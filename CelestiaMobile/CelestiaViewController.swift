@@ -116,6 +116,17 @@ extension CelestiaViewController {
             currentScale = nil
         }
     }
+
+    @objc private func handleTap(_ tap: UITapGestureRecognizer) {
+        switch tap.state {
+        case .ended:
+            let location = tap.location(in: view)
+            core.mouseButtonDown(at: location, modifiers: 0, with: .left)
+            core.mouseButtonUp(at: location, modifiers: 0, with: .left)
+        default:
+            break
+        }
+    }
 }
 
 extension CelestiaViewController {
@@ -167,5 +178,8 @@ extension CelestiaViewController {
         let pinch = UIPinchGestureRecognizer(target: self, action: #selector(handlePinch(_:)))
         pinch.require(toFail: pan2)
         view.addGestureRecognizer(pinch)
+
+        let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+        view.addGestureRecognizer(tap)
     }
 }
