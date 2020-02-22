@@ -21,6 +21,9 @@ class CelestiaViewController: GLKViewController {
 
     private var ready = false
 
+    private var oneFingerStartPoint: CGPoint?
+    private var twoFingerStartPoint: CGPoint?
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -50,6 +53,8 @@ class CelestiaViewController: GLKViewController {
             self.core.start()
 
             self.ready = true
+
+            self.setupGestures()
         }
     }
 
@@ -67,6 +72,31 @@ class CelestiaViewController: GLKViewController {
 
     override var prefersHomeIndicatorAutoHidden: Bool {
         return true
+    }
+}
+
+extension CelestiaViewController {
+    @objc private func handlePan(_ pan: UIPanGestureRecognizer) {
+        let move = pan.minimumNumberOfTouches == 1
+        let keyPath = move ? \CelestiaViewController.oneFingerStartPoint : \CelestiaViewController.twoFingerStartPoint
+        let location = pan.location(in: view)
+        switch pan.state {
+        case .possible:
+            break
+        case .began:
+            self[keyPath: keyPath] = location
+            core.mouseButtonDown(at: location, modifiers: 0, with: move ? .left : .right)
+        case .changed:
+            let current = self[keyPath: keyPath]!
+            let offset = CGPoint(x: location.x - current.x, y: location.y - current.y)
+            self[keyPath: keyPath] = location
+            core.mouseMove(by: offset, modifiers: 0, with: move ? .left : .right)
+        case .ended, .cancelled, .failed:
+            fallthrough
+        @unknown default:
+            core.mouseButtonUp(at: location, modifiers: 0, with: move ? .left : .right)
+            self[keyPath: keyPath] = nil
+        }
     }
 }
 
@@ -103,5 +133,17 @@ extension CelestiaViewController {
             self.core.loadUserDefaultsWithAppDefaults(atPath: Bundle.main.path(forResource: "defaults", ofType: "plist"))
             DispatchQueue.main.async { completion(true) }
         }
+    }
+
+    private func setupGestures() {
+        let pan1 = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
+        pan1.minimumNumberOfTouches = 1
+        pan1.maximumNumberOfTouches = 1
+        view.addGestureRecognizer(pan1)
+
+        let pan2 = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
+        pan2.minimumNumberOfTouches = 2
+        pan2.maximumNumberOfTouches = 2
+        view.addGestureRecognizer(pan2)
     }
 }
