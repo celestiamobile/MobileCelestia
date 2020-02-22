@@ -23,6 +23,7 @@ class CelestiaViewController: GLKViewController {
 
     private var oneFingerStartPoint: CGPoint?
     private var twoFingerStartPoint: CGPoint?
+    private var currentScale: CGFloat?
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -98,6 +99,23 @@ extension CelestiaViewController {
             self[keyPath: keyPath] = nil
         }
     }
+
+    @objc private func handlePinch(_ pinch: UIPinchGestureRecognizer) {
+        switch pinch.state {
+        case .possible:
+            break
+        case .began:
+            currentScale = pinch.scale
+        case .changed:
+            let delta = pinch.scale / currentScale!
+            core.mouseWheel(by: (1 - delta) * pinch.view!.bounds.height / 2, modifiers: 0)
+            currentScale = pinch.scale
+        case .ended, .cancelled, .failed:
+            fallthrough
+        @unknown default:
+            currentScale = nil
+        }
+    }
 }
 
 extension CelestiaViewController {
@@ -145,5 +163,9 @@ extension CelestiaViewController {
         pan2.minimumNumberOfTouches = 2
         pan2.maximumNumberOfTouches = 2
         view.addGestureRecognizer(pan2)
+
+        let pinch = UIPinchGestureRecognizer(target: self, action: #selector(handlePinch(_:)))
+        pinch.require(toFail: pan2)
+        view.addGestureRecognizer(pinch)
     }
 }
