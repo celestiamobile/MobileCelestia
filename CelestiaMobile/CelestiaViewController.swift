@@ -15,6 +15,13 @@ enum CelestiaLoadingError: Error {
     case celestiaError
 }
 
+enum CelestiaAction {
+}
+
+protocol CelestiaViewControllerDelegate: class {
+    func celestiaController(_ celestiaController: CelestiaViewController, supportedActions: [CelestiaAction], completion: (CelestiaAction?) -> Void)
+}
+
 class CelestiaViewController: GLKViewController {
 
     private var core: CelestiaAppCore!
@@ -28,6 +35,9 @@ class CelestiaViewController: GLKViewController {
     private var oneFingerStartPoint: CGPoint?
     private var twoFingerStartPoint: CGPoint?
     private var currentScale: CGFloat?
+    private var edgePanTriggerDistance: CGFloat = 20.0
+
+    weak var celestiaDelegate: CelestiaViewControllerDelegate!
 
     override func glkView(_ view: GLKView, drawIn rect: CGRect) {
         guard ready else { return }
@@ -99,6 +109,17 @@ extension CelestiaViewController {
             break
         }
     }
+
+    @objc private func handleEdgePan(_ pan: UIScreenEdgePanGestureRecognizer) {
+        switch pan.state {
+        case .ended:
+            view.isUserInteractionEnabled = false
+            celestiaDelegate.celestiaController(self, supportedActions: []) { (action) in
+            }
+        default:
+            break
+        }
+    }
 }
 
 extension CelestiaViewController {
@@ -153,6 +174,10 @@ extension CelestiaViewController {
 
         let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
         view.addGestureRecognizer(tap)
+
+        let rightEdge = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(handleEdgePan(_:)))
+        rightEdge.edges = .right
+        view.addGestureRecognizer(rightEdge)
     }
 }
 

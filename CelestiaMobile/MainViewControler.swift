@@ -13,12 +13,15 @@ class MainViewControler: UIViewController {
 
     private var loadeed = false
 
+    private lazy var slideInManager = SlideInPresentationManager()
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
         view.backgroundColor = .black
 
         install(celestiaController)
+        celestiaController.celestiaDelegate = self
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -48,5 +51,15 @@ class MainViewControler: UIViewController {
 
     override var prefersHomeIndicatorAutoHidden: Bool {
          return true
+    }
+}
+
+extension MainViewControler: CelestiaViewControllerDelegate {
+    func celestiaController(_ celestiaController: CelestiaViewController, supportedActions: [CelestiaAction], completion: (CelestiaAction?) -> Void) {
+        slideInManager.direction = .right
+        let controller = ToolbarViewController()
+        controller.modalPresentationStyle = .custom
+        controller.transitioningDelegate = slideInManager
+        present(controller, animated: true, completion: nil)
     }
 }

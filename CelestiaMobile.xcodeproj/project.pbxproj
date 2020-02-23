@@ -10,6 +10,9 @@
 		97143F1823FFAEFD00F35D87 /* defaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 97143F1623FFAEFD00F35D87 /* defaults.plist */; };
 		973E2EF82400F8C700B0F059 /* CelestiaResources in Resources */ = {isa = PBXBuildFile; fileRef = 973E2EF72400F8C700B0F059 /* CelestiaResources */; };
 		973E2EFC2400FA1100B0F059 /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973E2EFB2400FA1100B0F059 /* URL.swift */; };
+		9773949C2402A8F700E38B82 /* ToolbarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9773949B2402A8F700E38B82 /* ToolbarViewController.swift */; };
+		9773949E2402A96B00E38B82 /* SlideInPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9773949D2402A96B00E38B82 /* SlideInPresentationController.swift */; };
+		977394A02402A9AF00E38B82 /* SlideInPresentationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9773949F2402A9AF00E38B82 /* SlideInPresentationManager.swift */; };
 		978406D724028F0000876FD1 /* MainViewControler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978406D624028F0000876FD1 /* MainViewControler.swift */; };
 		978406DA2402906C00876FD1 /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978406D92402906C00876FD1 /* UIViewController+Extension.swift */; };
 		978406DC240294D000876FD1 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978406DB240294D000876FD1 /* LoadingViewController.swift */; };
@@ -48,6 +51,9 @@
 		97143F1623FFAEFD00F35D87 /* defaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = defaults.plist; sourceTree = "<group>"; };
 		973E2EF72400F8C700B0F059 /* CelestiaResources */ = {isa = PBXFileReference; lastKnownFileType = folder; path = CelestiaResources; sourceTree = "<group>"; };
 		973E2EFB2400FA1100B0F059 /* URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URL.swift; sourceTree = "<group>"; };
+		9773949B2402A8F700E38B82 /* ToolbarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarViewController.swift; sourceTree = "<group>"; };
+		9773949D2402A96B00E38B82 /* SlideInPresentationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideInPresentationController.swift; sourceTree = "<group>"; };
+		9773949F2402A9AF00E38B82 /* SlideInPresentationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideInPresentationManager.swift; sourceTree = "<group>"; };
 		978406D624028F0000876FD1 /* MainViewControler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewControler.swift; sourceTree = "<group>"; };
 		978406D92402906C00876FD1 /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		978406DB240294D000876FD1 /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
@@ -110,6 +116,16 @@
 			path = Utils;
 			sourceTree = "<group>";
 		};
+		977394992402A8DA00E38B82 /* Toolbar */ = {
+			isa = PBXGroup;
+			children = (
+				9773949B2402A8F700E38B82 /* ToolbarViewController.swift */,
+				9773949D2402A96B00E38B82 /* SlideInPresentationController.swift */,
+				9773949F2402A9AF00E38B82 /* SlideInPresentationManager.swift */,
+			);
+			path = Toolbar;
+			sourceTree = "<group>";
+		};
 		978406E124029DA900876FD1 /* Loading */ = {
 			isa = PBXGroup;
 			children = (
@@ -143,6 +159,7 @@
 		979D2F7C23FEB1A6005D2592 /* CelestiaMobile */ = {
 			isa = PBXGroup;
 			children = (
+				977394992402A8DA00E38B82 /* Toolbar */,
 				978406E124029DA900876FD1 /* Loading */,
 				973E2EFA2400FA0300B0F059 /* Utils */,
 				973E2EF92400F9E100B0F059 /* Resources */,
@@ -303,12 +320,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				977394A02402A9AF00E38B82 /* SlideInPresentationManager.swift in Sources */,
+				9773949C2402A8F700E38B82 /* ToolbarViewController.swift in Sources */,
 				979D2F8223FEB1A6005D2592 /* CelestiaViewController.swift in Sources */,
 				973E2EFC2400FA1100B0F059 /* URL.swift in Sources */,
 				978406DF24029D9100876FD1 /* LoadingFailureViewController.swift in Sources */,
 				978406D724028F0000876FD1 /* MainViewControler.swift in Sources */,
 				978406DC240294D000876FD1 /* LoadingViewController.swift in Sources */,
 				978406DA2402906C00876FD1 /* UIViewController+Extension.swift in Sources */,
+				9773949E2402A96B00E38B82 /* SlideInPresentationController.swift in Sources */,
 				979D2F7E23FEB1A6005D2592 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
