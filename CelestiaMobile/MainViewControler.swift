@@ -11,8 +11,12 @@ import UIKit
 class MainViewControler: UIViewController {
     private lazy var celestiaController = CelestiaViewController()
 
+    private var loadeed = false
+
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        view.backgroundColor = .black
 
         install(celestiaController)
     }
@@ -20,10 +24,25 @@ class MainViewControler: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        celestiaController.load({ (st) in
-            // TODO: loading view
+        if loadeed { return }
+
+        loadeed = true
+
+        let loadingController = LoadingViewController()
+        install(loadingController)
+
+        celestiaController.load({ (status) in
+            loadingController.update(with: status)
         }) { (result) in
-            // TODO: empty
+            loadingController.remove()
+
+            switch result {
+            case .success():
+                print("loading success")
+            case .failure(_):
+                let failure = LoadingFailureViewController()
+                self.install(failure)
+            }
         }
     }
 
