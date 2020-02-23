@@ -79,6 +79,12 @@ class CelestiaViewController: GLKViewController {
 extension CelestiaViewController {
     @objc private func handlePan(_ pan: UIPanGestureRecognizer) {
         let move = pan.minimumNumberOfTouches == 1
+        if pan.numberOfTouches != pan.minimumNumberOfTouches {
+            // cancel the gesture recognizer
+            pan.isEnabled = false
+            pan.isEnabled = true
+            return
+        }
         let keyPath = move ? \CelestiaViewController.oneFingerStartPoint : \CelestiaViewController.twoFingerStartPoint
         let location = pan.location(in: view)
         switch pan.state {
