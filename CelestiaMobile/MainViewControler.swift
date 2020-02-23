@@ -17,6 +17,16 @@ class MainViewControler: UIViewController {
         install(celestiaController)
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        celestiaController.load({ (st) in
+            // TODO: loading view
+        }) { (result) in
+            // TODO: empty
+        }
+    }
+
     override var prefersHomeIndicatorAutoHidden: Bool {
          return true
     }

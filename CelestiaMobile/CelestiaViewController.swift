@@ -10,54 +10,24 @@ import UIKit
 import CelestiaCore
 import GLKit
 
+enum CelestiaLoadingError: Error {
+    case openGLError
+    case celestiaError
+}
+
 class CelestiaViewController: GLKViewController {
 
     private var core: CelestiaAppCore!
+
+    // MARK: rendering
     private var glContext: EAGLContext!
-
     private var currentSize: CGSize = .zero
-
-    private lazy var statusLabel: UILabel = UILabel()
-
     private var ready = false
 
+    // MARK: gesture
     private var oneFingerStartPoint: CGPoint?
     private var twoFingerStartPoint: CGPoint?
     private var currentScale: CGFloat?
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        statusLabel.translatesAutoresizingMaskIntoConstraints = false
-
-        view.addSubview(statusLabel)
-        NSLayoutConstraint.activate([
-            view.centerXAnchor.constraint(equalTo: statusLabel.centerXAnchor),
-            view.centerYAnchor.constraint(equalTo: statusLabel.centerYAnchor),
-        ])
-
-        guard setupOpenGL() else {
-            print("Failed to setup OpenGL")
-            return
-        }
-
-        setupCelestia { (success) in
-            guard success else {
-                print("Failed to setup Celestia")
-                return
-            }
-            self.statusLabel.text = nil
-
-            self.core.showAtmospheres = false
-
-            self.core.tick()
-            self.core.start()
-
-            self.ready = true
-
-            self.setupGestures()
-        }
-    }
 
     override func glkView(_ view: GLKView, drawIn rect: CGRect) {
         guard ready else { return }
@@ -69,10 +39,6 @@ class CelestiaViewController: GLKViewController {
 
         core.draw()
         core.tick()
-    }
-
-    override var prefersHomeIndicatorAutoHidden: Bool {
-        return true
     }
 }
 
@@ -148,15 +114,15 @@ extension CelestiaViewController {
         return true
     }
 
-    private func setupCelestia(_ completion: @escaping (Bool) -> Void) {
+    private func setupCelestia(_ status: @escaping (String) -> Void, _ completion: @escaping (Bool) -> Void) {
         _ = CelestiaAppCore.initGL()
 
         core = CelestiaAppCore()
 
         DispatchQueue.global().async {
             EAGLContext.setCurrent(self.glContext)
-            self.core.startSimulation(configFileName: defaultConfigFile.path, extraDirectories: [extraDirectory].compactMap{$0?.path}) { (status) in
-                DispatchQueue.main.async { self.statusLabel.text = status }
+            self.core.startSimulation(configFileName: defaultConfigFile.path, extraDirectories: [extraDirectory].compactMap{$0?.path}) { (st) in
+                DispatchQueue.main.async { status(st) }
             }
 
             guard self.core.startRenderer() else {
@@ -187,5 +153,34 @@ extension CelestiaViewController {
 
         let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
         view.addGestureRecognizer(tap)
+    }
+}
+
+extension CelestiaViewController {
+    func load(_ status: @escaping (String) -> Void, _ completion: @escaping (Result<Void, CelestiaLoadingError>) -> Void) {
+        guard setupOpenGL() else {
+            completion(.failure(.openGLError))
+            return
+        }
+        setupCelestia({ (st) in
+            status(st)
+        }) { (success) in
+            guard success else {
+                completion(.failure(.celestiaError))
+                return
+            }
+
+            // FIXME: atmosphere rendering
+            self.core.showAtmospheres = false
+
+            self.core.tick()
+            self.core.start()
+
+            self.setupGestures()
+
+            self.ready = true
+
+            completion(.success(()))
+        }
     }
 }
