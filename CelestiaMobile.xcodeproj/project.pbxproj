@@ -10,9 +10,10 @@
 		97143F1823FFAEFD00F35D87 /* defaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 97143F1623FFAEFD00F35D87 /* defaults.plist */; };
 		973E2EF82400F8C700B0F059 /* CelestiaResources in Resources */ = {isa = PBXBuildFile; fileRef = 973E2EF72400F8C700B0F059 /* CelestiaResources */; };
 		973E2EFC2400FA1100B0F059 /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973E2EFB2400FA1100B0F059 /* URL.swift */; };
+		978406D724028F0000876FD1 /* MainViewControler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978406D624028F0000876FD1 /* MainViewControler.swift */; };
+		978406DA2402906C00876FD1 /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978406D92402906C00876FD1 /* UIViewController+Extension.swift */; };
 		979D2F7E23FEB1A6005D2592 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979D2F7D23FEB1A6005D2592 /* AppDelegate.swift */; };
 		979D2F8223FEB1A6005D2592 /* CelestiaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979D2F8123FEB1A6005D2592 /* CelestiaViewController.swift */; };
-		979D2F8523FEB1A6005D2592 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 979D2F8323FEB1A6005D2592 /* Main.storyboard */; };
 		979D2F8723FEB1A8005D2592 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 979D2F8623FEB1A8005D2592 /* Assets.xcassets */; };
 		979D2F8A23FEB1A8005D2592 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 979D2F8823FEB1A8005D2592 /* LaunchScreen.storyboard */; };
 		979D2F9523FEB1A8005D2592 /* CelestiaMobileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979D2F9423FEB1A8005D2592 /* CelestiaMobileTests.swift */; };
@@ -45,10 +46,11 @@
 		97143F1623FFAEFD00F35D87 /* defaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = defaults.plist; sourceTree = "<group>"; };
 		973E2EF72400F8C700B0F059 /* CelestiaResources */ = {isa = PBXFileReference; lastKnownFileType = folder; path = CelestiaResources; sourceTree = "<group>"; };
 		973E2EFB2400FA1100B0F059 /* URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URL.swift; sourceTree = "<group>"; };
+		978406D624028F0000876FD1 /* MainViewControler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewControler.swift; sourceTree = "<group>"; };
+		978406D92402906C00876FD1 /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		979D2F7A23FEB1A6005D2592 /* CelestiaMobile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CelestiaMobile.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		979D2F7D23FEB1A6005D2592 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		979D2F8123FEB1A6005D2592 /* CelestiaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaViewController.swift; sourceTree = "<group>"; };
-		979D2F8423FEB1A6005D2592 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		979D2F8623FEB1A8005D2592 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		979D2F8923FEB1A8005D2592 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		979D2F8B23FEB1A8005D2592 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -99,6 +101,7 @@
 			isa = PBXGroup;
 			children = (
 				973E2EFB2400FA1100B0F059 /* URL.swift */,
+				978406D92402906C00876FD1 /* UIViewController+Extension.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -130,8 +133,8 @@
 				973E2EFA2400FA0300B0F059 /* Utils */,
 				973E2EF92400F9E100B0F059 /* Resources */,
 				979D2F7D23FEB1A6005D2592 /* AppDelegate.swift */,
+				978406D624028F0000876FD1 /* MainViewControler.swift */,
 				979D2F8123FEB1A6005D2592 /* CelestiaViewController.swift */,
-				979D2F8323FEB1A6005D2592 /* Main.storyboard */,
 				979D2F8623FEB1A8005D2592 /* Assets.xcassets */,
 				979D2F8823FEB1A8005D2592 /* LaunchScreen.storyboard */,
 				979D2F8B23FEB1A8005D2592 /* Info.plist */,
@@ -269,7 +272,6 @@
 				979D2F8A23FEB1A8005D2592 /* LaunchScreen.storyboard in Resources */,
 				979D2F8723FEB1A8005D2592 /* Assets.xcassets in Resources */,
 				97143F1823FFAEFD00F35D87 /* defaults.plist in Resources */,
-				979D2F8523FEB1A6005D2592 /* Main.storyboard in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -289,6 +291,8 @@
 			files = (
 				979D2F8223FEB1A6005D2592 /* CelestiaViewController.swift in Sources */,
 				973E2EFC2400FA1100B0F059 /* URL.swift in Sources */,
+				978406D724028F0000876FD1 /* MainViewControler.swift in Sources */,
+				978406DA2402906C00876FD1 /* UIViewController+Extension.swift in Sources */,
 				979D2F7E23FEB1A6005D2592 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -312,14 +316,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		979D2F8323FEB1A6005D2592 /* Main.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				979D2F8423FEB1A6005D2592 /* Base */,
-			);
-			name = Main.storyboard;
-			sourceTree = "<group>";
-		};
 		979D2F8823FEB1A8005D2592 /* LaunchScreen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
