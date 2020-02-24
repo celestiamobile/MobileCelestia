@@ -61,3 +61,10 @@ final class BodyDescriptionCell: UICollectionViewCell {
         return attributes
     }
 }
+
+extension BodyDescriptionCell {
+    func update(with info: BodyInfo) {
+        titleLabel.text = info.name
+        bodyLabel.text = info.overview
+    }
+}

@@ -36,6 +36,10 @@ class ToolbarViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    override func loadView() {
+        view = UIView()
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 

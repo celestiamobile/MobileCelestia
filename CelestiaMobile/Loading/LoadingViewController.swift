@@ -12,6 +12,10 @@ class LoadingViewController: UIViewController {
 
     private var statusLabel = UILabel()
 
+    override func loadView() {
+        view = UIView()
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 

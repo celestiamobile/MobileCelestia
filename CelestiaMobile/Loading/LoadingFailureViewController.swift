@@ -10,6 +10,10 @@ import UIKit
 
 class LoadingFailureViewController: UIViewController {
 
+    override func loadView() {
+        view = UIView()
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
     }

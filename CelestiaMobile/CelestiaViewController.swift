@@ -27,7 +27,7 @@ extension CelestiaAction {
 }
 
 protocol CelestiaViewControllerDelegate: class {
-    func celestiaController(_ celestiaController: CelestiaViewController, supportedActions: [CelestiaAction], completion: @escaping (CelestiaAction?) -> Void)
+    func celestiaController(_ celestiaController: CelestiaViewController, selection: BodyInfo?, completion: @escaping (CelestiaAction?) -> Void)
 }
 
 class CelestiaViewController: GLKViewController {
@@ -122,7 +122,9 @@ extension CelestiaViewController {
         switch pan.state {
         case .ended:
             view.isUserInteractionEnabled = false
-            celestiaDelegate.celestiaController(self, supportedActions: []) { (action) in
+            let sel = core.simulation.selection
+            let info = sel.isEmpty ? nil : BodyInfo(selection: sel)
+            celestiaDelegate.celestiaController(self, selection: info) { (action) in
             }
         default:
             break

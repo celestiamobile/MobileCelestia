@@ -15,6 +15,10 @@ class MainViewControler: UIViewController {
 
     private lazy var slideInManager = SlideInPresentationManager()
 
+    override func loadView() {
+        view = UIView()
+    }
+
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -55,10 +59,10 @@ class MainViewControler: UIViewController {
 }
 
 extension MainViewControler: CelestiaViewControllerDelegate {
-    func celestiaController(_ celestiaController: CelestiaViewController, supportedActions: [CelestiaAction], completion: @escaping (CelestiaAction?) -> Void) {
+    func celestiaController(_ celestiaController: CelestiaViewController, selection: BodyInfo?, completion: @escaping (CelestiaAction?) -> Void) {
         slideInManager.direction = .right
         var actions: [ToolbarAction] = ToolbarAction.persistentAction
-        if !supportedActions.isEmpty {
+        if selection != nil {
             actions.insert(.celestia, at: 0)
         }
         let controller = ToolbarViewController(actions: actions)
@@ -69,7 +73,7 @@ extension MainViewControler: CelestiaViewControllerDelegate {
                 return
             }
             if ac == .celestia {
-                self.showBodyInfo(with: completion)
+                self.showBodyInfo(with: selection!, completion: completion)
                 return
             }
             // TODO: handle other actions
@@ -79,9 +83,9 @@ extension MainViewControler: CelestiaViewControllerDelegate {
         present(controller, animated: true, completion: nil)
     }
 
-    private func showBodyInfo(with completion: @escaping (CelestiaAction?) -> Void) {
+    private func showBodyInfo(with selection: BodyInfo, completion: @escaping (CelestiaAction?) -> Void) {
         slideInManager.direction = .right
-        let controller = InfoViewController()
+        let controller = InfoViewController(info: selection)
         controller.selectionHandler = completion
         // TODO: special setup for iPad
         controller.modalPresentationStyle = .custom
