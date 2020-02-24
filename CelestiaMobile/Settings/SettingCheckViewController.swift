@@ -34,7 +34,7 @@ class SettingCheckViewController: UIViewController {
         view = UIView()
         view.backgroundColor = .darkBackground
 
-        title = NSLocalizedString("Settings", comment: "")
+        title = item.title
     }
 
     override func viewDidLoad() {
