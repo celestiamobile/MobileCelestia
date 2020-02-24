@@ -28,6 +28,8 @@
 		977394B52403FD4400E38B82 /* SettingCheckViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394B42403FD4400E38B82 /* SettingCheckViewController.swift */; };
 		977394B8240409CF00E38B82 /* SettingSwitchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394B7240409CF00E38B82 /* SettingSwitchCell.swift */; };
 		977394BA240413EF00E38B82 /* SettingSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394B9240413EF00E38B82 /* SettingSelectionViewController.swift */; };
+		977394BD2404189000E38B82 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394BC2404189000E38B82 /* SearchViewController.swift */; };
+		977394BF24041A9A00E38B82 /* SearchCoordinatorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394BE24041A9A00E38B82 /* SearchCoordinatorController.swift */; };
 		978406D724028F0000876FD1 /* MainViewControler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978406D624028F0000876FD1 /* MainViewControler.swift */; };
 		978406DA2402906C00876FD1 /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978406D92402906C00876FD1 /* UIViewController+Extension.swift */; };
 		978406DC240294D000876FD1 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978406DB240294D000876FD1 /* LoadingViewController.swift */; };
@@ -84,6 +86,8 @@
 		977394B42403FD4400E38B82 /* SettingCheckViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingCheckViewController.swift; sourceTree = "<group>"; };
 		977394B7240409CF00E38B82 /* SettingSwitchCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingSwitchCell.swift; sourceTree = "<group>"; };
 		977394B9240413EF00E38B82 /* SettingSelectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingSelectionViewController.swift; sourceTree = "<group>"; };
+		977394BC2404189000E38B82 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
+		977394BE24041A9A00E38B82 /* SearchCoordinatorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchCoordinatorController.swift; sourceTree = "<group>"; };
 		978406D624028F0000876FD1 /* MainViewControler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewControler.swift; sourceTree = "<group>"; };
 		978406D92402906C00876FD1 /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		978406DB240294D000876FD1 /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
@@ -185,6 +189,15 @@
 			path = Settings;
 			sourceTree = "<group>";
 		};
+		977394BB2404187300E38B82 /* Search */ = {
+			isa = PBXGroup;
+			children = (
+				977394BC2404189000E38B82 /* SearchViewController.swift */,
+				977394BE24041A9A00E38B82 /* SearchCoordinatorController.swift */,
+			);
+			path = Search;
+			sourceTree = "<group>";
+		};
 		978406E124029DA900876FD1 /* Loading */ = {
 			isa = PBXGroup;
 			children = (
@@ -218,6 +231,7 @@
 		979D2F7C23FEB1A6005D2592 /* CelestiaMobile */ = {
 			isa = PBXGroup;
 			children = (
+				977394BB2404187300E38B82 /* Search */,
 				977394A92403F05100E38B82 /* Settings */,
 				974F86DA2403BD2600356795 /* Info */,
 				977394992402A8DA00E38B82 /* Toolbar */,
@@ -389,6 +403,7 @@
 				979D2F8223FEB1A6005D2592 /* CelestiaViewController.swift in Sources */,
 				977394AE2403F08800E38B82 /* SettingsMainViewController.swift in Sources */,
 				977394BA240413EF00E38B82 /* SettingSelectionViewController.swift in Sources */,
+				977394BD2404189000E38B82 /* SearchViewController.swift in Sources */,
 				977394B12403F30900E38B82 /* SettingModel.swift in Sources */,
 				973E2EFC2400FA1100B0F059 /* URL.swift in Sources */,
 				974F86E22403BD3C00356795 /* InfoViewController.swift in Sources */,
@@ -401,6 +416,7 @@
 				978406D724028F0000876FD1 /* MainViewControler.swift in Sources */,
 				974F86DF2403BD3C00356795 /* BodyActionCell.swift in Sources */,
 				977394B52403FD4400E38B82 /* SettingCheckViewController.swift in Sources */,
+				977394BF24041A9A00E38B82 /* SearchCoordinatorController.swift in Sources */,
 				978406DC240294D000876FD1 /* LoadingViewController.swift in Sources */,
 				978406DA2402906C00876FD1 /* UIViewController+Extension.swift in Sources */,
 				9773949E2402A96B00E38B82 /* SlideInPresentationController.swift in Sources */,

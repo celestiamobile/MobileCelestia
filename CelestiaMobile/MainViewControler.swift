@@ -79,6 +79,8 @@ extension MainViewControler: CelestiaViewControllerDelegate {
             completion(nil)
             if ac == .setting {
                 self.showSettings()
+            } else if ac == .search {
+                self.showSearch()
             }
             // TODO: handle other actions
         }
@@ -100,6 +102,15 @@ extension MainViewControler: CelestiaViewControllerDelegate {
     private func showSettings() {
         slideInManager.direction = .right
         let controller = SettingsCoordinatorController()
+        // TODO: special setup for iPad
+        controller.modalPresentationStyle = .custom
+        controller.transitioningDelegate = slideInManager
+        present(controller, animated: true, completion: nil)
+    }
+
+    private func showSearch() {
+        slideInManager.direction = .right
+        let controller = SearchCoordinatorController()
         // TODO: special setup for iPad
         controller.modalPresentationStyle = .custom
         controller.transitioningDelegate = slideInManager

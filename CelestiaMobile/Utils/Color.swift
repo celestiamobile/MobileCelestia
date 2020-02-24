@@ -82,6 +82,22 @@ extension UIColor {
     class var darkSecondaryBackground: UIColor {
         return UIColor(rgb: 0x1C1C1E)
     }
+
+    class var darkPlainHeaderBackground: UIColor {
+        return UIColor(rgb: 0x323234)
+    }
+
+    class var lightPlainHeaderBackground: UIColor {
+        return UIColor(rgb: 0xE5E5E5)
+    }
+
+    class var darkPlainHeaderLabel: UIColor {
+        return UIColor(rgb: 0xDCDCDC)
+    }
+
+    class var lightPlainHeaderLabel: UIColor {
+        return UIColor(rgb: 0x232323)
+    }
 }
 
 extension UIColor {
