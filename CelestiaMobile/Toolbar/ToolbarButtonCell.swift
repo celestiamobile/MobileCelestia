@@ -32,6 +32,7 @@ class ToolbarButtonCell: UITableViewCell {
             button.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             button.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
         ])
+        button.tintColor = .darkLabel
         button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
 
         selectionStyle = .none

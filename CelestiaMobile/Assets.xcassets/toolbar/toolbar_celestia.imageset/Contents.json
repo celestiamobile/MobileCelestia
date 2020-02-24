@@ -6,12 +6,12 @@
     },
     {
       "idiom" : "universal",
-      "filename" : "toolbar_info@2x.png",
+      "filename" : "toolbar_celestia@2x.png",
       "scale" : "2x"
     },
     {
       "idiom" : "universal",
-      "filename" : "toolbar_info@3x.png",
+      "filename" : "toolbar_celestia@3x.png",
       "scale" : "3x"
     }
   ],

@@ -14,6 +14,7 @@ class LoadingViewController: UIViewController {
 
     override func loadView() {
         view = UIView()
+        view.backgroundColor = .darkBackground
     }
 
     override func viewDidLoad() {
@@ -36,7 +37,7 @@ private extension LoadingViewController {
 
         view.addSubview(statusLabel)
         statusLabel.translatesAutoresizingMaskIntoConstraints = false
-        statusLabel.textColor = .white
+        statusLabel.textColor = .darkLabel
 
         NSLayoutConstraint.activate([
             statusLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),

@@ -32,6 +32,9 @@ final class BodyActionCell: UICollectionViewCell {
             button.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             button.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
         ])
+        button.layer.cornerRadius = 4
+        button.backgroundColor = .themeBackground
+        button.setTitleColor(.darkLabel, for: .normal)
         button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
     }
 
@@ -41,7 +44,7 @@ final class BodyActionCell: UICollectionViewCell {
 
     override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
         let attributes = super.preferredLayoutAttributesFitting(layoutAttributes)
-        attributes.size = CGSize(width: layoutAttributes.size.width, height: 50)
+        attributes.size = CGSize(width: layoutAttributes.size.width, height: 44)
         return attributes
     }
 }

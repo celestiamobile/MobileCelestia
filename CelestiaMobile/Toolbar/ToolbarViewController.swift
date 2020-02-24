@@ -38,6 +38,7 @@ class ToolbarViewController: UIViewController {
 
     override func loadView() {
         view = UIView()
+        view.backgroundColor = .darkBackground
     }
 
     override func viewDidLoad() {
@@ -67,6 +68,7 @@ extension ToolbarViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! ToolbarButtonCell
 
+        cell.backgroundColor = .clear
         cell.itemImage = actions[indexPath.row].image
         cell.actionHandler = { [weak self] in
             guard let self = self else { return }
@@ -104,6 +106,7 @@ private extension ToolbarViewController {
             ])
         }
 
+        tableView.backgroundColor = .clear
         tableView.alwaysBounceVertical = false
         tableView.separatorStyle = .none
         tableView.tableFooterView = UIView()

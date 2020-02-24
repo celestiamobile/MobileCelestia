@@ -17,6 +17,11 @@ final class InfoViewController: UIViewController {
     var selectionHandler: ((CelestiaAction?) -> Void)?
     private var selectedAction: CelestiaAction?
 
+    override var preferredContentSize: CGSize {
+        set {}
+        get { return CGSize(width: 300, height: 300) }
+    }
+
     init(info: BodyInfo) {
         self.info = info
         super.init(nibName: nil, bundle: nil)
@@ -28,6 +33,7 @@ final class InfoViewController: UIViewController {
 
     override func loadView() {
         view = UIView()
+        view.backgroundColor = .darkBackground
     }
 
     override func viewDidLoad() {
@@ -65,6 +71,7 @@ private extension InfoViewController {
             ])
         }
 
+        collectionView.backgroundColor = .clear
         (collectionView.collectionViewLayout as! UICollectionViewFlowLayout).estimatedItemSize = CGSize(width: 1, height: 1)
         collectionView.register(BodyDescriptionCell.self, forCellWithReuseIdentifier: "Description")
         collectionView.register(BodyActionCell.self, forCellWithReuseIdentifier: "Action")

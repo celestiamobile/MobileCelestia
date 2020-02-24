@@ -12,8 +12,6 @@ final class BodyDescriptionCell: UICollectionViewCell {
     private var titleLabel = UILabel()
     private var bodyLabel = UILabel()
 
-    private lazy var widthConstraint = self.widthAnchor.constraint(equalToConstant: 0)
-
     override init(frame: CGRect) {
         super.init(frame: frame)
 
@@ -33,6 +31,7 @@ final class BodyDescriptionCell: UICollectionViewCell {
             titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
         ])
 
+        titleLabel.textColor = .darkLabel
         titleLabel.font = UIFont.preferredFont(forTextStyle: .headline)
         titleLabel.numberOfLines = 0
         titleLabel.lineBreakMode = .byCharWrapping
@@ -47,6 +46,7 @@ final class BodyDescriptionCell: UICollectionViewCell {
             bodyLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
         ])
 
+        bodyLabel.textColor = .darkSecondaryLabel
         bodyLabel.font = UIFont.preferredFont(forTextStyle: .body)
         bodyLabel.numberOfLines = 0
         bodyLabel.lineBreakMode = .byCharWrapping
