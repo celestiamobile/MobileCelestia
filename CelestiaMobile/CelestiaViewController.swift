@@ -152,7 +152,7 @@ extension CelestiaViewController {
     private func setupCelestia(_ status: @escaping (String) -> Void, _ completion: @escaping (Bool) -> Void) {
         _ = CelestiaAppCore.initGL()
 
-        core = CelestiaAppCore()
+        core = CelestiaAppCore.shared
 
         DispatchQueue.global().async {
             EAGLContext.setCurrent(self.glContext)

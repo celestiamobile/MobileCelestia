@@ -14,3 +14,14 @@ extension BodyInfo {
     }
 }
 
+// MARK: singleton
+private var core: CelestiaAppCore?
+
+extension CelestiaAppCore {
+    static var shared: CelestiaAppCore {
+        if core == nil {
+            core = CelestiaAppCore()
+        }
+        return core!
+    }
+}
