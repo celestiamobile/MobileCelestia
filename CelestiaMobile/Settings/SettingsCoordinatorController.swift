@@ -10,8 +10,8 @@ import UIKit
 
 class SettingsCoordinatorController: UIViewController {
 
-    private lazy var main = SettingsMainViewController()
-    private lazy var navigation = UINavigationController(rootViewController: self.main)
+    private var main: SettingsMainViewController!
+    private var navigation: UINavigationController!
 
     override var preferredContentSize: CGSize {
         set {}
@@ -33,6 +33,16 @@ class SettingsCoordinatorController: UIViewController {
 
 private extension SettingsCoordinatorController {
     func setup() {
+        main = SettingsMainViewController(selection: { [weak self] (item) in
+            guard let self = self else { return }
+            switch item.type {
+            case .checkmarks(let masterKey, let items):
+                let controller = SettingCheckViewController(item: SettingCheckViewController.Item(title: item.name, masterKey: masterKey, subitems: items))
+                self.navigation.pushViewController(controller, animated: true)
+            }
+        })
+        navigation = UINavigationController(rootViewController: main)
+
         install(navigation)
 
         navigation.navigationBar.barStyle = .black
