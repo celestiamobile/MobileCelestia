@@ -34,5 +34,8 @@ class SettingsCoordinatorController: UIViewController {
 private extension SettingsCoordinatorController {
     func setup() {
         install(navigation)
+
+        navigation.navigationBar.barStyle = .black
+        navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
     }
 }
