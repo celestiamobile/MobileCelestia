@@ -15,9 +15,9 @@ enum CelestiaLoadingError: Error {
     case celestiaError
 }
 
-enum CelestiaAction {
-    case goto
-    case center
+enum CelestiaAction: Int8 {
+    case goto = 103
+    case center = 99
 }
 
 extension CelestiaAction {
@@ -124,7 +124,11 @@ extension CelestiaViewController {
             view.isUserInteractionEnabled = false
             let sel = core.simulation.selection
             let info = sel.isEmpty ? nil : BodyInfo(selection: sel)
-            celestiaDelegate.celestiaController(self, selection: info) { (action) in
+            celestiaDelegate.celestiaController(self, selection: info) { [weak self] (action) in
+                guard let self = self else { return }
+                defer { self.view.isUserInteractionEnabled = true }
+                guard let ac = action else { return }
+                self.core.charEnter(ac.rawValue)
             }
         default:
             break
