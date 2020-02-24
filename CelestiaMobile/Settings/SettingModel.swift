@@ -80,8 +80,7 @@ let mainSetting = [
                         SettingCheckmarkItem(name: NSLocalizedString("Galactic", comment: ""), key: "showGalacticGrid"),
                     ])),
         SettingItem(name: NSLocalizedString("Constellations", comment: ""),
-                    type: .checkmarks(masterKey: nil, items: [
-                        SettingCheckmarkItem(name: NSLocalizedString("Constellations", comment: ""), key: "showDiagrams"),
+                    type: .checkmarks(masterKey: "showDiagrams", items: [
                         SettingCheckmarkItem(name: NSLocalizedString("Constellation Labels", comment: ""), key: "showConstellationLabels"),
                         SettingCheckmarkItem(name: NSLocalizedString("Constellations in Latin", comment: ""), key: "showLatinConstellationLabels"),
                         SettingCheckmarkItem(name: NSLocalizedString("Show Boundaries", comment: ""), key: "showBoundaries"),
