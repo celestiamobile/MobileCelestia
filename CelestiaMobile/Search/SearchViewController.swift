@@ -29,6 +29,17 @@ class SearchViewController: UIViewController {
 
     private var resultSections: [SearchResultSection] = []
 
+    private let selected: (BodyInfo) -> Void
+
+    init(selected: @escaping (BodyInfo) -> Void) {
+        self.selected = selected
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     override func loadView() {
         view = UIView()
         view.backgroundColor = .darkBackground
@@ -143,6 +154,7 @@ extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
             return
         }
         sim.selection = object
+        selected(BodyInfo(selection: object))
     }
 }
 

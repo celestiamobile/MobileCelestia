@@ -18,6 +18,17 @@ class SearchCoordinatorController: UIViewController {
         get { return CGSize(width: 300, height: 300) }
     }
 
+    private let selected: (BodyInfo) -> Void
+
+    init(selected: @escaping (BodyInfo) -> Void) {
+        self.selected = selected
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     override func loadView() {
         view = UIView()
         view.backgroundColor = .darkBackground
@@ -33,7 +44,10 @@ class SearchCoordinatorController: UIViewController {
 
 private extension SearchCoordinatorController {
     func setup() {
-        main = SearchViewController()
+        main = SearchViewController(selected: { [weak self] (info) in
+            self?.dismiss(animated: true, completion: nil)
+            self?.selected(info)
+        })
         navigation = UINavigationController(rootViewController: main)
 
         install(navigation)

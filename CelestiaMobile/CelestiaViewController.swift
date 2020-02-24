@@ -27,7 +27,7 @@ extension CelestiaAction {
 }
 
 protocol CelestiaViewControllerDelegate: class {
-    func celestiaController(_ celestiaController: CelestiaViewController, selection: BodyInfo?, completion: @escaping (CelestiaAction?) -> Void)
+    func celestiaController(_ celestiaController: CelestiaViewController, selection: BodyInfo?)
 }
 
 class CelestiaViewController: GLKViewController {
@@ -121,15 +121,9 @@ extension CelestiaViewController {
     @objc private func handleEdgePan(_ pan: UIScreenEdgePanGestureRecognizer) {
         switch pan.state {
         case .ended:
-            view.isUserInteractionEnabled = false
             let sel = core.simulation.selection
             let info = sel.isEmpty ? nil : BodyInfo(selection: sel)
-            celestiaDelegate.celestiaController(self, selection: info) { [weak self] (action) in
-                guard let self = self else { return }
-                defer { self.view.isUserInteractionEnabled = true }
-                guard let ac = action else { return }
-                self.core.charEnter(ac.rawValue)
-            }
+            celestiaDelegate.celestiaController(self, selection: info)
         default:
             break
         }
@@ -221,5 +215,11 @@ extension CelestiaViewController {
 
             completion(.success(()))
         }
+    }
+}
+
+extension CelestiaViewController {
+    func receive(action: CelestiaAction) {
+        self.core.charEnter(action.rawValue)
     }
 }

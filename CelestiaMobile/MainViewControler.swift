@@ -59,7 +59,7 @@ class MainViewControler: UIViewController {
 }
 
 extension MainViewControler: CelestiaViewControllerDelegate {
-    func celestiaController(_ celestiaController: CelestiaViewController, selection: BodyInfo?, completion: @escaping (CelestiaAction?) -> Void) {
+    func celestiaController(_ celestiaController: CelestiaViewController, selection: BodyInfo?) {
         slideInManager.direction = .right
         var actions: [ToolbarAction] = ToolbarAction.persistentAction
         if selection != nil {
@@ -68,15 +68,11 @@ extension MainViewControler: CelestiaViewControllerDelegate {
         let controller = ToolbarViewController(actions: actions)
         controller.selectionHandler = { [weak self] (action) in
             guard let self = self else { return }
-            guard let ac = action else {
-                completion(nil)
-                return
-            }
+            guard let ac = action else { return }
             if ac == .celestia {
-                self.showBodyInfo(with: selection!, completion: completion)
+                self.showBodyInfo(with: selection!)
                 return
             }
-            completion(nil)
             if ac == .setting {
                 self.showSettings()
             } else if ac == .search {
@@ -89,10 +85,14 @@ extension MainViewControler: CelestiaViewControllerDelegate {
         present(controller, animated: true, completion: nil)
     }
 
-    private func showBodyInfo(with selection: BodyInfo, completion: @escaping (CelestiaAction?) -> Void) {
+    private func showBodyInfo(with selection: BodyInfo) {
         slideInManager.direction = .right
         let controller = InfoViewController(info: selection)
-        controller.selectionHandler = completion
+        controller.selectionHandler = { [weak self] (action) in
+            guard let ac = action else { return }
+            guard let self = self else { return }
+            self.celestiaController.receive(action: ac)
+        }
         // TODO: special setup for iPad
         controller.modalPresentationStyle = .custom
         controller.transitioningDelegate = slideInManager
@@ -110,7 +110,10 @@ extension MainViewControler: CelestiaViewControllerDelegate {
 
     private func showSearch() {
         slideInManager.direction = .right
-        let controller = SearchCoordinatorController()
+        let controller = SearchCoordinatorController { [weak self] (info) in
+            guard let self = self else { return }
+            self.showBodyInfo(with: info)
+        }
         // TODO: special setup for iPad
         controller.modalPresentationStyle = .custom
         controller.transitioningDelegate = slideInManager
