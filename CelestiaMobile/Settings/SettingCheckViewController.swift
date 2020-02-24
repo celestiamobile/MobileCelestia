@@ -8,6 +8,8 @@
 
 import UIKit
 
+import CelestiaCore
+
 class SettingCheckViewController: UIViewController {
     struct Item {
         let title: String
@@ -60,6 +62,7 @@ private extension SettingCheckViewController {
         tableView.separatorColor = .darkSeparator
 
         tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Text")
+        tableView.register(SettingSwitchCell.self, forCellReuseIdentifier: "Switch")
         tableView.dataSource = self
         tableView.delegate = self
     }
@@ -67,7 +70,11 @@ private extension SettingCheckViewController {
 
 extension SettingCheckViewController: UITableViewDataSource, UITableViewDelegate {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return item.masterKey == nil ? 1 : 2
+        let core = CelestiaAppCore.shared
+        if item.masterKey != nil && (core.value(forKey: item.masterKey!) as! Bool) {
+            return 2
+        }
+        return 1
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -76,14 +83,46 @@ extension SettingCheckViewController: UITableViewDataSource, UITableViewDelegate
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
+        let core = CelestiaAppCore.shared
+
         if item.masterKey != nil && indexPath.section == 0 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Switch", for: indexPath) as! SettingSwitchCell
             cell.title = item.title
-        } else {
-            let subitem = item.subitems[indexPath.row]
-            cell.title = subitem.name
+            cell.enabled = core.value(forKey: item.masterKey!) as! Bool
+            let key = item.masterKey!
+            cell.toggleBlock = { [weak self] (enabled) in
+                guard let self = self else { return }
+
+                let core = CelestiaAppCore.shared
+                core.setValue(enabled, forKey: key)
+
+                self.tableView.reloadData()
+            }
+            return cell
         }
+
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
+        let subitem = item.subitems[indexPath.row]
+        let title = subitem.name
+        let enabled = (core.value(forKey: subitem.key) as! Bool)
+        cell.title = title
+        cell.accessoryType = enabled ? .checkmark : .none
         return cell
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        if item.masterKey != nil && indexPath.section == 0 {
+            return
+        }
+
+        let core = CelestiaAppCore.shared
+
+        let subitem = item.subitems[indexPath.row]
+        let key = subitem.key
+        let enabled = (core.value(forKey: subitem.key) as! Bool)
+        core.setValue(!enabled, forKey: key)
+        tableView.reloadData()
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

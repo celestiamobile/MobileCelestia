@@ -26,6 +26,7 @@
 		977394B12403F30900E38B82 /* SettingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394B02403F30900E38B82 /* SettingModel.swift */; };
 		977394B32403F74800E38B82 /* SettingTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394B22403F74800E38B82 /* SettingTextCell.swift */; };
 		977394B52403FD4400E38B82 /* SettingCheckViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394B42403FD4400E38B82 /* SettingCheckViewController.swift */; };
+		977394B8240409CF00E38B82 /* SettingSwitchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394B7240409CF00E38B82 /* SettingSwitchCell.swift */; };
 		978406D724028F0000876FD1 /* MainViewControler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978406D624028F0000876FD1 /* MainViewControler.swift */; };
 		978406DA2402906C00876FD1 /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978406D92402906C00876FD1 /* UIViewController+Extension.swift */; };
 		978406DC240294D000876FD1 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978406DB240294D000876FD1 /* LoadingViewController.swift */; };
@@ -80,6 +81,7 @@
 		977394B02403F30900E38B82 /* SettingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingModel.swift; sourceTree = "<group>"; };
 		977394B22403F74800E38B82 /* SettingTextCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingTextCell.swift; sourceTree = "<group>"; };
 		977394B42403FD4400E38B82 /* SettingCheckViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingCheckViewController.swift; sourceTree = "<group>"; };
+		977394B7240409CF00E38B82 /* SettingSwitchCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingSwitchCell.swift; sourceTree = "<group>"; };
 		978406D624028F0000876FD1 /* MainViewControler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewControler.swift; sourceTree = "<group>"; };
 		978406D92402906C00876FD1 /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		978406DB240294D000876FD1 /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
@@ -175,6 +177,7 @@
 				977394B42403FD4400E38B82 /* SettingCheckViewController.swift */,
 				977394B02403F30900E38B82 /* SettingModel.swift */,
 				977394B22403F74800E38B82 /* SettingTextCell.swift */,
+				977394B7240409CF00E38B82 /* SettingSwitchCell.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -376,6 +379,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				977394A02402A9AF00E38B82 /* SlideInPresentationManager.swift in Sources */,
+				977394B8240409CF00E38B82 /* SettingSwitchCell.swift in Sources */,
 				977394B32403F74800E38B82 /* SettingTextCell.swift in Sources */,
 				974F86E62403C46D00356795 /* Celestia+Extension.swift in Sources */,
 				9773949C2402A8F700E38B82 /* ToolbarViewController.swift in Sources */,
