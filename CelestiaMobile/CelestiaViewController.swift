@@ -16,6 +16,8 @@ enum CelestiaLoadingError: Error {
 }
 
 enum CelestiaAction {
+    case goto
+    case center
 }
 
 protocol CelestiaViewControllerDelegate: class {

@@ -57,7 +57,14 @@ class MainViewControler: UIViewController {
 extension MainViewControler: CelestiaViewControllerDelegate {
     func celestiaController(_ celestiaController: CelestiaViewController, supportedActions: [CelestiaAction], completion: (CelestiaAction?) -> Void) {
         slideInManager.direction = .right
-        let controller = ToolbarViewController()
+        var actions: [ToolbarAction] = ToolbarAction.persistentAction
+        if !supportedActions.isEmpty {
+            actions.insert(.celestia, at: 0)
+        }
+        let controller = ToolbarViewController(actions: actions)
+        controller.selectionHandler = { action in
+            // TODO: handle action selection and call completion
+        }
         controller.modalPresentationStyle = .custom
         controller.transitioningDelegate = slideInManager
         present(controller, animated: true, completion: nil)
