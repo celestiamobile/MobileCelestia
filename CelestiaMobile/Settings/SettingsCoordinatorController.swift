@@ -39,6 +39,9 @@ private extension SettingsCoordinatorController {
             case .checkmarks(let masterKey, let items):
                 let controller = SettingCheckViewController(item: SettingCheckViewController.Item(title: item.name, masterKey: masterKey, subitems: items))
                 self.navigation.pushViewController(controller, animated: true)
+            case .selection(let key, let items):
+                let controller = SettingSelectionViewController(item: SettingSelectionViewController.Item(title: item.name, key: key, subitems: items))
+                self.navigation.pushViewController(controller, animated: true)
             }
         })
         navigation = UINavigationController(rootViewController: main)

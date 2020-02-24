@@ -10,11 +10,17 @@ import Foundation
 
 enum SettingType {
     case checkmarks(masterKey: String?, items: [SettingCheckmarkItem])
+    case selection(key: String, items: [SettingSelectionItem])
 }
 
 struct SettingCheckmarkItem {
     let name: String
     let key: String
+}
+
+struct SettingSelectionItem {
+    let name: String
+    let index: Int
 }
 
 struct SettingItem {
@@ -108,4 +114,37 @@ let mainSetting = [
                         SettingCheckmarkItem(name: NSLocalizedString("Volcanoes", comment: ""), key: "showEruptiveCenterLabels"),
                     ])),
     ]),
+    SettingSection(title: NSLocalizedString("Time", comment: ""), items: [
+        SettingItem(name: NSLocalizedString("Time Zone", comment: ""),
+                    type: .selection(key: "timeZone", items: [
+            SettingSelectionItem(name: NSLocalizedString("Local Time", comment: ""), index: 0),
+            SettingSelectionItem(name: NSLocalizedString("UTC", comment: ""), index: 1),
+        ])),
+        SettingItem(name: NSLocalizedString("Date Format", comment: ""),
+                    type: .selection(key: "dateFormat", items: [
+            SettingSelectionItem(name: NSLocalizedString("Default", comment: ""), index: 0),
+            SettingSelectionItem(name: NSLocalizedString("YYYY MMM DD HH:MM:SS TZ", comment: ""), index: 1),
+            SettingSelectionItem(name: NSLocalizedString("UTC Offset", comment: ""), index: 2),
+        ])),
+    ]),
+    SettingSection(title: NSLocalizedString("Advanced", comment: ""), items: [
+        SettingItem(name: NSLocalizedString("Texture Resolution", comment: ""),
+                    type: .selection(key: "resolution", items: [
+            SettingSelectionItem(name: NSLocalizedString("Low", comment: ""), index: 0),
+            SettingSelectionItem(name: NSLocalizedString("Medium", comment: ""), index: 1),
+            SettingSelectionItem(name: NSLocalizedString("High", comment: ""), index: 2),
+        ])),
+        SettingItem(name: NSLocalizedString("Star Style", comment: ""),
+                    type: .selection(key: "starStyle", items: [
+            SettingSelectionItem(name: NSLocalizedString("Fuzzy Points", comment: ""), index: 0),
+            SettingSelectionItem(name: NSLocalizedString("Points", comment: ""), index: 1),
+            SettingSelectionItem(name: NSLocalizedString("Scaled Discs", comment: ""), index: 2),
+        ])),
+        SettingItem(name: NSLocalizedString("Info Display", comment: ""),
+                    type: .selection(key: "hudDetail", items: [
+            SettingSelectionItem(name: NSLocalizedString("None", comment: ""), index: 0),
+            SettingSelectionItem(name: NSLocalizedString("Terse", comment: ""), index: 1),
+            SettingSelectionItem(name: NSLocalizedString("Verbose", comment: ""), index: 2),
+        ])),
+    ])
 ]
