@@ -10,7 +10,8 @@ import CelestiaCore
 
 extension BodyInfo {
     init(selection: CelestiaSelection) {
-        self.init(name: selection.name, overview: NSLocalizedString("No overview available.", comment: ""))
+        self.init(name: CelestiaAppCore.shared.simulation.universe.name(for: selection),
+                  overview: NSLocalizedString("No overview available.", comment: ""))
     }
 }
 
