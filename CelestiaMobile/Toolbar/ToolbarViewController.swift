@@ -8,7 +8,7 @@
 
 import UIKit
 
-enum ToolbarAction {
+enum ToolbarAction: String {
     case celestia
     case setting
     case share
@@ -63,8 +63,7 @@ extension ToolbarViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! ToolbarButtonCell
 
-        // TODO: set item image
-
+        cell.itemImage = actions[indexPath.row].image
         cell.actionHandler = { [weak self] in
             guard let self = self else { return }
             self.selectedAction = self.actions[indexPath.row]
@@ -99,4 +98,8 @@ private extension ToolbarViewController {
         tableView.dataSource = self
         tableView.delegate = self
     }
+}
+
+private extension ToolbarAction {
+    var image: UIImage? { return UIImage(named: "toolbar_\(rawValue)") }
 }
