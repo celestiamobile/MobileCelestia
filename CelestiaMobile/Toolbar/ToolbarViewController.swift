@@ -67,6 +67,7 @@ extension ToolbarViewController: UITableViewDataSource, UITableViewDelegate {
         cell.actionHandler = { [weak self] in
             guard let self = self else { return }
             self.selectedAction = self.actions[indexPath.row]
+            self.dismiss(animated: true, completion: nil)
         }
 
         return cell

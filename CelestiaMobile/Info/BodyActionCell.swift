@@ -1,21 +1,21 @@
 //
-//  ToolbarButtonCell.swift
-//  CelestiaMobile
+//  BodyActionCell.swift
+//  TestViewController
 //
 //  Created by Li Linfeng on 2020/2/24.
-//  Copyright © 2020 李林峰. All rights reserved.
+//  Copyright © 2020 Li Linfeng. All rights reserved.
 //
 
 import UIKit
 
-class ToolbarButtonCell: UITableViewCell {
-    var itemImage: UIImage? { didSet { button.setImage(itemImage, for: .normal) } }
+final class BodyActionCell: UICollectionViewCell {
+    var title: String? { didSet { button.setTitle(title, for: .normal) } }
     var actionHandler: (() -> Void)?
 
     private lazy var button = UIButton(type: .system)
 
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         setup()
     }
 
@@ -33,11 +33,15 @@ class ToolbarButtonCell: UITableViewCell {
             button.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
         ])
         button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
-
-        selectionStyle = .none
     }
 
     @objc private func buttonTapped() {
         actionHandler?()
+    }
+
+    override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
+        let attributes = super.preferredLayoutAttributesFitting(layoutAttributes)
+        attributes.size = CGSize(width: layoutAttributes.size.width, height: 50)
+        return attributes
     }
 }

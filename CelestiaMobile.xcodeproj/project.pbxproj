@@ -11,6 +11,10 @@
 		973E2EF82400F8C700B0F059 /* CelestiaResources in Resources */ = {isa = PBXBuildFile; fileRef = 973E2EF72400F8C700B0F059 /* CelestiaResources */; };
 		973E2EFC2400FA1100B0F059 /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973E2EFB2400FA1100B0F059 /* URL.swift */; };
 		974F86AA240362BA00356795 /* ToolbarButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974F86A9240362BA00356795 /* ToolbarButtonCell.swift */; };
+		974F86DF2403BD3C00356795 /* BodyActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974F86DB2403BD3B00356795 /* BodyActionCell.swift */; };
+		974F86E02403BD3C00356795 /* BodyDescriptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974F86DC2403BD3B00356795 /* BodyDescriptionCell.swift */; };
+		974F86E12403BD3C00356795 /* BodyInfoLayoutDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974F86DD2403BD3B00356795 /* BodyInfoLayoutDelegate.swift */; };
+		974F86E22403BD3C00356795 /* InfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974F86DE2403BD3B00356795 /* InfoViewController.swift */; };
 		9773949C2402A8F700E38B82 /* ToolbarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9773949B2402A8F700E38B82 /* ToolbarViewController.swift */; };
 		9773949E2402A96B00E38B82 /* SlideInPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9773949D2402A96B00E38B82 /* SlideInPresentationController.swift */; };
 		977394A02402A9AF00E38B82 /* SlideInPresentationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9773949F2402A9AF00E38B82 /* SlideInPresentationManager.swift */; };
@@ -53,6 +57,10 @@
 		973E2EF72400F8C700B0F059 /* CelestiaResources */ = {isa = PBXFileReference; lastKnownFileType = folder; path = CelestiaResources; sourceTree = "<group>"; };
 		973E2EFB2400FA1100B0F059 /* URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URL.swift; sourceTree = "<group>"; };
 		974F86A9240362BA00356795 /* ToolbarButtonCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarButtonCell.swift; sourceTree = "<group>"; };
+		974F86DB2403BD3B00356795 /* BodyActionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BodyActionCell.swift; sourceTree = "<group>"; };
+		974F86DC2403BD3B00356795 /* BodyDescriptionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BodyDescriptionCell.swift; sourceTree = "<group>"; };
+		974F86DD2403BD3B00356795 /* BodyInfoLayoutDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BodyInfoLayoutDelegate.swift; sourceTree = "<group>"; };
+		974F86DE2403BD3B00356795 /* InfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfoViewController.swift; sourceTree = "<group>"; };
 		9773949B2402A8F700E38B82 /* ToolbarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarViewController.swift; sourceTree = "<group>"; };
 		9773949D2402A96B00E38B82 /* SlideInPresentationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideInPresentationController.swift; sourceTree = "<group>"; };
 		9773949F2402A9AF00E38B82 /* SlideInPresentationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideInPresentationManager.swift; sourceTree = "<group>"; };
@@ -118,6 +126,17 @@
 			path = Utils;
 			sourceTree = "<group>";
 		};
+		974F86DA2403BD2600356795 /* Info */ = {
+			isa = PBXGroup;
+			children = (
+				974F86DB2403BD3B00356795 /* BodyActionCell.swift */,
+				974F86DC2403BD3B00356795 /* BodyDescriptionCell.swift */,
+				974F86DD2403BD3B00356795 /* BodyInfoLayoutDelegate.swift */,
+				974F86DE2403BD3B00356795 /* InfoViewController.swift */,
+			);
+			path = Info;
+			sourceTree = "<group>";
+		};
 		977394992402A8DA00E38B82 /* Toolbar */ = {
 			isa = PBXGroup;
 			children = (
@@ -162,6 +181,7 @@
 		979D2F7C23FEB1A6005D2592 /* CelestiaMobile */ = {
 			isa = PBXGroup;
 			children = (
+				974F86DA2403BD2600356795 /* Info */,
 				977394992402A8DA00E38B82 /* Toolbar */,
 				978406E124029DA900876FD1 /* Loading */,
 				973E2EFA2400FA0300B0F059 /* Utils */,
@@ -327,9 +347,13 @@
 				9773949C2402A8F700E38B82 /* ToolbarViewController.swift in Sources */,
 				979D2F8223FEB1A6005D2592 /* CelestiaViewController.swift in Sources */,
 				973E2EFC2400FA1100B0F059 /* URL.swift in Sources */,
+				974F86E22403BD3C00356795 /* InfoViewController.swift in Sources */,
 				978406DF24029D9100876FD1 /* LoadingFailureViewController.swift in Sources */,
+				974F86E02403BD3C00356795 /* BodyDescriptionCell.swift in Sources */,
+				974F86E12403BD3C00356795 /* BodyInfoLayoutDelegate.swift in Sources */,
 				974F86AA240362BA00356795 /* ToolbarButtonCell.swift in Sources */,
 				978406D724028F0000876FD1 /* MainViewControler.swift in Sources */,
+				974F86DF2403BD3C00356795 /* BodyActionCell.swift in Sources */,
 				978406DC240294D000876FD1 /* LoadingViewController.swift in Sources */,
 				978406DA2402906C00876FD1 /* UIViewController+Extension.swift in Sources */,
 				9773949E2402A96B00E38B82 /* SlideInPresentationController.swift in Sources */,

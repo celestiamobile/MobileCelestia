@@ -55,16 +55,35 @@ class MainViewControler: UIViewController {
 }
 
 extension MainViewControler: CelestiaViewControllerDelegate {
-    func celestiaController(_ celestiaController: CelestiaViewController, supportedActions: [CelestiaAction], completion: (CelestiaAction?) -> Void) {
+    func celestiaController(_ celestiaController: CelestiaViewController, supportedActions: [CelestiaAction], completion: @escaping (CelestiaAction?) -> Void) {
         slideInManager.direction = .right
         var actions: [ToolbarAction] = ToolbarAction.persistentAction
         if !supportedActions.isEmpty {
             actions.insert(.celestia, at: 0)
         }
         let controller = ToolbarViewController(actions: actions)
-        controller.selectionHandler = { action in
-            // TODO: handle action selection and call completion
+        controller.selectionHandler = { [weak self] (action) in
+            guard let self = self else { return }
+            guard let ac = action else {
+                completion(nil)
+                return
+            }
+            if ac == .celestia {
+                self.showBodyInfo(with: completion)
+                return
+            }
+            // TODO: handle other actions
         }
+        controller.modalPresentationStyle = .custom
+        controller.transitioningDelegate = slideInManager
+        present(controller, animated: true, completion: nil)
+    }
+
+    private func showBodyInfo(with completion: @escaping (CelestiaAction?) -> Void) {
+        slideInManager.direction = .right
+        let controller = InfoViewController()
+        controller.selectionHandler = completion
+        // TODO: special setup for iPad
         controller.modalPresentationStyle = .custom
         controller.transitioningDelegate = slideInManager
         present(controller, animated: true, completion: nil)

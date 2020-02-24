@@ -20,8 +20,14 @@ enum CelestiaAction {
     case center
 }
 
+extension CelestiaAction {
+    static var allCases: [CelestiaAction] {
+        return [.goto, .center]
+    }
+}
+
 protocol CelestiaViewControllerDelegate: class {
-    func celestiaController(_ celestiaController: CelestiaViewController, supportedActions: [CelestiaAction], completion: (CelestiaAction?) -> Void)
+    func celestiaController(_ celestiaController: CelestiaViewController, supportedActions: [CelestiaAction], completion: @escaping (CelestiaAction?) -> Void)
 }
 
 class CelestiaViewController: GLKViewController {
