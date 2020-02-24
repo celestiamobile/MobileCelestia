@@ -85,14 +85,23 @@ private extension ToolbarViewController {
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.topAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
         ])
 
         if #available(iOS 11.0, *) {
-            tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+            NSLayoutConstraint.activate([
+                tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+                tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
+            ])
         } else {
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+            NSLayoutConstraint.activate([
+                tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            ])
         }
+
+        tableView.alwaysBounceVertical = false
+        tableView.separatorStyle = .none
+        tableView.tableFooterView = UIView()
 
         tableView.register(ToolbarButtonCell.self, forCellReuseIdentifier: "Cell")
         tableView.dataSource = self
