@@ -27,6 +27,8 @@ class BrowserCoordinatorController: UIViewController {
         self.item = item
         self.selection = selection
         super.init(nibName: nil, bundle: nil)
+
+        tabBarItem = UITabBarItem(title: item.name, image: nil, selectedImage: nil)
     }
 
     required init?(coder: NSCoder) {
@@ -54,8 +56,6 @@ private extension BrowserCoordinatorController {
 
         navigation.navigationBar.barStyle = .black
         navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
-
-        tabBarItem = UITabBarItem(title: item.name, image: nil, selectedImage: nil)
     }
 
     func create(for item: CelestiaBrowserItem) -> BrowserCommonViewController {

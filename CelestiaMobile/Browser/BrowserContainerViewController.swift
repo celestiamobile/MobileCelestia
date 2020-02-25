@@ -49,5 +49,7 @@ private extension BrowserContainerViewController {
             self.dismiss(animated: true, completion: nil)
             self.selected(selection)
         } }, animated: false)
+
+        controller.tabBar.barStyle = .black
     }
 }

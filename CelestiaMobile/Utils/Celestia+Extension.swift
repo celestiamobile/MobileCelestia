@@ -47,7 +47,7 @@ extension CelestiaSelection {
 private var solBrowserRoot: CelestiaBrowserItem = {
     let universe = CelestiaAppCore.shared.simulation.universe
     let sol = universe.find("Sol")
-    return CelestiaBrowserItem(name: universe.starCatalog.starName(sol.star!), catEntry: sol.star!, provider: universe)
+    return CelestiaBrowserItem(name: NSLocalizedString("Solar System Objects", comment: ""), catEntry: sol.star!, provider: universe)
 }()
 
 private var starsBrowserRoot: CelestiaBrowserItem = {
@@ -66,7 +66,7 @@ private var starsBrowserRoot: CelestiaBrowserItem = {
     let nearestName = NSLocalizedString("Nearest Stars", comment: "")
     let brightestName = NSLocalizedString("Brightest Stars", comment: "")
     let hasPlanetsName = NSLocalizedString("Stars With Planets", comment: "")
-    let stars = CelestiaBrowserItem(name: nil, children: [
+    let stars = CelestiaBrowserItem(name: NSLocalizedString("Stars", comment: ""), children: [
         nearestName : CelestiaBrowserItem(name: nearestName, children: nearest),
         brightestName : CelestiaBrowserItem(name: brightestName, children: brightest),
         hasPlanetsName : CelestiaBrowserItem(name: hasPlanetsName, children: hasPlanets),
@@ -102,11 +102,13 @@ private var dsoBrowserRoot: CelestiaBrowserItem = {
     catalog.forEach({ (dso) in
         let matchingType = prefixes.first(where: {dso.type.hasPrefix($0)}) ?? "Unknown"
         let name = catalog.dsoName(dso)
-        tempDict[matchingType]![name] = CelestiaBrowserItem(name: name, catEntry: dso, provider: universe)
+        if tempDict[matchingType] != nil {
+            tempDict[matchingType]![name] = CelestiaBrowserItem(name: name, catEntry: dso, provider: universe)
+        }
     })
 
     let results = tempDict.reduce(into: [String : CelestiaBrowserItem](), updateAccumulation)
-    return CelestiaBrowserItem(name: nil, children: results)
+    return CelestiaBrowserItem(name: NSLocalizedString("Deep Sky Objects", comment: ""), children: results)
 }()
 
 var browserRoots: [CelestiaBrowserItem] {
