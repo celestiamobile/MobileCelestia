@@ -169,23 +169,40 @@ extension CelestiaViewController {
         let pan1 = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
         pan1.minimumNumberOfTouches = 1
         pan1.maximumNumberOfTouches = 1
+        pan1.delegate = self
         view.addGestureRecognizer(pan1)
 
         let pan2 = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
         pan2.minimumNumberOfTouches = 2
         pan2.maximumNumberOfTouches = 2
+        pan2.delegate = self
         view.addGestureRecognizer(pan2)
 
         let pinch = UIPinchGestureRecognizer(target: self, action: #selector(handlePinch(_:)))
         pinch.require(toFail: pan2)
+        pinch.delegate = self
         view.addGestureRecognizer(pinch)
 
         let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
+        tap.delegate = self
         view.addGestureRecognizer(tap)
 
         let rightEdge = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(handleEdgePan(_:)))
         rightEdge.edges = .right
+        pan1.require(toFail: rightEdge)
         view.addGestureRecognizer(rightEdge)
+    }
+}
+
+extension CelestiaViewController: UIGestureRecognizerDelegate {
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        var area = gestureRecognizer.view!.bounds
+        if #available(iOS 11.0, *) {
+            area = area.inset(by: gestureRecognizer.view!.safeAreaInsets)
+        }
+        // reserve area
+        area = area.insetBy(dx: 16, dy: 16)
+        return area.contains(gestureRecognizer.location(in: gestureRecognizer.view))
     }
 }
 

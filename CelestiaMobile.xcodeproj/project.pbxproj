@@ -344,6 +344,7 @@
 				TargetAttributes = {
 					979D2F7923FEB1A6005D2592 = {
 						CreatedOnToolsVersion = 11.3;
+						LastSwiftMigration = 1130;
 					};
 					979D2F8F23FEB1A8005D2592 = {
 						CreatedOnToolsVersion = 11.3;
@@ -593,6 +594,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 22NR5428TD;
 				INFOPLIST_FILE = CelestiaMobile/Info.plist;
@@ -603,6 +605,7 @@
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = cc.meowssage.CelestiaMobile;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -612,6 +615,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 22NR5428TD;
 				INFOPLIST_FILE = CelestiaMobile/Info.plist;
