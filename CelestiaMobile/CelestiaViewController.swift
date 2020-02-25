@@ -18,6 +18,9 @@ enum CelestiaLoadingError: Error {
 enum CelestiaAction: Int8 {
     case goto = 103
     case center = 99
+    case playpause = 32
+    case backward = 107
+    case forward = 108
 }
 
 extension CelestiaAction {

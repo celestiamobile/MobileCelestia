@@ -14,7 +14,6 @@ class MainViewControler: UIViewController {
     private var loadeed = false
 
     private lazy var rightSlideInManager = SlideInPresentationManager(direction: .right)
-
     private lazy var bottomSlideInManager = SlideInPresentationManager(direction: .bottom)
 
     override func loadView() {
@@ -62,14 +61,14 @@ class MainViewControler: UIViewController {
 
 extension MainViewControler: CelestiaViewControllerDelegate {
     func celestiaController(_ celestiaController: CelestiaViewController, selection: BodyInfo?) {
-        var actions: [ToolbarAction] = ToolbarAction.persistentAction
+        var actions: [AppToolbarAction] = AppToolbarAction.persistentAction
         if selection != nil {
             actions.insert(.celestia, at: 0)
         }
         let controller = ToolbarViewController(actions: actions)
         controller.selectionHandler = { [weak self] (action) in
             guard let self = self else { return }
-            guard let ac = action else { return }
+            guard let ac = action as? AppToolbarAction else { return }
             if ac == .celestia {
                 self.showBodyInfo(with: selection!)
                 return
@@ -83,6 +82,8 @@ extension MainViewControler: CelestiaViewControllerDelegate {
                 self.showSearch()
             case .browse:
                 self.showBrowser()
+            case .time:
+                self.presentTimeToolbar()
             // TODO: handle other actions
             case .share:
                 break
@@ -90,6 +91,19 @@ extension MainViewControler: CelestiaViewControllerDelegate {
         }
         controller.modalPresentationStyle = .custom
         controller.transitioningDelegate = rightSlideInManager
+        present(controller, animated: true, completion: nil)
+    }
+
+    private func presentTimeToolbar() {
+        let actions: [CelestiaAction] = [.backward, .playpause, .forward]
+        let controller = ToolbarViewController(actions: actions, scrollDirection: .horizontal, finishOnSelection: false)
+        controller.selectionHandler = { [weak self] (action) in
+            guard let self = self else { return }
+            guard let ac = action as? CelestiaAction else { return }
+            self.celestiaController.receive(action: ac)
+        }
+        controller.modalPresentationStyle = .custom
+        controller.transitioningDelegate = bottomSlideInManager
         present(controller, animated: true, completion: nil)
     }
 
@@ -134,5 +148,20 @@ extension MainViewControler: CelestiaViewControllerDelegate {
         controller.modalPresentationStyle = .custom
         controller.transitioningDelegate = rightSlideInManager
         present(controller, animated: true, completion: nil)
+    }
+}
+
+extension CelestiaAction: ToolbarAction {
+    var image: UIImage? {
+        switch self {
+        case .playpause:
+            return #imageLiteral(resourceName: "time_playpause")
+        case .forward:
+            return #imageLiteral(resourceName: "time_forward")
+        case .backward:
+            return #imageLiteral(resourceName: "time_backward")
+        default:
+            return nil
+        }
     }
 }

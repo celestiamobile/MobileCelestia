@@ -8,15 +8,20 @@
 
 import UIKit
 
-enum ToolbarAction: String {
+protocol ToolbarAction {
+    var image: UIImage? { get }
+}
+
+enum AppToolbarAction: String {
     case celestia
     case setting
     case share
     case search
+    case time
     case browse
 
-    static var persistentAction: [ToolbarAction] {
-        return [.setting, .share, .search, .browse]
+    static var persistentAction: [AppToolbarAction] {
+        return [.setting, .share, .search, .time, .browse]
     }
 }
 
@@ -138,6 +143,6 @@ private extension ToolbarViewController {
     }
 }
 
-private extension ToolbarAction {
+extension AppToolbarAction: ToolbarAction {
     var image: UIImage? { return UIImage(named: "toolbar_\(rawValue)") }
 }

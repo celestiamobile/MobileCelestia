@@ -110,6 +110,12 @@ private extension CelestiaAction {
             return NSLocalizedString("Goto", comment: "")
         case .center:
             return NSLocalizedString("Center", comment: "")
+        case .playpause:
+            return NSLocalizedString("Resume/Pause", comment: "")
+        case .backward:
+            return NSLocalizedString("Backward", comment: "")
+        case .forward:
+            return NSLocalizedString("Forward", comment: "")
         }
     }
 }
