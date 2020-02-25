@@ -47,7 +47,7 @@ extension CelestiaSelection {
 private var solBrowserRoot: CelestiaBrowserItem = {
     let universe = CelestiaAppCore.shared.simulation.universe
     let sol = universe.find("Sol")
-    return CelestiaBrowserItem(name: NSLocalizedString("Solar System Objects", comment: ""), catEntry: sol.star!, provider: universe)
+    return CelestiaBrowserItem(name: universe.starCatalog.starName(sol.star!), catEntry: sol.star!, provider: universe)
 }()
 
 private var starsBrowserRoot: CelestiaBrowserItem = {

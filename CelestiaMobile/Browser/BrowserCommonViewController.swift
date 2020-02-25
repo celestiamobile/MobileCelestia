@@ -15,9 +15,9 @@ class BrowserCommonViewController: UIViewController {
 
     private let item: CelestiaBrowserItem
 
-    private let selection: (CelestiaBrowserItem) -> Void
+    private let selection: (CelestiaBrowserItem, Bool) -> Void
 
-    init(item: CelestiaBrowserItem, selection: @escaping (CelestiaBrowserItem) -> Void) {
+    init(item: CelestiaBrowserItem, selection: @escaping (CelestiaBrowserItem, Bool) -> Void) {
         self.item = item
         self.selection = selection
         super.init(nibName: nil, bundle: nil)
@@ -65,21 +65,36 @@ private extension BrowserCommonViewController {
 }
 
 extension BrowserCommonViewController: UITableViewDataSource, UITableViewDelegate {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        if item.entry != nil { return 2 }
+        return 1
+    }
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if item.entry != nil && section == 0 { return 1 }
         return item.children.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let subitem = item.children[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
-        cell.title = subitem.name
-        cell.accessoryType = subitem.children.count == 0 ? .none : .disclosureIndicator
+        if item.entry != nil && indexPath.section == 0 {
+            cell.title = item.name
+            cell.accessoryType = .none
+        } else {
+            let subitem = item.children[indexPath.row]
+            cell.title = subitem.name
+            cell.accessoryType = subitem.children.count == 0 ? .none : .disclosureIndicator
+        }
         return cell
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let subitem = item.children[indexPath.row]
-        selection(subitem)
+        if item.entry != nil && indexPath.section == 0 {
+            selection(item, true)
+        } else {
+            let subitem = item.children[indexPath.row]
+            selection(subitem, subitem.children.count == 0)
+        }
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
