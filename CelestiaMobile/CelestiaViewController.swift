@@ -92,6 +92,12 @@ extension CelestiaViewController {
     }
 
     @objc private func handlePinch(_ pinch: UIPinchGestureRecognizer) {
+        if pinch.numberOfTouches < 2 {
+            // cancel the gesture recognizer
+            pinch.isEnabled = false
+            pinch.isEnabled = true
+            return
+        }
         switch pinch.state {
         case .possible:
             break
@@ -207,7 +213,13 @@ extension CelestiaViewController: UIGestureRecognizerDelegate {
         }
         // reserve area
         area = area.insetBy(dx: 16, dy: 16)
-        return area.contains(gestureRecognizer.location(in: gestureRecognizer.view))
+        if !area.contains(gestureRecognizer.location(in: gestureRecognizer.view)) {
+            return false
+        }
+        if gestureRecognizer is UIPinchGestureRecognizer {
+            return gestureRecognizer.numberOfTouches == 2
+        }
+        return true
     }
 }
 

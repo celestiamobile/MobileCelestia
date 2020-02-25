@@ -29,5 +29,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
+    func applicationWillTerminate(_ application: UIApplication) {
+        let core = CelestiaAppCore.shared
+        if core.isInitialized {
+            core.storeUserDefaults()
+        }
+    }
 }
 
