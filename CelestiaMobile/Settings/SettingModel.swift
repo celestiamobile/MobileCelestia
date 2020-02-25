@@ -34,6 +34,11 @@ struct SettingSection {
     let items: [SettingItem]
 }
 
+enum TextItem {
+    case short(title: String, detail: String?)
+    case long(content: String)
+}
+
 let mainSetting = [
     SettingSection(title: NSLocalizedString("Display", comment: ""), items: [
         SettingItem(name: NSLocalizedString("Objects", comment: ""),
