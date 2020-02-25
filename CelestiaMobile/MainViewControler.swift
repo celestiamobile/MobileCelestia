@@ -84,14 +84,20 @@ extension MainViewControler: CelestiaViewControllerDelegate {
                 self.showBrowser()
             case .time:
                 self.presentTimeToolbar()
-            // TODO: handle other actions
             case .share:
-                break
+                self.presentShare()
             }
         }
         controller.modalPresentationStyle = .custom
         controller.transitioningDelegate = rightSlideInManager
         present(controller, animated: true, completion: nil)
+    }
+
+    private func presentShare() {
+        let image = celestiaController.screenshot()
+        let activityController = UIActivityViewController(activityItems: [image], applicationActivities: nil)
+        // TODO: iPad presentation
+        present(activityController, animated: true, completion: nil)
     }
 
     private func presentTimeToolbar() {
