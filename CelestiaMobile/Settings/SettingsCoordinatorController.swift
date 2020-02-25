@@ -44,6 +44,8 @@ private extension SettingsCoordinatorController {
                 self.navigation.pushViewController(controller, animated: true)
             case .about:
                 self.navigation.pushViewController(AboutViewController(), animated: true)
+            case .time:
+                self.navigation.pushViewController(TimeSettingViewController(), animated: true)
             }
         })
         navigation = UINavigationController(rootViewController: main)

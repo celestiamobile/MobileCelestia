@@ -12,6 +12,7 @@ enum SettingType {
     case checkmarks(masterKey: String?, items: [SettingCheckmarkItem])
     case selection(key: String, items: [SettingSelectionItem])
     case about
+    case time
 }
 
 struct SettingCheckmarkItem {
@@ -131,6 +132,7 @@ let mainSetting = [
             SettingSelectionItem(name: NSLocalizedString("YYYY MMM DD HH:MM:SS TZ", comment: ""), index: 1),
             SettingSelectionItem(name: NSLocalizedString("UTC Offset", comment: ""), index: 2),
         ])),
+        SettingItem(name: NSLocalizedString("Current Time", comment: ""), type: .time)
     ]),
     SettingSection(title: NSLocalizedString("Advanced", comment: ""), items: [
         SettingItem(name: NSLocalizedString("Texture Resolution", comment: ""),
@@ -153,6 +155,6 @@ let mainSetting = [
         ])),
     ]),
     SettingSection(title: NSLocalizedString("Others", comment: ""), items: [
-        SettingItem(name: "About", type: .about)
+        SettingItem(name: NSLocalizedString("About", comment: ""), type: .about)
     ])
 ]
