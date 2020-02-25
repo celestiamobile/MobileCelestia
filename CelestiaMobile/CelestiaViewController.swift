@@ -148,6 +148,7 @@ extension CelestiaViewController {
         EAGLContext.setCurrent(context)
 
         (view as! GLKView).context = context
+        (view as! GLKView).drawableDepthFormat = .format24
 
         glContext = context
 
@@ -236,9 +237,6 @@ extension CelestiaViewController {
                 completion(.failure(.celestiaError))
                 return
             }
-
-            // FIXME: atmosphere rendering
-            self.core.showAtmospheres = false
 
             self.core.tick()
             self.core.start()
