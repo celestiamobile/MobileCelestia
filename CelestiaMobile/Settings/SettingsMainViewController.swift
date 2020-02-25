@@ -72,6 +72,7 @@ extension SettingsMainViewController: UITableViewDataSource, UITableViewDelegate
         let item = mainSetting[indexPath.section].items[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
         cell.title = item.name
+        cell.accessoryType = .disclosureIndicator
         return cell
     }
 

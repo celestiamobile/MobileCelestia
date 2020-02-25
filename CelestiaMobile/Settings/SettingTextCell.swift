@@ -13,6 +13,34 @@ class SettingTextCell: UITableViewCell {
 
     var title: String? { didSet { label.text = title }  }
 
+    private var savedAccessoryType: UITableViewCell.AccessoryType = .none
+
+    override var accessoryType: UITableViewCell.AccessoryType {
+        get { return savedAccessoryType }
+        set {
+            savedAccessoryType = newValue
+            switch newValue {
+            case .none:
+                accessoryView = nil
+            case .disclosureIndicator:
+                let view = UIImageView(image: #imageLiteral(resourceName: "accessory_full_disclosure").withRenderingMode(.alwaysTemplate))
+                view.tintColor = UIColor.darkTertiaryLabel
+                accessoryView = view
+            default:
+                accessoryView = nil
+                super.accessoryType = newValue
+            }
+        }
+    }
+
+    override func prepareForReuse() {
+        super.prepareForReuse()
+
+        super.accessoryType = .none
+        savedAccessoryType = .none
+        accessoryView = nil
+    }
+
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
