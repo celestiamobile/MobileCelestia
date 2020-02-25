@@ -11,6 +11,7 @@ import Foundation
 enum SettingType {
     case checkmarks(masterKey: String?, items: [SettingCheckmarkItem])
     case selection(key: String, items: [SettingSelectionItem])
+    case about
 }
 
 struct SettingCheckmarkItem {
@@ -145,5 +146,8 @@ let mainSetting = [
             SettingSelectionItem(name: NSLocalizedString("Terse", comment: ""), index: 1),
             SettingSelectionItem(name: NSLocalizedString("Verbose", comment: ""), index: 2),
         ])),
+    ]),
+    SettingSection(title: NSLocalizedString("Others", comment: ""), items: [
+        SettingItem(name: "About", type: .about)
     ])
 ]

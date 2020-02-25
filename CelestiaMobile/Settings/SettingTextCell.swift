@@ -10,8 +10,10 @@ import UIKit
 
 class SettingTextCell: UITableViewCell {
     private lazy var label = UILabel()
+    private lazy var detailLabel = UILabel()
 
     var title: String? { didSet { label.text = title }  }
+    var detail: String? { didSet { detailLabel.text = detail } }
 
     private var savedAccessoryType: UITableViewCell.AccessoryType = .none
 
@@ -57,14 +59,27 @@ private extension SettingTextCell {
         backgroundColor = .darkSecondaryBackground
         selectedBackgroundView = UIView()
         selectedBackgroundView?.backgroundColor = .darkSelection
+
         label.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(label)
         label.textColor = .darkLabel
 
         NSLayoutConstraint.activate([
             label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             label.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
+        ])
+
+        label.setContentHuggingPriority(.required, for: .horizontal)
+        label.setContentCompressionResistancePriority(.required, for: .horizontal)
+
+        detailLabel.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(detailLabel)
+        detailLabel.textColor = .darkTertiaryLabel
+
+        NSLayoutConstraint.activate([
+            detailLabel.leadingAnchor.constraint(greaterThanOrEqualTo: label.trailingAnchor, constant: 16),
+            detailLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            detailLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
         ])
     }
 }

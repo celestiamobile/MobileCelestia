@@ -11,6 +11,7 @@
 		972477D12404A19700729B45 /* BrowserContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972477D02404A19700729B45 /* BrowserContainerViewController.swift */; };
 		972477D52404A63800729B45 /* BrowserCommonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972477D42404A63800729B45 /* BrowserCommonViewController.swift */; };
 		972477D72404A65C00729B45 /* BrowserCoordinatorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972477D62404A65C00729B45 /* BrowserCoordinatorController.swift */; };
+		973BBA452405216700E3B061 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973BBA442405216700E3B061 /* AboutViewController.swift */; };
 		973E2EF82400F8C700B0F059 /* CelestiaResources in Resources */ = {isa = PBXBuildFile; fileRef = 973E2EF72400F8C700B0F059 /* CelestiaResources */; };
 		973E2EFC2400FA1100B0F059 /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973E2EFB2400FA1100B0F059 /* URL.swift */; };
 		974F86AA240362BA00356795 /* ToolbarButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974F86A9240362BA00356795 /* ToolbarButtonCell.swift */; };
@@ -72,6 +73,7 @@
 		972477D02404A19700729B45 /* BrowserContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserContainerViewController.swift; sourceTree = "<group>"; };
 		972477D42404A63800729B45 /* BrowserCommonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserCommonViewController.swift; sourceTree = "<group>"; };
 		972477D62404A65C00729B45 /* BrowserCoordinatorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserCoordinatorController.swift; sourceTree = "<group>"; };
+		973BBA442405216700E3B061 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		973E2EF72400F8C700B0F059 /* CelestiaResources */ = {isa = PBXFileReference; lastKnownFileType = folder; path = CelestiaResources; sourceTree = "<group>"; };
 		973E2EFB2400FA1100B0F059 /* URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URL.swift; sourceTree = "<group>"; };
 		974F86A9240362BA00356795 /* ToolbarButtonCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarButtonCell.swift; sourceTree = "<group>"; };
@@ -198,6 +200,7 @@
 				977394AD2403F08800E38B82 /* SettingsMainViewController.swift */,
 				977394B42403FD4400E38B82 /* SettingCheckViewController.swift */,
 				977394B9240413EF00E38B82 /* SettingSelectionViewController.swift */,
+				973BBA442405216700E3B061 /* AboutViewController.swift */,
 				977394B02403F30900E38B82 /* SettingModel.swift */,
 				977394B22403F74800E38B82 /* SettingTextCell.swift */,
 				977394B7240409CF00E38B82 /* SettingSwitchCell.swift */,
@@ -421,6 +424,7 @@
 				9773949C2402A8F700E38B82 /* ToolbarViewController.swift in Sources */,
 				979D2F8223FEB1A6005D2592 /* CelestiaViewController.swift in Sources */,
 				977394AE2403F08800E38B82 /* SettingsMainViewController.swift in Sources */,
+				973BBA452405216700E3B061 /* AboutViewController.swift in Sources */,
 				977394BA240413EF00E38B82 /* SettingSelectionViewController.swift in Sources */,
 				977394BD2404189000E38B82 /* SearchViewController.swift in Sources */,
 				977394B12403F30900E38B82 /* SettingModel.swift in Sources */,
