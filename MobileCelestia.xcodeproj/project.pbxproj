@@ -17,6 +17,7 @@
 		973BBA5F240531E600E3B061 /* COPYING in Resources */ = {isa = PBXBuildFile; fileRef = 973BBA5C240531E500E3B061 /* COPYING */; };
 		973BBA61240538DB00E3B061 /* MultiLineTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973BBA60240538DB00E3B061 /* MultiLineTextCell.swift */; };
 		973BBA642405481200E3B061 /* TimeSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973BBA632405481200E3B061 /* TimeSettingViewController.swift */; };
+		973BBA6624054E9900E3B061 /* TextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973BBA6524054E9900E3B061 /* TextViewController.swift */; };
 		973E2EFC2400FA1100B0F059 /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973E2EFB2400FA1100B0F059 /* URL.swift */; };
 		974F86AA240362BA00356795 /* ToolbarButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974F86A9240362BA00356795 /* ToolbarButtonCell.swift */; };
 		974F86DF2403BD3C00356795 /* BodyActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974F86DB2403BD3B00356795 /* BodyActionCell.swift */; };
@@ -83,6 +84,7 @@
 		973BBA5C240531E500E3B061 /* COPYING */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = COPYING; sourceTree = "<group>"; };
 		973BBA60240538DB00E3B061 /* MultiLineTextCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiLineTextCell.swift; sourceTree = "<group>"; };
 		973BBA632405481200E3B061 /* TimeSettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSettingViewController.swift; sourceTree = "<group>"; };
+		973BBA6524054E9900E3B061 /* TextViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewController.swift; sourceTree = "<group>"; };
 		973E2EFB2400FA1100B0F059 /* URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URL.swift; sourceTree = "<group>"; };
 		974F86A9240362BA00356795 /* ToolbarButtonCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarButtonCell.swift; sourceTree = "<group>"; };
 		974F86DB2403BD3B00356795 /* BodyActionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BodyActionCell.swift; sourceTree = "<group>"; };
@@ -217,6 +219,7 @@
 				977394B22403F74800E38B82 /* SettingTextCell.swift */,
 				977394B7240409CF00E38B82 /* SettingSwitchCell.swift */,
 				973BBA60240538DB00E3B061 /* MultiLineTextCell.swift */,
+				973BBA6524054E9900E3B061 /* TextViewController.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -502,6 +505,7 @@
 				978406DC240294D000876FD1 /* LoadingViewController.swift in Sources */,
 				978406DA2402906C00876FD1 /* UIViewController+Extension.swift in Sources */,
 				9773949E2402A96B00E38B82 /* SlideInPresentationController.swift in Sources */,
+				973BBA6624054E9900E3B061 /* TextViewController.swift in Sources */,
 				979D2F7E23FEB1A6005D2592 /* AppDelegate.swift in Sources */,
 				977394A32403E68800E38B82 /* Color.swift in Sources */,
 			);

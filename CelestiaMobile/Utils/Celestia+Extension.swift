@@ -115,6 +115,10 @@ var browserRoots: [CelestiaBrowserItem] {
     return [solBrowserRoot, starsBrowserRoot, dsoBrowserRoot]
 }
 
+var renderInfo: String {
+    return CelestiaAppCore.shared.renderInfo
+}
+
 extension CelestiaDSOCatalog {
     subscript(index: Int) -> CelestiaDSO {
         get {

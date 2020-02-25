@@ -12,6 +12,7 @@ enum SettingType {
     case checkmarks(masterKey: String?, items: [SettingCheckmarkItem])
     case selection(key: String, items: [SettingSelectionItem])
     case about
+    case render
     case time
 }
 
@@ -155,6 +156,7 @@ let mainSetting = [
         ])),
     ]),
     SettingSection(title: NSLocalizedString("Others", comment: ""), items: [
+        SettingItem(name: NSLocalizedString("Render Info", comment: ""), type: .render),
         SettingItem(name: NSLocalizedString("About", comment: ""), type: .about)
     ])
 ]
