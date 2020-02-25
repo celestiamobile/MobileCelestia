@@ -8,14 +8,14 @@
 
 import UIKit
 
-class ToolbarButtonCell: UITableViewCell {
+class ToolbarButtonCell: UICollectionViewCell {
     var itemImage: UIImage? { didSet { button.setImage(itemImage, for: .normal) } }
     var actionHandler: (() -> Void)?
 
     private lazy var button = UIButton(type: .system)
 
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         setup()
     }
 
@@ -34,8 +34,6 @@ class ToolbarButtonCell: UITableViewCell {
         ])
         button.tintColor = .darkLabel
         button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
-
-        selectionStyle = .none
     }
 
     @objc private func buttonTapped() {

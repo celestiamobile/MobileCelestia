@@ -21,17 +21,19 @@ enum ToolbarAction: String {
 }
 
 class ToolbarViewController: UIViewController {
-    private lazy var tableView = UITableView(frame: .zero, style: .plain)
+    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
 
     private let actions: [ToolbarAction]
     private let finishOnSelection: Bool
+    private let scrollDirection: UICollectionView.ScrollDirection
 
     private var selectedAction: ToolbarAction?
 
     var selectionHandler: ((ToolbarAction?) -> Void)?
 
-    init(actions: [ToolbarAction], finishOnSelection: Bool = true) {
+    init(actions: [ToolbarAction], scrollDirection: UICollectionView.ScrollDirection = .vertical, finishOnSelection: Bool = true) {
         self.actions = actions
+        self.scrollDirection = scrollDirection
         self.finishOnSelection = finishOnSelection
         super.init(nibName: nil, bundle: nil)
     }
@@ -52,19 +54,19 @@ class ToolbarViewController: UIViewController {
     }
 
     override var preferredContentSize: CGSize {
-        get { return CGSize(width: 60, height: 0) }
+        get { return CGSize(width: 60, height: 60) }
         set {}
     }
 
 }
 
-extension ToolbarViewController: UITableViewDataSource, UITableViewDelegate {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+extension ToolbarViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return actions.count
     }
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! ToolbarButtonCell
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! ToolbarButtonCell
 
         cell.backgroundColor = .clear
         cell.itemImage = actions[indexPath.row].image
@@ -78,42 +80,61 @@ extension ToolbarViewController: UITableViewDataSource, UITableViewDelegate {
 
         return cell
     }
-
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 60
-    }
 }
 
 private extension ToolbarViewController {
     func setup() {
-        view.addSubview(tableView)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
+        let layout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
+        layout.scrollDirection = scrollDirection
 
-        NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.topAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-        ])
+        layout.itemSize = CGSize(width: 60, height: 60)
+        layout.minimumLineSpacing = 0
+        layout.minimumInteritemSpacing = 0
 
-        if #available(iOS 11.0, *) {
+        view.addSubview(collectionView)
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+
+        if scrollDirection == .horizontal {
             NSLayoutConstraint.activate([
-                tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-                tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
+                collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             ])
+
+            if #available(iOS 11.0, *) {
+                NSLayoutConstraint.activate([
+                    collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+                    collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+                ])
+            } else {
+                NSLayoutConstraint.activate([
+                    collectionView.topAnchor.constraint(equalTo: view.topAnchor),
+                    collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+                ])
+            }
         } else {
             NSLayoutConstraint.activate([
-                tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+                collectionView.topAnchor.constraint(equalTo: view.topAnchor),
+                collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             ])
+
+            if #available(iOS 11.0, *) {
+                NSLayoutConstraint.activate([
+                    collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+                    collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
+                ])
+            } else {
+                NSLayoutConstraint.activate([
+                    collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                    collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+                ])
+            }
         }
 
-        tableView.backgroundColor = .clear
-        tableView.alwaysBounceVertical = false
-        tableView.separatorStyle = .none
-        tableView.tableFooterView = UIView()
+        collectionView.backgroundColor = .clear
+        collectionView.alwaysBounceVertical = false
 
-        tableView.register(ToolbarButtonCell.self, forCellReuseIdentifier: "Cell")
-        tableView.dataSource = self
-        tableView.delegate = self
+        collectionView.register(ToolbarButtonCell.self, forCellWithReuseIdentifier: "Cell")
+        collectionView.dataSource = self
     }
 }
 
