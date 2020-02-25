@@ -73,12 +73,19 @@ extension MainViewControler: CelestiaViewControllerDelegate {
                 self.showBodyInfo(with: selection!)
                 return
             }
-            if ac == .setting {
+            switch ac {
+            case .celestia:
+                self.showBodyInfo(with: selection!)
+            case .setting:
                 self.showSettings()
-            } else if ac == .search {
+            case .search:
                 self.showSearch()
-            }
+            case .browse:
+                self.showBrowser()
             // TODO: handle other actions
+            case .share:
+                break
+            }
         }
         controller.modalPresentationStyle = .custom
         controller.transitioningDelegate = slideInManager
@@ -114,6 +121,18 @@ extension MainViewControler: CelestiaViewControllerDelegate {
             guard let self = self else { return }
             self.showBodyInfo(with: info)
         }
+        // TODO: special setup for iPad
+        controller.modalPresentationStyle = .custom
+        controller.transitioningDelegate = slideInManager
+        present(controller, animated: true, completion: nil)
+    }
+
+    private func showBrowser() {
+        slideInManager.direction = .right
+        let controller = BrowserContainerViewController(selected: { [weak self] (info) in
+            guard let self = self else { return }
+            self.showBodyInfo(with: info)
+        })
         // TODO: special setup for iPad
         controller.modalPresentationStyle = .custom
         controller.transitioningDelegate = slideInManager

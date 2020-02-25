@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		97143F1823FFAEFD00F35D87 /* defaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 97143F1623FFAEFD00F35D87 /* defaults.plist */; };
+		972477D12404A19700729B45 /* BrowserContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972477D02404A19700729B45 /* BrowserContainerViewController.swift */; };
+		972477D52404A63800729B45 /* BrowserCommonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972477D42404A63800729B45 /* BrowserCommonViewController.swift */; };
+		972477D72404A65C00729B45 /* BrowserCoordinatorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972477D62404A65C00729B45 /* BrowserCoordinatorController.swift */; };
 		973E2EF82400F8C700B0F059 /* CelestiaResources in Resources */ = {isa = PBXBuildFile; fileRef = 973E2EF72400F8C700B0F059 /* CelestiaResources */; };
 		973E2EFC2400FA1100B0F059 /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973E2EFB2400FA1100B0F059 /* URL.swift */; };
 		974F86AA240362BA00356795 /* ToolbarButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974F86A9240362BA00356795 /* ToolbarButtonCell.swift */; };
@@ -66,6 +69,9 @@
 
 /* Begin PBXFileReference section */
 		97143F1623FFAEFD00F35D87 /* defaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = defaults.plist; sourceTree = "<group>"; };
+		972477D02404A19700729B45 /* BrowserContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserContainerViewController.swift; sourceTree = "<group>"; };
+		972477D42404A63800729B45 /* BrowserCommonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserCommonViewController.swift; sourceTree = "<group>"; };
+		972477D62404A65C00729B45 /* BrowserCoordinatorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserCoordinatorController.swift; sourceTree = "<group>"; };
 		973E2EF72400F8C700B0F059 /* CelestiaResources */ = {isa = PBXFileReference; lastKnownFileType = folder; path = CelestiaResources; sourceTree = "<group>"; };
 		973E2EFB2400FA1100B0F059 /* URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URL.swift; sourceTree = "<group>"; };
 		974F86A9240362BA00356795 /* ToolbarButtonCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarButtonCell.swift; sourceTree = "<group>"; };
@@ -133,6 +139,16 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		972477D32404A37600729B45 /* Browser */ = {
+			isa = PBXGroup;
+			children = (
+				972477D02404A19700729B45 /* BrowserContainerViewController.swift */,
+				972477D42404A63800729B45 /* BrowserCommonViewController.swift */,
+				972477D62404A65C00729B45 /* BrowserCoordinatorController.swift */,
+			);
+			path = Browser;
+			sourceTree = "<group>";
+		};
 		973E2EF92400F9E100B0F059 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
@@ -231,6 +247,7 @@
 		979D2F7C23FEB1A6005D2592 /* CelestiaMobile */ = {
 			isa = PBXGroup;
 			children = (
+				972477D32404A37600729B45 /* Browser */,
 				977394BB2404187300E38B82 /* Search */,
 				977394A92403F05100E38B82 /* Settings */,
 				974F86DA2403BD2600356795 /* Info */,
@@ -396,6 +413,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				977394A02402A9AF00E38B82 /* SlideInPresentationManager.swift in Sources */,
+				972477D12404A19700729B45 /* BrowserContainerViewController.swift in Sources */,
 				977394B8240409CF00E38B82 /* SettingSwitchCell.swift in Sources */,
 				977394B32403F74800E38B82 /* SettingTextCell.swift in Sources */,
 				974F86E62403C46D00356795 /* Celestia+Extension.swift in Sources */,
@@ -405,11 +423,13 @@
 				977394BA240413EF00E38B82 /* SettingSelectionViewController.swift in Sources */,
 				977394BD2404189000E38B82 /* SearchViewController.swift in Sources */,
 				977394B12403F30900E38B82 /* SettingModel.swift in Sources */,
+				972477D52404A63800729B45 /* BrowserCommonViewController.swift in Sources */,
 				973E2EFC2400FA1100B0F059 /* URL.swift in Sources */,
 				974F86E22403BD3C00356795 /* InfoViewController.swift in Sources */,
 				978406DF24029D9100876FD1 /* LoadingFailureViewController.swift in Sources */,
 				977394AC2403F07C00E38B82 /* SettingsCoordinatorController.swift in Sources */,
 				974F86E02403BD3C00356795 /* BodyDescriptionCell.swift in Sources */,
+				972477D72404A65C00729B45 /* BrowserCoordinatorController.swift in Sources */,
 				974F86E12403BD3C00356795 /* BodyInfoLayoutDelegate.swift in Sources */,
 				974F86AA240362BA00356795 /* ToolbarButtonCell.swift in Sources */,
 				974F86E42403C30E00356795 /* BodyInfoModel.swift in Sources */,

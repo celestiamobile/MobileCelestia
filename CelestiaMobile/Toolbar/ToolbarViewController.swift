@@ -13,9 +13,10 @@ enum ToolbarAction: String {
     case setting
     case share
     case search
+    case browse
 
     static var persistentAction: [ToolbarAction] {
-        return [.setting, .share, .search]
+        return [.setting, .share, .search, .browse]
     }
 }
 
