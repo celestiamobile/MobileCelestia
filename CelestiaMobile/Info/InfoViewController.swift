@@ -15,7 +15,6 @@ final class InfoViewController: UIViewController {
     private let info: BodyInfo
 
     var selectionHandler: ((CelestiaAction?) -> Void)?
-    private var selectedAction: CelestiaAction?
 
     override var preferredContentSize: CGSize {
         set {}
@@ -40,12 +39,6 @@ final class InfoViewController: UIViewController {
         super.viewDidLoad()
 
         setup()
-    }
-
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-
-        selectionHandler?(selectedAction)
     }
 }
 
@@ -102,8 +95,7 @@ extension InfoViewController: UICollectionViewDataSource {
         cell.title = action.description
         cell.actionHandler = { [weak self] in
             guard let self = self else { return }
-            self.selectedAction = action
-            self.dismiss(animated: true, completion: nil)
+            self.selectionHandler?(action)
         }
         return cell
     }
