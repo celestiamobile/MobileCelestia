@@ -74,7 +74,12 @@ class SlideInPresentationManager: NSObject {
         case bottom
     }
 
-    var direction: SlideInPresentationManager.PresentationDirection = .right
+    private let direction: PresentationDirection
+
+    init(direction: PresentationDirection) {
+        self.direction = direction
+        super.init()
+    }
 }
 
 extension SlideInPresentationManager: UIViewControllerTransitioningDelegate {

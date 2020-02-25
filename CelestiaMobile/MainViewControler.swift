@@ -13,7 +13,9 @@ class MainViewControler: UIViewController {
 
     private var loadeed = false
 
-    private lazy var slideInManager = SlideInPresentationManager()
+    private lazy var rightSlideInManager = SlideInPresentationManager(direction: .right)
+
+    private lazy var bottomSlideInManager = SlideInPresentationManager(direction: .bottom)
 
     override func loadView() {
         view = UIView()
@@ -60,7 +62,6 @@ class MainViewControler: UIViewController {
 
 extension MainViewControler: CelestiaViewControllerDelegate {
     func celestiaController(_ celestiaController: CelestiaViewController, selection: BodyInfo?) {
-        slideInManager.direction = .right
         var actions: [ToolbarAction] = ToolbarAction.persistentAction
         if selection != nil {
             actions.insert(.celestia, at: 0)
@@ -88,12 +89,11 @@ extension MainViewControler: CelestiaViewControllerDelegate {
             }
         }
         controller.modalPresentationStyle = .custom
-        controller.transitioningDelegate = slideInManager
+        controller.transitioningDelegate = rightSlideInManager
         present(controller, animated: true, completion: nil)
     }
 
     private func showBodyInfo(with selection: BodyInfo) {
-        slideInManager.direction = .right
         let controller = InfoViewController(info: selection)
         controller.selectionHandler = { [weak self] (action) in
             guard let ac = action else { return }
@@ -102,40 +102,37 @@ extension MainViewControler: CelestiaViewControllerDelegate {
         }
         // TODO: special setup for iPad
         controller.modalPresentationStyle = .custom
-        controller.transitioningDelegate = slideInManager
+        controller.transitioningDelegate = rightSlideInManager
         present(controller, animated: true, completion: nil)
     }
 
     private func showSettings() {
-        slideInManager.direction = .right
         let controller = SettingsCoordinatorController()
         // TODO: special setup for iPad
         controller.modalPresentationStyle = .custom
-        controller.transitioningDelegate = slideInManager
+        controller.transitioningDelegate = rightSlideInManager
         present(controller, animated: true, completion: nil)
     }
 
     private func showSearch() {
-        slideInManager.direction = .right
         let controller = SearchCoordinatorController { [weak self] (info) in
             guard let self = self else { return }
             self.showBodyInfo(with: info)
         }
         // TODO: special setup for iPad
         controller.modalPresentationStyle = .custom
-        controller.transitioningDelegate = slideInManager
+        controller.transitioningDelegate = rightSlideInManager
         present(controller, animated: true, completion: nil)
     }
 
     private func showBrowser() {
-        slideInManager.direction = .right
         let controller = BrowserContainerViewController(selected: { [weak self] (info) in
             guard let self = self else { return }
             self.showBodyInfo(with: info)
         })
         // TODO: special setup for iPad
         controller.modalPresentationStyle = .custom
-        controller.transitioningDelegate = slideInManager
+        controller.transitioningDelegate = rightSlideInManager
         present(controller, animated: true, completion: nil)
     }
 }
