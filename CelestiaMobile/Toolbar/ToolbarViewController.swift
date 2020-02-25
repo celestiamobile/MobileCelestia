@@ -24,12 +24,15 @@ class ToolbarViewController: UIViewController {
     private lazy var tableView = UITableView(frame: .zero, style: .plain)
 
     private let actions: [ToolbarAction]
+    private let finishOnSelection: Bool
+
     private var selectedAction: ToolbarAction?
 
     var selectionHandler: ((ToolbarAction?) -> Void)?
 
-    init(actions: [ToolbarAction]) {
+    init(actions: [ToolbarAction], finishOnSelection: Bool = true) {
         self.actions = actions
+        self.finishOnSelection = finishOnSelection
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -46,12 +49,6 @@ class ToolbarViewController: UIViewController {
         super.viewDidLoad()
 
         setup()
-    }
-
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-
-        selectionHandler?(selectedAction)
     }
 
     override var preferredContentSize: CGSize {
@@ -73,8 +70,10 @@ extension ToolbarViewController: UITableViewDataSource, UITableViewDelegate {
         cell.itemImage = actions[indexPath.row].image
         cell.actionHandler = { [weak self] in
             guard let self = self else { return }
-            self.selectedAction = self.actions[indexPath.row]
-            self.dismiss(animated: true, completion: nil)
+            if self.finishOnSelection {
+                self.dismiss(animated: true, completion: nil)
+            }
+            self.selectionHandler?(self.actions[indexPath.row])
         }
 
         return cell
