@@ -42,6 +42,7 @@ class CelestiaViewController: GLKViewController {
     // MARK: gesture
     private var oneFingerStartPoint: CGPoint?
     private var twoFingerStartPoint: CGPoint?
+    private var originalPinchDistance: CGFloat?
     private var currentScale: CGFloat?
     private var edgePanTriggerDistance: CGFloat = 20.0
 
@@ -76,16 +77,16 @@ extension CelestiaViewController {
             break
         case .began:
             self[keyPath: keyPath] = location
-            core.mouseButtonDown(at: location, modifiers: 0, with: move ? .left : .right)
+            core.mouseButtonDown(at: location, modifiers: 0, with: move ? .right : .left)
         case .changed:
             let current = self[keyPath: keyPath]!
             let offset = CGPoint(x: location.x - current.x, y: location.y - current.y)
             self[keyPath: keyPath] = location
-            core.mouseMove(by: offset, modifiers: 0, with: move ? .left : .right)
+            core.mouseMove(by: offset, modifiers: 0, with: move ? .right : .left)
         case .ended, .cancelled, .failed:
             fallthrough
         @unknown default:
-            core.mouseButtonUp(at: location, modifiers: 0, with: move ? .left : .right)
+            core.mouseButtonUp(at: location, modifiers: 0, with: move ? .right : .left)
             self[keyPath: keyPath] = nil
         }
     }
@@ -95,14 +96,18 @@ extension CelestiaViewController {
         case .possible:
             break
         case .began:
+            let loc1 = pinch.location(ofTouch: 0, in: pinch.view)
+            let loc2 = pinch.location(ofTouch: 1, in: pinch.view)
+            originalPinchDistance = hypot(abs(loc1.x - loc2.x), abs(loc1.y - loc2.y))
             currentScale = pinch.scale
         case .changed:
             let delta = pinch.scale / currentScale!
-            core.mouseWheel(by: (1 - delta) * pinch.view!.bounds.height / 2, modifiers: 0)
+            core.mouseWheel(by: (1 - delta) * originalPinchDistance!, modifiers: 0)
             currentScale = pinch.scale
         case .ended, .cancelled, .failed:
             fallthrough
         @unknown default:
+            originalPinchDistance = nil
             currentScale = nil
         }
     }
@@ -179,8 +184,8 @@ extension CelestiaViewController {
         view.addGestureRecognizer(pan2)
 
         let pinch = UIPinchGestureRecognizer(target: self, action: #selector(handlePinch(_:)))
-        pinch.require(toFail: pan2)
         pinch.delegate = self
+        pinch.require(toFail: pan2)
         view.addGestureRecognizer(pinch)
 
         let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
