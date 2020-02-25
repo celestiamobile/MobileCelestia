@@ -668,7 +668,7 @@
 					"@executable_path/Frameworks",
 				);
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_BUNDLE_IDENTIFIER = cc.meowssage.MobileCelestia;
+				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.MobileCelestia;
 				PRODUCT_NAME = Celestia;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -689,7 +689,7 @@
 					"@executable_path/Frameworks",
 				);
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_BUNDLE_IDENTIFIER = cc.meowssage.MobileCelestia;
+				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.MobileCelestia;
 				PRODUCT_NAME = Celestia;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
