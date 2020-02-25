@@ -104,13 +104,13 @@
 		978406D92402906C00876FD1 /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		978406DB240294D000876FD1 /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
 		978406DE24029D9100876FD1 /* LoadingFailureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingFailureViewController.swift; sourceTree = "<group>"; };
-		979D2F7A23FEB1A6005D2592 /* CelestiaMobile.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CelestiaMobile.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		979D2F7A23FEB1A6005D2592 /* Celestia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Celestia.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		979D2F7D23FEB1A6005D2592 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		979D2F8123FEB1A6005D2592 /* CelestiaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaViewController.swift; sourceTree = "<group>"; };
 		979D2F8623FEB1A8005D2592 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		979D2F8923FEB1A8005D2592 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		979D2F8B23FEB1A8005D2592 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		979D2F9023FEB1A8005D2592 /* CelestiaMobileTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CelestiaMobileTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		979D2F9023FEB1A8005D2592 /* MobileCelestiaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MobileCelestiaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		979D2F9423FEB1A8005D2592 /* CelestiaMobileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaMobileTests.swift; sourceTree = "<group>"; };
 		979D2F9623FEB1A8005D2592 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		979D2F9F23FEB1D5005D2592 /* CelestiaCore.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CelestiaCore.xcodeproj; path = ../CelestiaCore/CelestiaCore.xcodeproj; sourceTree = "<group>"; };
@@ -247,8 +247,8 @@
 		979D2F7B23FEB1A6005D2592 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				979D2F7A23FEB1A6005D2592 /* CelestiaMobile.app */,
-				979D2F9023FEB1A8005D2592 /* CelestiaMobileTests.xctest */,
+				979D2F7A23FEB1A6005D2592 /* Celestia.app */,
+				979D2F9023FEB1A8005D2592 /* MobileCelestiaTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -306,9 +306,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		979D2F7923FEB1A6005D2592 /* CelestiaMobile */ = {
+		979D2F7923FEB1A6005D2592 /* MobileCelestia */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 979D2F9923FEB1A8005D2592 /* Build configuration list for PBXNativeTarget "CelestiaMobile" */;
+			buildConfigurationList = 979D2F9923FEB1A8005D2592 /* Build configuration list for PBXNativeTarget "MobileCelestia" */;
 			buildPhases = (
 				979D2F7623FEB1A6005D2592 /* Sources */,
 				979D2F7723FEB1A6005D2592 /* Frameworks */,
@@ -320,14 +320,14 @@
 			);
 			dependencies = (
 			);
-			name = CelestiaMobile;
+			name = MobileCelestia;
 			productName = CelestiaMobile;
-			productReference = 979D2F7A23FEB1A6005D2592 /* CelestiaMobile.app */;
+			productReference = 979D2F7A23FEB1A6005D2592 /* Celestia.app */;
 			productType = "com.apple.product-type.application";
 		};
-		979D2F8F23FEB1A8005D2592 /* CelestiaMobileTests */ = {
+		979D2F8F23FEB1A8005D2592 /* MobileCelestiaTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 979D2F9C23FEB1A8005D2592 /* Build configuration list for PBXNativeTarget "CelestiaMobileTests" */;
+			buildConfigurationList = 979D2F9C23FEB1A8005D2592 /* Build configuration list for PBXNativeTarget "MobileCelestiaTests" */;
 			buildPhases = (
 				979D2F8C23FEB1A8005D2592 /* Sources */,
 				979D2F8D23FEB1A8005D2592 /* Frameworks */,
@@ -338,9 +338,9 @@
 			dependencies = (
 				979D2F9223FEB1A8005D2592 /* PBXTargetDependency */,
 			);
-			name = CelestiaMobileTests;
+			name = MobileCelestiaTests;
 			productName = CelestiaMobileTests;
-			productReference = 979D2F9023FEB1A8005D2592 /* CelestiaMobileTests.xctest */;
+			productReference = 979D2F9023FEB1A8005D2592 /* MobileCelestiaTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
@@ -363,7 +363,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 979D2F7523FEB1A6005D2592 /* Build configuration list for PBXProject "CelestiaMobile" */;
+			buildConfigurationList = 979D2F7523FEB1A6005D2592 /* Build configuration list for PBXProject "MobileCelestia" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -382,8 +382,8 @@
 			);
 			projectRoot = "";
 			targets = (
-				979D2F7923FEB1A6005D2592 /* CelestiaMobile */,
-				979D2F8F23FEB1A8005D2592 /* CelestiaMobileTests */,
+				979D2F7923FEB1A6005D2592 /* MobileCelestia */,
+				979D2F8F23FEB1A8005D2592 /* MobileCelestiaTests */,
 			);
 		};
 /* End PBXProject section */
@@ -512,7 +512,7 @@
 /* Begin PBXTargetDependency section */
 		979D2F9223FEB1A8005D2592 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 979D2F7923FEB1A6005D2592 /* CelestiaMobile */;
+			target = 979D2F7923FEB1A6005D2592 /* MobileCelestia */;
 			targetProxy = 979D2F9123FEB1A8005D2592 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -656,8 +656,8 @@
 					"@executable_path/Frameworks",
 				);
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_BUNDLE_IDENTIFIER = cc.meowssage.CelestiaMobile;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = cc.meowssage.MobileCelestia;
+				PRODUCT_NAME = Celestia;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -677,8 +677,8 @@
 					"@executable_path/Frameworks",
 				);
 				OTHER_LDFLAGS = "-ObjC";
-				PRODUCT_BUNDLE_IDENTIFIER = cc.meowssage.CelestiaMobile;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_BUNDLE_IDENTIFIER = cc.meowssage.MobileCelestia;
+				PRODUCT_NAME = Celestia;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -702,7 +702,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CelestiaMobile.app/CelestiaMobile";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MobileCelestia.app/MobileCelestia";
 			};
 			name = Debug;
 		};
@@ -724,14 +724,14 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/CelestiaMobile.app/CelestiaMobile";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MobileCelestia.app/MobileCelestia";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		979D2F7523FEB1A6005D2592 /* Build configuration list for PBXProject "CelestiaMobile" */ = {
+		979D2F7523FEB1A6005D2592 /* Build configuration list for PBXProject "MobileCelestia" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				979D2F9723FEB1A8005D2592 /* Debug */,
@@ -740,7 +740,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		979D2F9923FEB1A8005D2592 /* Build configuration list for PBXNativeTarget "CelestiaMobile" */ = {
+		979D2F9923FEB1A8005D2592 /* Build configuration list for PBXNativeTarget "MobileCelestia" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				979D2F9A23FEB1A8005D2592 /* Debug */,
@@ -749,7 +749,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		979D2F9C23FEB1A8005D2592 /* Build configuration list for PBXNativeTarget "CelestiaMobileTests" */ = {
+		979D2F9C23FEB1A8005D2592 /* Build configuration list for PBXNativeTarget "MobileCelestiaTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				979D2F9D23FEB1A8005D2592 /* Debug */,
