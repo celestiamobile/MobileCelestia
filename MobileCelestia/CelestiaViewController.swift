@@ -271,10 +271,11 @@ extension CelestiaViewController {
 
             self.core.tick()
 
-            if let startingURL = startingScriptURL?.path {
+            if let startingURL = startingScriptURL, startingURL.startAccessingSecurityScopedResource() {
                 self.core.setStartURL(nil)
                 self.core.start()
-                self.core.runScript(at: startingURL)
+                self.core.runScript(at: startingURL.path)
+                startingURL.stopAccessingSecurityScopedResource()
             } else {
                 self.core.start()
             }
