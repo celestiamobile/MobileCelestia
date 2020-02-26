@@ -107,8 +107,7 @@ extension InfoViewController: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Action", for: indexPath) as! BodyActionCell
         let action = actions[indexPath.item]
         cell.title = action.description
-        cell.actionHandler = { [weak self] in
-            guard let self = self else { return }
+        cell.actionHandler = { [unowned self] in
             self.selectionHandler?(action)
         }
         return cell

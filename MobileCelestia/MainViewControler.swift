@@ -68,8 +68,7 @@ extension MainViewControler: CelestiaViewControllerDelegate {
             actions.insert(.celestia, at: 0)
         }
         let controller = ToolbarViewController(actions: actions)
-        controller.selectionHandler = { [weak self] (action) in
-            guard let self = self else { return }
+        controller.selectionHandler = { [unowned self] (action) in
             guard let ac = action as? AppToolbarAction else { return }
             if ac == .celestia {
                 self.showBodyInfo(with: selection!)
@@ -105,8 +104,7 @@ extension MainViewControler: CelestiaViewControllerDelegate {
     private func presentTimeToolbar() {
         let actions: [CelestiaAction] = [.backward, .playpause, .forward]
         let controller = ToolbarViewController(actions: actions, scrollDirection: .horizontal, finishOnSelection: false)
-        controller.selectionHandler = { [weak self] (action) in
-            guard let self = self else { return }
+        controller.selectionHandler = { [unowned self] (action) in
             guard let ac = action as? CelestiaAction else { return }
             self.celestiaController.receive(action: ac)
         }
@@ -117,9 +115,8 @@ extension MainViewControler: CelestiaViewControllerDelegate {
 
     private func showBodyInfo(with selection: BodyInfo) {
         let controller = InfoViewController(info: selection)
-        controller.selectionHandler = { [weak self, weak controller] (action) in
+        controller.selectionHandler = { [unowned self, weak controller] (action) in
             guard let ac = action else { return }
-            guard let self = self else { return }
             switch ac {
             case .select:
                 self.celestiaController.select(selection)
@@ -145,16 +142,14 @@ extension MainViewControler: CelestiaViewControllerDelegate {
     }
 
     private func showSearch() {
-        let controller = SearchCoordinatorController { [weak self] (info) in
-            guard let self = self else { return }
+        let controller = SearchCoordinatorController { [unowned self] (info) in
             self.showBodyInfo(with: info)
         }
         showViewController(controller)
     }
 
     private func showBrowser() {
-        let controller = BrowserContainerViewController(selected: { [weak self] (info) in
-            guard let self = self else { return }
+        let controller = BrowserContainerViewController(selected: { [unowned self] (info) in
             self.showBodyInfo(with: info)
         })
         showViewController(controller)

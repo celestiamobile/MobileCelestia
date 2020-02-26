@@ -38,8 +38,7 @@ class BrowserContainerViewController: UIViewController {
 private extension BrowserContainerViewController {
     func setup() {
         install(controller)
-        let handler = { [weak self] (selection: BodyInfo) in
-            guard let self = self else { return }
+        let handler = { [unowned self] (selection: BodyInfo) in
             self.dismiss(animated: true, completion: nil)
             self.selected(selection)
         }

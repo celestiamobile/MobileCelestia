@@ -54,8 +54,7 @@ private extension BrowserCoordinatorController {
     }
 
     func create(for item: CelestiaBrowserItem) -> BrowserCommonViewController {
-        return BrowserCommonViewController(item: item, selection: { [weak self] (sel, finish) in
-            guard let self = self else { return }
+        return BrowserCommonViewController(item: item, selection: { [unowned self] (sel, finish) in
             if !finish {
                 self.navigation.pushViewController(self.create(for: sel), animated: true)
                 return

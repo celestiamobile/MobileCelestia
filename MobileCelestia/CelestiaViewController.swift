@@ -184,7 +184,7 @@ extension CelestiaViewController {
         core = CelestiaAppCore.shared
 
         let context = (self.view as! GLKView).context
-        DispatchQueue.global().async {
+        DispatchQueue.global().async { [unowned self] in
             EAGLContext.setCurrent(context)
             self.core.startSimulation(configFileName: defaultConfigFile.path, extraDirectories: [extraDirectory].compactMap{$0?.path}) { (st) in
                 DispatchQueue.main.async { status(st) }
@@ -259,7 +259,7 @@ extension CelestiaViewController {
             completion(.failure(.openGLError))
             return
         }
-        setupCelestia({ (st) in
+        setupCelestia({ [unowned self] (st) in
             status(st)
         }) { (success) in
             guard success else {
@@ -283,11 +283,11 @@ extension CelestiaViewController {
 
 extension CelestiaViewController {
     func receive(action: CelestiaAction) {
-        self.core.receive(action)
+        core.receive(action)
     }
 
     func select(_ bodyInfo: BodyInfo) {
-        self.core.selection = bodyInfo
+        core.selection = bodyInfo
     }
 
     func screenshot() -> UIImage {

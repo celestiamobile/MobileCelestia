@@ -90,9 +90,7 @@ extension SettingCheckViewController: UITableViewDataSource, UITableViewDelegate
             cell.title = item.title
             cell.enabled = core.value(forKey: item.masterKey!) as! Bool
             let key = item.masterKey!
-            cell.toggleBlock = { [weak self] (enabled) in
-                guard let self = self else { return }
-
+            cell.toggleBlock = { [unowned self] (enabled) in
                 let core = CelestiaAppCore.shared
                 core.setValue(enabled, forKey: key)
 

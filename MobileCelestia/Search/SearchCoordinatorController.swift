@@ -39,9 +39,9 @@ class SearchCoordinatorController: UIViewController {
 
 private extension SearchCoordinatorController {
     func setup() {
-        main = SearchViewController(selected: { [weak self] (info) in
-            self?.dismiss(animated: true, completion: nil)
-            self?.selected(info)
+        main = SearchViewController(selected: { [unowned self] (info) in
+            self.dismiss(animated: true, completion: nil)
+            self.selected(info)
         })
         navigation = UINavigationController(rootViewController: main)
 

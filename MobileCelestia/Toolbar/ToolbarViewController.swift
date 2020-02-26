@@ -75,8 +75,7 @@ extension ToolbarViewController: UICollectionViewDataSource {
 
         cell.backgroundColor = .clear
         cell.itemImage = actions[indexPath.row].image
-        cell.actionHandler = { [weak self] in
-            guard let self = self else { return }
+        cell.actionHandler = { [unowned self] in
             if self.finishOnSelection {
                 self.dismiss(animated: true, completion: nil)
             }

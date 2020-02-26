@@ -28,8 +28,7 @@ class SettingsCoordinatorController: UIViewController {
 
 private extension SettingsCoordinatorController {
     func setup() {
-        main = SettingsMainViewController(selection: { [weak self] (item) in
-            guard let self = self else { return }
+        main = SettingsMainViewController(selection: { [unowned self] (item) in
             switch item.type {
             case .checkmarks(let masterKey, let items):
                 let controller = SettingCheckViewController(item: SettingCheckViewController.Item(title: item.name, masterKey: masterKey, subitems: items))
