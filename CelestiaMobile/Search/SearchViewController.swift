@@ -87,6 +87,7 @@ private extension SearchViewController {
         if #available(iOS 11.0, *) {
             /* system attached searchbar */
             navigationItem.searchController = searchController
+            navigationItem.hidesSearchBarWhenScrolling = false
 
             tableView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         } else {

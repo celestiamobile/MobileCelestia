@@ -96,7 +96,7 @@ extension MainViewControler: CelestiaViewControllerDelegate {
     private func presentShare() {
         let image = celestiaController.screenshot()
         let activityController = UIActivityViewController(activityItems: [image], applicationActivities: nil)
-        // TODO: iPad presentation
+        configurePopover(for: activityController)
         present(activityController, animated: true, completion: nil)
     }
 
@@ -126,18 +126,12 @@ extension MainViewControler: CelestiaViewControllerDelegate {
                 self.celestiaController.receive(action: cac)
             }
         }
-        // TODO: special setup for iPad
-        controller.modalPresentationStyle = .custom
-        controller.transitioningDelegate = rightSlideInManager
-        present(controller, animated: true, completion: nil)
+        showViewController(controller)
     }
 
     private func showSettings() {
         let controller = SettingsCoordinatorController()
-        // TODO: special setup for iPad
-        controller.modalPresentationStyle = .custom
-        controller.transitioningDelegate = rightSlideInManager
-        present(controller, animated: true, completion: nil)
+        showViewController(controller)
     }
 
     private func showSearch() {
@@ -145,10 +139,7 @@ extension MainViewControler: CelestiaViewControllerDelegate {
             guard let self = self else { return }
             self.showBodyInfo(with: info)
         }
-        // TODO: special setup for iPad
-        controller.modalPresentationStyle = .custom
-        controller.transitioningDelegate = rightSlideInManager
-        present(controller, animated: true, completion: nil)
+        showViewController(controller)
     }
 
     private func showBrowser() {
@@ -156,10 +147,24 @@ extension MainViewControler: CelestiaViewControllerDelegate {
             guard let self = self else { return }
             self.showBodyInfo(with: info)
         })
-        // TODO: special setup for iPad
-        controller.modalPresentationStyle = .custom
-        controller.transitioningDelegate = rightSlideInManager
-        present(controller, animated: true, completion: nil)
+        showViewController(controller)
+    }
+
+    private func showViewController(_ viewController: UIViewController) {
+        if UIDevice.current.userInterfaceIdiom == .pad {
+            configurePopover(for: viewController)
+        } else {
+            viewController.modalPresentationStyle = .custom
+            viewController.transitioningDelegate = rightSlideInManager
+        }
+        present(viewController, animated: true, completion: nil)
+    }
+
+    private func configurePopover(for viewController: UIViewController) {
+        viewController.modalPresentationStyle = .popover
+        viewController.popoverPresentationController?.sourceView = view
+        viewController.popoverPresentationController?.sourceRect = CGRect(x: view.frame.midX, y: view.frame.midY, width: 0, height: 0)
+        viewController.popoverPresentationController?.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
     }
 }
 
