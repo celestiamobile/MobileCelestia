@@ -154,6 +154,7 @@ extension MainViewControler: CelestiaViewControllerDelegate {
         if UIDevice.current.userInterfaceIdiom == .pad {
             configurePopover(for: viewController)
         } else {
+            viewController.preferredContentSize = CGSize(width: 300, height: 300)
             viewController.modalPresentationStyle = .custom
             viewController.transitioningDelegate = rightSlideInManager
         }
@@ -165,6 +166,7 @@ extension MainViewControler: CelestiaViewControllerDelegate {
         viewController.popoverPresentationController?.sourceView = view
         viewController.popoverPresentationController?.sourceRect = CGRect(x: view.frame.midX, y: view.frame.midY, width: 0, height: 0)
         viewController.popoverPresentationController?.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
+        viewController.preferredContentSize = CGSize(width: 400, height: 500)
     }
 }
 

@@ -27,11 +27,6 @@ class BrowserContainerViewController: UIViewController {
         view.backgroundColor = .darkBackground
     }
 
-    override var preferredContentSize: CGSize {
-        set {}
-        get { return CGSize(width: 300, height: 300) }
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
 

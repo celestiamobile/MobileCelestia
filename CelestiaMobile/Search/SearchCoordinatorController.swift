@@ -13,11 +13,6 @@ class SearchCoordinatorController: UIViewController {
     private var main: SearchViewController!
     private var navigation: UINavigationController!
 
-    override var preferredContentSize: CGSize {
-        set {}
-        get { return CGSize(width: 300, height: 300) }
-    }
-
     private let selected: (BodyInfo) -> Void
 
     init(selected: @escaping (BodyInfo) -> Void) {

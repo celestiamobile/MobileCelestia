@@ -14,11 +14,6 @@ class BrowserCoordinatorController: UIViewController {
 
     private var navigation: UINavigationController!
 
-    override var preferredContentSize: CGSize {
-        set {}
-        get { return CGSize(width: 300, height: 300) }
-    }
-
     private let item: CelestiaBrowserItem
 
     private let selection: (BodyInfo) -> Void

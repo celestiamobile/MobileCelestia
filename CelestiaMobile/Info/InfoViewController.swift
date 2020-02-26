@@ -27,11 +27,6 @@ final class InfoViewController: UIViewController {
 
     var selectionHandler: ((ObjectAction?) -> Void)?
 
-    override var preferredContentSize: CGSize {
-        set {}
-        get { return CGSize(width: 300, height: 300) }
-    }
-
     init(info: BodyInfo) {
         self.info = info
         super.init(nibName: nil, bundle: nil)

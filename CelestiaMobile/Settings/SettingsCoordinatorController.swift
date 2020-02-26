@@ -13,11 +13,6 @@ class SettingsCoordinatorController: UIViewController {
     private var main: SettingsMainViewController!
     private var navigation: UINavigationController!
 
-    override var preferredContentSize: CGSize {
-        set {}
-        get { return CGSize(width: 300, height: 300) }
-    }
-
     override func loadView() {
         view = UIView()
         view.backgroundColor = .darkBackground
