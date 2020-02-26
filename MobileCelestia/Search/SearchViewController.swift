@@ -31,6 +31,8 @@ class SearchViewController: UIViewController {
 
     private let selected: (BodyInfo) -> Void
 
+    private var shouldActivate = true
+
     init(selected: @escaping (BodyInfo) -> Void) {
         self.selected = selected
         super.init(nibName: nil, bundle: nil)
@@ -53,6 +55,22 @@ class SearchViewController: UIViewController {
         setup()
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        if shouldActivate {
+            searchController.isActive = true
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { [weak self] in
+                _ = self?.searchController.searchBar.becomeFirstResponder()
+            }
+        }
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        shouldActivate = searchController.searchBar.isFirstResponder
+    }
 }
 
 private extension SearchViewController {
