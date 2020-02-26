@@ -22,11 +22,15 @@ enum CelestiaAction: Int8 {
     case backward = 107
     case forward = 108
     case currentTime = 33
+    case syncOrbit = 121
+    case lock = 58
+    case chase = 34
+    case follow = 102
 }
 
 extension CelestiaAction {
     static var allCases: [CelestiaAction] {
-        return [.goto, .center]
+        return [.goto, .center, .follow, .chase, .syncOrbit, .lock]
     }
 }
 

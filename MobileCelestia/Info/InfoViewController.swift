@@ -121,10 +121,9 @@ private extension ObjectAction {
 
 private extension CelestiaAction {
     var description: String {
-        // TODO: replace with call to gettext
         switch self {
         case .goto:
-            return CelestiaString("Goto", comment: "")
+            return CelestiaString("Go", comment: "")
         case .center:
             return CelestiaString("Center", comment: "")
         case .playpause:
@@ -135,6 +134,14 @@ private extension CelestiaAction {
             return CelestiaString("Forward", comment: "")
         case .currentTime:
             return CelestiaString("Current Time", comment: "")
+        case .syncOrbit:
+            return CelestiaString("Sync Orbit", comment: "")
+        case .lock:
+            return CelestiaString("Lock", comment: "")
+        case .chase:
+            return CelestiaString("Chase", comment: "")
+        case .follow:
+            return CelestiaString("Follow", comment: "")
         }
     }
 }
