@@ -21,7 +21,7 @@ enum AppToolbarAction: String {
     case browse
 
     static var persistentAction: [AppToolbarAction] {
-        return [.setting, .share, .search, .time, .browse]
+        return [.share, .search, .time, .browse, .setting]
     }
 }
 
@@ -135,6 +135,8 @@ private extension ToolbarViewController {
             }
         }
 
+        collectionView.showsHorizontalScrollIndicator = false
+        collectionView.showsVerticalScrollIndicator = false
         collectionView.backgroundColor = .clear
         collectionView.alwaysBounceVertical = false
 
