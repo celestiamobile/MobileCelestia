@@ -10,6 +10,7 @@ import UIKit
 
 enum ObjectAction {
     case select
+    case web(url: URL)
     case wrapped(action: CelestiaAction)
 }
 
@@ -27,8 +28,15 @@ final class InfoViewController: UIViewController {
 
     var selectionHandler: ((ObjectAction?) -> Void)?
 
+    let actions: [ObjectAction]
+
     init(info: BodyInfo) {
         self.info = info
+        var actions = ObjectAction.allCases
+        if let url = info.url {
+            actions.append(.web(url: url))
+        }
+        self.actions = actions
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -87,7 +95,7 @@ extension InfoViewController: UICollectionViewDataSource {
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if section == 0 { return 1 }
-        return ObjectAction.allCases.count
+        return actions.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -97,7 +105,7 @@ extension InfoViewController: UICollectionViewDataSource {
             return cell
         }
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Action", for: indexPath) as! BodyActionCell
-        let action = ObjectAction.allCases[indexPath.item]
+        let action = actions[indexPath.item]
         cell.title = action.description
         cell.actionHandler = { [weak self] in
             guard let self = self else { return }
@@ -113,6 +121,8 @@ private extension ObjectAction {
         switch self {
         case .select:
             return CelestiaString("Select", comment: "")
+        case .web(_):
+            return CelestiaString("Web Info", comment: "")
         case .wrapped(let action):
             return action.description
         }

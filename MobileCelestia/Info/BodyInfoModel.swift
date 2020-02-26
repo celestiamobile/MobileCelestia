@@ -17,6 +17,13 @@ struct BodyInfo {
     fileprivate let selection: CelestiaSelection
 }
 
+extension BodyInfo {
+    var url: URL? {
+        guard let url = selection.webInfoURL else { return nil }
+        return URL(string: url)
+    }
+}
+
 extension CelestiaAppCore {
     var selection: BodyInfo {
         get { return BodyInfo(selection: simulation.selection) }

@@ -8,6 +8,8 @@
 
 import UIKit
 
+import SafariServices
+
 class MainViewControler: UIViewController {
     private lazy var celestiaController = CelestiaViewController()
 
@@ -115,7 +117,7 @@ extension MainViewControler: CelestiaViewControllerDelegate {
 
     private func showBodyInfo(with selection: BodyInfo) {
         let controller = InfoViewController(info: selection)
-        controller.selectionHandler = { [weak self] (action) in
+        controller.selectionHandler = { [weak self, weak controller] (action) in
             guard let ac = action else { return }
             guard let self = self else { return }
             switch ac {
@@ -124,9 +126,17 @@ extension MainViewControler: CelestiaViewControllerDelegate {
             case .wrapped(let cac):
                 self.celestiaController.select(selection)
                 self.celestiaController.receive(action: cac)
+            case .web(let url):
+                controller?.dismiss(animated: true, completion: nil)
+                self.showWeb(url)
             }
         }
         showViewController(controller)
+    }
+
+    private func showWeb(_ url: URL) {
+        let sf = SFSafariViewController(url: url)
+        showViewController(sf)
     }
 
     private func showSettings() {
