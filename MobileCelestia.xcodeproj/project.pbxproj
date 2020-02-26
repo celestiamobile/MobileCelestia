@@ -47,7 +47,7 @@
 		979D2F8223FEB1A6005D2592 /* CelestiaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979D2F8123FEB1A6005D2592 /* CelestiaViewController.swift */; };
 		979D2F8723FEB1A8005D2592 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 979D2F8623FEB1A8005D2592 /* Assets.xcassets */; };
 		979D2F8A23FEB1A8005D2592 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 979D2F8823FEB1A8005D2592 /* LaunchScreen.storyboard */; };
-		979D2F9523FEB1A8005D2592 /* CelestiaMobileTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979D2F9423FEB1A8005D2592 /* CelestiaMobileTests.swift */; };
+		979D2F9523FEB1A8005D2592 /* MobileCelestiaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979D2F9423FEB1A8005D2592 /* MobileCelestiaTests.swift */; };
 		979D2FA623FEB1DD005D2592 /* CelestiaCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 979D2FA423FEB1D6005D2592 /* CelestiaCore.framework */; };
 		979D2FAB23FEB2AA005D2592 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 979D2FAA23FEB2A5005D2592 /* libc++.tbd */; };
 		979D2FAD23FEB2B4005D2592 /* libbz2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 979D2FAC23FEB2AE005D2592 /* libbz2.tbd */; };
@@ -61,7 +61,7 @@
 			containerPortal = 979D2F7223FEB1A6005D2592 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 979D2F7923FEB1A6005D2592;
-			remoteInfo = CelestiaMobile;
+			remoteInfo = MobileCelestia;
 		};
 		979D2FA323FEB1D6005D2592 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -116,7 +116,7 @@
 		979D2F8923FEB1A8005D2592 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		979D2F8B23FEB1A8005D2592 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		979D2F9023FEB1A8005D2592 /* MobileCelestiaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MobileCelestiaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		979D2F9423FEB1A8005D2592 /* CelestiaMobileTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaMobileTests.swift; sourceTree = "<group>"; };
+		979D2F9423FEB1A8005D2592 /* MobileCelestiaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileCelestiaTests.swift; sourceTree = "<group>"; };
 		979D2F9623FEB1A8005D2592 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		979D2F9F23FEB1D5005D2592 /* CelestiaCore.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CelestiaCore.xcodeproj; path = ../CelestiaCore/CelestiaCore.xcodeproj; sourceTree = "<group>"; };
 		979D2FAA23FEB2A5005D2592 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
@@ -243,8 +243,8 @@
 			isa = PBXGroup;
 			children = (
 				979D2F9F23FEB1D5005D2592 /* CelestiaCore.xcodeproj */,
-				979D2F7C23FEB1A6005D2592 /* CelestiaMobile */,
-				979D2F9323FEB1A8005D2592 /* CelestiaMobileTests */,
+				979D2F7C23FEB1A6005D2592 /* MobileCelestia */,
+				979D2F9323FEB1A8005D2592 /* MobileCelestiaTests */,
 				979D2F7B23FEB1A6005D2592 /* Products */,
 				979D2FA523FEB1DD005D2592 /* Frameworks */,
 			);
@@ -259,7 +259,7 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		979D2F7C23FEB1A6005D2592 /* CelestiaMobile */ = {
+		979D2F7C23FEB1A6005D2592 /* MobileCelestia */ = {
 			isa = PBXGroup;
 			children = (
 				972477D32404A37600729B45 /* Browser */,
@@ -277,16 +277,16 @@
 				979D2F8823FEB1A8005D2592 /* LaunchScreen.storyboard */,
 				979D2F8B23FEB1A8005D2592 /* Info.plist */,
 			);
-			path = CelestiaMobile;
+			path = MobileCelestia;
 			sourceTree = "<group>";
 		};
-		979D2F9323FEB1A8005D2592 /* CelestiaMobileTests */ = {
+		979D2F9323FEB1A8005D2592 /* MobileCelestiaTests */ = {
 			isa = PBXGroup;
 			children = (
-				979D2F9423FEB1A8005D2592 /* CelestiaMobileTests.swift */,
+				979D2F9423FEB1A8005D2592 /* MobileCelestiaTests.swift */,
 				979D2F9623FEB1A8005D2592 /* Info.plist */,
 			);
-			path = CelestiaMobileTests;
+			path = MobileCelestiaTests;
 			sourceTree = "<group>";
 		};
 		979D2FA023FEB1D5005D2592 /* Products */ = {
@@ -326,7 +326,7 @@
 			dependencies = (
 			);
 			name = MobileCelestia;
-			productName = CelestiaMobile;
+			productName = MobileCelestia;
 			productReference = 979D2F7A23FEB1A6005D2592 /* Celestia.app */;
 			productType = "com.apple.product-type.application";
 		};
@@ -344,7 +344,7 @@
 				979D2F9223FEB1A8005D2592 /* PBXTargetDependency */,
 			);
 			name = MobileCelestiaTests;
-			productName = CelestiaMobileTests;
+			productName = MobileCelestiaTests;
 			productReference = 979D2F9023FEB1A8005D2592 /* MobileCelestiaTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
@@ -511,7 +511,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				979D2F9523FEB1A8005D2592 /* CelestiaMobileTests.swift in Sources */,
+				979D2F9523FEB1A8005D2592 /* MobileCelestiaTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -659,7 +659,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 22NR5428TD;
-				INFOPLIST_FILE = CelestiaMobile/Info.plist;
+				INFOPLIST_FILE = MobileCelestia/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -681,7 +681,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_TEAM = 22NR5428TD;
-				INFOPLIST_FILE = CelestiaMobile/Info.plist;
+				INFOPLIST_FILE = MobileCelestia/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -701,14 +701,14 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 22NR5428TD;
-				INFOPLIST_FILE = CelestiaMobileTests/Info.plist;
+				INFOPLIST_FILE = MobileCelestiaTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = cc.meowssage.CelestiaMobileTests;
+				PRODUCT_BUNDLE_IDENTIFIER = cc.meowssage.MobileCelestiaTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -723,14 +723,14 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 22NR5428TD;
-				INFOPLIST_FILE = CelestiaMobileTests/Info.plist;
+				INFOPLIST_FILE = MobileCelestiaTests/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = cc.meowssage.CelestiaMobileTests;
+				PRODUCT_BUNDLE_IDENTIFIER = cc.meowssage.MobileCelestiaTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
