@@ -258,6 +258,10 @@ extension CelestiaViewController {
         self.core.charEnter(action.rawValue)
     }
 
+    func select(_ bodyInfo: BodyInfo) {
+        self.core.selection = bodyInfo
+    }
+
     func screenshot() -> UIImage {
         return UIGraphicsImageRenderer(size: view.bounds.size).image { (_) in
             self.view.drawHierarchy(in: self.view.bounds, afterScreenUpdates: false)

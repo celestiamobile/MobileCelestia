@@ -153,7 +153,6 @@ extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
             // TODO: handle error
             return
         }
-        sim.selection = object
         selected(BodyInfo(selection: object))
     }
 }

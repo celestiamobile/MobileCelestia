@@ -69,7 +69,6 @@ private extension BrowserCoordinatorController {
                 // TODO: handle error
                 return
             }
-            CelestiaAppCore.shared.simulation.selection = transformed
             self.selection(BodyInfo(selection: transformed))
         })
     }

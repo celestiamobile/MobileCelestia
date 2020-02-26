@@ -118,7 +118,13 @@ extension MainViewControler: CelestiaViewControllerDelegate {
         controller.selectionHandler = { [weak self] (action) in
             guard let ac = action else { return }
             guard let self = self else { return }
-            self.celestiaController.receive(action: ac)
+            switch ac {
+            case .select:
+                self.celestiaController.select(selection)
+            case .wrapped(let cac):
+                self.celestiaController.select(selection)
+                self.celestiaController.receive(action: cac)
+            }
         }
         // TODO: special setup for iPad
         controller.modalPresentationStyle = .custom
