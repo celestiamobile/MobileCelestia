@@ -146,14 +146,17 @@ extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        view.endEditing(true)
+
         tableView.deselectRow(at: indexPath, animated: true)
         let selection = resultSections[indexPath.section].results[indexPath.row]
         let sim = CelestiaAppCore.shared.simulation
         let object = sim.findObject(from: selection.name)
         if object.isEmpty {
-            // TODO: handle error
+            showError(NSLocalizedString("Object not found", comment: ""))
             return
         }
+
         selected(BodyInfo(selection: object))
     }
 }
