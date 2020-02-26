@@ -15,7 +15,7 @@ fileprivate struct SearchResult {
 }
 
 fileprivate struct SearchResultSection {
-    let title: String
+    let title: String?
     let results: [SearchResult]
 }
 
@@ -183,9 +183,7 @@ extension SearchViewController: UISearchResultsUpdating {
 
 extension SearchViewController {
     private func search(with text: String) -> [SearchResultSection] {
-        let universe = CelestiaAppCore.shared.simulation.universe
-        let dsos = SearchResultSection(title: NSLocalizedString("Deep Sky Objects", comment: ""), results: universe.dsoCatalog.completion(for: text).map { SearchResult(name: $0) })
-        let stars = SearchResultSection(title: NSLocalizedString("Stars", comment: ""), results: universe.starCatalog.completion(for: text).map { SearchResult(name: $0) })
-        return [stars, dsos].filter { $0.results.count > 0 }
+        let simulation = CelestiaAppCore.shared.simulation
+        return [SearchResultSection(title: nil, results: simulation.completion(for: text).map { SearchResult(name: $0) })]
     }
 }
