@@ -29,6 +29,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
+    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
+        let core = CelestiaAppCore.shared
+        if core.isInitialized {
+            core.runScript(at: url.path)
+        } else {
+            startingScriptURL = url
+        }
+        return true
+    }
+
     func applicationWillTerminate(_ application: UIApplication) {
         let core = CelestiaAppCore.shared
         if core.isInitialized {

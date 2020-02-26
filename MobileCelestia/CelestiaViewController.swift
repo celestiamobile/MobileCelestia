@@ -10,6 +10,8 @@ import UIKit
 import CelestiaCore
 import GLKit
 
+var startingScriptURL: URL?
+
 enum CelestiaLoadingError: Error {
     case openGLError
     case celestiaError
@@ -268,7 +270,14 @@ extension CelestiaViewController {
             }
 
             self.core.tick()
-            self.core.start()
+
+            if let startingURL = startingScriptURL?.path {
+                self.core.setStartURL(nil)
+                self.core.start()
+                self.core.runScript(at: startingURL)
+            } else {
+                self.core.start()
+            }
 
             self.setupGestures()
 
