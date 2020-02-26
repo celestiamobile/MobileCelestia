@@ -23,12 +23,12 @@ class BrowserCoordinatorController: UIViewController {
 
     private let selection: (BodyInfo) -> Void
 
-    init(item: CelestiaBrowserItem, selection: @escaping (BodyInfo) -> Void) {
+    init(item: CelestiaBrowserItem, image: UIImage, selection: @escaping (BodyInfo) -> Void) {
         self.item = item
         self.selection = selection
         super.init(nibName: nil, bundle: nil)
 
-        tabBarItem = UITabBarItem(title: item.name, image: nil, selectedImage: nil)
+        tabBarItem = UITabBarItem(title: item.name, image: image, selectedImage: nil)
     }
 
     required init?(coder: NSCoder) {

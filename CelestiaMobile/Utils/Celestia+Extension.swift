@@ -44,13 +44,13 @@ extension CelestiaSelection {
     }
 }
 
-private var solBrowserRoot: CelestiaBrowserItem = {
+var solBrowserRoot: CelestiaBrowserItem = {
     let universe = CelestiaAppCore.shared.simulation.universe
     let sol = universe.find("Sol")
     return CelestiaBrowserItem(name: universe.starCatalog.starName(sol.star!), catEntry: sol.star!, provider: universe)
 }()
 
-private var starsBrowserRoot: CelestiaBrowserItem = {
+var starBrowserRoot: CelestiaBrowserItem = {
     let core = CelestiaAppCore.shared
     let universe = core.simulation.universe
 
@@ -74,7 +74,7 @@ private var starsBrowserRoot: CelestiaBrowserItem = {
     return stars
 }()
 
-private var dsoBrowserRoot: CelestiaBrowserItem = {
+var dsoBrowserRoot: CelestiaBrowserItem = {
     let core = CelestiaAppCore.shared
     let universe = core.simulation.universe
 
@@ -110,10 +110,6 @@ private var dsoBrowserRoot: CelestiaBrowserItem = {
     let results = tempDict.reduce(into: [String : CelestiaBrowserItem](), updateAccumulation)
     return CelestiaBrowserItem(name: NSLocalizedString("Deep Sky Objects", comment: ""), children: results)
 }()
-
-var browserRoots: [CelestiaBrowserItem] {
-    return [solBrowserRoot, starsBrowserRoot, dsoBrowserRoot]
-}
 
 var renderInfo: String {
     return CelestiaAppCore.shared.renderInfo

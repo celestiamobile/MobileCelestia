@@ -43,12 +43,17 @@ class BrowserContainerViewController: UIViewController {
 private extension BrowserContainerViewController {
     func setup() {
         install(controller)
-
-        controller.setViewControllers(browserRoots.map { BrowserCoordinatorController(item: $0) { [weak self] (selection) in
+        let handler = { [weak self] (selection: BodyInfo) in
             guard let self = self else { return }
             self.dismiss(animated: true, completion: nil)
             self.selected(selection)
-        } }, animated: false)
+        }
+
+        controller.setViewControllers([
+            BrowserCoordinatorController(item: solBrowserRoot, image: #imageLiteral(resourceName: "browser_tab_sso"), selection: handler),
+            BrowserCoordinatorController(item: starBrowserRoot, image: #imageLiteral(resourceName: "browser_tab_star"), selection: handler),
+            BrowserCoordinatorController(item: dsoBrowserRoot, image: #imageLiteral(resourceName: "browser_tab_dso"), selection: handler),
+        ], animated: false)
 
         controller.tabBar.barStyle = .black
     }
