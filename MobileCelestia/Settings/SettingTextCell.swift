@@ -13,6 +13,7 @@ class SettingTextCell: UITableViewCell {
     private lazy var detailLabel = UILabel()
 
     var title: String? { didSet { label.text = title }  }
+    var titleColor: UIColor? { didSet { label.textColor = titleColor } }
     var detail: String? { didSet { detailLabel.text = detail } }
 
     private var savedAccessoryType: UITableViewCell.AccessoryType = .none
@@ -37,6 +38,10 @@ class SettingTextCell: UITableViewCell {
 
     override func prepareForReuse() {
         super.prepareForReuse()
+
+        label.text = nil
+        detailLabel.text = nil
+        label.textColor = .darkLabel
 
         super.accessoryType = .none
         savedAccessoryType = .none

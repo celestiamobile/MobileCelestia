@@ -152,6 +152,7 @@ extension CelestiaViewController {
 
         (view as! GLKView).context = context
         (view as! GLKView).drawableDepthFormat = .format24
+        (view as! GLKView).drawableMultisample = .multisample4X
 
         glContext = context
 

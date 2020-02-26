@@ -104,4 +104,8 @@ extension UIColor {
     class var themeBackground: UIColor {
         return UIColor(rgb: 0x114477)
     }
+
+    class var themeLabel: UIColor {
+        return UIColor(rgb: 0x6699CC)
+    }
 }

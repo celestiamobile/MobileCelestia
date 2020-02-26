@@ -39,6 +39,7 @@ struct SettingSection {
 enum TextItem {
     case short(title: String, detail: String?)
     case long(content: String)
+    case link(title: String, url: URL)
 }
 
 let mainSetting = [

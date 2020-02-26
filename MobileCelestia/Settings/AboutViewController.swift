@@ -45,6 +45,11 @@ class AboutViewController: UIViewController {
             ])
         }
 
+        totalItems.append([
+            TextItem.link(title: CelestiaString("Official Website", comment: ""), url: URL(string: "https://celestia.space")!),
+            TextItem.link(title: CelestiaString("Support Forum", comment: ""), url: URL(string: "https://celestia.space/forum")!)
+        ])
+
         items = totalItems
         tableView.reloadData()
     }
@@ -96,6 +101,12 @@ extension AboutViewController: UITableViewDataSource, UITableViewDelegate {
             cell.title = content
             cell.selectionStyle = .none
             return cell
+        case .link(let title, _):
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
+            cell.title = title
+            cell.titleColor = UIColor.themeLabel
+            cell.selectionStyle = .default
+            return cell
         }
     }
 
@@ -103,9 +114,22 @@ extension AboutViewController: UITableViewDataSource, UITableViewDelegate {
         let item = items[indexPath.section][indexPath.row]
         switch item {
         case .short(_, _):
+            fallthrough
+        case .link(_, _):
             return 44
         case .long(_):
             return UITableView.automaticDimension
+        }
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        let item = items[indexPath.section][indexPath.row]
+        switch item {
+        case .link(_, let url):
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        default:
+            break
         }
     }
 
