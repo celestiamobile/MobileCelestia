@@ -45,6 +45,13 @@ class AboutViewController: UIViewController {
             ])
         }
 
+        if let translatorsPath = Bundle.main.path(forResource: "TRANSLATORS", ofType: nil), let text = try? String(contentsOfFile: translatorsPath) {
+            totalItems.append([
+                TextItem.short(title: CelestiaString("Translators", comment: ""), detail: ""),
+                TextItem.long(content: text)
+            ])
+        }
+
         totalItems.append([
             TextItem.link(title: CelestiaString("Official Website", comment: ""), url: URL(string: "https://celestia.space")!),
             TextItem.link(title: CelestiaString("Support Forum", comment: ""), url: URL(string: "https://celestia.space/forum")!)

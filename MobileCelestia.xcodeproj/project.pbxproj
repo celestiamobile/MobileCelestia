@@ -12,9 +12,6 @@
 		972477D52404A63800729B45 /* BrowserCommonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972477D42404A63800729B45 /* BrowserCommonViewController.swift */; };
 		972477D72404A65C00729B45 /* BrowserCoordinatorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972477D62404A65C00729B45 /* BrowserCoordinatorController.swift */; };
 		973BBA452405216700E3B061 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973BBA442405216700E3B061 /* AboutViewController.swift */; };
-		973BBA5D240531E500E3B061 /* AUTHORS in Resources */ = {isa = PBXBuildFile; fileRef = 973BBA5A240531E500E3B061 /* AUTHORS */; };
-		973BBA5E240531E500E3B061 /* README in Resources */ = {isa = PBXBuildFile; fileRef = 973BBA5B240531E500E3B061 /* README */; };
-		973BBA5F240531E600E3B061 /* COPYING in Resources */ = {isa = PBXBuildFile; fileRef = 973BBA5C240531E500E3B061 /* COPYING */; };
 		973BBA61240538DB00E3B061 /* MultiLineTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973BBA60240538DB00E3B061 /* MultiLineTextCell.swift */; };
 		973BBA642405481200E3B061 /* TimeSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973BBA632405481200E3B061 /* TimeSettingViewController.swift */; };
 		973BBA6624054E9900E3B061 /* TextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973BBA6524054E9900E3B061 /* TextViewController.swift */; };
@@ -53,6 +50,9 @@
 		979D2FAD23FEB2B4005D2592 /* libbz2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 979D2FAC23FEB2AE005D2592 /* libbz2.tbd */; };
 		979D2FAF23FEB2BD005D2592 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 979D2FAE23FEB2B9005D2592 /* libz.tbd */; };
 		979D2FB123FEB2C2005D2592 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 979D2FB023FEB2C2005D2592 /* OpenGLES.framework */; };
+		97DB1FCD24064865001F222F /* COPYING in Resources */ = {isa = PBXBuildFile; fileRef = 97DB1FCC24064865001F222F /* COPYING */; };
+		97DB1FCF2406486E001F222F /* TRANSLATORS in Resources */ = {isa = PBXBuildFile; fileRef = 97DB1FCE2406486E001F222F /* TRANSLATORS */; };
+		97DB1FD12406487E001F222F /* AUTHORS in Resources */ = {isa = PBXBuildFile; fileRef = 97DB1FD02406487E001F222F /* AUTHORS */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -78,9 +78,6 @@
 		972477D42404A63800729B45 /* BrowserCommonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserCommonViewController.swift; sourceTree = "<group>"; };
 		972477D62404A65C00729B45 /* BrowserCoordinatorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserCoordinatorController.swift; sourceTree = "<group>"; };
 		973BBA442405216700E3B061 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
-		973BBA5A240531E500E3B061 /* AUTHORS */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = AUTHORS; sourceTree = "<group>"; };
-		973BBA5B240531E500E3B061 /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README; sourceTree = "<group>"; };
-		973BBA5C240531E500E3B061 /* COPYING */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = COPYING; sourceTree = "<group>"; };
 		973BBA60240538DB00E3B061 /* MultiLineTextCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiLineTextCell.swift; sourceTree = "<group>"; };
 		973BBA632405481200E3B061 /* TimeSettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSettingViewController.swift; sourceTree = "<group>"; };
 		973BBA6524054E9900E3B061 /* TextViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewController.swift; sourceTree = "<group>"; };
@@ -123,6 +120,9 @@
 		979D2FAC23FEB2AE005D2592 /* libbz2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbz2.tbd; path = usr/lib/libbz2.tbd; sourceTree = SDKROOT; };
 		979D2FAE23FEB2B9005D2592 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		979D2FB023FEB2C2005D2592 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		97DB1FCC24064865001F222F /* COPYING */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = COPYING; path = ../../../Celestia/COPYING; sourceTree = "<group>"; };
+		97DB1FCE2406486E001F222F /* TRANSLATORS */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = TRANSLATORS; path = ../../../Celestia/TRANSLATORS; sourceTree = "<group>"; };
+		97DB1FD02406487E001F222F /* AUTHORS */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = AUTHORS; path = ../../../Celestia/AUTHORS; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -162,9 +162,9 @@
 			isa = PBXGroup;
 			children = (
 				97143F1623FFAEFD00F35D87 /* defaults.plist */,
-				973BBA5A240531E500E3B061 /* AUTHORS */,
-				973BBA5C240531E500E3B061 /* COPYING */,
-				973BBA5B240531E500E3B061 /* README */,
+				97DB1FD02406487E001F222F /* AUTHORS */,
+				97DB1FCC24064865001F222F /* COPYING */,
+				97DB1FCE2406486E001F222F /* TRANSLATORS */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -408,11 +408,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				973BBA5E240531E500E3B061 /* README in Resources */,
 				979D2F8A23FEB1A8005D2592 /* LaunchScreen.storyboard in Resources */,
-				973BBA5F240531E600E3B061 /* COPYING in Resources */,
-				973BBA5D240531E500E3B061 /* AUTHORS in Resources */,
 				979D2F8723FEB1A8005D2592 /* Assets.xcassets in Resources */,
+				97DB1FCD24064865001F222F /* COPYING in Resources */,
+				97DB1FD12406487E001F222F /* AUTHORS in Resources */,
+				97DB1FCF2406486E001F222F /* TRANSLATORS in Resources */,
 				97143F1823FFAEFD00F35D87 /* defaults.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
