@@ -21,6 +21,7 @@ enum CelestiaAction: Int8 {
     case playpause = 32
     case backward = 107
     case forward = 108
+    case currentTime = 33
 }
 
 extension CelestiaAction {
@@ -278,7 +279,7 @@ extension CelestiaViewController {
 
 extension CelestiaViewController {
     func receive(action: CelestiaAction) {
-        self.core.charEnter(action.rawValue)
+        self.core.receive(action)
     }
 
     func select(_ bodyInfo: BodyInfo) {

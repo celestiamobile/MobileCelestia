@@ -51,7 +51,6 @@ private extension TimeSettingViewController {
         tableView.separatorColor = .darkSeparator
 
         tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Text")
-        tableView.register(SettingSwitchCell.self, forCellReuseIdentifier: "Switch")
         tableView.dataSource = self
         tableView.delegate = self
     }
@@ -72,17 +71,19 @@ extension TimeSettingViewController: UITableViewDataSource, UITableViewDelegate 
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let core = CelestiaAppCore.shared
-
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Switch", for: indexPath) as! SettingSwitchCell
-        cell.title = CelestiaString("Synchronize Time", comment: "")
-        cell.enabled = core.synchTime
-        cell.toggleBlock = { [weak self] (enabled) in
-            core.synchTime = enabled
-            self?.tableView.reloadData()
-        }
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
+        cell.title = CelestiaString("Set to Current Time", comment: "")
 
         return cell
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let core = CelestiaAppCore.shared
+        tableView.deselectRow(at: indexPath, animated: true)
+        if indexPath.section == 0 && indexPath.row == 0 {
+            core.receive(.currentTime)
+        }
+        tableView.reloadData()
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

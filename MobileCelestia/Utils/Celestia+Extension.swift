@@ -18,6 +18,10 @@ extension CelestiaAppCore {
         }
         return core!
     }
+
+    func receive(_ action: CelestiaAction) {
+        charEnter(action.rawValue)
+    }
 }
 
 extension CelestiaSelection {

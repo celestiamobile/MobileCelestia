@@ -133,6 +133,8 @@ private extension CelestiaAction {
             return CelestiaString("Backward", comment: "")
         case .forward:
             return CelestiaString("Forward", comment: "")
+        case .currentTime:
+            return CelestiaString("Current Time", comment: "")
         }
     }
 }
