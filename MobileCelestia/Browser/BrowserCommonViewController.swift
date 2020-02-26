@@ -89,6 +89,7 @@ extension BrowserCommonViewController: UITableViewDataSource, UITableViewDelegat
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
         if item.entry != nil && indexPath.section == 0 {
             selection(item, true)
         } else {

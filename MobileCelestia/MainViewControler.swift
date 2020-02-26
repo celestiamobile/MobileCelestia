@@ -10,6 +10,8 @@ import UIKit
 
 import SafariServices
 
+private let userInitiatedDismissalFlag = 1
+
 class MainViewControler: UIViewController {
     private lazy var celestiaController = CelestiaViewController()
 
@@ -17,6 +19,8 @@ class MainViewControler: UIViewController {
 
     private lazy var rightSlideInManager = SlideInPresentationManager(direction: .right)
     private lazy var bottomSlideInManager = SlideInPresentationManager(direction: .bottom)
+
+    private var viewControllerStack: [UIViewController] = []
 
     override func loadView() {
         view = UIView()
@@ -70,10 +74,6 @@ extension MainViewControler: CelestiaViewControllerDelegate {
         let controller = ToolbarViewController(actions: actions)
         controller.selectionHandler = { [unowned self] (action) in
             guard let ac = action as? AppToolbarAction else { return }
-            if ac == .celestia {
-                self.showBodyInfo(with: selection!)
-                return
-            }
             switch ac {
             case .celestia:
                 self.showBodyInfo(with: selection!)
@@ -115,7 +115,8 @@ extension MainViewControler: CelestiaViewControllerDelegate {
 
     private func showBodyInfo(with selection: BodyInfo) {
         let controller = InfoViewController(info: selection)
-        controller.selectionHandler = { [unowned self, weak controller] (action) in
+        controller.dismissDelegate = self
+        controller.selectionHandler = { [unowned self] (action) in
             guard let ac = action else { return }
             switch ac {
             case .select:
@@ -124,7 +125,7 @@ extension MainViewControler: CelestiaViewControllerDelegate {
                 self.celestiaController.select(selection)
                 self.celestiaController.receive(action: cac)
             case .web(let url):
-                controller?.dismiss(animated: true, completion: nil)
+                self.addToBackStack()
                 self.showWeb(url)
             }
         }
@@ -133,6 +134,7 @@ extension MainViewControler: CelestiaViewControllerDelegate {
 
     private func showWeb(_ url: URL) {
         let sf = SFSafariViewController(url: url)
+        sf.dismissDelegate = self
         showViewController(sf)
     }
 
@@ -143,6 +145,7 @@ extension MainViewControler: CelestiaViewControllerDelegate {
 
     private func showSearch() {
         let controller = SearchCoordinatorController { [unowned self] (info) in
+            self.addToBackStack()
             self.showBodyInfo(with: info)
         }
         showViewController(controller)
@@ -150,12 +153,14 @@ extension MainViewControler: CelestiaViewControllerDelegate {
 
     private func showBrowser() {
         let controller = BrowserContainerViewController(selected: { [unowned self] (info) in
+            self.addToBackStack()
             self.showBodyInfo(with: info)
         })
         showViewController(controller)
     }
 
     private func showViewController(_ viewController: UIViewController) {
+        viewController.customFlag &= ~userInitiatedDismissalFlag
         if UIDevice.current.userInterfaceIdiom == .pad {
             configurePopover(for: viewController)
         } else {
@@ -172,6 +177,28 @@ extension MainViewControler: CelestiaViewControllerDelegate {
         viewController.popoverPresentationController?.sourceRect = CGRect(x: view.frame.midX, y: view.frame.midY, width: 0, height: 0)
         viewController.popoverPresentationController?.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
         viewController.preferredContentSize = CGSize(width: 400, height: 500)
+    }
+}
+
+extension MainViewControler: UIViewControllerDismissDelegate {
+    func viewControllerDidDismiss(_ viewController: UIViewController) {
+        if (viewController.customFlag & userInitiatedDismissalFlag) == 0 {
+            popLastAndShow()
+        }
+    }
+
+    func popLastAndShow() {
+        if let viewController = viewControllerStack.popLast() {
+            showViewController(viewController)
+        }
+    }
+
+    func addToBackStack() {
+        if let current = presentedViewController {
+            viewControllerStack.append(current)
+            current.customFlag |= userInitiatedDismissalFlag
+            current.dismiss(animated: true, completion: nil)
+        }
     }
 }
 

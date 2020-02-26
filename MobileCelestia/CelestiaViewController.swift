@@ -259,7 +259,7 @@ extension CelestiaViewController {
             completion(.failure(.openGLError))
             return
         }
-        setupCelestia({ [unowned self] (st) in
+        setupCelestia({ (st) in
             status(st)
         }) { (success) in
             guard success else {
