@@ -26,7 +26,7 @@ class SettingsMainViewController: UIViewController {
         view = UIView()
         view.backgroundColor = .darkBackground
 
-        title = NSLocalizedString("Settings", comment: "")
+        title = CelestiaString("Settings", comment: "")
     }
 
     override func viewDidLoad() {

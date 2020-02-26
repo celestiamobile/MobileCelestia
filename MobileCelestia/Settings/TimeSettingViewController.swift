@@ -19,7 +19,7 @@ class TimeSettingViewController: UIViewController {
         view = UIView()
         view.backgroundColor = .darkBackground
 
-        title = NSLocalizedString("Current Time", comment: "")
+        title = CelestiaString("Current Time", comment: "")
     }
 
     override func viewDidLoad() {
@@ -75,7 +75,7 @@ extension TimeSettingViewController: UITableViewDataSource, UITableViewDelegate 
         let core = CelestiaAppCore.shared
 
         let cell = tableView.dequeueReusableCell(withIdentifier: "Switch", for: indexPath) as! SettingSwitchCell
-        cell.title = NSLocalizedString("Synchronize Time", comment: "")
+        cell.title = CelestiaString("Synchronize Time", comment: "")
         cell.enabled = core.synchTime
         cell.toggleBlock = { [weak self] (enabled) in
             core.synchTime = enabled

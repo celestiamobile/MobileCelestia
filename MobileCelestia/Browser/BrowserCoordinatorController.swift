@@ -61,7 +61,7 @@ private extension BrowserCoordinatorController {
                 return
             }
             guard let transformed = CelestiaSelection(item: sel) else {
-                self.showError(NSLocalizedString("Object not selectable", comment: ""))
+                self.showError(CelestiaString("Object not selectable", comment: ""))
                 return
             }
             self.selection(BodyInfo(selection: transformed))

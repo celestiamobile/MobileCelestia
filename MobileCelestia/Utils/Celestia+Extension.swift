@@ -56,10 +56,10 @@ var starBrowserRoot: CelestiaBrowserItem = {
     let brightest = CelestiaStarBrowser(kind: .brightest, simulation: core.simulation).stars().reduce(into: [String : CelestiaBrowserItem](), updateAccumulation)
     let hasPlanets = CelestiaStarBrowser(kind: .starsWithPlants, simulation: core.simulation).stars().reduce(into: [String : CelestiaBrowserItem](), updateAccumulation)
 
-    let nearestName = NSLocalizedString("Nearest Stars", comment: "")
-    let brightestName = NSLocalizedString("Brightest Stars", comment: "")
-    let hasPlanetsName = NSLocalizedString("Stars With Planets", comment: "")
-    let stars = CelestiaBrowserItem(name: NSLocalizedString("Stars", comment: ""), children: [
+    let nearestName = CelestiaString("Nearest Stars", comment: "")
+    let brightestName = CelestiaString("Brightest Stars", comment: "")
+    let hasPlanetsName = CelestiaString("Stars With Planets", comment: "")
+    let stars = CelestiaBrowserItem(name: CelestiaString("Stars", comment: ""), children: [
         nearestName : CelestiaBrowserItem(name: nearestName, children: nearest),
         brightestName : CelestiaBrowserItem(name: brightestName, children: brightest),
         hasPlanetsName : CelestiaBrowserItem(name: hasPlanetsName, children: hasPlanets),
@@ -72,14 +72,14 @@ var dsoBrowserRoot: CelestiaBrowserItem = {
     let universe = core.simulation.universe
 
     let typeMap = [
-        "SB" : NSLocalizedString("Galaxies (Barred Spiral)", comment: ""),
-        "S" : NSLocalizedString("Galaxies (Spiral)", comment: ""),
-        "E" : NSLocalizedString("Galaxies (Elliptical)", comment: ""),
-        "Irr" : NSLocalizedString("Galaxies (Irregular)", comment: ""),
-        "Neb" : NSLocalizedString("Nebulae", comment: ""),
-        "Glob" : NSLocalizedString("Globulars", comment: ""),
-        "Open cluster" : NSLocalizedString("Open Clusters", comment: ""),
-        "Unknown" : NSLocalizedString("Unknown", comment: ""),
+        "SB" : CelestiaString("Galaxies (Barred Spiral)", comment: ""),
+        "S" : CelestiaString("Galaxies (Spiral)", comment: ""),
+        "E" : CelestiaString("Galaxies (Elliptical)", comment: ""),
+        "Irr" : CelestiaString("Galaxies (Irregular)", comment: ""),
+        "Neb" : CelestiaString("Nebulae", comment: ""),
+        "Glob" : CelestiaString("Globulars", comment: ""),
+        "Open cluster" : CelestiaString("Open Clusters", comment: ""),
+        "Unknown" : CelestiaString("Unknown", comment: ""),
     ]
 
     func updateAccumulation(result: inout [String : CelestiaBrowserItem], item: (key: String, value: [String : CelestiaBrowserItem])) {
@@ -101,7 +101,7 @@ var dsoBrowserRoot: CelestiaBrowserItem = {
     })
 
     let results = tempDict.reduce(into: [String : CelestiaBrowserItem](), updateAccumulation)
-    return CelestiaBrowserItem(name: NSLocalizedString("Deep Sky Objects", comment: ""), children: results)
+    return CelestiaBrowserItem(name: CelestiaString("Deep Sky Objects", comment: ""), children: results)
 }()
 
 var renderInfo: String {
@@ -141,4 +141,12 @@ extension CelestiaDSOCatalog: Sequence {
     public __consuming func makeIterator() -> CelestiaDSOCatalogIterator {
         return CelestiaDSOCatalogIterator(catalog: self)
     }
+}
+
+func CelestiaString(_ key: String, comment: String) -> String {
+    return LocalizedString(key)
+}
+
+func CelestiaFilename(_ key: String) -> String {
+    return LocalizedFilename(key)
 }

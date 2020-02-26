@@ -44,7 +44,7 @@ class SearchViewController: UIViewController {
         view = UIView()
         view.backgroundColor = .darkBackground
 
-        title = NSLocalizedString("Search", comment: "")
+        title = CelestiaString("Search", comment: "")
     }
 
     override func viewDidLoad() {
@@ -153,7 +153,7 @@ extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
         let sim = CelestiaAppCore.shared.simulation
         let object = sim.findObject(from: selection.name)
         if object.isEmpty {
-            showError(NSLocalizedString("Object not found", comment: ""))
+            showError(CelestiaString("Object not found", comment: ""))
             return
         }
 

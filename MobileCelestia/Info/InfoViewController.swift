@@ -112,7 +112,7 @@ private extension ObjectAction {
     var description: String {
         switch self {
         case .select:
-            return NSLocalizedString("Select", comment: "")
+            return CelestiaString("Select", comment: "")
         case .wrapped(let action):
             return action.description
         }
@@ -124,15 +124,15 @@ private extension CelestiaAction {
         // TODO: replace with call to gettext
         switch self {
         case .goto:
-            return NSLocalizedString("Goto", comment: "")
+            return CelestiaString("Goto", comment: "")
         case .center:
-            return NSLocalizedString("Center", comment: "")
+            return CelestiaString("Center", comment: "")
         case .playpause:
-            return NSLocalizedString("Resume/Pause", comment: "")
+            return CelestiaString("Resume/Pause", comment: "")
         case .backward:
-            return NSLocalizedString("Backward", comment: "")
+            return CelestiaString("Backward", comment: "")
         case .forward:
-            return NSLocalizedString("Forward", comment: "")
+            return CelestiaString("Forward", comment: "")
         }
     }
 }

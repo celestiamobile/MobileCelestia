@@ -18,7 +18,7 @@ class AboutViewController: UIViewController {
         view = UIView()
         view.backgroundColor = .darkBackground
 
-        title = NSLocalizedString("About", comment: "")
+        title = CelestiaString("About", comment: "")
     }
 
     override func viewDidLoad() {
@@ -34,13 +34,13 @@ class AboutViewController: UIViewController {
 
         let shortVersion = Bundle.main.infoDictionary!["CFBundleShortVersionString"] as! String
         let buildNumber = Bundle.main.infoDictionary!["CFBundleVersion"] as! String
-        let versionItem = TextItem.short(title: NSLocalizedString("Version", comment: ""), detail: "\(shortVersion)(\(buildNumber))")
+        let versionItem = TextItem.short(title: CelestiaString("Version", comment: ""), detail: "\(shortVersion)(\(buildNumber))")
 
         totalItems.append([versionItem])
 
         if let authorsPath = Bundle.main.path(forResource: "AUTHORS", ofType: nil), let text = try? String(contentsOfFile: authorsPath) {
             totalItems.append([
-                TextItem.short(title: NSLocalizedString("Authors", comment: ""), detail: ""),
+                TextItem.short(title: CelestiaString("Authors", comment: ""), detail: ""),
                 TextItem.long(content: text)
             ])
         }
