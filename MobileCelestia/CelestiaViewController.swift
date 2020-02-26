@@ -33,14 +33,14 @@ protocol CelestiaViewControllerDelegate: class {
     func celestiaController(_ celestiaController: CelestiaViewController, selection: BodyInfo?)
 }
 
-class CelestiaViewController: GLKViewController {
+class CelestiaViewController: UIViewController {
 
     private var core: CelestiaAppCore!
 
     // MARK: rendering
-    private var glContext: EAGLContext!
     private var currentSize: CGSize = .zero
     private var ready = false
+    private var displayLink: CADisplayLink?
 
     // MARK: gesture
     private var oneFingerStartPoint: CGPoint?
@@ -51,11 +51,19 @@ class CelestiaViewController: GLKViewController {
 
     weak var celestiaDelegate: CelestiaViewControllerDelegate!
 
-    override func glkView(_ view: GLKView, drawIn rect: CGRect) {
+    override func loadView() {
+        let glView = GLKView(frame: .zero)
+        glView.delegate = self
+        view = glView
+    }
+}
+
+extension CelestiaViewController: GLKViewDelegate {
+    func glkView(_ view: GLKView, drawIn rect: CGRect) {
         guard ready else { return }
 
-        if rect.size != currentSize {
-            currentSize = rect.size
+        if view.bounds.size != currentSize {
+            currentSize = view.bounds.size
             core.resize(to: currentSize)
         }
 
@@ -145,16 +153,22 @@ extension CelestiaViewController {
 }
 
 extension CelestiaViewController {
+    @objc private func handleDisplayLink(_ sender: CADisplayLink) {
+        (view as! GLKView).display()
+    }
+}
+
+extension CelestiaViewController {
     private func setupOpenGL() -> Bool {
         guard let context = EAGLContext(api: .openGLES2) else { return false }
 
+        let view = self.view as! GLKView
+
         EAGLContext.setCurrent(context)
 
-        (view as! GLKView).context = context
-        (view as! GLKView).drawableDepthFormat = .format24
-        (view as! GLKView).drawableMultisample = .multisample4X
-
-        glContext = context
+        view.context = context
+        view.enableSetNeedsDisplay = false
+        view.drawableDepthFormat = .format24
 
         return true
     }
@@ -164,8 +178,9 @@ extension CelestiaViewController {
 
         core = CelestiaAppCore.shared
 
+        let context = (self.view as! GLKView).context
         DispatchQueue.global().async {
-            EAGLContext.setCurrent(self.glContext)
+            EAGLContext.setCurrent(context)
             self.core.startSimulation(configFileName: defaultConfigFile.path, extraDirectories: [extraDirectory].compactMap{$0?.path}) { (st) in
                 DispatchQueue.main.async { status(st) }
             }
@@ -208,6 +223,11 @@ extension CelestiaViewController {
         pan1.require(toFail: rightEdge)
         view.addGestureRecognizer(rightEdge)
     }
+
+    private func setupDisplayLink() {
+        displayLink = CADisplayLink(target: self, selector: #selector(handleDisplayLink(_:)))
+        displayLink?.add(to: .current, forMode: .default)
+    }
 }
 
 extension CelestiaViewController: UIGestureRecognizerDelegate {
@@ -246,6 +266,8 @@ extension CelestiaViewController {
             self.core.start()
 
             self.setupGestures()
+
+            self.setupDisplayLink()
 
             self.ready = true
 
