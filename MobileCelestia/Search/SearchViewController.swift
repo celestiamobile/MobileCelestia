@@ -59,8 +59,7 @@ class SearchViewController: UIViewController {
         super.viewDidAppear(animated)
 
         if shouldActivate {
-            searchController.isActive = true
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) { [weak self] in
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
                 _ = self?.searchController.searchBar.becomeFirstResponder()
             }
         }
