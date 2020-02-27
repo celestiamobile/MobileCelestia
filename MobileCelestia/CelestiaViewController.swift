@@ -51,6 +51,8 @@ class CelestiaViewController: UIViewController {
 
     // MARK: gesture
     private var oneFingerStartPoint: CGPoint?
+    private var currentPanDistance: CGFloat?
+    private var currentPanCenter: CGPoint?
     private var twoFingerStartPoint: CGPoint?
     private var originalPinchDistance: CGFloat?
     private var currentScale: CGFloat?
@@ -109,30 +111,51 @@ extension CelestiaViewController {
         }
     }
 
-    @objc private func handlePinch(_ pinch: UIPinchGestureRecognizer) {
-        if pinch.numberOfTouches < 2 {
-            // cancel the gesture recognizer
-            pinch.isEnabled = false
-            pinch.isEnabled = true
-            return
-        }
-        switch pinch.state {
+    @objc private func handlePan2AndPinch(_ gesture: UIPanGestureRecognizer) {
+        switch gesture.state {
         case .possible:
             break
         case .began:
-            let loc1 = pinch.location(ofTouch: 0, in: pinch.view)
-            let loc2 = pinch.location(ofTouch: 1, in: pinch.view)
-            originalPinchDistance = hypot(abs(loc1.x - loc2.x), abs(loc1.y - loc2.y))
-            currentScale = pinch.scale
+            if gesture.numberOfTouches < 2 {
+                // cancel the gesture recognizer
+                gesture.isEnabled = false
+                gesture.isEnabled = true
+                break
+            }
+            let point1 = gesture.location(ofTouch: 0, in: view)
+            let point2 = gesture.location(ofTouch: 1, in: view)
+            let length = hypot(abs(point1.x - point2.x), abs(point1.y - point2.y))
+            let center = CGPoint(x: (point1.x + point2.x) / 2, y: (point1.y + point2.y) / 2)
+            currentPanDistance = length
+            currentPanCenter = center
+            core.mouseButtonDown(at: center, modifiers: 0, with: .left)
         case .changed:
-            let delta = pinch.scale / currentScale!
-            core.mouseWheel(by: (1 - delta) * originalPinchDistance!, modifiers: 0)
-            currentScale = pinch.scale
+            if gesture.numberOfTouches < 2 {
+                // cancel the gesture recognizer
+                gesture.isEnabled = false
+                gesture.isEnabled = true
+                break
+            }
+            let point1 = gesture.location(ofTouch: 0, in: view)
+            let point2 = gesture.location(ofTouch: 1, in: view)
+            let length = hypot(abs(point1.x - point2.x), abs(point1.y - point2.y))
+            let center = CGPoint(x: (point1.x + point2.x) / 2, y: (point1.y + point2.y) / 2)
+            core.mouseMove(by: CGPoint(x: center.x - currentPanCenter!.x,
+                                       y: center.y - currentPanCenter!.y),
+                           modifiers: 0, with: .left)
+            let delta = length / currentPanDistance!
+            // FIXME: 8 is a magic number
+            core.mouseWheel(by: (1 - delta) * currentPanDistance! / 8, modifiers: 0)
+            currentPanDistance = length
+            currentPanCenter = center
         case .ended, .cancelled, .failed:
             fallthrough
         @unknown default:
-            originalPinchDistance = nil
-            currentScale = nil
+            if let point = currentPanCenter {
+                core.mouseButtonUp(at: point, modifiers: 0, with: .left)
+            }
+            currentPanDistance = nil
+            currentPanCenter = nil
         }
     }
 
@@ -210,16 +233,11 @@ extension CelestiaViewController {
         pan1.delegate = self
         view.addGestureRecognizer(pan1)
 
-        let pan2 = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
+        let pan2 = UIPanGestureRecognizer(target: self, action: #selector(handlePan2AndPinch(_:)))
         pan2.minimumNumberOfTouches = 2
         pan2.maximumNumberOfTouches = 2
         pan2.delegate = self
         view.addGestureRecognizer(pan2)
-
-        let pinch = UIPinchGestureRecognizer(target: self, action: #selector(handlePinch(_:)))
-        pinch.delegate = self
-        pinch.require(toFail: pan2)
-        view.addGestureRecognizer(pinch)
 
         let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
         tap.delegate = self
