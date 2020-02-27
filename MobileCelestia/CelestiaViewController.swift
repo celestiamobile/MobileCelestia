@@ -269,16 +269,7 @@ extension CelestiaViewController {
                 return
             }
 
-            self.core.tick()
-
-            if let startingURL = startingScriptURL, startingURL.startAccessingSecurityScopedResource() {
-                self.core.setStartURL(nil)
-                self.core.start()
-                self.core.runScript(at: startingURL.path)
-                startingURL.stopAccessingSecurityScopedResource()
-            } else {
-                self.core.start()
-            }
+            self.handleURLAndStart()
 
             self.setupGestures()
 
@@ -287,6 +278,30 @@ extension CelestiaViewController {
             self.ready = true
 
             completion(.success(()))
+        }
+    }
+
+    private func handleURLAndStart() {
+        core.tick()
+
+        var handled = false
+        if let startingURL = startingScriptURL {
+            if startingURL.isFileURL {
+                if startingURL.startAccessingSecurityScopedResource() {
+                    core.setStartURL(startingURL.path)
+                    core.start()
+                    startingURL.stopAccessingSecurityScopedResource()
+                    handled = true
+                }
+            } else {
+                core.setStartURL(startingURL.absoluteString)
+                core.start()
+                handled = true
+            }
+        }
+
+        if !handled {
+            core.start()
         }
     }
 }

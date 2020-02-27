@@ -32,9 +32,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
         let core = CelestiaAppCore.shared
         if core.isInitialized {
-            if !url.startAccessingSecurityScopedResource() { return false }
-            core.runScript(at: url.path)
-            url.stopAccessingSecurityScopedResource()
+            if url.isFileURL {
+                if !url.startAccessingSecurityScopedResource() { return false }
+                core.runScript(at: url.path)
+                url.stopAccessingSecurityScopedResource()
+            } else {
+                core.go(to: url.absoluteString)
+            }
         } else {
             startingScriptURL = url
         }
