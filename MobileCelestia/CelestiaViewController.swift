@@ -315,6 +315,10 @@ extension CelestiaViewController {
         core.selection = bodyInfo
     }
 
+    var currentURL: URL {
+        return URL(string: core.currentURL)!
+    }
+
     func screenshot() -> UIImage {
         return UIGraphicsImageRenderer(size: view.bounds.size).image { (_) in
             self.view.drawHierarchy(in: self.view.bounds, afterScreenUpdates: false)
