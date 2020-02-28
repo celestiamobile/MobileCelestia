@@ -101,6 +101,7 @@ private extension SearchViewController {
             searchController.dimsBackgroundDuringPresentation = false
         }
         let searchBar = searchController.searchBar
+        searchBar.keyboardAppearance = .dark
         if #available(iOS 11.0, *) {
             /* system attached searchbar */
             navigationItem.searchController = searchController
