@@ -42,6 +42,8 @@ private extension SettingsCoordinatorController {
                 self.navigation.pushViewController(TimeSettingViewController(), animated: true)
             case .render:
                 self.navigation.pushViewController(TextViewController(title: item.name, text: renderInfo), animated: true)
+            case .dataLocation:
+                self.navigation.pushViewController(DataLocationSelectionViewController(), animated: true)
             }
         })
         navigation = UINavigationController(rootViewController: main)

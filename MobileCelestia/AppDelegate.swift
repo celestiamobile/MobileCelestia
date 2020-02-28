@@ -23,9 +23,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.rootViewController = vc
         window?.makeKeyAndVisible()
 
-        FileManager.default.changeCurrentDirectoryPath(defaultDataDirectory.path)
-        CelestiaAppCore.setLocaleDirectory(defaultDataDirectory.path + "/locale")
-
         return true
     }
 

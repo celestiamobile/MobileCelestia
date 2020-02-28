@@ -42,12 +42,22 @@ class MainViewControler: UIViewController {
 
         loadeed = true
 
+        var retried = false
+
         let loadingController = LoadingViewController()
         install(loadingController)
 
-        celestiaController.load({ (status) in
+        celestiaController.load(statusUpdater: { (status) in
             loadingController.update(with: status)
-        }) { (result) in
+        }, errorHandler: { [unowned self] in
+            if retried { return false }
+            // TODO: display an error
+            DispatchQueue.main.async { self.showError(CelestiaString("Error loading data, fallback to original configuration.", comment: "")) }
+            retried = true
+            saveConfigFile(nil)
+            saveDataDirectory(nil)
+            return true
+        }, completionHandler: { [unowned self] (result) in
             loadingController.remove()
 
             switch result {
@@ -57,7 +67,7 @@ class MainViewControler: UIViewController {
                 let failure = LoadingFailureViewController()
                 self.install(failure)
             }
-        }
+        })
     }
 
     override var prefersHomeIndicatorAutoHidden: Bool {

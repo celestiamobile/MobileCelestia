@@ -58,6 +58,9 @@ class CelestiaViewController: UIViewController {
     private var currentScale: CGFloat?
     private var edgePanTriggerDistance: CGFloat = 20.0
 
+    private var dataDirectoryURL: UniformedURL!
+    private var configFileURL: UniformedURL!
+
     weak var celestiaDelegate: CelestiaViewControllerDelegate!
 
     override func loadView() {
@@ -203,26 +206,43 @@ extension CelestiaViewController {
         return true
     }
 
-    private func setupCelestia(_ status: @escaping (String) -> Void, _ completion: @escaping (Bool) -> Void) {
+    private func setupCelestia(statusUpdater: @escaping (String) -> Void, errorHandler: @escaping () -> Bool, completionHandler: @escaping (Bool) -> Void) {
         _ = CelestiaAppCore.initGL()
 
         core = CelestiaAppCore.shared
 
         let context = (self.view as! GLKView).context
         DispatchQueue.global().async { [unowned self] in
+            var success = false
+            var shouldRetry = true
+
             EAGLContext.setCurrent(context)
-            self.core.startSimulation(configFileName: defaultConfigFile.path, extraDirectories: [extraDirectory].compactMap{$0?.path}) { (st) in
-                DispatchQueue.main.async { status(st) }
+
+            while !success && shouldRetry {
+                self.dataDirectoryURL = currentDataDirectory()
+                self.configFileURL = currentConfigFile()
+
+                FileManager.default.changeCurrentDirectoryPath(self.dataDirectoryURL.url.path)
+                CelestiaAppCore.setLocaleDirectory(self.dataDirectoryURL.url.path + "/locale")
+
+                guard self.core.startSimulation(configFileName: self.configFileURL.url.path, extraDirectories: [extraDirectory].compactMap{$0?.path}, progress: { (st) in
+                    DispatchQueue.main.async { statusUpdater(st) }
+                }) else {
+                    shouldRetry = errorHandler()
+                    continue
+                }
+
+                guard self.core.startRenderer() else {
+                    print("Failed to start renderer.")
+                    shouldRetry = errorHandler()
+                    continue
+                }
+
+                self.core.loadUserDefaultsWithAppDefaults(atPath: Bundle.main.path(forResource: "defaults", ofType: "plist"))
+                success = true
             }
 
-            guard self.core.startRenderer() else {
-                print("Failed to start renderer.")
-                DispatchQueue.main.async { completion(false) }
-                return
-            }
-
-            self.core.loadUserDefaultsWithAppDefaults(atPath: Bundle.main.path(forResource: "defaults", ofType: "plist"))
-            DispatchQueue.main.async { completion(true) }
+            DispatchQueue.main.async { completionHandler(success) }
         }
     }
 
@@ -274,16 +294,18 @@ extension CelestiaViewController: UIGestureRecognizerDelegate {
 }
 
 extension CelestiaViewController {
-    func load(_ status: @escaping (String) -> Void, _ completion: @escaping (Result<Void, CelestiaLoadingError>) -> Void) {
+    func load(statusUpdater: @escaping (String) -> Void, errorHandler: @escaping () -> Bool, completionHandler: @escaping (Result<Void, CelestiaLoadingError>) -> Void) {
         guard setupOpenGL() else {
-            completion(.failure(.openGLError))
+            completionHandler(.failure(.openGLError))
             return
         }
-        setupCelestia({ (st) in
-            status(st)
-        }) { (success) in
+        setupCelestia(statusUpdater: { (st) in
+            statusUpdater(st)
+        }, errorHandler: {
+            return errorHandler()
+        }, completionHandler: { (success) in
             guard success else {
-                completion(.failure(.celestiaError))
+                completionHandler(.failure(.celestiaError))
                 return
             }
 
@@ -295,8 +317,8 @@ extension CelestiaViewController {
 
             self.ready = true
 
-            completion(.success(()))
-        }
+            completionHandler(.success(()))
+        })
     }
 
     private func handleURLAndStart() {

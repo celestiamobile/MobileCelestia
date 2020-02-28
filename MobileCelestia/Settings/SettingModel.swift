@@ -14,6 +14,7 @@ enum SettingType {
     case about
     case render
     case time
+    case dataLocation
 }
 
 struct SettingCheckmarkItem {
@@ -155,6 +156,7 @@ let mainSetting = [
             SettingSelectionItem(name: CelestiaString("Terse", comment: ""), index: 1),
             SettingSelectionItem(name: CelestiaString("Verbose", comment: ""), index: 2),
         ])),
+        SettingItem(name: CelestiaString("Data Location", comment: ""), type: .dataLocation),
     ]),
     SettingSection(title: CelestiaString("Others", comment: ""), items: [
         SettingItem(name: CelestiaString("Render Info", comment: ""), type: .render),
