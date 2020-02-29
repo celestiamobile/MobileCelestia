@@ -98,6 +98,14 @@ extension UIColor {
     class var lightPlainHeaderLabel: UIColor {
         return UIColor(rgb: 0x232323)
     }
+
+    class var darkGroupHeaderFooterLabel: UIColor {
+        return UIColor(rgb: 0x8E8E93)
+    }
+
+    class var lightGroupHeaderFooterLabel: UIColor {
+        return UIColor(rgb: 0x6D6D72)
+    }
 }
 
 extension UIColor {
