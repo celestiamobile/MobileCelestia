@@ -38,6 +38,40 @@ extension UIViewController {
     func showError(_ title: String) {
         let alert = UIAlertController(title: title, message: nil, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: CelestiaString("OK", comment: ""), style: .default, handler: nil))
+        presentAlert(alert)
+    }
+
+    func showOption(_ title: String, message: String? = nil, completion: (() -> Void)? = nil) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let confirmAction = UIAlertAction(title: CelestiaString("OK", comment: ""), style: .default, handler: { (_) in
+            completion?()
+        })
+        alert.addAction(confirmAction)
+        alert.addAction(UIAlertAction(title: CelestiaString("Cancel", comment: ""), style: .cancel, handler: nil))
+        alert.preferredAction = confirmAction
+        presentAlert(alert)
+    }
+
+    func showTextInput(_ title: String, message: String? = nil, text: String? = nil, placeholder: String? = nil, completion: ((String?) -> Void)? = nil) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let confirmAction = UIAlertAction(title: CelestiaString("OK", comment: ""), style: .default, handler: { [unowned alert] (_) in
+            completion?(alert.textFields?.first?.text)
+        })
+        alert.addTextField { (textField) in
+            textField.text = text
+            textField.placeholder = placeholder
+            textField.keyboardAppearance = .dark
+        }
+        alert.addAction(confirmAction)
+        alert.addAction(UIAlertAction(title: CelestiaString("Cancel", comment: ""), style: .cancel, handler: nil))
+        alert.preferredAction = confirmAction
+        presentAlert(alert)
+    }
+
+    private func presentAlert(_ alert: UIAlertController) {
+        if #available(iOS 13.0, *) {
+            alert.overrideUserInterfaceStyle = .dark
+        }
         alert.popoverPresentationController?.sourceView = view
         alert.popoverPresentationController?.sourceRect = CGRect(x: view.frame.midX, y: view.frame.midY, width: 0, height: 0)
         alert.popoverPresentationController?.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
