@@ -12,6 +12,7 @@
 		972477D52404A63800729B45 /* BrowserCommonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972477D42404A63800729B45 /* BrowserCommonViewController.swift */; };
 		972477D72404A65C00729B45 /* BrowserCoordinatorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972477D62404A65C00729B45 /* BrowserCoordinatorController.swift */; };
 		972C5A8A24068D55009747A8 /* UIViewController+Presentation.m in Sources */ = {isa = PBXBuildFile; fileRef = 972C5A8924068D55009747A8 /* UIViewController+Presentation.m */; };
+		9730CC2E240A86D200B269BC /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9730CC2D240A86D200B269BC /* UserDefaults.swift */; };
 		973BBA452405216700E3B061 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973BBA442405216700E3B061 /* AboutViewController.swift */; };
 		973BBA61240538DB00E3B061 /* MultiLineTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973BBA60240538DB00E3B061 /* MultiLineTextCell.swift */; };
 		973BBA642405481200E3B061 /* TimeSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973BBA632405481200E3B061 /* TimeSettingViewController.swift */; };
@@ -84,6 +85,7 @@
 		972477D62404A65C00729B45 /* BrowserCoordinatorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserCoordinatorController.swift; sourceTree = "<group>"; };
 		972C5A8824068D54009747A8 /* UIViewController+Presentation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIViewController+Presentation.h"; sourceTree = "<group>"; };
 		972C5A8924068D55009747A8 /* UIViewController+Presentation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+Presentation.m"; sourceTree = "<group>"; };
+		9730CC2D240A86D200B269BC /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		973BBA442405216700E3B061 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		973BBA60240538DB00E3B061 /* MultiLineTextCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiLineTextCell.swift; sourceTree = "<group>"; };
 		973BBA632405481200E3B061 /* TimeSettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSettingViewController.swift; sourceTree = "<group>"; };
@@ -188,6 +190,7 @@
 				973E2EFB2400FA1100B0F059 /* URL.swift */,
 				978406D92402906C00876FD1 /* UIViewController+Extension.swift */,
 				974F86E52403C46D00356795 /* Celestia+Extension.swift */,
+				9730CC2D240A86D200B269BC /* UserDefaults.swift */,
 				977394A22403E68800E38B82 /* Color.swift */,
 				97DB1FD724067B76001F222F /* NSObject+Flag.h */,
 				97DB1FD824067B76001F222F /* NSObject+Flag.m */,
@@ -535,6 +538,7 @@
 				972C5A8A24068D55009747A8 /* UIViewController+Presentation.m in Sources */,
 				978406DA2402906C00876FD1 /* UIViewController+Extension.swift in Sources */,
 				9773949E2402A96B00E38B82 /* SlideInPresentationController.swift in Sources */,
+				9730CC2E240A86D200B269BC /* UserDefaults.swift in Sources */,
 				973BBA6624054E9900E3B061 /* TextViewController.swift in Sources */,
 				979D2F7E23FEB1A6005D2592 /* AppDelegate.swift in Sources */,
 				977394A32403E68800E38B82 /* Color.swift in Sources */,
