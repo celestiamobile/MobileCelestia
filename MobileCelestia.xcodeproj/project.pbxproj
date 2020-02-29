@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9702D299240A8DD1005746E3 /* AppCenterAnalytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9702D295240A8DD1005746E3 /* AppCenterAnalytics.framework */; };
+		9702D29B240A8DD1005746E3 /* AppCenterCrashes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9702D297240A8DD1005746E3 /* AppCenterCrashes.framework */; };
+		9702D29D240A8DD1005746E3 /* AppCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9702D298240A8DD1005746E3 /* AppCenter.framework */; };
 		97143F1823FFAEFD00F35D87 /* defaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 97143F1623FFAEFD00F35D87 /* defaults.plist */; };
 		972477D12404A19700729B45 /* BrowserContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972477D02404A19700729B45 /* BrowserContainerViewController.swift */; };
 		972477D52404A63800729B45 /* BrowserCommonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972477D42404A63800729B45 /* BrowserCommonViewController.swift */; };
@@ -91,6 +94,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9702D295240A8DD1005746E3 /* AppCenterAnalytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppCenterAnalytics.framework; path = AppCenter/AppCenterAnalytics.framework; sourceTree = "<group>"; };
+		9702D297240A8DD1005746E3 /* AppCenterCrashes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppCenterCrashes.framework; path = AppCenter/AppCenterCrashes.framework; sourceTree = "<group>"; };
+		9702D298240A8DD1005746E3 /* AppCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppCenter.framework; path = AppCenter/AppCenter.framework; sourceTree = "<group>"; };
 		97143F1623FFAEFD00F35D87 /* defaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = defaults.plist; sourceTree = "<group>"; };
 		972477D02404A19700729B45 /* BrowserContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserContainerViewController.swift; sourceTree = "<group>"; };
 		972477D42404A63800729B45 /* BrowserCommonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserCommonViewController.swift; sourceTree = "<group>"; };
@@ -170,9 +176,12 @@
 			files = (
 				97FF95A8240A371F00E9F44F /* MBProgressHUD in Frameworks */,
 				979D2FB123FEB2C2005D2592 /* OpenGLES.framework in Frameworks */,
+				9702D29D240A8DD1005746E3 /* AppCenter.framework in Frameworks */,
+				9702D29B240A8DD1005746E3 /* AppCenterCrashes.framework in Frameworks */,
 				979D2FAD23FEB2B4005D2592 /* libbz2.tbd in Frameworks */,
 				979D2FAF23FEB2BD005D2592 /* libz.tbd in Frameworks */,
 				979D2FAB23FEB2AA005D2592 /* libc++.tbd in Frameworks */,
+				9702D299240A8DD1005746E3 /* AppCenterAnalytics.framework in Frameworks */,
 				979D2FA623FEB1DD005D2592 /* CelestiaCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -379,6 +388,9 @@
 		979D2FA523FEB1DD005D2592 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				9702D298240A8DD1005746E3 /* AppCenter.framework */,
+				9702D295240A8DD1005746E3 /* AppCenterAnalytics.framework */,
+				9702D297240A8DD1005746E3 /* AppCenterCrashes.framework */,
 				979D2FB023FEB2C2005D2592 /* OpenGLES.framework */,
 				979D2FAE23FEB2B9005D2592 /* libz.tbd */,
 				979D2FAC23FEB2AE005D2592 /* libbz2.tbd */,
@@ -780,8 +792,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = 22NR5428TD;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/AppCenter",
+				);
 				INFOPLIST_FILE = MobileCelestia/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -804,8 +820,12 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 7;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = 22NR5428TD;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/AppCenter",
+				);
 				INFOPLIST_FILE = MobileCelestia/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
