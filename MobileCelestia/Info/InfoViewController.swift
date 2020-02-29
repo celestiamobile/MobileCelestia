@@ -151,6 +151,8 @@ private extension CelestiaAction {
             return CelestiaString("Chase", comment: "")
         case .follow:
             return CelestiaString("Follow", comment: "")
+        case .runDemo:
+            return CelestiaString("Run Demo", comment: "")
         }
     }
 }

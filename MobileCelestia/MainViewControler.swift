@@ -63,6 +63,7 @@ class MainViewControler: UIViewController {
             switch result {
             case .success():
                 print("loading success")
+                self.runDemoIfNeeded()
             case .failure(_):
                 let failure = LoadingFailureViewController()
                 self.install(failure)
@@ -187,6 +188,18 @@ extension MainViewControler: CelestiaViewControllerDelegate {
         viewController.popoverPresentationController?.sourceRect = CGRect(x: view.frame.midX, y: view.frame.midY, width: 0, height: 0)
         viewController.popoverPresentationController?.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
         viewController.preferredContentSize = CGSize(width: 400, height: 500)
+    }
+}
+
+extension MainViewControler {
+    private func runDemoIfNeeded() {
+        let launched: Bool? = UserDefaults.app[.demoLaunched]
+        if launched == nil {
+            UserDefaults.app[.demoLaunched] = true
+            showOption(CelestiaString("Run demo?", comment: "")) { [unowned self] in
+                self.celestiaController.receive(action: .runDemo)
+            }
+        }
     }
 }
 
