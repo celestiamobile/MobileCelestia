@@ -10,6 +10,8 @@ import UIKit
 
 import SafariServices
 
+import MBProgressHUD
+
 private let userInitiatedDismissalFlag = 1
 
 class MainViewControler: UIViewController {
@@ -97,7 +99,7 @@ extension MainViewControler: CelestiaViewControllerDelegate {
             case .time:
                 self.presentTimeToolbar()
             case .share:
-                self.presentShare()
+                self.presentShare(selection: selection)
             }
         }
         controller.modalPresentationStyle = .custom
@@ -105,11 +107,13 @@ extension MainViewControler: CelestiaViewControllerDelegate {
         present(controller, animated: true, completion: nil)
     }
 
-    private func presentShare() {
-        let image = celestiaController.screenshot()
-        let activityController = UIActivityViewController(activityItems: [image], applicationActivities: nil)
-        configurePopover(for: activityController)
-        present(activityController, animated: true, completion: nil)
+    private func presentShare(selection: BodyInfo?) {
+        let url = celestiaController.currentURL.absoluteString
+        showTextInput(CelestiaString("Description", comment: ""),
+                      message: CelestiaString("Please enter a description of the content.", comment: ""),
+                      text: selection?.name) { (description) in
+                        self.submitURL(url, title: description)
+        }
     }
 
     private func presentTimeToolbar() {
@@ -216,6 +220,48 @@ extension MainViewControler {
                 }
             })
         }
+    }
+}
+
+extension MainViewControler {
+    private func submitURL(_ url: String, title: String?) {
+        let requestURL = "https://meowssage.cc/celestia/create"
+
+        struct URLCreationResponse: Decodable {
+            let publicURL: String
+        }
+
+        let showUnknownError = { [unowned self] in
+            self.showError(CelestiaString("Unknown error", comment: ""))
+        }
+
+        guard let data = url.data(using: .utf8) else {
+            showUnknownError()
+            return
+        }
+
+        MBProgressHUD.showAdded(to: view, animated: true)
+        _ = RequestHandler.post(url: requestURL, params: [
+            "title" : title ?? CelestiaString("Unnamed", comment: ""),
+            "url" : data.base64EncodedURLString(),
+            "version" : Bundle.main.infoDictionary!["CFBundleVersion"] as! String
+        ], success: { [unowned self] (result: URLCreationResponse) in
+            MBProgressHUD.hide(for: self.view, animated: true)
+            guard let url = URL(string: result.publicURL) else {
+                showUnknownError()
+                return
+            }
+            self.showShareSheet(for: url)
+        }, fail: { [unowned self] (error) in
+            MBProgressHUD.hide(for: self.view, animated: true)
+            showUnknownError()
+        })
+    }
+
+    private func showShareSheet(for url: URL) {
+        let activityController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+        configurePopover(for: activityController)
+        present(activityController, animated: true, completion: nil)
     }
 }
 
