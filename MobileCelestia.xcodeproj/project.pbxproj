@@ -38,6 +38,10 @@
 		977394BA240413EF00E38B82 /* SettingSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394B9240413EF00E38B82 /* SettingSelectionViewController.swift */; };
 		977394BD2404189000E38B82 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394BC2404189000E38B82 /* SearchViewController.swift */; };
 		977394BF24041A9A00E38B82 /* SearchCoordinatorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394BE24041A9A00E38B82 /* SearchCoordinatorController.swift */; };
+		977CDD2A240BC50A00137127 /* TutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CDD29240BC50A00137127 /* TutorialViewController.swift */; };
+		977CDD2E240BC6A900137127 /* TutorialDescriptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CDD2D240BC6A900137127 /* TutorialDescriptionCell.swift */; };
+		977CDD30240BD78F00137127 /* TutorialActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CDD2F240BD78F00137127 /* TutorialActionCell.swift */; };
+		977CDD34240BDFE500137127 /* OnboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CDD33240BDFE500137127 /* OnboardViewController.swift */; };
 		978406D724028F0000876FD1 /* MainViewControler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978406D624028F0000876FD1 /* MainViewControler.swift */; };
 		978406DA2402906C00876FD1 /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978406D92402906C00876FD1 /* UIViewController+Extension.swift */; };
 		978406DC240294D000876FD1 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978406DB240294D000876FD1 /* LoadingViewController.swift */; };
@@ -111,6 +115,10 @@
 		977394B9240413EF00E38B82 /* SettingSelectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingSelectionViewController.swift; sourceTree = "<group>"; };
 		977394BC2404189000E38B82 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		977394BE24041A9A00E38B82 /* SearchCoordinatorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchCoordinatorController.swift; sourceTree = "<group>"; };
+		977CDD29240BC50A00137127 /* TutorialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialViewController.swift; sourceTree = "<group>"; };
+		977CDD2D240BC6A900137127 /* TutorialDescriptionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialDescriptionCell.swift; sourceTree = "<group>"; };
+		977CDD2F240BD78F00137127 /* TutorialActionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialActionCell.swift; sourceTree = "<group>"; };
+		977CDD33240BDFE500137127 /* OnboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardViewController.swift; sourceTree = "<group>"; };
 		978406D624028F0000876FD1 /* MainViewControler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewControler.swift; sourceTree = "<group>"; };
 		978406D92402906C00876FD1 /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		978406DB240294D000876FD1 /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
@@ -250,6 +258,17 @@
 			path = Search;
 			sourceTree = "<group>";
 		};
+		977CDD27240BC4ED00137127 /* Tutorial */ = {
+			isa = PBXGroup;
+			children = (
+				977CDD29240BC50A00137127 /* TutorialViewController.swift */,
+				977CDD2D240BC6A900137127 /* TutorialDescriptionCell.swift */,
+				977CDD2F240BD78F00137127 /* TutorialActionCell.swift */,
+				977CDD33240BDFE500137127 /* OnboardViewController.swift */,
+			);
+			path = Tutorial;
+			sourceTree = "<group>";
+		};
 		978406E124029DA900876FD1 /* Loading */ = {
 			isa = PBXGroup;
 			children = (
@@ -282,6 +301,7 @@
 		979D2F7C23FEB1A6005D2592 /* MobileCelestia */ = {
 			isa = PBXGroup;
 			children = (
+				977CDD27240BC4ED00137127 /* Tutorial */,
 				97DB1FD424067757001F222F /* Presentation */,
 				972477D32404A37600729B45 /* Browser */,
 				977394BB2404187300E38B82 /* Search */,
@@ -505,8 +525,10 @@
 				977394A02402A9AF00E38B82 /* SlideInPresentationManager.swift in Sources */,
 				97DB1FD924067B76001F222F /* NSObject+Flag.m in Sources */,
 				972477D12404A19700729B45 /* BrowserContainerViewController.swift in Sources */,
+				977CDD2E240BC6A900137127 /* TutorialDescriptionCell.swift in Sources */,
 				977394B8240409CF00E38B82 /* SettingSwitchCell.swift in Sources */,
 				977394B32403F74800E38B82 /* SettingTextCell.swift in Sources */,
+				977CDD30240BD78F00137127 /* TutorialActionCell.swift in Sources */,
 				974F86E62403C46D00356795 /* Celestia+Extension.swift in Sources */,
 				9773949C2402A8F700E38B82 /* ToolbarViewController.swift in Sources */,
 				979D2F8223FEB1A6005D2592 /* CelestiaViewController.swift in Sources */,
@@ -526,7 +548,9 @@
 				972477D72404A65C00729B45 /* BrowserCoordinatorController.swift in Sources */,
 				974F86E12403BD3C00356795 /* BodyInfoLayoutDelegate.swift in Sources */,
 				97EB41C92408F26200E6D441 /* SettingStepperCell.swift in Sources */,
+				977CDD34240BDFE500137127 /* OnboardViewController.swift in Sources */,
 				974F86AA240362BA00356795 /* ToolbarButtonCell.swift in Sources */,
+				977CDD2A240BC50A00137127 /* TutorialViewController.swift in Sources */,
 				974F86E42403C30E00356795 /* BodyInfoModel.swift in Sources */,
 				978406D724028F0000876FD1 /* MainViewControler.swift in Sources */,
 				974F86DF2403BD3C00356795 /* BodyActionCell.swift in Sources */,

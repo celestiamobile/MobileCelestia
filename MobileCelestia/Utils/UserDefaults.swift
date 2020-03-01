@@ -14,7 +14,7 @@ enum UserDefaultsKey: String {
     case databaseVersion
     case dataDirPath
     case configFile
-    case demoLaunched
+    case onboardMessageDisplayed
 }
 
 extension UserDefaults {

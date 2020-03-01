@@ -63,7 +63,7 @@ class MainViewControler: UIViewController {
             switch result {
             case .success():
                 print("loading success")
-                self.runDemoIfNeeded()
+                self.showOnboardMessageIfNeeded()
             case .failure(_):
                 let failure = LoadingFailureViewController()
                 self.install(failure)
@@ -150,7 +150,12 @@ extension MainViewControler: CelestiaViewControllerDelegate {
     }
 
     private func showSettings() {
-        let controller = SettingsCoordinatorController()
+        let controller = SettingsCoordinatorController() { [unowned self] (action) in
+            switch action {
+            case .tutorial(let tutorial):
+                self.handleTutorialAction(tutorial)
+            }
+        }
         showViewController(controller)
     }
 
@@ -192,13 +197,24 @@ extension MainViewControler: CelestiaViewControllerDelegate {
 }
 
 extension MainViewControler {
-    private func runDemoIfNeeded() {
-        let launched: Bool? = UserDefaults.app[.demoLaunched]
-        if launched == nil {
-            UserDefaults.app[.demoLaunched] = true
-            showOption(CelestiaString("Run demo?", comment: "")) { [unowned self] in
-                self.celestiaController.receive(action: .runDemo)
-            }
+    private func handleTutorialAction(_ action: TutorialAction) {
+        dismiss(animated: true, completion: nil)
+        switch action {
+        case .runDemo:
+            celestiaController.receive(action: .runDemo)
+        }
+    }
+
+    private func showOnboardMessageIfNeeded() {
+        let onboardMessageDisplayed: Bool? = UserDefaults.app[.onboardMessageDisplayed]
+        if onboardMessageDisplayed == nil {
+            UserDefaults.app[.onboardMessageDisplayed] = true
+            showViewController(OnboardViewController() { [unowned self] (action) in
+                switch action {
+                case .tutorial(let tutorial):
+                    self.handleTutorialAction(tutorial)
+                }
+            })
         }
     }
 }

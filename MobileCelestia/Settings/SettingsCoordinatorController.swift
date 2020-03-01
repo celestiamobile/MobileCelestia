@@ -8,10 +8,25 @@
 
 import UIKit
 
+enum SettingAction {
+    case tutorial(action: TutorialAction)
+}
+
 class SettingsCoordinatorController: UIViewController {
 
     private var main: SettingsMainViewController!
     private var navigation: UINavigationController!
+
+    private let actionHandler: ((SettingAction) -> Void)
+
+    init(actionHandler: @escaping ((SettingAction) -> Void)) {
+        self.actionHandler = actionHandler
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override func loadView() {
         view = UIView()
@@ -46,6 +61,10 @@ private extension SettingsCoordinatorController {
                 self.navigation.pushViewController(DataLocationSelectionViewController(), animated: true)
             case .cameraControl:
                 self.navigation.pushViewController(CameraControlViewController(), animated: true)
+            case .tutorial:
+                self.navigation.pushViewController(TutorialViewController(actionHandler: { [unowned self] (action) in
+                    self.actionHandler(.tutorial(action: action))
+                }), animated: true)
             }
         })
         navigation = UINavigationController(rootViewController: main)
