@@ -16,6 +16,23 @@ class LoadingFailureViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        setup()
     }
 
+    private func setup() {
+        let label = UILabel()
+        view.addSubview(label)
+        label.textColor = .darkLabel
+        label.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate(
+            [
+                label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+                label.centerYAnchor.constraint(equalTo: view.centerYAnchor)
+            ]
+        )
+
+        label.text = CelestiaString("Failed to initialize Celestia, please reinstall Celestia.", comment: "")
+    }
 }
