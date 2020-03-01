@@ -27,7 +27,7 @@ class LoadingViewController: UIViewController {
 
 extension LoadingViewController {
     func update(with status: String) {
-        statusLabel.text = status
+        statusLabel.text = String(format: CelestiaString("Loading: %@", comment: ""), status)
     }
 }
 
@@ -35,13 +35,41 @@ private extension LoadingViewController {
     func setup() {
         view.backgroundColor = .clear
 
-        view.addSubview(statusLabel)
+        let container = UIView()
+        container.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(container)
+
+        // display an icon above status
+        let iconImageView = UIImageView(image: #imageLiteral(resourceName: "loading_icon"))
+        container.addSubview(iconImageView)
+        iconImageView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            iconImageView.centerXAnchor.constraint(equalTo: container.centerXAnchor),
+            iconImageView.topAnchor.constraint(equalTo: container.topAnchor),
+            iconImageView.leadingAnchor.constraint(greaterThanOrEqualTo: container.leadingAnchor),
+            iconImageView.trailingAnchor.constraint(lessThanOrEqualTo: container.trailingAnchor),
+        ])
+
+        // status label
+        container.addSubview(statusLabel)
         statusLabel.translatesAutoresizingMaskIntoConstraints = false
         statusLabel.textColor = .darkLabel
+        NSLayoutConstraint.activate([
+            statusLabel.topAnchor.constraint(equalTo: iconImageView.bottomAnchor, constant: 24),
+            statusLabel.centerXAnchor.constraint(equalTo: container.centerXAnchor),
+            statusLabel.bottomAnchor.constraint(equalTo: container.bottomAnchor),
+        ])
+
+        let labelWidthConstraints = [
+            statusLabel.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            statusLabel.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+        ]
+        labelWidthConstraints.forEach { $0.priority = .defaultLow }
+        NSLayoutConstraint.activate(labelWidthConstraints)
 
         NSLayoutConstraint.activate([
-            statusLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            statusLabel.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            container.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            container.centerYAnchor.constraint(equalTo: view.centerYAnchor),
         ])
     }
 }
