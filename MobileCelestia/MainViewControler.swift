@@ -14,6 +14,8 @@ import MBProgressHUD
 
 private let userInitiatedDismissalFlag = 1
 
+var urlToRun: URL?
+
 class MainViewControler: UIViewController {
     private lazy var celestiaController = CelestiaViewController()
 
@@ -35,6 +37,8 @@ class MainViewControler: UIViewController {
 
         install(celestiaController)
         celestiaController.celestiaDelegate = self
+
+        NotificationCenter.default.addObserver(self, selector: #selector(applicationDidBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -66,6 +70,10 @@ class MainViewControler: UIViewController {
             case .success():
                 print("loading success")
                 self.showOnboardMessageIfNeeded()
+                // we can't present two vcs together, so we delay the action
+                DispatchQueue.main.asyncAfter(deadline: .now() + 1)  {
+                    self.checkNeedOpeningURL()
+                }
             case .failure(_):
                 let failure = LoadingFailureViewController()
                 self.install(failure)
@@ -75,6 +83,28 @@ class MainViewControler: UIViewController {
 
     override var prefersHomeIndicatorAutoHidden: Bool {
          return true
+    }
+}
+
+extension MainViewControler {
+    @objc private func applicationDidBecomeActive() {
+        if isCoreInitialized() {
+            checkNeedOpeningURL()
+        }
+    }
+
+    private func checkNeedOpeningURL() {
+        if let url = urlToRun {
+            urlToRun = nil
+            addToBackStack()
+            let title = CelestiaString(url.isFileURL ? "Run script?" : "Open URL?", comment: "")
+            showOption(title) { [unowned self] (confirmed) in
+                self.popLastAndShow()
+                if confirmed {
+                    self.celestiaController.openURL(url)
+                }
+            }
+        }
     }
 }
 
@@ -112,7 +142,8 @@ extension MainViewControler: CelestiaViewControllerDelegate {
         showTextInput(CelestiaString("Description", comment: ""),
                       message: CelestiaString("Please enter a description of the content.", comment: ""),
                       text: selection?.name) { (description) in
-                        self.submitURL(url, title: description)
+                        guard let title = description else { return }
+                        self.submitURL(url, title: title)
         }
     }
 
@@ -224,14 +255,14 @@ extension MainViewControler {
 }
 
 extension MainViewControler {
-    private func submitURL(_ url: String, title: String?) {
+    private func submitURL(_ url: String, title: String) {
         let requestURL = "https://meowssage.cc/celestia/create"
 
         struct URLCreationResponse: Decodable {
             let publicURL: String
         }
 
-        let showUnknownError = { [unowned self] in
+        let showUnknownError: () -> Void = { [unowned self] in
             self.showError(CelestiaString("Unknown error", comment: ""))
         }
 
@@ -242,7 +273,7 @@ extension MainViewControler {
 
         MBProgressHUD.showAdded(to: view, animated: true)
         _ = RequestHandler.post(url: requestURL, params: [
-            "title" : title ?? CelestiaString("Unnamed", comment: ""),
+            "title" : title,
             "url" : data.base64EncodedURLString(),
             "version" : Bundle.main.infoDictionary!["CFBundleVersion"] as! String
         ], success: { [unowned self] (result: URLCreationResponse) in

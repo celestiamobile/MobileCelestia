@@ -24,6 +24,10 @@ extension CelestiaAppCore {
     }
 }
 
+func isCoreInitialized() -> Bool {
+    return core?.isInitialized == true
+}
+
 extension CelestiaSelection {
     convenience init?(item: CelestiaBrowserItem) {
         let object = item.entry

@@ -35,24 +35,28 @@ public extension UIViewController {
 }
 
 extension UIViewController {
-    func showError(_ title: String) {
+    @discardableResult func showError(_ title: String) -> UIAlertController {
         let alert = UIAlertController(title: title, message: nil, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: CelestiaString("OK", comment: ""), style: .default, handler: nil))
         presentAlert(alert)
+        return alert
     }
 
-    func showOption(_ title: String, message: String? = nil, completion: (() -> Void)? = nil) {
+    @discardableResult func showOption(_ title: String, message: String? = nil, completion: ((Bool) -> Void)? = nil) -> UIAlertController {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         let confirmAction = UIAlertAction(title: CelestiaString("OK", comment: ""), style: .default, handler: { (_) in
-            completion?()
+            completion?(true)
         })
         alert.addAction(confirmAction)
-        alert.addAction(UIAlertAction(title: CelestiaString("Cancel", comment: ""), style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: CelestiaString("Cancel", comment: ""), style: .cancel, handler: { (_) in
+            completion?(false)
+        }))
         alert.preferredAction = confirmAction
         presentAlert(alert)
+        return alert
     }
 
-    func showTextInput(_ title: String, message: String? = nil, text: String? = nil, placeholder: String? = nil, completion: ((String?) -> Void)? = nil) {
+    @discardableResult func showTextInput(_ title: String, message: String? = nil, text: String? = nil, placeholder: String? = nil, completion: ((String?) -> Void)? = nil) -> UIAlertController {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         let confirmAction = UIAlertAction(title: CelestiaString("OK", comment: ""), style: .default, handler: { [unowned alert] (_) in
             completion?(alert.textFields?.first?.text)
@@ -63,9 +67,12 @@ extension UIViewController {
             textField.keyboardAppearance = .dark
         }
         alert.addAction(confirmAction)
-        alert.addAction(UIAlertAction(title: CelestiaString("Cancel", comment: ""), style: .cancel, handler: nil))
+        alert.addAction(UIAlertAction(title: CelestiaString("Cancel", comment: ""), style: .cancel, handler: { (_) in
+            completion?(nil)
+        }))
         alert.preferredAction = confirmAction
         presentAlert(alert)
+        return alert
     }
 
     private func presentAlert(_ alert: UIAlertController) {

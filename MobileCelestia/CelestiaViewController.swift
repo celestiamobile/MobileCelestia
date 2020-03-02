@@ -10,8 +10,6 @@ import UIKit
 import CelestiaCore
 import GLKit
 
-var startingScriptURL: URL?
-
 enum CelestiaLoadingError: Error {
     case openGLError
     case celestiaError
@@ -310,7 +308,7 @@ extension CelestiaViewController {
                 return
             }
 
-            self.handleURLAndStart()
+            self.start()
 
             self.setupGestures()
 
@@ -322,28 +320,9 @@ extension CelestiaViewController {
         })
     }
 
-    private func handleURLAndStart() {
+    private func start() {
         core.tick()
-
-        var handled = false
-        if let startingURL = startingScriptURL {
-            if startingURL.isFileURL {
-                if startingURL.startAccessingSecurityScopedResource() {
-                    core.setStartURL(startingURL.path)
-                    core.start()
-                    startingURL.stopAccessingSecurityScopedResource()
-                    handled = true
-                }
-            } else {
-                core.setStartURL(startingURL.absoluteString)
-                core.start()
-                handled = true
-            }
-        }
-
-        if !handled {
-            core.start()
-        }
+        core.start()
     }
 }
 
@@ -363,6 +342,19 @@ extension CelestiaViewController {
     func screenshot() -> UIImage {
         return UIGraphicsImageRenderer(size: view.bounds.size).image { (_) in
             self.view.drawHierarchy(in: self.view.bounds, afterScreenUpdates: false)
+        }
+    }
+
+    func openURL(_ url: URL) {
+        if url.isFileURL {
+            if url.startAccessingSecurityScopedResource() {
+                core.setStartURL(url.path)
+                core.start()
+                url.stopAccessingSecurityScopedResource()
+            }
+        } else {
+            core.start()
+            core.go(to: url.absoluteString)
         }
     }
 }
