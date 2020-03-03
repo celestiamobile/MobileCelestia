@@ -93,6 +93,13 @@ extension CameraControlViewController: UITableViewDataSource, UITableViewDelegat
         return cell
     }
 
+    func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+        if section == 0 {
+            return CelestiaString("Long press on stepper to change orientation.", comment: "")
+        }
+        return nil
+    }
+
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 44
     }
