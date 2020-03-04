@@ -166,8 +166,10 @@ extension MainViewControler: CelestiaViewControllerDelegate {
             guard let ac = action else { return }
             switch ac {
             case .select:
+                self.clearBackStack()
                 self.celestiaController.select(selection)
             case .wrapped(let cac):
+                self.clearBackStack()
                 self.celestiaController.select(selection)
                 self.celestiaController.receive(action: cac)
             case .web(let url):
@@ -307,6 +309,10 @@ extension MainViewControler: UIViewControllerDismissDelegate {
         if let viewController = viewControllerStack.popLast() {
             showViewController(viewController)
         }
+    }
+
+    func clearBackStack() {
+        viewControllerStack.removeAll()
     }
 
     func addToBackStack() {
