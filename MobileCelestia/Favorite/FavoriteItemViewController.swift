@@ -21,6 +21,7 @@ protocol FavoriteItemList {
     var canBeModified: Bool { get }
     func append(_ item: Item)
     func remove(at index: Int)
+    func move(from source: Int, to dest: Int)
 }
 
 extension Array: FavoriteItemList where Element == CelestiaScript {
@@ -37,6 +38,10 @@ extension Array: FavoriteItemList where Element == CelestiaScript {
     }
 
     func remove(at index: Int) {
+        fatalError()
+    }
+
+    func move(from source: Int, to dest: Int) {
         fatalError()
     }
 }
@@ -61,6 +66,10 @@ extension BookmarkNode: FavoriteItemList {
     func remove(at index: Int) {
         children.remove(at: index)
     }
+
+    func move(from source: Int, to dest: Int) {
+        children.insert(children.remove(at: source), at: dest)
+    }
 }
 
 protocol FavoriteItem {
@@ -69,6 +78,9 @@ protocol FavoriteItem {
     var associatedURL: URL? { get }
     var isLeaf: Bool { get }
     var itemList: ItemList? { get }
+    var canBeRenamed: Bool { get }
+
+    func rename(to name: String)
 }
 
 extension BookmarkNode: FavoriteItem {
@@ -86,6 +98,12 @@ extension BookmarkNode: FavoriteItem {
         }
         return nil
     }
+
+    var canBeRenamed: Bool { return true }
+
+    func rename(to name: String) {
+        self.name = name
+    }
 }
 
 extension CelestiaScript: FavoriteItem {
@@ -100,6 +118,12 @@ extension CelestiaScript: FavoriteItem {
 
     var itemList: [CelestiaScript]? {
         return nil
+    }
+
+    var canBeRenamed: Bool { return false }
+
+    func rename(to name: String) {
+        fatalError()
     }
 }
 
@@ -135,45 +159,107 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: UIViewController, 
         setup()
     }
 
+    func numberOfSections(in tableView: UITableView) -> Int {
+        if itemList.canBeModified { return 2 }
+        return 1
+    }
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        if section == 1 { return 1 }
         return itemList.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
-        let item = itemList[indexPath.row]
-        cell.title = item.title
-        cell.accessoryType = item.isLeaf ? .none : .disclosureIndicator
+        if indexPath.section == 1 {
+            cell.title = CelestiaString("Add new...", comment: "")
+            cell.accessoryType = .disclosureIndicator
+        } else {
+            let item = itemList[indexPath.row]
+            cell.title = item.title
+            cell.accessoryType = item.isLeaf ? .none : .disclosureIndicator
+        }
         return cell
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        selection(itemList[indexPath.row])
+        if indexPath.section == 1 {
+            requestAddObject()
+        } else {
+            selection(itemList[indexPath.row])
+        }
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 44
     }
 
-    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
-        return itemList.canBeModified ? .delete : .none
-    }
-
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            itemList.remove(at: indexPath.row)
-            tableView.reloadData()
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        if indexPath.section == 1 { return nil }
+        var actions = [UITableViewRowAction]()
+        if itemList.canBeModified {
+            actions.append(
+                UITableViewRowAction(style: .destructive, title: CelestiaString("Delete", comment: "")) { [unowned self] (_, indexPath) in
+                    self.requestRemoveObject(at: indexPath.row)
+            })
         }
+        let item = itemList[indexPath.row]
+        if item.canBeRenamed {
+            actions.append(
+                UITableViewRowAction(style: .normal, title: CelestiaString("Edit", comment: "")) { [unowned self] (_, indexPath) in
+                    self.requestRenameObject(at: indexPath.row)
+            })
+        }
+        return actions
     }
 
-    @objc private func requestAddObject(_ sender: Any) {
+    func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        return itemList.canBeModified && indexPath.section == 0
+    }
+
+    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+        return itemList.canBeModified && indexPath.section == 0
+    }
+
+    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        defer { tableView.reloadData() }
+        guard destinationIndexPath.section == 0 else { return }
+        itemList.move(from: sourceIndexPath.row, to: destinationIndexPath.row)
+    }
+
+    // MARK: Modification
+    @objc private func requestEdit() {
+        tableView.setEditing(true, animated: true)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(finishEditing))
+    }
+
+    @objc private func finishEditing() {
+        tableView.setEditing(false, animated: true)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(requestEdit))
+    }
+
+    private func requestAddObject() {
         guard let item = add?() else {
             showError(CelestiaString("Cannot add object.", comment: ""))
             return
         }
         itemList.append(item)
         tableView.reloadData()
+    }
+
+    private func requestRemoveObject(at index: Int) {
+        itemList.remove(at: index)
+        tableView.reloadData()
+    }
+
+    private func requestRenameObject(at index: Int) {
+        let item = itemList[index]
+        showTextInput(CelestiaString("Please enter a new name.", comment: ""), text: item.title) { [unowned self] (text) in
+            guard let newName = text else { return }
+            item.rename(to: newName)
+            self.tableView.reloadData()
+        }
     }
 }
 
@@ -198,7 +284,7 @@ private extension FavoriteItemViewController {
         tableView.delegate = self
 
         if itemList.canBeModified {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(requestAddObject(_:)))
+            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(requestEdit))
         }
     }
 }
