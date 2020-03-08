@@ -57,7 +57,6 @@ class MainViewControler: UIViewController {
             loadingController.update(with: status)
         }, errorHandler: { [unowned self] in
             if retried { return false }
-            // TODO: display an error
             DispatchQueue.main.async { self.showError(CelestiaString("Error loading data, fallback to original configuration.", comment: "")) }
             retried = true
             saveConfigFile(nil)
@@ -68,6 +67,7 @@ class MainViewControler: UIViewController {
 
             switch result {
             case .success():
+                UIApplication.shared.isIdleTimerDisabled = true
                 print("loading success")
                 self.showOnboardMessageIfNeeded()
                 // we can't present two vcs together, so we delay the action
