@@ -35,6 +35,12 @@ extension CelestiaAction {
     }
 }
 
+extension CelestiaAppCore {
+    func receive(_ action: CelestiaAction) {
+        charEnter(action.rawValue)
+    }
+}
+
 protocol CelestiaViewControllerDelegate: class {
     func celestiaController(_ celestiaController: CelestiaViewController, selection: BodyInfo?)
 }
