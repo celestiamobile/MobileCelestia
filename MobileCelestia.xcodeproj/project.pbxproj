@@ -19,6 +19,9 @@
 		97401C9C2414D3460015F8E8 /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97401C982414D3460015F8E8 /* URL.swift */; };
 		97401C9D2414D3460015F8E8 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97401C992414D3460015F8E8 /* UserDefaults.swift */; };
 		97401C9E2414D3460015F8E8 /* Celestia+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97401C9A2414D3460015F8E8 /* Celestia+Extension.swift */; };
+		97401CA52414DAF50015F8E8 /* FavoriteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97401CA32414DAF50015F8E8 /* FavoriteViewController.swift */; };
+		97401CA62414DAF50015F8E8 /* FavoriteCoordinatorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97401CA42414DAF50015F8E8 /* FavoriteCoordinatorController.swift */; };
+		97401CAB2414DCAC0015F8E8 /* FavoriteItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97401CAA2414DCAC0015F8E8 /* FavoriteItemViewController.swift */; };
 		974F86AA240362BA00356795 /* ToolbarButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974F86A9240362BA00356795 /* ToolbarButtonCell.swift */; };
 		974F86DF2403BD3C00356795 /* BodyActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974F86DB2403BD3B00356795 /* BodyActionCell.swift */; };
 		974F86E02403BD3C00356795 /* BodyDescriptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974F86DC2403BD3B00356795 /* BodyDescriptionCell.swift */; };
@@ -101,6 +104,9 @@
 		97401C982414D3460015F8E8 /* URL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URL.swift; sourceTree = "<group>"; };
 		97401C992414D3460015F8E8 /* UserDefaults.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		97401C9A2414D3460015F8E8 /* Celestia+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Celestia+Extension.swift"; sourceTree = "<group>"; };
+		97401CA32414DAF50015F8E8 /* FavoriteViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoriteViewController.swift; sourceTree = "<group>"; };
+		97401CA42414DAF50015F8E8 /* FavoriteCoordinatorController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavoriteCoordinatorController.swift; sourceTree = "<group>"; };
+		97401CAA2414DCAC0015F8E8 /* FavoriteItemViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteItemViewController.swift; sourceTree = "<group>"; };
 		974F86A9240362BA00356795 /* ToolbarButtonCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarButtonCell.swift; sourceTree = "<group>"; };
 		974F86DB2403BD3B00356795 /* BodyActionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BodyActionCell.swift; sourceTree = "<group>"; };
 		974F86DC2403BD3B00356795 /* BodyDescriptionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BodyDescriptionCell.swift; sourceTree = "<group>"; };
@@ -227,6 +233,16 @@
 			path = ../../CelestiaCore/Helper;
 			sourceTree = "<group>";
 		};
+		97401CA12414DA6B0015F8E8 /* Favorite */ = {
+			isa = PBXGroup;
+			children = (
+				97401CA42414DAF50015F8E8 /* FavoriteCoordinatorController.swift */,
+				97401CA32414DAF50015F8E8 /* FavoriteViewController.swift */,
+				97401CAA2414DCAC0015F8E8 /* FavoriteItemViewController.swift */,
+			);
+			path = Favorite;
+			sourceTree = "<group>";
+		};
 		974F86DA2403BD2600356795 /* Info */ = {
 			isa = PBXGroup;
 			children = (
@@ -322,6 +338,7 @@
 			isa = PBXGroup;
 			children = (
 				97401C972414D3460015F8E8 /* Helper */,
+				97401CA12414DA6B0015F8E8 /* Favorite */,
 				977CDD27240BC4ED00137127 /* Tutorial */,
 				97DB1FD424067757001F222F /* Presentation */,
 				972477D32404A37600729B45 /* Browser */,
@@ -563,6 +580,7 @@
 				97401C9E2414D3460015F8E8 /* Celestia+Extension.swift in Sources */,
 				97DB1FD924067B76001F222F /* NSObject+Flag.m in Sources */,
 				972477D12404A19700729B45 /* BrowserContainerViewController.swift in Sources */,
+				97401CA62414DAF50015F8E8 /* FavoriteCoordinatorController.swift in Sources */,
 				977CDD2E240BC6A900137127 /* TutorialDescriptionCell.swift in Sources */,
 				977394B8240409CF00E38B82 /* SettingSwitchCell.swift in Sources */,
 				977394B32403F74800E38B82 /* SettingTextCell.swift in Sources */,
@@ -576,6 +594,7 @@
 				977394BA240413EF00E38B82 /* SettingSelectionViewController.swift in Sources */,
 				973BBA642405481200E3B061 /* TimeSettingViewController.swift in Sources */,
 				973BBA61240538DB00E3B061 /* MultiLineTextCell.swift in Sources */,
+				97401CAB2414DCAC0015F8E8 /* FavoriteItemViewController.swift in Sources */,
 				977394BD2404189000E38B82 /* SearchViewController.swift in Sources */,
 				977394B12403F30900E38B82 /* SettingModel.swift in Sources */,
 				972477D52404A63800729B45 /* BrowserCommonViewController.swift in Sources */,
@@ -590,6 +609,7 @@
 				977CDD34240BDFE500137127 /* OnboardViewController.swift in Sources */,
 				974F86AA240362BA00356795 /* ToolbarButtonCell.swift in Sources */,
 				977CDD2A240BC50A00137127 /* TutorialViewController.swift in Sources */,
+				97401CA52414DAF50015F8E8 /* FavoriteViewController.swift in Sources */,
 				974F86E42403C30E00356795 /* BodyInfoModel.swift in Sources */,
 				978406D724028F0000876FD1 /* MainViewControler.swift in Sources */,
 				97FF95AA240A3F0900E9F44F /* Data.swift in Sources */,

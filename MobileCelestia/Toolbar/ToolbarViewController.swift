@@ -19,9 +19,10 @@ enum AppToolbarAction: String {
     case search
     case time
     case browse
+    case favorite
 
     static var persistentAction: [AppToolbarAction] {
-        return [.share, .search, .time, .browse, .setting]
+        return [.share, .search, .time, .browse, .favorite, .setting]
     }
 }
 

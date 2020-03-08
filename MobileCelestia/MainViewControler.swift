@@ -94,15 +94,14 @@ extension MainViewControler {
     }
 
     private func checkNeedOpeningURL() {
-        if let url = urlToRun {
-            urlToRun = nil
-            addToBackStack()
-            let title = CelestiaString(url.isFileURL ? "Run script?" : "Open URL?", comment: "")
-            showOption(title) { [unowned self] (confirmed) in
-                self.popLastAndShow()
-                if confirmed {
-                    self.celestiaController.openURL(url)
-                }
+        guard let url = urlToRun else { return }
+        urlToRun = nil
+        addToBackStack()
+        let title = CelestiaString(url.isFileURL ? "Run script?" : "Open URL?", comment: "")
+        showOption(title) { [unowned self] (confirmed) in
+            self.popLastAndShow()
+            if confirmed {
+                self.celestiaController.openURL(UniformedURL(url: url, securityScoped: true))
             }
         }
     }
@@ -130,6 +129,8 @@ extension MainViewControler: CelestiaViewControllerDelegate {
                 self.presentTimeToolbar()
             case .share:
                 self.presentShare(selection: selection)
+            case .favorite:
+                self.presentFavorite()
             }
         }
         controller.modalPresentationStyle = .custom
@@ -145,6 +146,15 @@ extension MainViewControler: CelestiaViewControllerDelegate {
                         guard let title = description else { return }
                         self.submitURL(url, title: title)
         }
+    }
+
+
+    private func presentFavorite() {
+        let controller = FavoriteCoordinatorController { [unowned self] (url) in
+            self.dismiss(animated: true, completion: nil)
+            self.celestiaController.openURL(UniformedURL(url: url))
+        }
+        showViewController(controller)
     }
 
     private func presentTimeToolbar() {

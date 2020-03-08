@@ -351,16 +351,11 @@ extension CelestiaViewController {
         }
     }
 
-    func openURL(_ url: URL) {
-        if url.isFileURL {
-            if url.startAccessingSecurityScopedResource() {
-                core.setStartURL(url.path)
-                core.start()
-                url.stopAccessingSecurityScopedResource()
-            }
+    func openURL(_ url: UniformedURL) {
+        if url.url.isFileURL {
+            core.runScript(at: url.url.path)
         } else {
-            core.start()
-            core.go(to: url.absoluteString)
+            core.go(to: url.url.absoluteString)
         }
     }
 }
