@@ -133,6 +133,8 @@ extension MainViewControler: CelestiaViewControllerDelegate {
                 self.presentShare(selection: selection)
             case .favorite:
                 self.presentFavorite()
+            case .help:
+                self.presentHelp()
             }
         }
         controller.modalPresentationStyle = .custom
@@ -177,6 +179,15 @@ extension MainViewControler: CelestiaViewControllerDelegate {
         showViewController(controller)
     }
 
+    private func presentHelp() {
+        showViewController(OnboardViewController() { [unowned self] (action) in
+            switch action {
+            case .tutorial(let tutorial):
+                self.handleTutorialAction(tutorial)
+            }
+        })
+    }
+
     private func showBodyInfo(with selection: BodyInfo) {
         let controller = InfoViewController(info: selection)
         controller.dismissDelegate = self
@@ -205,11 +216,7 @@ extension MainViewControler: CelestiaViewControllerDelegate {
     }
 
     private func showSettings() {
-        let controller = SettingsCoordinatorController() { [unowned self] (action) in
-            switch action {
-            case .tutorial(let tutorial):
-                self.handleTutorialAction(tutorial)
-            }
+        let controller = SettingsCoordinatorController() { (_) in
         }
         showViewController(controller)
     }
@@ -264,12 +271,7 @@ extension MainViewControler {
         let onboardMessageDisplayed: Bool? = UserDefaults.app[.onboardMessageDisplayed]
         if onboardMessageDisplayed == nil {
             UserDefaults.app[.onboardMessageDisplayed] = true
-            showViewController(OnboardViewController() { [unowned self] (action) in
-                switch action {
-                case .tutorial(let tutorial):
-                    self.handleTutorialAction(tutorial)
-                }
-            })
+            presentHelp()
         }
     }
 }

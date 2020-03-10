@@ -25,10 +25,11 @@ enum AppToolbarAction: String {
     case time
     case camera
     case browse
+    case help
     case favorite
 
     static var persistentAction: [[AppToolbarAction]] {
-        return [[.share, .search], [.time, .camera], [.browse, .favorite], [.setting]]
+        return [[.share, .search], [.time, .camera], [.browse, .favorite], [.help], [.setting]]
     }
 }
 
@@ -196,6 +197,8 @@ extension AppToolbarAction {
             return CelestiaString("Time Control", comment: "")
         case .camera:
             return CelestiaString("Camera Control", comment: "")
+        case .help:
+            return CelestiaString("Help", comment: "")
         }
     }
 }
