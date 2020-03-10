@@ -59,8 +59,6 @@ private extension SettingsCoordinatorController {
                 self.navigation.pushViewController(TextViewController(title: item.name, text: renderInfo), animated: true)
             case .dataLocation:
                 self.navigation.pushViewController(DataLocationSelectionViewController(), animated: true)
-            case .cameraControl:
-                self.navigation.pushViewController(CameraControlViewController(), animated: true)
             case .tutorial:
                 self.navigation.pushViewController(TutorialViewController(actionHandler: { [unowned self] (action) in
                     self.actionHandler(.tutorial(action: action))

@@ -109,9 +109,9 @@ extension MainViewControler {
 
 extension MainViewControler: CelestiaViewControllerDelegate {
     func celestiaController(_ celestiaController: CelestiaViewController, selection: BodyInfo?) {
-        var actions: [AppToolbarAction] = AppToolbarAction.persistentAction
+        var actions: [[AppToolbarAction]] = AppToolbarAction.persistentAction
         if selection != nil {
-            actions.insert(.celestia, at: 0)
+            actions.insert([.celestia], at: 0)
         }
         let controller = ToolbarViewController(actions: actions)
         controller.selectionHandler = { [unowned self] (action) in
@@ -127,6 +127,8 @@ extension MainViewControler: CelestiaViewControllerDelegate {
                 self.showBrowser()
             case .time:
                 self.presentTimeToolbar()
+            case .camera:
+                self.presentCameraControl()
             case .share:
                 self.presentShare(selection: selection)
             case .favorite:
@@ -158,7 +160,7 @@ extension MainViewControler: CelestiaViewControllerDelegate {
     }
 
     private func presentTimeToolbar() {
-        let actions: [CelestiaAction] = [.backward, .playpause, .forward]
+        let actions: [[CelestiaAction]] = [[.backward, .playpause, .forward]]
         let controller = ToolbarViewController(actions: actions, scrollDirection: .horizontal, finishOnSelection: false)
         controller.selectionHandler = { [unowned self] (action) in
             guard let ac = action as? CelestiaAction else { return }
@@ -167,6 +169,12 @@ extension MainViewControler: CelestiaViewControllerDelegate {
         controller.modalPresentationStyle = .custom
         controller.transitioningDelegate = bottomSlideInManager
         present(controller, animated: true, completion: nil)
+    }
+
+    private func presentCameraControl() {
+        let vc = CameraControlViewController()
+        let controller = UINavigationController(rootViewController: vc)
+        showViewController(controller)
     }
 
     private func showBodyInfo(with selection: BodyInfo) {

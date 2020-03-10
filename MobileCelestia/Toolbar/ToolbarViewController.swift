@@ -10,6 +10,11 @@ import UIKit
 
 protocol ToolbarAction {
     var image: UIImage? { get }
+    var title: String? { get }
+}
+
+extension ToolbarAction {
+    var title: String? { return nil }
 }
 
 enum AppToolbarAction: String {
@@ -18,18 +23,19 @@ enum AppToolbarAction: String {
     case share
     case search
     case time
+    case camera
     case browse
     case favorite
 
-    static var persistentAction: [AppToolbarAction] {
-        return [.share, .search, .time, .browse, .favorite, .setting]
+    static var persistentAction: [[AppToolbarAction]] {
+        return [[.share, .search], [.time, .camera], [.browse, .favorite], [.setting]]
     }
 }
 
 class ToolbarViewController: UIViewController {
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
 
-    private let actions: [ToolbarAction]
+    private let actions: [[ToolbarAction]]
     private let finishOnSelection: Bool
     private let scrollDirection: UICollectionView.ScrollDirection
 
@@ -37,7 +43,7 @@ class ToolbarViewController: UIViewController {
 
     var selectionHandler: ((ToolbarAction?) -> Void)?
 
-    init(actions: [ToolbarAction], scrollDirection: UICollectionView.ScrollDirection = .vertical, finishOnSelection: Bool = true) {
+    init(actions: [[ToolbarAction]], scrollDirection: UICollectionView.ScrollDirection = .vertical, finishOnSelection: Bool = true) {
         self.actions = actions
         self.scrollDirection = scrollDirection
         self.finishOnSelection = finishOnSelection
@@ -49,8 +55,7 @@ class ToolbarViewController: UIViewController {
     }
 
     override func loadView() {
-        view = UIView()
-        view.backgroundColor = .darkBackground
+        view = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
     }
 
     override func viewDidLoad() {
@@ -60,30 +65,42 @@ class ToolbarViewController: UIViewController {
     }
 
     override var preferredContentSize: CGSize {
-        get { return CGSize(width: 60, height: 60) }
+        get { return CGSize(width: 220, height: 60) }
         set {}
     }
 
 }
 
 extension ToolbarViewController: UICollectionViewDataSource {
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
         return actions.count
     }
 
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return actions[section].count
+    }
+
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! ToolbarButtonCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! ToolbarCell
 
         cell.backgroundColor = .clear
-        cell.itemImage = actions[indexPath.row].image
+        let action = actions[indexPath.section][indexPath.row]
+        cell.itemImage = action.image
+        cell.itemTitle = action.title
         cell.actionHandler = { [unowned self] in
             if self.finishOnSelection {
                 self.dismiss(animated: true, completion: nil)
             }
-            self.selectionHandler?(self.actions[indexPath.row])
+            self.selectionHandler?(action)
         }
 
         return cell
+    }
+
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        let sup = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Separator", for: indexPath) as! ToolbarSeparatorCell
+        sup.isHidden = indexPath.section == actions.count - 1
+        return sup
     }
 }
 
@@ -92,11 +109,17 @@ private extension ToolbarViewController {
         let layout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
         layout.scrollDirection = scrollDirection
 
-        layout.itemSize = CGSize(width: 60, height: 60)
+        if scrollDirection == .vertical {
+            layout.itemSize = CGSize(width: 220, height: 44)
+            layout.footerReferenceSize = CGSize(width: 200, height: 6)
+        } else {
+            layout.itemSize = CGSize(width: 60, height: 60)
+        }
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
 
-        view.addSubview(collectionView)
+        let contentView = (view as! UIVisualEffectView).contentView
+        contentView.addSubview(collectionView)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
 
         if scrollDirection == .horizontal {
@@ -140,11 +163,39 @@ private extension ToolbarViewController {
         collectionView.backgroundColor = .clear
         collectionView.alwaysBounceVertical = false
 
-        collectionView.register(ToolbarButtonCell.self, forCellWithReuseIdentifier: "Cell")
+        if scrollDirection == .horizontal {
+            collectionView.register(ToolbarImageButtonCell.self, forCellWithReuseIdentifier: "Cell")
+        } else {
+            collectionView.register(ToolbarSeparatorCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "Separator")
+            collectionView.register(ToolbarImageTextButtonCell.self, forCellWithReuseIdentifier: "Cell")
+        }
         collectionView.dataSource = self
     }
 }
 
 extension AppToolbarAction: ToolbarAction {
     var image: UIImage? { return UIImage(named: "toolbar_\(rawValue)") }
+}
+
+extension AppToolbarAction {
+    var title: String? {
+        switch self {
+        case .celestia:
+            return CelestiaString("Information", comment: "")
+        case .browse:
+            return CelestiaString("Browser", comment: "")
+        case .favorite:
+            return CelestiaString("Favorite", comment: "")
+        case .search:
+            return CelestiaString("Search", comment: "")
+        case .setting:
+            return CelestiaString("Setting", comment: "")
+        case .share:
+            return CelestiaString("Share", comment: "")
+        case .time:
+            return CelestiaString("Time Control", comment: "")
+        case .camera:
+            return CelestiaString("Camera Control", comment: "")
+        }
+    }
 }
