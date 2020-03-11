@@ -153,6 +153,8 @@ private extension CelestiaAction {
             return CelestiaString("Follow", comment: "")
         case .runDemo:
             return CelestiaString("Run Demo", comment: "")
+        case .cancelScript:
+            return CelestiaString("Cancel Script", comment: "")
         }
     }
 }

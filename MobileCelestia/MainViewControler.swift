@@ -127,6 +127,8 @@ extension MainViewControler: CelestiaViewControllerDelegate {
                 self.showBrowser()
             case .time:
                 self.presentTimeToolbar()
+            case .script:
+                self.presentScriptToolbar()
             case .camera:
                 self.presentCameraControl()
             case .share:
@@ -161,9 +163,16 @@ extension MainViewControler: CelestiaViewControllerDelegate {
         showViewController(controller)
     }
 
+    private func presentScriptToolbar() {
+        presentActionToolbar(for: [.playpause, .cancelScript])
+    }
+
     private func presentTimeToolbar() {
-        let actions: [[CelestiaAction]] = [[.backward, .playpause, .forward]]
-        let controller = ToolbarViewController(actions: actions, scrollDirection: .horizontal, finishOnSelection: false)
+        presentActionToolbar(for: [.backward, .playpause, .forward])
+    }
+
+    private func presentActionToolbar(for actions: [CelestiaAction]) {
+        let controller = ToolbarViewController(actions: [actions], scrollDirection: .horizontal, finishOnSelection: false)
         controller.selectionHandler = { [unowned self] (action) in
             guard let ac = action as? CelestiaAction else { return }
             self.celestiaController.receive(action: ac)
@@ -353,6 +362,8 @@ extension CelestiaAction: ToolbarAction {
             return #imageLiteral(resourceName: "time_forward")
         case .backward:
             return #imageLiteral(resourceName: "time_backward")
+        case .cancelScript:
+            return #imageLiteral(resourceName: "time_stop")
         default:
             return nil
         }

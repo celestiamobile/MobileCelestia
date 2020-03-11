@@ -27,6 +27,7 @@ enum CelestiaAction: Int8 {
     case chase = 34
     case follow = 102
     case runDemo = 100
+    case cancelScript = 27
 }
 
 extension CelestiaAction {
