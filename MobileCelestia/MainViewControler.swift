@@ -287,7 +287,7 @@ extension MainViewControler {
 
 extension MainViewControler {
     private func submitURL(_ url: String, title: String) {
-        let requestURL = "https://meowssage.cc/celestia/create"
+        let requestURL = "https://astroweather.cn/celestia/create"
 
         struct URLCreationResponse: Decodable {
             let publicURL: String
