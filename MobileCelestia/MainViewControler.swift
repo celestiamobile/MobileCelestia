@@ -84,6 +84,10 @@ class MainViewControler: UIViewController {
     override var prefersHomeIndicatorAutoHidden: Bool {
          return true
     }
+
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
 }
 
 extension MainViewControler {
