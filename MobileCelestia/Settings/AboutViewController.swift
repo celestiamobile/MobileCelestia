@@ -38,14 +38,16 @@ class AboutViewController: UIViewController {
 
         totalItems.append([versionItem])
 
-        if let authorsPath = Bundle.main.path(forResource: "AUTHORS", ofType: nil), let text = try? String(contentsOfFile: authorsPath) {
+        let authorsPath = defaultDataDirectory.appendingPathComponent("AUTHORS").path
+        if let text = try? String(contentsOfFile: authorsPath) {
             totalItems.append([
                 TextItem.short(title: CelestiaString("Authors", comment: ""), detail: ""),
                 TextItem.long(content: text)
             ])
         }
 
-        if let translatorsPath = Bundle.main.path(forResource: "TRANSLATORS", ofType: nil), let text = try? String(contentsOfFile: translatorsPath) {
+        let translatorsPath = defaultDataDirectory.appendingPathComponent("TRANSLATORS").path
+        if let text = try? String(contentsOfFile: translatorsPath) {
             totalItems.append([
                 TextItem.short(title: CelestiaString("Translators", comment: ""), detail: ""),
                 TextItem.long(content: text)
