@@ -72,6 +72,7 @@ class CelestiaViewController: UIViewController {
     override func loadView() {
         let glView = GLKView(frame: .zero)
         glView.delegate = self
+        glView.contentScaleFactor = 1
         view = glView
     }
 }
@@ -80,8 +81,9 @@ extension CelestiaViewController: GLKViewDelegate {
     func glkView(_ view: GLKView, drawIn rect: CGRect) {
         guard ready else { return }
 
-        if view.bounds.size != currentSize {
-            currentSize = view.bounds.size
+        let size = CGSize(width: CGFloat(view.drawableWidth), height: CGFloat(view.drawableHeight))
+        if size != currentSize {
+            currentSize = size
             core.resize(to: currentSize)
         }
 
