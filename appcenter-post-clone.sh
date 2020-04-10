@@ -6,7 +6,7 @@ cd $APPCENTER_SOURCE_DIRECTORY/..
 git clone https://github.com/eyvallah/Celestia
 
 # Clone the CelestiaCore repo
-git clone https://github.com/eyvallah/CelestiaCore
+git clone https://${GITHUB_USERNAME}:${GITHUB_ACCESS_TOKEN}@github.com/eyvallah/CelestiaCore
 cd CelestiaCore
 git submodule update --init
 ln -sf libs/iOS thirdparty
