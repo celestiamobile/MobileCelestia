@@ -4,6 +4,9 @@ cd $APPCENTER_SOURCE_DIRECTORY/..
 
 # Clone the Celestia repo (modified)
 git clone https://github.com/eyvallah/Celestia
+cd Celestia
+git submodule update --init
+cd ..
 
 # Clone the CelestiaCore repo
 git clone https://${GITHUB_USERNAME}:${GITHUB_ACCESS_TOKEN}@github.com/eyvallah/CelestiaCore
