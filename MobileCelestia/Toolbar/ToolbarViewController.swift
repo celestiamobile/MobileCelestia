@@ -191,7 +191,7 @@ extension AppToolbarAction {
         case .search:
             return CelestiaString("Search", comment: "")
         case .setting:
-            return CelestiaString("Setting", comment: "")
+            return CelestiaString("Settings", comment: "")
         case .share:
             return CelestiaString("Share", comment: "")
         case .time:
