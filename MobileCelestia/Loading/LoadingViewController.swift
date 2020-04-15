@@ -33,8 +33,6 @@ extension LoadingViewController {
 
 private extension LoadingViewController {
     func setup() {
-        view.backgroundColor = .clear
-
         let container = UIView()
         container.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(container)
