@@ -187,7 +187,7 @@ extension AppToolbarAction {
         case .browse:
             return CelestiaString("Browser", comment: "")
         case .favorite:
-            return CelestiaString("Favorite", comment: "")
+            return CelestiaString("Favorites", comment: "")
         case .search:
             return CelestiaString("Search", comment: "")
         case .setting:

@@ -138,7 +138,7 @@ extension DataLocationSelectionViewController: UITableViewDataSource, UITableVie
 
     func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         if section == 0 {
-            return CelestiaString("Configuration will take place after a restart.", comment: "")
+            return CelestiaString("Configuration will take effect after a restart.", comment: "")
         }
         return nil
     }
