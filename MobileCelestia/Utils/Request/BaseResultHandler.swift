@@ -31,7 +31,7 @@ extension RequestHandler {
                                   queue: DispatchQueue = .main,
                                   session: URLSession = .shared) -> Self {
         return post(url: url, params: params, success: { (output) in
-            func unexpectedServerError() { fail?(NSLocalizedString("Unknown error", comment: "")) }
+            func unexpectedServerError() { fail?(CelestiaString("Unknown error", comment: "")) }
             guard output.status == 0, let data = output.info.detail?.data(using: .utf8) else {
                 unexpectedServerError()
                 return
