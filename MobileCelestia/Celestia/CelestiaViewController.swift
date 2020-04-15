@@ -54,6 +54,10 @@ class CelestiaViewController: UIViewController {
         var button: MouseButton {
             return self == .rotate ? .right : .left
         }
+
+        var next: DragMode {
+            return self == .rotate ? .move : .rotate
+        }
     }
 
     private enum ZoomMode {
@@ -83,6 +87,7 @@ class CelestiaViewController: UIViewController {
 
     weak var celestiaDelegate: CelestiaViewControllerDelegate!
 
+    private var dragMode = DragMode.move
     private var currentDragMode = DragMode.move
     private var zoomMode: ZoomMode? = nil
 
@@ -127,6 +132,38 @@ class CelestiaViewController: UIViewController {
 
         view = container
     }
+
+    override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+        super.pressesBegan(presses, with: event)
+        if #available(iOS 13.4, *), let key = presses.first?.key {
+            core.keyDown(with: key.input, modifiers: UInt(key.modifierFlags.rawValue))
+        }
+    }
+
+    override func pressesEnded(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+        super.pressesEnded(presses, with: event)
+        if #available(iOS 13.4, *), let key = presses.first?.key {
+            core.keyUp(with: key.input, modifiers: UInt(key.modifierFlags.rawValue))
+        }
+    }
+
+    override func pressesCancelled(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
+        super.pressesCancelled(presses, with: event)
+        if #available(iOS 13.4, *), let key = presses.first?.key {
+            core.keyUp(with: key.input, modifiers: UInt(key.modifierFlags.rawValue))
+        }
+    }
+}
+
+@available(iOS 13.4, *)
+private extension UIKey {
+    var input: String? {
+        let c = characters
+        if c.count > 0 {
+            return c
+        }
+        return charactersIgnoringModifiers
+    }
 }
 
 extension CelestiaViewController: GLKViewDelegate {
@@ -165,7 +202,7 @@ extension CelestiaViewController: CelestiaControlViewDelegate {
     }
 
     func celestiaControlView(_ celestiaControlView: CelestiaControlView, didToggleTo action: CelestiaControlAction) {
-        currentDragMode = action == .switchToMove ? .move : .rotate
+        dragMode = action == .switchToMove ? .move : .rotate
     }
 }
 
@@ -176,6 +213,16 @@ extension CelestiaViewController {
         case .possible:
             break
         case .began:
+            if #available(iOS 13.4, *) {
+                if pan.modifierFlags.contains(.control) {
+                    // When control is clicked, use next drag mode
+                    currentDragMode = dragMode.next
+                } else {
+                    currentDragMode = dragMode
+                }
+            } else {
+                currentDragMode = dragMode
+            }
             oneFingerStartPoint = location
             core.mouseButtonDown(at: location, modifiers: 0, with: currentDragMode.button)
         case .changed:
