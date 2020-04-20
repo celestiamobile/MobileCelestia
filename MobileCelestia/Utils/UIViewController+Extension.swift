@@ -75,6 +75,12 @@ extension UIViewController {
         return alert
     }
 
+    @discardableResult func showLoading(_ title: String) -> UIAlertController {
+        let alert = UIAlertController(title: title, message: nil, preferredStyle: .alert)
+        presentAlert(alert)
+        return alert
+    }
+
     private func presentAlert(_ alert: UIAlertController) {
         if #available(iOS 13.0, *) {
             alert.overrideUserInterfaceStyle = .dark

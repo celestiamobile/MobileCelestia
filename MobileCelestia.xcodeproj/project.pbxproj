@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 50;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -70,7 +70,6 @@
 		97FF95A0240A2E9900E9F44F /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FF959E240A2E9900E9F44F /* Request.swift */; };
 		97FF95A1240A2E9900E9F44F /* RequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FF959F240A2E9900E9F44F /* RequestHandler.swift */; };
 		97FF95A5240A340300E9F44F /* BaseResultHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FF95A4240A340300E9F44F /* BaseResultHandler.swift */; };
-		97FF95A8240A371F00E9F44F /* MBProgressHUD in Frameworks */ = {isa = PBXBuildFile; productRef = 97FF95A7240A371F00E9F44F /* MBProgressHUD */; };
 		97FF95AA240A3F0900E9F44F /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FF95A9240A3F0900E9F44F /* Data.swift */; };
 /* End PBXBuildFile section */
 
@@ -170,7 +169,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				97FF95A8240A371F00E9F44F /* MBProgressHUD in Frameworks */,
 				979D2FB123FEB2C2005D2592 /* OpenGLES.framework in Frameworks */,
 				9702D29D240A8DD1005746E3 /* AppCenter.framework in Frameworks */,
 				9702D29B240A8DD1005746E3 /* AppCenterCrashes.framework in Frameworks */,
@@ -441,7 +439,6 @@
 			);
 			name = MobileCelestia;
 			packageProductDependencies = (
-				97FF95A7240A371F00E9F44F /* MBProgressHUD */,
 			);
 			productName = MobileCelestia;
 			productReference = 979D2F7A23FEB1A6005D2592 /* Celestia.app */;
@@ -495,7 +492,6 @@
 			);
 			mainGroup = 979D2F7123FEB1A6005D2592;
 			packageReferences = (
-				97FF95A6240A371F00E9F44F /* XCRemoteSwiftPackageReference "MBProgressHUD" */,
 			);
 			productRefGroup = 979D2F7B23FEB1A6005D2592 /* Products */;
 			projectDirPath = "";
@@ -916,25 +912,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		97FF95A6240A371F00E9F44F /* XCRemoteSwiftPackageReference "MBProgressHUD" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/jdg/MBProgressHUD.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.2.0;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		97FF95A7240A371F00E9F44F /* MBProgressHUD */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 97FF95A6240A371F00E9F44F /* XCRemoteSwiftPackageReference "MBProgressHUD" */;
-			productName = MBProgressHUD;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 979D2F7223FEB1A6005D2592 /* Project object */;
 }

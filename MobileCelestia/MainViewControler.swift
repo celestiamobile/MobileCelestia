@@ -10,8 +10,6 @@ import UIKit
 
 import SafariServices
 
-import MBProgressHUD
-
 private let userInitiatedDismissalFlag = 1
 
 var urlToRun: URL?
@@ -306,21 +304,23 @@ extension MainViewControler {
             return
         }
 
-        MBProgressHUD.showAdded(to: view, animated: true)
+        let alert = showLoading(CelestiaString("Generating sharing link...", comment: ""))
         _ = RequestHandler.post(url: requestURL, params: [
             "title" : title,
             "url" : data.base64EncodedURLString(),
             "version" : Bundle.main.infoDictionary!["CFBundleVersion"] as! String
         ], success: { [unowned self] (result: URLCreationResponse) in
-            MBProgressHUD.hide(for: self.view, animated: true)
-            guard let url = URL(string: result.publicURL) else {
-                showUnknownError()
-                return
+            alert.dismiss(animated: true) {
+                guard let url = URL(string: result.publicURL) else {
+                    showUnknownError()
+                    return
+                }
+                self.showShareSheet(for: url)
             }
-            self.showShareSheet(for: url)
-        }, fail: { [unowned self] (error) in
-            MBProgressHUD.hide(for: self.view, animated: true)
-            showUnknownError()
+        }, fail: { (error) in
+            alert.dismiss(animated: true) {
+                showUnknownError()
+            }
         })
     }
 
