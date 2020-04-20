@@ -46,7 +46,7 @@ public class BaseRequestHandler<Output> {
             return true
         }
         guard let statusCode = (response as? HTTPURLResponse)?.statusCode else {
-            asyncFailHandler(message: CelestiaString("No Response", comment: ""))
+            asyncFailHandler(message: CelestiaString("No response", comment: ""))
             return true
         }
         guard statusCode < 400 else {

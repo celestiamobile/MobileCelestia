@@ -241,7 +241,7 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: UIViewController, 
 
     private func requestAddObject() {
         guard let item = add?() else {
-            showError(CelestiaString("Cannot add object.", comment: ""))
+            showError(CelestiaString("Cannot add object", comment: ""))
             return
         }
         itemList.append(item)

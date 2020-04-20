@@ -99,7 +99,7 @@ extension MainViewControler {
         guard let url = urlToRun else { return }
         urlToRun = nil
         addToBackStack()
-        let title = CelestiaString(url.isFileURL ? "Run script?" : "Open URL?", comment: "")
+        let title = url.isFileURL ? CelestiaString("Run script?", comment: "") : CelestiaString("Open URL?", comment: "")
         showOption(title) { [unowned self] (confirmed) in
             self.popLastAndShow()
             if confirmed {

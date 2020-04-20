@@ -76,7 +76,7 @@ private extension FavoriteCoordinatorController {
             } else if let itemList = item.itemList {
                 self.show(itemList)
             } else {
-                self.showError(CelestiaString("Object not selectable", comment: ""))
+                self.showError(CelestiaString("Object not found", comment: ""))
             }
         }, add: {
             guard itemList is BookmarkNode else {
