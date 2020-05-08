@@ -172,7 +172,7 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: UIViewController, 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
         if indexPath.section == 1 {
-            cell.title = CelestiaString("Add new...", comment: "")
+            cell.title = CelestiaString("Add new…", comment: "")
             cell.accessoryType = .disclosureIndicator
         } else {
             let item = itemList[indexPath.row]

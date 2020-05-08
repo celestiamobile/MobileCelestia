@@ -304,7 +304,7 @@ extension MainViewControler {
             return
         }
 
-        let alert = showLoading(CelestiaString("Generating sharing link...", comment: ""))
+        let alert = showLoading(CelestiaString("Generating sharing link…", comment: ""))
         _ = RequestHandler.post(url: requestURL, params: [
             "title" : title,
             "url" : data.base64EncodedURLString(),
