@@ -33,6 +33,6 @@ class LoadingFailureViewController: UIViewController {
             ]
         )
 
-        label.text = CelestiaString("Loading Celestia failed...", comment: "")
+        label.text = CelestiaString("Loading Celestia failed…", comment: "")
     }
 }
