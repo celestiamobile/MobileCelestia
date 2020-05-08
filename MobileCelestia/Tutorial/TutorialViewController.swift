@@ -44,7 +44,7 @@ class TutorialViewController: UIViewController {
     ]
 
     private lazy var tutorialActionItems = [
-        TutorialActionItem(title: "Run Demo", object: .runDemo)
+        TutorialActionItem(title: CelestiaString("Run Demo", comment: ""), object: .runDemo)
     ]
 
     private lazy var tutorialItems: [[TutorialItem]] = [
