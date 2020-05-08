@@ -27,9 +27,7 @@ class LoadingViewController: UIViewController {
 
 extension LoadingViewController {
     func update(with status: String) {
-        status.withCString {
-            statusLabel.text = String(format: CelestiaString("Loading: %s", comment: ""), $0)
-        }
+        statusLabel.text = String(format: CelestiaString("Loading: %s", comment: "").toLocalizationTemplate, status)
     }
 }
 
