@@ -35,6 +35,9 @@ private extension TimeSettingViewController {
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
 
+        if let sysLang = Locale.preferredLanguages.first {
+            datePicker.locale = Locale(identifier: sysLang)
+        }
         datePicker.setValue(UIColor.darkLabel, forKey: "textColor")
         datePicker.addTarget(self, action: #selector(handleTimeChange), for: .valueChanged)
         tableView.tableHeaderView = datePicker
