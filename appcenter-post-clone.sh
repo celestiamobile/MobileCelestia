@@ -21,7 +21,7 @@ brew install gettext
 # Download AppCenter
 cd $APPCENTER_SOURCE_DIRECTORY
 brew install wget
-APPCENTER_VERSION="3.1.0"
+APPCENTER_VERSION="3.1.1"
 wget https://github.com/microsoft/appcenter-sdk-apple/releases/download/${APPCENTER_VERSION}/AppCenter-SDK-Apple-${APPCENTER_VERSION}.zip
 unzip -qq AppCenter-SDK-Apple-${APPCENTER_VERSION}.zip 'AppCenter-SDK-Apple/iOS/*'
 ln -sf AppCenter-SDK-Apple/iOS AppCenter
