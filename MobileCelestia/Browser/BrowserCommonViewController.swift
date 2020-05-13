@@ -31,7 +31,7 @@ class BrowserCommonViewController: UIViewController {
         view = UIView()
         view.backgroundColor = .darkBackground
 
-        title = item.name
+        title = item.alternativeName ?? item.name
     }
 
     override func viewDidLoad() {

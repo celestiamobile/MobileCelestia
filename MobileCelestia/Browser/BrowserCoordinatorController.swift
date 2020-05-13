@@ -23,7 +23,7 @@ class BrowserCoordinatorController: UIViewController {
         self.selection = selection
         super.init(nibName: nil, bundle: nil)
 
-        tabBarItem = UITabBarItem(title: item.name, image: image, selectedImage: nil)
+        tabBarItem = UITabBarItem(title: item.alternativeName ?? item.name, image: image, selectedImage: nil)
     }
 
     required init?(coder: NSCoder) {
