@@ -18,7 +18,6 @@ extension ToolbarAction {
 }
 
 enum AppToolbarAction: String {
-    case celestia
     case setting
     case share
     case search
@@ -182,8 +181,6 @@ extension AppToolbarAction: ToolbarAction {
 extension AppToolbarAction {
     var title: String? {
         switch self {
-        case .celestia:
-            return CelestiaString("Information", comment: "")
         case .browse:
             return CelestiaString("Browser", comment: "")
         case .favorite:

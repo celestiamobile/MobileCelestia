@@ -110,17 +110,12 @@ extension MainViewControler {
 }
 
 extension MainViewControler: CelestiaViewControllerDelegate {
-    func celestiaController(_ celestiaController: CelestiaViewController, selection: BodyInfo?) {
-        var actions: [[AppToolbarAction]] = AppToolbarAction.persistentAction
-        if selection != nil {
-            actions.insert([.celestia], at: 0)
-        }
+    func celestiaController(_ celestiaController: CelestiaViewController, requestShowActionMenuWithSelection selection: BodyInfo?) {
+        let actions: [[AppToolbarAction]] = AppToolbarAction.persistentAction
         let controller = ToolbarViewController(actions: actions)
         controller.selectionHandler = { [unowned self] (action) in
             guard let ac = action as? AppToolbarAction else { return }
             switch ac {
-            case .celestia:
-                self.showBodyInfo(with: selection!)
             case .setting:
                 self.showSettings()
             case .search:
@@ -144,6 +139,11 @@ extension MainViewControler: CelestiaViewControllerDelegate {
         controller.modalPresentationStyle = .custom
         controller.transitioningDelegate = rightSlideInManager
         present(controller, animated: true, completion: nil)
+    }
+
+    func celestiaController(_ celestiaController: CelestiaViewController, requestShowInfoWithSelection selection: BodyInfo?) {
+        guard let sel = selection else { return }
+        showBodyInfo(with: sel)
     }
 
     private func presentShare(selection: BodyInfo?) {

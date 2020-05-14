@@ -14,6 +14,7 @@ enum CelestiaControlAction {
     case showMenu
     case switchToRotate
     case switchToMove
+    case info
 }
 
 enum CelestiaControlButton {

@@ -5,18 +5,18 @@
       "scale" : "1x"
     },
     {
+      "filename" : "control_info@2x.png",
       "idiom" : "universal",
-      "filename" : "toolbar_celestia@2x.png",
       "scale" : "2x"
     },
     {
+      "filename" : "control_info@3x.png",
       "idiom" : "universal",
-      "filename" : "toolbar_celestia@3x.png",
       "scale" : "3x"
     }
   ],
   "info" : {
-    "version" : 1,
-    "author" : "xcode"
+    "author" : "xcode",
+    "version" : 1
   }
 }

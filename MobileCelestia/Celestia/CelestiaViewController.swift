@@ -43,7 +43,8 @@ extension CelestiaAppCore {
 }
 
 protocol CelestiaViewControllerDelegate: class {
-    func celestiaController(_ celestiaController: CelestiaViewController, selection: BodyInfo?)
+    func celestiaController(_ celestiaController: CelestiaViewController, requestShowActionMenuWithSelection selection: BodyInfo?)
+    func celestiaController(_ celestiaController: CelestiaViewController, requestShowInfoWithSelection selection: BodyInfo?)
 }
 
 class CelestiaViewController: UIViewController {
@@ -111,6 +112,7 @@ class CelestiaViewController: UIViewController {
             CelestiaControlButton.toggle(offImage: #imageLiteral(resourceName: "control_rotate_off"), offAction: .switchToMove, onImage: #imageLiteral(resourceName: "control_rotate_on"), onAction: .switchToRotate),
             CelestiaControlButton.pressAndHold(image: #imageLiteral(resourceName: "control_zoom_in"), action: .zoomIn),
             CelestiaControlButton.pressAndHold(image: #imageLiteral(resourceName: "control_zoom_out"), action: .zoomOut),
+            CelestiaControlButton.tap(image: #imageLiteral(resourceName: "control_info"), action: .info),
             CelestiaControlButton.tap(image: #imageLiteral(resourceName: "control_action_menu"), action: .showMenu),
         ])
         controlView.delegate = self
@@ -191,11 +193,13 @@ extension CelestiaViewController: CelestiaControlViewDelegate {
     }
 
     func celestiaControlView(_ celestiaControlView: CelestiaControlView, didTapWith action: CelestiaControlAction) {
+        let sel = core.simulation.selection
+        let info = sel.isEmpty ? nil : BodyInfo(selection: sel)
         switch action {
         case .showMenu:
-            let sel = core.simulation.selection
-            let info = sel.isEmpty ? nil : BodyInfo(selection: sel)
-            celestiaDelegate.celestiaController(self, selection: info)
+            celestiaDelegate.celestiaController(self, requestShowActionMenuWithSelection: info)
+        case .info:
+            celestiaDelegate.celestiaController(self, requestShowInfoWithSelection: info)
         default:
             break
         }
@@ -292,7 +296,7 @@ extension CelestiaViewController {
         case .ended:
             let sel = core.simulation.selection
             let info = sel.isEmpty ? nil : BodyInfo(selection: sel)
-            celestiaDelegate.celestiaController(self, selection: info)
+            celestiaDelegate.celestiaController(self, requestShowActionMenuWithSelection: info)
         default:
             break
         }
