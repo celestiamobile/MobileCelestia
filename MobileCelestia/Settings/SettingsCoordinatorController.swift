@@ -50,6 +50,9 @@ private extension SettingsCoordinatorController {
             case .selection(let key, let items):
                 let controller = SettingSelectionViewController(item: SettingSelectionViewController.Item(title: item.name, key: key, subitems: items))
                 self.navigation.pushViewController(controller, animated: true)
+            case .slider(let it):
+                let controller = SettingSliderViewController(item: SettingSliderViewController.Item(title: item.name, sliderItem: it))
+                self.navigation.pushViewController(controller, animated: true)
             case .about:
                 self.navigation.pushViewController(AboutViewController(), animated: true)
             case .time:

@@ -106,6 +106,22 @@ extension UIColor {
     class var lightGroupHeaderFooterLabel: UIColor {
         return UIColor(rgb: 0x6D6D72)
     }
+
+    class var darkSystemBlueColor: UIColor {
+        return UIColor(rgb: 0x0A84FF)
+    }
+
+    class var lightSystemBlueColor: UIColor {
+        return UIColor(rgb: 0x007AFF)
+    }
+
+    class var darkSliderMinimumTrackTintColor: UIColor {
+        return darkSystemBlueColor
+    }
+
+    class var lightSliderMinimumTrackTintColor: UIColor {
+        return lightSystemBlueColor
+    }
 }
 
 extension UIColor {

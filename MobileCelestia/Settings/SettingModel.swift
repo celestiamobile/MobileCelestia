@@ -11,6 +11,7 @@ import Foundation
 enum SettingType {
     case checkmarks(masterKey: String?, items: [SettingCheckmarkItem])
     case selection(key: String, items: [SettingSelectionItem])
+    case slider(item: SettingSliderItem)
     case about
     case render
     case time
@@ -25,6 +26,12 @@ struct SettingCheckmarkItem {
 struct SettingSelectionItem {
     let name: String
     let index: Int
+}
+
+struct SettingSliderItem {
+    let key: String
+    let minValue: Double
+    let maxValue: Double
 }
 
 struct SettingItem {
@@ -156,6 +163,14 @@ let mainSetting = [
             SettingSelectionItem(name: CelestiaString("Terse", comment: ""), index: 1),
             SettingSelectionItem(name: CelestiaString("Verbose", comment: ""), index: 2),
         ])),
+        SettingItem(name: CelestiaString("Ambient Light", comment: ""),
+                    type: .slider(item: .init(key: "ambientLightLevel",
+                                  minValue: 0, maxValue: 1))
+        ),
+        SettingItem(name: CelestiaString("Faintest Stars", comment: ""),
+                    type: .slider(item: .init(key: "faintestVisible",
+                                  minValue: 3, maxValue: 12))
+        ),
         SettingItem(name: CelestiaString("Data Location", comment: ""), type: .dataLocation),
     ]),
     SettingSection(title: CelestiaString("Others", comment: ""), items: [

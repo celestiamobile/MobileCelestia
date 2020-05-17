@@ -71,6 +71,8 @@
 		97FF95A1240A2E9900E9F44F /* RequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FF959F240A2E9900E9F44F /* RequestHandler.swift */; };
 		97FF95A5240A340300E9F44F /* BaseResultHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FF95A4240A340300E9F44F /* BaseResultHandler.swift */; };
 		97FF95AA240A3F0900E9F44F /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FF95A9240A3F0900E9F44F /* Data.swift */; };
+		EABDE3642471708100E0A5FA /* SettingSliderViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABDE3632471708100E0A5FA /* SettingSliderViewController.swift */; };
+		EABDE367247170F000E0A5FA /* SettngSliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABDE366247170F000E0A5FA /* SettngSliderCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -162,6 +164,8 @@
 		97FF959F240A2E9900E9F44F /* RequestHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestHandler.swift; sourceTree = "<group>"; };
 		97FF95A4240A340300E9F44F /* BaseResultHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseResultHandler.swift; sourceTree = "<group>"; };
 		97FF95A9240A3F0900E9F44F /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
+		EABDE3632471708100E0A5FA /* SettingSliderViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingSliderViewController.swift; sourceTree = "<group>"; };
+		EABDE366247170F000E0A5FA /* SettngSliderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettngSliderCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -281,6 +285,8 @@
 				973BBA60240538DB00E3B061 /* MultiLineTextCell.swift */,
 				973BBA6524054E9900E3B061 /* TextViewController.swift */,
 				97EB41C82408F26200E6D441 /* SettingStepperCell.swift */,
+				EABDE3632471708100E0A5FA /* SettingSliderViewController.swift */,
+				EABDE366247170F000E0A5FA /* SettngSliderCell.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -631,10 +637,12 @@
 				972C5A8A24068D55009747A8 /* UIViewController+Presentation.m in Sources */,
 				978406DA2402906C00876FD1 /* UIViewController+Extension.swift in Sources */,
 				9773949E2402A96B00E38B82 /* SlideInPresentationController.swift in Sources */,
+				EABDE3642471708100E0A5FA /* SettingSliderViewController.swift in Sources */,
 				973BBA6624054E9900E3B061 /* TextViewController.swift in Sources */,
 				97FF95A1240A2E9900E9F44F /* RequestHandler.swift in Sources */,
 				979D2F7E23FEB1A6005D2592 /* AppDelegate.swift in Sources */,
 				977394A32403E68800E38B82 /* Color.swift in Sources */,
+				EABDE367247170F000E0A5FA /* SettngSliderCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
