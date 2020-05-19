@@ -12,6 +12,8 @@ enum SettingType {
     case checkmarks(masterKey: String?, items: [SettingCheckmarkItem])
     case selection(key: String, items: [SettingSelectionItem])
     case slider(item: SettingSliderItem)
+    case action(item: SettingActionItem)
+    case common(item: SettingCommonItem)
     case about
     case render
     case time
@@ -34,6 +36,10 @@ struct SettingSliderItem {
     let maxValue: Double
 }
 
+struct SettingActionItem {
+    let action: Int8
+}
+
 struct SettingItem {
     let name: String
     let type: SettingType
@@ -48,6 +54,26 @@ enum TextItem {
     case short(title: String, detail: String?)
     case long(content: String)
     case link(title: String, url: URL)
+}
+
+struct SettingCommonItem {
+    struct Section {
+        let rows: [SettingItem]
+    }
+    let title: String
+    let sections: [Section]
+}
+
+extension SettingCommonItem {
+    init(title: String, items: [SettingItem]) {
+        self.init(title: title, sections: [Section(rows: items)])
+    }
+}
+
+extension SettingCommonItem {
+    init(item: SettingItem) {
+        self.init(title: item.name, items: [item])
+    }
 }
 
 let mainSetting = [
@@ -164,17 +190,31 @@ let mainSetting = [
             SettingSelectionItem(name: CelestiaString("Verbose", comment: ""), index: 2),
         ])),
         SettingItem(name: CelestiaString("Ambient Light", comment: ""),
-                    type: .slider(item: .init(key: "ambientLightLevel",
-                                  minValue: 0, maxValue: 1))
+                    type: .common(item: SettingCommonItem(
+                        item: SettingItem(
+                            name: CelestiaString("Ambient Light", comment: ""),
+                            type: .slider(item: .init(key: "ambientLightLevel", minValue: 0, maxValue: 1)))
+                        )
+            )
         ),
         SettingItem(name: CelestiaString("Faintest Stars", comment: ""),
-                    type: .slider(item: .init(key: "faintestVisible",
-                                  minValue: 3, maxValue: 12))
+                    type: .common(item: SettingCommonItem(
+                        item: SettingItem(
+                            name: CelestiaString("Faintest Stars", comment: ""),
+                            type: .slider(item: .init(key: "faintestVisible", minValue: 3, maxValue: 12)))
+                        )
+            )
         ),
         SettingItem(name: CelestiaString("Data Location", comment: ""), type: .dataLocation),
     ]),
     SettingSection(title: CelestiaString("Others", comment: ""), items: [
         SettingItem(name: CelestiaString("Render Info", comment: ""), type: .render),
+        SettingItem(name: CelestiaString("Debug", comment: ""), type: .common(item:
+            SettingCommonItem(title: CelestiaString("Debug", comment: ""), items: [
+                SettingItem(name: CelestiaString("Toggle Display FPS", comment: ""), type: .action(item: SettingActionItem(action: 0x60))),
+                SettingItem(name: CelestiaString("Toggle Display Console", comment: ""), type: .action(item: SettingActionItem(action: 0x7E))),
+            ])
+        )),
         SettingItem(name: CelestiaString("About", comment: ""), type: .about)
     ])
 ]

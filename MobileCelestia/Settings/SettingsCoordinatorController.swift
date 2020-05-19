@@ -50,8 +50,8 @@ private extension SettingsCoordinatorController {
             case .selection(let key, let items):
                 let controller = SettingSelectionViewController(item: SettingSelectionViewController.Item(title: item.name, key: key, subitems: items))
                 self.navigation.pushViewController(controller, animated: true)
-            case .slider(let it):
-                let controller = SettingSliderViewController(item: SettingSliderViewController.Item(title: item.name, sliderItem: it))
+            case .common(let item):
+                let controller = SettingCommonViewController(item: item)
                 self.navigation.pushViewController(controller, animated: true)
             case .about:
                 self.navigation.pushViewController(AboutViewController(), animated: true)
@@ -61,6 +61,10 @@ private extension SettingsCoordinatorController {
                 self.navigation.pushViewController(TextViewController(title: item.name, text: renderInfo), animated: true)
             case .dataLocation:
                 self.navigation.pushViewController(DataLocationSelectionViewController(), animated: true)
+            case .slider(_):
+                fallthrough
+            case .action(_):
+                fatalError("Use .common for slider/action setting item.")
             }
         })
         navigation = UINavigationController(rootViewController: main)
