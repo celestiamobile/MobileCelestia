@@ -12,8 +12,8 @@ enum CelestiaControlAction {
     case zoomIn
     case zoomOut
     case showMenu
-    case switchToRotate
-    case switchToMove
+    case switchToObject
+    case switchToCamera
     case info
 }
 
@@ -61,6 +61,7 @@ final class CelestiaControlView: UIView {
         let buttons = buttonProperties.enumerated().map { (arg) -> UIButton in
             let (offset, element) = arg
             let button = Button()
+            button.imageView?.contentMode = .center
             button.tintColor = .darkBackground
             button.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
