@@ -48,16 +48,16 @@ protocol CelestiaViewControllerDelegate: class {
 }
 
 class CelestiaViewController: UIViewController {
-    private enum DragMode {
-        case rotate
-        case move
+    private enum InteractionMode {
+        case object
+        case camera
 
         var button: MouseButton {
-            return self == .rotate ? .right : .left
+            return self == .object ? .right : .left
         }
 
-        var next: DragMode {
-            return self == .rotate ? .move : .rotate
+        var next: InteractionMode {
+            return self == .object ? .camera : .object
         }
     }
 
@@ -88,8 +88,8 @@ class CelestiaViewController: UIViewController {
 
     weak var celestiaDelegate: CelestiaViewControllerDelegate!
 
-    private var dragMode = DragMode.move
-    private var currentDragMode = DragMode.move
+    private var interactionMode = InteractionMode.camera
+    private var currentInteractionMode = InteractionMode.camera
     private var zoomMode: ZoomMode? = nil
 
     override func loadView() {
@@ -109,7 +109,7 @@ class CelestiaViewController: UIViewController {
         glView.contentScaleFactor = 1
 
         let controlView = CelestiaControlView(items: [
-            CelestiaControlButton.toggle(offImage: #imageLiteral(resourceName: "control_rotate_off"), offAction: .switchToMove, onImage: #imageLiteral(resourceName: "control_rotate_on"), onAction: .switchToRotate),
+            CelestiaControlButton.toggle(offImage: #imageLiteral(resourceName: "control_mode_camera"), offAction: .switchToCamera, onImage: #imageLiteral(resourceName: "control_mode_object"), onAction: .switchToObject),
             CelestiaControlButton.pressAndHold(image: #imageLiteral(resourceName: "control_zoom_in"), action: .zoomIn),
             CelestiaControlButton.pressAndHold(image: #imageLiteral(resourceName: "control_zoom_out"), action: .zoomOut),
             CelestiaControlButton.tap(image: #imageLiteral(resourceName: "control_info"), action: .info),
@@ -206,7 +206,7 @@ extension CelestiaViewController: CelestiaControlViewDelegate {
     }
 
     func celestiaControlView(_ celestiaControlView: CelestiaControlView, didToggleTo action: CelestiaControlAction) {
-        dragMode = action == .switchToMove ? .move : .rotate
+        interactionMode = action == .switchToObject ? .object : .camera
     }
 }
 
@@ -220,24 +220,24 @@ extension CelestiaViewController {
             if #available(iOS 13.4, *) {
                 if pan.modifierFlags.contains(.control) {
                     // When control is clicked, use next drag mode
-                    currentDragMode = dragMode.next
+                    currentInteractionMode = interactionMode.next
                 } else {
-                    currentDragMode = dragMode
+                    currentInteractionMode = interactionMode
                 }
             } else {
-                currentDragMode = dragMode
+                currentInteractionMode = interactionMode
             }
             oneFingerStartPoint = location
-            core.mouseButtonDown(at: location, modifiers: 0, with: currentDragMode.button)
+            core.mouseButtonDown(at: location, modifiers: 0, with: currentInteractionMode.button)
         case .changed:
             let current = oneFingerStartPoint!
             let offset = CGPoint(x: location.x - current.x, y: location.y - current.y)
             oneFingerStartPoint = location
-            core.mouseMove(by: offset, modifiers: 0, with: currentDragMode.button)
+            core.mouseMove(by: offset, modifiers: 0, with: currentInteractionMode.button)
         case .ended, .cancelled, .failed:
             fallthrough
         @unknown default:
-            core.mouseButtonUp(at: location, modifiers: 0, with: currentDragMode.button)
+            core.mouseButtonUp(at: location, modifiers: 0, with: currentInteractionMode.button)
             oneFingerStartPoint = nil
         }
     }
@@ -271,7 +271,8 @@ extension CelestiaViewController {
             let length = hypot(abs(point1.x - point2.x), abs(point1.y - point2.y))
             let delta = length / currentPanDistance!
             // FIXME: 8 is a magic number
-            core.mouseWheel(by: (1 - delta) * currentPanDistance! / 8, modifiers: 0)
+            let y = (1 - delta) * currentPanDistance! / 8
+            callZoom(deltaY: y)
             currentPanDistance = length
         case .ended, .cancelled, .failed:
             fallthrough
@@ -301,12 +302,20 @@ extension CelestiaViewController {
             break
         }
     }
+
+    private func callZoom(deltaY: CGFloat) {
+        if currentInteractionMode == .camera {
+            core.mouseMove(by: CGPoint(x: 0, y: deltaY), modifiers: UInt(UIKeyModifierFlags.shift.rawValue), with: .left)
+        } else {
+            core.mouseWheel(by: deltaY, modifiers: 0)
+        }
+    }
 }
 
 extension CelestiaViewController {
     @objc private func handleDisplayLink(_ sender: CADisplayLink) {
         if let mode = zoomMode {
-            core.mouseWheel(by: mode.distance, modifiers: 0)
+            callZoom(deltaY: mode.distance)
         }
         glView.display()
     }
