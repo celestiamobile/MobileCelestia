@@ -206,7 +206,22 @@ extension CelestiaViewController: CelestiaControlViewDelegate {
     }
 
     func celestiaControlView(_ celestiaControlView: CelestiaControlView, didToggleTo action: CelestiaControlAction) {
+        let toastDuration: TimeInterval = 1
         interactionMode = action == .switchToObject ? .object : .camera
+        switch action {
+        case .switchToObject:
+            interactionMode = .object
+            if let window = view.window {
+                Toast.show(text: CelestiaString("Switched to object mode", comment: ""), in: window, duration: toastDuration)
+            }
+        case .switchToCamera:
+            interactionMode = .camera
+            if let window = view.window {
+                Toast.show(text: CelestiaString("Switched to camera mode", comment: ""), in: window, duration: toastDuration)
+            }
+        default:
+            fatalError("Unknown mode found: \(action)")
+        }
     }
 }
 
