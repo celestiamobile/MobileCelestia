@@ -187,6 +187,8 @@ extension MainViewControler: CelestiaViewControllerDelegate {
     private func presentCameraControl() {
         let vc = CameraControlViewController()
         let controller = UINavigationController(rootViewController: vc)
+        controller.navigationBar.barStyle = .black
+        controller.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
         showViewController(controller)
     }
 
