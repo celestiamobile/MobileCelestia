@@ -211,8 +211,8 @@ let mainSetting = [
         SettingItem(name: CelestiaString("Render Info", comment: ""), type: .render),
         SettingItem(name: CelestiaString("Debug", comment: ""), type: .common(item:
             SettingCommonItem(title: CelestiaString("Debug", comment: ""), items: [
-                SettingItem(name: CelestiaString("Toggle Display FPS", comment: ""), type: .action(item: SettingActionItem(action: 0x60))),
-                SettingItem(name: CelestiaString("Toggle Display Console", comment: ""), type: .action(item: SettingActionItem(action: 0x7E))),
+                SettingItem(name: CelestiaString("Toggle FPS Display", comment: ""), type: .action(item: SettingActionItem(action: 0x60))),
+                SettingItem(name: CelestiaString("Toggle Console Display", comment: ""), type: .action(item: SettingActionItem(action: 0x7E))),
             ])
         )),
         SettingItem(name: CelestiaString("About", comment: ""), type: .about)
