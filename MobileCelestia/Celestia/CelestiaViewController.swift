@@ -88,8 +88,8 @@ class CelestiaViewController: UIViewController {
 
     weak var celestiaDelegate: CelestiaViewControllerDelegate!
 
-    private var interactionMode = InteractionMode.camera
-    private var currentInteractionMode = InteractionMode.camera
+    private var interactionMode = InteractionMode.object
+    private var currentInteractionMode = InteractionMode.object
     private var zoomMode: ZoomMode? = nil
 
     override func loadView() {
@@ -109,7 +109,7 @@ class CelestiaViewController: UIViewController {
         glView.contentScaleFactor = 1
 
         let controlView = CelestiaControlView(items: [
-            CelestiaControlButton.toggle(offImage: #imageLiteral(resourceName: "control_mode_camera"), offAction: .switchToCamera, onImage: #imageLiteral(resourceName: "control_mode_object"), onAction: .switchToObject),
+            CelestiaControlButton.toggle(offImage: #imageLiteral(resourceName: "control_mode_object"), offAction: .switchToObject, onImage: #imageLiteral(resourceName: "control_mode_camera"), onAction: .switchToCamera),
             CelestiaControlButton.pressAndHold(image: #imageLiteral(resourceName: "control_zoom_in"), action: .zoomIn),
             CelestiaControlButton.pressAndHold(image: #imageLiteral(resourceName: "control_zoom_out"), action: .zoomOut),
             CelestiaControlButton.tap(image: #imageLiteral(resourceName: "control_info"), action: .info),

@@ -12,7 +12,7 @@ class TutorialDescriptionCell: UITableViewCell {
     private lazy var label = UILabel()
     private lazy var iv = UIImageView()
 
-    var img: UIImage? { didSet { iv.image = img } }
+    var img: UIImage? { didSet { iv.image = img?.withRenderingMode(.alwaysTemplate) } }
     var title: String? { didSet { label.text = title }  }
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -31,12 +31,18 @@ private extension TutorialDescriptionCell {
         selectionStyle = .none
         backgroundColor = .clear
 
+        let verticalSpacing: CGFloat = 12
+        let horizontalSpacing: CGFloat = 16
+
         iv.translatesAutoresizingMaskIntoConstraints = false
+        iv.tintColor = .darkLabel
         contentView.addSubview(iv)
         NSLayoutConstraint.activate([
-            iv.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            iv.topAnchor.constraint(greaterThanOrEqualTo: contentView.topAnchor, constant: 16),
-            iv.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            iv.widthAnchor.constraint(equalToConstant: 44),
+            iv.heightAnchor.constraint(equalToConstant: 44),
+            iv.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: horizontalSpacing),
+            iv.topAnchor.constraint(equalTo: contentView.topAnchor, constant: verticalSpacing),
+            iv.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -verticalSpacing),
         ])
 
         iv.setContentHuggingPriority(.required, for: .horizontal)
@@ -48,13 +54,18 @@ private extension TutorialDescriptionCell {
         label.numberOfLines = 0
 
         NSLayoutConstraint.activate([
-            label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            label.leadingAnchor.constraint(equalTo: iv.trailingAnchor, constant: 16),
-            label.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 16),
-            label.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -horizontalSpacing),
+            label.leadingAnchor.constraint(equalTo: iv.trailingAnchor, constant: horizontalSpacing),
+            label.topAnchor.constraint(equalTo: contentView.topAnchor, constant: verticalSpacing),
+            {
+                let cons =
+                label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -verticalSpacing)
+                cons.priority = .defaultHigh
+                return cons
+            }()
         ])
 
-        let textBottomConstraint = label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16)
+        let textBottomConstraint = label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -verticalSpacing)
         textBottomConstraint.priority = .defaultLow
         NSLayoutConstraint.activate([textBottomConstraint])
     }

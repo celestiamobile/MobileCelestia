@@ -16,7 +16,7 @@ enum TutorialAction {
 
 class TutorialViewController: UIViewController {
     private struct TutorialDescriptionItem {
-        let image: UIImage
+        let image: UIImage?
         let text: String
     }
 
@@ -33,14 +33,12 @@ class TutorialViewController: UIViewController {
     private lazy var tableView = UITableView(frame: .zero, style: .plain)
 
     private lazy var tutorialDescriptionItems = [
-        TutorialDescriptionItem(image: #imageLiteral(resourceName: "tutorial_gesture_tap"),
-                                text: CelestiaString("Tap to select an object.", comment: "")),
-        TutorialDescriptionItem(image: #imageLiteral(resourceName: "tutorial_gesture_one_finger_pan"),
-                                text: CelestiaString("Drag with one finger to move/rotate around an object.", comment: "")),
-        TutorialDescriptionItem(image: #imageLiteral(resourceName: "tutorial_gesture_pinch"),
-                                text: CelestiaString("Pinch to zoom in/out on an object.", comment: "")),
-        TutorialDescriptionItem(image: #imageLiteral(resourceName: "tutorial_gesture_screen_edge_pan"),
-                                text: CelestiaString("Swipe left from right edge of screen to open action menu.", comment: "")),
+        TutorialDescriptionItem(image: #imageLiteral(resourceName: "tutorial_switch_mode"),
+                                text: CelestiaString("Tap the mode button on the sidebar to switch between object mode and camera mode.", comment: "")),
+        TutorialDescriptionItem(image: #imageLiteral(resourceName: "tutorial_mode_object"),
+                                text: CelestiaString("In object mode, drag to rotate around an object.\n\nPinch to zoom in/out on an object.", comment: "")),
+        TutorialDescriptionItem(image: #imageLiteral(resourceName: "tutorial_mode_camera"),
+                                text: CelestiaString("In camera mode, drag to move field of view.\n\nPinch to zoom in/out field of view.", comment: "")),
     ]
 
     private lazy var tutorialActionItems = [
