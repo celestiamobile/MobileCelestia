@@ -135,6 +135,12 @@ class CelestiaViewController: UIViewController {
         view = container
     }
 
+    override func viewSafeAreaInsetsDidChange() {
+        super.viewSafeAreaInsetsDidChange()
+
+        core?.setSafeAreaInsets(view.safeAreaInsets)
+    }
+
     override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
         super.pressesBegan(presses, with: event)
         if #available(iOS 13.4, *), let key = presses.first?.key {
@@ -154,6 +160,12 @@ class CelestiaViewController: UIViewController {
         if #available(iOS 13.4, *), let key = presses.first?.key {
             core.keyUp(with: key.input, modifiers: UInt(key.modifierFlags.rawValue))
         }
+    }
+}
+
+private extension CelestiaAppCore {
+    func setSafeAreaInsets(_ safeAreaInsets: UIEdgeInsets) {
+        setSafeAreaInsets(left: safeAreaInsets.left, top: safeAreaInsets.top, right: safeAreaInsets.right, bottom: safeAreaInsets.bottom)
     }
 }
 
@@ -465,6 +477,8 @@ extension CelestiaViewController {
     }
 
     private func start() {
+        core.setSafeAreaInsets(view.safeAreaInsets)
+
         core.tick()
         core.start()
     }
