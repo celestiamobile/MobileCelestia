@@ -55,14 +55,15 @@ final class CelestiaControlView: UIView {
 
         super.init(frame: .zero)
 
-        backgroundColor = .darkLabel
+        backgroundColor = .clear
+        clipsToBounds = true
         layer.cornerRadius = 8
 
         let buttons = buttonProperties.enumerated().map { (arg) -> UIButton in
             let (offset, element) = arg
             let button = Button()
             button.imageView?.contentMode = .center
-            button.tintColor = .darkBackground
+            button.tintColor = .darkSecondaryLabel
             button.translatesAutoresizingMaskIntoConstraints = false
             NSLayoutConstraint.activate([
                 button.heightAnchor.constraint(equalToConstant: 44),
@@ -86,6 +87,17 @@ final class CelestiaControlView: UIView {
             button.tag = offset
             return button
         }
+
+        let visualBackground = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
+        visualBackground.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(visualBackground)
+        NSLayoutConstraint.activate([
+            visualBackground.leadingAnchor.constraint(equalTo: leadingAnchor),
+            visualBackground.trailingAnchor.constraint(equalTo: trailingAnchor),
+            visualBackground.topAnchor.constraint(equalTo: topAnchor),
+            visualBackground.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
+
         let stackView = UIStackView(arrangedSubviews: buttons)
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
