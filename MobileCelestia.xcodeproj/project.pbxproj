@@ -72,6 +72,7 @@
 		97FF95A5240A340300E9F44F /* BaseResultHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FF95A4240A340300E9F44F /* BaseResultHandler.swift */; };
 		97FF95AA240A3F0900E9F44F /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FF95A9240A3F0900E9F44F /* Data.swift */; };
 		EA5E185D2477C78E00F5374B /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5E185B2477C78E00F5374B /* Toast.swift */; };
+		EABC245D248E162000205B5A /* FontHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = EABC245A248E162000205B5A /* FontHelper.m */; };
 		EABDE367247170F000E0A5FA /* SettngSliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABDE366247170F000E0A5FA /* SettngSliderCell.swift */; };
 		EABDE3A92473DAA300E0A5FA /* SettingCommonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABDE3A82473DAA300E0A5FA /* SettingCommonViewController.swift */; };
 /* End PBXBuildFile section */
@@ -166,6 +167,8 @@
 		97FF95A4240A340300E9F44F /* BaseResultHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseResultHandler.swift; sourceTree = "<group>"; };
 		97FF95A9240A3F0900E9F44F /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
 		EA5E185B2477C78E00F5374B /* Toast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
+		EABC245A248E162000205B5A /* FontHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FontHelper.m; sourceTree = "<group>"; };
+		EABC245C248E162000205B5A /* FontHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FontHelper.h; sourceTree = "<group>"; };
 		EABDE366247170F000E0A5FA /* SettngSliderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettngSliderCell.swift; sourceTree = "<group>"; };
 		EABDE3A82473DAA300E0A5FA /* SettingCommonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingCommonViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -232,6 +235,8 @@
 		97401C972414D3460015F8E8 /* Helper */ = {
 			isa = PBXGroup;
 			children = (
+				EABC245C248E162000205B5A /* FontHelper.h */,
+				EABC245A248E162000205B5A /* FontHelper.m */,
 				97401C982414D3460015F8E8 /* URL.swift */,
 				97401C992414D3460015F8E8 /* UserDefaults.swift */,
 				97401C9A2414D3460015F8E8 /* Celestia+Extension.swift */,
@@ -638,6 +643,7 @@
 				97FF95A5240A340300E9F44F /* BaseResultHandler.swift in Sources */,
 				977394BF24041A9A00E38B82 /* SearchCoordinatorController.swift in Sources */,
 				978406DC240294D000876FD1 /* LoadingViewController.swift in Sources */,
+				EABC245D248E162000205B5A /* FontHelper.m in Sources */,
 				972C5A8A24068D55009747A8 /* UIViewController+Presentation.m in Sources */,
 				978406DA2402906C00876FD1 /* UIViewController+Extension.swift in Sources */,
 				9773949E2402A96B00E38B82 /* SlideInPresentationController.swift in Sources */,
