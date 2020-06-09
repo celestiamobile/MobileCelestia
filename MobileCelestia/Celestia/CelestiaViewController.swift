@@ -106,7 +106,6 @@ class CelestiaViewController: UIViewController {
             glView.bottomAnchor.constraint(equalTo: container.bottomAnchor),
         ])
         glView.delegate = self
-        glView.contentScaleFactor = 1
 
         let controlView = CelestiaControlView(items: [
             CelestiaControlButton.toggle(offImage: #imageLiteral(resourceName: "control_mode_object"), offAction: .switchToObject, onImage: #imageLiteral(resourceName: "control_mode_camera"), onAction: .switchToCamera),
@@ -138,7 +137,7 @@ class CelestiaViewController: UIViewController {
     override func viewSafeAreaInsetsDidChange() {
         super.viewSafeAreaInsetsDidChange()
 
-        core?.setSafeAreaInsets(view.safeAreaInsets)
+        core?.setSafeAreaInsets(view.safeAreaInsets.scale(by: glView.contentScaleFactor))
     }
 
     override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
@@ -239,7 +238,7 @@ extension CelestiaViewController: CelestiaControlViewDelegate {
 
 extension CelestiaViewController {
     @objc private func handlePan(_ pan: UIPanGestureRecognizer) {
-        let location = pan.location(in: pan.view)
+        let location = pan.location(in: pan.view).scale(by: glView.contentScaleFactor)
         switch pan.state {
         case .possible:
             break
@@ -280,8 +279,8 @@ extension CelestiaViewController {
                 gesture.isEnabled = true
                 break
             }
-            let point1 = gesture.location(ofTouch: 0, in: view)
-            let point2 = gesture.location(ofTouch: 1, in: view)
+            let point1 = gesture.location(ofTouch: 0, in: view).scale(by: glView.contentScaleFactor)
+            let point2 = gesture.location(ofTouch: 1, in: view).scale(by: glView.contentScaleFactor)
             let length = hypot(abs(point1.x - point2.x), abs(point1.y - point2.y))
             let center = CGPoint(x: (point1.x + point2.x) / 2, y: (point1.y + point2.y) / 2)
             currentPanDistance = length
@@ -293,8 +292,8 @@ extension CelestiaViewController {
                 gesture.isEnabled = true
                 break
             }
-            let point1 = gesture.location(ofTouch: 0, in: view)
-            let point2 = gesture.location(ofTouch: 1, in: view)
+            let point1 = gesture.location(ofTouch: 0, in: view).scale(by: glView.contentScaleFactor)
+            let point2 = gesture.location(ofTouch: 1, in: view).scale(by: glView.contentScaleFactor)
             let length = hypot(abs(point1.x - point2.x), abs(point1.y - point2.y))
             let delta = length / currentPanDistance!
             // FIXME: 8 is a magic number
@@ -311,7 +310,7 @@ extension CelestiaViewController {
     @objc private func handleTap(_ tap: UITapGestureRecognizer) {
         switch tap.state {
         case .ended:
-            let location = tap.location(in: tap.view)
+            let location = tap.location(in: tap.view).scale(by: glView.contentScaleFactor)
             core.mouseButtonDown(at: location, modifiers: 0, with: .left)
             core.mouseButtonUp(at: location, modifiers: 0, with: .left)
         default:
@@ -477,7 +476,9 @@ extension CelestiaViewController {
     }
 
     private func start() {
-        core.setSafeAreaInsets(view.safeAreaInsets)
+        core.setSafeAreaInsets(view.safeAreaInsets.scale(by: glView.contentScaleFactor))
+
+        core.setDPI(Int(96.0 * glView.contentScaleFactor))
 
         let locale = LocalizedString("LANGUAGE", "celestia")
         if let font = GetFontForLocale(locale, .system),
@@ -518,5 +519,17 @@ extension CelestiaViewController {
         } else {
             core.go(to: url.url.absoluteString)
         }
+    }
+}
+
+private extension CGPoint {
+    func scale(by factor: CGFloat) -> CGPoint {
+        return applying(CGAffineTransform(scaleX: factor, y: factor))
+    }
+}
+
+private extension UIEdgeInsets {
+    func scale(by factor: CGFloat) -> UIEdgeInsets {
+        return UIEdgeInsets(top: top * factor, left: left * factor, bottom: bottom * factor, right: right * factor)
     }
 }
