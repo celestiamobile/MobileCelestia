@@ -88,7 +88,7 @@ class CelestiaViewController: UIViewController {
 
     weak var celestiaDelegate: CelestiaViewControllerDelegate!
 
-    private var interactionMode = InteractionMode.object
+    private var interactionMode = InteractionMode.object { didSet { currentInteractionMode = interactionMode } }
     private var currentInteractionMode = InteractionMode.object
     private var zoomMode: ZoomMode? = nil
 
