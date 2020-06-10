@@ -97,6 +97,12 @@ class CelestiaViewController: UIViewController {
         container.backgroundColor = .darkBackground
 
         glView.translatesAutoresizingMaskIntoConstraints = false
+        if UserDefaults.app[.fullDPI] == true {
+            glView.contentScaleFactor = UIScreen.main.scale
+        } else {
+            glView.contentScaleFactor = 1
+        }
+
         container.addSubview(glView)
 
         NSLayoutConstraint.activate([
@@ -356,6 +362,8 @@ extension CelestiaViewController {
         glView.context = context
         glView.enableSetNeedsDisplay = false
         glView.drawableDepthFormat = .format24
+
+        glView.drawableMultisample = UserDefaults.app[.msaa] == true ? .multisample4X : .multisampleNone
 
         return true
     }

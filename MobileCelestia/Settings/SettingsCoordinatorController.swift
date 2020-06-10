@@ -63,6 +63,8 @@ private extension SettingsCoordinatorController {
                 self.navigation.pushViewController(DataLocationSelectionViewController(), animated: true)
             case .slider(_):
                 fallthrough
+            case .prefSwitch(_):
+                fallthrough
             case .action(_):
                 fatalError("Use .common for slider/action setting item.")
             }

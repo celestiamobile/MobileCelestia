@@ -57,6 +57,7 @@ private extension SettingCommonViewController {
 
         tableView.register(SettingSliderCell.self, forCellReuseIdentifier: "Slider")
         tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Action")
+        tableView.register(SettingSwitchCell.self, forCellReuseIdentifier: "Switch")
         tableView.dataSource = self
         tableView.delegate = self
     }
@@ -93,6 +94,14 @@ extension SettingCommonViewController: UITableViewDataSource, UITableViewDelegat
             let cell = tableView.dequeueReusableCell(withIdentifier: "Action", for: indexPath) as! SettingTextCell
             cell.title = row.name
             return cell
+        case .prefSwitch(let item):
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Switch", for: indexPath) as! SettingSwitchCell
+            cell.enabled = UserDefaults.app[item.key] ?? false
+            cell.title = row.name
+            cell.toggleBlock = { (enabled) in
+                UserDefaults.app[item.key] = enabled
+            }
+            return cell
         default:
             fatalError("SettingCommonViewController cannot handle this type of item")
         }
@@ -117,5 +126,9 @@ extension SettingCommonViewController: UITableViewDataSource, UITableViewDelegat
         default:
             return 44
         }
+    }
+
+    func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+        return item.sections[section].footer
     }
 }
