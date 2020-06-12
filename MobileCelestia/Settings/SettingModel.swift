@@ -201,6 +201,8 @@ let mainSetting = [
                             SettingCommonItem.Section(rows: [
                                 SettingItem(name: CelestiaString("Ambient Light", comment: ""), type: .slider(item: .init(key: "ambientLightLevel", minValue: 0, maxValue: 1))),
                                 SettingItem(name: CelestiaString("Faintest Stars", comment: ""), type: .slider(item: .init(key: "faintestVisible", minValue: 3, maxValue: 12))),
+                                SettingItem(name: CelestiaString("Minimum Labelled Feature Size", comment: ""), type: .slider(item: .init(key: "minimumFeatureSize", minValue: 0, maxValue: 999))),
+                                SettingItem(name: CelestiaString("Galaxy Brightness", comment: ""), type: .slider(item: .init(key: "galaxyBrightness", minValue: 0, maxValue: 1))),
                             ], footer: nil),
                             SettingCommonItem.Section(rows: [
                                 SettingItem(name: CelestiaString("HiDPI", comment: ""), type: .prefSwitch(item: .init(key: .fullDPI))),
