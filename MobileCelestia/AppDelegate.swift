@@ -10,9 +10,11 @@ import UIKit
 
 import CelestiaCore
 
+#if !targetEnvironment(macCatalyst)
 import AppCenter
 import AppCenterAnalytics
 import AppCenterCrashes
+#endif
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -21,11 +23,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
+        #if !targetEnvironment(macCatalyst)
         #if !DEBUG
         MSAppCenter.start("4c46cd7d-ea97-452b-920c-4328ac062db3", withServices:[
             MSAnalytics.self,
             MSCrashes.self
         ])
+        #endif
         #endif
 
         window = UIWindow()

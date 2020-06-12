@@ -372,7 +372,6 @@ extension CelestiaViewController {
 
         core = CelestiaAppCore.shared
 
-        let context = glView.context
         DispatchQueue.global().async { [unowned self] in
             var success = false
             var shouldRetry = true
