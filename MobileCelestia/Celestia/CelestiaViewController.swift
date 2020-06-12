@@ -8,7 +8,6 @@
 
 import UIKit
 import CelestiaCore
-import GLKit
 
 enum CelestiaLoadingError: Error {
     case openGLError
@@ -77,7 +76,7 @@ class CelestiaViewController: UIViewController {
     private var ready = false
     private var displayLink: CADisplayLink?
 
-    private lazy var glView = GLKView(frame: .zero)
+    private lazy var glView = MGLKView(frame: .zero)
 
     // MARK: gesture
     private var oneFingerStartPoint: CGPoint?
@@ -111,6 +110,7 @@ class CelestiaViewController: UIViewController {
             glView.topAnchor.constraint(equalTo: container.topAnchor),
             glView.bottomAnchor.constraint(equalTo: container.bottomAnchor),
         ])
+        setupOpenGL()
         glView.delegate = self
 
         let controlView = CelestiaControlView(items: [
@@ -185,11 +185,11 @@ private extension UIKey {
     }
 }
 
-extension CelestiaViewController: GLKViewDelegate {
-    func glkView(_ view: GLKView, drawIn rect: CGRect) {
+extension CelestiaViewController: MGLKViewDelegate {
+    func mglkView(_ view: MGLKView!, drawIn rect: CGRect) {
         guard ready else { return }
 
-        let size = CGSize(width: CGFloat(view.drawableWidth), height: CGFloat(view.drawableHeight))
+        let size = view.drawableSize
         if size != currentSize {
             currentSize = size
             core.resize(to: currentSize)
@@ -354,16 +354,15 @@ extension CelestiaViewController {
 }
 
 extension CelestiaViewController {
-    private func setupOpenGL() -> Bool {
-        guard let context = EAGLContext(api: .openGLES2) else { return false }
-
-        EAGLContext.setCurrent(context)
+    @discardableResult private func setupOpenGL() -> Bool {
+        let context = MGLContext(api: kMGLRenderingAPIOpenGLES2)
+        MGLContext.setCurrent(context)
 
         glView.context = context
-        glView.enableSetNeedsDisplay = false
-        glView.drawableDepthFormat = .format24
+//        glView.enableSetNeedsDisplay = false
+        glView.drawableDepthFormat = MGLDrawableDepthFormat24
 
-        glView.drawableMultisample = UserDefaults.app[.msaa] == true ? .multisample4X : .multisampleNone
+        glView.drawableMultisample = UserDefaults.app[.msaa] == true ? MGLDrawableMultisample4X : MGLDrawableMultisampleNone
 
         return true
     }
@@ -377,8 +376,6 @@ extension CelestiaViewController {
         DispatchQueue.global().async { [unowned self] in
             var success = false
             var shouldRetry = true
-
-            EAGLContext.setCurrent(context)
 
             while !success && shouldRetry {
                 self.dataDirectoryURL = currentDataDirectory()
@@ -457,10 +454,6 @@ extension CelestiaViewController: UIGestureRecognizerDelegate {
 
 extension CelestiaViewController {
     func load(statusUpdater: @escaping (String) -> Void, errorHandler: @escaping () -> Bool, completionHandler: @escaping (Result<Void, CelestiaLoadingError>) -> Void) {
-        guard setupOpenGL() else {
-            completionHandler(.failure(.openGLError))
-            return
-        }
         setupCelestia(statusUpdater: { (st) in
             statusUpdater(st)
         }, errorHandler: {
