@@ -195,23 +195,27 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: UIViewController, 
         return 44
     }
 
-    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         if indexPath.section == 1 { return nil }
-        var actions = [UITableViewRowAction]()
+
+        var actions = [UIContextualAction]()
         if itemList.canBeModified {
             actions.append(
-                UITableViewRowAction(style: .destructive, title: CelestiaString("Delete", comment: "")) { [unowned self] (_, indexPath) in
+                UIContextualAction(style: .destructive, title: CelestiaString("Delete", comment: "")) { [unowned self] (_, _, completionHandler) in
                     self.requestRemoveObject(at: indexPath.row)
-            })
+                    completionHandler(true)
+                }
+            )
         }
         let item = itemList[indexPath.row]
         if item.canBeRenamed {
             actions.append(
-                UITableViewRowAction(style: .normal, title: CelestiaString("Edit", comment: "")) { [unowned self] (_, indexPath) in
-                    self.requestRenameObject(at: indexPath.row)
-            })
+                UIContextualAction(style: .normal, title: CelestiaString("Edit", comment: "")) { [unowned self] (_, _, completionHandler) in
+                    self.requestRenameObject(at: indexPath.row, completionHandler: completionHandler)
+                }
+            )
         }
-        return actions
+        return UISwipeActionsConfiguration(actions: actions)
     }
 
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
@@ -226,6 +230,34 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: UIViewController, 
         defer { tableView.reloadData() }
         guard destinationIndexPath.section == 0 else { return }
         itemList.move(from: sourceIndexPath.row, to: destinationIndexPath.row)
+    }
+
+    @available(iOS 13.0, *)
+    func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        if indexPath.section == 1 { return nil }
+
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { [weak self] (_) -> UIMenu? in
+            guard let self = self else { return nil }
+
+            var actions = [UIAction]()
+            if self.itemList.canBeModified {
+                let deleteAction = UIAction(title: CelestiaString("Delete", comment: ""), image: UIImage(systemName: "trash"), identifier: nil) { (_) in
+                    self.requestRemoveObject(at: indexPath.row)
+                }
+                deleteAction.attributes = .destructive
+                actions.append(deleteAction)
+            }
+            let item = self.itemList[indexPath.row]
+            if item.canBeRenamed {
+                actions.append(
+                    UIAction(title: CelestiaString("Edit", comment: ""), image: UIImage(systemName: "square.and.pencil"), identifier: nil) { (_) in
+                        self.requestRenameObject(at: indexPath.row)
+                    }
+                )
+            }
+            guard actions.count > 0 else { return nil }
+            return UIMenu(title: "", image: nil, identifier: nil, children: actions)
+        }
     }
 
     // MARK: Modification
@@ -253,12 +285,16 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: UIViewController, 
         tableView.reloadData()
     }
 
-    private func requestRenameObject(at index: Int) {
+    private func requestRenameObject(at index: Int, completionHandler: ((Bool) -> Void)? = nil) {
         let item = itemList[index]
         showTextInput(CelestiaString("Please enter a new name.", comment: ""), text: item.title) { [unowned self] (text) in
-            guard let newName = text else { return }
+            guard let newName = text else {
+                completionHandler?(false)
+                return
+            }
             item.rename(to: newName)
             self.tableView.reloadData()
+            completionHandler?(true)
         }
     }
 }
