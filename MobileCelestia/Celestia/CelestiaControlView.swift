@@ -15,6 +15,8 @@ enum CelestiaControlAction {
     case switchToObject
     case switchToCamera
     case info
+    case hide
+    case show
 }
 
 enum CelestiaControlButton {

@@ -69,6 +69,12 @@ class CelestiaViewController: UIViewController {
         }
     }
 
+    struct Constant {
+        static let controlViewTrailingMargin: CGFloat = 8
+        static let controlViewHideAnimationDuration: TimeInterval = 0.2
+        static let controlViewShowAnimationDuration: TimeInterval = 0.2
+    }
+
     private var core: CelestiaAppCore!
 
     // MARK: rendering
@@ -92,6 +98,21 @@ class CelestiaViewController: UIViewController {
     private var currentInteractionMode = InteractionMode.object
     private var zoomMode: ZoomMode? = nil
 
+    private lazy var activeControlView = CelestiaControlView(items: [
+        CelestiaControlButton.toggle(offImage: #imageLiteral(resourceName: "control_mode_object"), offAction: .switchToObject, onImage: #imageLiteral(resourceName: "control_mode_camera"), onAction: .switchToCamera),
+        CelestiaControlButton.pressAndHold(image: #imageLiteral(resourceName: "control_zoom_in"), action: .zoomIn),
+        CelestiaControlButton.pressAndHold(image: #imageLiteral(resourceName: "control_zoom_out"), action: .zoomOut),
+        CelestiaControlButton.tap(image: #imageLiteral(resourceName: "control_info"), action: .info),
+        CelestiaControlButton.tap(image: #imageLiteral(resourceName: "control_action_menu"), action: .showMenu),
+        CelestiaControlButton.tap(image: #imageLiteral(resourceName: "control_hide"), action: .hide),
+    ])
+
+    private lazy var inactiveControlView = CelestiaControlView(items: [
+        CelestiaControlButton.tap(image: #imageLiteral(resourceName: "control_show"), action: .show),
+    ])
+
+    private var currentControlView: CelestiaControlView?
+
     override func loadView() {
         let container = UIView()
         container.backgroundColor = .darkBackground
@@ -114,29 +135,22 @@ class CelestiaViewController: UIViewController {
         setupOpenGL()
         glView.delegate = self
 
-        let controlView = CelestiaControlView(items: [
-            CelestiaControlButton.toggle(offImage: #imageLiteral(resourceName: "control_mode_object"), offAction: .switchToObject, onImage: #imageLiteral(resourceName: "control_mode_camera"), onAction: .switchToCamera),
-            CelestiaControlButton.pressAndHold(image: #imageLiteral(resourceName: "control_zoom_in"), action: .zoomIn),
-            CelestiaControlButton.pressAndHold(image: #imageLiteral(resourceName: "control_zoom_out"), action: .zoomOut),
-            CelestiaControlButton.tap(image: #imageLiteral(resourceName: "control_info"), action: .info),
-            CelestiaControlButton.tap(image: #imageLiteral(resourceName: "control_action_menu"), action: .showMenu),
-        ])
-        controlView.delegate = self
-        controlView.translatesAutoresizingMaskIntoConstraints = false
-        container.addSubview(controlView)
+        activeControlView.delegate = self
+        inactiveControlView.delegate = self
+        activeControlView.translatesAutoresizingMaskIntoConstraints = false
+        inactiveControlView.translatesAutoresizingMaskIntoConstraints = false
+
+        container.addSubview(activeControlView)
+        container.addSubview(inactiveControlView)
+
         NSLayoutConstraint.activate([
-            controlView.centerYAnchor.constraint(equalTo: container.centerYAnchor),
+            activeControlView.centerYAnchor.constraint(equalTo: container.centerYAnchor),
+            activeControlView.trailingAnchor.constraint(equalTo: container.safeAreaLayoutGuide.trailingAnchor, constant: -Constant.controlViewTrailingMargin),
+            inactiveControlView.centerYAnchor.constraint(equalTo: container.centerYAnchor),
+            inactiveControlView.leadingAnchor.constraint(equalTo: container.trailingAnchor)
         ])
 
-        if #available(iOS 11.0, *) {
-            NSLayoutConstraint.activate([
-                controlView.trailingAnchor.constraint(equalTo: container.safeAreaLayoutGuide.trailingAnchor, constant: -8),
-            ])
-        } else {
-            NSLayoutConstraint.activate([
-                controlView.trailingAnchor.constraint(equalTo: container.trailingAnchor, constant: -8),
-            ])
-        }
+        currentControlView = activeControlView
 
         view = container
     }
@@ -218,9 +232,50 @@ extension CelestiaViewController: CelestiaControlViewDelegate {
             celestiaDelegate.celestiaController(self, requestShowActionMenuWithSelection: info)
         case .info:
             celestiaDelegate.celestiaController(self, requestShowInfoWithSelection: info)
+        case .hide:
+            hideCurrentControlViewToShow(inactiveControlView)
+        case .show:
+            hideCurrentControlViewToShow(activeControlView)
         default:
             break
         }
+    }
+
+    private func hideCurrentControlViewToShow(_ anotherView: CelestiaControlView) {
+        guard let activeView = currentControlView else { return }
+        guard let superview = activeView.superview else { return }
+        guard anotherView != activeView else { return }
+
+        guard let activeViewConstraint = activeView.constraintsAffectingLayout(for: .horizontal).filter({ ($0.firstItem as? UIView) == activeView && ($0.secondItem as? NSObject) == superview.safeAreaLayoutGuide }).first else {
+            return
+        }
+        guard let anotherViewConstrant = anotherView.constraintsAffectingLayout(for: .horizontal).filter({ ($0.firstItem as? UIView) == anotherView && ($0.secondItem as? UIView) == superview }).first else {
+            return
+        }
+
+        activeViewConstraint.isActive = false
+        activeView.leadingAnchor.constraint(equalTo: superview.trailingAnchor).isActive = true
+        let hideAnimator = UIViewPropertyAnimator(duration: Constant.controlViewHideAnimationDuration, curve: .linear) { [weak self] in
+            self?.view.setNeedsLayout()
+            self?.view.layoutIfNeeded()
+        }
+
+        let showAnimator = UIViewPropertyAnimator(duration: Constant.controlViewShowAnimationDuration, curve: .linear) { [weak self] in
+            self?.view.setNeedsLayout()
+            self?.view.layoutIfNeeded()
+        }
+
+        hideAnimator.addCompletion { (_) in
+            anotherViewConstrant.isActive = false
+            anotherView.trailingAnchor.constraint(equalTo: superview.safeAreaLayoutGuide.trailingAnchor, constant: -Constant.controlViewTrailingMargin).isActive = true
+            showAnimator.startAnimation()
+        }
+
+        showAnimator.addAnimations { [weak self] in
+            self?.currentControlView = anotherView
+        }
+
+        hideAnimator.startAnimation()
     }
 
     func celestiaControlView(_ celestiaControlView: CelestiaControlView, didToggleTo action: CelestiaControlAction) {
