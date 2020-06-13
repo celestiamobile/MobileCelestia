@@ -330,7 +330,7 @@ extension CelestiaViewController {
         }
     }
 
-    @objc private func handlePinch(_ gesture: UIPanGestureRecognizer) {
+    @objc private func handlePinch(_ gesture: UIPinchGestureRecognizer) {
         switch gesture.state {
         case .possible:
             break
@@ -471,9 +471,7 @@ extension CelestiaViewController {
         pan1.delegate = self
         glView.addGestureRecognizer(pan1)
 
-        let pinch = UIPanGestureRecognizer(target: self, action: #selector(handlePinch(_:)))
-        pinch.minimumNumberOfTouches = 2
-        pinch.maximumNumberOfTouches = 2
+        let pinch = UIPinchGestureRecognizer(target: self, action: #selector(handlePinch(_:)))
         pinch.delegate = self
         glView.addGestureRecognizer(pinch)
 
