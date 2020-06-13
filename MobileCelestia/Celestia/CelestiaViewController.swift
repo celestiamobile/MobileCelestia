@@ -46,6 +46,26 @@ protocol CelestiaViewControllerDelegate: class {
     func celestiaController(_ celestiaController: CelestiaViewController, requestShowInfoWithSelection selection: BodyInfo?)
 }
 
+private class PanGestureRecognizer: UIPanGestureRecognizer {
+    @available(iOS 13.4, *)
+    var supportedMouseButtons: UIEvent.ButtonMask {
+        get { return UIEvent.ButtonMask(rawValue: supportedMouseButtonsRawValue) }
+        set { supportedMouseButtonsRawValue = newValue.rawValue }
+    }
+
+    private var supportedMouseButtonsRawValue: Int = {
+        if #available(iOS 13.4, *) {
+            return UIEvent.ButtonMask.primary.rawValue
+        }
+        return 1
+    }()
+
+    // HACK, support other buttons by override this private method in UIKit
+    @objc private var _defaultAllowedMouseButtons: Int {
+        return supportedMouseButtonsRawValue
+    }
+}
+
 class CelestiaViewController: UIViewController {
     private enum InteractionMode {
         case object
@@ -299,6 +319,17 @@ extension CelestiaViewController: CelestiaControlViewDelegate {
 }
 
 extension CelestiaViewController {
+    @objc private func handlePanZoom(_ pan: UIPanGestureRecognizer) {
+        switch pan.state {
+        case .changed:
+            callZoom(deltaY: pan.translation(in: glView).y * glView.contentScaleFactor / 400)
+        case .possible, .began, .ended, .cancelled, .failed:
+            fallthrough
+        @unknown default:
+            break
+        }
+    }
+
     @objc private func handlePan(_ pan: UIPanGestureRecognizer) {
         let location = pan.location(in: pan.view).scale(by: glView.contentScaleFactor)
         switch pan.state {
@@ -306,7 +337,7 @@ extension CelestiaViewController {
             break
         case .began:
             if #available(iOS 13.4, *) {
-                if pan.modifierFlags.contains(.control) {
+                if pan.modifierFlags.contains(.control) || pan.buttonMask.contains(.secondary) {
                     // When control is clicked, use next drag mode
                     currentInteractionMode = interactionMode.next
                 } else {
@@ -465,11 +496,22 @@ extension CelestiaViewController {
     }
 
     private func setupGestures() {
-        let pan1 = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
+        let pan1 = PanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
         pan1.minimumNumberOfTouches = 1
         pan1.maximumNumberOfTouches = 1
         pan1.delegate = self
+        if #available(iOS 13.4, *) {
+            pan1.supportedMouseButtons = [.primary, .secondary]
+        }
         glView.addGestureRecognizer(pan1)
+
+        if #available(iOS 13.4, *) {
+            let pan2 = UIPanGestureRecognizer(target: self, action: #selector(handlePanZoom(_:)))
+            pan2.allowedScrollTypesMask = .discrete
+            pan2.delegate = self
+            glView.addGestureRecognizer(pan2)
+            pan2.require(toFail: pan1)
+        }
 
         let pinch = UIPinchGestureRecognizer(target: self, action: #selector(handlePinch(_:)))
         pinch.delegate = self
