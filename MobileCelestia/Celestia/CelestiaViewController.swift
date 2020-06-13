@@ -75,6 +75,7 @@ class CelestiaViewController: UIViewController {
     private var currentSize: CGSize = .zero
     private var ready = false
     private var displayLink: CADisplayLink?
+    private var displaySource: DispatchSourceUserDataAdd?
 
     private lazy var glView = MGLKView(frame: .zero)
 
@@ -346,6 +347,10 @@ extension CelestiaViewController {
 
 extension CelestiaViewController {
     @objc private func handleDisplayLink(_ sender: CADisplayLink) {
+        displaySource?.add(data: 1)
+    }
+
+    private func displaySourceCallback() {
         if let mode = zoomMode {
             callZoom(deltaY: mode.distance)
         }
@@ -428,6 +433,12 @@ extension CelestiaViewController {
     }
 
     private func setupDisplayLink() {
+        displaySource = DispatchSource.makeUserDataAddSource(queue: .main)
+        displaySource?.setEventHandler() { [weak self] in
+            self?.displaySourceCallback()
+        }
+        displaySource?.resume()
+
         displayLink = CADisplayLink(target: self, selector: #selector(handleDisplayLink(_:)))
         displayLink?.add(to: .current, forMode: .default)
     }
