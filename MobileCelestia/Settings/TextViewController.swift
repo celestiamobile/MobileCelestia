@@ -51,5 +51,7 @@ private extension TextViewController {
         ])
 
         textView.text = text
+
+        edgesForExtendedLayout = []
     }
 }
