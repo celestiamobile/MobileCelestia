@@ -67,6 +67,20 @@ private class PanGestureRecognizer: UIPanGestureRecognizer {
     }
 }
 
+private class Cursor {
+    class func hide() {
+        #if targetEnvironment(macCatalyst)
+        (NSClassFromString("NSCursor") as! NSObject.Type).perform(NSSelectorFromString("hide"))
+        #endif
+    }
+
+    class func unhide() {
+        #if targetEnvironment(macCatalyst)
+        (NSClassFromString("NSCursor") as! NSObject.Type).perform(NSSelectorFromString("unhide"))
+        #endif
+    }
+}
+
 class CelestiaViewController: UIViewController {
     private enum InteractionMode {
         case object
@@ -427,6 +441,7 @@ extension CelestiaViewController {
         case .possible:
             break
         case .began:
+            Cursor.hide()
             if #available(iOS 13.4, *) {
                 if pan.modifierFlags.contains(.control) || pan.buttonMask.contains(.secondary) {
                     // When control is clicked, use next drag mode
@@ -447,6 +462,7 @@ extension CelestiaViewController {
         case .ended, .cancelled, .failed:
             fallthrough
         @unknown default:
+            Cursor.unhide()
             core.mouseButtonUp(at: location, modifiers: 0, with: currentInteractionMode.button)
             oneFingerStartPoint = nil
         }
