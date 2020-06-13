@@ -8,7 +8,9 @@
 
 import UIKit
 
+#if !targetEnvironment(macCatalyst)
 import SafariServices
+#endif
 
 private let userInitiatedDismissalFlag = 1
 
@@ -146,6 +148,10 @@ extension MainViewControler: CelestiaViewControllerDelegate {
         showBodyInfo(with: sel)
     }
 
+    func celestiaController(_ celestiaController: CelestiaViewController, requestWebInfo webURL: URL) {
+        showWeb(webURL)
+    }
+
     private func presentShare(selection: BodyInfo?) {
         let url = celestiaController.currentURL.absoluteString
         showTextInput(CelestiaString("Description", comment: ""),
@@ -223,9 +229,13 @@ extension MainViewControler: CelestiaViewControllerDelegate {
     }
 
     private func showWeb(_ url: URL) {
+        #if targetEnvironment(macCatalyst)
+        UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        #else
         let sf = SFSafariViewController(url: url)
         sf.dismissDelegate = self
         showViewController(sf)
+        #endif
     }
 
     private func showSettings() {

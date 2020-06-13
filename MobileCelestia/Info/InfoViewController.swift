@@ -128,7 +128,7 @@ private extension ObjectAction {
     }
 }
 
-private extension CelestiaAction {
+extension CelestiaAction {
     var description: String {
         switch self {
         case .goto:

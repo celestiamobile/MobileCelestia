@@ -44,6 +44,7 @@ extension CelestiaAppCore {
 protocol CelestiaViewControllerDelegate: class {
     func celestiaController(_ celestiaController: CelestiaViewController, requestShowActionMenuWithSelection selection: BodyInfo?)
     func celestiaController(_ celestiaController: CelestiaViewController, requestShowInfoWithSelection selection: BodyInfo?)
+    func celestiaController(_ celestiaController: CelestiaViewController, requestWebInfo webURL: URL)
 }
 
 private class PanGestureRecognizer: UIPanGestureRecognizer {
@@ -104,6 +105,8 @@ class CelestiaViewController: UIViewController {
     private var displaySource: DispatchSourceUserDataAdd?
 
     private lazy var glView = MGLKView(frame: .zero)
+
+    private var pendingSelection: CelestiaSelection?
 
     // MARK: gesture
     private var oneFingerStartPoint: CGPoint?
@@ -203,9 +206,97 @@ class CelestiaViewController: UIViewController {
     }
 }
 
+@available(iOS 13.0, *)
+extension CelestiaViewController: UIContextMenuInteractionDelegate {
+    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
+        core.mouseButtonDown(at: interaction.location(in: glView).scale(by: glView.contentScaleFactor), modifiers: 0, with: .right)
+        core.mouseButtonUp(at: interaction.location(in: glView).scale(by: glView.contentScaleFactor), modifiers: 0, with: .right)
+
+        guard let selection = pendingSelection else { return nil }
+        pendingSelection = nil
+
+        guard let core = self.core else { return nil }
+
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { (_) -> UIMenu? in
+            var actions: [UIMenuElement] = [
+                UIAction(title: core.simulation.universe.name(for: selection), attributes: .disabled, handler: { _ in })
+            ]
+
+            actions.append(UIMenu(title: "", options: .displayInline, children: CelestiaAction.allCases.map { action in
+                return UIAction(title: action.description) { (_) in
+                    core.selection = BodyInfo(selection: selection)
+                    core.receive(action)
+                }
+            }))
+
+            if let entry = selection.object {
+                let browserItem = CelestiaBrowserItem(name: core.simulation.universe.name(for: selection), catEntry: entry, provider: core.simulation.universe)
+                actions.append(UIMenu(title: "", options: .displayInline, children: browserItem.children.compactMap { $0.createMenuItems(additionalItemName: CelestiaString("Go", comment: "")) { (selection) in
+                    core.selection = BodyInfo(selection: selection)
+                    core.receive(.goto)
+                    }
+                }))
+            }
+
+            if let webInfo = selection.webInfoURL, let url = URL(string: webInfo) {
+                actions.append(UIAction(title: CelestiaString("Web Info", comment: ""), handler: { [weak self] (_) in
+                    guard let self = self else { return }
+                    self.celestiaDelegate?.celestiaController(self, requestWebInfo: url)
+                }))
+            }
+
+            #if !targetEnvironment(macCatalyst)
+            actions.append(UIMenu(title: "", options: .displayInline, children: [
+                UIAction(title: CelestiaString("Cancel", comment: ""), handler: { _ in })
+            ]))
+            #endif
+
+            return UIMenu(title: "", children: actions)
+        }
+    }
+}
+
+extension CelestiaViewController: CelestiaAppCoreDelegate {
+    func celestiaAppCoreFatalErrorHappened(_ error: String) {}
+
+    func celestiaAppCoreCursorShapeChanged(_ shape: CursorShape) {}
+
+    func celestiaAppCoreCursorDidRequestContextMenu(at location: CGPoint, with selection: CelestiaSelection) {
+        pendingSelection = selection
+    }
+}
+
 private extension CelestiaAppCore {
     func setSafeAreaInsets(_ safeAreaInsets: UIEdgeInsets) {
         setSafeAreaInsets(left: safeAreaInsets.left, top: safeAreaInsets.top, right: safeAreaInsets.right, bottom: safeAreaInsets.bottom)
+    }
+}
+
+@available(iOS 13.0, *)
+extension CelestiaBrowserItem {
+    func createMenuItems(additionalItemName: String, with callback: @escaping (CelestiaSelection) -> Void) -> UIMenu? {
+        var items = [UIMenuElement]()
+
+        if let ent = entry {
+            items.append(UIAction(title: CelestiaString(additionalItemName, comment: ""), handler: { (_) in
+                guard let selection = CelestiaSelection(object: ent) else { return }
+                callback(selection)
+            }))
+        }
+
+        var childItems = [UIMenuElement]()
+        for i in 0..<children.count {
+
+            let subItemName = childName(at: Int(i))!
+            let child = self.child(with: subItemName)!
+            if let childMenu = child.createMenuItems(additionalItemName: additionalItemName, with: callback) {
+                childItems.append(childMenu)
+            }
+        }
+        if childItems.count > 0 {
+            items.append(UIMenu(title: "", options: .displayInline, children: childItems))
+        }
+        return items.count == 0 ? nil : UIMenu(title: name, children: items)
     }
 }
 
@@ -525,6 +616,14 @@ extension CelestiaViewController {
         rightEdge.edges = .right
         pan1.require(toFail: rightEdge)
         glView.addGestureRecognizer(rightEdge)
+
+        if #available(iOS 13.0, *) {
+            glView.addInteraction(UIContextMenuInteraction(delegate: self))
+
+            if let clickGesture = glView.gestureRecognizers?.filter({ String(cString: object_getClassName($0)) == "_UISecondaryClickDriverGestureRecognizer" }).first {
+                clickGesture.require(toFail: pan1)
+            }
+        }
     }
 
     private func setupDisplayLink() {
@@ -582,6 +681,8 @@ extension CelestiaViewController {
     }
 
     private func start() {
+        core.delegate = self
+
         core.setSafeAreaInsets(view.safeAreaInsets.scale(by: glView.contentScaleFactor))
 
         core.setDPI(Int(96.0 * glView.contentScaleFactor))
