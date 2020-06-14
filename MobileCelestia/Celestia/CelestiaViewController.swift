@@ -463,6 +463,7 @@ extension CelestiaViewController {
             fallthrough
         @unknown default:
             Cursor.unhide()
+            currentInteractionMode = interactionMode
             core.mouseButtonUp(at: location, modifiers: 0, with: currentInteractionMode.button)
             oneFingerStartPoint = nil
         }
