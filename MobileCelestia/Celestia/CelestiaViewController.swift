@@ -789,11 +789,16 @@ extension CelestiaViewController {
         }
     }
 
-    func openURL(_ url: UniformedURL) {
-        if url.url.isFileURL {
-            core.runScript(at: url.url.path)
+    func openURL(_ url: URL, external: Bool) {
+        if url.isFileURL {
+            #if targetEnvironment(macCatalyst)
+            let uniformed = UniformedURL(url: url, securityScoped: false)
+            #else
+            let uniformed = UniformedURL(url: url, securityScoped: external)
+            #endif
+            core.runScript(at: uniformed.url.path)
         } else {
-            core.go(to: url.url.absoluteString)
+            core.go(to: url.absoluteString)
         }
     }
 }

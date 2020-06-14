@@ -47,7 +47,7 @@ class MainViewControler: UIViewController {
         install(celestiaController)
         celestiaController.celestiaDelegate = self
 
-        NotificationCenter.default.addObserver(self, selector: #selector(applicationDidBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(newURLOpened(_:)), name: newURLOpenedNotificationName, object: nil)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -107,10 +107,9 @@ class MainViewControler: UIViewController {
 }
 
 extension MainViewControler {
-    @objc private func applicationDidBecomeActive() {
-        if isCoreInitialized() {
-            checkNeedOpeningURL()
-        }
+    @objc private func newURLOpened(_ notification: Notification) {
+        guard status == .loaded else { return }
+        checkNeedOpeningURL()
     }
 
     private func checkNeedOpeningURL() {
@@ -120,9 +119,9 @@ extension MainViewControler {
         let title = url.isFileURL ? CelestiaString("Run script?", comment: "") : CelestiaString("Open URL?", comment: "")
         showOption(title) { [unowned self] (confirmed) in
             self.popLastAndShow()
-            if confirmed {
-                self.celestiaController.openURL(UniformedURL(url: url, securityScoped: true))
-            }
+
+            guard confirmed else { return }
+            self.celestiaController.openURL(url, external: true)
         }
     }
 }
@@ -189,7 +188,7 @@ extension MainViewControler: CelestiaViewControllerDelegate {
     private func presentFavorite() {
         let controller = FavoriteCoordinatorController { [unowned self] (url) in
             self.dismiss(animated: true, completion: nil)
-            self.celestiaController.openURL(UniformedURL(url: url))
+            self.celestiaController.openURL(url, external: false)
         }
         showViewController(controller)
     }

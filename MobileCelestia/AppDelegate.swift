@@ -16,6 +16,9 @@ import AppCenterAnalytics
 import AppCenterCrashes
 #endif
 
+let newURLOpenedNotificationName = Notification.Name("newURLOpenedNotificationName")
+let newURLOpenedNotificationURLKey = "newURLOpenedNotificationURLKey"
+
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 
@@ -47,6 +50,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
         urlToRun = url
+
+        NotificationCenter.default.post(name: newURLOpenedNotificationName, object: nil, userInfo: [newURLOpenedNotificationURLKey : url])
         return true
     }
 
