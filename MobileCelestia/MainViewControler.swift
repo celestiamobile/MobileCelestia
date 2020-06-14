@@ -396,7 +396,7 @@ extension MainViewControler: UIViewControllerDismissDelegate {
     }
 }
 
-@available(macCatalyst 13.0, *)
+#if targetEnvironment(macCatalyst)
 extension MainViewControler: NSToolbarDelegate {
     func toolbar(_ toolbar: NSToolbar, itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier, willBeInsertedIntoToolbar flag: Bool) -> NSToolbarItem? {
         guard let action = AppToolbarAction(rawValue: itemIdentifier.rawValue) else { return nil }
@@ -443,7 +443,6 @@ extension MainViewControler: NSToolbarDelegate {
     }
 }
 
-@available(macCatalyst 13.0, *)
 extension MainViewControler: NSTouchBarDelegate {
     private func setupTouchBar() {
         touchBar = nil
@@ -472,14 +471,12 @@ extension MainViewControler: NSTouchBarDelegate {
     }
 }
 
-@available(macCatalyst 13.0, *)
 extension AppToolbarAction {
     var touchBarImage: UIImage? {
         return toolBarImage
     }
 }
 
-@available(macCatalyst 13.0, *)
 extension AppToolbarAction {
     var toolBarImage: UIImage? {
         switch self {
@@ -506,6 +503,7 @@ extension AppToolbarAction {
         }
     }
 }
+#endif
 
 extension CelestiaAction: ToolbarAction {
     var image: UIImage? {
