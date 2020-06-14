@@ -8,6 +8,8 @@
 
 import UIKit
 
+import CelestiaCore
+
 #if !targetEnvironment(macCatalyst)
 import SafariServices
 #endif
@@ -17,9 +19,16 @@ private let userInitiatedDismissalFlag = 1
 var urlToRun: URL?
 
 class MainViewControler: UIViewController {
+    enum LoadingStatus {
+        case notLoaded
+        case loading
+        case loadingFailed
+        case loaded
+    }
+
     private lazy var celestiaController = CelestiaViewController()
 
-    private var loadeed = false
+    private var status: LoadingStatus = .notLoaded
 
     private lazy var rightSlideInManager = SlideInPresentationManager(direction: .right)
     private lazy var bottomSlideInManager = SlideInPresentationManager(direction: .bottom)
@@ -44,9 +53,9 @@ class MainViewControler: UIViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        if loadeed { return }
+        guard status == .notLoaded else { return }
 
-        loadeed = true
+        status = .loading
 
         var retried = false
 
@@ -67,14 +76,21 @@ class MainViewControler: UIViewController {
 
             switch result {
             case .success():
-                UIApplication.shared.isIdleTimerDisabled = true
                 print("loading success")
+                self.status = .loaded
+                #if targetEnvironment(macCatalyst)
+                self.setupToolbar()
+                self.setupTouchBar()
+                #endif
+                UIApplication.shared.isIdleTimerDisabled = true
                 self.showOnboardMessageIfNeeded()
                 // we can't present two vcs together, so we delay the action
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1)  {
                     self.checkNeedOpeningURL()
                 }
             case .failure(_):
+                print("loading failed")
+                self.status = .loadingFailed
                 let failure = LoadingFailureViewController()
                 self.install(failure)
             }
@@ -117,26 +133,7 @@ extension MainViewControler: CelestiaViewControllerDelegate {
         let controller = ToolbarViewController(actions: actions)
         controller.selectionHandler = { [unowned self] (action) in
             guard let ac = action as? AppToolbarAction else { return }
-            switch ac {
-            case .setting:
-                self.showSettings()
-            case .search:
-                self.showSearch()
-            case .browse:
-                self.showBrowser()
-            case .time:
-                self.presentTimeToolbar()
-            case .script:
-                self.presentScriptToolbar()
-            case .camera:
-                self.presentCameraControl()
-            case .share:
-                self.presentShare(selection: selection)
-            case .favorite:
-                self.presentFavorite()
-            case .help:
-                self.presentHelp()
-            }
+            self.toolbarActionSelected(ac)
         }
         controller.modalPresentationStyle = .custom
         controller.transitioningDelegate = rightSlideInManager
@@ -152,11 +149,35 @@ extension MainViewControler: CelestiaViewControllerDelegate {
         showWeb(webURL)
     }
 
-    private func presentShare(selection: BodyInfo?) {
+    private func toolbarActionSelected(_ action: AppToolbarAction) {
+        switch action {
+        case .setting:
+            showSettings()
+        case .search:
+            showSearch()
+        case .browse:
+            showBrowser()
+        case .time:
+            presentTimeToolbar()
+        case .script:
+            presentScriptToolbar()
+        case .camera:
+            presentCameraControl()
+        case .share:
+            presentShare(selection: CelestiaAppCore.shared.simulation.selection)
+        case .favorite:
+            presentFavorite()
+        case .help:
+            presentHelp()
+        }
+    }
+
+    private func presentShare(selection: CelestiaSelection) {
+        let name = CelestiaAppCore.shared.simulation.universe.name(for: selection)
         let url = celestiaController.currentURL.absoluteString
         showTextInput(CelestiaString("Description", comment: ""),
                       message: CelestiaString("Please enter a description of the content.", comment: ""),
-                      text: selection?.name) { (description) in
+                      text: name) { (description) in
                         guard let title = description else { return }
                         self.submitURL(url, title: title)
         }
@@ -365,6 +386,120 @@ extension MainViewControler: UIViewControllerDismissDelegate {
             viewControllerStack.append(current)
             current.customFlag |= userInitiatedDismissalFlag
             current.dismiss(animated: true, completion: nil)
+        }
+    }
+}
+
+@available(macCatalyst 13.0, *)
+extension MainViewControler: NSToolbarDelegate {
+    func toolbar(_ toolbar: NSToolbar, itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier, willBeInsertedIntoToolbar flag: Bool) -> NSToolbarItem? {
+        guard let action = AppToolbarAction(rawValue: itemIdentifier.rawValue) else { return nil }
+        let toolbarItem = NSToolbarItem(itemIdentifier: itemIdentifier, barButtonItem: UIBarButtonItem())
+        toolbarItem.label = action.title ?? ""
+        toolbarItem.image = action.toolBarImage
+        toolbarItem.target = self
+        toolbarItem.action = #selector(toolbarButtonItemClicked(_:))
+
+        return toolbarItem
+    }
+
+    private func defaultToolbarIdentifiers() -> [NSToolbarItem.Identifier] {
+        return
+            [AppToolbarAction.browse, .favorite].map { NSToolbarItem.Identifier($0.rawValue) } +
+            [.flexibleSpace] +
+            [AppToolbarAction.share, .search].map { NSToolbarItem.Identifier($0.rawValue) }
+    }
+
+    private func availableIdentifiers() -> [NSToolbarItem.Identifier] {
+        return AppToolbarAction.persistentAction.reduce([AppToolbarAction](), { $0 + $1 }).map { NSToolbarItem.Identifier(rawValue: $0.rawValue) } + [.flexibleSpace, .space]
+    }
+
+    func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
+        return defaultToolbarIdentifiers()
+    }
+
+    func toolbarAllowedItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
+        return availableIdentifiers()
+    }
+
+    private func setupToolbar() {
+        let toolbar = NSToolbar(identifier: Bundle.main.bundleIdentifier!)
+        toolbar.allowsUserCustomization = true
+        toolbar.delegate = self
+        view.window?.windowScene?.titlebar?.titleVisibility = .hidden
+        view.window?.windowScene?.titlebar?.toolbar = toolbar
+    }
+
+    @objc private func toolbarButtonItemClicked(_ sender: NSToolbarItem) {
+        guard presentedViewController == nil else { return }
+        guard let action = AppToolbarAction(rawValue: sender.itemIdentifier.rawValue) else { return }
+        toolbarActionSelected(action)
+    }
+}
+
+@available(macCatalyst 13.0, *)
+extension MainViewControler: NSTouchBarDelegate {
+    private func setupTouchBar() {
+        touchBar = nil
+    }
+
+    override func makeTouchBar() -> NSTouchBar? {
+        guard status == .loaded else { return nil }
+        let tbar = NSTouchBar()
+        tbar.defaultItemIdentifiers = availableIdentifiers().map { NSTouchBarItem.Identifier($0.rawValue) }
+        tbar.delegate = self
+        return tbar
+    }
+
+    func touchBar(_ touchBar: NSTouchBar, makeItemForIdentifier identifier: NSTouchBarItem.Identifier) -> NSTouchBarItem? {
+        guard let action = AppToolbarAction(rawValue: identifier.rawValue) else { return nil }
+        if let image = action.touchBarImage {
+            return NSButtonTouchBarItem(identifier: identifier, image: image, target: self, action: #selector(touchBarButtonItemClicked(_:)))
+        }
+        return NSButtonTouchBarItem(identifier: identifier, title: action.title ?? "", target: self, action: #selector(touchBarButtonItemClicked(_:)))
+    }
+
+    @objc private func touchBarButtonItemClicked(_ sender: NSTouchBarItem) {
+        guard presentedViewController == nil else { return }
+        guard let action = AppToolbarAction(rawValue: sender.identifier.rawValue) else { return }
+        toolbarActionSelected(action)
+    }
+}
+
+@available(macCatalyst 13.0, *)
+extension AppToolbarAction {
+    var touchBarImage: UIImage? {
+        switch self {
+        case .search, .share, .setting, .browse, .favorite, .help:
+            return toolBarImage
+        default:
+            return nil
+        }
+    }
+}
+
+@available(macCatalyst 13.0, *)
+extension AppToolbarAction {
+    var toolBarImage: UIImage? {
+        switch self {
+        case .search:
+            return UIImage(systemName: "magnifyingglass")
+        case .share:
+            return UIImage(systemName: "square.and.arrow.up")
+        case .setting:
+            return UIImage(systemName: "gear")
+        case .browse:
+            return UIImage(systemName: "globe")
+        case .favorite:
+            return UIImage(systemName: "star.circle")
+        case .camera:
+            return UIImage(systemName: "camera")
+        case .time:
+            return UIImage(systemName: "clock")
+        case .script:
+            return UIImage(systemName: "doc")
+        case .help:
+            return UIImage(systemName: "questionmark.circle")
         }
     }
 }

@@ -68,4 +68,3 @@ extension AppDelegate {
         } as @convention(block) (MGLKView) -> Bool), method_getTypeEncoding(method))
     }
 }
-
