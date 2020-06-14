@@ -160,7 +160,11 @@ extension DataLocationSelectionViewController: UIDocumentPickerDelegate {
 
         // save the bookmark for next launch
         do {
+            #if targetEnvironment(macCatalyst)
+            let bookmark = try url.bookmarkData(options: [.withSecurityScope, .securityScopeAllowOnlyReadAccess], includingResourceValuesForKeys: nil, relativeTo: nil)
+            #else
             let bookmark = try url.bookmarkData(options: .init(rawValue: 0), includingResourceValuesForKeys: nil, relativeTo: nil)
+            #endif
             if currentPicker == .dataDirectory {
                 saveDataDirectory(bookmark)
             } else if currentPicker == .configFile {
