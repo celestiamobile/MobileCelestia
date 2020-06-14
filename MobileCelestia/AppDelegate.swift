@@ -34,6 +34,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         #endif
 
         window = UIWindow()
+        if #available(iOS 13.0, *) {
+            window?.overrideUserInterfaceStyle = .dark
+        }
         let vc = MainViewControler()
 
         window?.rootViewController = vc

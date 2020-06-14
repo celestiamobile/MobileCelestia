@@ -46,9 +46,6 @@ private extension SettingStepperCell {
         contentView.addSubview(label)
         label.textColor = .darkLabel
 
-        if #available(iOS 13.0, *) {
-            stepper.overrideUserInterfaceStyle = .dark
-        }
         stepper.wraps = true
 
         NSLayoutConstraint.activate([

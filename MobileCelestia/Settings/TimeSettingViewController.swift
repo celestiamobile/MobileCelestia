@@ -37,9 +37,7 @@ private extension TimeSettingViewController {
         tableView.translatesAutoresizingMaskIntoConstraints = false
 
         datePicker.translatesAutoresizingMaskIntoConstraints = false
-        #if targetEnvironment(macCatalyst)
-        datePicker.overrideUserInterfaceStyle = .dark
-        #else
+        #if !targetEnvironment(macCatalyst)
         if datePicker.responds(to: NSSelectorFromString("_setTextColor:")) {
             datePicker.setValue(UIColor.darkLabel, forKey: "textColor")
         }

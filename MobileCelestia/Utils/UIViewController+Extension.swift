@@ -82,9 +82,6 @@ extension UIViewController {
     }
 
     private func presentAlert(_ alert: UIAlertController) {
-        if #available(iOS 13.0, *) {
-            alert.overrideUserInterfaceStyle = .dark
-        }
         alert.popoverPresentationController?.sourceView = view
         alert.popoverPresentationController?.sourceRect = CGRect(x: view.frame.midX, y: view.frame.midY, width: 0, height: 0)
         alert.popoverPresentationController?.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
