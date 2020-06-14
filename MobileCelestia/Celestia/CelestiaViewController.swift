@@ -38,6 +38,9 @@ extension CelestiaAction {
 
 extension CelestiaAppCore {
     func receive(_ action: CelestiaAction) {
+        if textEnterMode != .normal {
+            textEnterMode = .normal
+        }
         charEnter(action.rawValue)
     }
 }
@@ -279,6 +282,8 @@ extension CelestiaViewController: CelestiaAppCoreDelegate {
     func celestiaAppCoreCursorDidRequestContextMenu(at location: CGPoint, with selection: CelestiaSelection) {
         pendingSelection = selection
     }
+
+    func celestiaAppCoreWatchedFlagDidChange(_ changedFlag: CelestiaWatcherFlag) {}
 }
 
 private extension CelestiaAppCore {
