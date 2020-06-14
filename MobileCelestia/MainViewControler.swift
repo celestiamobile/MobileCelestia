@@ -177,7 +177,7 @@ extension MainViewControler: CelestiaViewControllerDelegate {
     private func presentShare(selection: CelestiaSelection) {
         let name = CelestiaAppCore.shared.simulation.universe.name(for: selection)
         let url = celestiaController.currentURL.absoluteString
-        showTextInput(CelestiaString("Description", comment: ""),
+        showTextInput(CelestiaString("Share", comment: ""),
                       message: CelestiaString("Please enter a description of the content.", comment: ""),
                       text: name) { (description) in
                         guard let title = description else { return }
@@ -208,6 +208,11 @@ extension MainViewControler: CelestiaViewControllerDelegate {
             guard let ac = action as? CelestiaAction else { return }
             self.celestiaController.receive(action: ac)
         }
+        #if targetEnvironment(macCatalyst)
+        controller.touchBarActionConversionBlock = { (identifier) in
+            return CelestiaAction(identifier)
+        }
+        #endif
         controller.modalPresentationStyle = .custom
         controller.transitioningDelegate = bottomSlideInManager
         present(controller, animated: true, completion: nil)
@@ -234,8 +239,7 @@ extension MainViewControler: CelestiaViewControllerDelegate {
         let controller = InfoViewController(info: selection)
         controller.dismissDelegate = self
         controller.selectionHandler = { [unowned self] (action) in
-            guard let ac = action else { return }
-            switch ac {
+            switch action {
             case .select:
                 self.clearBackStack()
                 self.celestiaController.select(selection)
@@ -409,7 +413,7 @@ extension MainViewControler: NSToolbarDelegate {
         return
             [AppToolbarAction.browse, .favorite, .home].map { NSToolbarItem.Identifier($0.rawValue) } +
             [.flexibleSpace] +
-            [AppToolbarAction.share, .search].map { NSToolbarItem.Identifier($0.rawValue) }
+            [AppToolbarAction.setting, .share, .search].map { NSToolbarItem.Identifier($0.rawValue) }
     }
 
     private func availableIdentifiers() -> [NSToolbarItem.Identifier] {
@@ -519,3 +523,31 @@ extension CelestiaAction: ToolbarAction {
         }
     }
 }
+
+#if targetEnvironment(macCatalyst)
+extension CelestiaAction: ToolbarTouchBarAction {
+    var touchBarImage: UIImage? {
+        switch self {
+        case .playpause:
+            return UIImage(systemName: "playpause.fill")
+        case .forward:
+            return UIImage(systemName: "forward.fill")
+        case .backward:
+            return UIImage(systemName: "backward.fill")
+        case .cancelScript:
+            return UIImage(systemName: "stop.fill")
+        default:
+            return nil
+        }
+    }
+
+    var touchBarItemIdentifier: NSTouchBarItem.Identifier {
+        return NSTouchBarItem.Identifier(rawValue: "\(rawValue)")
+    }
+
+    init?(_ touchBarItemIdentifier: NSTouchBarItem.Identifier) {
+        guard let rawValue = Int8(touchBarItemIdentifier.rawValue) else { return nil }
+        self.init(rawValue: rawValue)
+    }
+}
+#endif

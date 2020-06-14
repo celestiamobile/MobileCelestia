@@ -26,7 +26,7 @@ final class InfoViewController: UIViewController {
 
     private let info: BodyInfo
 
-    var selectionHandler: ((ObjectAction?) -> Void)?
+    var selectionHandler: ((ObjectAction) -> Void)?
 
     let actions: [ObjectAction]
 
