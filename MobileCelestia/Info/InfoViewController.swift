@@ -155,6 +155,8 @@ extension CelestiaAction {
             return CelestiaString("Run Demo", comment: "")
         case .cancelScript:
             return CelestiaString("Cancel Script", comment: "")
+        case .home:
+            return CelestiaString("Home (Sol)", comment: "")
         }
     }
 }

@@ -169,6 +169,8 @@ extension MainViewControler: CelestiaViewControllerDelegate {
             presentFavorite()
         case .help:
             presentHelp()
+        case .home:
+            CelestiaAppCore.shared.receive(.home)
         }
     }
 
@@ -405,7 +407,7 @@ extension MainViewControler: NSToolbarDelegate {
 
     private func defaultToolbarIdentifiers() -> [NSToolbarItem.Identifier] {
         return
-            [AppToolbarAction.browse, .favorite].map { NSToolbarItem.Identifier($0.rawValue) } +
+            [AppToolbarAction.browse, .favorite, .home].map { NSToolbarItem.Identifier($0.rawValue) } +
             [.flexibleSpace] +
             [AppToolbarAction.share, .search].map { NSToolbarItem.Identifier($0.rawValue) }
     }
@@ -469,12 +471,7 @@ extension MainViewControler: NSTouchBarDelegate {
 @available(macCatalyst 13.0, *)
 extension AppToolbarAction {
     var touchBarImage: UIImage? {
-        switch self {
-        case .search, .share, .setting, .browse, .favorite, .help:
-            return toolBarImage
-        default:
-            return nil
-        }
+        return toolBarImage
     }
 }
 
@@ -493,13 +490,15 @@ extension AppToolbarAction {
         case .favorite:
             return UIImage(systemName: "star.circle")
         case .camera:
-            return UIImage(systemName: "camera")
+            return UIImage(systemName: "video")
         case .time:
             return UIImage(systemName: "clock")
         case .script:
             return UIImage(systemName: "doc")
         case .help:
             return UIImage(systemName: "questionmark.circle")
+        case .home:
+            return UIImage(systemName: "house")
         }
     }
 }
