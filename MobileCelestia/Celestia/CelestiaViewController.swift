@@ -702,7 +702,17 @@ extension CelestiaViewController {
 
         core.setSafeAreaInsets(view.safeAreaInsets.scale(by: glView.contentScaleFactor))
 
-        core.setDPI(Int(96.0 * glView.contentScaleFactor))
+        #if targetEnvironment(macCatalyst)
+        let selector = NSSelectorFromString("scaleFactor")
+        var applicationScalingFactor: CGFloat = 1
+        if let clazz = NSClassFromString("_UIiOSMacIdiomManager") as? NSObject.Type, clazz.responds(to: selector), let value = clazz.value(forKey: "scaleFactor") as? CGFloat {
+            applicationScalingFactor = value
+        }
+        #else
+        let applicationScalingFactor: CGFloat = 1
+        #endif
+
+        core.setDPI(Int(96.0 * glView.contentScaleFactor / applicationScalingFactor))
 
         let locale = LocalizedString("LANGUAGE", "celestia")
         if let font = GetFontForLocale(locale, .system),
