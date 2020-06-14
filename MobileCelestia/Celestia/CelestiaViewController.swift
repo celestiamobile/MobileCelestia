@@ -9,6 +9,10 @@
 import UIKit
 import CelestiaCore
 
+#if !USE_MGL
+import GLKit
+#endif
+
 enum CelestiaLoadingError: Error {
     case openGLError
     case celestiaError
@@ -122,7 +126,11 @@ class CelestiaViewController: UIViewController {
     private var displayLink: CADisplayLink?
     private var displaySource: DispatchSourceUserDataAdd?
 
+    #if USE_MGL
     private lazy var glView = MGLKView(frame: .zero)
+    #else
+    private lazy var glView = GLKView(frame: .zero)
+    #endif
 
     private var pendingSelection: CelestiaSelection?
 
@@ -331,6 +339,7 @@ private extension UIKey {
     }
 }
 
+#if USE_MGL
 extension CelestiaViewController: MGLKViewDelegate {
     func mglkView(_ view: MGLKView!, drawIn rect: CGRect) {
         guard ready else { return }
@@ -345,6 +354,22 @@ extension CelestiaViewController: MGLKViewDelegate {
         core.tick()
     }
 }
+#else
+extension CelestiaViewController: GLKViewDelegate {
+    func glkView(_ view: GLKView, drawIn rect: CGRect) {
+        guard ready else { return }
+
+        let size = CGSize(width: view.drawableWidth, height: view.drawableHeight)
+        if size != currentSize {
+            currentSize = size
+            core.resize(to: currentSize)
+        }
+
+        core.draw()
+        core.tick()
+    }
+}
+#endif
 
 extension CelestiaViewController: CelestiaControlViewDelegate {
     func celestiaControlView(_ celestiaControlView: CelestiaControlView, pressDidStartWith action: CelestiaControlAction) {
@@ -560,14 +585,25 @@ extension CelestiaViewController {
 
 extension CelestiaViewController {
     @discardableResult private func setupOpenGL() -> Bool {
+        #if USE_MGL
         let context = MGLContext(api: kMGLRenderingAPIOpenGLES2)
         MGLContext.setCurrent(context)
 
         glView.context = context
-//        glView.enableSetNeedsDisplay = false
         glView.drawableDepthFormat = MGLDrawableDepthFormat24
 
         glView.drawableMultisample = UserDefaults.app[.msaa] == true ? MGLDrawableMultisample4X : MGLDrawableMultisampleNone
+        #else
+        let context = EAGLContext(api: .openGLES2)!
+
+        EAGLContext.setCurrent(context)
+
+        glView.context = context
+        glView.enableSetNeedsDisplay = false
+        glView.drawableDepthFormat = .format24
+
+        glView.drawableMultisample = UserDefaults.app[.msaa] == true ? .multisample4X : .multisampleNone
+        #endif
 
         return true
     }
