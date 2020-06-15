@@ -33,6 +33,8 @@ class MainViewControler: UIViewController {
     private lazy var rightSlideInManager = SlideInPresentationManager(direction: .right)
     private lazy var bottomSlideInManager = SlideInPresentationManager(direction: .bottom)
 
+    private lazy var core = CelestiaAppCore.shared
+
     private var viewControllerStack: [UIViewController] = []
 
     override func loadView() {
@@ -163,18 +165,18 @@ extension MainViewControler: CelestiaViewControllerDelegate {
         case .camera:
             presentCameraControl()
         case .share:
-            presentShare(selection: CelestiaAppCore.shared.simulation.selection)
+            presentShare(selection: core.simulation.selection)
         case .favorite:
             presentFavorite()
         case .help:
             presentHelp()
         case .home:
-            CelestiaAppCore.shared.receive(.home)
+            core.receive(.home)
         }
     }
 
     private func presentShare(selection: CelestiaSelection) {
-        let name = CelestiaAppCore.shared.simulation.universe.name(for: selection)
+        let name = core.simulation.universe.name(for: selection)
         let url = celestiaController.currentURL.absoluteString
         showTextInput(CelestiaString("Share", comment: ""),
                       message: CelestiaString("Please enter a description of the content.", comment: ""),
@@ -397,7 +399,16 @@ extension MainViewControler: UIViewControllerDismissDelegate {
 
 #if targetEnvironment(macCatalyst)
 extension MainViewControler: NSToolbarDelegate {
+    private var undoOrRedoGroupItemIdentifier: NSToolbarItem.Identifier {
+        return NSToolbarItem.Identifier("undoOrRedoGroup")
+    }
+
     func toolbar(_ toolbar: NSToolbar, itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier, willBeInsertedIntoToolbar flag: Bool) -> NSToolbarItem? {
+        if itemIdentifier == undoOrRedoGroupItemIdentifier {
+            let toolbarItemGroup = NSToolbarItemGroup(itemIdentifier: itemIdentifier, images: [UIImage(systemName: "chevron.left")!, UIImage(systemName: "chevron.right")!], selectionMode: .momentary, labels: [CelestiaString("Backward", comment: ""), CelestiaString("Forward", comment: "")], target: self, action: #selector(undoOrRedo(_:)))
+            return toolbarItemGroup
+        }
+
         guard let action = AppToolbarAction(rawValue: itemIdentifier.rawValue) else { return nil }
         let toolbarItem = NSToolbarItem(itemIdentifier: itemIdentifier, barButtonItem: UIBarButtonItem())
         toolbarItem.label = action.title ?? ""
@@ -410,13 +421,14 @@ extension MainViewControler: NSToolbarDelegate {
 
     private func defaultToolbarIdentifiers() -> [NSToolbarItem.Identifier] {
         return
+            [undoOrRedoGroupItemIdentifier] +
             [AppToolbarAction.browse, .favorite, .home].map { NSToolbarItem.Identifier($0.rawValue) } +
             [.flexibleSpace] +
             [AppToolbarAction.setting, .share, .search].map { NSToolbarItem.Identifier($0.rawValue) }
     }
 
     private func availableIdentifiers() -> [NSToolbarItem.Identifier] {
-        return AppToolbarAction.persistentAction.reduce([AppToolbarAction](), { $0 + $1 }).map { NSToolbarItem.Identifier(rawValue: $0.rawValue) } + [.flexibleSpace, .space]
+        return AppToolbarAction.persistentAction.reduce([AppToolbarAction](), { $0 + $1 }).map { NSToolbarItem.Identifier(rawValue: $0.rawValue) } + [.flexibleSpace, .space] + [undoOrRedoGroupItemIdentifier]
     }
 
     func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
@@ -439,6 +451,14 @@ extension MainViewControler: NSToolbarDelegate {
         guard presentedViewController == nil else { return }
         guard let action = AppToolbarAction(rawValue: sender.itemIdentifier.rawValue) else { return }
         toolbarActionSelected(action)
+    }
+
+    @objc private func undoOrRedo(_ sender: NSToolbarItemGroup) {
+        if sender.selectedIndex == 0 {
+            core.back()
+        } else {
+            core.forward()
+        }
     }
 }
 

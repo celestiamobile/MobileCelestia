@@ -207,27 +207,38 @@ class CelestiaViewController: UIViewController {
     override func viewSafeAreaInsetsDidChange() {
         super.viewSafeAreaInsetsDidChange()
 
+        guard ready else { return }
+
         core?.setSafeAreaInsets(view.safeAreaInsets.scale(by: glView.contentScaleFactor))
     }
 
     override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-        super.pressesBegan(presses, with: event)
+        guard ready else { return }
+
         if #available(iOS 13.4, *), let key = presses.first?.key {
             core.keyDown(with: key.input, modifiers: UInt(key.modifierFlags.rawValue))
+        } else {
+            super.pressesBegan(presses, with: event)
         }
     }
 
     override func pressesEnded(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-        super.pressesEnded(presses, with: event)
+        guard ready else { return }
+
         if #available(iOS 13.4, *), let key = presses.first?.key {
             core.keyUp(with: key.input, modifiers: UInt(key.modifierFlags.rawValue))
+        } else {
+            super.pressesEnded(presses, with: event)
         }
     }
 
     override func pressesCancelled(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-        super.pressesCancelled(presses, with: event)
+        guard ready else { return }
+
         if #available(iOS 13.4, *), let key = presses.first?.key {
             core.keyUp(with: key.input, modifiers: UInt(key.modifierFlags.rawValue))
+        } else {
+            super.pressesCancelled(presses, with: event)
         }
     }
 }
