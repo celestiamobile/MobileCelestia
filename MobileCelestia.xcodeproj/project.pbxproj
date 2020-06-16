@@ -68,8 +68,8 @@
 		97FF95A5240A340300E9F44F /* BaseResultHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FF95A4240A340300E9F44F /* BaseResultHandler.swift */; };
 		97FF95AA240A3F0900E9F44F /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FF95A9240A3F0900E9F44F /* Data.swift */; };
 		EA10553324935A4700E49C6D /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA10553224935A4700E49C6D /* Metal.framework */; };
-		EA1EF0642493A9A20039F493 /* MetalANGLE.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA1EF0632493A9A20039F493 /* MetalANGLE.xcframework */; };
-		EA1EF0652493A9A30039F493 /* MetalANGLE.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EA1EF0632493A9A20039F493 /* MetalANGLE.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		EA1EF0642493A9A20039F493 /* MetalANGLE.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA1EF0632493A9A20039F493 /* MetalANGLE.xcframework */; platformFilter = maccatalyst; };
+		EA1EF0652493A9A30039F493 /* MetalANGLE.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EA1EF0632493A9A20039F493 /* MetalANGLE.xcframework */; platformFilter = maccatalyst; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		EA1EF0662493A9F30039F493 /* AppCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9702D298240A8DD1005746E3 /* AppCenter.framework */; platformFilter = ios; };
 		EA1EF0682493A9F30039F493 /* AppCenterAnalytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9702D295240A8DD1005746E3 /* AppCenterAnalytics.framework */; platformFilter = ios; };
 		EA1EF06A2493A9F30039F493 /* AppCenterCrashes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9702D297240A8DD1005746E3 /* AppCenterCrashes.framework */; platformFilter = ios; };
@@ -77,6 +77,7 @@
 		EABC245D248E162000205B5A /* FontHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = EABC245A248E162000205B5A /* FontHelper.m */; };
 		EABDE367247170F000E0A5FA /* SettngSliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABDE366247170F000E0A5FA /* SettngSliderCell.swift */; };
 		EABDE3A92473DAA300E0A5FA /* SettingCommonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABDE3A82473DAA300E0A5FA /* SettingCommonViewController.swift */; };
+		EAF484A52498774A00E5B817 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EAF484A42498774A00E5B817 /* OpenGLES.framework */; platformFilter = ios; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -189,6 +190,7 @@
 		EABC245C248E162000205B5A /* FontHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FontHelper.h; sourceTree = "<group>"; };
 		EABDE366247170F000E0A5FA /* SettngSliderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettngSliderCell.swift; sourceTree = "<group>"; };
 		EABDE3A82473DAA300E0A5FA /* SettingCommonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingCommonViewController.swift; sourceTree = "<group>"; };
+		EAF484A42498774A00E5B817 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -201,6 +203,7 @@
 				EA1EF06A2493A9F30039F493 /* AppCenterCrashes.framework in Frameworks */,
 				EA1EF0682493A9F30039F493 /* AppCenterAnalytics.framework in Frameworks */,
 				979D2FAD23FEB2B4005D2592 /* libbz2.tbd in Frameworks */,
+				EAF484A52498774A00E5B817 /* OpenGLES.framework in Frameworks */,
 				979D2FAF23FEB2BD005D2592 /* libz.tbd in Frameworks */,
 				EA1EF0662493A9F30039F493 /* AppCenter.framework in Frameworks */,
 				979D2FAB23FEB2AA005D2592 /* libc++.tbd in Frameworks */,
@@ -413,6 +416,7 @@
 		979D2FA523FEB1DD005D2592 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				EAF484A42498774A00E5B817 /* OpenGLES.framework */,
 				EA1EF0632493A9A20039F493 /* MetalANGLE.xcframework */,
 				EA10553224935A4700E49C6D /* Metal.framework */,
 				9702D298240A8DD1005746E3 /* AppCenter.framework */,
@@ -842,7 +846,8 @@
 					"@executable_path/Frameworks",
 				);
 				OTHER_LDFLAGS = "-ObjC";
-				OTHER_SWIFT_FLAGS = "-DUSE_MGL";
+				OTHER_SWIFT_FLAGS = "";
+				"OTHER_SWIFT_FLAGS[sdk=macosx*]" = "-DUSE_MGL";
 				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.MobileCelestia;
 				PRODUCT_NAME = Celestia;
 				SUPPORTS_MACCATALYST = YES;
@@ -874,7 +879,8 @@
 					"@executable_path/Frameworks",
 				);
 				OTHER_LDFLAGS = "-ObjC";
-				OTHER_SWIFT_FLAGS = "-DUSE_MGL";
+				OTHER_SWIFT_FLAGS = "";
+				"OTHER_SWIFT_FLAGS[sdk=macosx*]" = "-DUSE_MGL";
 				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.MobileCelestia;
 				PRODUCT_NAME = Celestia;
 				SUPPORTS_MACCATALYST = YES;
