@@ -55,8 +55,8 @@ class AboutViewController: UIViewController {
         }
 
         totalItems.append([
-            TextItem.link(title: CelestiaString("Official Website", comment: ""), url: URL(string: "https://celestia.space")!),
-            TextItem.link(title: CelestiaString("Support Forum", comment: ""), url: URL(string: "https://celestia.space/forum")!)
+            TextItem.link(title: CelestiaString("Official Website", comment: ""), url: officialWebsiteURL),
+            TextItem.link(title: CelestiaString("Support Forum", comment: ""), url: supportForumURL)
         ])
 
         items = totalItems

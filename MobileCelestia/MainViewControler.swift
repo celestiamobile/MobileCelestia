@@ -50,10 +50,13 @@ class MainViewControler: UIViewController {
         celestiaController.celestiaDelegate = self
 
         NotificationCenter.default.addObserver(self, selector: #selector(newURLOpened(_:)), name: newURLOpenedNotificationName, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(presentHelp), name: showHelpNotificationName, object: nil)
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+
+        _ = becomeFirstResponder()
 
         guard status == .notLoaded else { return }
 
@@ -227,7 +230,7 @@ extension MainViewControler: CelestiaViewControllerDelegate {
         showViewController(controller)
     }
 
-    private func presentHelp() {
+    @objc private func presentHelp() {
         showViewController(OnboardViewController() { [unowned self] (action) in
             switch action {
             case .tutorial(let tutorial):
