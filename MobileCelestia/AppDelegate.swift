@@ -68,6 +68,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 }
 
 extension AppDelegate: UIDocumentPickerDelegate {
+    @available(iOS 13.0, *)
     override func buildMenu(with builder: UIMenuBuilder) {
         guard builder.system == .main else { return }
 
