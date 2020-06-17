@@ -137,10 +137,12 @@ extension CelestiaAction {
             return CelestiaString("Center", comment: "")
         case .playpause:
             return CelestiaString("Resume/Pause", comment: "")
-        case .backward:
-            return CelestiaString("Backward", comment: "")
-        case .forward:
-            return CelestiaString("Forward", comment: "")
+        case .slower:
+            return CelestiaString("Slower", comment: "")
+        case .faster:
+            return CelestiaString("Faster", comment: "")
+        case .reverse:
+            return CelestiaString("Reverse Time", comment: "")
         case .currentTime:
             return CelestiaString("Current Time", comment: "")
         case .syncOrbit:

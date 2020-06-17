@@ -203,7 +203,7 @@ extension MainViewControler: CelestiaViewControllerDelegate {
     }
 
     private func presentTimeToolbar() {
-        presentActionToolbar(for: [.backward, .playpause, .forward])
+        presentActionToolbar(for: [.slower, .playpause, .faster, .reverse])
     }
 
     private func presentActionToolbar(for actions: [CelestiaAction]) {
@@ -532,10 +532,12 @@ extension CelestiaAction: ToolbarAction {
         switch self {
         case .playpause:
             return #imageLiteral(resourceName: "time_playpause")
-        case .forward:
-            return #imageLiteral(resourceName: "time_forward")
-        case .backward:
-            return #imageLiteral(resourceName: "time_backward")
+        case .faster:
+            return #imageLiteral(resourceName: "time_faster")
+        case .slower:
+            return #imageLiteral(resourceName: "time_slower")
+        case .reverse:
+            return #imageLiteral(resourceName: "time_reverse")
         case .cancelScript:
             return #imageLiteral(resourceName: "time_stop")
         default:
@@ -550,10 +552,12 @@ extension CelestiaAction: ToolbarTouchBarAction {
         switch self {
         case .playpause:
             return UIImage(systemName: "playpause.fill")
-        case .forward:
+        case .faster:
             return UIImage(systemName: "forward.fill")
-        case .backward:
+        case .slower:
             return UIImage(systemName: "backward.fill")
+        case .reverse:
+            return UIImage(systemName: "repeat")
         case .cancelScript:
             return UIImage(systemName: "stop.fill")
         default:

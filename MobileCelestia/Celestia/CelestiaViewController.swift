@@ -22,8 +22,9 @@ enum CelestiaAction: Int8 {
     case goto = 103
     case center = 99
     case playpause = 32
-    case backward = 107
-    case forward = 108
+    case reverse = 106
+    case slower = 107
+    case faster = 108
     case currentTime = 33
     case syncOrbit = 121
     case lock = 58
