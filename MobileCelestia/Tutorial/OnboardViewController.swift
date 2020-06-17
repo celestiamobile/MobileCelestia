@@ -26,7 +26,6 @@ class OnboardViewController: UIViewController {
     }
     override func loadView() {
         view = UIView()
-        view.backgroundColor = .darkBackground
     }
 
     override func viewDidLoad() {
@@ -38,7 +37,7 @@ class OnboardViewController: UIViewController {
 
 private extension OnboardViewController {
     func setup() {
-        view.backgroundColor = .darkBackground
+        view.backgroundColor = .darkSecondaryBackground
 
         let welcomeView = UILabel()
         welcomeView.font = UIFont.preferredFont(forTextStyle: .largeTitle)

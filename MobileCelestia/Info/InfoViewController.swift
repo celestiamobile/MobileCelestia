@@ -46,7 +46,7 @@ final class InfoViewController: UIViewController {
 
     override func loadView() {
         view = UIView()
-        view.backgroundColor = .darkBackground
+        view.backgroundColor = .darkSecondaryBackground
     }
 
     override func viewDidLoad() {
