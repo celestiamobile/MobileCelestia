@@ -845,7 +845,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = MobileCelestia/Celestia.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 19;
+				CURRENT_PROJECT_VERSION = 27;
 				DEVELOPMENT_TEAM = 22NR5428TD;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -877,7 +877,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = MobileCelestia/Celestia.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 19;
+				CURRENT_PROJECT_VERSION = 27;
 				DEVELOPMENT_TEAM = 22NR5428TD;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",

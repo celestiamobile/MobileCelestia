@@ -70,6 +70,10 @@ class SearchViewController: UIViewController {
 
         shouldActivate = searchController.searchBar.isFirstResponder
     }
+
+    deinit {
+        searchQueue.cancelAllOperations()
+    }
 }
 
 private extension SearchViewController {
@@ -102,6 +106,7 @@ private extension SearchViewController {
         }
         let searchBar = searchController.searchBar
         searchBar.keyboardAppearance = .dark
+        searchBar.delegate = self
         if #available(iOS 11.0, *) {
             /* system attached searchbar */
             navigationItem.searchController = searchController
@@ -168,9 +173,21 @@ extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
 
         tableView.deselectRow(at: indexPath, animated: true)
         let selection = resultSections[indexPath.section].results[indexPath.row]
+        itemSelected(with: selection.name)
+    }
+}
+
+extension SearchViewController: UISearchBarDelegate {
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        searchBar.resignFirstResponder()
+        guard let text = searchBar.text, !text.isEmpty, resultSections.reduce(0, { $0 + $1.results.count }) == 0 else { return }
+        itemSelected(with: text)
+    }
+
+    private func itemSelected(with name: String) {
         let sim = CelestiaAppCore.shared.simulation
-        let object = sim.findObject(from: selection.name)
-        if object.isEmpty {
+        let object = sim.findObject(from: name)
+        guard !object.isEmpty else {
             showError(CelestiaString("Object not found", comment: ""))
             return
         }
