@@ -29,11 +29,11 @@ class SearchViewController: UIViewController {
 
     private var resultSections: [SearchResultSection] = []
 
-    private let selected: (BodyInfo) -> Void
+    private let selected: (CelestiaSelection) -> Void
 
     private var shouldActivate = true
 
-    init(selected: @escaping (BodyInfo) -> Void) {
+    init(selected: @escaping (CelestiaSelection) -> Void) {
         self.selected = selected
         super.init(nibName: nil, bundle: nil)
     }
@@ -175,7 +175,7 @@ extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
             return
         }
 
-        selected(BodyInfo(selection: object))
+        selected(object)
     }
 }
 

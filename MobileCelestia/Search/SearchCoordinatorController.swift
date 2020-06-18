@@ -8,14 +8,16 @@
 
 import UIKit
 
+import CelestiaCore
+
 class SearchCoordinatorController: UIViewController {
 
     private var main: SearchViewController!
     private var navigation: UINavigationController!
 
-    private let selected: (BodyInfo) -> Void
+    private let selected: (CelestiaSelection) -> Void
 
-    init(selected: @escaping (BodyInfo) -> Void) {
+    init(selected: @escaping (CelestiaSelection) -> Void) {
         self.selected = selected
         super.init(nibName: nil, bundle: nil)
     }

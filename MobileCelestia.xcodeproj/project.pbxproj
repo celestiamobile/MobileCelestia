@@ -78,6 +78,7 @@
 		EABDE367247170F000E0A5FA /* SettngSliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABDE366247170F000E0A5FA /* SettngSliderCell.swift */; };
 		EABDE3A92473DAA300E0A5FA /* SettingCommonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABDE3A82473DAA300E0A5FA /* SettingCommonViewController.swift */; };
 		EAF484A52498774A00E5B817 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EAF484A42498774A00E5B817 /* OpenGLES.framework */; platformFilter = ios; };
+		EAF48515249B2C4700E5B817 /* SubsystemBrowserCoordinatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF48514249B2C4700E5B817 /* SubsystemBrowserCoordinatorViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -191,6 +192,7 @@
 		EABDE366247170F000E0A5FA /* SettngSliderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettngSliderCell.swift; sourceTree = "<group>"; };
 		EABDE3A82473DAA300E0A5FA /* SettingCommonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingCommonViewController.swift; sourceTree = "<group>"; };
 		EAF484A42498774A00E5B817 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		EAF48514249B2C4700E5B817 /* SubsystemBrowserCoordinatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubsystemBrowserCoordinatorViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -227,6 +229,7 @@
 				972477D02404A19700729B45 /* BrowserContainerViewController.swift */,
 				972477D42404A63800729B45 /* BrowserCommonViewController.swift */,
 				972477D62404A65C00729B45 /* BrowserCoordinatorController.swift */,
+				EAF48514249B2C4700E5B817 /* SubsystemBrowserCoordinatorViewController.swift */,
 			);
 			path = Browser;
 			sourceTree = "<group>";
@@ -670,6 +673,7 @@
 				977394BF24041A9A00E38B82 /* SearchCoordinatorController.swift in Sources */,
 				978406DC240294D000876FD1 /* LoadingViewController.swift in Sources */,
 				EABC245D248E162000205B5A /* FontHelper.m in Sources */,
+				EAF48515249B2C4700E5B817 /* SubsystemBrowserCoordinatorViewController.swift in Sources */,
 				972C5A8A24068D55009747A8 /* UIViewController+Presentation.m in Sources */,
 				978406DA2402906C00876FD1 /* UIViewController+Extension.swift in Sources */,
 				9773949E2402A96B00E38B82 /* SlideInPresentationController.swift in Sources */,

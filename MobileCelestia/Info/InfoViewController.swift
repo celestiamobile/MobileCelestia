@@ -8,10 +8,13 @@
 
 import UIKit
 
+import CelestiaCore
+
 enum ObjectAction {
     case select
     case web(url: URL)
     case wrapped(action: CelestiaAction)
+    case subsystem
 }
 
 private extension ObjectAction {
@@ -24,18 +27,19 @@ final class InfoViewController: UIViewController {
     private lazy var layout = UICollectionViewFlowLayout()
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: self.layout)
 
-    private let info: BodyInfo
+    private let info: CelestiaSelection
 
     var selectionHandler: ((ObjectAction) -> Void)?
 
-    let actions: [ObjectAction]
+    private let actions: [ObjectAction]
 
-    init(info: BodyInfo) {
+    init(info: CelestiaSelection) {
         self.info = info
         var actions = ObjectAction.allCases
-        if let url = info.url {
+        if let urlString = info.webInfoURL, let url = URL(string: urlString) {
             actions.append(.web(url: url))
         }
+        actions.append(.subsystem)
         self.actions = actions
         super.init(nibName: nil, bundle: nil)
     }
@@ -101,7 +105,7 @@ extension InfoViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if indexPath.section == 0 {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Description", for: indexPath) as! BodyDescriptionCell
-            cell.update(with: info)
+            cell.update(with: BodyInfo(selection: info))
             return cell
         }
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Action", for: indexPath) as! BodyActionCell
@@ -124,6 +128,8 @@ private extension ObjectAction {
             return CelestiaString("Web Info", comment: "")
         case .wrapped(let action):
             return action.description
+        case .subsystem:
+            return CelestiaString("Subsystem", comment: "")
         }
     }
 }

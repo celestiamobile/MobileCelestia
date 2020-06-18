@@ -1,8 +1,8 @@
 //
-//  BrowserCoordinatorController.swift
+//  SubsystemBrowserCoordinatorViewController.swift
 //  MobileCelestia
 //
-//  Created by 李林峰 on 2020/2/25.
+//  Created by Levin Li on 2020/6/18.
 //  Copyright © 2020 李林峰. All rights reserved.
 //
 
@@ -10,7 +10,7 @@ import UIKit
 
 import CelestiaCore
 
-class BrowserCoordinatorController: UIViewController {
+class SubsystemBrowserCoordinatorViewController: UIViewController {
 
     private var navigation: UINavigationController!
 
@@ -18,12 +18,10 @@ class BrowserCoordinatorController: UIViewController {
 
     private let selection: (CelestiaSelection) -> Void
 
-    init(item: CelestiaBrowserItem, image: UIImage, selection: @escaping (CelestiaSelection) -> Void) {
+    init(item: CelestiaBrowserItem, selection: @escaping (CelestiaSelection) -> Void) {
         self.item = item
         self.selection = selection
         super.init(nibName: nil, bundle: nil)
-
-        tabBarItem = UITabBarItem(title: item.alternativeName ?? item.name, image: image, selectedImage: nil)
     }
 
     required init?(coder: NSCoder) {
@@ -43,7 +41,7 @@ class BrowserCoordinatorController: UIViewController {
 
 }
 
-private extension BrowserCoordinatorController {
+private extension SubsystemBrowserCoordinatorViewController {
     func setup() {
         navigation = UINavigationController(rootViewController: create(for: item))
 

@@ -132,7 +132,7 @@ extension MainViewControler {
 }
 
 extension MainViewControler: CelestiaViewControllerDelegate {
-    func celestiaController(_ celestiaController: CelestiaViewController, requestShowActionMenuWithSelection selection: BodyInfo?) {
+    func celestiaController(_ celestiaController: CelestiaViewController, requestShowActionMenuWithSelection selection: CelestiaSelection) {
         let actions: [[AppToolbarAction]] = AppToolbarAction.persistentAction
         let controller = ToolbarViewController(actions: actions)
         controller.selectionHandler = { [unowned self] (action) in
@@ -144,9 +144,9 @@ extension MainViewControler: CelestiaViewControllerDelegate {
         present(controller, animated: true, completion: nil)
     }
 
-    func celestiaController(_ celestiaController: CelestiaViewController, requestShowInfoWithSelection selection: BodyInfo?) {
-        guard let sel = selection else { return }
-        showBodyInfo(with: sel)
+    func celestiaController(_ celestiaController: CelestiaViewController, requestShowInfoWithSelection selection: CelestiaSelection) {
+        guard !selection.isEmpty else { return }
+        showSelectionInfo(with: selection)
     }
 
     func celestiaController(_ celestiaController: CelestiaViewController, requestWebInfo webURL: URL) {
@@ -180,7 +180,7 @@ extension MainViewControler: CelestiaViewControllerDelegate {
 
     private func presentShare(selection: CelestiaSelection) {
         let name = core.simulation.universe.name(for: selection)
-        let url = celestiaController.currentURL.absoluteString
+        let url = core.currentURL
         showTextInput(CelestiaString("Share", comment: ""),
                       message: CelestiaString("Please enter a description of the content.", comment: ""),
                       text: name) { (description) in
@@ -210,7 +210,7 @@ extension MainViewControler: CelestiaViewControllerDelegate {
         let controller = ToolbarViewController(actions: [actions], scrollDirection: .horizontal, finishOnSelection: false)
         controller.selectionHandler = { [unowned self] (action) in
             guard let ac = action as? CelestiaAction else { return }
-            self.celestiaController.receive(action: ac)
+            self.core.receive(ac)
         }
         #if targetEnvironment(macCatalyst)
         controller.touchBarActionConversionBlock = { (identifier) in
@@ -239,21 +239,24 @@ extension MainViewControler: CelestiaViewControllerDelegate {
         })
     }
 
-    private func showBodyInfo(with selection: BodyInfo) {
+    private func showSelectionInfo(with selection: CelestiaSelection) {
         let controller = InfoViewController(info: selection)
         controller.dismissDelegate = self
         controller.selectionHandler = { [unowned self] (action) in
             switch action {
             case .select:
                 self.clearBackStack()
-                self.celestiaController.select(selection)
+                self.core.simulation.selection = selection
             case .wrapped(let cac):
                 self.clearBackStack()
-                self.celestiaController.select(selection)
-                self.celestiaController.receive(action: cac)
+                self.core.simulation.selection = selection
+                self.core.receive(cac)
             case .web(let url):
                 self.addToBackStack()
                 self.showWeb(url)
+            case .subsystem:
+                self.addToBackStack()
+                self.showSubsystem(with: selection)
             }
         }
         showViewController(controller)
@@ -269,6 +272,17 @@ extension MainViewControler: CelestiaViewControllerDelegate {
         #endif
     }
 
+    private func showSubsystem(with selection: CelestiaSelection) {
+        guard let entry = selection.object else { return }
+        let browserItem = CelestiaBrowserItem(name: core.simulation.universe.name(for: selection), alternativeName: nil, catEntry: entry, provider: core.simulation.universe)
+        let controller = SubsystemBrowserCoordinatorViewController(item: browserItem) { [unowned self] (selection) in
+            self.addToBackStack()
+            self.showSelectionInfo(with: selection)
+        }
+        controller.dismissDelegate = self
+        showViewController(controller)
+    }
+
     private func showSettings() {
         let controller = SettingsCoordinatorController() { (_) in
         }
@@ -278,7 +292,7 @@ extension MainViewControler: CelestiaViewControllerDelegate {
     private func showSearch() {
         let controller = SearchCoordinatorController { [unowned self] (info) in
             self.addToBackStack()
-            self.showBodyInfo(with: info)
+            self.showSelectionInfo(with: info)
         }
         showViewController(controller)
     }
@@ -286,7 +300,7 @@ extension MainViewControler: CelestiaViewControllerDelegate {
     private func showBrowser() {
         let controller = BrowserContainerViewController(selected: { [unowned self] (info) in
             self.addToBackStack()
-            self.showBodyInfo(with: info)
+            self.showSelectionInfo(with: info)
         })
         showViewController(controller)
     }
@@ -317,7 +331,7 @@ extension MainViewControler {
         dismiss(animated: true, completion: nil)
         switch action {
         case .runDemo:
-            celestiaController.receive(action: .runDemo)
+            core.receive(.runDemo)
         }
     }
 

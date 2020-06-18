@@ -8,12 +8,14 @@
 
 import UIKit
 
+import CelestiaCore
+
 class BrowserContainerViewController: UIViewController {
     private lazy var controller = UITabBarController()
 
-    private let selected: (BodyInfo) -> Void
+    private let selected: (CelestiaSelection) -> Void
 
-    init(selected: @escaping (BodyInfo) -> Void) {
+    init(selected: @escaping (CelestiaSelection) -> Void) {
         self.selected = selected
         super.init(nibName: nil, bundle: nil)
     }
@@ -38,7 +40,7 @@ class BrowserContainerViewController: UIViewController {
 private extension BrowserContainerViewController {
     func setup() {
         install(controller)
-        let handler = { [unowned self] (selection: BodyInfo) in
+        let handler = { [unowned self] (selection: CelestiaSelection) in
             self.dismiss(animated: true, completion: nil)
             self.selected(selection)
         }

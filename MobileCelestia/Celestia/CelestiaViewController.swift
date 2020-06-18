@@ -51,8 +51,8 @@ extension CelestiaAppCore {
 }
 
 protocol CelestiaViewControllerDelegate: class {
-    func celestiaController(_ celestiaController: CelestiaViewController, requestShowActionMenuWithSelection selection: BodyInfo?)
-    func celestiaController(_ celestiaController: CelestiaViewController, requestShowInfoWithSelection selection: BodyInfo?)
+    func celestiaController(_ celestiaController: CelestiaViewController, requestShowActionMenuWithSelection selection: CelestiaSelection)
+    func celestiaController(_ celestiaController: CelestiaViewController, requestShowInfoWithSelection selection: CelestiaSelection)
     func celestiaController(_ celestiaController: CelestiaViewController, requestWebInfo webURL: URL)
 }
 
@@ -262,7 +262,7 @@ extension CelestiaViewController: UIContextMenuInteractionDelegate {
 
             actions.append(UIMenu(title: "", options: .displayInline, children: CelestiaAction.allCases.map { action in
                 return UIAction(title: action.description) { (_) in
-                    core.selection = BodyInfo(selection: selection)
+                    core.simulation.selection = selection
                     core.receive(action)
                 }
             }))
@@ -270,7 +270,7 @@ extension CelestiaViewController: UIContextMenuInteractionDelegate {
             if let entry = selection.object {
                 let browserItem = CelestiaBrowserItem(name: core.simulation.universe.name(for: selection), catEntry: entry, provider: core.simulation.universe)
                 actions.append(UIMenu(title: "", options: .displayInline, children: browserItem.children.compactMap { $0.createMenuItems(additionalItemName: CelestiaString("Go", comment: "")) { (selection) in
-                    core.selection = BodyInfo(selection: selection)
+                    core.simulation.selection = selection
                     core.receive(.goto)
                     }
                 }))
@@ -394,12 +394,11 @@ extension CelestiaViewController: CelestiaControlViewDelegate {
 
     func celestiaControlView(_ celestiaControlView: CelestiaControlView, didTapWith action: CelestiaControlAction) {
         let sel = core.simulation.selection
-        let info = sel.isEmpty ? nil : BodyInfo(selection: sel)
         switch action {
         case .showMenu:
-            celestiaDelegate.celestiaController(self, requestShowActionMenuWithSelection: info)
+            celestiaDelegate.celestiaController(self, requestShowActionMenuWithSelection: sel)
         case .info:
-            celestiaDelegate.celestiaController(self, requestShowInfoWithSelection: info)
+            celestiaDelegate.celestiaController(self, requestShowInfoWithSelection: sel)
         case .hide:
             hideCurrentControlViewToShow(inactiveControlView)
         case .show:
@@ -566,8 +565,7 @@ extension CelestiaViewController {
         switch pan.state {
         case .ended:
             let sel = core.simulation.selection
-            let info = sel.isEmpty ? nil : BodyInfo(selection: sel)
-            celestiaDelegate.celestiaController(self, requestShowActionMenuWithSelection: info)
+            celestiaDelegate.celestiaController(self, requestShowActionMenuWithSelection: sel)
         default:
             break
         }
@@ -783,18 +781,6 @@ extension CelestiaViewController {
 }
 
 extension CelestiaViewController {
-    func receive(action: CelestiaAction) {
-        core.receive(action)
-    }
-
-    func select(_ bodyInfo: BodyInfo) {
-        core.selection = bodyInfo
-    }
-
-    var currentURL: URL {
-        return URL(string: core.currentURL)!
-    }
-
     func screenshot() -> UIImage {
         return UIGraphicsImageRenderer(size: glView.bounds.size).image { (_) in
             self.glView.drawHierarchy(in: self.glView.bounds, afterScreenUpdates: false)
