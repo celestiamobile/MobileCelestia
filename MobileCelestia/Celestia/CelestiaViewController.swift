@@ -257,7 +257,10 @@ extension CelestiaViewController: UIContextMenuInteractionDelegate {
 
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { (_) -> UIMenu? in
             var actions: [UIMenuElement] = [
-                UIAction(title: core.simulation.universe.name(for: selection), attributes: .disabled, handler: { _ in })
+                UIAction(title: core.simulation.universe.name(for: selection), handler: { [weak self] _ in
+                    guard let self = self else { return }
+                    self.celestiaDelegate.celestiaController(self, requestShowInfoWithSelection: selection)
+                })
             ]
 
             actions.append(UIMenu(title: "", options: .displayInline, children: CelestiaAction.allCases.map { action in

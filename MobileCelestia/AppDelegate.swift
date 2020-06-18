@@ -67,8 +67,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 }
 
+#if targetEnvironment(macCatalyst)
 extension AppDelegate: UIDocumentPickerDelegate {
-    @available(iOS 13.0, *)
     override func buildMenu(with builder: UIMenuBuilder) {
         guard builder.system == .main else { return }
 
@@ -123,6 +123,7 @@ extension AppDelegate: UIDocumentPickerDelegate {
         UIApplication.shared.open(supportForumURL, options: [:], completionHandler: nil)
     }
 }
+#endif
 
 extension AppDelegate {
     private func swizzleShouldInheritScreenScaleAsContentScaleFactor() {
