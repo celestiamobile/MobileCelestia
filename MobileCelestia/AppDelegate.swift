@@ -72,18 +72,33 @@ extension AppDelegate: UIDocumentPickerDelegate {
     override func buildMenu(with builder: UIMenuBuilder) {
         guard builder.system == .main else { return }
 
+        let newHelpCommand: UIKeyCommand
+        let oldHelpCommand = builder.command(for: NSSelectorFromString("showHelp:"))
+        if let helpCommand = oldHelpCommand as? UIKeyCommand {
+            newHelpCommand = UIKeyCommand(title: helpCommand.title, image: helpCommand.image, action: #selector(showCelestiaHelp(_:)), input: helpCommand.input ?? "?", modifierFlags: helpCommand.modifierFlags)
+        } else {
+            newHelpCommand = UIKeyCommand(title: oldHelpCommand?.title ?? CelestiaString("", comment: ""), image: oldHelpCommand?.image, action: #selector(showCelestiaHelp(_:)), input: "?", modifierFlags: .command)
+        }
+
         let identifierPrefix = Bundle.main.bundleIdentifier! + "."
 
         builder.insertChild(UIMenu(title: "", image: nil, identifier: UIMenu.Identifier(identifierPrefix + "open"), options: .displayInline, children: [
             UIKeyCommand(title: CelestiaString("Run Script…", comment: ""), image: nil, action: #selector(openScriptFile), input: "O", modifierFlags: .command)
         ]), atStartOfMenu: .file)
-        builder.replace(menu: .help, with: UIMenu(title: CelestiaString("Help", comment: ""), image: nil, identifier: UIMenu.Identifier(identifierPrefix + "help"), children: [
-            UICommand(title: CelestiaString("Celestia Help", comment: ""), image: nil, action: #selector(showCelestiaHelp(_:))),
-            UIMenu(title: "", image: nil, identifier: UIMenu.Identifier(identifierPrefix + "help.sub"), options: .displayInline, children: [
+        builder.replaceChildren(ofMenu: .help) { (oldCommands: [UIMenuElement]) -> [UIMenuElement] in
+            var newCommands = oldCommands
+            if let helpCommandIndex = newCommands.firstIndex(where: { $0 == oldHelpCommand }) {
+                newCommands.remove(at: helpCommandIndex)
+                newCommands.insert(newHelpCommand, at: helpCommandIndex)
+            } else {
+                newCommands.insert(newHelpCommand, at: 0)
+            }
+            newCommands.append(UIMenu(title: "", image: nil, identifier: UIMenu.Identifier(identifierPrefix + "help.sub"), options: .displayInline, children: [
                 UICommand(title: CelestiaString("Official Website", comment: ""), image: nil, action: #selector(openOfficialWebsite)),
                 UICommand(title: CelestiaString("Support Forum", comment: ""), image: nil, action: #selector(openSupportForum)),
-            ])
-        ]))
+            ]))
+            return newCommands
+        }
     }
 
     @objc private func openScriptFile() {
