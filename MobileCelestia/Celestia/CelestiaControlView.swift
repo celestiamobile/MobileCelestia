@@ -33,21 +33,6 @@ protocol CelestiaControlViewDelegate: class {
 }
 
 final class CelestiaControlView: UIView {
-    private class Button: UIButton {
-        override var isHighlighted: Bool {
-            get { return super.isHighlighted }
-            set { alpha = newValue ? 0.3 : 1 }
-        }
-
-        init() {
-            super.init(frame: .zero)
-        }
-
-        required init?(coder: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
-        }
-    }
-
     private let buttonProperties: [CelestiaControlButton]
 
     weak var delegate: CelestiaControlViewDelegate?
@@ -63,7 +48,7 @@ final class CelestiaControlView: UIView {
 
         let buttons = buttonProperties.enumerated().map { (arg) -> UIButton in
             let (offset, element) = arg
-            let button = Button()
+            let button = StandardButton(frame: .zero)
             button.imageView?.contentMode = .center
             button.tintColor = .darkSecondaryLabel
             button.translatesAutoresizingMaskIntoConstraints = false
