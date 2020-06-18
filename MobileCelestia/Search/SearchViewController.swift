@@ -97,6 +97,7 @@ private extension SearchViewController {
         tableView.dataSource = self
         tableView.delegate = self
 
+        definesPresentationContext = true
         searchController.searchResultsUpdater = self
 
         if #available(iOS 9.1, *) {
