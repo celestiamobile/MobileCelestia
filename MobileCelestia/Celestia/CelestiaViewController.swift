@@ -244,6 +244,7 @@ class CelestiaViewController: UIViewController {
     }
 }
 
+#if targetEnvironment(macCatalyst)
 @available(iOS 13.0, *)
 extension CelestiaViewController: UIContextMenuInteractionDelegate {
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
@@ -296,6 +297,7 @@ extension CelestiaViewController: UIContextMenuInteractionDelegate {
         }
     }
 }
+#endif
 
 extension CelestiaViewController: CelestiaAppCoreDelegate {
     func celestiaAppCoreFatalErrorHappened(_ error: String) {}
@@ -689,13 +691,13 @@ extension CelestiaViewController {
         pan1.require(toFail: rightEdge)
         glView.addGestureRecognizer(rightEdge)
 
-        if #available(iOS 13.0, *) {
-            glView.addInteraction(UIContextMenuInteraction(delegate: self))
+        #if targetEnvironment(macCatalyst)
+        glView.addInteraction(UIContextMenuInteraction(delegate: self))
 
-            if let clickGesture = glView.gestureRecognizers?.filter({ String(cString: object_getClassName($0)) == "_UISecondaryClickDriverGestureRecognizer" }).first {
-                clickGesture.require(toFail: pan1)
-            }
+        if let clickGesture = glView.gestureRecognizers?.filter({ String(cString: object_getClassName($0)) == "_UISecondaryClickDriverGestureRecognizer" }).first {
+            clickGesture.require(toFail: pan1)
         }
+        #endif
     }
 
     private func setupDisplayLink() {
