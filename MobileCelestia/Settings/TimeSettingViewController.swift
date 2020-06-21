@@ -12,10 +12,22 @@ import CelestiaCore
 
 class TimeSettingViewController: UIViewController {
 
-    private lazy var tableView = UITableView(frame: .zero, style: .grouped)
-    private lazy var datePicker = UIDatePicker()
+    private lazy var core = CelestiaAppCore.shared
 
-    private lazy var datePickerContainer = UIView()
+    private lazy var tableView = UITableView(frame: .zero, style: .grouped)
+
+    private let inputDateFormat = "yyyy/MM/dd HH:mm:ss"
+    private lazy var displayDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .short
+        formatter.timeStyle = .short
+        return formatter
+    }()
+    private lazy var inputDateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = self.inputDateFormat
+        return formatter
+    }()
 
     override func loadView() {
         view = UIView()
@@ -36,31 +48,6 @@ private extension TimeSettingViewController {
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
 
-        datePicker.translatesAutoresizingMaskIntoConstraints = false
-        #if !targetEnvironment(macCatalyst)
-        if datePicker.responds(to: NSSelectorFromString("_setTextColor:")) {
-            datePicker.setValue(UIColor.darkLabel, forKey: "textColor")
-        }
-        #endif
-        datePicker.addTarget(self, action: #selector(handleTimeChange), for: .valueChanged)
-
-        datePickerContainer.addSubview(datePicker)
-        #if targetEnvironment(macCatalyst)
-        NSLayoutConstraint.activate([
-            datePicker.leadingAnchor.constraint(equalTo: datePickerContainer.leadingAnchor, constant: 16),
-            datePicker.trailingAnchor.constraint(equalTo: datePickerContainer.trailingAnchor, constant: -16),
-            datePicker.topAnchor.constraint(equalTo: datePickerContainer.topAnchor, constant: 8),
-            datePicker.bottomAnchor.constraint(equalTo: datePickerContainer.bottomAnchor, constant: -8),
-        ])
-        #else
-        NSLayoutConstraint.activate([
-            datePicker.leadingAnchor.constraint(equalTo: datePickerContainer.leadingAnchor),
-            datePicker.trailingAnchor.constraint(equalTo: datePickerContainer.trailingAnchor),
-            datePicker.topAnchor.constraint(equalTo: datePickerContainer.topAnchor),
-            datePicker.bottomAnchor.constraint(equalTo: datePickerContainer.bottomAnchor),
-        ])
-        #endif
-
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: view.topAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
@@ -76,25 +63,22 @@ private extension TimeSettingViewController {
         tableView.dataSource = self
         tableView.delegate = self
     }
-
-    @objc private func handleTimeChange() {
-        CelestiaAppCore.shared.simulation.time = datePicker.date
-    }
 }
 
 extension TimeSettingViewController: UITableViewDataSource, UITableViewDelegate {
-    func numberOfSections(in tableView: UITableView) -> Int {
-        datePicker.setDate(CelestiaAppCore.shared.simulation.time, animated: false)
-        return 1
-    }
-
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return 2
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
-        cell.title = CelestiaString("Set to Current Time", comment: "")
+        if indexPath.row == 0 {
+            cell.title = CelestiaString("Select Time", comment: "")
+            cell.detail = displayDateFormatter.string(from: core.simulation.time)
+        } else {
+            cell.title = CelestiaString("Set to Current Time", comment: "")
+            cell.detail = nil
+        }
 
         return cell
     }
@@ -102,17 +86,25 @@ extension TimeSettingViewController: UITableViewDataSource, UITableViewDelegate 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let core = CelestiaAppCore.shared
         tableView.deselectRow(at: indexPath, animated: true)
-        if indexPath.section == 0 && indexPath.row == 0 {
+        if indexPath.row == 0 {
+            showTextInput(CelestiaString("Please enter the time in \(inputDateFormat) format.", comment: "")) { [weak self] (result) in
+                guard let self = self, let res = result else { return }
+
+                guard let date = self.inputDateFormatter.date(from: res) else {
+                    self.showError(CelestiaString("Unrecognized time string.", comment: ""))
+                    return
+                }
+
+                self.core.simulation.time = date
+                tableView.reloadData()
+            }
+        } else {
             core.receive(.currentTime)
+            tableView.reloadData()
         }
-        tableView.reloadData()
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 44
-    }
-
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return datePickerContainer
     }
 }
