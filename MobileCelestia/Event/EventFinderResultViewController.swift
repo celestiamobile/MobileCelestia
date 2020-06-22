@@ -1,8 +1,8 @@
 //
-//  TimeSettingViewController.swift
+//  EventFinderResultViewController.swift
 //  MobileCelestia
 //
-//  Created by 李林峰 on 2020/2/25.
+//  Created by Levin Li on 2020/6/22.
 //  Copyright © 2020 李林峰. All rights reserved.
 //
 
@@ -10,13 +10,9 @@ import UIKit
 
 import CelestiaCore
 
-class TimeSettingViewController: UIViewController {
-
-    private lazy var core = CelestiaAppCore.shared
-
+class EventFinderResultViewController: UIViewController {
     private lazy var tableView = UITableView(frame: .zero, style: .grouped)
 
-    private let inputDateFormat = "yyyy/MM/dd HH:mm:ss"
     private lazy var displayDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .short
@@ -24,11 +20,24 @@ class TimeSettingViewController: UIViewController {
         return formatter
     }()
 
+    private let eventHandler: ((CelestiaEclipse) -> Void)
+    private let events: [CelestiaEclipse]
+
+    init(results: [CelestiaEclipse], eventHandler: @escaping ((CelestiaEclipse) -> Void)) {
+        self.eventHandler = eventHandler
+        self.events = results
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     override func loadView() {
         view = UIView()
         view.backgroundColor = .darkBackground
 
-        title = CelestiaString("Current Time", comment: "")
+        title = CelestiaString("Event Finder", comment: "")
     }
 
     override func viewDidLoad() {
@@ -38,7 +47,7 @@ class TimeSettingViewController: UIViewController {
     }
 }
 
-private extension TimeSettingViewController {
+private extension EventFinderResultViewController {
     func setup() {
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -60,46 +69,28 @@ private extension TimeSettingViewController {
     }
 }
 
-extension TimeSettingViewController: UITableViewDataSource, UITableViewDelegate {
+extension EventFinderResultViewController: UITableViewDataSource, UITableViewDelegate {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2
+        return events.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let event = events[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
-        if indexPath.row == 0 {
-            cell.title = CelestiaString("Select Time", comment: "")
-            cell.detail = displayDateFormatter.string(from: core.simulation.time)
-        } else {
-            cell.title = CelestiaString("Set to Current Time", comment: "")
-            cell.detail = nil
-        }
+        cell.title = "\(event.occulter.name) -> \(event.receiver.name)"
+        cell.detail = displayDateFormatter.string(from: event.startTime)
 
         return cell
-    }
-
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let core = CelestiaAppCore.shared
-        tableView.deselectRow(at: indexPath, animated: true)
-        if indexPath.row == 0 {
-            showDateInput(CelestiaString("Please enter the time in \"\(inputDateFormat)\" format.", comment: ""), format: inputDateFormat) { [weak self] (result) in
-                guard let self = self else { return }
-
-                guard let date = result else {
-                    self.showError(CelestiaString("Unrecognized time string.", comment: ""))
-                    return
-                }
-
-                self.core.simulation.time = date
-                tableView.reloadData()
-            }
-        } else {
-            core.receive(.currentTime)
-            tableView.reloadData()
-        }
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 44
     }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+
+        eventHandler(events[indexPath.row])
+    }
 }
+

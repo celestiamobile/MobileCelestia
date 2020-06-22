@@ -175,6 +175,8 @@ extension MainViewControler: CelestiaViewControllerDelegate {
             presentHelp()
         case .home:
             core.receive(.home)
+        case .event:
+            presentEventFinder()
         }
     }
 
@@ -236,6 +238,12 @@ extension MainViewControler: CelestiaViewControllerDelegate {
             case .tutorial(let tutorial):
                 self.handleTutorialAction(tutorial)
             }
+        })
+    }
+
+    private func presentEventFinder() {
+        showViewController(EventFinderCoordinatorViewController { [unowned self] eclipse in
+            self.core.simulation.goToEclipse(eclipse)
         })
     }
 
@@ -536,6 +544,8 @@ extension AppToolbarAction {
             return UIImage(systemName: "questionmark.circle")
         case .home:
             return UIImage(systemName: "house")
+        case .event:
+            return UIImage(systemName: "calendar")
         }
     }
 }

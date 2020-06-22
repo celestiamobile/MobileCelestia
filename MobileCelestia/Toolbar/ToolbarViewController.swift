@@ -36,9 +36,10 @@ enum AppToolbarAction: String {
     case help
     case favorite
     case home
+    case event
 
     static var persistentAction: [[AppToolbarAction]] {
-        return [[.share, .search, .home], [.camera, .time, .script], [.browse, .favorite], [.help], [.setting]]
+        return [[.share, .search, .home], [.camera, .time, .script], [.browse, .favorite, .event], [.help], [.setting]]
     }
 }
 
@@ -258,6 +259,8 @@ extension AppToolbarAction {
             return CelestiaString("Help", comment: "")
         case .home:
             return CelestiaString("Home (Sol)", comment: "")
+        case .event:
+            return CelestiaString("Event Finder", comment: "")
         }
     }
 }

@@ -75,9 +75,46 @@ extension UIViewController {
         return alert
     }
 
-    @discardableResult func showLoading(_ title: String) -> UIAlertController {
+    @discardableResult func showDateInput(_ title: String, format: String, completion: ((Date?) -> Void)? = nil) -> UIAlertController {
         let alert = UIAlertController(title: title, message: nil, preferredStyle: .alert)
+        let formatter = DateFormatter()
+        formatter.dateFormat = format
+        let confirmAction = UIAlertAction(title: CelestiaString("OK", comment: ""), style: .default, handler: { [unowned alert] (_) in
+            guard let text = alert.textFields?.first?.text else { return }
+            completion?(formatter.date(from: text))
+        })
+        alert.addTextField { (textField) in
+            textField.keyboardAppearance = .dark
+        }
+        alert.addAction(confirmAction)
+        alert.addAction(UIAlertAction(title: CelestiaString("Cancel", comment: ""), style: .cancel, handler: nil))
+        alert.preferredAction = confirmAction
         presentAlert(alert)
+        return alert
+    }
+
+    @discardableResult func showLoading(_ title: String, cancelHandelr: (() -> Void)? = nil) -> UIAlertController {
+        let alert = UIAlertController(title: title, message: nil, preferredStyle: .alert)
+        if let cancel = cancelHandelr {
+            alert.addAction(UIAlertAction(title: CelestiaString("Cancel", comment: ""), style: .cancel) { _ in
+                cancel()
+            })
+        }
+        presentAlert(alert)
+        return alert
+    }
+
+    @discardableResult func showSelection(_ title: String, options: [String], sourceView: UIView?, sourceRect: CGRect?, completion: ((Int) -> Void)?) -> UIAlertController {
+        let alert = UIAlertController(title: title, message: nil, preferredStyle: .actionSheet)
+        for (index, option) in options.enumerated() {
+            alert.addAction(UIAlertAction(title: option, style: .default) { _ in
+                completion?(index)
+            })
+        }
+        alert.addAction(UIAlertAction(title: CelestiaString("Cancel", comment: ""), style: .cancel, handler: nil))
+        alert.popoverPresentationController?.sourceView = sourceView
+        alert.popoverPresentationController?.sourceRect = sourceView?.bounds ?? .zero
+        present(alert, animated: true, completion: nil)
         return alert
     }
 
