@@ -33,6 +33,8 @@ class SlideInPresentationController: UIPresentationController {
             size = CGSize(width: presentedViewController.preferredContentSize.width, height: parentSize.height)
         case .bottom, .top:
             size = CGSize(width: parentSize.width, height: presentedViewController.preferredContentSize.height)
+        case .bottomRight, .bottomLeft:
+            size = presentedViewController.preferredContentSize
         }
         if #available(iOS 11.0, *), let safeAreaInset = containerView?.safeAreaInsets {
             switch direction {
@@ -44,6 +46,12 @@ class SlideInPresentationController: UIPresentationController {
                 size.width += safeAreaInset.left
             case .right:
                 size.width += safeAreaInset.right
+            case .bottomLeft:
+                size.width += safeAreaInset.left
+                size.height += safeAreaInset.bottom
+            case .bottomRight:
+                size.width += safeAreaInset.right
+                size.height += safeAreaInset.bottom
             }
         }
         return size
@@ -57,7 +65,10 @@ class SlideInPresentationController: UIPresentationController {
         switch direction {
         case .right:
             frame.origin.x = containerView!.frame.width - frame.width
-        case .bottom:
+        case .bottom, .bottomLeft:
+            frame.origin.y = containerView!.frame.height - frame.height
+        case .bottomRight:
+            frame.origin.x = containerView!.frame.width - frame.width
             frame.origin.y = containerView!.frame.height - frame.height
         default:
             frame.origin = .zero

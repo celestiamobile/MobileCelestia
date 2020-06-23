@@ -31,7 +31,7 @@ class MainViewControler: UIViewController {
     private var status: LoadingStatus = .notLoaded
 
     private lazy var endSlideInManager = SlideInPresentationManager(direction: UIView.userInterfaceLayoutDirection(for: self.view.semanticContentAttribute) == .rightToLeft ? .left : .right)
-    private lazy var bottomSlideInManager = SlideInPresentationManager(direction: .bottom)
+    private lazy var bottomSlideInManager = SlideInPresentationManager(direction: UIView.userInterfaceLayoutDirection(for: self.view.semanticContentAttribute) == .rightToLeft ? .bottomRight : .bottomLeft)
 
     private lazy var core = CelestiaAppCore.shared
 

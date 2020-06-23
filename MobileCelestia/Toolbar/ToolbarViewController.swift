@@ -75,7 +75,7 @@ class ToolbarViewController: UIViewController {
     }
 
     override func loadView() {
-        view = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
+        view = UIView()
     }
 
     override func viewDidLoad() {
@@ -85,7 +85,12 @@ class ToolbarViewController: UIViewController {
     }
 
     override var preferredContentSize: CGSize {
-        get { return CGSize(width: 220, height: 60) }
+        get {
+            if scrollDirection == .horizontal {
+                return CGSize(width: CGFloat(60 * actions.reduce(0, { $0 + $1.count }) + 16), height: 60 + 8)
+            }
+            return CGSize(width: 220, height: 0)
+        }
         set {}
     }
 
@@ -126,6 +131,26 @@ extension ToolbarViewController: UICollectionViewDataSource {
 
 private extension ToolbarViewController {
     func setup() {
+        let backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
+        backgroundView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(backgroundView)
+
+        NSLayoutConstraint.activate([
+            backgroundView.trailingAnchor.constraint(equalTo: view!.trailingAnchor),
+            backgroundView.topAnchor.constraint(equalTo: view!.topAnchor),
+        ])
+        if scrollDirection == .horizontal {
+            NSLayoutConstraint.activate([
+                backgroundView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: scrollDirection == .horizontal ? 16 : 0),
+                backgroundView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: scrollDirection == .horizontal ? -8 : 0)
+            ])
+        } else {
+            NSLayoutConstraint.activate([
+                backgroundView.leadingAnchor.constraint(equalTo: view!.leadingAnchor, constant: scrollDirection == .horizontal ? 16 : 0),
+                backgroundView.bottomAnchor.constraint(equalTo: view!.bottomAnchor, constant: scrollDirection == .horizontal ? -8 : 0)
+            ])
+        }
+
         let layout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
         layout.scrollDirection = scrollDirection
 
@@ -134,46 +159,48 @@ private extension ToolbarViewController {
             layout.footerReferenceSize = CGSize(width: 200, height: 6)
         } else {
             layout.itemSize = CGSize(width: 60, height: 60)
+            backgroundView.layer.masksToBounds = true
+            backgroundView.layer.cornerRadius = 8
         }
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
 
-        let contentView = (view as! UIVisualEffectView).contentView
+        let contentView = backgroundView.contentView
         contentView.addSubview(collectionView)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
 
         if scrollDirection == .horizontal {
             NSLayoutConstraint.activate([
-                collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                collectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+                collectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             ])
 
             if #available(iOS 11.0, *) {
                 NSLayoutConstraint.activate([
-                    collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-                    collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+                    collectionView.topAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.topAnchor),
+                    collectionView.bottomAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.bottomAnchor)
                 ])
             } else {
                 NSLayoutConstraint.activate([
-                    collectionView.topAnchor.constraint(equalTo: view.topAnchor),
-                    collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+                    collectionView.topAnchor.constraint(equalTo: contentView.topAnchor),
+                    collectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
                 ])
             }
         } else {
             NSLayoutConstraint.activate([
-                collectionView.topAnchor.constraint(equalTo: view.topAnchor),
-                collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+                collectionView.topAnchor.constraint(equalTo: contentView.topAnchor),
+                collectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             ])
 
             if #available(iOS 11.0, *) {
                 NSLayoutConstraint.activate([
-                    collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-                    collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
+                    collectionView.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor),
+                    collectionView.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor)
                 ])
             } else {
                 NSLayoutConstraint.activate([
-                    collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                    collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+                    collectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+                    collectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
                 ])
             }
         }
