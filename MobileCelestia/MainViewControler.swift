@@ -30,7 +30,7 @@ class MainViewControler: UIViewController {
 
     private var status: LoadingStatus = .notLoaded
 
-    private lazy var rightSlideInManager = SlideInPresentationManager(direction: .right)
+    private lazy var endSlideInManager = SlideInPresentationManager(direction: UIView.userInterfaceLayoutDirection(for: self.view.semanticContentAttribute) == .rightToLeft ? .left : .right)
     private lazy var bottomSlideInManager = SlideInPresentationManager(direction: .bottom)
 
     private lazy var core = CelestiaAppCore.shared
@@ -140,7 +140,7 @@ extension MainViewControler: CelestiaViewControllerDelegate {
             self.toolbarActionSelected(ac)
         }
         controller.modalPresentationStyle = .custom
-        controller.transitioningDelegate = rightSlideInManager
+        controller.transitioningDelegate = endSlideInManager
         present(controller, animated: true, completion: nil)
     }
 
@@ -320,7 +320,7 @@ extension MainViewControler: CelestiaViewControllerDelegate {
         } else {
             viewController.preferredContentSize = CGSize(width: 300, height: 300)
             viewController.modalPresentationStyle = .custom
-            viewController.transitioningDelegate = rightSlideInManager
+            viewController.transitioningDelegate = endSlideInManager
         }
         present(viewController, animated: true, completion: nil)
     }
