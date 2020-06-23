@@ -141,7 +141,7 @@ extension MainViewControler: CelestiaViewControllerDelegate {
         }
         controller.modalPresentationStyle = .custom
         controller.transitioningDelegate = endSlideInManager
-        present(controller, animated: true, completion: nil)
+        presentAfterDismissCurrent(controller, animated: true)
     }
 
     func celestiaController(_ celestiaController: CelestiaViewController, requestShowInfoWithSelection selection: CelestiaSelection) {
@@ -209,7 +209,7 @@ extension MainViewControler: CelestiaViewControllerDelegate {
     }
 
     private func presentActionToolbar(for actions: [CelestiaAction]) {
-        let controller = ToolbarViewController(actions: [actions], scrollDirection: .horizontal, finishOnSelection: false)
+        let controller = BottomControlViewController(actions: actions, finishOnSelection: false)
         controller.selectionHandler = { [unowned self] (action) in
             guard let ac = action as? CelestiaAction else { return }
             self.core.receive(ac)
@@ -221,7 +221,7 @@ extension MainViewControler: CelestiaViewControllerDelegate {
         #endif
         controller.modalPresentationStyle = .custom
         controller.transitioningDelegate = bottomSlideInManager
-        present(controller, animated: true, completion: nil)
+        presentAfterDismissCurrent(controller, animated: true)
     }
 
     private func presentCameraControl() {
@@ -322,7 +322,7 @@ extension MainViewControler: CelestiaViewControllerDelegate {
             viewController.modalPresentationStyle = .custom
             viewController.transitioningDelegate = endSlideInManager
         }
-        present(viewController, animated: true, completion: nil)
+        presentAfterDismissCurrent(viewController, animated: true)
     }
 
     private func configurePopover(for viewController: UIViewController) {
@@ -331,6 +331,16 @@ extension MainViewControler: CelestiaViewControllerDelegate {
         viewController.popoverPresentationController?.sourceRect = CGRect(x: view.frame.midX, y: view.frame.midY, width: 0, height: 0)
         viewController.popoverPresentationController?.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
         viewController.preferredContentSize = CGSize(width: 400, height: 500)
+    }
+
+    private func presentAfterDismissCurrent(_ viewController: UIViewController, animated: Bool) {
+        if presentedViewController == nil {
+            present(viewController, animated: animated)
+        } else {
+            dismiss(animated: animated) { [weak self] in
+                self?.present(viewController, animated: animated)
+            }
+        }
     }
 }
 
@@ -392,7 +402,7 @@ extension MainViewControler {
     private func showShareSheet(for url: URL) {
         let activityController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
         configurePopover(for: activityController)
-        present(activityController, animated: true, completion: nil)
+        presentAfterDismissCurrent(activityController, animated: true)
     }
 }
 

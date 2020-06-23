@@ -12,7 +12,7 @@ class SlideInPresentationController: UIPresentationController {
 
     private var direction: SlideInPresentationManager.PresentationDirection
 
-    private var dimmingView: UIView!
+    private var dimmingView: UIView?
 
     init(presentedViewController: UIViewController, presenting presentingViewController: UIViewController?, direction: SlideInPresentationManager.PresentationDirection) {
         self.direction = direction
@@ -96,18 +96,18 @@ class SlideInPresentationController: UIPresentationController {
         }
 
         coordinator.animate(alongsideTransition: { _ in
-            self.dimmingView.alpha = 1.0
+            self.dimmingView?.alpha = 1.0
         })
     }
 
     override func dismissalTransitionWillBegin() {
         guard let coordinator = presentedViewController.transitionCoordinator else {
-            dimmingView.alpha = 0.0
+            dimmingView?.alpha = 0.0
             return
         }
 
         coordinator.animate(alongsideTransition: { _ in
-            self.dimmingView.alpha = 0.0
+            self.dimmingView?.alpha = 0.0
         })
     }
 }
@@ -121,12 +121,14 @@ private extension SlideInPresentationController {
     }
 
     func setupDimmingView() {
-        dimmingView = UIView()
+        let dimmingView = UIView()
         dimmingView.translatesAutoresizingMaskIntoConstraints = false
         dimmingView.backgroundColor = UIColor(white: 0.0, alpha: 0.5)
         dimmingView.alpha = 0.0
         let recognizer = UITapGestureRecognizer(target: self, action: #selector(handleTap(recognizer:)))
         dimmingView.addGestureRecognizer(recognizer)
+
+        self.dimmingView = dimmingView
     }
 
     @objc func handleTap(recognizer: UITapGestureRecognizer) {
