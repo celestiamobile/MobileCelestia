@@ -194,7 +194,6 @@ extension MainViewControler: CelestiaViewControllerDelegate {
 
     private func presentFavorite() {
         let controller = FavoriteCoordinatorController { [unowned self] (url) in
-            self.dismiss(animated: true, completion: nil)
             self.celestiaController.openURL(url, external: false)
         }
         showViewController(controller)
