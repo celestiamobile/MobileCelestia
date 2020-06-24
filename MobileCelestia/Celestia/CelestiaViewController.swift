@@ -772,7 +772,12 @@ extension CelestiaViewController {
         core.setDPI(Int(96.0 * glView.contentScaleFactor / applicationScalingFactor))
 
         let locale = LocalizedString("LANGUAGE", "celestia")
-        if let font = GetFontForLocale(locale, .system),
+        if let (font, boldFont) = getInstalledFontFor(locale: locale) {
+            core.setFont(font.filePath, collectionIndex: font.collectionIndex, fontSize: 9)
+            core.setTitleFont(boldFont.filePath, collectionIndex: boldFont.collectionIndex, fontSize: 15)
+            core.setRendererFont(font.filePath, collectionIndex: font.collectionIndex, fontSize: 9, fontStyle: .normal)
+            core.setRendererFont(boldFont.filePath, collectionIndex: boldFont.collectionIndex, fontSize: 15, fontStyle: .large)
+        } else if let font = GetFontForLocale(locale, .system),
             let boldFont = GetFontForLocale(locale, .emphasizedSystem) {
             core.setFont(font.filePath, collectionIndex: font.collectionIndex, fontSize: 9)
             core.setTitleFont(boldFont.filePath, collectionIndex: boldFont.collectionIndex, fontSize: 15)
@@ -783,6 +788,37 @@ extension CelestiaViewController {
         core.tick()
         core.start()
     }
+}
+
+private func getInstalledFontFor(locale: String) -> (font: FallbackFont, boldFont: FallbackFont)? {
+    guard let fontDir = Bundle.main.path(forResource: "Fonts", ofType: nil) else { return nil }
+    let fontFallback = [
+        "ja": (
+            font: FallbackFont(filePath: "\(fontDir)/NotoSansCJK-Regular.ttc", collectionIndex: 0),
+            boldFont: FallbackFont(filePath: "\(fontDir)/NotoSansCJK-Bold.ttc", collectionIndex: 0)
+        ),
+        "ko": (
+            font: FallbackFont(filePath: "\(fontDir)/NotoSansCJK-Regular.ttc", collectionIndex: 1),
+            boldFont: FallbackFont(filePath: "\(fontDir)/NotoSansCJK-Bold.ttc", collectionIndex: 1)
+        ),
+        "zh_CN": (
+            font: FallbackFont(filePath: "\(fontDir)/NotoSansCJK-Regular.ttc", collectionIndex: 2),
+            boldFont: FallbackFont(filePath: "\(fontDir)/NotoSansCJK-Bold.ttc", collectionIndex: 2)
+        ),
+        "zh_TW": (
+            font: FallbackFont(filePath: "\(fontDir)/NotoSansCJK-Regular.ttc", collectionIndex: 3),
+            boldFont: FallbackFont(filePath: "\(fontDir)/NotoSansCJK-Bold.ttc", collectionIndex: 3)
+        ),
+        "ar": (
+            font: FallbackFont(filePath: "\(fontDir)/NotoSansArabic-Regular.ttf", collectionIndex: 0),
+            boldFont: FallbackFont(filePath: "\(fontDir)/NotoSansArabic-Bold.ttf", collectionIndex: 0)
+        )
+    ]
+    let def = (
+        font: FallbackFont(filePath: "\(fontDir)/NotoSans-Regular.ttf", collectionIndex: 0),
+        boldFont: FallbackFont(filePath: "\(fontDir)/NotoSans-Bold.ttf", collectionIndex: 0)
+    )
+    return fontFallback[locale] ?? def
 }
 
 extension CelestiaViewController {
