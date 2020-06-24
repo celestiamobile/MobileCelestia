@@ -104,7 +104,7 @@ extension UIViewController {
         return alert
     }
 
-    @discardableResult func showSelection(_ title: String, options: [String], sourceView: UIView?, sourceRect: CGRect?, completion: ((Int) -> Void)?) -> UIAlertController {
+    @discardableResult func showSelection(_ title: String, options: [String], sourceView: UIView?, sourceRect: CGRect?, permittedArrowDirections: UIPopoverArrowDirection = .any, completion: ((Int) -> Void)?) -> UIAlertController {
         let alert = UIAlertController(title: title, message: nil, preferredStyle: .actionSheet)
         for (index, option) in options.enumerated() {
             alert.addAction(UIAlertAction(title: option, style: .default) { _ in

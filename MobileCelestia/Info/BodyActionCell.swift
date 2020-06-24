@@ -10,7 +10,7 @@ import UIKit
 
 final class BodyActionCell: UICollectionViewCell {
     var title: String? { didSet { button.setTitle(title, for: .normal) } }
-    var actionHandler: (() -> Void)?
+    var actionHandler: ((BodyActionCell) -> Void)?
 
     private lazy var button = StandardButton(type: .system)
 
@@ -39,7 +39,7 @@ final class BodyActionCell: UICollectionViewCell {
     }
 
     @objc private func buttonTapped() {
-        actionHandler?()
+        actionHandler?(self)
     }
 
     override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {

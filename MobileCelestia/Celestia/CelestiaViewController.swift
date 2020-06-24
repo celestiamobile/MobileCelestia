@@ -266,11 +266,28 @@ extension CelestiaViewController: UIContextMenuInteractionDelegate {
                 }))
             }
 
+            if let alternativeSurfaces = selection.body?.alternateSurfaceNames, alternativeSurfaces.count > 0 {
+                let displaySurface = core.simulation.activeObserver.displayedSurface
+                let defaultSurfaceItem = UIAction(title: CelestiaString("Default", comment: "")) { _ in
+                    core.simulation.activeObserver.displayedSurface = ""
+                }
+                defaultSurfaceItem.state = displaySurface == "" ? .on : .off
+                let otherSurfaces = alternativeSurfaces.map { name -> UIAction in
+                    let action = UIAction(title: name) { _ in
+                        core.simulation.activeObserver.displayedSurface = name
+                    }
+                    action.state = displaySurface == name ? .on : .off
+                    return action
+                }
+                let menu = UIMenu(title: "Alternate Surfaces", children: [defaultSurfaceItem] + otherSurfaces)
+                actions.append(menu)
+            }
+
             if let webInfo = selection.webInfoURL, let url = URL(string: webInfo) {
-                actions.append(UIAction(title: CelestiaString("Web Info", comment: ""), handler: { [weak self] (_) in
+                actions.append(UIMenu(title: "", options: .displayInline, children: [UIAction(title: CelestiaString("Web Info", comment: ""), handler: { [weak self] (_) in
                     guard let self = self else { return }
                     self.celestiaDelegate?.celestiaController(self, requestWebInfo: url)
-                }))
+                })]))
             }
 
             #if !targetEnvironment(macCatalyst)

@@ -15,6 +15,7 @@ enum ObjectAction {
     case web(url: URL)
     case wrapped(action: CelestiaAction)
     case subsystem
+    case alternateSurfaces
 }
 
 private extension ObjectAction {
@@ -29,7 +30,7 @@ final class InfoViewController: UIViewController {
 
     private let info: CelestiaSelection
 
-    var selectionHandler: ((ObjectAction) -> Void)?
+    var selectionHandler: ((ObjectAction, UIView) -> Void)?
 
     private let actions: [ObjectAction]
 
@@ -38,6 +39,9 @@ final class InfoViewController: UIViewController {
         var actions = ObjectAction.allCases
         if let urlString = info.webInfoURL, let url = URL(string: urlString) {
             actions.append(.web(url: url))
+        }
+        if let surfaces = info.body?.alternateSurfaceNames, surfaces.count > 0 {
+            actions.append(.alternateSurfaces)
         }
         actions.append(.subsystem)
         self.actions = actions
@@ -111,8 +115,8 @@ extension InfoViewController: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Action", for: indexPath) as! BodyActionCell
         let action = actions[indexPath.item]
         cell.title = action.description
-        cell.actionHandler = { [unowned self] in
-            self.selectionHandler?(action)
+        cell.actionHandler = { [unowned self] view in
+            self.selectionHandler?(action, view)
         }
         return cell
     }
@@ -130,6 +134,8 @@ private extension ObjectAction {
             return action.description
         case .subsystem:
             return CelestiaString("Subsystem", comment: "")
+        case .alternateSurfaces:
+            return CelestiaString("Alternate Surfaces", comment: "")
         }
     }
 }

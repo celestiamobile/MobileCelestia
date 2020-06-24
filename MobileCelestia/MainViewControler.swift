@@ -249,7 +249,7 @@ extension MainViewControler: CelestiaViewControllerDelegate {
     private func showSelectionInfo(with selection: CelestiaSelection) {
         let controller = InfoViewController(info: selection)
         controller.dismissDelegate = self
-        controller.selectionHandler = { [unowned self] (action) in
+        controller.selectionHandler = { [unowned self] (action, sender) in
             switch action {
             case .select:
                 self.clearBackStack()
@@ -264,9 +264,24 @@ extension MainViewControler: CelestiaViewControllerDelegate {
             case .subsystem:
                 self.addToBackStack()
                 self.showSubsystem(with: selection)
+            case .alternateSurfaces:
+                self.showAlternateSurfaces(of: selection, with: sender)
             }
         }
         showViewController(controller)
+    }
+
+    private func showAlternateSurfaces(of selection: CelestiaSelection, with sender: UIView) {
+        guard let alternativeSurfaces = selection.body?.alternateSurfaceNames, alternativeSurfaces.count > 0 else { return }
+        (presentedViewController ?? self).showSelection(CelestiaString("Alternate Surfaces", comment: ""), options: [CelestiaString("Default", comment: "")] + alternativeSurfaces, sourceView: sender, sourceRect: sender.bounds) { [weak self] index in
+            guard let self = self else { return }
+
+            if index == 0 {
+                self.core.simulation.activeObserver.displayedSurface = ""
+                return
+            }
+            self.core.simulation.activeObserver.displayedSurface = alternativeSurfaces[index - 1]
+        }
     }
 
     private func showWeb(_ url: URL) {
