@@ -37,7 +37,7 @@ class EventFinderResultViewController: UIViewController {
         view = UIView()
         view.backgroundColor = .darkBackground
 
-        title = CelestiaString("Event Finder", comment: "")
+        title = CelestiaString("Eclipse Finder", comment: "")
     }
 
     override func viewDidLoad() {

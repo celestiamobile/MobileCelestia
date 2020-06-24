@@ -37,8 +37,9 @@ class EventFinderInputViewController: UIViewController {
 
     private let selectableObjects = ["Earth", "Jupiter"]
 
-    private var startTime = Date()
-    private var endTime = Date()
+    private let defaultSearchingInterval: TimeInterval = 365 * 24 * 60 * 60
+    private lazy var startTime = endTime.addingTimeInterval(-defaultSearchingInterval)
+    private lazy var endTime = Date()
     private var objectName = "Earth"
 
     private let core = CelestiaAppCore.shared
@@ -68,7 +69,7 @@ class EventFinderInputViewController: UIViewController {
         view = UIView()
         view.backgroundColor = .darkBackground
 
-        title = CelestiaString("Event Finder", comment: "")
+        title = CelestiaString("Eclipse Finder", comment: "")
     }
 
     override func viewDidLoad() {
@@ -168,7 +169,7 @@ extension EventFinderInputViewController: UITableViewDataSource, UITableViewDele
                 return
             }
             let finder = CelestiaEclipseFinder(body: body)
-            let alert = showLoading(CelestiaString("Calculating astronomy events…", comment: "")) {
+            let alert = showLoading(CelestiaString("Calculating…", comment: "")) {
                 finder.abort()
             }
             DispatchQueue.global().async { [weak self] in

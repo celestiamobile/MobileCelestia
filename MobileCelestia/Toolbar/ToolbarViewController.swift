@@ -244,7 +244,7 @@ extension AppToolbarAction {
         case .home:
             return CelestiaString("Home (Sol)", comment: "")
         case .event:
-            return CelestiaString("Event Finder", comment: "")
+            return CelestiaString("Eclipse Finder", comment: "")
         }
     }
 }
