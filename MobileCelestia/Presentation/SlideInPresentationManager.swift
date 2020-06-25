@@ -11,7 +11,6 @@ import UIKit
 final class SlideInPresentationAnimator: NSObject {
     // MARK: - Properties
     let direction: SlideInPresentationManager.PresentationDirection
-
     let isPresentation: Bool
 
     // MARK: - Initializers
@@ -77,23 +76,65 @@ class SlideInPresentationManager: NSObject {
     }
 
     private let direction: PresentationDirection
+    private let usesFormSheetForRegular: Bool
 
-    init(direction: PresentationDirection) {
+    private var currentTraitCollection: UITraitCollection?
+
+    init(direction: PresentationDirection, usesFormSheetForRegular: Bool = false) {
         self.direction = direction
+        self.usesFormSheetForRegular = usesFormSheetForRegular
         super.init()
+    }
+}
+
+extension UIViewController {
+    private struct AssociatedKeys {
+        static var formSheetPreferredContentSize: UInt8 = 0
+        static var regularPreferredContentSize: UInt8 = 0
+    }
+
+    var formSheetPreferredContentSize: CGSize {
+        get { return objc_getAssociatedObject(self, &AssociatedKeys.formSheetPreferredContentSize) as? CGSize ?? regularPreferredContentSize }
+        set { objc_setAssociatedObject(self, &AssociatedKeys.formSheetPreferredContentSize, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
+    }
+
+    var regularPreferredContentSize: CGSize {
+        get { return objc_getAssociatedObject(self, &AssociatedKeys.regularPreferredContentSize) as? CGSize ?? preferredContentSize }
+        set { objc_setAssociatedObject(self, &AssociatedKeys.regularPreferredContentSize, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
     }
 }
 
 extension SlideInPresentationManager: UIViewControllerTransitioningDelegate {
     func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
-        return SlideInPresentationController(presentedViewController: presented, presenting: presenting, direction: direction)
+        let pc = SlideInPresentationController(presentedViewController: presented, presenting: presenting, direction: direction)
+        pc.delegate = self
+        return pc
     }
 
     func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        if currentTraitCollection?.verticalSizeClass == .regular && currentTraitCollection?.horizontalSizeClass == .regular && usesFormSheetForRegular {
+            return nil
+        }
         return SlideInPresentationAnimator(direction: direction, isPresentation: true)
     }
 
     func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        if currentTraitCollection?.verticalSizeClass == .regular && currentTraitCollection?.horizontalSizeClass == .regular && usesFormSheetForRegular {
+            return nil
+        }
         return SlideInPresentationAnimator(direction: direction, isPresentation: false)
+    }
+}
+
+extension SlideInPresentationManager: UIAdaptivePresentationControllerDelegate {
+    func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
+        if traitCollection.horizontalSizeClass == .regular && traitCollection.verticalSizeClass == .regular && usesFormSheetForRegular {
+            currentTraitCollection = traitCollection
+            controller.presentedViewController.preferredContentSize = controller.presentedViewController.formSheetPreferredContentSize
+            return .formSheet
+        }
+        currentTraitCollection = traitCollection
+        controller.presentedViewController.preferredContentSize = controller.presentedViewController.regularPreferredContentSize
+        return .none
     }
 }

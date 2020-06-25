@@ -30,7 +30,8 @@ class MainViewControler: UIViewController {
 
     private var status: LoadingStatus = .notLoaded
 
-    private lazy var endSlideInManager = SlideInPresentationManager(direction: UIView.userInterfaceLayoutDirection(for: self.view.semanticContentAttribute) == .rightToLeft ? .left : .right)
+    private lazy var toolbarSlideInManager = SlideInPresentationManager(direction: UIView.userInterfaceLayoutDirection(for: self.view.semanticContentAttribute) == .rightToLeft ? .left : .right)
+    private lazy var endSlideInManager = SlideInPresentationManager(direction: UIView.userInterfaceLayoutDirection(for: self.view.semanticContentAttribute) == .rightToLeft ? .left : .right, usesFormSheetForRegular: true)
     private lazy var bottomSlideInManager = SlideInPresentationManager(direction: UIView.userInterfaceLayoutDirection(for: self.view.semanticContentAttribute) == .rightToLeft ? .bottomRight : .bottomLeft)
 
     private lazy var core = CelestiaAppCore.shared
@@ -140,7 +141,7 @@ extension MainViewControler: CelestiaViewControllerDelegate {
             self.toolbarActionSelected(ac)
         }
         controller.modalPresentationStyle = .custom
-        controller.transitioningDelegate = endSlideInManager
+        controller.transitioningDelegate = toolbarSlideInManager
         presentAfterDismissCurrent(controller, animated: true)
     }
 
@@ -329,13 +330,12 @@ extension MainViewControler: CelestiaViewControllerDelegate {
 
     private func showViewController(_ viewController: UIViewController) {
         viewController.customFlag &= ~userInitiatedDismissalFlag
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            configurePopover(for: viewController)
-        } else {
-            viewController.preferredContentSize = CGSize(width: 300, height: 300)
-            viewController.modalPresentationStyle = .custom
-            viewController.transitioningDelegate = endSlideInManager
-        }
+
+        viewController.regularPreferredContentSize = CGSize(width: 300, height: 300)
+        viewController.formSheetPreferredContentSize = CGSize(width: 400, height: 500)
+        viewController.modalPresentationStyle = .custom
+        viewController.transitioningDelegate = endSlideInManager
+
         presentAfterDismissCurrent(viewController, animated: true)
     }
 
