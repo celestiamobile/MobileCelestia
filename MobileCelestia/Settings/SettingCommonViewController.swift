@@ -72,47 +72,69 @@ extension SettingCommonViewController: UITableViewDataSource, UITableViewDelegat
         return item.sections[section].rows.count
     }
 
+    private func logWrongAssociatedItemType(_ item: AnyHashable) -> Never {
+        fatalError("Wrong associated item \(item.base)")
+    }
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let row = item.sections[indexPath.section].rows[indexPath.row]
         let core = CelestiaAppCore.shared
 
         switch row.type {
-        case .slider(let item):
-            let maxValue = item.maxValue
-            let minValue = item.minValue
-            let key = item.key
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Slider", for: indexPath) as! SettingSliderCell
-            cell.title = row.name
-            cell.value = ((core.value(forKey: key) as! Double) - minValue) / (maxValue - minValue)
-            cell.valueChangeBlock = { [unowned self] (value) in
-                let transformed = value * (maxValue - minValue) + minValue
-                core.setValue(transformed, forKey: key)
-                self.tableView.reloadData()
+        case .slider:
+            if let item = row.associatedItem.base as? AssociatedSliderItem {
+                let maxValue = item.maxValue
+                let minValue = item.minValue
+                let key = item.key
+                let cell = tableView.dequeueReusableCell(withIdentifier: "Slider", for: indexPath) as! SettingSliderCell
+                cell.title = row.name
+                cell.value = ((core.value(forKey: key) as! Double) - minValue) / (maxValue - minValue)
+                cell.valueChangeBlock = { [unowned self] (value) in
+                    let transformed = value * (maxValue - minValue) + minValue
+                    core.setValue(transformed, forKey: key)
+                    self.tableView.reloadData()
+                }
+                return cell
+            } else {
+                logWrongAssociatedItemType(row.associatedItem)
             }
-            return cell
-        case .action(_):
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Action", for: indexPath) as! SettingTextCell
-            cell.title = row.name
-            return cell
-        case .prefSwitch(let item):
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Switch", for: indexPath) as! SettingSwitchCell
-            cell.enabled = UserDefaults.app[item.key] ?? false
-            cell.title = row.name
-            cell.toggleBlock = { (enabled) in
-                UserDefaults.app[item.key] = enabled
+        case .action:
+            if row.associatedItem.base is AssociatedActionItem {
+                let cell = tableView.dequeueReusableCell(withIdentifier: "Action", for: indexPath) as! SettingTextCell
+                cell.title = row.name
+                return cell
+            } else {
+                logWrongAssociatedItemType(row.associatedItem)
             }
-            return cell
+        case .prefSwitch:
+            if let item = row.associatedItem.base as? AssociatedPreferenceSwitchItem {
+                let cell = tableView.dequeueReusableCell(withIdentifier: "Switch", for: indexPath) as! SettingSwitchCell
+                cell.enabled = UserDefaults.app[item.key] ?? false
+                cell.title = row.name
+                cell.toggleBlock = { (enabled) in
+                    UserDefaults.app[item.key] = enabled
+                }
+                return cell
+            } else {
+                logWrongAssociatedItemType(row.associatedItem)
+            }
         default:
             fatalError("SettingCommonViewController cannot handle this type of item")
         }
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let rowType = item.sections[indexPath.section].rows[indexPath.row].type
-        switch rowType {
-        case .action(let item):
-            tableView.deselectRow(at: indexPath, animated: true)
-            CelestiaAppCore.shared.charEnter(item.action)
+        tableView.deselectRow(at: indexPath, animated: true)
+
+        let row = item.sections[indexPath.section].rows[indexPath.row]
+        switch row.type {
+        case .action:
+            if let item = row.associatedItem.base as? AssociatedActionItem {
+                tableView.deselectRow(at: indexPath, animated: true)
+                CelestiaAppCore.shared.charEnter(item.action)
+            } else {
+                logWrongAssociatedItemType(row.associatedItem)
+            }
         default:
             break
         }
@@ -121,7 +143,7 @@ extension SettingCommonViewController: UITableViewDataSource, UITableViewDelegat
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let rowType = item.sections[indexPath.section].rows[indexPath.row].type
         switch rowType {
-        case .slider(_):
+        case .slider:
             return 88
         default:
             return 44

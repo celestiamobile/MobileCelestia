@@ -11,9 +11,9 @@ import UIKit
 class SettingsMainViewController: UIViewController {
     private lazy var tableView = UITableView(frame: .zero, style: .grouped)
 
-    private let selection: (SettingItem) -> Void
+    private let selection: (SettingItem<AnyHashable>) -> Void
 
-    init(selection: @escaping (SettingItem) -> Void) {
+    init(selection: @escaping (SettingItem<AnyHashable>) -> Void) {
         self.selection = selection
         super.init(nibName: nil, bundle: nil)
     }

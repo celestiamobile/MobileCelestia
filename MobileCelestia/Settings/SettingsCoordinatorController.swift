@@ -43,16 +43,32 @@ class SettingsCoordinatorController: UIViewController {
 private extension SettingsCoordinatorController {
     func setup() {
         main = SettingsMainViewController(selection: { [unowned self] (item) in
+            func logWrongAssociatedItemType(_ item: AnyHashable) -> Never {
+                fatalError("Wrong associated item \(item.base)")
+            }
+
             switch item.type {
-            case .checkmarks(let masterKey, let items):
-                let controller = SettingCheckViewController(item: SettingCheckViewController.Item(title: item.name, masterKey: masterKey, subitems: items))
-                self.navigation.pushViewController(controller, animated: true)
-            case .selection(let key, let items):
-                let controller = SettingSelectionViewController(item: SettingSelectionViewController.Item(title: item.name, key: key, subitems: items))
-                self.navigation.pushViewController(controller, animated: true)
-            case .common(let item):
-                let controller = SettingCommonViewController(item: item)
-                self.navigation.pushViewController(controller, animated: true)
+            case .checkmarks:
+                if let associated = item.associatedItem.base as? AssociatedCheckMarkItem {
+                    let controller = SettingCheckViewController(item: SettingCheckViewController.Item(title: item.name, masterKey: associated.masterKey, subitems: associated.items))
+                    self.navigation.pushViewController(controller, animated: true)
+                } else {
+                    logWrongAssociatedItemType(item.associatedItem)
+                }
+            case .selection:
+                if let associated = item.associatedItem.base as? AssociatedSelectionItem {
+                    let controller = SettingSelectionViewController(item: SettingSelectionViewController.Item(title: item.name, key: associated.key, subitems: associated.items))
+                    self.navigation.pushViewController(controller, animated: true)
+                } else {
+                    logWrongAssociatedItemType(item.associatedItem)
+                }
+            case .common:
+                if let associated = item.associatedItem.base as? AssociatedCommonItem {
+                    let controller = SettingCommonViewController(item: associated)
+                    self.navigation.pushViewController(controller, animated: true)
+                } else {
+                    logWrongAssociatedItemType(item.associatedItem)
+                }
             case .about:
                 self.navigation.pushViewController(AboutViewController(), animated: true)
             case .time:
@@ -61,11 +77,11 @@ private extension SettingsCoordinatorController {
                 self.navigation.pushViewController(TextViewController(title: item.name, text: renderInfo), animated: true)
             case .dataLocation:
                 self.navigation.pushViewController(DataLocationSelectionViewController(), animated: true)
-            case .slider(_):
+            case .slider:
                 fallthrough
-            case .prefSwitch(_):
+            case .prefSwitch:
                 fallthrough
-            case .action(_):
+            case .action:
                 fatalError("Use .common for slider/action setting item.")
             }
         })
