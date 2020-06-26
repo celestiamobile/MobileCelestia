@@ -20,4 +20,33 @@ class StandardButton: UIButton {
             }
         }
     }
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+
+        setup()
+    }
+
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+
+        setup()
+    }
+
+    private func setup() {
+        if #available(iOS 13.4, *) {
+            addInteraction(UIPointerInteraction(delegate: self))
+        }
+    }
+}
+
+@available(iOS 13.4, *)
+extension StandardButton: UIPointerInteractionDelegate {
+    func pointerInteraction(_ interaction: UIPointerInteraction, regionFor request: UIPointerRegionRequest, defaultRegion: UIPointerRegion) -> UIPointerRegion? {
+        return defaultRegion
+    }
+
+    func pointerInteraction(_ interaction: UIPointerInteraction, styleFor region: UIPointerRegion) -> UIPointerStyle? {
+        return UIPointerStyle(effect: .hover(.init(view: self)))
+    }
 }
