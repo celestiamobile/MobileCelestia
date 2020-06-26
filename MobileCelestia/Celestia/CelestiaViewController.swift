@@ -298,6 +298,10 @@ extension CelestiaViewController: UIContextMenuInteractionDelegate {
             )
             actions.append(UIMenu(title: "", options: .displayInline, children: [markerMenu]))
 
+            if selection.body != nil {
+                
+            }
+
             if let webInfo = selection.webInfoURL, let url = URL(string: webInfo) {
                 actions.append(UIMenu(title: "", options: .displayInline, children: [UIAction(title: CelestiaString("Web Info", comment: ""), handler: { [weak self] (_) in
                     guard let self = self else { return }

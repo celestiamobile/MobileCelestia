@@ -15,6 +15,8 @@ class SettingCommonViewController: UIViewController {
 
     private let item: SettingCommonItem
 
+    private lazy var core = CelestiaAppCore.shared
+
     init(item: SettingCommonItem) {
         self.item = item
         super.init(nibName: nil, bundle: nil)
@@ -57,6 +59,7 @@ private extension SettingCommonViewController {
 
         tableView.register(SettingSliderCell.self, forCellReuseIdentifier: "Slider")
         tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Action")
+        tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Checkmark")
         tableView.register(SettingSwitchCell.self, forCellReuseIdentifier: "Switch")
         tableView.dataSource = self
         tableView.delegate = self
@@ -78,7 +81,6 @@ extension SettingCommonViewController: UITableViewDataSource, UITableViewDelegat
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let row = item.sections[indexPath.section].rows[indexPath.row]
-        let core = CelestiaAppCore.shared
 
         switch row.type {
         case .slider:
@@ -89,9 +91,10 @@ extension SettingCommonViewController: UITableViewDataSource, UITableViewDelegat
                 let cell = tableView.dequeueReusableCell(withIdentifier: "Slider", for: indexPath) as! SettingSliderCell
                 cell.title = row.name
                 cell.value = ((core.value(forKey: key) as! Double) - minValue) / (maxValue - minValue)
-                cell.valueChangeBlock = { [unowned self] (value) in
+                cell.valueChangeBlock = { [weak self] (value) in
+                    guard let self = self else { return }
                     let transformed = value * (maxValue - minValue) + minValue
-                    core.setValue(transformed, forKey: key)
+                    self.core.setValue(transformed, forKey: key)
                     self.tableView.reloadData()
                 }
                 return cell
@@ -102,6 +105,15 @@ extension SettingCommonViewController: UITableViewDataSource, UITableViewDelegat
             if row.associatedItem.base is AssociatedActionItem {
                 let cell = tableView.dequeueReusableCell(withIdentifier: "Action", for: indexPath) as! SettingTextCell
                 cell.title = row.name
+                return cell
+            } else {
+                logWrongAssociatedItemType(row.associatedItem)
+            }
+        case .checkmark:
+            if let item = row.associatedItem.base as? AssociatedCheckmarkItem {
+                let cell = tableView.dequeueReusableCell(withIdentifier: "Checkmark", for: indexPath) as! SettingTextCell
+                cell.title = row.name
+                cell.accessoryType = core.value(forKey: item.key) as? Bool ?? false ? .checkmark : .none
                 return cell
             } else {
                 logWrongAssociatedItemType(row.associatedItem)
@@ -132,6 +144,16 @@ extension SettingCommonViewController: UITableViewDataSource, UITableViewDelegat
             if let item = row.associatedItem.base as? AssociatedActionItem {
                 tableView.deselectRow(at: indexPath, animated: true)
                 CelestiaAppCore.shared.charEnter(item.action)
+            } else {
+                logWrongAssociatedItemType(row.associatedItem)
+            }
+        case .checkmark:
+            if let item = row.associatedItem.base as? AssociatedCheckmarkItem {
+                if let cell = tableView.cellForRow(at: indexPath) {
+                    let checked = cell.accessoryType == .checkmark
+                    core.setValue(!checked, forKey: item.key)
+                    tableView.reloadData()
+                }
             } else {
                 logWrongAssociatedItemType(row.associatedItem)
             }

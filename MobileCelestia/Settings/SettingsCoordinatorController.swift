@@ -48,8 +48,8 @@ private extension SettingsCoordinatorController {
             }
 
             switch item.type {
-            case .checkmarks:
-                if let associated = item.associatedItem.base as? AssociatedCheckMarkItem {
+            case .multiSelection:
+                if let associated = item.associatedItem.base as? AssociatedMultiSelectionItem {
                     let controller = SettingCheckViewController(item: SettingCheckViewController.Item(title: item.name, masterKey: associated.masterKey, subitems: associated.items))
                     self.navigation.pushViewController(controller, animated: true)
                 } else {
@@ -77,11 +77,7 @@ private extension SettingsCoordinatorController {
                 self.navigation.pushViewController(TextViewController(title: item.name, text: renderInfo), animated: true)
             case .dataLocation:
                 self.navigation.pushViewController(DataLocationSelectionViewController(), animated: true)
-            case .slider:
-                fallthrough
-            case .prefSwitch:
-                fallthrough
-            case .action:
+            case .slider, .prefSwitch, .checkmark, .action:
                 fatalError("Use .common for slider/action setting item.")
             }
         })

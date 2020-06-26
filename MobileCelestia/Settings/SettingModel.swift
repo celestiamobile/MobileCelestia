@@ -9,7 +9,7 @@
 import Foundation
 
 enum SettingType: Hashable {
-    case checkmarks
+    case multiSelection
     case selection
     case slider
     case action
@@ -19,9 +19,10 @@ enum SettingType: Hashable {
     case render
     case time
     case dataLocation
+    case checkmark
 }
 
-struct AssociatedCheckMarkItem: Hashable {
+struct AssociatedMultiSelectionItem: Hashable {
     let masterKey: String?
     let items: [SettingCheckmarkItem]
 }
@@ -35,6 +36,7 @@ typealias AssociatedCommonItem = SettingCommonItem
 typealias AssociatedSliderItem = SettingSliderItem
 typealias AssociatedActionItem = SettingActionItem
 typealias AssociatedPreferenceSwitchItem = SettingPreferenceSwitchItem
+typealias AssociatedCheckmarkItem = SettingCheckmarkItem
 
 struct SettingCheckmarkItem: Hashable {
     let name: String
@@ -104,9 +106,9 @@ let mainSetting = [
         items: [
             SettingItem(
                 name: CelestiaString("Objects", comment: ""),
-                type: .checkmarks,
+                type: .multiSelection,
                 associatedItem: .init(
-                    AssociatedCheckMarkItem(
+                    AssociatedMultiSelectionItem(
                         masterKey: nil,
                         items: [
                             SettingCheckmarkItem(name: CelestiaString("Stars", comment: ""), key: "showStars"),
@@ -127,9 +129,9 @@ let mainSetting = [
             ),
             SettingItem(
                 name: CelestiaString("Features", comment: ""),
-                type: .checkmarks,
+                type: .multiSelection,
                 associatedItem: .init(
-                    AssociatedCheckMarkItem(
+                    AssociatedMultiSelectionItem(
                         masterKey: nil,
                         items: [
                             SettingCheckmarkItem(name: CelestiaString("Atmospheres", comment: ""), key: "showAtmospheres"),
@@ -146,9 +148,9 @@ let mainSetting = [
             ),
             SettingItem(
                 name: CelestiaString("Orbits", comment: ""),
-                type: .checkmarks,
+                type: .multiSelection,
                 associatedItem: .init(
-                    AssociatedCheckMarkItem(
+                    AssociatedMultiSelectionItem(
                         masterKey: "showOrbits",
                         items: [
                             SettingCheckmarkItem(name: CelestiaString("Stars", comment: ""), key: "showStellarOrbits"),
@@ -165,9 +167,9 @@ let mainSetting = [
             ),
             SettingItem(
                 name: CelestiaString("Grids", comment: ""),
-                type: .checkmarks,
+                type: .multiSelection,
                 associatedItem: .init(
-                    AssociatedCheckMarkItem(
+                    AssociatedMultiSelectionItem(
                         masterKey: nil,
                         items: [
                             SettingCheckmarkItem(name: CelestiaString("Equatorial", comment: ""), key: "showCelestialSphere"),
@@ -180,9 +182,9 @@ let mainSetting = [
             ),
             SettingItem(
                 name: CelestiaString("Constellations", comment: ""),
-                type: .checkmarks,
+                type: .multiSelection,
                 associatedItem: .init(
-                    AssociatedCheckMarkItem(
+                    AssociatedMultiSelectionItem(
                         masterKey: "showDiagrams",
                         items: [
                             SettingCheckmarkItem(name: CelestiaString("Constellation Labels", comment: ""), key: "showConstellationLabels"),
@@ -194,9 +196,9 @@ let mainSetting = [
             ),
             SettingItem(
                 name: CelestiaString("Object Labels", comment: ""),
-                type: .checkmarks,
+                type: .multiSelection,
                 associatedItem: .init(
-                    AssociatedCheckMarkItem(
+                    AssociatedMultiSelectionItem(
                         masterKey: nil,
                         items: [
                             SettingCheckmarkItem(name: CelestiaString("Stars", comment: ""), key: "showStarLabels"),
@@ -217,9 +219,9 @@ let mainSetting = [
             ),
             SettingItem(
                 name: CelestiaString("Locations", comment: ""),
-                type: .checkmarks,
+                type: .multiSelection,
                 associatedItem: .init(
-                    AssociatedCheckMarkItem(
+                    AssociatedMultiSelectionItem(
                         masterKey: "showLocationLabels",
                         items: [
                             SettingCheckmarkItem(name: CelestiaString("Cities", comment: ""), key: "showCityLabels"),
@@ -237,14 +239,34 @@ let mainSetting = [
             ),
             SettingItem(
                 name: CelestiaString("Markers", comment: ""),
-                type: .checkmarks,
+                type: .multiSelection,
                 associatedItem: .init(
-                    AssociatedCheckMarkItem(
+                    AssociatedMultiSelectionItem(
                         masterKey: "showMarkers",
                         items: []
                     )
                 )
             ),
+            SettingItem(
+                name: CelestiaString("Reference Vectors", comment: ""),
+                type: .common,
+                associatedItem: .init(
+                    AssociatedCommonItem(
+                        title: CelestiaString("Reference Vectors", comment: ""),
+                        sections: [
+                            .init(rows: [
+                                AssociatedCheckmarkItem(name: CelestiaString("Show Body Axes", comment: ""), key: "showBodyAxes"),
+                                AssociatedCheckmarkItem(name: CelestiaString("Show Frame Axes", comment: ""), key: "showFrameAxes"),
+                                AssociatedCheckmarkItem(name: CelestiaString("Show Sun Direction", comment: ""), key: "showSunDirection"),
+                                AssociatedCheckmarkItem(name: CelestiaString("Show Velocity Vector", comment: ""), key: "showVelocityVector"),
+                                AssociatedCheckmarkItem(name: CelestiaString("Show Planetographic Grid", comment: ""), key: "showPlanetographicGrid"),
+                                AssociatedCheckmarkItem(name: CelestiaString("Show Terminator", comment: ""), key: "showTerminator"),
+                            ].map { (item) -> SettingItem<AnyHashable> in
+                                return .init(name: item.name, type: .checkmark, associatedItem: .init(item))
+                            }, footer: CelestiaString("Reference vectors are only visible for the current selected solar system object.", comment: ""))
+                        ]
+                    )
+                ))
         ]),
     SettingSection(
         title: CelestiaString("Time", comment: ""),
