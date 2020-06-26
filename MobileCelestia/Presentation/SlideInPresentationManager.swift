@@ -112,14 +112,14 @@ extension SlideInPresentationManager: UIViewControllerTransitioningDelegate {
     }
 
     func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        if currentTraitCollection?.verticalSizeClass == .regular && currentTraitCollection?.horizontalSizeClass == .regular && usesFormSheetForRegular {
+        if #available(iOS 13.0, *), currentTraitCollection?.verticalSizeClass == .regular && currentTraitCollection?.horizontalSizeClass == .regular && usesFormSheetForRegular {
             return nil
         }
         return SlideInPresentationAnimator(direction: direction, isPresentation: true)
     }
 
     func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        if currentTraitCollection?.verticalSizeClass == .regular && currentTraitCollection?.horizontalSizeClass == .regular && usesFormSheetForRegular {
+        if #available(iOS 13.0, *), currentTraitCollection?.verticalSizeClass == .regular && currentTraitCollection?.horizontalSizeClass == .regular && usesFormSheetForRegular {
             return nil
         }
         return SlideInPresentationAnimator(direction: direction, isPresentation: false)
@@ -128,7 +128,7 @@ extension SlideInPresentationManager: UIViewControllerTransitioningDelegate {
 
 extension SlideInPresentationManager: UIAdaptivePresentationControllerDelegate {
     func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
-        if traitCollection.horizontalSizeClass == .regular && traitCollection.verticalSizeClass == .regular && usesFormSheetForRegular {
+        if #available(iOS 13.0, *), traitCollection.horizontalSizeClass == .regular && traitCollection.verticalSizeClass == .regular && usesFormSheetForRegular {
             currentTraitCollection = traitCollection
             controller.presentedViewController.preferredContentSize = controller.presentedViewController.formSheetPreferredContentSize
             return .formSheet

@@ -348,7 +348,7 @@ extension MainViewControler: CelestiaViewControllerDelegate {
     }
 
     private func presentAfterDismissCurrent(_ viewController: UIViewController, animated: Bool) {
-        if presentedViewController == nil {
+        if presentedViewController == nil || presentedViewController?.isBeingDismissed == true {
             present(viewController, animated: animated)
         } else {
             dismiss(animated: animated) { [weak self] in
