@@ -19,7 +19,7 @@ class ToolbarImageButtonCell: UICollectionViewCell, ToolbarCell {
     var itemImage: UIImage? { didSet { button.setImage(itemImage, for: .normal) } }
     var actionHandler: (() -> Void)?
 
-    private lazy var button = UIButton(type: .system)
+    private lazy var button = StandardButton(type: .system)
 
     override init(frame: CGRect) {
         super.init(frame: frame)
