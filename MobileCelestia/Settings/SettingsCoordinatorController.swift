@@ -77,7 +77,7 @@ private extension SettingsCoordinatorController {
                 self.navigation.pushViewController(TextViewController(title: item.name, text: renderInfo), animated: true)
             case .dataLocation:
                 self.navigation.pushViewController(DataLocationSelectionViewController(), animated: true)
-            case .slider, .prefSwitch, .checkmark, .action:
+            case .slider, .prefSwitch, .checkmark, .action, .custom:
                 fatalError("Use .common for slider/action setting item.")
             }
         })

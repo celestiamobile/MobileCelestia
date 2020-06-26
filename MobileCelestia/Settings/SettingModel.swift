@@ -8,6 +8,8 @@
 
 import Foundation
 
+import CelestiaCore
+
 enum SettingType: Hashable {
     case multiSelection
     case selection
@@ -20,6 +22,7 @@ enum SettingType: Hashable {
     case time
     case dataLocation
     case checkmark
+    case custom
 }
 
 struct AssociatedMultiSelectionItem: Hashable {
@@ -37,10 +40,36 @@ typealias AssociatedSliderItem = SettingSliderItem
 typealias AssociatedActionItem = SettingActionItem
 typealias AssociatedPreferenceSwitchItem = SettingPreferenceSwitchItem
 typealias AssociatedCheckmarkItem = SettingCheckmarkItem
+typealias AssociatedCustomItem = BlockHolder<CelestiaAppCore>
+
+class BlockHolder<T>: NSObject {
+    let block: (T) -> Void
+
+    init(block: @escaping (T) -> Void) {
+        self.block = block
+        super.init()
+    }
+}
 
 struct SettingCheckmarkItem: Hashable {
+    enum Representation: Hashable {
+        case checkmark
+        case `switch`
+    }
+
     let name: String
     let key: String
+    let representation: Representation
+
+    init(name: String, key: String, representation: Representation) {
+        self.name = name
+        self.key = key
+        self.representation = representation
+    }
+
+    init(name: String, key: String) {
+        self.init(name: name, key: key, representation: .checkmark)
+    }
 }
 
 struct SettingSelectionItem: Hashable {
@@ -239,11 +268,30 @@ let mainSetting = [
             ),
             SettingItem(
                 name: CelestiaString("Markers", comment: ""),
-                type: .multiSelection,
+                type: .common,
                 associatedItem: .init(
-                    AssociatedMultiSelectionItem(
-                        masterKey: "showMarkers",
-                        items: []
+                    AssociatedCommonItem(
+                        title: CelestiaString("Markers", comment: ""),
+                        sections: [
+                            .init(rows: [
+                                SettingItem(
+                                    name: CelestiaString("Show Markers", comment: ""),
+                                    type: .checkmark,
+                                    associatedItem: .init(
+                                        SettingCheckmarkItem(name: CelestiaString("Show Markers", comment: ""), key: "showMarkers", representation: .switch)
+                                    )
+                                ),
+                                SettingItem(
+                                    name: CelestiaString("Unmark All", comment: ""),
+                                    type: .custom,
+                                    associatedItem: .init(
+                                        AssociatedCustomItem(){ core in
+                                            core.simulation.universe.unmarkAll()
+                                        }
+                                    )
+                                )
+                            ], footer: nil)
+                        ]
                     )
                 )
             ),
@@ -266,7 +314,8 @@ let mainSetting = [
                             }, footer: CelestiaString("Reference vectors are only visible for the current selected solar system object.", comment: ""))
                         ]
                     )
-                ))
+                )
+            )
         ]),
     SettingSection(
         title: CelestiaString("Time", comment: ""),

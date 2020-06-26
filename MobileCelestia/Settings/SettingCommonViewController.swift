@@ -60,6 +60,7 @@ private extension SettingCommonViewController {
         tableView.register(SettingSliderCell.self, forCellReuseIdentifier: "Slider")
         tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Action")
         tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Checkmark")
+        tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Custom")
         tableView.register(SettingSwitchCell.self, forCellReuseIdentifier: "Switch")
         tableView.dataSource = self
         tableView.delegate = self
@@ -109,12 +110,32 @@ extension SettingCommonViewController: UITableViewDataSource, UITableViewDelegat
             } else {
                 logWrongAssociatedItemType(row.associatedItem)
             }
+        case .custom:
+            if row.associatedItem.base is AssociatedCustomItem {
+                let cell = tableView.dequeueReusableCell(withIdentifier: "Custom", for: indexPath) as! SettingTextCell
+                cell.title = row.name
+                return cell
+            } else {
+                logWrongAssociatedItemType(row.associatedItem)
+            }
         case .checkmark:
             if let item = row.associatedItem.base as? AssociatedCheckmarkItem {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "Checkmark", for: indexPath) as! SettingTextCell
-                cell.title = row.name
-                cell.accessoryType = core.value(forKey: item.key) as? Bool ?? false ? .checkmark : .none
-                return cell
+                let enabled = core.value(forKey: item.key) as? Bool ?? false
+                if item.representation == .switch {
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "Switch", for: indexPath) as! SettingSwitchCell
+                    cell.title = row.name
+                    cell.enabled = enabled
+                    cell.toggleBlock = { [weak self] newValue in
+                        guard let self = self else { return }
+                        self.core.setValue(newValue, forKey: item.key)
+                    }
+                    return cell
+                } else {
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "Checkmark", for: indexPath) as! SettingTextCell
+                    cell.title = row.name
+                    cell.accessoryType = enabled ? .checkmark : .none
+                    return cell
+                }
             } else {
                 logWrongAssociatedItemType(row.associatedItem)
             }
@@ -141,22 +162,17 @@ extension SettingCommonViewController: UITableViewDataSource, UITableViewDelegat
         let row = item.sections[indexPath.section].rows[indexPath.row]
         switch row.type {
         case .action:
-            if let item = row.associatedItem.base as? AssociatedActionItem {
-                tableView.deselectRow(at: indexPath, animated: true)
-                CelestiaAppCore.shared.charEnter(item.action)
-            } else {
-                logWrongAssociatedItemType(row.associatedItem)
-            }
+            guard let item = row.associatedItem.base as? AssociatedActionItem else { break }
+            CelestiaAppCore.shared.charEnter(item.action)
         case .checkmark:
-            if let item = row.associatedItem.base as? AssociatedCheckmarkItem {
-                if let cell = tableView.cellForRow(at: indexPath) {
-                    let checked = cell.accessoryType == .checkmark
-                    core.setValue(!checked, forKey: item.key)
-                    tableView.reloadData()
-                }
-            } else {
-                logWrongAssociatedItemType(row.associatedItem)
-            }
+            guard let item = row.associatedItem.base as? AssociatedCheckmarkItem, item.representation == .checkmark else { break }
+            guard let cell = tableView.cellForRow(at: indexPath) else { break }
+            let checked = cell.accessoryType == .checkmark
+            core.setValue(!checked, forKey: item.key)
+            tableView.reloadData()
+        case .custom:
+            guard let item = row.associatedItem.base as? AssociatedCustomItem else { break }
+            item.block(core)
         default:
             break
         }
