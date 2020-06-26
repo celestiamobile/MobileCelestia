@@ -16,6 +16,7 @@ enum ObjectAction {
     case wrapped(action: CelestiaAction)
     case subsystem
     case alternateSurfaces
+    case mark
 }
 
 private extension ObjectAction {
@@ -32,7 +33,7 @@ final class InfoViewController: UIViewController {
 
     var selectionHandler: ((ObjectAction, UIView) -> Void)?
 
-    private let actions: [ObjectAction]
+    private var actions: [ObjectAction]
 
     init(info: CelestiaSelection) {
         self.info = info
@@ -44,6 +45,7 @@ final class InfoViewController: UIViewController {
             actions.append(.alternateSurfaces)
         }
         actions.append(.subsystem)
+        actions.append(.mark)
         self.actions = actions
         super.init(nibName: nil, bundle: nil)
     }
@@ -136,6 +138,8 @@ private extension ObjectAction {
             return CelestiaString("Subsystem", comment: "")
         case .alternateSurfaces:
             return CelestiaString("Alternate Surfaces", comment: "")
+        case .mark:
+            return CelestiaString("Mark", comment: "")
         }
     }
 }

@@ -235,6 +235,16 @@ let mainSetting = [
                     )
                 )
             ),
+            SettingItem(
+                name: CelestiaString("Markers", comment: ""),
+                type: .checkmarks,
+                associatedItem: .init(
+                    AssociatedCheckMarkItem(
+                        masterKey: "showMarkers",
+                        items: []
+                    )
+                )
+            ),
         ]),
     SettingSection(
         title: CelestiaString("Time", comment: ""),

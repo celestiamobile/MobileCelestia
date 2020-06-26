@@ -283,6 +283,21 @@ extension CelestiaViewController: UIContextMenuInteractionDelegate {
                 actions.append(menu)
             }
 
+            let markerOptions = (0...CelestiaMarkerRepresentation.crosshair.rawValue).map { CelestiaMarkerRepresentation(rawValue: $0)?.localizedTitle ?? "" } + [CelestiaString("Unmark", comment: "")]
+            let markerMenu = UIMenu(title: CelestiaString("Mark", comment: ""), children: markerOptions.enumerated().map() { index, name -> UIAction in
+                    return UIAction(title: name) { [weak self] _ in
+                        guard let self = self else { return }
+                        if let marker = CelestiaMarkerRepresentation(rawValue: UInt(index)) {
+                            self.core.simulation.universe.mark(selection, with: marker)
+                            self.core.showMarkers = true
+                        } else {
+                            self.core.simulation.universe.unmark(selection)
+                        }
+                    }
+                }
+            )
+            actions.append(UIMenu(title: "", options: .displayInline, children: [markerMenu]))
+
             if let webInfo = selection.webInfoURL, let url = URL(string: webInfo) {
                 actions.append(UIMenu(title: "", options: .displayInline, children: [UIAction(title: CelestiaString("Web Info", comment: ""), handler: { [weak self] (_) in
                     guard let self = self else { return }

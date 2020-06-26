@@ -267,9 +267,24 @@ extension MainViewControler: CelestiaViewControllerDelegate {
                 self.showSubsystem(with: selection)
             case .alternateSurfaces:
                 self.showAlternateSurfaces(of: selection, with: sender)
+            case .mark:
+                self.showMarkMenu(with: selection, with: sender)
             }
         }
         showViewController(controller)
+    }
+
+    private func showMarkMenu(with selection: CelestiaSelection, with sender: UIView) {
+        let options = (0...CelestiaMarkerRepresentation.crosshair.rawValue).map{ CelestiaMarkerRepresentation(rawValue: $0)?.localizedTitle ?? "" } + [CelestiaString("Unmark", comment: "")]
+        (presentedViewController ?? self).showSelection(CelestiaString("Mark", comment: ""), options: options, sourceView: sender, sourceRect: sender.bounds) { [weak self] index in
+            guard let self = self else { return }
+            if let marker = CelestiaMarkerRepresentation(rawValue: UInt(index)) {
+                self.core.simulation.universe.mark(selection, with: marker)
+                self.core.showMarkers = true
+            } else {
+                self.core.simulation.universe.unmark(selection)
+            }
+        }
     }
 
     private func showAlternateSurfaces(of selection: CelestiaSelection, with sender: UIView) {
@@ -623,3 +638,42 @@ extension CelestiaAction: ToolbarTouchBarAction {
     }
 }
 #endif
+
+extension CelestiaMarkerRepresentation {
+    var localizedTitle: String {
+        return CelestiaString(unlocalizedTitle, comment: "")
+    }
+
+    private var unlocalizedTitle: String {
+        switch self {
+        case .circle:
+            return "Circle"
+        case .triangle:
+            return "Triangle"
+        case .plus:
+            return "Plus"
+        case .X:
+            return "X"
+        case .crosshair:
+            return "Crosshair"
+        case .diamond:
+            return "Diamond"
+        case .disk:
+            return "Disk"
+        case .filledSquare:
+            return "Filled Square"
+        case .leftArrow:
+            return "Left Arrow"
+        case .upArrow:
+            return "Up Arrow"
+        case .rightArrow:
+            return "Right Arrow"
+        case .downArrow:
+            return "Down Arrow"
+        case .square:
+            return "Square"
+        @unknown default:
+            return "Unknown"
+        }
+    }
+}
