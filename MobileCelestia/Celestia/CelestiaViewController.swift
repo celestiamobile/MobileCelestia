@@ -698,7 +698,7 @@ extension CelestiaViewController {
 
         if #available(iOS 13.4, *) {
             let pan2 = UIPanGestureRecognizer(target: self, action: #selector(handlePanZoom(_:)))
-            pan2.allowedScrollTypesMask = .discrete
+            pan2.allowedScrollTypesMask = [.discrete, .continuous]
             pan2.delegate = self
             glView.addGestureRecognizer(pan2)
             pan2.require(toFail: pan1)
