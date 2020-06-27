@@ -87,6 +87,7 @@ class MainViewControler: UIViewController {
                 #if targetEnvironment(macCatalyst)
                 self.setupToolbar()
                 self.setupTouchBar()
+                UIMenuSystem.main.setNeedsRebuild()
                 #endif
                 UIApplication.shared.isIdleTimerDisabled = true
                 self.showOnboardMessageIfNeeded()

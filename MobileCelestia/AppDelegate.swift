@@ -70,6 +70,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 #if targetEnvironment(macCatalyst)
 extension AppDelegate: UIDocumentPickerDelegate {
     override func buildMenu(with builder: UIMenuBuilder) {
+        guard CelestiaAppCore.shared.isInitialized else { return }
         guard builder.system == .main else { return }
 
         let newHelpCommand: UIKeyCommand
