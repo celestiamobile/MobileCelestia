@@ -650,11 +650,21 @@ extension CelestiaViewController {
     }
 
     private func setupCelestia(statusUpdater: @escaping (String) -> Void, errorHandler: @escaping () -> Bool, completionHandler: @escaping (Bool) -> Void) {
+
+        #if !USE_MGL
+        let context = glView.context
+        EAGLContext.setCurrent(context)
+        #endif
+
         _ = CelestiaAppCore.initGL()
 
         core = CelestiaAppCore.shared
 
         DispatchQueue.global().async { [unowned self] in
+            #if !USE_MGL
+            EAGLContext.setCurrent(context)
+            #endif
+
             var success = false
             var shouldRetry = true
 
