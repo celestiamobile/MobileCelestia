@@ -16,7 +16,6 @@ class TimeSettingViewController: UIViewController {
 
     private lazy var tableView = UITableView(frame: .zero, style: .grouped)
 
-    private let inputDateFormat = "yyyy/MM/dd HH:mm:ss"
     private lazy var displayDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateStyle = .short
@@ -82,7 +81,8 @@ extension TimeSettingViewController: UITableViewDataSource, UITableViewDelegate 
         let core = CelestiaAppCore.shared
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.row == 0 {
-            showDateInput(CelestiaString("Please enter the time in \"\(inputDateFormat)\" format.", comment: ""), format: inputDateFormat) { [weak self] (result) in
+            let preferredFormat = DateFormatter.dateFormat(fromTemplate: "yyyyMMddHHmmss", options: 0, locale: Locale.current) ?? "yyyy/MM/dd HH:mm:ss"
+            showDateInput(String(format: CelestiaString("Please enter the time in \"%s\" format.", comment: "").toLocalizationTemplate, preferredFormat), format: preferredFormat) { [weak self] (result) in
                 guard let self = self else { return }
 
                 guard let date = result else {
