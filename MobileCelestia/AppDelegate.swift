@@ -10,11 +10,9 @@ import UIKit
 
 import CelestiaCore
 
-#if !targetEnvironment(macCatalyst)
 import AppCenter
 import AppCenterAnalytics
 import AppCenterCrashes
-#endif
 
 let newURLOpenedNotificationName = Notification.Name("newURLOpenedNotificationName")
 let newURLOpenedNotificationURLKey = "newURLOpenedNotificationURLKey"
@@ -31,13 +29,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         swizzleShouldInheritScreenScaleAsContentScaleFactor()
 
-        #if !targetEnvironment(macCatalyst)
         #if !DEBUG
-        MSAppCenter.start("4c46cd7d-ea97-452b-920c-4328ac062db3", withServices:[
+        #if targetEnvironment(macCatalyst)
+        let appCenterID = "63a9e404-a07b-40eb-a5e7-320f65934b05"
+        #else
+        let appCenterID = "4c46cd7d-ea97-452b-920c-4328ac062db3"
+        #endif
+        MSAppCenter.start(appCenterID, withServices:[
             MSAnalytics.self,
             MSCrashes.self
         ])
-        #endif
         #endif
 
         window = UIWindow()

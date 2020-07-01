@@ -73,12 +73,12 @@
 		EA1BC6E724A0E94900F3F51B /* EventFinderResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E624A0E94900F3F51B /* EventFinderResultViewController.swift */; };
 		EA1EF0642493A9A20039F493 /* MetalANGLE.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA1EF0632493A9A20039F493 /* MetalANGLE.xcframework */; };
 		EA1EF0652493A9A30039F493 /* MetalANGLE.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EA1EF0632493A9A20039F493 /* MetalANGLE.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
-		EA1EF0662493A9F30039F493 /* AppCenter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9702D298240A8DD1005746E3 /* AppCenter.framework */; platformFilter = ios; };
-		EA1EF0682493A9F30039F493 /* AppCenterAnalytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9702D295240A8DD1005746E3 /* AppCenterAnalytics.framework */; platformFilter = ios; };
-		EA1EF06A2493A9F30039F493 /* AppCenterCrashes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9702D297240A8DD1005746E3 /* AppCenterCrashes.framework */; platformFilter = ios; };
 		EA28CA4E24A25FE7004B011E /* BottomControlViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA28CA4D24A25FE7004B011E /* BottomControlViewController.swift */; };
 		EA28CA5324A2F399004B011E /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = EA28CA5124A2F399004B011E /* Fonts */; };
 		EA5E185D2477C78E00F5374B /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5E185B2477C78E00F5374B /* Toast.swift */; };
+		EA5F726724ACA74F00B0237D /* AppCenterCrashes.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA5F726424ACA74F00B0237D /* AppCenterCrashes.xcframework */; };
+		EA5F726924ACA74F00B0237D /* AppCenter.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA5F726524ACA74F00B0237D /* AppCenter.xcframework */; };
+		EA5F726B24ACA74F00B0237D /* AppCenterAnalytics.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA5F726624ACA74F00B0237D /* AppCenterAnalytics.xcframework */; };
 		EABC245D248E162000205B5A /* FontHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = EABC245A248E162000205B5A /* FontHelper.m */; };
 		EABDE367247170F000E0A5FA /* SettngSliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABDE366247170F000E0A5FA /* SettngSliderCell.swift */; };
 		EABDE3A92473DAA300E0A5FA /* SettingCommonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABDE3A82473DAA300E0A5FA /* SettingCommonViewController.swift */; };
@@ -118,9 +118,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		9702D295240A8DD1005746E3 /* AppCenterAnalytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppCenterAnalytics.framework; path = AppCenter/AppCenterAnalytics.framework; sourceTree = "<group>"; };
-		9702D297240A8DD1005746E3 /* AppCenterCrashes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppCenterCrashes.framework; path = AppCenter/AppCenterCrashes.framework; sourceTree = "<group>"; };
-		9702D298240A8DD1005746E3 /* AppCenter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppCenter.framework; path = AppCenter/AppCenter.framework; sourceTree = "<group>"; };
 		97143F1623FFAEFD00F35D87 /* defaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = defaults.plist; sourceTree = "<group>"; };
 		972477D02404A19700729B45 /* BrowserContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserContainerViewController.swift; sourceTree = "<group>"; };
 		972477D42404A63800729B45 /* BrowserCommonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserCommonViewController.swift; sourceTree = "<group>"; };
@@ -197,6 +194,9 @@
 		EA28CA4D24A25FE7004B011E /* BottomControlViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomControlViewController.swift; sourceTree = "<group>"; };
 		EA28CA5124A2F399004B011E /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Fonts; path = ../../../CelestiaCore/Fonts; sourceTree = "<group>"; };
 		EA5E185B2477C78E00F5374B /* Toast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
+		EA5F726424ACA74F00B0237D /* AppCenterCrashes.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = AppCenterCrashes.xcframework; path = AppCenter/AppCenterCrashes.xcframework; sourceTree = "<group>"; };
+		EA5F726524ACA74F00B0237D /* AppCenter.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = AppCenter.xcframework; path = AppCenter/AppCenter.xcframework; sourceTree = "<group>"; };
+		EA5F726624ACA74F00B0237D /* AppCenterAnalytics.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = AppCenterAnalytics.xcframework; path = AppCenter/AppCenterAnalytics.xcframework; sourceTree = "<group>"; };
 		EABC245A248E162000205B5A /* FontHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FontHelper.m; sourceTree = "<group>"; };
 		EABC245C248E162000205B5A /* FontHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FontHelper.h; sourceTree = "<group>"; };
 		EABDE366247170F000E0A5FA /* SettngSliderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettngSliderCell.swift; sourceTree = "<group>"; };
@@ -212,13 +212,13 @@
 			files = (
 				EA10553324935A4700E49C6D /* Metal.framework in Frameworks */,
 				EA1EF0642493A9A20039F493 /* MetalANGLE.xcframework in Frameworks */,
-				EA1EF06A2493A9F30039F493 /* AppCenterCrashes.framework in Frameworks */,
-				EA1EF0682493A9F30039F493 /* AppCenterAnalytics.framework in Frameworks */,
 				979D2FAD23FEB2B4005D2592 /* libbz2.tbd in Frameworks */,
 				979D2FAF23FEB2BD005D2592 /* libz.tbd in Frameworks */,
-				EA1EF0662493A9F30039F493 /* AppCenter.framework in Frameworks */,
 				979D2FAB23FEB2AA005D2592 /* libc++.tbd in Frameworks */,
+				EA5F726B24ACA74F00B0237D /* AppCenterAnalytics.xcframework in Frameworks */,
 				979D2FA623FEB1DD005D2592 /* CelestiaCore.framework in Frameworks */,
+				EA5F726924ACA74F00B0237D /* AppCenter.xcframework in Frameworks */,
+				EA5F726724ACA74F00B0237D /* AppCenterCrashes.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -432,11 +432,11 @@
 		979D2FA523FEB1DD005D2592 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				EA5F726524ACA74F00B0237D /* AppCenter.xcframework */,
+				EA5F726624ACA74F00B0237D /* AppCenterAnalytics.xcframework */,
+				EA5F726424ACA74F00B0237D /* AppCenterCrashes.xcframework */,
 				EA1EF0632493A9A20039F493 /* MetalANGLE.xcframework */,
 				EA10553224935A4700E49C6D /* Metal.framework */,
-				9702D298240A8DD1005746E3 /* AppCenter.framework */,
-				9702D295240A8DD1005746E3 /* AppCenterAnalytics.framework */,
-				9702D297240A8DD1005746E3 /* AppCenterCrashes.framework */,
 				979D2FAE23FEB2B9005D2592 /* libz.tbd */,
 				979D2FAC23FEB2AE005D2592 /* libbz2.tbd */,
 				979D2FAA23FEB2A5005D2592 /* libc++.tbd */,
