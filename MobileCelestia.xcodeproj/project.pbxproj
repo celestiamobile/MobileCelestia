@@ -71,8 +71,6 @@
 		EA1BC6E324A0E92B00F3F51B /* EventFinderCoordinatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E224A0E92B00F3F51B /* EventFinderCoordinatorViewController.swift */; };
 		EA1BC6E524A0E93D00F3F51B /* EventFinderInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E424A0E93D00F3F51B /* EventFinderInputViewController.swift */; };
 		EA1BC6E724A0E94900F3F51B /* EventFinderResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E624A0E94900F3F51B /* EventFinderResultViewController.swift */; };
-		EA1EF0642493A9A20039F493 /* MetalANGLE.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA1EF0632493A9A20039F493 /* MetalANGLE.xcframework */; };
-		EA1EF0652493A9A30039F493 /* MetalANGLE.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EA1EF0632493A9A20039F493 /* MetalANGLE.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		EA28CA4E24A25FE7004B011E /* BottomControlViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA28CA4D24A25FE7004B011E /* BottomControlViewController.swift */; };
 		EA28CA5324A2F399004B011E /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = EA28CA5124A2F399004B011E /* Fonts */; };
 		EA5E185D2477C78E00F5374B /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5E185B2477C78E00F5374B /* Toast.swift */; };
@@ -102,20 +100,6 @@
 			remoteInfo = CelestiaCore;
 		};
 /* End PBXContainerItemProxy section */
-
-/* Begin PBXCopyFilesBuildPhase section */
-		EA1EF0622493A0C20039F493 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				EA1EF0652493A9A30039F493 /* MetalANGLE.xcframework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		97143F1623FFAEFD00F35D87 /* defaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = defaults.plist; sourceTree = "<group>"; };
@@ -190,7 +174,6 @@
 		EA1BC6E424A0E93D00F3F51B /* EventFinderInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventFinderInputViewController.swift; sourceTree = "<group>"; };
 		EA1BC6E624A0E94900F3F51B /* EventFinderResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventFinderResultViewController.swift; sourceTree = "<group>"; };
 		EA1EF056249393BE0039F493 /* Celestia.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Celestia.entitlements; sourceTree = "<group>"; };
-		EA1EF0632493A9A20039F493 /* MetalANGLE.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = MetalANGLE.xcframework; path = ../CelestiaCore/Frameworks/MetalANGLE.xcframework; sourceTree = "<group>"; };
 		EA28CA4D24A25FE7004B011E /* BottomControlViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomControlViewController.swift; sourceTree = "<group>"; };
 		EA28CA5124A2F399004B011E /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Fonts; path = ../../../CelestiaCore/Fonts; sourceTree = "<group>"; };
 		EA5E185B2477C78E00F5374B /* Toast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
@@ -211,7 +194,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				EA10553324935A4700E49C6D /* Metal.framework in Frameworks */,
-				EA1EF0642493A9A20039F493 /* MetalANGLE.xcframework in Frameworks */,
 				979D2FAD23FEB2B4005D2592 /* libbz2.tbd in Frameworks */,
 				979D2FAF23FEB2BD005D2592 /* libz.tbd in Frameworks */,
 				979D2FAB23FEB2AA005D2592 /* libc++.tbd in Frameworks */,
@@ -435,7 +417,6 @@
 				EA5F726524ACA74F00B0237D /* AppCenter.xcframework */,
 				EA5F726624ACA74F00B0237D /* AppCenterAnalytics.xcframework */,
 				EA5F726424ACA74F00B0237D /* AppCenterCrashes.xcframework */,
-				EA1EF0632493A9A20039F493 /* MetalANGLE.xcframework */,
 				EA10553224935A4700E49C6D /* Metal.framework */,
 				979D2FAE23FEB2B9005D2592 /* libz.tbd */,
 				979D2FAC23FEB2AE005D2592 /* libbz2.tbd */,
@@ -504,7 +485,6 @@
 				979D2F7823FEB1A6005D2592 /* Resources */,
 				973BBA5724052FFB00E3B061 /* Copy General Data */,
 				973BBA592405305100E3B061 /* Convert PO */,
-				EA1EF0622493A0C20039F493 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -878,7 +858,6 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/AppCenter",
-					"$(PROJECT_DIR)/../CelestiaCore/Frameworks",
 				);
 				INFOPLIST_FILE = MobileCelestia/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -886,7 +865,6 @@
 					"@executable_path/Frameworks",
 				);
 				OTHER_LDFLAGS = "-ObjC";
-				OTHER_SWIFT_FLAGS = "-DUSE_MGL";
 				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.MobileCelestia;
 				PRODUCT_NAME = Celestia;
 				SUPPORTS_MACCATALYST = YES;
@@ -910,7 +888,6 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)/AppCenter",
-					"$(PROJECT_DIR)/../CelestiaCore/Frameworks",
 				);
 				INFOPLIST_FILE = MobileCelestia/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -918,7 +895,6 @@
 					"@executable_path/Frameworks",
 				);
 				OTHER_LDFLAGS = "-ObjC";
-				OTHER_SWIFT_FLAGS = "-DUSE_MGL";
 				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.MobileCelestia;
 				PRODUCT_NAME = Celestia;
 				SUPPORTS_MACCATALYST = YES;
