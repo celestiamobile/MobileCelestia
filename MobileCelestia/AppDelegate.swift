@@ -32,6 +32,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         swizzleShouldInheritScreenScaleAsContentScaleFactor()
 
+        #if targetEnvironment(macCatalyst)
+        UserDefaults.standard.register(defaults: ["NSApplicationCrashOnExceptions": true])
+        #endif
+
         #if !DEBUG
         #if targetEnvironment(macCatalyst)
         let appCenterID = "63a9e404-a07b-40eb-a5e7-320f65934b05"
