@@ -38,6 +38,14 @@ public extension UIViewController {
 }
 
 extension UIViewController {
+    var front: UIViewController? {
+        guard isViewLoaded else { return nil }
+        if let presented = presentedViewController { return presented.front }
+        return self
+    }
+}
+
+extension UIViewController {
     @discardableResult func showError(_ title: String) -> UIAlertController {
         let alert = UIAlertController(title: title, message: nil, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: CelestiaString("OK", comment: ""), style: .default, handler: nil))

@@ -122,16 +122,21 @@ extension MainViewControler {
         checkNeedOpeningURL()
     }
 
-    private func checkNeedOpeningURL() {
+    private func checkNeedOpeningURL(_ external: Bool = true, _ dismissCurrent: Bool = true) {
         guard let url = urlToRun else { return }
         urlToRun = nil
-        addToBackStack()
+
+        if dismissCurrent {
+            addToBackStack()
+        }
         let title = url.isFileURL ? CelestiaString("Run script?", comment: "") : CelestiaString("Open URL?", comment: "")
-        showOption(title) { [unowned self] (confirmed) in
-            self.popLastAndShow()
+        front?.showOption(title) { [unowned self] (confirmed) in
+            if dismissCurrent {
+                self.popLastAndShow()
+            }
 
             guard confirmed else { return }
-            self.celestiaController.openURL(url, external: true)
+            self.celestiaController.openURL(url, external: external)
         }
     }
 }
@@ -199,7 +204,8 @@ extension MainViewControler: CelestiaViewControllerDelegate {
 
     private func presentFavorite() {
         let controller = FavoriteCoordinatorController { [unowned self] (url) in
-            self.celestiaController.openURL(url, external: false)
+            urlToRun = url
+            self.checkNeedOpeningURL(false, false)
         }
         showViewController(controller)
     }
@@ -280,7 +286,7 @@ extension MainViewControler: CelestiaViewControllerDelegate {
 
     private func showMarkMenu(with selection: CelestiaSelection, with sender: UIView) {
         let options = (0...CelestiaMarkerRepresentation.crosshair.rawValue).map{ CelestiaMarkerRepresentation(rawValue: $0)?.localizedTitle ?? "" } + [CelestiaString("Unmark", comment: "")]
-        (presentedViewController ?? self).showSelection(CelestiaString("Mark", comment: ""), options: options, sourceView: sender, sourceRect: sender.bounds) { [weak self] index in
+        front?.showSelection(CelestiaString("Mark", comment: ""), options: options, sourceView: sender, sourceRect: sender.bounds) { [weak self] index in
             guard let self = self else { return }
             if let marker = CelestiaMarkerRepresentation(rawValue: UInt(index)) {
                 self.core.simulation.universe.mark(selection, with: marker)
@@ -293,7 +299,7 @@ extension MainViewControler: CelestiaViewControllerDelegate {
 
     private func showAlternateSurfaces(of selection: CelestiaSelection, with sender: UIView) {
         guard let alternativeSurfaces = selection.body?.alternateSurfaceNames, alternativeSurfaces.count > 0 else { return }
-        (presentedViewController ?? self).showSelection(CelestiaString("Alternate Surfaces", comment: ""), options: [CelestiaString("Default", comment: "")] + alternativeSurfaces, sourceView: sender, sourceRect: sender.bounds) { [weak self] index in
+        front?.showSelection(CelestiaString("Alternate Surfaces", comment: ""), options: [CelestiaString("Default", comment: "")] + alternativeSurfaces, sourceView: sender, sourceRect: sender.bounds) { [weak self] index in
             guard let self = self else { return }
 
             if index == 0 {
