@@ -82,12 +82,13 @@ extension UIViewController {
         let alert = UIAlertController(title: title, message: nil, preferredStyle: .alert)
         let formatter = DateFormatter()
         formatter.dateFormat = format
-        let confirmAction = UIAlertAction(title: CelestiaString("OK", comment: ""), style: .default, handler: { [unowned alert] (_) in
+        let confirmAction = UIAlertAction(title: CelestiaString("OK", comment: ""), style: .default, handler: { [unowned alert] _ in
             guard let text = alert.textFields?.first?.text else { return }
             completion?(formatter.date(from: text))
         })
-        alert.addTextField { (textField) in
+        alert.addTextField { textField in
             textField.keyboardAppearance = .dark
+            textField.placeholder = formatter.string(from: Date())
         }
         alert.addAction(confirmAction)
         alert.addAction(UIAlertAction(title: CelestiaString("Cancel", comment: ""), style: .cancel, handler: nil))
