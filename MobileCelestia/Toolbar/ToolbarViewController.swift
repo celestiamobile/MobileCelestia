@@ -42,7 +42,7 @@ enum AppToolbarAction: String {
     case event
 
     static var persistentAction: [[AppToolbarAction]] {
-        return [[.share, .search, .home], [.camera, .time, .script], [.browse, .favorite, .event], [.help], [.setting]]
+        return [[.setting], [.share, .search, .home], [.camera, .time, .script], [.browse, .favorite, .event], [.help]]
     }
 }
 
