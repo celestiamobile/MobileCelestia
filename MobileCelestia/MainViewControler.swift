@@ -247,6 +247,8 @@ extension MainViewControler: CelestiaViewControllerDelegate {
             switch action {
             case .tutorial(let tutorial):
                 self.handleTutorialAction(tutorial)
+            case .url(let url):
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
             }
         })
     }

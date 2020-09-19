@@ -13,11 +13,13 @@ import UIKit
 
 enum OnboardAction {
     case tutorial(action: TutorialAction)
+    case url(url: URL)
 }
 
 class OnboardViewController: UIViewController {
 
     private let actionHandler: ((OnboardAction) -> Void)
+    private let urlHandler: (())
 
     init(actionHandler: @escaping ((OnboardAction) -> Void)) {
         self.actionHandler = actionHandler
@@ -56,9 +58,11 @@ private extension OnboardViewController {
             welcomeView.topAnchor.constraint(equalTo: view.topAnchor, constant: 16),
         ])
 
-        let tutorialController = TutorialViewController { [unowned self] (action) in
+        let tutorialController = TutorialViewController(actionHandler: { [unowned self] (action) in
             self.actionHandler(.tutorial(action: action))
-        }
+        }, urlHandler: { url in
+            self.actionHandler(.url(url: url))
+        })
 
         // add child vc
         addChild(tutorialController)

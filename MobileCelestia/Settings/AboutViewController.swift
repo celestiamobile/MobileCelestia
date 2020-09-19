@@ -58,6 +58,11 @@ class AboutViewController: UIViewController {
         }
 
         totalItems.append([
+            TextItem.link(title: CelestiaString("Development", comment: ""), url: URL(string: "https://github.com/levinli303/Celestia/wiki/Development")!),
+            TextItem.link(title: CelestiaString("Third Party Dependencies", comment: ""), url: URL(string: "https://github.com/levinli303/Celestia/wiki/Third-Party-Dependencies")!)
+        ])
+
+        totalItems.append([
             TextItem.link(title: CelestiaString("Official Website", comment: ""), url: officialWebsiteURL),
             TextItem.link(title: CelestiaString("Support Forum", comment: ""), url: supportForumURL)
         ])

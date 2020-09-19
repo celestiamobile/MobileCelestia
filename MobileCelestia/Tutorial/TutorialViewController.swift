@@ -28,9 +28,15 @@ class TutorialViewController: UIViewController {
         let object: TutorialAction
     }
 
+    private struct TutorialURLItem {
+        let title: String
+        let url: URL
+    }
+
     private enum TutorialItem {
         case description(item: TutorialDescriptionItem)
         case action(item: TutorialActionItem)
+        case url(url: TutorialURLItem)
     }
 
     private lazy var tableView = UITableView(frame: .zero, style: .plain)
@@ -48,15 +54,23 @@ class TutorialViewController: UIViewController {
         TutorialActionItem(title: CelestiaString("Run Demo", comment: ""), object: .runDemo)
     ]
 
+    private lazy var urlItems = [
+        TutorialURLItem(title: CelestiaString("Use Add-ons and Scripts", comment: ""), url: URL(string: "https://github.com/levinli303/Celestia/wiki/Use-Addons-and-Scripts")!),
+        TutorialURLItem(title: CelestiaString("Scripts and URLs", comment: ""), url: URL(string: "https://github.com/levinli303/Celestia/wiki/Scripts-and-URLs")!),
+    ]
+
     private lazy var tutorialItems: [[TutorialItem]] = [
         self.tutorialDescriptionItems.map { TutorialItem.description(item: $0) },
+        self.urlItems.map { TutorialItem.url(url: $0) },
         self.tutorialActionItems.map { TutorialItem.action(item: $0) }
     ]
 
     private let actionHandler: ((TutorialAction) -> Void)?
+    private let urlHandler: ((URL) -> Void)?
 
-    init(actionHandler: ((TutorialAction) -> Void)?) {
+    init(actionHandler: ((TutorialAction) -> Void)?, urlHandler: ((URL) -> Void)?) {
         self.actionHandler = actionHandler
+        self.urlHandler = urlHandler
         super.init(nibName: nil, bundle: nil)
 
         title = CelestiaString("Tutorial", comment: "")
@@ -100,6 +114,7 @@ private extension TutorialViewController {
 
         tableView.register(TutorialDescriptionCell.self, forCellReuseIdentifier: "Description")
         tableView.register(TutorialActionCell.self, forCellReuseIdentifier: "Action")
+        tableView.register(TutorialActionCell.self, forCellReuseIdentifier: "URL")
         tableView.dataSource = self
         tableView.delegate = self
     }
@@ -129,6 +144,13 @@ extension TutorialViewController: UITableViewDataSource, UITableViewDelegate {
                 self.actionHandler?(action.object)
             }
             return cell
+        case .url(let url):
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Action", for: indexPath) as! TutorialActionCell
+            cell.title = url.title
+            cell.actionHandler = { [unowned self] in
+                self.urlHandler?(url.url)
+            }
+            return cell
         }
     }
 
@@ -137,7 +159,7 @@ extension TutorialViewController: UITableViewDataSource, UITableViewDelegate {
         switch item {
         case .description(_):
             return UITableView.automaticDimension
-        case .action(_):
+        case .action(_), .url(_):
             return 60
         }
     }
