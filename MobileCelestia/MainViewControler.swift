@@ -429,17 +429,24 @@ extension MainViewControler: CelestiaControllerDelegate {
             self.addToBackStack()
             self.showSelectionInfo(with: info)
         })
+        #if targetEnvironment(macCatalyst)
+        showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600))
+        #else
         showViewController(controller)
+        #endif
     }
 
-    private func showViewController(_ viewController: UIViewController) {
+    private func showViewController(_ viewController: UIViewController,
+                                    iOSPreferredSize: CGSize = CGSize(width: 300, height: 300),
+                                    macOSPreferredSize: CGSize = CGSize(width: 400, height: 500),
+                                    formSheetPreferredContentSize: CGSize = CGSize(width: 400, height: 500)) {
         #if targetEnvironment(macCatalyst)
-        PanelSceneDelegate.present(viewController)
+        PanelSceneDelegate.present(viewController, preferredSize: macOSPreferredSize)
         #else
         viewController.customFlag &= ~userInitiatedDismissalFlag
 
-        viewController.regularPreferredContentSize = CGSize(width: 300, height: 300)
-        viewController.formSheetPreferredContentSize = CGSize(width: 400, height: 500)
+        viewController.regularPreferredContentSize = iOSPreferredSize
+        viewController.formSheetPreferredContentSize = formSheetPreferredContentSize
         viewController.modalPresentationStyle = .custom
         viewController.transitioningDelegate = endSlideInManager
 
