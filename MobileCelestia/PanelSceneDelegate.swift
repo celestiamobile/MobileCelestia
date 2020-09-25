@@ -1,0 +1,71 @@
+//
+// PanelSceneDelegate.swift
+//
+// Copyright © 2020 Celestia Development Team. All rights reserved.
+//
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either version 2
+// of the License, or (at your option) any later version.
+//
+
+import UIKit
+
+#if targetEnvironment(macCatalyst)
+@available(iOS 13, *)
+class PanelSceneDelegate: UIResponder, UIWindowSceneDelegate {
+    var window: UIWindow?
+
+    func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
+        guard let windowScene = scene as? UIWindowScene else { return }
+        guard let id = connectionOptions.userActivities.first?.userInfo?[Self.idKey] as? UUID else { return }
+        guard let viewController = Self.viewControllersToPresent.removeValue(forKey: id) else { return }
+        Self.weakSessionTable.setObject(session, forKey: String(describing: type(of: viewController)) as NSString)
+
+        windowScene.titlebar?.titleVisibility = .hidden
+        windowScene.sizeRestrictions?.minimumSize = CGSize(width: 400, height: 500)
+        windowScene.sizeRestrictions?.maximumSize = CGSize(width: 400, height: 500)
+        let window = UIWindow(windowScene: windowScene)
+        window.rootViewController = viewController
+
+        self.window = window
+        window.makeKeyAndVisible()
+    }
+
+    static var activityType = "\(Bundle.main.bundleIdentifier!).Panel"
+    private static var idKey = "id"
+    private static var viewControllersToPresent: [UUID : UIViewController] = [:]
+    private static var weakSessionTable = NSMapTable<NSString, UISceneSession>(keyOptions: .strongMemory, valueOptions: .weakMemory)
+
+    static func present(_ viewController: UIViewController) {
+        if let existingSession = weakSessionTable.object(forKey: String(describing: type(of: viewController)) as NSString) {
+            UIApplication.shared.requestSceneSessionDestruction(existingSession, options: nil) { _ in }
+        }
+        let activity = NSUserActivity(activityType: "\(Bundle.main.bundleIdentifier!).Panel")
+        let id = UUID()
+        activity.userInfo = [idKey : id]
+        viewControllersToPresent[id] = viewController
+        UIApplication.shared.requestSceneSessionActivation(nil, userActivity: activity, options: nil) { _ in }
+    }
+}
+
+fileprivate extension UIWindow {
+    var nsWindow: NSObject? {
+        guard let appClass = NSClassFromString("NSApplication") as? NSObject.Type,
+              let appDelegate = appClass.value(forKeyPath: "sharedApplication.delegate") as? NSObject else {
+            return nil
+        }
+        let sel1 = NSSelectorFromString("_hostWindowForUIWindow:")
+        let sel2 = NSSelectorFromString("attachedWindow")
+        var win: NSObject?
+        if appDelegate.responds(to: sel1) {
+            win = appDelegate.perform(sel1, with: self)?.takeUnretainedValue() as? NSObject
+        }
+
+        if let window = win, window.responds(to: sel2) {
+            win = window.perform(sel2)?.takeUnretainedValue() as? NSObject
+        }
+        return win
+    }
+}
+#endif

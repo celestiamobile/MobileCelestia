@@ -77,6 +77,8 @@
 		EA5F726724ACA74F00B0237D /* AppCenterCrashes.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA5F726424ACA74F00B0237D /* AppCenterCrashes.xcframework */; };
 		EA5F726924ACA74F00B0237D /* AppCenter.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA5F726524ACA74F00B0237D /* AppCenter.xcframework */; };
 		EA5F726B24ACA74F00B0237D /* AppCenterAnalytics.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA5F726624ACA74F00B0237D /* AppCenterAnalytics.xcframework */; };
+		EA934C90251D90C500DD284C /* MainSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA934C8F251D90C500DD284C /* MainSceneDelegate.swift */; };
+		EA934C9A251D92AD00DD284C /* PanelSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA934C99251D92A700DD284C /* PanelSceneDelegate.swift */; };
 		EABC245D248E162000205B5A /* FontHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = EABC245A248E162000205B5A /* FontHelper.m */; };
 		EABDE367247170F000E0A5FA /* SettngSliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABDE366247170F000E0A5FA /* SettngSliderCell.swift */; };
 		EABDE3A92473DAA300E0A5FA /* SettingCommonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABDE3A82473DAA300E0A5FA /* SettingCommonViewController.swift */; };
@@ -180,6 +182,8 @@
 		EA5F726424ACA74F00B0237D /* AppCenterCrashes.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = AppCenterCrashes.xcframework; path = AppCenter/AppCenterCrashes.xcframework; sourceTree = "<group>"; };
 		EA5F726524ACA74F00B0237D /* AppCenter.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = AppCenter.xcframework; path = AppCenter/AppCenter.xcframework; sourceTree = "<group>"; };
 		EA5F726624ACA74F00B0237D /* AppCenterAnalytics.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = AppCenterAnalytics.xcframework; path = AppCenter/AppCenterAnalytics.xcframework; sourceTree = "<group>"; };
+		EA934C8F251D90C500DD284C /* MainSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSceneDelegate.swift; sourceTree = "<group>"; };
+		EA934C99251D92A700DD284C /* PanelSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelSceneDelegate.swift; sourceTree = "<group>"; };
 		EABC245A248E162000205B5A /* FontHelper.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FontHelper.m; sourceTree = "<group>"; };
 		EABC245C248E162000205B5A /* FontHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FontHelper.h; sourceTree = "<group>"; };
 		EABDE366247170F000E0A5FA /* SettngSliderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettngSliderCell.swift; sourceTree = "<group>"; };
@@ -386,6 +390,8 @@
 				973E2EF92400F9E100B0F059 /* Resources */,
 				979D2F7D23FEB1A6005D2592 /* AppDelegate.swift */,
 				978406D624028F0000876FD1 /* MainViewControler.swift */,
+				EA934C8F251D90C500DD284C /* MainSceneDelegate.swift */,
+				EA934C99251D92A700DD284C /* PanelSceneDelegate.swift */,
 				979D2F8623FEB1A8005D2592 /* Assets.xcassets */,
 				EA1EF056249393BE0039F493 /* Celestia.entitlements */,
 				979D2F8823FEB1A8005D2592 /* LaunchScreen.storyboard */,
@@ -655,6 +661,7 @@
 				97401C9C2414D3460015F8E8 /* URL.swift in Sources */,
 				977394AE2403F08800E38B82 /* SettingsMainViewController.swift in Sources */,
 				973BBA452405216700E3B061 /* AboutViewController.swift in Sources */,
+				EA934C90251D90C500DD284C /* MainSceneDelegate.swift in Sources */,
 				977394BA240413EF00E38B82 /* SettingSelectionViewController.swift in Sources */,
 				973BBA642405481200E3B061 /* TimeSettingViewController.swift in Sources */,
 				973BBA61240538DB00E3B061 /* MultiLineTextCell.swift in Sources */,
@@ -680,6 +687,7 @@
 				978406D724028F0000876FD1 /* MainViewControler.swift in Sources */,
 				97FF95AA240A3F0900E9F44F /* Data.swift in Sources */,
 				974F86DF2403BD3C00356795 /* BodyActionCell.swift in Sources */,
+				EA934C9A251D92AD00DD284C /* PanelSceneDelegate.swift in Sources */,
 				97EB41C62408F20700E6D441 /* CameraControlViewController.swift in Sources */,
 				977394B52403FD4400E38B82 /* SettingCheckViewController.swift in Sources */,
 				97F1141E2408AE06003A06D7 /* DataLocationSelectionViewController.swift in Sources */,

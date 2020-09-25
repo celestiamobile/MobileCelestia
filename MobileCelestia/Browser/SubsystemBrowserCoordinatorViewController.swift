@@ -51,6 +51,7 @@ private extension SubsystemBrowserCoordinatorViewController {
         install(navigation)
 
         navigation.navigationBar.barStyle = .black
+        navigation.navigationBar.barTintColor = .black
         navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
     }
 

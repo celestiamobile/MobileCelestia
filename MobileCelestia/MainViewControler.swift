@@ -238,6 +238,7 @@ extension MainViewControler: CelestiaViewControllerDelegate {
         let vc = CameraControlViewController()
         let controller = UINavigationController(rootViewController: vc)
         controller.navigationBar.barStyle = .black
+        controller.navigationBar.barTintColor = .black
         controller.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
         showViewController(controller)
     }
@@ -356,6 +357,9 @@ extension MainViewControler: CelestiaViewControllerDelegate {
     }
 
     private func showViewController(_ viewController: UIViewController) {
+        #if targetEnvironment(macCatalyst)
+        PanelSceneDelegate.present(viewController)
+        #else
         viewController.customFlag &= ~userInitiatedDismissalFlag
 
         viewController.regularPreferredContentSize = CGSize(width: 300, height: 300)
@@ -364,6 +368,7 @@ extension MainViewControler: CelestiaViewControllerDelegate {
         viewController.transitioningDelegate = endSlideInManager
 
         presentAfterDismissCurrent(viewController, animated: true)
+        #endif
     }
 
     private func configurePopover(for viewController: UIViewController) {

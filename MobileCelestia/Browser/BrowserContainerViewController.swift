@@ -55,5 +55,6 @@ private extension BrowserContainerViewController {
         ], animated: false)
 
         controller.tabBar.barStyle = .black
+        controller.tabBar.barTintColor = .black
     }
 }

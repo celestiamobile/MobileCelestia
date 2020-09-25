@@ -89,6 +89,7 @@ private extension SettingsCoordinatorController {
         install(navigation)
 
         navigation.navigationBar.barStyle = .black
+        navigation.navigationBar.barTintColor = .black
         navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
     }
 }

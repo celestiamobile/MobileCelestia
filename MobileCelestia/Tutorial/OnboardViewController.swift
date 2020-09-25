@@ -55,7 +55,7 @@ private extension OnboardViewController {
         NSLayoutConstraint.activate([
             welcomeView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
             welcomeView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
-            welcomeView.topAnchor.constraint(equalTo: view.topAnchor, constant: 16),
+            welcomeView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
         ])
 
         let tutorialController = TutorialViewController(actionHandler: { [unowned self] (action) in

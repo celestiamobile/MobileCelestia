@@ -34,6 +34,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         #if targetEnvironment(macCatalyst)
         UserDefaults.standard.register(defaults: ["NSApplicationCrashOnExceptions": true])
+
+        // Force dark aqua appearance
+        if let appClass = NSClassFromString("NSApplication") as? NSObject.Type,
+           let app = appClass.perform(NSSelectorFromString("sharedApplication"))?.takeUnretainedValue() as? NSObject,
+           let appearanceClass = NSClassFromString("NSAppearance") as? NSObject.Type,
+           let appearance = appearanceClass.perform(NSSelectorFromString("appearanceNamed:"), with: "NSAppearanceNameDarkAqua")?.takeUnretainedValue() {
+            app.perform(NSSelectorFromString("setAppearance:"), with: appearance)
+        }
+
+        // Avoid reading saved state
+        if let libraryPath = NSSearchPathForDirectoriesInDomains(.libraryDirectory, .userDomainMask, true).first {
+            let savedStatePath = "\(libraryPath)/Saved Application State"
+            if FileManager.default.fileExists(atPath: savedStatePath) {
+                try? FileManager.default.removeItem(atPath: savedStatePath)
+            }
+        }
         #endif
 
         #if !DEBUG
@@ -48,10 +64,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         ])
         #endif
 
+        if #available(iOS 13.0, *) { return true }
+
         window = UIWindow()
-        if #available(iOS 13.0, *) {
-            window?.overrideUserInterfaceStyle = .dark
-        }
         let vc = MainViewControler()
 
         window?.rootViewController = vc
@@ -73,13 +88,41 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             core.storeUserDefaults()
         }
     }
+
+    func application(_ application: UIApplication, shouldSaveApplicationState coder: NSCoder) -> Bool {
+        return false
+    }
+
+    func application(_ application: UIApplication, shouldSaveSecureApplicationState coder: NSCoder) -> Bool {
+        return false
+    }
+
+    func application(_ application: UIApplication, shouldRestoreApplicationState coder: NSCoder) -> Bool {
+        return false
+    }
+
+    func application(_ application: UIApplication, shouldRestoreSecureApplicationState coder: NSCoder) -> Bool {
+        return false
+    }
+
+    #if targetEnvironment(macCatalyst)
+    @available(iOS 13, *)
+    func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
+        if options.userActivities.contains(where: { $0.activityType == PanelSceneDelegate.activityType }) {
+            return UISceneConfiguration(name: "Panel", sessionRole: .windowApplication)
+        }
+        return UISceneConfiguration(name: "Main", sessionRole: connectingSceneSession.role)
+    }
+    #endif
 }
 
 #if targetEnvironment(macCatalyst)
 extension AppDelegate: UIDocumentPickerDelegate {
     override func buildMenu(with builder: UIMenuBuilder) {
-        guard CelestiaAppCore.shared.isInitialized else { return }
         guard builder.system == .main else { return }
+        builder.remove(menu: .newScene)
+
+        guard CelestiaAppCore.shared.isInitialized else { return }
 
         let newHelpCommand: UIKeyCommand
         let oldHelpCommand = builder.command(for: NSSelectorFromString("showHelp:"))
