@@ -54,7 +54,12 @@ private extension BrowserContainerViewController {
 
         #if targetEnvironment(macCatalyst)
         controller.primaryBackgroundStyle = .sidebar
-        controller.preferredDisplayMode = .oneBesideSecondary
+        controller.overrideUserInterfaceStyle = .dark
+        if #available(macCatalyst 14.0, *) {
+            controller.preferredDisplayMode = .oneBesideSecondary
+        } else {
+            controller.preferredDisplayMode = .allVisible
+        }
         controller.preferredPrimaryColumnWidthFraction = 0.3
         let sidebarController = BrowserSidebarController(browserRoots: [solBrowserRoot, starBrowserRoot, dsoBrowserRoot]) { [unowned self] item in
             let newVc = BrowserCoordinatorController(item: item, image: UIImage(), selection: handler)
@@ -78,6 +83,7 @@ private extension BrowserContainerViewController {
 
 #if targetEnvironment(macCatalyst)
 class BrowserSidebarController: UIViewController {
+    @available(macCatalyst 14, *)
     private lazy var layout: UICollectionViewLayout = {
         let configuration = UICollectionLayoutListConfiguration(appearance: .sidebar)
         let layout = UICollectionViewCompositionalLayout.list(using: configuration)
@@ -88,8 +94,10 @@ class BrowserSidebarController: UIViewController {
         case single
     }
 
+    @available(macCatalyst 14, *)
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: self.layout)
-    private lazy var dataSource: UICollectionViewDiffableDataSource<Section, CelestiaBrowserItem> = {
+    @available(macCatalyst 14, *)
+    private lazy var collectionViewDataSource: UICollectionViewDiffableDataSource<Section, CelestiaBrowserItem> = {
         let registration = UICollectionView.CellRegistration { (cell: UICollectionViewListCell, indexPath, item: CelestiaBrowserItem) in
             var config = cell.defaultContentConfiguration()
             config.text = item.alternativeName ?? item.name
@@ -100,19 +108,37 @@ class BrowserSidebarController: UIViewController {
         }
         return dataSource
     }()
+    private lazy var tableViewDataSource: UITableViewDiffableDataSource<Section, CelestiaBrowserItem> = {
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
+        let dataSource = UITableViewDiffableDataSource<Section, CelestiaBrowserItem>(tableView: tableView) { (view, indexPath, item) -> UITableViewCell? in
+            let cell = view.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+            cell.textLabel?.text = item.alternativeName ?? item.name
+            return cell
+        }
+        return dataSource
+    }()
+
+    private lazy var tableView = UITableView(frame: .zero, style: .grouped)
+
+    private var listView: UIView {
+        if #available(macCatalyst 14.0, *) {
+            return collectionView
+        }
+        return tableView
+    }
 
     private let browserRoots: [CelestiaBrowserItem]
     private let handler: (CelestiaBrowserItem) -> Void
 
     override func loadView() {
         let container = UIView()
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-        container.addSubview(collectionView)
+        listView.translatesAutoresizingMaskIntoConstraints = false
+        container.addSubview(listView)
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: container.topAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: container.bottomAnchor),
-            collectionView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            listView.topAnchor.constraint(equalTo: container.topAnchor),
+            listView.bottomAnchor.constraint(equalTo: container.bottomAnchor),
+            listView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            listView.trailingAnchor.constraint(equalTo: container.trailingAnchor),
         ])
         view = container
     }
@@ -133,17 +159,30 @@ class BrowserSidebarController: UIViewController {
         var snapshot = NSDiffableDataSourceSnapshot<Section, CelestiaBrowserItem>()
         snapshot.appendSections([.single])
         snapshot.appendItems(browserRoots, toSection: .single)
-        dataSource.apply(snapshot)
-        collectionView.dataSource = dataSource
-        collectionView.delegate = self
+        if #available(macCatalyst 14, *) {
+            collectionViewDataSource.apply(snapshot)
+            collectionView.dataSource = collectionViewDataSource
+            collectionView.delegate = self
+        } else {
+            tableViewDataSource.apply(snapshot)
+            tableView.dataSource = tableViewDataSource
+            tableView.delegate = self
+            tableView.estimatedRowHeight = 44
+            tableView.rowHeight = UITableView.automaticDimension
+        }
     }
 }
 
 extension BrowserSidebarController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
+        guard #available(macCatalyst 14, *), let item = collectionViewDataSource.itemIdentifier(for: indexPath) else { return }
         handler(item)
     }
 }
 
+extension BrowserSidebarController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        handler(browserRoots[indexPath.row])
+    }
+}
 #endif
