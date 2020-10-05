@@ -41,6 +41,8 @@ class MainViewControler: UIViewController {
 
     private var viewControllerStack: [UIViewController] = []
 
+    private var currentExternalScreen: UIScreen?
+
     override func loadView() {
         view = UIView()
     }
@@ -51,16 +53,16 @@ class MainViewControler: UIViewController {
         view.backgroundColor = .darkBackground
 
         install(celestiaController)
-        celestiaController.celestiaDelegate = self
+        celestiaController.delegate = self
 
         NotificationCenter.default.addObserver(self, selector: #selector(newURLOpened(_:)), name: newURLOpenedNotificationName, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(presentHelp), name: showHelpNotificationName, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(newScreenConnected(_:)), name: UIScreen.didConnectNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(screenDisconnected(_:)), name: UIScreen.didDisconnectNotification, object: nil)
     }
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-
-        _ = becomeFirstResponder()
 
         guard status == .notLoaded else { return }
 
@@ -141,7 +143,40 @@ extension MainViewControler {
     }
 }
 
-extension MainViewControler: CelestiaViewControllerDelegate {
+extension MainViewControler {
+    @objc private func newScreenConnected(_ notification: Notification) {
+        guard let newScreen = notification.object as? UIScreen else { return }
+        // Avoid handling connecting to a new screen when we are working on a screen already
+        guard currentExternalScreen == nil else { return }
+
+        currentExternalScreen = newScreen
+        showOption(CelestiaString("An external screen is connected, do you want to display Celestia in the external screen?", comment: "")) { [weak self] choice in
+            guard choice, let self = self else { return }
+            self.currentExternalScreen = nil
+
+            guard self.celestiaController.moveToNewScreen(newScreen) else {
+                self.showError(CelestiaString("Failed to connect to new screen.", comment: ""))
+                return
+            }
+        }
+    }
+
+    @objc private func screenDisconnected(_ notification: Notification) {
+        guard let screen = notification.object as? UIScreen else { return }
+
+        if screen == currentExternalScreen {
+            // The screen we are asking to connect is disconnected, dismiss
+            // the presented alert controller
+            dismiss(animated: true, completion: nil)
+            currentExternalScreen = nil
+            return
+        }
+
+        celestiaController.moveBack(from: screen)
+    }
+}
+
+extension MainViewControler: CelestiaControllerDelegate {
     func celestiaController(_ celestiaController: CelestiaViewController, requestShowActionMenuWithSelection selection: CelestiaSelection) {
         let actions: [[AppToolbarAction]] = AppToolbarAction.persistentAction
         let controller = ToolbarViewController(actions: actions)
