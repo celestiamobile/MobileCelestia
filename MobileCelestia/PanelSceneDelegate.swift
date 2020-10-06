@@ -30,6 +30,18 @@ class PanelSceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         self.window = window
         window.makeKeyAndVisible()
+
+        NotificationCenter.default.addObserver(self, selector: #selector(handleNSWindowDidBecomeKey(_:)), name: NSNotification.Name("NSWindowDidBecomeKeyNotification"), object: nil)
+    }
+
+    func sceneDidDisconnect(_ scene: UIScene) {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    @objc private func handleNSWindowDidBecomeKey(_ notification: Notification) {
+        guard let window = notification.object as? NSObject else { return }
+        guard window == self.window?.nsWindow else { return }
+        MacBridge.disableFullScreenForNSWindow(window)
     }
 
     static var activityType = "\(Bundle.main.bundleIdentifier!).Panel"
@@ -51,21 +63,7 @@ class PanelSceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 fileprivate extension UIWindow {
     var nsWindow: NSObject? {
-        guard let appClass = NSClassFromString("NSApplication") as? NSObject.Type,
-              let appDelegate = appClass.value(forKeyPath: "sharedApplication.delegate") as? NSObject else {
-            return nil
-        }
-        let sel1 = NSSelectorFromString("_hostWindowForUIWindow:")
-        let sel2 = NSSelectorFromString("attachedWindow")
-        var win: NSObject?
-        if appDelegate.responds(to: sel1) {
-            win = appDelegate.perform(sel1, with: self)?.takeUnretainedValue() as? NSObject
-        }
-
-        if let window = win, window.responds(to: sel2) {
-            win = window.perform(sel2)?.takeUnretainedValue() as? NSObject
-        }
-        return win
+        return MacBridge.nsWindowForUIWindow(self)
     }
 }
 #endif

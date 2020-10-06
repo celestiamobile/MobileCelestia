@@ -84,6 +84,8 @@
 		EABDE3A92473DAA300E0A5FA /* SettingCommonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABDE3A82473DAA300E0A5FA /* SettingCommonViewController.swift */; };
 		EADE7FBB252B517600D4174F /* CelestiaDisplayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE7FBA252B517600D4174F /* CelestiaDisplayController.swift */; };
 		EADE7FC0252B54A400D4174F /* CelestiaInteractionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE7FBF252B54A400D4174F /* CelestiaInteractionController.swift */; };
+		EAC8435F252C818700691943 /* MacBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = EAC8435E252C818700691943 /* MacBridge.m */; };
+		EAC84364252C84B600691943 /* CelestiaMacBridge.bundle in Embed PlugIns */ = {isa = PBXBuildFile; fileRef = EAC84354252C816500691943 /* CelestiaMacBridge.bundle */; platformFilter = maccatalyst; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EAF48515249B2C4700E5B817 /* SubsystemBrowserCoordinatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF48514249B2C4700E5B817 /* SubsystemBrowserCoordinatorViewController.swift */; };
 		EAF48520249B5C2500E5B817 /* StandardButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF4851F249B5C2500E5B817 /* StandardButton.swift */; };
 /* End PBXBuildFile section */
@@ -103,7 +105,28 @@
 			remoteGlobalIDString = 971A65CC23019BC5009E4EA1;
 			remoteInfo = CelestiaCore;
 		};
+		EAC84365252C84B600691943 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 979D2F7223FEB1A6005D2592 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EAC84353252C816500691943;
+			remoteInfo = CelestiaMacBridge;
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		EAC84367252C84B600691943 /* Embed PlugIns */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				EAC84364252C84B600691943 /* CelestiaMacBridge.bundle in Embed PlugIns */,
+			);
+			name = "Embed PlugIns";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		97143F1623FFAEFD00F35D87 /* defaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = defaults.plist; sourceTree = "<group>"; };
@@ -192,6 +215,10 @@
 		EABDE3A82473DAA300E0A5FA /* SettingCommonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingCommonViewController.swift; sourceTree = "<group>"; };
 		EADE7FBA252B517600D4174F /* CelestiaDisplayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaDisplayController.swift; sourceTree = "<group>"; };
 		EADE7FBF252B54A400D4174F /* CelestiaInteractionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaInteractionController.swift; sourceTree = "<group>"; };
+		EAC84354252C816500691943 /* CelestiaMacBridge.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CelestiaMacBridge.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		EAC84356252C816500691943 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		EAC8435D252C818700691943 /* MacBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MacBridge.h; sourceTree = "<group>"; };
+		EAC8435E252C818700691943 /* MacBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MacBridge.m; sourceTree = "<group>"; };
 		EAF48514249B2C4700E5B817 /* SubsystemBrowserCoordinatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubsystemBrowserCoordinatorViewController.swift; sourceTree = "<group>"; };
 		EAF4851F249B5C2500E5B817 /* StandardButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandardButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -213,6 +240,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		979D2F8D23FEB1A8005D2592 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EAC84351252C816500691943 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -360,6 +394,7 @@
 				979D2F9F23FEB1D5005D2592 /* CelestiaCore.xcodeproj */,
 				979D2F7C23FEB1A6005D2592 /* MobileCelestia */,
 				979D2F9323FEB1A8005D2592 /* MobileCelestiaTests */,
+				EAC84355252C816500691943 /* CelestiaMacBridge */,
 				979D2F7B23FEB1A6005D2592 /* Products */,
 				979D2FA523FEB1DD005D2592 /* Frameworks */,
 			);
@@ -370,6 +405,7 @@
 			children = (
 				979D2F7A23FEB1A6005D2592 /* Celestia.app */,
 				979D2F9023FEB1A8005D2592 /* MobileCelestiaTests.xctest */,
+				EAC84354252C816500691943 /* CelestiaMacBridge.bundle */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -477,6 +513,16 @@
 			path = Event;
 			sourceTree = "<group>";
 		};
+		EAC84355252C816500691943 /* CelestiaMacBridge */ = {
+			isa = PBXGroup;
+			children = (
+				EAC84356252C816500691943 /* Info.plist */,
+				EAC8435D252C818700691943 /* MacBridge.h */,
+				EAC8435E252C818700691943 /* MacBridge.m */,
+			);
+			path = CelestiaMacBridge;
+			sourceTree = "<group>";
+		};
 		EAF4851D249B5C0F00E5B817 /* Common */ = {
 			isa = PBXGroup;
 			children = (
@@ -497,10 +543,12 @@
 				979D2F7823FEB1A6005D2592 /* Resources */,
 				973BBA5724052FFB00E3B061 /* Copy General Data */,
 				973BBA592405305100E3B061 /* Convert PO */,
+				EAC84367252C84B600691943 /* Embed PlugIns */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				EAC84366252C84B600691943 /* PBXTargetDependency */,
 			);
 			name = MobileCelestia;
 			packageProductDependencies = (
@@ -527,6 +575,23 @@
 			productReference = 979D2F9023FEB1A8005D2592 /* MobileCelestiaTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		EAC84353252C816500691943 /* CelestiaMacBridge */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EAC8435A252C816500691943 /* Build configuration list for PBXNativeTarget "CelestiaMacBridge" */;
+			buildPhases = (
+				EAC84350252C816500691943 /* Sources */,
+				EAC84351252C816500691943 /* Frameworks */,
+				EAC84352252C816500691943 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CelestiaMacBridge;
+			productName = CelestiaMacBridge;
+			productReference = EAC84354252C816500691943 /* CelestiaMacBridge.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -544,6 +609,9 @@
 					979D2F8F23FEB1A8005D2592 = {
 						CreatedOnToolsVersion = 11.3;
 						TestTargetID = 979D2F7923FEB1A6005D2592;
+					};
+					EAC84353252C816500691943 = {
+						CreatedOnToolsVersion = 12.2;
 					};
 				};
 			};
@@ -570,6 +638,7 @@
 			targets = (
 				979D2F7923FEB1A6005D2592 /* MobileCelestia */,
 				979D2F8F23FEB1A8005D2592 /* MobileCelestiaTests */,
+				EAC84353252C816500691943 /* CelestiaMacBridge */,
 			);
 		};
 /* End PBXProject section */
@@ -597,6 +666,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		979D2F8E23FEB1A8005D2592 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EAC84352252C816500691943 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -726,6 +802,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		EAC84350252C816500691943 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EAC8435F252C818700691943 /* MacBridge.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -733,6 +817,12 @@
 			isa = PBXTargetDependency;
 			target = 979D2F7923FEB1A6005D2592 /* MobileCelestia */;
 			targetProxy = 979D2F9123FEB1A8005D2592 /* PBXContainerItemProxy */;
+		};
+		EAC84366252C84B600691943 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			platformFilter = maccatalyst;
+			target = EAC84353252C816500691943 /* CelestiaMacBridge */;
+			targetProxy = EAC84365252C84B600691943 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -967,6 +1057,42 @@
 			};
 			name = Release;
 		};
+		EAC84357252C816500691943 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 22NR5428TD;
+				INFOPLIST_FILE = CelestiaMacBridge/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.CelestiaMacBridge;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
+		EAC84358252C816500691943 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = 22NR5428TD;
+				INFOPLIST_FILE = CelestiaMacBridge/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.CelestiaMacBridge;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -993,6 +1119,15 @@
 			buildConfigurations = (
 				979D2F9D23FEB1A8005D2592 /* Debug */,
 				979D2F9E23FEB1A8005D2592 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EAC8435A252C816500691943 /* Build configuration list for PBXNativeTarget "CelestiaMacBridge" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EAC84357252C816500691943 /* Debug */,
+				EAC84358252C816500691943 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

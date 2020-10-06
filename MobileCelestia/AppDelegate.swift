@@ -33,15 +33,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         swizzleShouldInheritScreenScaleAsContentScaleFactor()
 
         #if targetEnvironment(macCatalyst)
+        MacBridge.initilize()
+
         UserDefaults.standard.register(defaults: ["NSApplicationCrashOnExceptions": true])
 
         // Force dark aqua appearance
-        if let appClass = NSClassFromString("NSApplication") as? NSObject.Type,
-           let app = appClass.perform(NSSelectorFromString("sharedApplication"))?.takeUnretainedValue() as? NSObject,
-           let appearanceClass = NSClassFromString("NSAppearance") as? NSObject.Type,
-           let appearance = appearanceClass.perform(NSSelectorFromString("appearanceNamed:"), with: "NSAppearanceNameDarkAqua")?.takeUnretainedValue() {
-            app.perform(NSSelectorFromString("setAppearance:"), with: appearance)
-        }
+        MacBridge.forceDarkAppearance()
 
         // Avoid reading saved state
         if let libraryPath = NSSearchPathForDirectoriesInDomains(.libraryDirectory, .userDomainMask, true).first {
@@ -188,6 +185,33 @@ extension AppDelegate: UIDocumentPickerDelegate {
 
     @objc private func openSupportForum() {
         UIApplication.shared.open(supportForumURL, options: [:], completionHandler: nil)
+    }
+}
+
+class MacBridge {
+    private static var clazz = NSClassFromString("MacBridge") as! NSObject.Type // Should only be used after calling initialize
+
+    static func initilize() {
+        guard let appBundleUrl = Bundle.main.builtInPlugInsURL else { return }
+        let helperBundleUrl = appBundleUrl.appendingPathComponent("CelestiaMacBridge.bundle")
+        guard let bundle = Bundle(url: helperBundleUrl) else { return }
+        bundle.load()
+    }
+
+    static var catalystScaleFactor: CGFloat {
+        return (clazz.value(forKey: "catalystScaleFactor") as? CGFloat) ?? 1.0
+    }
+
+    static func forceDarkAppearance() {
+        clazz.perform(NSSelectorFromString("forceDarkAppearance"))
+    }
+
+    static func nsWindowForUIWindow(_ uiWindow: UIWindow) -> NSObject? {
+        return clazz.perform(NSSelectorFromString("nsWindowForUIWindow:"), with: uiWindow)?.takeUnretainedValue() as? NSObject
+    }
+
+    static func disableFullScreenForNSWindow(_ nsWindow: NSObject) {
+        clazz.perform(NSSelectorFromString("disableFullScreenForNSWindow:"), with: nsWindow)
     }
 }
 #endif
