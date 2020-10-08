@@ -56,9 +56,12 @@ class MainViewControler: UIViewController {
         celestiaController.delegate = self
 
         NotificationCenter.default.addObserver(self, selector: #selector(newURLOpened(_:)), name: newURLOpenedNotificationName, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(presentHelp), name: showHelpNotificationName, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(newScreenConnected(_:)), name: UIScreen.didConnectNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(screenDisconnected(_:)), name: UIScreen.didDisconnectNotification, object: nil)
+        #if targetEnvironment(macCatalyst)
+        NotificationCenter.default.addObserver(self, selector: #selector(presentHelp), name: showHelpNotificationName, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(requestOpenFile), name: requestOpenFileNotificationName, object: nil)
+        #endif
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -119,6 +122,16 @@ class MainViewControler: UIViewController {
 }
 
 extension MainViewControler {
+    #if targetEnvironment(macCatalyst)
+    @objc private func requestOpenFile() {
+        let types = ["space.celestia.script", "public.flc-animation"]
+        let browser = UIDocumentPickerViewController(documentTypes: types, in: .open)
+        browser.allowsMultipleSelection = false
+        browser.delegate = self
+        present(browser, animated: true, completion: nil)
+    }
+    #endif
+
     @objc private func newURLOpened(_ notification: Notification) {
         guard status == .loaded else { return }
         checkNeedOpeningURL()
@@ -175,6 +188,17 @@ extension MainViewControler {
         celestiaController.moveBack(from: screen)
     }
 }
+
+#if targetEnvironment(macCatalyst)
+extension MainViewControler: UIDocumentPickerDelegate {
+    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+        guard let url = urls.first else { return }
+
+        urlToRun = url
+        checkNeedOpeningURL()
+    }
+}
+#endif
 
 extension MainViewControler: CelestiaControllerDelegate {
     func celestiaController(_ celestiaController: CelestiaViewController, requestShowActionMenuWithSelection selection: CelestiaSelection) {

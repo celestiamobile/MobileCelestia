@@ -19,7 +19,10 @@ import AppCenterCrashes
 
 let newURLOpenedNotificationName = Notification.Name("newURLOpenedNotificationName")
 let newURLOpenedNotificationURLKey = "newURLOpenedNotificationURLKey"
+#if targetEnvironment(macCatalyst)
 let showHelpNotificationName = Notification.Name("showHelpNotificationName")
+let requestOpenFileNotificationName = Notification.Name("requestOpenFileNotificationName")
+#endif
 
 let officialWebsiteURL = URL(string: "https://celestia.space")!
 let supportForumURL = URL(string: "https://celestia.space/forum")!
@@ -33,7 +36,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         swizzleShouldInheritScreenScaleAsContentScaleFactor()
 
         #if targetEnvironment(macCatalyst)
-        MacBridge.initilize()
+        MacBridge.initialize()
 
         UserDefaults.standard.register(defaults: ["NSApplicationCrashOnExceptions": true])
 
@@ -114,7 +117,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 }
 
 #if targetEnvironment(macCatalyst)
-extension AppDelegate: UIDocumentPickerDelegate {
+extension AppDelegate {
     override func buildMenu(with builder: UIMenuBuilder) {
         guard builder.system == .main else { return }
         builder.remove(menu: .newScene)
@@ -151,32 +154,11 @@ extension AppDelegate: UIDocumentPickerDelegate {
     }
 
     @objc private func openScriptFile() {
-        guard let presenting = UIApplication.shared.delegate?.window??.rootViewController else { return }
-        let types = ["space.celestia.script", "public.flc-animation"]
-        let browser = UIDocumentPickerViewController(documentTypes: types, in: .open)
-        browser.allowsMultipleSelection = false
-        browser.delegate = self
-        presenting.present(browser, animated: true, completion: nil)
+        NotificationCenter.default.post(name: requestOpenFileNotificationName, object: nil)
     }
 
     @objc private func showCelestiaHelp(_ sender: Any) {
         NotificationCenter.default.post(name: showHelpNotificationName, object: nil, userInfo: nil)
-    }
-
-    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
-        guard let url = urls.first else { return }
-
-        urlToRun = url
-
-        NotificationCenter.default.post(name: newURLOpenedNotificationName, object: nil, userInfo: [newURLOpenedNotificationURLKey : url])
-    }
-
-    override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
-        if action == #selector(openScriptFile) || action == #selector(showCelestiaHelp(_:)) {
-            let presenting = UIApplication.shared.delegate?.window??.rootViewController
-            return presenting != nil && presenting?.presentedViewController == nil
-        }
-        return super.canPerformAction(action, withSender: sender)
     }
 
     @objc private func openOfficialWebsite() {
@@ -191,7 +173,7 @@ extension AppDelegate: UIDocumentPickerDelegate {
 class MacBridge {
     private static var clazz = NSClassFromString("MacBridge") as! NSObject.Type // Should only be used after calling initialize
 
-    static func initilize() {
+    static func initialize() {
         guard let appBundleUrl = Bundle.main.builtInPlugInsURL else { return }
         let helperBundleUrl = appBundleUrl.appendingPathComponent("CelestiaMacBridge.bundle")
         guard let bundle = Bundle(url: helperBundleUrl) else { return }
