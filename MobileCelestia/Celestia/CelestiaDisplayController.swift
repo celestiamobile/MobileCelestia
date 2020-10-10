@@ -211,11 +211,7 @@ extension CelestiaDisplayController {
         glView.contentScaleFactor = viewScale
 
         #if targetEnvironment(macCatalyst)
-        let selector = NSSelectorFromString("scaleFactor")
-        var applicationScalingFactor: CGFloat = 1
-        if let clazz = NSClassFromString("_UIiOSMacIdiomManager") as? NSObject.Type, clazz.responds(to: selector), let value = clazz.value(forKey: "scaleFactor") as? CGFloat {
-            applicationScalingFactor = value
-        }
+        let applicationScalingFactor: CGFloat = MacBridge.catalystScaleFactor
         #else
         let applicationScalingFactor: CGFloat = 1
         #endif
