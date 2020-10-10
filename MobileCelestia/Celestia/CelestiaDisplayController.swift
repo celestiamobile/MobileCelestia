@@ -218,6 +218,7 @@ extension CelestiaDisplayController {
 
         core.setDPI(Int(96.0 * glView.contentScaleFactor / applicationScalingFactor))
         core.setSafeAreaInsets(view.safeAreaInsets.scale(by: glView.contentScaleFactor))
+        core.setPickTolerance(10 * glView.contentScaleFactor / applicationScalingFactor)
     }
 }
 
