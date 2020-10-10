@@ -82,10 +82,10 @@
 		EABC245D248E162000205B5A /* FontHelper.m in Sources */ = {isa = PBXBuildFile; fileRef = EABC245A248E162000205B5A /* FontHelper.m */; };
 		EABDE367247170F000E0A5FA /* SettngSliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABDE366247170F000E0A5FA /* SettngSliderCell.swift */; };
 		EABDE3A92473DAA300E0A5FA /* SettingCommonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABDE3A82473DAA300E0A5FA /* SettingCommonViewController.swift */; };
-		EADE7FBB252B517600D4174F /* CelestiaDisplayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE7FBA252B517600D4174F /* CelestiaDisplayController.swift */; };
-		EADE7FC0252B54A400D4174F /* CelestiaInteractionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE7FBF252B54A400D4174F /* CelestiaInteractionController.swift */; };
 		EAC8435F252C818700691943 /* MacBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = EAC8435E252C818700691943 /* MacBridge.m */; };
 		EAC84364252C84B600691943 /* CelestiaMacBridge.bundle in Embed PlugIns */ = {isa = PBXBuildFile; fileRef = EAC84354252C816500691943 /* CelestiaMacBridge.bundle */; platformFilter = maccatalyst; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		EADE7FBB252B517600D4174F /* CelestiaDisplayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE7FBA252B517600D4174F /* CelestiaDisplayController.swift */; };
+		EADE7FC0252B54A400D4174F /* CelestiaInteractionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE7FBF252B54A400D4174F /* CelestiaInteractionController.swift */; };
 		EAF48515249B2C4700E5B817 /* SubsystemBrowserCoordinatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF48514249B2C4700E5B817 /* SubsystemBrowserCoordinatorViewController.swift */; };
 		EAF48520249B5C2500E5B817 /* StandardButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF4851F249B5C2500E5B817 /* StandardButton.swift */; };
 /* End PBXBuildFile section */
@@ -213,12 +213,12 @@
 		EABC245C248E162000205B5A /* FontHelper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FontHelper.h; sourceTree = "<group>"; };
 		EABDE366247170F000E0A5FA /* SettngSliderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettngSliderCell.swift; sourceTree = "<group>"; };
 		EABDE3A82473DAA300E0A5FA /* SettingCommonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingCommonViewController.swift; sourceTree = "<group>"; };
-		EADE7FBA252B517600D4174F /* CelestiaDisplayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaDisplayController.swift; sourceTree = "<group>"; };
-		EADE7FBF252B54A400D4174F /* CelestiaInteractionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaInteractionController.swift; sourceTree = "<group>"; };
 		EAC84354252C816500691943 /* CelestiaMacBridge.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CelestiaMacBridge.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		EAC84356252C816500691943 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EAC8435D252C818700691943 /* MacBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MacBridge.h; sourceTree = "<group>"; };
 		EAC8435E252C818700691943 /* MacBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MacBridge.m; sourceTree = "<group>"; };
+		EADE7FBA252B517600D4174F /* CelestiaDisplayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaDisplayController.swift; sourceTree = "<group>"; };
+		EADE7FBF252B54A400D4174F /* CelestiaInteractionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaInteractionController.swift; sourceTree = "<group>"; };
 		EAF48514249B2C4700E5B817 /* SubsystemBrowserCoordinatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubsystemBrowserCoordinatorViewController.swift; sourceTree = "<group>"; };
 		EAF4851F249B5C2500E5B817 /* StandardButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandardButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -893,6 +893,8 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
+				SHARED_BUILD_NUMBER = 28;
+				SHARED_BUILD_VERSION = 1.0.4;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -946,6 +948,8 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
+				SHARED_BUILD_NUMBER = 28;
+				SHARED_BUILD_VERSION = 1.0.4;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				VALIDATE_PRODUCT = YES;
@@ -959,7 +963,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = MobileCelestia/Celestia.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 28;
+				CURRENT_PROJECT_VERSION = "$(SHARED_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = 22NR5428TD;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -970,7 +974,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.3;
+				MARKETING_VERSION = "$(SHARED_BUILD_VERSION)";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.MobileCelestia;
 				PRODUCT_NAME = Celestia;
@@ -990,7 +994,7 @@
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = MobileCelestia/Celestia.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 28;
+				CURRENT_PROJECT_VERSION = "$(SHARED_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = 22NR5428TD;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1001,7 +1005,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0.3;
+				MARKETING_VERSION = "$(SHARED_BUILD_VERSION)";
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.MobileCelestia;
 				PRODUCT_NAME = Celestia;
@@ -1063,10 +1067,12 @@
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = "$(SHARED_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = 22NR5428TD;
 				INFOPLIST_FILE = CelestiaMacBridge/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MARKETING_VERSION = "$(SHARED_BUILD_VERSION)";
 				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.CelestiaMacBridge;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
@@ -1081,10 +1087,12 @@
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
+				CURRENT_PROJECT_VERSION = "$(SHARED_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = 22NR5428TD;
 				INFOPLIST_FILE = CelestiaMacBridge/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MARKETING_VERSION = "$(SHARED_BUILD_VERSION)";
 				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.CelestiaMacBridge;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
