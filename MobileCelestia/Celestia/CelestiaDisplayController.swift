@@ -16,10 +16,6 @@ import CelestiaCore
 import GLKit
 #endif
 
-protocol CelestiaDisplayControllerDelegate: class {
-    func celestiaDisplayControllerWillDisplay(_ celestiaDisplayController: CelestiaDisplayController)
-}
-
 class CelestiaDisplayController: UIViewController {
 
     private var core: CelestiaAppCore!
@@ -42,8 +38,6 @@ class CelestiaDisplayController: UIViewController {
 
     private var dataDirectoryURL: UniformedURL!
     private var configFileURL: UniformedURL!
-
-    weak var delegate: CelestiaDisplayControllerDelegate?
 
     override func loadView() {
         glView.translatesAutoresizingMaskIntoConstraints = false
@@ -114,7 +108,6 @@ extension CelestiaDisplayController {
     }
 
     private func displaySourceCallback() {
-        delegate?.celestiaDisplayControllerWillDisplay(self)
         glView.display()
     }
 }

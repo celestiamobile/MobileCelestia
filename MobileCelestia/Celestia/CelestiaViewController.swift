@@ -50,7 +50,6 @@ class CelestiaViewController: UIViewController {
         super.viewDidLoad()
 
         install(displayController)
-        displayController.delegate = self
     }
 
     override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
@@ -75,12 +74,6 @@ class CelestiaViewController: UIViewController {
         } else {
             super.pressesCancelled(presses, with: event)
         }
-    }
-}
-
-extension CelestiaViewController: CelestiaDisplayControllerDelegate {
-    func celestiaDisplayControllerWillDisplay(_ celestiaDisplayController: CelestiaDisplayController) {
-        interactionController?.tick()
     }
 }
 

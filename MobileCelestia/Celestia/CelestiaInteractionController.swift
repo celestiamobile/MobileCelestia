@@ -74,7 +74,7 @@ class CelestiaInteractionController: UIViewController {
         case out
 
         var distance: CGFloat {
-            return self == .out ? 1 : -1
+            return self == .out ? 1.5 : -1.5
         }
     }
 
@@ -113,6 +113,8 @@ class CelestiaInteractionController: UIViewController {
 
     weak var delegate: CelestiaInteractionControllerDelegate?
     weak var targetProvider: RenderingTargetInformationProvider?
+
+    private var zoomTimer: Timer?
 
     private var renderingTargetGeometry: RenderingTargetGeometry {
         return targetProvider?.targetGeometry ?? RenderingTargetGeometry(size: view.frame.size, scale: view.contentScaleFactor)
@@ -173,10 +175,15 @@ class CelestiaInteractionController: UIViewController {
 extension CelestiaInteractionController: CelestiaControlViewDelegate {
     func celestiaControlView(_ celestiaControlView: CelestiaControlView, pressDidStartWith action: CelestiaControlAction) {
         zoomMode = action == .zoomIn ? .in : .out
+        zoomTimer?.invalidate()
+        zoomTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(callZoom), userInfo: nil, repeats: true)
+        callZoom()
     }
 
     func celestiaControlView(_ celestiaControlView: CelestiaControlView, pressDidEndWith action: CelestiaControlAction) {
         zoomMode = nil
+        zoomTimer?.invalidate()
+        zoomTimer = nil
     }
 
     func celestiaControlView(_ celestiaControlView: CelestiaControlView, didTapWith action: CelestiaControlAction) {
@@ -318,7 +325,7 @@ extension CelestiaInteractionController {
     @objc private func handlePanZoom(_ pan: UIPanGestureRecognizer) {
         switch pan.state {
         case .changed:
-            callZoom(deltaY: pan.translation(with: renderingTargetGeometry).y / 400)
+            zoom(deltaY: pan.translation(with: renderingTargetGeometry).y / 400)
         case .possible, .began, .ended, .cancelled, .failed:
             fallthrough
         @unknown default:
@@ -394,7 +401,7 @@ extension CelestiaInteractionController {
             let delta = length / currentPanDistance!
             // FIXME: 8 is a magic number
             let y = (1 - delta) * currentPanDistance! / 8
-            callZoom(deltaY: y)
+            zoom(deltaY: y)
             currentPanDistance = length
         case .ended, .cancelled, .failed:
             fallthrough
@@ -424,11 +431,11 @@ extension CelestiaInteractionController {
         }
     }
 
-    private func callZoom(deltaY: CGFloat) {
+    private func zoom(deltaY: CGFloat) {
         if currentInteractionMode == .camera {
-            core.mouseMove(by: CGPoint(x: 0, y: deltaY), modifiers: UInt(UIKeyModifierFlags.shift.rawValue), with: .left)
+            core.mouseMove(by: CGPoint(x: 0, y: deltaY * renderingTargetGeometry.scale), modifiers: UInt(UIKeyModifierFlags.shift.rawValue), with: .left)
         } else {
-            core.mouseWheel(by: deltaY, modifiers: 0)
+            core.mouseWheel(by: deltaY * renderingTargetGeometry.scale, modifiers: 0)
         }
     }
 }
@@ -635,9 +642,9 @@ extension CelestiaInteractionController {
 }
 
 extension CelestiaInteractionController {
-    func tick() {
+    @objc private func callZoom() {
         if let mode = zoomMode {
-            callZoom(deltaY: mode.distance)
+            zoom(deltaY: mode.distance)
         }
     }
 
