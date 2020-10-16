@@ -18,6 +18,9 @@ class MainSceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = scene as? UIWindowScene else { return }
 
+        #if targetEnvironment(macCatalyst)
+        windowScene.titlebar?.autoHidesToolbarInFullScreen = true
+        #endif
         let window = UIWindow(windowScene: windowScene)
         window.overrideUserInterfaceStyle = .dark
         let vc = MainViewControler(initialURL: connectionOptions.urlContexts.first?.url)

@@ -54,7 +54,6 @@ private extension BrowserContainerViewController {
 
         #if targetEnvironment(macCatalyst)
         controller.primaryBackgroundStyle = .sidebar
-        controller.overrideUserInterfaceStyle = .dark
         if #available(macCatalyst 14.0, *) {
             controller.preferredDisplayMode = .oneBesideSecondary
         } else {

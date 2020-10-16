@@ -12,6 +12,9 @@
 import UIKit
 
 class ResourceViewController: UIViewController {
+    #if targetEnvironment(macCatalyst)
+    private lazy var controller = UISplitViewController()
+    #endif
     private var main: ResourceCategoryListViewController!
     private var navigation: UINavigationController!
 
@@ -40,19 +43,40 @@ private extension ResourceViewController {
         }) { [weak self] in
             self?.viewInstalled()
         }
+        #if targetEnvironment(macCatalyst)
+        controller.primaryBackgroundStyle = .sidebar
+        if #available(macCatalyst 14.0, *) {
+            controller.preferredDisplayMode = .oneBesideSecondary
+        } else {
+            controller.preferredDisplayMode = .allVisible
+        }
+        controller.preferredPrimaryColumnWidthFraction = 0.3
+        let emptyVc = UIViewController()
+        emptyVc.view.backgroundColor = .darkBackground
+        controller.viewControllers = [main, emptyVc]
+        install(controller)
+        #else
         navigation = UINavigationController(rootViewController: main)
-
         install(navigation)
-
         navigation.navigationBar.barStyle = .black
         navigation.navigationBar.barTintColor = .black
         navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
+        #endif
     }
 
     private func viewCategory(_ category: ResourceCategory) {
-        navigation.pushViewController(ResourceItemListViewController(category: category) { [weak self] item in
+        let vc = ResourceItemListViewController(category: category) { [weak self] item in
             self?.viewItem(item)
-        }, animated: true)
+        }
+        #if targetEnvironment(macCatalyst)
+        navigation = UINavigationController(rootViewController: vc)
+        navigation.navigationBar.barStyle = .black
+        navigation.navigationBar.barTintColor = .black
+        navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
+        controller.viewControllers = [controller.viewControllers[0], navigation]
+        #else
+        navigation.pushViewController(vc, animated: true)
+        #endif
     }
 
     private func viewItem(_ item: ResourceItem) {
@@ -60,8 +84,17 @@ private extension ResourceViewController {
     }
 
     private func viewInstalled() {
-        navigation.pushViewController(InstalledResourceViewController { [weak self] item in
+        let vc = InstalledResourceViewController { [weak self] item in
             self?.viewItem(item)
-        }, animated: true)
+        }
+        #if targetEnvironment(macCatalyst)
+        navigation = UINavigationController(rootViewController: vc)
+        navigation.navigationBar.barStyle = .black
+        navigation.navigationBar.barTintColor = .black
+        navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
+        controller.viewControllers = [controller.viewControllers[0], navigation]
+        #else
+        navigation.pushViewController(vc, animated: true)
+        #endif
     }
 }

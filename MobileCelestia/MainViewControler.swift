@@ -333,7 +333,12 @@ extension MainViewControler: CelestiaControllerDelegate {
     }
 
     private func presentPlugins() {
-        showViewController(ResourceViewController())
+        let controller = ResourceViewController()
+        #if targetEnvironment(macCatalyst)
+        showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600))
+        #else
+        showViewController(controller)
+        #endif
     }
 
     private func showSelectionInfo(with selection: CelestiaSelection) {
