@@ -47,4 +47,26 @@ extension RequestHandler {
             }
         }, fail: fail, queue: queue, session: session)
     }
+
+    class func get<T: Decodable>(url: String,
+                                  params: [String:String] = [:],
+                                  success: ((T) -> Void)? = nil,
+                                  fail: FailHandler? = nil,
+                                  decoder: JSONDecoder = JSONDecoder(),
+                                  queue: DispatchQueue = .main,
+                                  session: URLSession = .shared) -> Self {
+        return get(url: url, params: params, success: { (output) in
+            func unexpectedServerError() { fail?(CelestiaString("Unknown error", comment: "")) }
+            guard output.status == 0, let data = output.info.detail?.data(using: .utf8) else {
+                unexpectedServerError()
+                return
+            }
+            do {
+                let result = try decoder.decode(T.self, from: data)
+                success?(result)
+            } catch {
+                unexpectedServerError()
+            }
+        }, fail: fail, queue: queue, session: session)
+    }
 }

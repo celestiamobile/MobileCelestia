@@ -26,6 +26,7 @@ let requestOpenFileNotificationName = Notification.Name("requestOpenFileNotifica
 
 let officialWebsiteURL = URL(string: "https://celestia.space")!
 let supportForumURL = URL(string: "https://celestia.space/forum")!
+let apiPrefix = "https://celestia.mobi/api"
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

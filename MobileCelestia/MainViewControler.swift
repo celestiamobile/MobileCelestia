@@ -246,6 +246,8 @@ extension MainViewControler: CelestiaControllerDelegate {
             core.receive(.home)
         case .event:
             presentEventFinder()
+        case .plugins:
+            presentPlugins()
         }
     }
 
@@ -317,6 +319,10 @@ extension MainViewControler: CelestiaControllerDelegate {
         showViewController(EventFinderCoordinatorViewController { [unowned self] eclipse in
             self.core.simulation.goToEclipse(eclipse)
         })
+    }
+
+    private func presentPlugins() {
+        showViewController(ResourceViewController())
     }
 
     private func showSelectionInfo(with selection: CelestiaSelection) {
@@ -469,7 +475,7 @@ extension MainViewControler {
 
 extension MainViewControler {
     private func submitURL(_ url: String, title: String) {
-        let requestURL = "https://celestia.mobi/api/create"
+        let requestURL = apiPrefix + "/create"
 
         struct URLCreationResponse: Decodable {
             let publicURL: String
@@ -657,6 +663,8 @@ extension AppToolbarAction {
             return UIImage(systemName: "doc")
         case .help:
             return UIImage(systemName: "questionmark.circle")
+        case .plugins:
+            return UIImage(systemName: "folder")
         case .home:
             return UIImage(systemName: "house")
         case .event:
