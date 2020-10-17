@@ -469,7 +469,7 @@ extension MainViewControler {
 
 extension MainViewControler {
     private func submitURL(_ url: String, title: String) {
-        let requestURL = "https://astroweather.cn/celestia/create"
+        let requestURL = "https://celestia.mobi/api/create"
 
         struct URLCreationResponse: Decodable {
             let publicURL: String
