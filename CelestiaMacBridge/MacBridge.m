@@ -16,11 +16,21 @@
 + (CGFloat)catalystScaleFactor {
     Class clazz = NSClassFromString(@"_UIiOSMacIdiomManager");
     if (clazz) {
+        // macOS 10.15
         SEL selector = NSSelectorFromString(@"scaleFactor");
         if ([clazz respondsToSelector:selector]) {
             NSObject *result = [clazz valueForKey:NSStringFromSelector(selector)];
             if (result && [result isKindOfClass:[NSNumber class]]) {
                 return [(NSNumber *)result floatValue];
+            }
+        } else {
+            // macOS 11.0
+            selector = NSSelectorFromString(@"sceneScaleFactor");
+            if ([clazz respondsToSelector:selector]) {
+                NSObject *result = [clazz valueForKey:NSStringFromSelector(selector)];
+                if (result && [result isKindOfClass:[NSNumber class]]) {
+                    return [(NSNumber *)result floatValue];
+                }
             }
         }
     }
