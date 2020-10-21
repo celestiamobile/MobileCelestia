@@ -58,6 +58,8 @@ class CelestiaDisplayController: UIViewController {
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
 
+        guard ready else { return }
+
         if previousTraitCollection?.displayScale != traitCollection.displayScale {
             updateContentScale()
         }
