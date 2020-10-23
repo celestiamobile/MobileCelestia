@@ -136,3 +136,13 @@ extension UIColor {
         return UIColor(rgb: 0x6699CC)
     }
 }
+
+extension UIColor {
+    class var progressBackground: UIColor {
+        return UIColor(rgb: 0x114477)
+    }
+
+    class var progressForeground: UIColor {
+        return UIColor(rgb: 0x4477AA)
+    }
+}

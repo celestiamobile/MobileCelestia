@@ -40,9 +40,10 @@ enum AppToolbarAction: String {
     case favorite
     case home
     case event
+    case addons
 
     static var persistentAction: [[AppToolbarAction]] {
-        return [[.setting], [.share, .search, .home], [.camera, .time, .script], [.browse, .favorite, .event], [.help]]
+        return [[.setting], [.share, .search, .home], [.camera, .time, .script], [.browse, .favorite, .event], [.addons], [.help]]
     }
 }
 
@@ -248,6 +249,8 @@ extension AppToolbarAction {
             return CelestiaString("Home (Sol)", comment: "")
         case .event:
             return CelestiaString("Eclipse Finder", comment: "")
+        case .addons:
+            return CelestiaString("Add-ons", comment: "")
         }
     }
 }
