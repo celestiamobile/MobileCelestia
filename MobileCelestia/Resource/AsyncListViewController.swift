@@ -120,8 +120,7 @@ private extension AsyncListViewController {
             activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
         ])
 
-        // TODO: Localization
-        refreshButton.setTitle("Refresh", for: .normal)
+        refreshButton.setTitle(CelestiaString("Refresh", comment: ""), for: .normal)
         refreshButton.setTitleColor(.darkLabel, for: .normal)
         refreshButton.translatesAutoresizingMaskIntoConstraints = false
         refreshButton.addTarget(self, action: #selector(callRefresh), for: .touchUpInside)

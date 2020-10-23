@@ -22,7 +22,7 @@ extension ResourceCategoryItem: AsyncListItem {
     var name: String {
         switch self {
         case .installed:
-            return "Installed"
+            return CelestiaString("Installed", comment: "")
         case .wrapped(let category):
             return category.name
         }
@@ -45,8 +45,8 @@ class ResourceCategoryListViewController: AsyncListViewController<ResourceCatego
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = "Categories"
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Installed", style: .plain, target: self, action: #selector(viewInstalled))
+        title = CelestiaString("Categories", comment: "")
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: CelestiaString("Installed", comment: ""), style: .plain, target: self, action: #selector(viewInstalled))
     }
 
     override func refresh(success: @escaping ([ResourceCategoryItem]) -> Void, failure: @escaping (String) -> Void) {

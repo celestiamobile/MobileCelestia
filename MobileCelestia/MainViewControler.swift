@@ -246,7 +246,7 @@ extension MainViewControler: CelestiaControllerDelegate {
             core.receive(.home)
         case .event:
             presentEventFinder()
-        case .plugins:
+        case .addons:
             presentPlugins()
         }
     }
@@ -663,7 +663,7 @@ extension AppToolbarAction {
             return UIImage(systemName: "doc")
         case .help:
             return UIImage(systemName: "questionmark.circle")
-        case .plugins:
+        case .addons:
             return UIImage(systemName: "folder")
         case .home:
             return UIImage(systemName: "house")

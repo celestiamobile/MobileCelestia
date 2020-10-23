@@ -19,9 +19,8 @@ enum ResourceManagerError: Error {
 extension ResourceManagerError: LocalizedError {
     var errorDescription: String? {
         switch self {
-        // TODO: Localization
         case .addonDirectoryNotExists:
-            return "Addon directory does not exit."
+            return CelestiaString("Add-on directory does not exit.", comment: "")
         }
     }
 }

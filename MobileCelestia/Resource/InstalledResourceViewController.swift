@@ -16,7 +16,7 @@ import CelestiaCore
 class InstalledResourceViewController: AsyncListViewController<ResourceItem> {
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Installed"
+        title = CelestiaString("Installed", comment: "")
     }
 
     override func refresh(success: @escaping ([ResourceItem]) -> Void, failure: @escaping (String) -> Void) {

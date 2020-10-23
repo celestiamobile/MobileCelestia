@@ -98,15 +98,13 @@ class ResourceItemViewController: UIViewController {
 
         if dm.isInstalled(identifier: item.id) {
             // Already installed, offer option for uninstalling
-            // TODO: Localization
-            showOption("Do you want to uninstall this plugin?") { [weak self] confirm in
+            showOption(CelestiaString("Do you want to uninstall this add-on?", comment: "")) { [weak self] confirm in
                 guard let self = self else { return }
                 do {
                     try dm.uninstall(identifier: self.item.id)
                     self.currentState = .none
                 } catch {
-                    // TODO: Localization
-                    self.showError("Unable to uninstall plugin.")
+                    self.showError(CelestiaString("Unable to uninstall add-on.", comment: ""))
                 }
                 self.updateUI()
             }
@@ -116,7 +114,7 @@ class ResourceItemViewController: UIViewController {
         // Cancel if already downloading
         if dm.isDownloading(identifier: item.id) {
             // TODO: Localization
-            showOption("Do you want to cancel this task?") { [weak self] confirm in
+            showOption(CelestiaString("Do you want to cancel this task?", comment: "")) { [weak self] confirm in
                 guard confirm, let self = self, dm.isDownloading(identifier: self.item.id) else { return }
                 dm.cancel(identifier: self.item.id)
                 self.currentState = .none
@@ -188,7 +186,7 @@ private extension ResourceItemViewController {
 
         let footnoteLabel = UILabel()
         // TODO: Localization
-        footnoteLabel.text = "Note: restarting Celestia is needed to use any new installed plugin."
+        footnoteLabel.text = CelestiaString("Note: restarting Celestia is needed to use any new installed add-on.", comment: "")
         footnoteLabel.numberOfLines = 0
         footnoteLabel.textColor = .darkSecondaryLabel
         footnoteLabel.font = UIFont.preferredFont(forTextStyle: .footnote)
@@ -248,12 +246,12 @@ private extension ResourceItemViewController {
         switch currentState {
         case .none:
             progressButton.resetProgress()
-            progressButton.setTitle("DOWNLOAD", for: .normal)
+            progressButton.setTitle(CelestiaString("DOWNLOAD", comment: ""), for: .normal)
         case .downloading:
-            progressButton.setTitle("DOWNLOADING", for: .normal)
+            progressButton.setTitle(CelestiaString("DOWNLOADING", comment: ""), for: .normal)
         case .installed:
             progressButton.setProgress(progress: 1.0)
-            progressButton.setTitle("INSTALLED", for: .normal)
+            progressButton.setTitle(CelestiaString("INSTALLED", comment: ""), for: .normal)
         }
     }
 }
