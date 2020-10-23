@@ -20,7 +20,7 @@ extension ResourceManagerError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .addonDirectoryNotExists:
-            return CelestiaString("Add-on directory does not exit.", comment: "")
+            return CelestiaString("Add-on directory does not exist.", comment: "")
         }
     }
 }
