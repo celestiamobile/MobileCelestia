@@ -174,12 +174,12 @@ extension MainViewControler {
         guard currentExternalScreen == nil else { return }
 
         currentExternalScreen = newScreen
-        showOption(CelestiaString("An external screen is connected, do you want to display Celestia in the external screen?", comment: "")) { [weak self] choice in
+        showOption(CelestiaString("An external screen is connected, do you want to display Celestia on the external screen?", comment: "")) { [weak self] choice in
             guard choice, let self = self else { return }
             self.currentExternalScreen = nil
 
             guard self.celestiaController.moveToNewScreen(newScreen) else {
-                self.showError(CelestiaString("Failed to connect to new screen.", comment: ""))
+                self.showError(CelestiaString("Failed to connect to the external screen.", comment: ""))
                 return
             }
         }
