@@ -69,6 +69,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         window = UIWindow()
         let vc = MainViewControler(initialURL: launchOptions?[.url] as? URL)
+        if let userActivity = launchOptions?[.userActivityType] as? NSUserActivity {
+            Self.handleUserActivity(userActivity)
+        }
 
         window?.rootViewController = vc
         window?.makeKeyAndVisible()
@@ -104,6 +107,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return false
     }
 
+    func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
+        Self.handleUserActivity(userActivity)
+        return true
+    }
+
     #if targetEnvironment(macCatalyst)
     @available(iOS 13, *)
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
@@ -113,6 +121,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return UISceneConfiguration(name: "Main", sessionRole: connectingSceneSession.role)
     }
     #endif
+
+    @discardableResult static func handleUserActivity(_ userActivity: NSUserActivity) -> Bool {
+        guard let url = userActivity.webpageURL else { return false }
+        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false) else { return false }
+        // Path and ID are needed to resolve a URL with API
+        guard let id = components.queryItems?.first(where: { $0.name == "id" })?.value else { return false }
+        let path = components.path
+
+        struct Response: Decodable {
+            let resolvedURL: URL
+        }
+
+        // Make request to the server to resolve the URL
+        let requestURL = apiPrefix + "/resolve"
+        _ = RequestHandler.get(url: requestURL, params: ["path" : path, "id" : id], success: { (response: Response) in
+            NotificationCenter.default.post(name: newURLOpenedNotificationName, object: nil, userInfo: [newURLOpenedNotificationURLKey : response.resolvedURL])
+        })
+        return true
+    }
 }
 
 #if targetEnvironment(macCatalyst)

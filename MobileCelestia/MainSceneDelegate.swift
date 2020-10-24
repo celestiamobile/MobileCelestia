@@ -21,10 +21,17 @@ class MainSceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)
         window.overrideUserInterfaceStyle = .dark
         let vc = MainViewControler(initialURL: connectionOptions.urlContexts.first?.url)
+        if let userActivity = connectionOptions.userActivities.first {
+            AppDelegate.handleUserActivity(userActivity)
+        }
         window.rootViewController = vc
 
         self.window = window
         window.makeKeyAndVisible()
+    }
+
+    func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
+        AppDelegate.handleUserActivity(userActivity)
     }
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {

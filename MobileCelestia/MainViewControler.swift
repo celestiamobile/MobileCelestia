@@ -142,9 +142,9 @@ extension MainViewControler {
     #endif
 
     @objc private func newURLOpened(_ notification: Notification) {
-        guard status == .loaded else { return }
         guard let url = notification.userInfo?[newURLOpenedNotificationURLKey] as? URL else { return }
         urlToRun = url
+        guard status == .loaded else { return }
         checkNeedOpeningURL()
     }
 
