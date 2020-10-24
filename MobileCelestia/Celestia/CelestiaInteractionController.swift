@@ -433,9 +433,9 @@ extension CelestiaInteractionController {
 
     private func zoom(deltaY: CGFloat) {
         if currentInteractionMode == .camera {
-            core.mouseMove(by: CGPoint(x: 0, y: deltaY * renderingTargetGeometry.scale), modifiers: UInt(UIKeyModifierFlags.shift.rawValue), with: .left)
+            core.mouseMove(by: CGPoint(x: 0, y: deltaY), modifiers: UInt(UIKeyModifierFlags.shift.rawValue), with: .left)
         } else {
-            core.mouseWheel(by: deltaY * renderingTargetGeometry.scale, modifiers: 0)
+            core.mouseWheel(by: deltaY, modifiers: 0)
         }
     }
 }
