@@ -68,7 +68,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if #available(iOS 13.0, *) { return true }
 
         window = UIWindow()
-        let vc = MainViewControler()
+        let vc = MainViewControler(initialURL: launchOptions?[.url] as? URL)
 
         window?.rootViewController = vc
         window?.makeKeyAndVisible()
@@ -77,8 +77,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-        urlToRun = url
-
         NotificationCenter.default.post(name: newURLOpenedNotificationName, object: nil, userInfo: [newURLOpenedNotificationURLKey : url])
         return true
     }

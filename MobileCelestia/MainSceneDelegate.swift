@@ -20,7 +20,7 @@ class MainSceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         let window = UIWindow(windowScene: windowScene)
         window.overrideUserInterfaceStyle = .dark
-        let vc = MainViewControler()
+        let vc = MainViewControler(initialURL: connectionOptions.urlContexts.first?.url)
         window.rootViewController = vc
 
         self.window = window
@@ -29,8 +29,6 @@ class MainSceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         guard let url = URLContexts.first?.url else { return }
-
-        urlToRun = url
         NotificationCenter.default.post(name: newURLOpenedNotificationName, object: nil, userInfo: [newURLOpenedNotificationURLKey : url])
     }
 

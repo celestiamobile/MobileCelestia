@@ -19,8 +19,6 @@ import SafariServices
 
 private let userInitiatedDismissalFlag = 1
 
-var urlToRun: URL?
-
 class MainViewControler: UIViewController {
     enum LoadingStatus {
         case notLoaded
@@ -42,6 +40,17 @@ class MainViewControler: UIViewController {
     private var viewControllerStack: [UIViewController] = []
 
     private var currentExternalScreen: UIScreen?
+
+    private var urlToRun: URL?
+
+    init(initialURL: URL?) {
+        self.urlToRun = initialURL
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override func loadView() {
         view = UIView()
@@ -134,6 +143,8 @@ extension MainViewControler {
 
     @objc private func newURLOpened(_ notification: Notification) {
         guard status == .loaded else { return }
+        guard let url = notification.userInfo?[newURLOpenedNotificationURLKey] as? URL else { return }
+        urlToRun = url
         checkNeedOpeningURL()
     }
 
