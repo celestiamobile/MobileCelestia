@@ -36,6 +36,6 @@ class ResourceItemListViewController: AsyncListViewController<ResourceItem> {
     override func refresh(success: @escaping ([ResourceItem]) -> Void, failure: @escaping (String) -> Void) {
         let requestURL = apiPrefix + "/resource/items"
         let locale = LocalizedString("LANGUAGE", "celestia")
-        _ = RequestHandler.get(url: requestURL, params: ["lang": locale, "category": category.id], success: success, fail: failure)
+        _ = RequestHandler.get(url: requestURL, params: ["lang": locale, "category": category.id], success: success, fail: failure, decoder: ResourceItem.networkResponseDecoder)
     }
 }

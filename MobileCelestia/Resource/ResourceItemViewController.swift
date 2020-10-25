@@ -42,11 +42,31 @@ class ResourceItemViewController: UIViewController {
     private lazy var progressButton = ProgressButton(frame: .zero)
 
     private lazy var titleLabel = UILabel()
+    private lazy var authorsLabel = UILabel()
+    private lazy var releaseDateLabel = UILabel()
     private lazy var descriptionLabel = UILabel()
     private lazy var imageView = UIImageView()
+    private lazy var footnoteLabel = UILabel()
+
+    private lazy var contentStack = UIStackView(arrangedSubviews: [
+        titleLabel,
+        authorsLabel,
+        releaseDateLabel,
+        descriptionLabel,
+        imageView,
+        footnoteLabel
+    ])
+
     private var aspectRatioConstraint: NSLayoutConstraint?
 
     private var currentState: ResourceItemState = .none
+
+    private lazy var dateFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        formatter.timeStyle = .none
+        return formatter
+    }()
 
     init(item: ResourceItem) {
         // Store to cache key dictionary
@@ -90,7 +110,7 @@ class ResourceItemViewController: UIViewController {
         _ = RequestHandler.get(url: requestURL, params: ["lang": locale, "item": item.id], success: { [weak self] (item: ResourceItem) in
             self?.item = item
             self?.updateContents()
-        })
+        }, decoder: ResourceItem.networkResponseDecoder)
     }
 
     @objc private func progressButtonClicked() {
@@ -113,7 +133,6 @@ class ResourceItemViewController: UIViewController {
 
         // Cancel if already downloading
         if dm.isDownloading(identifier: item.id) {
-            // TODO: Localization
             showOption(CelestiaString("Do you want to cancel this task?", comment: "")) { [weak self] confirm in
                 guard confirm, let self = self, dm.isDownloading(identifier: self.item.id) else { return }
                 dm.cancel(identifier: self.item.id)
@@ -153,51 +172,39 @@ private extension ResourceItemViewController {
 
         contentContainer.backgroundColor = .clear
 
+        contentStack.translatesAutoresizingMaskIntoConstraints = false
+        contentContainer.addSubview(contentStack)
+        contentStack.axis = .vertical
+        contentStack.spacing = 4
+        contentStack.setCustomSpacing(8, after: descriptionLabel)
+        contentStack.setCustomSpacing(8, after: imageView)
+
+        NSLayoutConstraint.activate([
+            contentStack.topAnchor.constraint(equalTo: contentContainer.topAnchor),
+            contentStack.bottomAnchor.constraint(equalTo: contentContainer.bottomAnchor),
+            contentStack.leadingAnchor.constraint(equalTo: contentContainer.leadingAnchor),
+            contentStack.trailingAnchor.constraint(equalTo: contentContainer.trailingAnchor),
+        ])
+
         titleLabel.numberOfLines = 0
         titleLabel.textColor = .darkLabel
         titleLabel.font = UIFont.preferredFont(forTextStyle: .title2)
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        contentContainer.addSubview(titleLabel)
-        NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: contentContainer.topAnchor),
-            titleLabel.leadingAnchor.constraint(equalTo: contentContainer.leadingAnchor),
-            titleLabel.trailingAnchor.constraint(equalTo: contentContainer.trailingAnchor),
-        ])
-
+        authorsLabel.numberOfLines = 0
+        authorsLabel.textColor = .darkSecondaryLabel
+        authorsLabel.font = UIFont.preferredFont(forTextStyle: .footnote)
+        releaseDateLabel.numberOfLines = 0
+        releaseDateLabel.textColor = .darkSecondaryLabel
+        releaseDateLabel.font = UIFont.preferredFont(forTextStyle: .footnote)
         descriptionLabel.numberOfLines = 0
         descriptionLabel.textColor = .darkSecondaryLabel
         descriptionLabel.font = UIFont.preferredFont(forTextStyle: .body)
-        descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
-        contentContainer.addSubview(descriptionLabel)
-        NSLayoutConstraint.activate([
-            descriptionLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 4),
-            descriptionLabel.leadingAnchor.constraint(equalTo: contentContainer.leadingAnchor),
-            descriptionLabel.trailingAnchor.constraint(equalTo: contentContainer.trailingAnchor),
-        ])
 
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        contentContainer.addSubview(imageView)
-        NSLayoutConstraint.activate([
-            imageView.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 8),
-            imageView.leadingAnchor.constraint(equalTo: contentContainer.leadingAnchor),
-            imageView.trailingAnchor.constraint(equalTo: contentContainer.trailingAnchor),
-        ])
-        aspectRatioConstraint = imageView.heightAnchor.constraint(equalTo: imageView.widthAnchor, multiplier: 0)
+        imageView.isHidden = true
 
-        let footnoteLabel = UILabel()
-        // TODO: Localization
         footnoteLabel.text = CelestiaString("Note: restarting Celestia is needed to use any new installed add-on.", comment: "")
         footnoteLabel.numberOfLines = 0
         footnoteLabel.textColor = .darkSecondaryLabel
         footnoteLabel.font = UIFont.preferredFont(forTextStyle: .footnote)
-        footnoteLabel.translatesAutoresizingMaskIntoConstraints = false
-        contentContainer.addSubview(footnoteLabel)
-        NSLayoutConstraint.activate([
-            footnoteLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 8),
-            footnoteLabel.bottomAnchor.constraint(equalTo: contentContainer.bottomAnchor),
-            footnoteLabel.leadingAnchor.constraint(equalTo: contentContainer.leadingAnchor),
-            footnoteLabel.trailingAnchor.constraint(equalTo: contentContainer.trailingAnchor),
-        ])
 
         progressButton.translatesAutoresizingMaskIntoConstraints = false
         progressButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
@@ -220,16 +227,41 @@ private extension ResourceItemViewController {
         imageView.sd_cancelCurrentImageLoad()
         if let imageURL = item.image {
             imageView.sd_setImage(with: imageURL) { [weak self] image, _, _, _ in
-                guard let size = image?.size, let self = self else { return }
+                guard let self = self else { return }
+                guard let size = image?.size else {
+                    self.imageView.image = nil
+                    self.imageView.isHidden = true
+                    self.aspectRatioConstraint?.isActive = false
+                    self.aspectRatioConstraint = nil
+                    return
+                }
+                self.imageView.isHidden = false
                 self.aspectRatioConstraint?.isActive = false
                 self.aspectRatioConstraint = self.imageView.heightAnchor.constraint(equalTo: self.imageView.widthAnchor, multiplier: size.height / size.width)
                 self.aspectRatioConstraint?.isActive = true
             }
         } else {
+            imageView.isHidden = true
             imageView.image = nil
-            self.aspectRatioConstraint?.isActive = false
-            self.aspectRatioConstraint = self.imageView.heightAnchor.constraint(equalTo: self.imageView.widthAnchor, multiplier: 0)
-            self.aspectRatioConstraint?.isActive = true
+            aspectRatioConstraint?.isActive = false
+            aspectRatioConstraint = nil
+        }
+        if let releaseDate = item.publishTime {
+            releaseDateLabel.isHidden = false
+            releaseDateLabel.text = String(format: CelestiaString("Release date: %s", comment: "").toLocalizationTemplate, dateFormatter.string(from: releaseDate))
+        } else {
+            releaseDateLabel.isHidden = true
+        }
+        if let authors = item.authors, authors.count > 0 {
+            authorsLabel.isHidden = false
+            let template = CelestiaString("Authors: %s", comment: "").toLocalizationTemplate
+            if #available(iOS 13, *) {
+                authorsLabel.text = String(format: template, ListFormatter.localizedString(byJoining: authors))
+            } else {
+                authorsLabel.text = String(format: template, authors.joined(separator: ", "))
+            }
+        } else {
+            authorsLabel.isHidden = true
         }
     }
 

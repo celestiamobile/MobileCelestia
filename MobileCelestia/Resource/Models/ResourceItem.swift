@@ -17,4 +17,12 @@ struct ResourceItem: Codable {
     let id: String
     let image: URL?
     let item: URL
+    let authors: [String]?
+    let publishTime: Date?
+
+    static let networkResponseDecoder: JSONDecoder = {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .secondsSince1970
+        return decoder
+    }()
 }
