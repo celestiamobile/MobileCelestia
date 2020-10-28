@@ -605,7 +605,6 @@ extension MainViewControler: NSToolbarDelegate {
     }
 
     @objc private func toolbarButtonItemClicked(_ sender: NSToolbarItem) {
-        guard presentedViewController == nil else { return }
         guard let action = AppToolbarAction(rawValue: sender.itemIdentifier.rawValue) else { return }
         toolbarActionSelected(action)
     }
@@ -641,7 +640,6 @@ extension MainViewControler: NSTouchBarDelegate {
     }
 
     @objc private func touchBarButtonItemClicked(_ sender: NSTouchBarItem) {
-        guard presentedViewController == nil else { return }
         guard let action = AppToolbarAction(rawValue: sender.identifier.rawValue) else { return }
         toolbarActionSelected(action)
     }
