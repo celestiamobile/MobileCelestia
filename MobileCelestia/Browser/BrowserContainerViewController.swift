@@ -81,33 +81,12 @@ private extension BrowserContainerViewController {
 }
 
 #if targetEnvironment(macCatalyst)
-class BrowserSidebarController: UIViewController {
-    @available(macCatalyst 14, *)
-    private lazy var layout: UICollectionViewLayout = {
-        let configuration = UICollectionLayoutListConfiguration(appearance: .sidebar)
-        let layout = UICollectionViewCompositionalLayout.list(using: configuration)
-        return layout
-    }()
-
+class BrowserSidebarController: BaseTableViewController {
     enum Section {
         case single
     }
 
-    @available(macCatalyst 14, *)
-    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: self.layout)
-    @available(macCatalyst 14, *)
-    private lazy var collectionViewDataSource: UICollectionViewDiffableDataSource<Section, CelestiaBrowserItem> = {
-        let registration = UICollectionView.CellRegistration { (cell: UICollectionViewListCell, indexPath, item: CelestiaBrowserItem) in
-            var config = cell.defaultContentConfiguration()
-            config.text = item.alternativeName ?? item.name
-            cell.contentConfiguration = config
-        }
-        let dataSource = UICollectionViewDiffableDataSource<Section, CelestiaBrowserItem>(collectionView: collectionView) { (view, indexPath, item) -> UICollectionViewCell? in
-            return view.dequeueConfiguredReusableCell(using: registration, for: indexPath, item: item)
-        }
-        return dataSource
-    }()
-    private lazy var tableViewDataSource: UITableViewDiffableDataSource<Section, CelestiaBrowserItem> = {
+    private lazy var dataSource: UITableViewDiffableDataSource<Section, CelestiaBrowserItem> = {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
         let dataSource = UITableViewDiffableDataSource<Section, CelestiaBrowserItem>(tableView: tableView) { (view, indexPath, item) -> UITableViewCell? in
             let cell = view.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
@@ -117,35 +96,13 @@ class BrowserSidebarController: UIViewController {
         return dataSource
     }()
 
-    private lazy var tableView = UITableView(frame: .zero, style: .grouped)
-
-    private var listView: UIView {
-        if #available(macCatalyst 14.0, *) {
-            return collectionView
-        }
-        return tableView
-    }
-
     private let browserRoots: [CelestiaBrowserItem]
     private let handler: (CelestiaBrowserItem) -> Void
-
-    override func loadView() {
-        let container = UIView()
-        listView.translatesAutoresizingMaskIntoConstraints = false
-        container.addSubview(listView)
-        NSLayoutConstraint.activate([
-            listView.topAnchor.constraint(equalTo: container.topAnchor),
-            listView.bottomAnchor.constraint(equalTo: container.bottomAnchor),
-            listView.leadingAnchor.constraint(equalTo: container.leadingAnchor),
-            listView.trailingAnchor.constraint(equalTo: container.trailingAnchor),
-        ])
-        view = container
-    }
 
     init(browserRoots: [CelestiaBrowserItem], handler: @escaping (CelestiaBrowserItem) -> Void) {
         self.browserRoots = browserRoots
         self.handler = handler
-        super.init(nibName: nil, bundle: nil)
+        super.init(style: .grouped)
     }
 
     required init?(coder: NSCoder) {
@@ -158,29 +115,13 @@ class BrowserSidebarController: UIViewController {
         var snapshot = NSDiffableDataSourceSnapshot<Section, CelestiaBrowserItem>()
         snapshot.appendSections([.single])
         snapshot.appendItems(browserRoots, toSection: .single)
-        if #available(macCatalyst 14, *) {
-            collectionViewDataSource.apply(snapshot)
-            collectionView.dataSource = collectionViewDataSource
-            collectionView.delegate = self
-        } else {
-            tableViewDataSource.apply(snapshot)
-            tableView.dataSource = tableViewDataSource
-            tableView.delegate = self
-            tableView.estimatedRowHeight = 44
-            tableView.rowHeight = UITableView.automaticDimension
-        }
+        tableView.dataSource = dataSource
+        tableView.estimatedRowHeight = 44
+        tableView.rowHeight = UITableView.automaticDimension
+        dataSource.apply(snapshot, animatingDifferences: false, completion: nil)
     }
-}
 
-extension BrowserSidebarController: UICollectionViewDelegate {
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard #available(macCatalyst 14, *), let item = collectionViewDataSource.itemIdentifier(for: indexPath) else { return }
-        handler(item)
-    }
-}
-
-extension BrowserSidebarController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         handler(browserRoots[indexPath.row])
     }
 }
