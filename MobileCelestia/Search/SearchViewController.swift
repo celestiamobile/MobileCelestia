@@ -22,10 +22,7 @@ fileprivate struct SearchResultSection {
     let results: [SearchResult]
 }
 
-class SearchViewController: UIViewController {
-
-    private lazy var tableView = UITableView(frame: .zero, style: .plain)
-
+class SearchViewController: BaseTableViewController {
     private lazy var searchController = UISearchController(searchResultsController: nil)
 
     private var searchQueue = OperationQueue()
@@ -38,18 +35,11 @@ class SearchViewController: UIViewController {
 
     init(selected: @escaping (CelestiaSelection) -> Void) {
         self.selected = selected
-        super.init(nibName: nil, bundle: nil)
+        super.init(style: .plain)
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    override func loadView() {
-        view = UIView()
-        view.backgroundColor = .darkBackground
-
-        title = CelestiaString("Search", comment: "")
     }
 
     override func viewDidLoad() {
@@ -83,88 +73,47 @@ private extension SearchViewController {
     func setup() {
         searchQueue.maxConcurrentOperationCount = 1
 
-        view.addSubview(tableView)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-
-        NSLayoutConstraint.activate([
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-        ])
-
-        tableView.backgroundColor = .clear
-        tableView.alwaysBounceVertical = false
-        tableView.separatorColor = .darkSeparator
-
         tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Text")
-        tableView.dataSource = self
-        tableView.delegate = self
 
+        // Configure search bar
         definesPresentationContext = true
         searchController.searchResultsUpdater = self
-
-        if #available(iOS 9.1, *) {
-            searchController.obscuresBackgroundDuringPresentation = false
-        } else {
-            searchController.dimsBackgroundDuringPresentation = false
-        }
+        searchController.obscuresBackgroundDuringPresentation = false
         let searchBar = searchController.searchBar
         searchBar.keyboardAppearance = .dark
         searchBar.delegate = self
-        if #available(iOS 11.0, *) {
-            /* system attached searchbar */
-            navigationItem.searchController = searchController
-            navigationItem.hidesSearchBarWhenScrolling = false
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
 
-            tableView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        } else {
-            /* setup search bar */
-            let container = UIView()
-            container.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(container)
-            NSLayoutConstraint.activate([
-                  container.topAnchor.constraint(equalTo: view.topAnchor),
-                  container.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                  container.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-                  container.bottomAnchor.constraint(equalTo: tableView.topAnchor),
-                  container.heightAnchor.constraint(equalToConstant: searchBar.bounds.height)
-            ])
-            container.addSubview(searchBar)
-
-            for view in searchBar.subviews.last!.subviews {
-                if type(of: view) == NSClassFromString("UISearchBarBackground") {
-                    view.alpha = 0.1
-                }
-            }
-        }
+        title = CelestiaString("Search", comment: "")
     }
 }
 
-extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
-    func numberOfSections(in tableView: UITableView) -> Int {
+extension SearchViewController {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return resultSections.count
     }
 
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return resultSections[section].results.count
     }
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let result = resultSections[indexPath.section].results[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
         cell.title = result.name
         return cell
     }
 
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return resultSections[section].title
     }
 
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 44
     }
 
-    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+    override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
         if let header = view as? UITableViewHeaderFooterView {
             header.textLabel?.textColor = UIColor.darkPlainHeaderLabel
             header.backgroundView = UIView()
@@ -172,7 +121,7 @@ extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
         }
     }
 
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         view.endEditing(true)
 
         tableView.deselectRow(at: indexPath, animated: true)

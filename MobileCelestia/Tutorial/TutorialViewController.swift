@@ -17,7 +17,7 @@ enum TutorialAction {
     case runDemo
 }
 
-class TutorialViewController: UIViewController {
+class TutorialViewController: BaseTableViewController {
     private struct TutorialDescriptionItem {
         let image: UIImage?
         let text: String
@@ -38,8 +38,6 @@ class TutorialViewController: UIViewController {
         case action(item: TutorialActionItem)
         case url(url: TutorialURLItem)
     }
-
-    private lazy var tableView = UITableView(frame: .zero, style: .plain)
 
     private lazy var tutorialDescriptionItems = [
         TutorialDescriptionItem(image: #imageLiteral(resourceName: "tutorial_switch_mode"),
@@ -71,18 +69,11 @@ class TutorialViewController: UIViewController {
     init(actionHandler: ((TutorialAction) -> Void)?, urlHandler: ((URL) -> Void)?) {
         self.actionHandler = actionHandler
         self.urlHandler = urlHandler
-        super.init(nibName: nil, bundle: nil)
-
-        title = CelestiaString("Tutorial", comment: "")
+        super.init(style: .plain)
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    override func loadView() {
-        view = UIView()
-        view.backgroundColor = .darkSecondaryBackground
     }
 
     override func viewDidLoad() {
@@ -90,46 +81,30 @@ class TutorialViewController: UIViewController {
 
         setup()
     }
-
 }
 
 private extension TutorialViewController {
     func setup() {
-        view.addSubview(tableView)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-
-        NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.topAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-        ])
-
-        tableView.tableFooterView = UIView()
-
         tableView.backgroundColor = .clear
-        tableView.showsVerticalScrollIndicator = false
-        tableView.alwaysBounceVertical = false
         tableView.separatorStyle = .none
 
         tableView.register(TutorialDescriptionCell.self, forCellReuseIdentifier: "Description")
         tableView.register(TutorialActionCell.self, forCellReuseIdentifier: "Action")
         tableView.register(TutorialActionCell.self, forCellReuseIdentifier: "URL")
-        tableView.dataSource = self
-        tableView.delegate = self
+        title = CelestiaString("Tutorial", comment: "")
     }
 }
 
-extension TutorialViewController: UITableViewDataSource, UITableViewDelegate {
-    func numberOfSections(in tableView: UITableView) -> Int {
+extension TutorialViewController {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return tutorialItems.count
     }
 
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return tutorialItems[section].count
     }
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = tutorialItems[indexPath.section][indexPath.row]
         switch item {
         case .description(let desc):
@@ -154,7 +129,7 @@ extension TutorialViewController: UITableViewDataSource, UITableViewDelegate {
         }
     }
 
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let item = tutorialItems[indexPath.section][indexPath.row]
         switch item {
         case .description(_):
@@ -164,7 +139,7 @@ extension TutorialViewController: UITableViewDataSource, UITableViewDelegate {
         }
     }
 
-    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return 44
     }
 }

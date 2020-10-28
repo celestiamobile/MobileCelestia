@@ -13,27 +13,18 @@ import UIKit
 
 import CelestiaCore
 
-class SettingCommonViewController: UIViewController {
-    private lazy var tableView = UITableView(frame: .zero, style: .grouped)
-
+class SettingCommonViewController: BaseTableViewController {
     private let item: SettingCommonItem
 
     private lazy var core = CelestiaAppCore.shared
 
     init(item: SettingCommonItem) {
         self.item = item
-        super.init(nibName: nil, bundle: nil)
+        super.init(style: .grouped)
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    override func loadView() {
-        view = UIView()
-        view.backgroundColor = .darkBackground
-
-        title = item.title
     }
 
     override func viewDidLoad() {
@@ -41,41 +32,25 @@ class SettingCommonViewController: UIViewController {
 
         setup()
     }
-
 }
 
 private extension SettingCommonViewController {
     func setup() {
-        view.addSubview(tableView)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-
-        NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.topAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-        ])
-
-        tableView.backgroundColor = .clear
-        tableView.alwaysBounceVertical = false
-        tableView.separatorColor = .darkSeparator
-
         tableView.register(SettingSliderCell.self, forCellReuseIdentifier: "Slider")
         tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Action")
         tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Checkmark")
         tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Custom")
         tableView.register(SettingSwitchCell.self, forCellReuseIdentifier: "Switch")
-        tableView.dataSource = self
-        tableView.delegate = self
+        title = item.title
     }
 }
 
-extension SettingCommonViewController: UITableViewDataSource, UITableViewDelegate {
-    func numberOfSections(in tableView: UITableView) -> Int {
+extension SettingCommonViewController {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return item.sections.count
     }
 
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return item.sections[section].rows.count
     }
 
@@ -83,7 +58,7 @@ extension SettingCommonViewController: UITableViewDataSource, UITableViewDelegat
         fatalError("Wrong associated item \(item.base)")
     }
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let row = item.sections[indexPath.section].rows[indexPath.row]
 
         switch row.type {
@@ -159,7 +134,7 @@ extension SettingCommonViewController: UITableViewDataSource, UITableViewDelegat
         }
     }
 
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
         let row = item.sections[indexPath.section].rows[indexPath.row]
@@ -181,7 +156,7 @@ extension SettingCommonViewController: UITableViewDataSource, UITableViewDelegat
         }
     }
 
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let rowType = item.sections[indexPath.section].rows[indexPath.row].type
         switch rowType {
         case .slider:
@@ -191,7 +166,7 @@ extension SettingCommonViewController: UITableViewDataSource, UITableViewDelegat
         }
     }
 
-    func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+    override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         return item.sections[section].footer
     }
 }

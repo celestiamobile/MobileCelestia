@@ -29,26 +29,16 @@ private extension FavoriteItemType {
     }
 }
 
-class FavoriteViewController: UIViewController {
-
-    private lazy var tableView = UITableView(frame: .zero, style: .grouped)
-
+class FavoriteViewController: BaseTableViewController {
     private let selected: (FavoriteItemType) -> Void
 
     init(selected: @escaping (FavoriteItemType) -> Void) {
         self.selected = selected
-        super.init(nibName: nil, bundle: nil)
+        super.init(style: .grouped)
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    override func loadView() {
-        view = UIView()
-        view.backgroundColor = .darkBackground
-
-        title = CelestiaString("Favorites", comment: "")
     }
 
     override func viewDidLoad() {
@@ -60,42 +50,27 @@ class FavoriteViewController: UIViewController {
 
 private extension FavoriteViewController {
     func setup() {
-        view.addSubview(tableView)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-
-        NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.topAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-        ])
-
-        tableView.backgroundColor = .clear
-        tableView.alwaysBounceVertical = false
-        tableView.separatorColor = .darkSeparator
-
         tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Text")
-        tableView.dataSource = self
-        tableView.delegate = self
+        title = CelestiaString("Favorites", comment: "")
     }
 }
 
-extension FavoriteViewController: UITableViewDataSource, UITableViewDelegate {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+extension FavoriteViewController {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 2
     }
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
         cell.title = FavoriteItemType(rawValue: indexPath.row)?.description
         return cell
     }
 
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 44
     }
 
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         selected(FavoriteItemType(rawValue: indexPath.row)!)
     }

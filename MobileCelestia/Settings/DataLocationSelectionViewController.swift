@@ -13,10 +13,7 @@ import UIKit
 
 import MobileCoreServices
 
-class DataLocationSelectionViewController: UIViewController {
-
-    private lazy var tableView = UITableView(frame: .zero, style: .grouped)
-
+class DataLocationSelectionViewController: BaseTableViewController {
     private var items: [[TextItem]] = []
 
     private enum Location: Int {
@@ -26,11 +23,12 @@ class DataLocationSelectionViewController: UIViewController {
 
     private var currentPicker: Location?
 
-    override func loadView() {
-        view = UIView()
-        view.backgroundColor = .darkBackground
+    init() {
+        super.init(style: .grouped)
+    }
 
-        title = CelestiaString("Data Location", comment: "")
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     override func viewDidLoad() {
@@ -66,36 +64,21 @@ class DataLocationSelectionViewController: UIViewController {
 
 private extension DataLocationSelectionViewController {
     func setup() {
-        view.addSubview(tableView)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-
-        NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.topAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-        ])
-
-        tableView.backgroundColor = .clear
-        tableView.alwaysBounceVertical = false
-        tableView.separatorColor = .darkSeparator
-
         tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Text")
-        tableView.dataSource = self
-        tableView.delegate = self
+        title = CelestiaString("Data Location", comment: "")
     }
 }
 
-extension DataLocationSelectionViewController: UITableViewDataSource, UITableViewDelegate {
-    func numberOfSections(in tableView: UITableView) -> Int {
+extension DataLocationSelectionViewController {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return items.count
     }
 
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return items[section].count
     }
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = items[indexPath.section][indexPath.row]
         switch item {
         case .short(let title, let detail):
@@ -110,7 +93,7 @@ extension DataLocationSelectionViewController: UITableViewDataSource, UITableVie
         }
     }
 
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         let item = items[indexPath.section][indexPath.row]
         switch item {
         case .short(_, _):
@@ -122,7 +105,7 @@ extension DataLocationSelectionViewController: UITableViewDataSource, UITableVie
         }
     }
 
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.section == 1 {
             saveDataDirectory(nil)
@@ -139,14 +122,14 @@ extension DataLocationSelectionViewController: UITableViewDataSource, UITableVie
         }
     }
 
-    func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+    override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         if section == 0 {
             return CelestiaString("Configuration will take effect after a restart.", comment: "")
         }
         return nil
     }
 
-    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return 44
     }
 }

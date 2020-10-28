@@ -17,7 +17,7 @@ protocol EventFinderInputItem {
     var title: String { get }
 }
 
-class EventFinderInputViewController: UIViewController {
+class EventFinderInputViewController: BaseTableViewController {
     struct DateItem: EventFinderInputItem {
         let title: String
         let isStartTime: Bool
@@ -54,24 +54,15 @@ class EventFinderInputViewController: UIViewController {
         return formatter
     }()
 
-    private lazy var tableView = UITableView(frame: .zero, style: .grouped)
-
     private let resultHandler: (([CelestiaEclipse]) -> Void)
 
     init(resultHandler: @escaping (([CelestiaEclipse]) -> Void)) {
         self.resultHandler = resultHandler
-        super.init(nibName: nil, bundle: nil)
+        super.init(style: .grouped)
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    override func loadView() {
-        view = UIView()
-        view.backgroundColor = .darkBackground
-
-        title = CelestiaString("Eclipse Finder", comment: "")
     }
 
     override func viewDidLoad() {
@@ -83,36 +74,21 @@ class EventFinderInputViewController: UIViewController {
 
 private extension EventFinderInputViewController {
     func setup() {
-        view.addSubview(tableView)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-
-        NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.topAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-        ])
-
-        tableView.backgroundColor = .clear
-        tableView.alwaysBounceVertical = false
-        tableView.separatorColor = .darkSeparator
-
+        title = CelestiaString("Eclipse Finder", comment: "")
         tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Text")
-        tableView.dataSource = self
-        tableView.delegate = self
     }
 }
 
-extension EventFinderInputViewController: UITableViewDataSource, UITableViewDelegate {
-    func numberOfSections(in tableView: UITableView) -> Int {
+extension EventFinderInputViewController {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return allSections.count
     }
 
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return allSections[section].count
     }
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = allSections[indexPath.section][indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
         cell.title = item.title
@@ -130,13 +106,11 @@ extension EventFinderInputViewController: UITableViewDataSource, UITableViewDele
         return cell
     }
 
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 44
     }
 
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let item = allSections[indexPath.section][indexPath.row]
         if let it = item as? DateItem {
             let preferredFormat = DateFormatter.dateFormat(fromTemplate: "yyyyMMddHHmmss", options: 0, locale: Locale.current) ?? "yyyy/MM/dd HH:mm:ss"

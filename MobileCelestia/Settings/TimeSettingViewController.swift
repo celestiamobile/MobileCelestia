@@ -13,11 +13,8 @@ import UIKit
 
 import CelestiaCore
 
-class TimeSettingViewController: UIViewController {
-
+class TimeSettingViewController: BaseTableViewController {
     private lazy var core = CelestiaAppCore.shared
-
-    private lazy var tableView = UITableView(frame: .zero, style: .grouped)
 
     private lazy var displayDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -26,13 +23,14 @@ class TimeSettingViewController: UIViewController {
         return formatter
     }()
 
-    override func loadView() {
-        view = UIView()
-        view.backgroundColor = .darkBackground
-
-        title = CelestiaString("Current Time", comment: "")
+    init() {
+        super.init(style: .grouped)
     }
-
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -42,32 +40,17 @@ class TimeSettingViewController: UIViewController {
 
 private extension TimeSettingViewController {
     func setup() {
-        view.addSubview(tableView)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-
-        NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.topAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-        ])
-
-        tableView.backgroundColor = .clear
-        tableView.alwaysBounceVertical = false
-        tableView.separatorColor = .darkSeparator
-
         tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Text")
-        tableView.dataSource = self
-        tableView.delegate = self
+        title = CelestiaString("Current Time", comment: "")
     }
 }
 
-extension TimeSettingViewController: UITableViewDataSource, UITableViewDelegate {
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+extension TimeSettingViewController {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 2
     }
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
         if indexPath.row == 0 {
             cell.title = CelestiaString("Select Time", comment: "")
@@ -80,7 +63,7 @@ extension TimeSettingViewController: UITableViewDataSource, UITableViewDelegate 
         return cell
     }
 
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let core = CelestiaAppCore.shared
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.row == 0 {
@@ -102,7 +85,7 @@ extension TimeSettingViewController: UITableViewDataSource, UITableViewDelegate 
         }
     }
 
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 44
     }
 }

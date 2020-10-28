@@ -13,9 +13,7 @@ import UIKit
 
 import CelestiaCore
 
-class BrowserCommonViewController: UIViewController {
-    private lazy var tableView = UITableView(frame: .zero, style: .grouped)
-
+class BrowserCommonViewController: BaseTableViewController {
     private let item: CelestiaBrowserItem
 
     private let selection: (CelestiaBrowserItem, Bool) -> Void
@@ -23,18 +21,11 @@ class BrowserCommonViewController: UIViewController {
     init(item: CelestiaBrowserItem, selection: @escaping (CelestiaBrowserItem, Bool) -> Void) {
         self.item = item
         self.selection = selection
-        super.init(nibName: nil, bundle: nil)
+        super.init(style: .grouped)
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    override func loadView() {
-        view = UIView()
-        view.backgroundColor = .darkBackground
-
-        title = item.alternativeName ?? item.name
     }
 
     override func viewDidLoad() {
@@ -42,43 +33,27 @@ class BrowserCommonViewController: UIViewController {
 
         setup()
     }
-
 }
 
 private extension BrowserCommonViewController {
     func setup() {
-        view.addSubview(tableView)
-        tableView.translatesAutoresizingMaskIntoConstraints = false
-
-        NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: view.topAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
-        ])
-
-        tableView.backgroundColor = .clear
-        tableView.alwaysBounceVertical = false
-        tableView.separatorColor = .darkSeparator
-
         tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Text")
-        tableView.dataSource = self
-        tableView.delegate = self
+        title = item.alternativeName ?? item.name
     }
 }
 
-extension BrowserCommonViewController: UITableViewDataSource, UITableViewDelegate {
-    func numberOfSections(in tableView: UITableView) -> Int {
+extension BrowserCommonViewController {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         if item.entry != nil { return 2 }
         return 1
     }
 
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if item.entry != nil && section == 0 { return 1 }
         return item.children.count
     }
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
         if item.entry != nil && indexPath.section == 0 {
             cell.title = item.name
@@ -91,17 +66,21 @@ extension BrowserCommonViewController: UITableViewDataSource, UITableViewDelegat
         return cell
     }
 
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if item.entry != nil && indexPath.section == 0 {
+            tableView.deselectRow(at: indexPath, animated: true)
             selection(item, true)
         } else {
             let subitem = item.children[indexPath.row]
-            selection(subitem, subitem.children.count == 0)
+            let isLeaf = subitem.children.count == 0
+            if isLeaf {
+                tableView.deselectRow(at: indexPath, animated: true)
+            }
+            selection(subitem, isLeaf)
         }
     }
 
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 44
     }
 }
