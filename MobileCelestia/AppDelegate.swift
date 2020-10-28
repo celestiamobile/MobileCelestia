@@ -69,9 +69,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         window = UIWindow()
         let vc = MainViewControler(initialURL: launchOptions?[.url] as? URL)
-        if let userActivity = launchOptions?[.userActivityType] as? NSUserActivity {
-            Self.handleUserActivity(userActivity)
-        }
 
         window?.rootViewController = vc
         window?.makeKeyAndVisible()
