@@ -26,6 +26,7 @@ class PanelSceneDelegate: UIResponder, UIWindowSceneDelegate {
         windowScene.sizeRestrictions?.minimumSize = CGSize(width: 400, height: 500)
         windowScene.sizeRestrictions?.maximumSize = CGSize(width: 400, height: 500)
         let window = UIWindow(windowScene: windowScene)
+        window.overrideUserInterfaceStyle = .dark
         window.rootViewController = viewController
 
         self.window = window
