@@ -132,7 +132,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Make request to the server to resolve the URL
         let requestURL = apiPrefix + "/resolve"
-        _ = RequestHandler.get(url: requestURL, params: ["path" : path, "id" : id], success: { (response: Response) in
+        _ = RequestHandler.get(url: requestURL, parameters: ["path" : path, "id" : id], success: { (response: Response) in
             NotificationCenter.default.post(name: newURLOpenedNotificationName, object: nil, userInfo: [newURLOpenedNotificationURLKey : response.resolvedURL])
         })
         return true

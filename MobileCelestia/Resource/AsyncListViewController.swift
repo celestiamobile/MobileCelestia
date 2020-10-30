@@ -38,7 +38,7 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
         callRefresh()
     }
 
-    func refresh(success: @escaping ([T]) -> Void, failure: @escaping (String) -> Void) {}
+    func refresh(success: @escaping ([T]) -> Void, failure: @escaping (Error) -> Void) {}
 
     @objc private func callRefresh() {
         startRefreshing()
@@ -48,7 +48,7 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
             self?.stopRefreshing(success: true)
         } failure: { [weak self] error in
             self?.stopRefreshing(success: false)
-            self?.showError(error)
+            self?.showError(error.localizedDescription)
         }
     }
 

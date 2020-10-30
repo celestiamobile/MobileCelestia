@@ -502,7 +502,7 @@ extension MainViewControler {
         }
 
         let alert = showLoading(CelestiaString("Generating sharing link…", comment: ""))
-        _ = RequestHandler.post(url: requestURL, params: [
+        _ = RequestHandler.post(url: requestURL, parameters: [
             "title" : title,
             "url" : data.base64EncodedURLString(),
             "version" : Bundle.main.infoDictionary!["CFBundleVersion"] as! String
@@ -514,7 +514,7 @@ extension MainViewControler {
                 }
                 self.showShareSheet(for: url)
             }
-        }, fail: { (error) in
+        }, failure: { (error) in
             alert.dismiss(animated: true) {
                 showUnknownError()
             }

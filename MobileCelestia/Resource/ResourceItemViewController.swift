@@ -107,7 +107,7 @@ class ResourceItemViewController: UIViewController {
         // here from Installed where the URL might be incorrect
         let requestURL = apiPrefix + "/resource/item"
         let locale = LocalizedString("LANGUAGE", "celestia")
-        _ = RequestHandler.get(url: requestURL, params: ["lang": locale, "item": item.id], success: { [weak self] (item: ResourceItem) in
+        _ = RequestHandler.get(url: requestURL, parameters: ["lang": locale, "item": item.id], success: { [weak self] (item: ResourceItem) in
             self?.item = item
             self?.updateContents()
         }, decoder: ResourceItem.networkResponseDecoder)

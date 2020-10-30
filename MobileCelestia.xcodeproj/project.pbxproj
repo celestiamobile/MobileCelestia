@@ -63,10 +63,9 @@
 		97EB41C62408F20700E6D441 /* CameraControlViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EB41C52408F20700E6D441 /* CameraControlViewController.swift */; };
 		97EB41C92408F26200E6D441 /* SettingStepperCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EB41C82408F26200E6D441 /* SettingStepperCell.swift */; };
 		97F1141E2408AE06003A06D7 /* DataLocationSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F1141D2408AE06003A06D7 /* DataLocationSelectionViewController.swift */; };
-		97FF95A0240A2E9900E9F44F /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FF959E240A2E9900E9F44F /* Request.swift */; };
-		97FF95A1240A2E9900E9F44F /* RequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FF959F240A2E9900E9F44F /* RequestHandler.swift */; };
 		97FF95A5240A340300E9F44F /* BaseResultHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FF95A4240A340300E9F44F /* BaseResultHandler.swift */; };
 		97FF95AA240A3F0900E9F44F /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FF95A9240A3F0900E9F44F /* Data.swift */; };
+		EA09B5EC254BB92900DACC1D /* MWRequest in Frameworks */ = {isa = PBXBuildFile; productRef = EA09B5EB254BB92900DACC1D /* MWRequest */; };
 		EA10553324935A4700E49C6D /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA10553224935A4700E49C6D /* Metal.framework */; };
 		EA1BC6E324A0E92B00F3F51B /* EventFinderCoordinatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E224A0E92B00F3F51B /* EventFinderCoordinatorViewController.swift */; };
 		EA1BC6E524A0E93D00F3F51B /* EventFinderInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E424A0E93D00F3F51B /* EventFinderInputViewController.swift */; };
@@ -205,8 +204,6 @@
 		97EB41C52408F20700E6D441 /* CameraControlViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraControlViewController.swift; sourceTree = "<group>"; };
 		97EB41C82408F26200E6D441 /* SettingStepperCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingStepperCell.swift; sourceTree = "<group>"; };
 		97F1141D2408AE06003A06D7 /* DataLocationSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataLocationSelectionViewController.swift; sourceTree = "<group>"; };
-		97FF959E240A2E9900E9F44F /* Request.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Request.swift; sourceTree = "<group>"; };
-		97FF959F240A2E9900E9F44F /* RequestHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RequestHandler.swift; sourceTree = "<group>"; };
 		97FF95A4240A340300E9F44F /* BaseResultHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseResultHandler.swift; sourceTree = "<group>"; };
 		97FF95A9240A3F0900E9F44F /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
 		EA10553224935A4700E49C6D /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
@@ -257,6 +254,7 @@
 				979D2FAD23FEB2B4005D2592 /* libbz2.tbd in Frameworks */,
 				979D2FAF23FEB2BD005D2592 /* libz.tbd in Frameworks */,
 				EABF7A032539731300F2460C /* SDWebImage in Frameworks */,
+				EA09B5EC254BB92900DACC1D /* MWRequest in Frameworks */,
 				979D2FAB23FEB2AA005D2592 /* libc++.tbd in Frameworks */,
 				EA5F726B24ACA74F00B0237D /* AppCenterAnalytics.xcframework in Frameworks */,
 				979D2FA623FEB1DD005D2592 /* CelestiaCore.framework in Frameworks */,
@@ -523,8 +521,6 @@
 		97FF959C240A2E8A00E9F44F /* Request */ = {
 			isa = PBXGroup;
 			children = (
-				97FF959E240A2E9900E9F44F /* Request.swift */,
-				97FF959F240A2E9900E9F44F /* RequestHandler.swift */,
 				97FF95A4240A340300E9F44F /* BaseResultHandler.swift */,
 			);
 			path = Request;
@@ -615,6 +611,7 @@
 			packageProductDependencies = (
 				EABF795225391ECB00F2460C /* Zip */,
 				EABF7A022539731300F2460C /* SDWebImage */,
+				EA09B5EB254BB92900DACC1D /* MWRequest */,
 			);
 			productName = MobileCelestia;
 			productReference = 979D2F7A23FEB1A6005D2592 /* Celestia.app */;
@@ -690,6 +687,7 @@
 			packageReferences = (
 				EABF795125391ECB00F2460C /* XCRemoteSwiftPackageReference "Zip" */,
 				EABF7A012539731300F2460C /* XCRemoteSwiftPackageReference "SDWebImage" */,
+				EA09B5EA254BB92900DACC1D /* XCRemoteSwiftPackageReference "mwrequest" */,
 			);
 			productRefGroup = 979D2F7B23FEB1A6005D2592 /* Products */;
 			projectDirPath = "";
@@ -825,7 +823,6 @@
 				977394BD2404189000E38B82 /* SearchViewController.swift in Sources */,
 				977394B12403F30900E38B82 /* SettingModel.swift in Sources */,
 				972477D52404A63800729B45 /* BrowserCommonViewController.swift in Sources */,
-				97FF95A0240A2E9900E9F44F /* Request.swift in Sources */,
 				974F86E22403BD3C00356795 /* InfoViewController.swift in Sources */,
 				978406DF24029D9100876FD1 /* LoadingFailureViewController.swift in Sources */,
 				EA1BC6E524A0E93D00F3F51B /* EventFinderInputViewController.swift in Sources */,
@@ -862,7 +859,6 @@
 				EA1BC6E724A0E94900F3F51B /* EventFinderResultViewController.swift in Sources */,
 				EABF792425389B2400F2460C /* ResourceCategory.swift in Sources */,
 				973BBA6624054E9900E3B061 /* TextViewController.swift in Sources */,
-				97FF95A1240A2E9900E9F44F /* RequestHandler.swift in Sources */,
 				979D2F7E23FEB1A6005D2592 /* AppDelegate.swift in Sources */,
 				EA5E185D2477C78E00F5374B /* Toast.swift in Sources */,
 				977394A32403E68800E38B82 /* Color.swift in Sources */,
@@ -1219,6 +1215,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		EA09B5EA254BB92900DACC1D /* XCRemoteSwiftPackageReference "mwrequest" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/levinli303/mwrequest.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.2.2;
+			};
+		};
 		EABF795125391ECB00F2460C /* XCRemoteSwiftPackageReference "Zip" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/marmelroy/Zip.git";
@@ -1238,6 +1242,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		EA09B5EB254BB92900DACC1D /* MWRequest */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EA09B5EA254BB92900DACC1D /* XCRemoteSwiftPackageReference "mwrequest" */;
+			productName = MWRequest;
+		};
 		EABF795225391ECB00F2460C /* Zip */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = EABF795125391ECB00F2460C /* XCRemoteSwiftPackageReference "Zip" */;

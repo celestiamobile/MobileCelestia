@@ -10,6 +10,7 @@
 //
 
 import Foundation
+import MWRequest
 
 struct BaseResult: JSONDecodable {
     static var decoder: JSONDecoder? { return nil }
@@ -27,46 +28,55 @@ typealias RequestHandler = JSONRequestHandler<BaseResult>
 
 extension RequestHandler {
     class func post<T: Decodable>(url: String,
-                                  params: [String:String] = [:],
+                                  parameters: [String: String] = [:],
                                   success: ((T) -> Void)? = nil,
-                                  fail: FailHandler? = nil,
+                                  failure: FailureHandler? = nil,
                                   decoder: JSONDecoder = JSONDecoder(),
-                                  queue: DispatchQueue = .main,
                                   session: URLSession = .shared) -> Self {
-        return post(url: url, params: params, success: { (output) in
-            func unexpectedServerError() { fail?(CelestiaString("Unknown error", comment: "")) }
+        return post(url: url, parameters: parameters, success: { (output) in
+            func unexpectedServerError() {
+                DispatchQueue.main.async { failure?(.unknown) }
+            }
+
             guard output.status == 0, let data = output.info.detail?.data(using: .utf8) else {
                 unexpectedServerError()
                 return
             }
             do {
                 let result = try decoder.decode(T.self, from: data)
-                success?(result)
+                DispatchQueue.main.async { success?(result) }
             } catch {
                 unexpectedServerError()
             }
-        }, fail: fail, queue: queue, session: session)
+        }, failure: { error in
+            DispatchQueue.main.async { failure?(error) }
+        }, session: session)
     }
 
     class func get<T: Decodable>(url: String,
-                                  params: [String:String] = [:],
+                                  parameters: [String: String] = [:],
                                   success: ((T) -> Void)? = nil,
-                                  fail: FailHandler? = nil,
+                                  failure: FailureHandler? = nil,
                                   decoder: JSONDecoder = JSONDecoder(),
                                   queue: DispatchQueue = .main,
                                   session: URLSession = .shared) -> Self {
-        return get(url: url, params: params, success: { (output) in
-            func unexpectedServerError() { fail?(CelestiaString("Unknown error", comment: "")) }
+        return get(url: url, parameters: parameters, success: { (output) in
+            func unexpectedServerError() {
+                DispatchQueue.main.async { failure?(.unknown) }
+            }
+
             guard output.status == 0, let data = output.info.detail?.data(using: .utf8) else {
                 unexpectedServerError()
                 return
             }
             do {
                 let result = try decoder.decode(T.self, from: data)
-                success?(result)
+                DispatchQueue.main.async { success?(result) }
             } catch {
                 unexpectedServerError()
             }
-        }, fail: fail, queue: queue, session: session)
+        }, failure: { error in
+            DispatchQueue.main.async { failure?(error) }
+        }, session: session)
     }
 }

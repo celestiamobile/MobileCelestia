@@ -49,12 +49,12 @@ class ResourceCategoryListViewController: AsyncListViewController<ResourceCatego
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: CelestiaString("Installed", comment: ""), style: .plain, target: self, action: #selector(viewInstalled))
     }
 
-    override func refresh(success: @escaping ([ResourceCategoryItem]) -> Void, failure: @escaping (String) -> Void) {
+    override func refresh(success: @escaping ([ResourceCategoryItem]) -> Void, failure: @escaping (Error) -> Void) {
         let requestURL = apiPrefix + "/resource/categories"
         let locale = LocalizedString("LANGUAGE", "celestia")
-        _ = RequestHandler.get(url: requestURL, params: ["lang" : locale], success: { (categories: [ResourceCategory]) in
+        _ = RequestHandler.get(url: requestURL, parameters: ["lang" : locale], success: { (categories: [ResourceCategory]) in
             success(categories.map{ ResourceCategoryItem.wrapped(category: $0) })
-        }, fail: failure)
+        }, failure: failure)
     }
 
     @objc private func viewInstalled() {
