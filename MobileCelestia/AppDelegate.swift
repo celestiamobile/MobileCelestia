@@ -24,7 +24,7 @@ let showHelpNotificationName = Notification.Name("showHelpNotificationName")
 let requestOpenFileNotificationName = Notification.Name("requestOpenFileNotificationName")
 #endif
 
-let officialWebsiteURL = URL(string: "https://celestia.space")!
+let officialWebsiteURL = URL(string: "https://celestia.mobi")!
 let supportForumURL = URL(string: "https://celestia.space/forum")!
 let apiPrefix = "https://celestia.mobi/api"
 
