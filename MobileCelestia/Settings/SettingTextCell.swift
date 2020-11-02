@@ -22,8 +22,17 @@ class SettingTextCell: UITableViewCell {
     private var savedAccessoryType: UITableViewCell.AccessoryType = .none
 
     override var accessoryType: UITableViewCell.AccessoryType {
-        get { return savedAccessoryType }
+        get {
+            if #available(iOS 13, *) {
+                return super.accessoryType
+            }
+            return savedAccessoryType
+        }
         set {
+            if #available(iOS 13, *) {
+                super.accessoryType = newValue
+                return
+            }
             savedAccessoryType = newValue
             switch newValue {
             case .none:
