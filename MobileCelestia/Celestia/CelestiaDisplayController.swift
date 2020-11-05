@@ -214,7 +214,11 @@ extension CelestiaDisplayController {
 
         core.setDPI(Int(96.0 * glView.contentScaleFactor / applicationScalingFactor))
         core.setSafeAreaInsets(view.safeAreaInsets.scale(by: glView.contentScaleFactor))
+        #if targetEnvironment(macCatalyst)
+        core.setPickTolerance(4 * glView.contentScaleFactor / applicationScalingFactor)
+        #else
         core.setPickTolerance(10 * glView.contentScaleFactor / applicationScalingFactor)
+        #endif
     }
 }
 

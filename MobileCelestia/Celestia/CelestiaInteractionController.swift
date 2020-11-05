@@ -84,8 +84,15 @@ class CelestiaInteractionController: UIViewController {
         static let controlViewShowAnimationDuration: TimeInterval = 0.2
     }
 
-    private var interactionMode = InteractionMode.object { didSet { currentInteractionMode = interactionMode } }
-    private var currentInteractionMode = InteractionMode.object
+    private var interactionMode: InteractionMode = {
+        #if targetEnvironment(macCatalyst)
+        return .camera // Follows AppKit implementation
+        #else
+        return .object
+        #endif
+    }() { didSet { currentInteractionMode = interactionMode } }
+
+    private lazy var currentInteractionMode = interactionMode
     private var zoomMode: ZoomMode? = nil
 
     private lazy var activeControlView = CelestiaControlView(items: [
