@@ -13,9 +13,11 @@ import UIKit
 
 import CelestiaCore
 
+#if !targetEnvironment(macCatalyst) || arch(x86_64)
 import AppCenter
 import AppCenterAnalytics
 import AppCenterCrashes
+#endif
 
 let newURLOpenedNotificationName = Notification.Name("newURLOpenedNotificationName")
 let newURLOpenedNotificationURLKey = "newURLOpenedNotificationURLKey"
@@ -39,7 +41,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         #if targetEnvironment(macCatalyst)
         MacBridge.initialize()
 
+        #if arch(x86_64)
         UserDefaults.standard.register(defaults: ["NSApplicationCrashOnExceptions": true])
+        #endif
 
         // Force dark aqua appearance
         MacBridge.forceDarkAppearance()
@@ -53,6 +57,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         #endif
 
+        #if !targetEnvironment(macCatalyst) || arch(x86_64)
         #if !DEBUG
         #if targetEnvironment(macCatalyst)
         let appCenterID = "63a9e404-a07b-40eb-a5e7-320f65934b05"
@@ -63,6 +68,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             MSAnalytics.self,
             MSCrashes.self
         ])
+        #endif
         #endif
 
         if #available(iOS 13.0, *) { return true }
