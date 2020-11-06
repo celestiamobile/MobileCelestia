@@ -46,19 +46,42 @@ class ResourceCategoryListViewController: AsyncListViewController<ResourceCatego
         super.viewDidLoad()
 
         title = CelestiaString("Categories", comment: "")
+        #if targetEnvironment(macCatalyst)
+        view.backgroundColor = .clear
+        #endif
+
+        #if !targetEnvironment(macCatalyst)
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: CelestiaString("Installed", comment: ""), style: .plain, target: self, action: #selector(viewInstalled))
+        #endif
     }
 
-    override func refresh(success: @escaping ([ResourceCategoryItem]) -> Void, failure: @escaping (Error) -> Void) {
+    #if targetEnvironment(macCatalyst)
+    override var showDisclosureIndicator: Bool {
+        return false
+    }
+
+    override var useStandardUITableViewCell: Bool {
+        return true
+    }
+    #endif
+
+    override func refresh(success: @escaping ([[ResourceCategoryItem]]) -> Void, failure: @escaping (Error) -> Void) {
         let requestURL = apiPrefix + "/resource/categories"
         let locale = LocalizedString("LANGUAGE", "celestia")
         _ = RequestHandler.get(url: requestURL, parameters: ["lang" : locale], success: { (categories: [ResourceCategory]) in
-            success(categories.map{ ResourceCategoryItem.wrapped(category: $0) })
+            let items = categories.map{ ResourceCategoryItem.wrapped(category: $0) }
+            #if targetEnvironment(macCatalyst)
+            success([items, [.installed]])
+            #else
+            success([items])
+            #endif
         }, failure: failure)
     }
 
+    #if !targetEnvironment(macCatalyst)
     @objc private func viewInstalled() {
         viewInstalledHandler()
     }
+    #endif
 }
 

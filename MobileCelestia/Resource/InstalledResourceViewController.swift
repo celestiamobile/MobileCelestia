@@ -19,11 +19,11 @@ class InstalledResourceViewController: AsyncListViewController<ResourceItem> {
         title = CelestiaString("Installed", comment: "")
     }
 
-    override func refresh(success: @escaping ([ResourceItem]) -> Void, failure: @escaping (Error) -> Void) {
+    override func refresh(success: @escaping ([[ResourceItem]]) -> Void, failure: @escaping (Error) -> Void) {
         DispatchQueue.global().async {
             let items = ResourceManager.shared.installedResources()
             DispatchQueue.main.async {
-                success(items)
+                success([items])
             }
         }
     }

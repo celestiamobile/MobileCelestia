@@ -14,7 +14,11 @@ import UIKit
 import CelestiaCore
 
 class BrowserContainerViewController: UIViewController {
+    #if targetEnvironment(macCatalyst)
+    private lazy var controller = UISplitViewController()
+    #else
     private lazy var controller = UITabBarController()
+    #endif
 
     private let selected: (CelestiaSelection) -> Void
 
@@ -48,6 +52,22 @@ private extension BrowserContainerViewController {
             self.selected(selection)
         }
 
+        #if targetEnvironment(macCatalyst)
+        controller.primaryBackgroundStyle = .sidebar
+        if #available(macCatalyst 14.0, *) {
+            controller.preferredDisplayMode = .oneBesideSecondary
+        } else {
+            controller.preferredDisplayMode = .allVisible
+        }
+        controller.preferredPrimaryColumnWidthFraction = 0.3
+        let sidebarController = BrowserSidebarController(browserRoots: [solBrowserRoot, starBrowserRoot, dsoBrowserRoot]) { [unowned self] item in
+            let newVc = BrowserCoordinatorController(item: item, image: UIImage(), selection: handler)
+            controller.viewControllers = [self.controller.viewControllers[0], newVc]
+        }
+        let emptyVc = UIViewController()
+        emptyVc.view.backgroundColor = .darkBackground
+        controller.viewControllers = [sidebarController, emptyVc]
+        #else
         controller.setViewControllers([
             BrowserCoordinatorController(item: solBrowserRoot, image: #imageLiteral(resourceName: "browser_tab_sso"), selection: handler),
             BrowserCoordinatorController(item: starBrowserRoot, image: #imageLiteral(resourceName: "browser_tab_star"), selection: handler),
@@ -56,5 +76,53 @@ private extension BrowserContainerViewController {
 
         controller.tabBar.barStyle = .black
         controller.tabBar.barTintColor = .black
+        #endif
     }
 }
+
+#if targetEnvironment(macCatalyst)
+class BrowserSidebarController: BaseTableViewController {
+    enum Section {
+        case single
+    }
+
+    private lazy var dataSource: UITableViewDiffableDataSource<Section, CelestiaBrowserItem> = {
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
+        let dataSource = UITableViewDiffableDataSource<Section, CelestiaBrowserItem>(tableView: tableView) { (view, indexPath, item) -> UITableViewCell? in
+            let cell = view.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+            cell.textLabel?.text = item.alternativeName ?? item.name
+            return cell
+        }
+        return dataSource
+    }()
+
+    private let browserRoots: [CelestiaBrowserItem]
+    private let handler: (CelestiaBrowserItem) -> Void
+
+    init(browserRoots: [CelestiaBrowserItem], handler: @escaping (CelestiaBrowserItem) -> Void) {
+        self.browserRoots = browserRoots
+        self.handler = handler
+        super.init(style: .grouped)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        var snapshot = NSDiffableDataSourceSnapshot<Section, CelestiaBrowserItem>()
+        snapshot.appendSections([.single])
+        snapshot.appendItems(browserRoots, toSection: .single)
+        tableView.dataSource = dataSource
+        tableView.estimatedRowHeight = 44
+        tableView.rowHeight = UITableView.automaticDimension
+        dataSource.apply(snapshot, animatingDifferences: false, completion: nil)
+    }
+
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        handler(browserRoots[indexPath.row])
+    }
+}
+#endif
