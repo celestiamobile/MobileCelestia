@@ -89,10 +89,9 @@ class CelestiaInteractionController: UIViewController {
         return .camera
     }
     #else
-    private var interactionMode: InteractionMode = .object { didSet { currentInteractionMode = interactionMode } }
+    private var interactionMode: InteractionMode = .object
     #endif
 
-    private lazy var currentInteractionMode = interactionMode
     private var zoomMode: ZoomMode? = nil
 
     #if targetEnvironment(macCatalyst)
@@ -342,9 +341,13 @@ extension CelestiaInteractionController {
 
 extension CelestiaInteractionController {
     @objc private func handlePanZoom(_ pan: UIPanGestureRecognizer) {
+        var modifiers: UIKeyModifierFlags = []
+        if #available(iOS 13.4, *) {
+            modifiers = pan.modifierFlags
+        }
         switch pan.state {
         case .changed:
-            zoom(deltaY: pan.translation(with: renderingTargetGeometry).y / 400)
+            zoom(deltaY: pan.translation(with: renderingTargetGeometry).y / 400, modifiers: UInt(modifiers.rawValue), scrolling: true)
         case .possible, .began, .ended, .cancelled, .failed:
             fallthrough
         @unknown default:
@@ -354,6 +357,16 @@ extension CelestiaInteractionController {
 
     @objc private func handlePan(_ pan: UIPanGestureRecognizer) {
         let location = pan.location(with: renderingTargetGeometry)
+        var modifiers: UIKeyModifierFlags = []
+        var button = interactionMode.button
+        if #available(iOS 13.4, *) {
+            modifiers = pan.modifierFlags
+            if pan.buttonMask.contains(.secondary) {
+                button = .right
+            } else if pan.buttonMask.contains(.primary) {
+                button = modifiers.contains(.alternate) ? .right : .left
+            }
+        }
         switch pan.state {
         case .possible:
             break
@@ -361,31 +374,20 @@ extension CelestiaInteractionController {
             #if targetEnvironment(macCatalyst)
             NSCursor.hide()
             #endif
-            if #available(iOS 13.4, *) {
-                if pan.modifierFlags.contains(.control) || pan.buttonMask.contains(.secondary) {
-                    // When control is clicked, use next drag mode
-                    currentInteractionMode = interactionMode.next
-                } else {
-                    currentInteractionMode = interactionMode
-                }
-            } else {
-                currentInteractionMode = interactionMode
-            }
             oneFingerStartPoint = location
-            core.mouseButtonDown(at: location, modifiers: 0, with: currentInteractionMode.button)
+            core.mouseButtonDown(at: location, modifiers: UInt(modifiers.rawValue), with: button)
         case .changed:
             let current = oneFingerStartPoint!
             let offset = CGPoint(x: location.x - current.x, y: location.y - current.y)
             oneFingerStartPoint = location
-            core.mouseMove(by: offset, modifiers: 0, with: currentInteractionMode.button)
+            core.mouseMove(by: offset, modifiers: UInt(modifiers.rawValue), with: button)
         case .ended, .cancelled, .failed:
             fallthrough
         @unknown default:
             #if targetEnvironment(macCatalyst)
             NSCursor.unhide()
             #endif
-            currentInteractionMode = interactionMode
-            core.mouseButtonUp(at: location, modifiers: 0, with: currentInteractionMode.button)
+            core.mouseButtonUp(at: location, modifiers: UInt(modifiers.rawValue), with: button)
             oneFingerStartPoint = nil
         }
     }
@@ -450,16 +452,12 @@ extension CelestiaInteractionController {
         }
     }
 
-    private func zoom(deltaY: CGFloat) {
-        #if targetEnvironment(macCatalyst)
-        core.mouseWheel(by: deltaY, modifiers: 0)
-        #else
-        if currentInteractionMode == .camera {
-            core.mouseMove(by: CGPoint(x: 0, y: deltaY), modifiers: UInt(UIKeyModifierFlags.shift.rawValue), with: .left)
+    private func zoom(deltaY: CGFloat, modifiers: UInt = 0, scrolling: Bool = false) {
+        if scrolling || interactionMode == .object {
+            core.mouseWheel(by: deltaY, modifiers: modifiers)
         } else {
-            core.mouseWheel(by: deltaY, modifiers: 0)
+            core.mouseMove(by: CGPoint(x: 0, y: deltaY), modifiers: UInt(UIKeyModifierFlags.shift.rawValue), with: .left)
         }
-        #endif
     }
 }
 
