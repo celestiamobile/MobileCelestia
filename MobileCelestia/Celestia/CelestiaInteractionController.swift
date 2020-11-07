@@ -84,17 +84,26 @@ class CelestiaInteractionController: UIViewController {
         static let controlViewShowAnimationDuration: TimeInterval = 0.2
     }
 
-    private var interactionMode: InteractionMode = {
-        #if targetEnvironment(macCatalyst)
-        return .camera // Follows AppKit implementation
-        #else
-        return .object
-        #endif
-    }() { didSet { currentInteractionMode = interactionMode } }
+    #if targetEnvironment(macCatalyst)
+    private var interactionMode: InteractionMode {
+        return .camera
+    }
+    #else
+    private var interactionMode: InteractionMode = .object { didSet { currentInteractionMode = interactionMode } }
+    #endif
 
     private lazy var currentInteractionMode = interactionMode
     private var zoomMode: ZoomMode? = nil
 
+    #if targetEnvironment(macCatalyst)
+    private lazy var activeControlView = CelestiaControlView(items: [
+        CelestiaControlButton.pressAndHold(image: #imageLiteral(resourceName: "control_zoom_in"), action: .zoomIn),
+        CelestiaControlButton.pressAndHold(image: #imageLiteral(resourceName: "control_zoom_out"), action: .zoomOut),
+        CelestiaControlButton.tap(image: #imageLiteral(resourceName: "control_info"), action: .info),
+        CelestiaControlButton.tap(image: #imageLiteral(resourceName: "control_action_menu"), action: .showMenu),
+        CelestiaControlButton.tap(image: #imageLiteral(resourceName: "control_hide"), action: .hide),
+    ])
+    #else
     private lazy var activeControlView = CelestiaControlView(items: [
         CelestiaControlButton.toggle(offImage: #imageLiteral(resourceName: "control_mode_object"), offAction: .switchToObject, onImage: #imageLiteral(resourceName: "control_mode_camera"), onAction: .switchToCamera),
         CelestiaControlButton.pressAndHold(image: #imageLiteral(resourceName: "control_zoom_in"), action: .zoomIn),
@@ -103,6 +112,7 @@ class CelestiaInteractionController: UIViewController {
         CelestiaControlButton.tap(image: #imageLiteral(resourceName: "control_action_menu"), action: .showMenu),
         CelestiaControlButton.tap(image: #imageLiteral(resourceName: "control_hide"), action: .hide),
     ])
+    #endif
 
     private lazy var inactiveControlView = CelestiaControlView(items: [
         CelestiaControlButton.tap(image: #imageLiteral(resourceName: "control_show"), action: .show),
@@ -247,6 +257,7 @@ extension CelestiaInteractionController: CelestiaControlViewDelegate {
     }
 
     func celestiaControlView(_ celestiaControlView: CelestiaControlView, didToggleTo action: CelestiaControlAction) {
+        #if !targetEnvironment(macCatalyst)
         let toastDuration: TimeInterval = 1
         interactionMode = action == .switchToObject ? .object : .camera
         switch action {
@@ -263,6 +274,7 @@ extension CelestiaInteractionController: CelestiaControlViewDelegate {
         default:
             fatalError("Unknown mode found: \(action)")
         }
+        #endif
     }
 }
 
@@ -439,11 +451,15 @@ extension CelestiaInteractionController {
     }
 
     private func zoom(deltaY: CGFloat) {
+        #if targetEnvironment(macCatalyst)
+        core.mouseWheel(by: deltaY, modifiers: 0)
+        #else
         if currentInteractionMode == .camera {
             core.mouseMove(by: CGPoint(x: 0, y: deltaY), modifiers: UInt(UIKeyModifierFlags.shift.rawValue), with: .left)
         } else {
             core.mouseWheel(by: deltaY, modifiers: 0)
         }
+        #endif
     }
 }
 
