@@ -12,6 +12,7 @@
 import UIKit
 
 import MobileCoreServices
+import UniformTypeIdentifiers
 
 class DataLocationSelectionViewController: BaseTableViewController {
     private var items: [[TextItem]] = []
@@ -113,9 +114,15 @@ extension DataLocationSelectionViewController {
 
             loadContents()
         } else {
-            let type = [kUTTypeFolder as String, "space.celestia.config"][indexPath.row]
+            let browser: UIDocumentPickerViewController
+            if #available(iOS 14, *) {
+                let types = [UTType.folder, UTType(filenameExtension: "cfg") ?? UTType(exportedAs: "space.celestia.config")]
+                browser = UIDocumentPickerViewController(forOpeningContentTypes: [types[indexPath.row]])
+            } else {
+                let types = [kUTTypeFolder as String, "space.celestia.config"]
+                browser = UIDocumentPickerViewController(documentTypes: [types[indexPath.row]], in: .open)
+            }
             currentPicker = Location(rawValue: indexPath.row)
-            let browser = UIDocumentPickerViewController(documentTypes: [type], in: .open)
             browser.allowsMultipleSelection = false
             browser.delegate = self
             present(browser, animated: true, completion: nil)

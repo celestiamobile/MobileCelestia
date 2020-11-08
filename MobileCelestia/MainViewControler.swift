@@ -16,6 +16,7 @@ import CelestiaCore
 #if !targetEnvironment(macCatalyst)
 import SafariServices
 #endif
+import UniformTypeIdentifiers
 
 private let userInitiatedDismissalFlag = 1
 
@@ -133,8 +134,14 @@ class MainViewControler: UIViewController {
 extension MainViewControler {
     #if targetEnvironment(macCatalyst)
     @objc private func requestOpenFile() {
-        let types = ["space.celestia.script", "public.flc-animation"]
-        let browser = UIDocumentPickerViewController(documentTypes: types, in: .open)
+        let browser: UIDocumentPickerViewController
+        if #available(iOS 14, *) {
+            let types = Set([UTType(filenameExtension: "cel"), UTType(filenameExtension: "celx"), UTType(exportedAs: "space.celestia.script")]).compactMap { $0 }
+            browser = UIDocumentPickerViewController(forOpeningContentTypes: types)
+        } else {
+            let types = ["space.celestia.script", "public.flc-animation"] // .cel extension is taken by public.flc-animation
+            browser = UIDocumentPickerViewController(documentTypes: types, in: .open)
+        }
         browser.allowsMultipleSelection = false
         browser.delegate = self
         present(browser, animated: true, completion: nil)
