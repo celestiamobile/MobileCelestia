@@ -19,10 +19,3 @@ cd ..
 
 # Install gettext, needed for translation
 brew install gettext
-
-# Download AppCenter
-cd $APPCENTER_SOURCE_DIRECTORY
-brew install wget
-wget https://github.com/microsoft/appcenter-sdk-apple/releases/download/${APPCENTER_VERSION}/AppCenter-SDK-Apple-XCFramework-${APPCENTER_VERSION}.zip
-unzip -qq AppCenter-SDK-Apple-XCFramework-${APPCENTER_VERSION}.zip 'AppCenter-SDK-Apple/*'
-ln -sf AppCenter-SDK-Apple AppCenter

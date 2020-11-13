@@ -73,9 +73,6 @@
 		EA28CA4E24A25FE7004B011E /* BottomControlViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA28CA4D24A25FE7004B011E /* BottomControlViewController.swift */; };
 		EA28CA5324A2F399004B011E /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = EA28CA5124A2F399004B011E /* Fonts */; };
 		EA5E185D2477C78E00F5374B /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5E185B2477C78E00F5374B /* Toast.swift */; };
-		EA5F726724ACA74F00B0237D /* AppCenterCrashes.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA5F726424ACA74F00B0237D /* AppCenterCrashes.xcframework */; };
-		EA5F726924ACA74F00B0237D /* AppCenter.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA5F726524ACA74F00B0237D /* AppCenter.xcframework */; };
-		EA5F726B24ACA74F00B0237D /* AppCenterAnalytics.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA5F726624ACA74F00B0237D /* AppCenterAnalytics.xcframework */; };
 		EA934C90251D90C500DD284C /* MainSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA934C8F251D90C500DD284C /* MainSceneDelegate.swift */; };
 		EA934C9A251D92AD00DD284C /* PanelSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA934C99251D92A700DD284C /* PanelSceneDelegate.swift */; };
 		EA982BFF25496B6D00CDC642 /* BaseTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA982BFE25496B6D00CDC642 /* BaseTableViewController.swift */; };
@@ -100,6 +97,8 @@
 		EADE7FC0252B54A400D4174F /* CelestiaInteractionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE7FBF252B54A400D4174F /* CelestiaInteractionController.swift */; };
 		EAF48515249B2C4700E5B817 /* SubsystemBrowserCoordinatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF48514249B2C4700E5B817 /* SubsystemBrowserCoordinatorViewController.swift */; };
 		EAF48520249B5C2500E5B817 /* StandardButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF4851F249B5C2500E5B817 /* StandardButton.swift */; };
+		EAF4A2F1255E4AA000F67F80 /* AppCenterCrashes in Frameworks */ = {isa = PBXBuildFile; productRef = EAF4A2F0255E4AA000F67F80 /* AppCenterCrashes */; };
+		EAF4A2F3255E4AA000F67F80 /* AppCenterAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = EAF4A2F2255E4AA000F67F80 /* AppCenterAnalytics */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -214,9 +213,6 @@
 		EA28CA4D24A25FE7004B011E /* BottomControlViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomControlViewController.swift; sourceTree = "<group>"; };
 		EA28CA5124A2F399004B011E /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Fonts; path = ../../../CelestiaCore/Fonts; sourceTree = "<group>"; };
 		EA5E185B2477C78E00F5374B /* Toast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
-		EA5F726424ACA74F00B0237D /* AppCenterCrashes.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = AppCenterCrashes.xcframework; path = AppCenter/AppCenterCrashes.xcframework; sourceTree = "<group>"; };
-		EA5F726524ACA74F00B0237D /* AppCenter.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = AppCenter.xcframework; path = AppCenter/AppCenter.xcframework; sourceTree = "<group>"; };
-		EA5F726624ACA74F00B0237D /* AppCenterAnalytics.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = AppCenterAnalytics.xcframework; path = AppCenter/AppCenterAnalytics.xcframework; sourceTree = "<group>"; };
 		EA934C8F251D90C500DD284C /* MainSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSceneDelegate.swift; sourceTree = "<group>"; };
 		EA934C99251D92A700DD284C /* PanelSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelSceneDelegate.swift; sourceTree = "<group>"; };
 		EA982BFE25496B6D00CDC642 /* BaseTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTableViewController.swift; sourceTree = "<group>"; };
@@ -256,10 +252,9 @@
 				EABF7A032539731300F2460C /* SDWebImage in Frameworks */,
 				EA09B5EC254BB92900DACC1D /* MWRequest in Frameworks */,
 				979D2FAB23FEB2AA005D2592 /* libc++.tbd in Frameworks */,
-				EA5F726B24ACA74F00B0237D /* AppCenterAnalytics.xcframework in Frameworks */,
+				EAF4A2F1255E4AA000F67F80 /* AppCenterCrashes in Frameworks */,
+				EAF4A2F3255E4AA000F67F80 /* AppCenterAnalytics in Frameworks */,
 				979D2FA623FEB1DD005D2592 /* CelestiaCore.framework in Frameworks */,
-				EA5F726924ACA74F00B0237D /* AppCenter.xcframework in Frameworks */,
-				EA5F726724ACA74F00B0237D /* AppCenterCrashes.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -485,9 +480,6 @@
 		979D2FA523FEB1DD005D2592 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				EA5F726524ACA74F00B0237D /* AppCenter.xcframework */,
-				EA5F726624ACA74F00B0237D /* AppCenterAnalytics.xcframework */,
-				EA5F726424ACA74F00B0237D /* AppCenterCrashes.xcframework */,
 				EA10553224935A4700E49C6D /* Metal.framework */,
 				979D2FAE23FEB2B9005D2592 /* libz.tbd */,
 				979D2FAC23FEB2AE005D2592 /* libbz2.tbd */,
@@ -612,6 +604,8 @@
 				EABF795225391ECB00F2460C /* Zip */,
 				EABF7A022539731300F2460C /* SDWebImage */,
 				EA09B5EB254BB92900DACC1D /* MWRequest */,
+				EAF4A2F0255E4AA000F67F80 /* AppCenterCrashes */,
+				EAF4A2F2255E4AA000F67F80 /* AppCenterAnalytics */,
 			);
 			productName = MobileCelestia;
 			productReference = 979D2F7A23FEB1A6005D2592 /* Celestia.app */;
@@ -688,6 +682,7 @@
 				EABF795125391ECB00F2460C /* XCRemoteSwiftPackageReference "Zip" */,
 				EABF7A012539731300F2460C /* XCRemoteSwiftPackageReference "SDWebImage" */,
 				EA09B5EA254BB92900DACC1D /* XCRemoteSwiftPackageReference "mwrequest" */,
+				EAF4A2EF255E4AA000F67F80 /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */,
 			);
 			productRefGroup = 979D2F7B23FEB1A6005D2592 /* Products */;
 			projectDirPath = "";
@@ -1241,6 +1236,14 @@
 				minimumVersion = 5.9.3;
 			};
 		};
+		EAF4A2EF255E4AA000F67F80 /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/microsoft/appcenter-sdk-apple.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 4.0.0;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -1258,6 +1261,16 @@
 			isa = XCSwiftPackageProductDependency;
 			package = EABF7A012539731300F2460C /* XCRemoteSwiftPackageReference "SDWebImage" */;
 			productName = SDWebImage;
+		};
+		EAF4A2F0255E4AA000F67F80 /* AppCenterCrashes */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EAF4A2EF255E4AA000F67F80 /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
+			productName = AppCenterCrashes;
+		};
+		EAF4A2F2255E4AA000F67F80 /* AppCenterAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EAF4A2EF255E4AA000F67F80 /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
+			productName = AppCenterAnalytics;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
