@@ -70,6 +70,10 @@
 	<true/>
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright (C) 2001-2020, the Celestia Development Team</string>
+	<key>NSUserActivityTypes</key>
+	<array>
+		<string>ConfigurationIntent</string>
+	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

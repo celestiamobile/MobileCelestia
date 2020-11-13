@@ -70,8 +70,23 @@
 		EA1BC6E324A0E92B00F3F51B /* EventFinderCoordinatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E224A0E92B00F3F51B /* EventFinderCoordinatorViewController.swift */; };
 		EA1BC6E524A0E93D00F3F51B /* EventFinderInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E424A0E93D00F3F51B /* EventFinderInputViewController.swift */; };
 		EA1BC6E724A0E94900F3F51B /* EventFinderResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E624A0E94900F3F51B /* EventFinderResultViewController.swift */; };
+		EA26DB09255CDE1F00D26D7B /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA26DB08255CDE1F00D26D7B /* WidgetKit.framework */; platformFilter = ios; };
+		EA26DB0B255CDE1F00D26D7B /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA26DB0A255CDE1F00D26D7B /* SwiftUI.framework */; };
+		EA26DB0E255CDE1F00D26D7B /* CelestiaWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA26DB0D255CDE1F00D26D7B /* CelestiaWidget.swift */; };
+		EA26DB11255CDE2000D26D7B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EA26DB10255CDE2000D26D7B /* Assets.xcassets */; };
+		EA26DB13255CDE2000D26D7B /* CelestiaWidget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = EA26DB0F255CDE1F00D26D7B /* CelestiaWidget.intentdefinition */; };
+		EA26DB14255CDE2000D26D7B /* CelestiaWidget.intentdefinition in Sources */ = {isa = PBXBuildFile; fileRef = EA26DB0F255CDE1F00D26D7B /* CelestiaWidget.intentdefinition */; };
+		EA26DB17255CDE2000D26D7B /* CelestiaWidgetExtension.appex in Embed PlugIns */ = {isa = PBXBuildFile; fileRef = EA26DB07255CDE1F00D26D7B /* CelestiaWidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		EA26DB27255CDEC000D26D7B /* CelestiaCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 979D2FA423FEB1D6005D2592 /* CelestiaCore.framework */; platformFilter = ios; };
+		EA26DB3F255CE83800D26D7B /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97401C982414D3460015F8E8 /* URL.swift */; };
+		EA26DB43255CE9A500D26D7B /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97401C992414D3460015F8E8 /* UserDefaults.swift */; };
 		EA28CA4E24A25FE7004B011E /* BottomControlViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA28CA4D24A25FE7004B011E /* BottomControlViewController.swift */; };
 		EA28CA5324A2F399004B011E /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = EA28CA5124A2F399004B011E /* Fonts */; };
+		EA409EA8255EC6E80095D756 /* celestia.cfg in Resources */ = {isa = PBXBuildFile; fileRef = EA409EA7255EC6E80095D756 /* celestia.cfg */; };
+		EA409EAE255EC7870095D756 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EA409EAC255EC77A0095D756 /* libz.tbd */; };
+		EA409EB2255EC78C0095D756 /* libbz2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EA409EAD255EC7830095D756 /* libbz2.tbd */; };
+		EA409EB7255EC79A0095D756 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EA409EB6255EC7940095D756 /* libc++.tbd */; };
+		EA409EC2255ECFBD0095D756 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA409EC1255ECFBD0095D756 /* Renderer.swift */; };
 		EA5E185D2477C78E00F5374B /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5E185B2477C78E00F5374B /* Toast.swift */; };
 		EA934C90251D90C500DD284C /* MainSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA934C8F251D90C500DD284C /* MainSceneDelegate.swift */; };
 		EA934C9A251D92AD00DD284C /* PanelSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA934C99251D92A700DD284C /* PanelSceneDelegate.swift */; };
@@ -116,6 +131,13 @@
 			remoteGlobalIDString = 971A65CC23019BC5009E4EA1;
 			remoteInfo = CelestiaCore;
 		};
+		EA26DB15255CDE2000D26D7B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 979D2F7223FEB1A6005D2592 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EA26DB06255CDE1F00D26D7B;
+			remoteInfo = CelestiaWidgetExtension;
+		};
 		EAC84365252C84B600691943 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 979D2F7223FEB1A6005D2592 /* Project object */;
@@ -132,6 +154,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
+				EA26DB17255CDE2000D26D7B /* CelestiaWidgetExtension.appex in Embed PlugIns */,
 				EAC84364252C84B600691943 /* CelestiaMacBridge.bundle in Embed PlugIns */,
 			);
 			name = "Embed PlugIns";
@@ -210,8 +233,21 @@
 		EA1BC6E424A0E93D00F3F51B /* EventFinderInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventFinderInputViewController.swift; sourceTree = "<group>"; };
 		EA1BC6E624A0E94900F3F51B /* EventFinderResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventFinderResultViewController.swift; sourceTree = "<group>"; };
 		EA1EF056249393BE0039F493 /* Celestia.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Celestia.entitlements; sourceTree = "<group>"; };
+		EA26DB07255CDE1F00D26D7B /* CelestiaWidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = CelestiaWidgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		EA26DB08255CDE1F00D26D7B /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		EA26DB0A255CDE1F00D26D7B /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		EA26DB0D255CDE1F00D26D7B /* CelestiaWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaWidget.swift; sourceTree = "<group>"; };
+		EA26DB0F255CDE1F00D26D7B /* CelestiaWidget.intentdefinition */ = {isa = PBXFileReference; lastKnownFileType = file.intentdefinition; path = CelestiaWidget.intentdefinition; sourceTree = "<group>"; };
+		EA26DB10255CDE2000D26D7B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		EA26DB12255CDE2000D26D7B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		EA26DB18255CDE2000D26D7B /* CelestiaWidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = CelestiaWidgetExtension.entitlements; sourceTree = "<group>"; };
 		EA28CA4D24A25FE7004B011E /* BottomControlViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomControlViewController.swift; sourceTree = "<group>"; };
 		EA28CA5124A2F399004B011E /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Fonts; path = ../../../CelestiaCore/Fonts; sourceTree = "<group>"; };
+		EA409EA7255EC6E80095D756 /* celestia.cfg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = celestia.cfg; sourceTree = "<group>"; };
+		EA409EAC255EC77A0095D756 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/libz.tbd; sourceTree = DEVELOPER_DIR; };
+		EA409EAD255EC7830095D756 /* libbz2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbz2.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/libbz2.tbd; sourceTree = DEVELOPER_DIR; };
+		EA409EB6255EC7940095D756 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.15.sdk/usr/lib/libc++.tbd"; sourceTree = DEVELOPER_DIR; };
+		EA409EC1255ECFBD0095D756 /* Renderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
 		EA5E185B2477C78E00F5374B /* Toast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
 		EA934C8F251D90C500DD284C /* MainSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSceneDelegate.swift; sourceTree = "<group>"; };
 		EA934C99251D92A700DD284C /* PanelSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelSceneDelegate.swift; sourceTree = "<group>"; };
@@ -262,6 +298,19 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EA26DB04255CDE1F00D26D7B /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EA409EB7255EC79A0095D756 /* libc++.tbd in Frameworks */,
+				EA26DB0B255CDE1F00D26D7B /* SwiftUI.framework in Frameworks */,
+				EA409EB2255EC78C0095D756 /* libbz2.tbd in Frameworks */,
+				EA409EAE255EC7870095D756 /* libz.tbd in Frameworks */,
+				EA26DB09255CDE1F00D26D7B /* WidgetKit.framework in Frameworks */,
+				EA26DB27255CDEC000D26D7B /* CelestiaCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -410,10 +459,12 @@
 		979D2F7123FEB1A6005D2592 = {
 			isa = PBXGroup;
 			children = (
+				EA26DB18255CDE2000D26D7B /* CelestiaWidgetExtension.entitlements */,
 				979D2F9F23FEB1D5005D2592 /* CelestiaCore.xcodeproj */,
 				979D2F7C23FEB1A6005D2592 /* MobileCelestia */,
 				979D2F9323FEB1A8005D2592 /* MobileCelestiaTests */,
 				EAC84355252C816500691943 /* CelestiaMacBridge */,
+				EA26DB0C255CDE1F00D26D7B /* CelestiaWidget */,
 				979D2F7B23FEB1A6005D2592 /* Products */,
 				979D2FA523FEB1DD005D2592 /* Frameworks */,
 			);
@@ -425,6 +476,7 @@
 				979D2F7A23FEB1A6005D2592 /* Celestia.app */,
 				979D2F9023FEB1A8005D2592 /* MobileCelestiaTests.xctest */,
 				EAC84354252C816500691943 /* CelestiaMacBridge.bundle */,
+				EA26DB07255CDE1F00D26D7B /* CelestiaWidgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -480,10 +532,15 @@
 		979D2FA523FEB1DD005D2592 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				EA409EB6255EC7940095D756 /* libc++.tbd */,
+				EA409EAD255EC7830095D756 /* libbz2.tbd */,
+				EA409EAC255EC77A0095D756 /* libz.tbd */,
 				EA10553224935A4700E49C6D /* Metal.framework */,
 				979D2FAE23FEB2B9005D2592 /* libz.tbd */,
 				979D2FAC23FEB2AE005D2592 /* libbz2.tbd */,
 				979D2FAA23FEB2A5005D2592 /* libc++.tbd */,
+				EA26DB08255CDE1F00D26D7B /* WidgetKit.framework */,
+				EA26DB0A255CDE1F00D26D7B /* SwiftUI.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -526,6 +583,19 @@
 				EA1BC6E624A0E94900F3F51B /* EventFinderResultViewController.swift */,
 			);
 			path = Event;
+			sourceTree = "<group>";
+		};
+		EA26DB0C255CDE1F00D26D7B /* CelestiaWidget */ = {
+			isa = PBXGroup;
+			children = (
+				EA409EA7255EC6E80095D756 /* celestia.cfg */,
+				EA409EC1255ECFBD0095D756 /* Renderer.swift */,
+				EA26DB0D255CDE1F00D26D7B /* CelestiaWidget.swift */,
+				EA26DB0F255CDE1F00D26D7B /* CelestiaWidget.intentdefinition */,
+				EA26DB10255CDE2000D26D7B /* Assets.xcassets */,
+				EA26DB12255CDE2000D26D7B /* Info.plist */,
+			);
+			path = CelestiaWidget;
 			sourceTree = "<group>";
 		};
 		EABF790E253895DD00F2460C /* Resource */ = {
@@ -598,6 +668,7 @@
 			);
 			dependencies = (
 				EAC84366252C84B600691943 /* PBXTargetDependency */,
+				EA26DB16255CDE2000D26D7B /* PBXTargetDependency */,
 			);
 			name = MobileCelestia;
 			packageProductDependencies = (
@@ -629,6 +700,23 @@
 			productReference = 979D2F9023FEB1A8005D2592 /* MobileCelestiaTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		EA26DB06255CDE1F00D26D7B /* CelestiaWidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EA26DB1C255CDE2000D26D7B /* Build configuration list for PBXNativeTarget "CelestiaWidgetExtension" */;
+			buildPhases = (
+				EA26DB03255CDE1F00D26D7B /* Sources */,
+				EA26DB04255CDE1F00D26D7B /* Frameworks */,
+				EA26DB05255CDE1F00D26D7B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = CelestiaWidgetExtension;
+			productName = CelestiaWidgetExtension;
+			productReference = EA26DB07255CDE1F00D26D7B /* CelestiaWidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		EAC84353252C816500691943 /* CelestiaMacBridge */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = EAC8435A252C816500691943 /* Build configuration list for PBXNativeTarget "CelestiaMacBridge" */;
@@ -652,7 +740,7 @@
 		979D2F7223FEB1A6005D2592 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1130;
+				LastSwiftUpdateCheck = 1200;
 				LastUpgradeCheck = 1130;
 				ORGANIZATIONNAME = "Celestia Development Team";
 				TargetAttributes = {
@@ -663,6 +751,9 @@
 					979D2F8F23FEB1A8005D2592 = {
 						CreatedOnToolsVersion = 11.3;
 						TestTargetID = 979D2F7923FEB1A6005D2592;
+					};
+					EA26DB06255CDE1F00D26D7B = {
+						CreatedOnToolsVersion = 12.0;
 					};
 					EAC84353252C816500691943 = {
 						CreatedOnToolsVersion = 12.2;
@@ -697,6 +788,7 @@
 				979D2F7923FEB1A6005D2592 /* MobileCelestia */,
 				979D2F8F23FEB1A8005D2592 /* MobileCelestiaTests */,
 				EAC84353252C816500691943 /* CelestiaMacBridge */,
+				EA26DB06255CDE1F00D26D7B /* CelestiaWidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -727,6 +819,15 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EA26DB05255CDE1F00D26D7B /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EA409EA8255EC6E80095D756 /* celestia.cfg in Resources */,
+				EA26DB11255CDE2000D26D7B /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -837,6 +938,7 @@
 				EABF791E2538986400F2460C /* AsyncListViewController.swift in Sources */,
 				97FF95AA240A3F0900E9F44F /* Data.swift in Sources */,
 				974F86DF2403BD3C00356795 /* BodyActionCell.swift in Sources */,
+				EA26DB14255CDE2000D26D7B /* CelestiaWidget.intentdefinition in Sources */,
 				EA934C9A251D92AD00DD284C /* PanelSceneDelegate.swift in Sources */,
 				97EB41C62408F20700E6D441 /* CameraControlViewController.swift in Sources */,
 				977394B52403FD4400E38B82 /* SettingCheckViewController.swift in Sources */,
@@ -869,6 +971,18 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		EA26DB03255CDE1F00D26D7B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EA26DB43255CE9A500D26D7B /* UserDefaults.swift in Sources */,
+				EA26DB13255CDE2000D26D7B /* CelestiaWidget.intentdefinition in Sources */,
+				EA26DB0E255CDE1F00D26D7B /* CelestiaWidget.swift in Sources */,
+				EA409EC2255ECFBD0095D756 /* Renderer.swift in Sources */,
+				EA26DB3F255CE83800D26D7B /* URL.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		EAC84350252C816500691943 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -884,6 +998,11 @@
 			isa = PBXTargetDependency;
 			target = 979D2F7923FEB1A6005D2592 /* MobileCelestia */;
 			targetProxy = 979D2F9123FEB1A8005D2592 /* PBXContainerItemProxy */;
+		};
+		EA26DB16255CDE2000D26D7B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EA26DB06255CDE1F00D26D7B /* CelestiaWidgetExtension */;
+			targetProxy = EA26DB15255CDE2000D26D7B /* PBXContainerItemProxy */;
 		};
 		EAC84366252C84B600691943 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1026,6 +1145,7 @@
 		979D2F9A23FEB1A8005D2592 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = MobileCelestia/Celestia.entitlements;
@@ -1058,6 +1178,7 @@
 		979D2F9B23FEB1A8005D2592 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = MobileCelestia/Celestia.entitlements;
@@ -1130,6 +1251,62 @@
 			};
 			name = Release;
 		};
+		EA26DB19255CDE2000D26D7B /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_ENTITLEMENTS = CelestiaWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(SHARED_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = 22NR5428TD;
+				INFOPLIST_FILE = CelestiaWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = "$(SHARED_BUILD_VERSION)";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.MobileCelestia.CelestiaWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		EA26DB1A255CDE2000D26D7B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGN_ENTITLEMENTS = CelestiaWidgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(SHARED_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = 22NR5428TD;
+				INFOPLIST_FILE = CelestiaWidget/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = "$(SHARED_BUILD_VERSION)";
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.MobileCelestia.CelestiaWidget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		EAC84357252C816500691943 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1196,6 +1373,15 @@
 			buildConfigurations = (
 				979D2F9D23FEB1A8005D2592 /* Debug */,
 				979D2F9E23FEB1A8005D2592 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EA26DB1C255CDE2000D26D7B /* Build configuration list for PBXNativeTarget "CelestiaWidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EA26DB19255CDE2000D26D7B /* Debug */,
+				EA26DB1A255CDE2000D26D7B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
