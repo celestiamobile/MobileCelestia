@@ -33,8 +33,8 @@ class AboutViewController: BaseTableViewController {
     private func loadContents() {
         var totalItems = [[TextItem]]()
 
-        let shortVersion = Bundle.main.infoDictionary!["CFBundleShortVersionString"] as! String
-        let buildNumber = Bundle.main.infoDictionary!["CFBundleVersion"] as! String
+        let shortVersion = Bundle.app.infoDictionary!["CFBundleShortVersionString"] as! String
+        let buildNumber = Bundle.app.infoDictionary!["CFBundleVersion"] as! String
         let versionItem = TextItem.short(title: CelestiaString("Version", comment: ""), detail: "\(shortVersion)(\(buildNumber))")
 
         totalItems.append([versionItem])

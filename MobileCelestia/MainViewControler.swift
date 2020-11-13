@@ -524,7 +524,7 @@ extension MainViewControler {
         _ = RequestHandler.post(url: requestURL, parameters: [
             "title" : title,
             "url" : data.base64EncodedURLString(),
-            "version" : Bundle.main.infoDictionary!["CFBundleVersion"] as! String
+            "version" : Bundle.app.infoDictionary!["CFBundleVersion"] as! String
         ], success: { [unowned self] (result: URLCreationResponse) in
             alert.dismiss(animated: true) {
                 guard let url = URL(string: result.publicURL) else {
@@ -616,7 +616,7 @@ extension MainViewControler: NSToolbarDelegate {
     }
 
     private func setupToolbar() {
-        let toolbar = NSToolbar(identifier: Bundle.main.bundleIdentifier!)
+        let toolbar = NSToolbar(identifier: Bundle.app.bundleIdentifier!)
         toolbar.allowsUserCustomization = true
         toolbar.delegate = self
         view.window?.windowScene?.titlebar?.titleVisibility = .hidden

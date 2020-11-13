@@ -13,11 +13,9 @@ import UIKit
 
 import CelestiaCore
 
-#if !targetEnvironment(macCatalyst) || arch(x86_64)
 import AppCenter
 import AppCenterAnalytics
 import AppCenterCrashes
-#endif
 
 let newURLOpenedNotificationName = Notification.Name("newURLOpenedNotificationName")
 let newURLOpenedNotificationURLKey = "newURLOpenedNotificationURLKey"
@@ -41,9 +39,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         #if targetEnvironment(macCatalyst)
         MacBridge.initialize()
 
-        #if arch(x86_64)
         UserDefaults.standard.register(defaults: ["NSApplicationCrashOnExceptions": true])
-        #endif
 
         // Force dark aqua appearance
         MacBridge.forceDarkAppearance()
@@ -57,18 +53,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         #endif
 
-        #if !targetEnvironment(macCatalyst) || arch(x86_64)
         #if !DEBUG
         #if targetEnvironment(macCatalyst)
         let appCenterID = "63a9e404-a07b-40eb-a5e7-320f65934b05"
         #else
         let appCenterID = "4c46cd7d-ea97-452b-920c-4328ac062db3"
         #endif
-        MSAppCenter.start(appCenterID, withServices:[
-            MSAnalytics.self,
-            MSCrashes.self
+        AppCenter.start(withAppSecret: appCenterID, services: [
+            Analytics.self,
+            Crashes.self
         ])
-        #endif
         #endif
 
         if #available(iOS 13.0, *) { return true }
@@ -161,7 +155,7 @@ extension AppDelegate {
             newHelpCommand = UIKeyCommand(title: oldHelpCommand?.title ?? CelestiaString("", comment: ""), image: oldHelpCommand?.image, action: #selector(showCelestiaHelp(_:)), input: "?", modifierFlags: .command)
         }
 
-        let identifierPrefix = Bundle.main.bundleIdentifier! + "."
+        let identifierPrefix = Bundle.app.bundleIdentifier! + "."
 
         builder.insertChild(UIMenu(title: "", image: nil, identifier: UIMenu.Identifier(identifierPrefix + "open"), options: .displayInline, children: [
             UIKeyCommand(title: CelestiaString("Run Script…", comment: ""), image: nil, action: #selector(openScriptFile), input: "O", modifierFlags: .command)
@@ -203,7 +197,7 @@ class MacBridge {
     private static var clazz = NSClassFromString("MacBridge") as! NSObject.Type // Should only be used after calling initialize
 
     static func initialize() {
-        guard let appBundleUrl = Bundle.main.builtInPlugInsURL else { return }
+        guard let appBundleUrl = Bundle.app.builtInPlugInsURL else { return }
         let helperBundleUrl = appBundleUrl.appendingPathComponent("CelestiaMacBridge.bundle")
         guard let bundle = Bundle(url: helperBundleUrl) else { return }
         bundle.load()

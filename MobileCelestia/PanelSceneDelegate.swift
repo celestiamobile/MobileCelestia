@@ -47,7 +47,7 @@ class PanelSceneDelegate: UIResponder, UIWindowSceneDelegate {
         MacBridge.disableFullScreenForNSWindow(window)
     }
 
-    static var activityType = "\(Bundle.main.bundleIdentifier!).Panel"
+    static var activityType = "\(Bundle.app.bundleIdentifier!).Panel"
     private static var idKey = "id"
     private static var widthKey = "width"
     private static var heightKey = "height"
@@ -58,7 +58,7 @@ class PanelSceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let existingSession = weakSessionTable.object(forKey: String(describing: type(of: viewController)) as NSString) {
             UIApplication.shared.requestSceneSessionDestruction(existingSession, options: nil) { _ in }
         }
-        let activity = NSUserActivity(activityType: "\(Bundle.main.bundleIdentifier!).Panel")
+        let activity = NSUserActivity(activityType: "\(Bundle.app.bundleIdentifier!).Panel")
         let id = UUID()
         activity.userInfo = [idKey : id, widthKey : preferredSize.width, heightKey : preferredSize.height]
         viewControllersToPresent[id] = viewController

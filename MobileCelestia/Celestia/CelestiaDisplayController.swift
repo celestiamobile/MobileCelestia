@@ -183,7 +183,7 @@ extension CelestiaDisplayController {
                     continue
                 }
 
-                self.core.loadUserDefaultsWithAppDefaults(atPath: Bundle.main.path(forResource: "defaults", ofType: "plist"))
+                self.core.loadUserDefaultsWithAppDefaults(atPath: Bundle.app.path(forResource: "defaults", ofType: "plist"))
                 success = true
             }
 
@@ -271,7 +271,7 @@ extension CelestiaDisplayController {
 }
 
 private func getInstalledFontFor(locale: String) -> (font: FallbackFont, boldFont: FallbackFont)? {
-    guard let fontDir = Bundle.main.path(forResource: "Fonts", ofType: nil) else { return nil }
+    guard let fontDir = Bundle.app.path(forResource: "Fonts", ofType: nil) else { return nil }
     let fontFallback = [
         "ja": (
             font: FallbackFont(filePath: "\(fontDir)/NotoSansCJK-Regular.ttc", collectionIndex: 0),
