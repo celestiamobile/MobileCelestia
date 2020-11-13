@@ -72,6 +72,10 @@
 	<string>Copyright (C) 2001-2021, the Celestia Development Team</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Permission is needed to save screenshots to Photo Library.</string>
+	<key>NSUserActivityTypes</key>
+	<array>
+		<string>ConfigurationIntent</string>
+	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
