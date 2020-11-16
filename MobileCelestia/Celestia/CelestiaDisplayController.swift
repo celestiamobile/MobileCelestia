@@ -252,26 +252,18 @@ extension CelestiaDisplayController {
         updateContentScale()
 
         let locale = LocalizedString("LANGUAGE", "celestia")
-        if let (font, boldFont) = getInstalledFontFor(locale: locale) {
-            core.setFont(font.filePath, collectionIndex: font.collectionIndex, fontSize: 9)
-            core.setTitleFont(boldFont.filePath, collectionIndex: boldFont.collectionIndex, fontSize: 15)
-            core.setRendererFont(font.filePath, collectionIndex: font.collectionIndex, fontSize: 9, fontStyle: .normal)
-            core.setRendererFont(boldFont.filePath, collectionIndex: boldFont.collectionIndex, fontSize: 15, fontStyle: .large)
-        } else if let font = GetFontForLocale(locale, .system),
-            let boldFont = GetFontForLocale(locale, .emphasizedSystem) {
-            core.setFont(font.filePath, collectionIndex: font.collectionIndex, fontSize: 9)
-            core.setTitleFont(boldFont.filePath, collectionIndex: boldFont.collectionIndex, fontSize: 15)
-            core.setRendererFont(font.filePath, collectionIndex: font.collectionIndex, fontSize: 9, fontStyle: .normal)
-            core.setRendererFont(boldFont.filePath, collectionIndex: boldFont.collectionIndex, fontSize: 15, fontStyle: .large)
-        }
-
+        let (font, boldFont) = getInstalledFontFor(locale: locale)
+        core.setFont(font.filePath, collectionIndex: font.collectionIndex, fontSize: 9)
+        core.setTitleFont(boldFont.filePath, collectionIndex: boldFont.collectionIndex, fontSize: 15)
+        core.setRendererFont(font.filePath, collectionIndex: font.collectionIndex, fontSize: 9, fontStyle: .normal)
+        core.setRendererFont(boldFont.filePath, collectionIndex: boldFont.collectionIndex, fontSize: 15, fontStyle: .large)
         core.tick()
         core.start()
     }
 }
 
-private func getInstalledFontFor(locale: String) -> (font: FallbackFont, boldFont: FallbackFont)? {
-    guard let fontDir = Bundle.app.path(forResource: "Fonts", ofType: nil) else { return nil }
+private func getInstalledFontFor(locale: String) -> (font: FallbackFont, boldFont: FallbackFont) {
+    let fontDir = Bundle.app.path(forResource: "Fonts", ofType: nil)!
     let fontFallback = [
         "ja": (
             font: FallbackFont(filePath: "\(fontDir)/NotoSansCJK-Regular.ttc", collectionIndex: 0),
