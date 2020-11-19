@@ -96,8 +96,6 @@ class CelestiaInteractionController: UIViewController {
 
     #if targetEnvironment(macCatalyst)
     private lazy var activeControlView = CelestiaControlView(items: [
-        CelestiaControlButton.pressAndHold(image: #imageLiteral(resourceName: "control_zoom_in"), action: .zoomIn),
-        CelestiaControlButton.pressAndHold(image: #imageLiteral(resourceName: "control_zoom_out"), action: .zoomOut),
         CelestiaControlButton.tap(image: #imageLiteral(resourceName: "control_info"), action: .info),
         CelestiaControlButton.tap(image: #imageLiteral(resourceName: "control_action_menu"), action: .showMenu),
         CelestiaControlButton.tap(image: #imageLiteral(resourceName: "control_hide"), action: .hide),

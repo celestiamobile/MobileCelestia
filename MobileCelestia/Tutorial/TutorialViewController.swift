@@ -40,6 +40,7 @@ class TutorialViewController: BaseTableViewController {
         case url(url: TutorialURLItem)
     }
 
+    #if !targetEnvironment(macCatalyst)
     private lazy var tutorialDescriptionItems = [
         TutorialDescriptionItem(image: #imageLiteral(resourceName: "tutorial_switch_mode"),
                                 text: CelestiaString("Tap the mode button on the sidebar to switch between object mode and camera mode.", comment: "")),
@@ -48,6 +49,9 @@ class TutorialViewController: BaseTableViewController {
         TutorialDescriptionItem(image: #imageLiteral(resourceName: "tutorial_mode_camera"),
                                 text: CelestiaString("In camera mode, drag to move field of view.\n\nPinch to zoom in/out field of view.", comment: "")),
     ]
+    #else
+    private lazy var tutorialDescriptionItems: [TutorialDescriptionItem] = []
+    #endif
 
     private lazy var tutorialActionItems = [
         TutorialActionItem(title: CelestiaString("Run Demo", comment: ""), object: .runDemo),
@@ -55,6 +59,7 @@ class TutorialViewController: BaseTableViewController {
     ]
 
     private lazy var urlItems = [
+        TutorialURLItem(title: CelestiaString("Mouse/Keyboard Controls", comment: ""), url: URL(string: "https://github.com/levinli303/Celestia/wiki/Controls")!),
         TutorialURLItem(title: CelestiaString("Use Add-ons and Scripts", comment: ""), url: URL(string: "https://github.com/levinli303/Celestia/wiki/Use-Addons-and-Scripts")!),
         TutorialURLItem(title: CelestiaString("Scripts and URLs", comment: ""), url: URL(string: "https://github.com/levinli303/Celestia/wiki/Scripts-and-URLs")!),
     ]
