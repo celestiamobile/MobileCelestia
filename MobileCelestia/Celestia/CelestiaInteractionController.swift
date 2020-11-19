@@ -314,9 +314,11 @@ extension CelestiaInteractionController {
             pan2.require(toFail: pan1)
         }
 
+        #if !targetEnvironment(macCatalyst)
         let pinch = UIPinchGestureRecognizer(target: self, action: #selector(handlePinch(_:)))
         pinch.delegate = self
         targetInteractionView.addGestureRecognizer(pinch)
+        #endif
 
         let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
         tap.delegate = self
@@ -390,6 +392,7 @@ extension CelestiaInteractionController {
         }
     }
 
+    #if !targetEnvironment(macCatalyst)
     @objc private func handlePinch(_ gesture: UIPinchGestureRecognizer) {
         switch gesture.state {
         case .possible:
@@ -428,6 +431,7 @@ extension CelestiaInteractionController {
             currentPanDistance = nil
         }
     }
+    #endif
 
     @objc private func handleTap(_ tap: UITapGestureRecognizer) {
         switch tap.state {
