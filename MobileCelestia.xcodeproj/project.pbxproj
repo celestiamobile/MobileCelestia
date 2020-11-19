@@ -72,6 +72,7 @@
 		EA1BC6E724A0E94900F3F51B /* EventFinderResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E624A0E94900F3F51B /* EventFinderResultViewController.swift */; };
 		EA28CA4E24A25FE7004B011E /* BottomControlViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA28CA4D24A25FE7004B011E /* BottomControlViewController.swift */; };
 		EA28CA5324A2F399004B011E /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = EA28CA5124A2F399004B011E /* Fonts */; };
+		EA544E5F2566BC50003F351D /* DestinationDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA544E5E2566BC50003F351D /* DestinationDetailViewController.swift */; };
 		EA5E185D2477C78E00F5374B /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5E185B2477C78E00F5374B /* Toast.swift */; };
 		EA934C90251D90C500DD284C /* MainSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA934C8F251D90C500DD284C /* MainSceneDelegate.swift */; };
 		EA934C9A251D92AD00DD284C /* PanelSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA934C99251D92A700DD284C /* PanelSceneDelegate.swift */; };
@@ -212,6 +213,7 @@
 		EA1EF056249393BE0039F493 /* Celestia.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Celestia.entitlements; sourceTree = "<group>"; };
 		EA28CA4D24A25FE7004B011E /* BottomControlViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomControlViewController.swift; sourceTree = "<group>"; };
 		EA28CA5124A2F399004B011E /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Fonts; path = ../../../CelestiaCore/Fonts; sourceTree = "<group>"; };
+		EA544E5E2566BC50003F351D /* DestinationDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DestinationDetailViewController.swift; sourceTree = "<group>"; };
 		EA5E185B2477C78E00F5374B /* Toast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
 		EA934C8F251D90C500DD284C /* MainSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSceneDelegate.swift; sourceTree = "<group>"; };
 		EA934C99251D92A700DD284C /* PanelSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelSceneDelegate.swift; sourceTree = "<group>"; };
@@ -326,6 +328,7 @@
 		97401CA12414DA6B0015F8E8 /* Favorite */ = {
 			isa = PBXGroup;
 			children = (
+				EA544E5E2566BC50003F351D /* DestinationDetailViewController.swift */,
 				97401CA42414DAF50015F8E8 /* FavoriteCoordinatorController.swift */,
 				97401CA32414DAF50015F8E8 /* FavoriteViewController.swift */,
 				97401CAA2414DCAC0015F8E8 /* FavoriteItemViewController.swift */,
@@ -811,6 +814,7 @@
 				977394BA240413EF00E38B82 /* SettingSelectionViewController.swift in Sources */,
 				973BBA642405481200E3B061 /* TimeSettingViewController.swift in Sources */,
 				EABF794A2538A86500F2460C /* ResourceManager.swift in Sources */,
+				EA544E5F2566BC50003F351D /* DestinationDetailViewController.swift in Sources */,
 				973BBA61240538DB00E3B061 /* MultiLineTextCell.swift in Sources */,
 				97C3A9F22445FACF00EB365A /* CelestiaControlView.swift in Sources */,
 				97401CAB2414DCAC0015F8E8 /* FavoriteItemViewController.swift in Sources */,

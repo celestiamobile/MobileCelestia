@@ -14,8 +14,9 @@ import UIKit
 import CelestiaCore
 
 enum FavoriteItemType: Int {
-    case bookmark   = 0
-    case script     = 1
+    case bookmark    = 0
+    case script      = 1
+    case destination = 2
 }
 
 private extension FavoriteItemType {
@@ -25,6 +26,8 @@ private extension FavoriteItemType {
             return CelestiaString("Bookmarks", comment: "")
         case .script:
             return CelestiaString("Scripts", comment: "")
+        case .destination:
+            return CelestiaString("Destinations", comment: "")
         }
     }
 }
@@ -57,7 +60,7 @@ private extension FavoriteViewController {
 
 extension FavoriteViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2
+        return 3
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

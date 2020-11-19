@@ -13,9 +13,12 @@ import UIKit
 
 import CelestiaCore
 
-class FavoriteCoordinatorController: UIViewController {
+enum FavoriteRoot {
+    case main
+    case destinations
+}
 
-    private var main: FavoriteViewController!
+class FavoriteCoordinatorController: UIViewController {
     private var navigation: UINavigationController!
 
     private lazy var bookmarkRoot: BookmarkNode = {
@@ -25,9 +28,11 @@ class FavoriteCoordinatorController: UIViewController {
         return node
     }()
 
-    private let selected: (URL) -> Void
+    private let root: FavoriteRoot
+    private let selected: (Any) -> Void
 
-    init(selected: @escaping (URL) -> Void) {
+    init(root: FavoriteRoot, selected: @escaping (Any) -> Void) {
+        self.root = root
         self.selected = selected
         super.init(nibName: nil, bundle: nil)
     }
@@ -56,15 +61,23 @@ class FavoriteCoordinatorController: UIViewController {
 
 private extension FavoriteCoordinatorController {
     func setup() {
-        main = FavoriteViewController(selected: { [unowned self] (item) in
-            switch item {
-            case .bookmark:
-                self.show(self.bookmarkRoot)
-            case .script:
-                self.show(readScripts())
-            }
-        })
-        navigation = UINavigationController(rootViewController: main)
+        let rootVC: UIViewController
+        switch root {
+        case .main:
+            rootVC = FavoriteViewController(selected: { [unowned self] (item) in
+                switch item {
+                case .bookmark:
+                    self.show(self.bookmarkRoot)
+                case .script:
+                    self.show(AnyFavoriteItemList(title: CelestiaString("Scripts", comment: ""), items: readScripts()))
+                case .destination:
+                    self.show(AnyFavoriteItemList(title: CelestiaString("Destinations", comment: ""), items: CelestiaAppCore.shared.destinations))
+                }
+            })
+        case .destinations:
+            rootVC = generateVC(AnyFavoriteItemList(title: CelestiaString("Destinations", comment: ""), items: CelestiaAppCore.shared.destinations))
+        }
+        navigation = UINavigationController(rootViewController: rootVC)
 
         install(navigation)
 
@@ -74,9 +87,20 @@ private extension FavoriteCoordinatorController {
     }
 
     func show<T: FavoriteItemList>(_ itemList: T) {
-        self.navigation.pushViewController(FavoriteItemViewController(item: itemList, selection: { [unowned self] (item) in
+        self.navigation.pushViewController(generateVC(itemList), animated: true)
+    }
+
+    func generateVC<T: FavoriteItemList>(_ itemList: T) -> UIViewController {
+        FavoriteItemViewController(item: itemList, selection: { [unowned self] (item) in
             if item.isLeaf {
-                self.selected(item.associatedURL!)
+                if let destination = item.associatedObject as? CelestiaDestination {
+                    let vc = DestinationDetailViewController(destination: destination) {
+                        self.selected(destination)
+                    }
+                    self.navigation.pushViewController(vc, animated: true)
+                } else {
+                    self.selected(item.associatedObject!)
+                }
             } else if let itemList = item.itemList {
                 self.show(itemList)
             } else {
@@ -87,6 +111,6 @@ private extension FavoriteCoordinatorController {
                 fatalError()
             }
             return CelestiaAppCore.shared.currentBookmark as? T.Item
-        }), animated: true)
+        })
     }
 }

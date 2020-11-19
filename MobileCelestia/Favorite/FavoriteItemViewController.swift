@@ -27,16 +27,26 @@ protocol FavoriteItemList {
     func move(from source: Int, to dest: Int)
 }
 
-extension Array: FavoriteItemList where Element == CelestiaScript {
-    typealias Item = CelestiaScript
+class AnyFavoriteItemList<T: FavoriteItem>: FavoriteItemList {
+    typealias Item = T
 
-    var title: String {
-        return CelestiaString("Scripts", comment: "")
+    let title: String
+    var items: [T]
+
+    init(title: String, items: [T]) {
+        self.title = title
+        self.items = items
+    }
+
+    var count: Int { return items.count }
+
+    subscript(index: Int) -> T {
+        return items[index]
     }
 
     var canBeModified: Bool { return false }
 
-    func append(_ item: CelestiaScript) {
+    func append(_ item: T) {
         fatalError()
     }
 
@@ -77,8 +87,10 @@ extension BookmarkNode: FavoriteItemList {
 
 protocol FavoriteItem {
     associatedtype ItemList: FavoriteItemList
+    associatedtype Representation
+
     var title: String { get }
-    var associatedURL: URL? { get }
+    var associatedObject: Representation? { get }
     var isLeaf: Bool { get }
     var itemList: ItemList? { get }
     var canBeRenamed: Bool { get }
@@ -88,10 +100,11 @@ protocol FavoriteItem {
 
 extension BookmarkNode: FavoriteItem {
     typealias ItemList = BookmarkNode
+    typealias Representation = URL
 
     var title: String { return name }
 
-    var associatedURL: URL? {
+    var associatedObject: URL? {
         return URL(string: url)
     }
 
@@ -110,8 +123,10 @@ extension BookmarkNode: FavoriteItem {
 }
 
 extension CelestiaScript: FavoriteItem {
-    typealias ItemList = [CelestiaScript]
-    var associatedURL: URL? {
+    typealias ItemList = AnyFavoriteItemList<CelestiaScript>
+    typealias Representation = URL
+
+    var associatedObject: URL? {
         return URL(fileURLWithPath: FileManager.default.currentDirectoryPath + "/" + filename)
     }
 
@@ -119,7 +134,34 @@ extension CelestiaScript: FavoriteItem {
         return true
     }
 
-    var itemList: [CelestiaScript]? {
+    var itemList: AnyFavoriteItemList<CelestiaScript>? {
+        return nil
+    }
+
+    var canBeRenamed: Bool { return false }
+
+    func rename(to name: String) {
+        fatalError()
+    }
+}
+
+extension CelestiaDestination: FavoriteItem {
+    var title: String {
+        return name
+    }
+
+    typealias ItemList = AnyFavoriteItemList<CelestiaDestination>
+    typealias Representation = CelestiaDestination
+
+    var associatedObject: CelestiaDestination? {
+        return self
+    }
+
+    var isLeaf: Bool {
+        return true
+    }
+
+    var itemList: AnyFavoriteItemList<CelestiaDestination>? {
         return nil
     }
 

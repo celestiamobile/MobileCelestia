@@ -257,7 +257,7 @@ extension MainViewControler: CelestiaControllerDelegate {
         case .share:
             presentShare(selection: core.simulation.selection)
         case .favorite:
-            presentFavorite()
+            presentFavorite(.main)
         case .help:
             presentHelp()
         case .home:
@@ -281,10 +281,14 @@ extension MainViewControler: CelestiaControllerDelegate {
     }
 
 
-    private func presentFavorite() {
-        let controller = FavoriteCoordinatorController { [unowned self] (url) in
-            urlToRun = url
-            self.checkNeedOpeningURL(false, false)
+    private func presentFavorite(_ root: FavoriteRoot) {
+        let controller = FavoriteCoordinatorController(root: root) { [unowned self] object in
+            if let url = object as? URL {
+                urlToRun = url
+                self.checkNeedOpeningURL(false, false)
+            } else if let destination = object as? CelestiaDestination {
+                self.core.simulation.goToDestination(destination)
+            }
         }
         showViewController(controller)
     }
@@ -491,6 +495,8 @@ extension MainViewControler {
         switch action {
         case .runDemo:
             core.receive(.runDemo)
+        case .showDestinations:
+            presentFavorite(.destinations)
         }
     }
 

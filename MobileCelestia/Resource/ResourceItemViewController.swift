@@ -1,5 +1,5 @@
 //
-// ResourceItemListViewController.swift
+// ResourceItemViewController.swift
 //
 // Copyright © 2020 Celestia Development Team. All rights reserved.
 //

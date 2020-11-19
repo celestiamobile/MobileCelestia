@@ -15,6 +15,7 @@ import CelestiaCore
 
 enum TutorialAction {
     case runDemo
+    case showDestinations
 }
 
 class TutorialViewController: BaseTableViewController {
@@ -49,7 +50,8 @@ class TutorialViewController: BaseTableViewController {
     ]
 
     private lazy var tutorialActionItems = [
-        TutorialActionItem(title: CelestiaString("Run Demo", comment: ""), object: .runDemo)
+        TutorialActionItem(title: CelestiaString("Run Demo", comment: ""), object: .runDemo),
+        TutorialActionItem(title: CelestiaString("Show Destinations", comment: ""), object: .showDestinations)
     ]
 
     private lazy var urlItems = [
