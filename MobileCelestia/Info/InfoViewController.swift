@@ -150,8 +150,10 @@ private extension ObjectAction {
 extension CelestiaAction {
     var description: String {
         switch self {
-        case .goto:
+        case .goTo:
             return CelestiaString("Go", comment: "")
+        case .goToSurface:
+            return CelestiaString("Land", comment: "")
         case .center:
             return CelestiaString("Center", comment: "")
         case .playpause:

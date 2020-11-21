@@ -13,7 +13,8 @@ import UIKit
 import CelestiaCore
 
 enum CelestiaAction: Int8 {
-    case goto = 103
+    case goTo = 103
+    case goToSurface = 7
     case center = 99
     case playpause = 32
     case reverse = 106
@@ -31,7 +32,7 @@ enum CelestiaAction: Int8 {
 
 extension CelestiaAction {
     static var allCases: [CelestiaAction] {
-        return [.goto, .center, .follow, .chase, .syncOrbit, .lock]
+        return [.goTo, .center, .follow, .chase, .syncOrbit, .lock, .goToSurface]
     }
 }
 
@@ -511,7 +512,7 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
                 let browserItem = CelestiaBrowserItem(name: core.simulation.universe.name(for: selection), catEntry: entry, provider: core.simulation.universe)
                 actions.append(UIMenu(title: "", options: .displayInline, children: browserItem.children.compactMap { $0.createMenuItems(additionalItemName: CelestiaString("Go", comment: "")) { (selection) in
                     core.simulation.selection = selection
-                    core.receive(.goto)
+                    core.receive(.goTo)
                 }
                 }))
             }
