@@ -140,6 +140,7 @@ class CelestiaInteractionController: UIViewController {
     }
 
     private lazy var targetInteractionView = UIImageView()
+    private lazy var auxillaryContextMenuPreviewView = UIView()
     private lazy var mirroringDisplayLink = CADisplayLink(target: self, selector: #selector(mirroringDisplayLinkHandler))
     private var isMirroring = false
 
@@ -174,6 +175,10 @@ class CelestiaInteractionController: UIViewController {
         ])
 
         currentControlView = activeControlView
+
+        auxillaryContextMenuPreviewView.backgroundColor = .clear
+        container.addSubview(auxillaryContextMenuPreviewView)
+        auxillaryContextMenuPreviewView.frame = CGRect(x: 0, y: 0, width: 1, height: 1)
 
         view = container
     }
@@ -330,9 +335,11 @@ extension CelestiaInteractionController {
         pan1.require(toFail: rightEdge)
         targetInteractionView.addGestureRecognizer(rightEdge)
 
-        #if targetEnvironment(macCatalyst)
-        targetInteractionView.addInteraction(UIContextMenuInteraction(delegate: self))
+        if #available(iOS 13.0, *) {
+            targetInteractionView.addInteraction(UIContextMenuInteraction(delegate: self))
+        }
 
+        #if targetEnvironment(macCatalyst)
         if let clickGesture = targetInteractionView.gestureRecognizers?.filter({ String(cString: object_getClassName($0)) == "_UISecondaryClickDriverGestureRecognizer" }).first {
             clickGesture.require(toFail: pan1)
         }
@@ -482,7 +489,6 @@ extension CelestiaInteractionController: UIGestureRecognizerDelegate {
     }
 }
 
-#if targetEnvironment(macCatalyst)
 @available(iOS 13.0, *)
 extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
@@ -493,13 +499,10 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
         pendingSelection = nil
         let core = self.core
 
-        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { (_) -> UIMenu? in
-            var actions: [UIMenuElement] = [
-                UIAction(title: core.simulation.universe.name(for: selection), handler: { [weak self] _ in
-                    guard let self = self else { return }
-                    self.delegate?.celestiaInteractionController(self, requestShowInfoWithSelection: selection)
-                })
-            ]
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ -> UIMenu? in
+            let titleAction = UIAction(title: core.simulation.universe.name(for: selection)) { _ in }
+            titleAction.attributes = [.disabled]
+            var actions: [UIMenuElement] = [titleAction]
 
             actions.append(UIMenu(title: "", options: .displayInline, children: CelestiaAction.allCases.map { action in
                 return UIAction(title: action.description) { (_) in
@@ -548,26 +551,16 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
             }
             )
             actions.append(UIMenu(title: "", options: .displayInline, children: [markerMenu]))
-
-            if selection.body != nil {
-
-            }
-
-            if let webInfo = selection.webInfoURL, let url = URL(string: webInfo) {
-                actions.append(UIMenu(title: "", options: .displayInline, children: [UIAction(title: CelestiaString("Web Info", comment: ""), handler: { [weak self] (_) in
-                    guard let self = self else { return }
-                    self.delegate?.celestiaInteractionController(self, requestWebInfo: url)
-                })]))
-            }
-
-            #if !targetEnvironment(macCatalyst)
-            actions.append(UIMenu(title: "", options: .displayInline, children: [
-                UIAction(title: CelestiaString("Cancel", comment: ""), handler: { _ in })
-            ]))
-            #endif
-
             return UIMenu(title: "", children: actions)
         }
+    }
+
+    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, previewForHighlightingMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
+        let loc = interaction.location(in: view)
+        auxillaryContextMenuPreviewView.frame = CGRect(origin: loc, size: CGSize(width: 1, height: 1))
+        let parameters = UIPreviewParameters()
+        parameters.backgroundColor = UIColor.clear
+        return UITargetedPreview(view: auxillaryContextMenuPreviewView, parameters: parameters)
     }
 }
 
@@ -595,7 +588,6 @@ extension CelestiaBrowserItem {
 
         var childItems = [UIMenuElement]()
         for i in 0..<children.count {
-
             let subItemName = childName(at: Int(i))!
             let child = self.child(with: subItemName)!
             if let childMenu = child.createMenuItems(additionalItemName: additionalItemName, with: callback) {
@@ -608,7 +600,6 @@ extension CelestiaBrowserItem {
         return items.count == 0 ? nil : UIMenu(title: name, children: items)
     }
 }
-#endif
 
 extension UIGestureRecognizer {
     func location(with targetGeometry: RenderingTargetGeometry) -> CGPoint {
