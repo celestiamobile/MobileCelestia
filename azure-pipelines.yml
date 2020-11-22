@@ -10,11 +10,20 @@ pool:
   vmImage: 'macos-latest'
 
 steps:
+- task: InstallAppleCertificate@2
+  inputs:
+    certSecureFile: 'app-release.p12'
+    certPwd: $(P12Password)
+
+- task: InstallAppleProvisioningProfile@1
+  inputs:
+    provProfileSecureFile: 'mobile_celestia.mobileprovision'
+
 - task: Xcode@5
   inputs:
     actions: 'build'
-    scheme: ''
+    scheme: 'MobileCelestia'
     sdk: 'iphoneos'
     configuration: 'Release'
-    xcWorkspacePath: '**/*.xcodeproj/project.xcworkspace'
+    xcWorkspacePath: 'MobileCelestia.xcodeproj/project.xcworkspace'
     xcodeVersion: 'default' # Options: 8, 9, 10, default, specifyPath
