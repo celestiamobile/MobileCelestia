@@ -42,5 +42,5 @@ steps:
     scheme: 'MobileCelestia'
     sdk: 'iphoneos'
     configuration: 'Release'
-    xcWorkspacePath: 'MobileCelestia.xcodeproj/project.xcworkspace'
+    xcWorkspacePath: 'MobileCelestia/MobileCelestia.xcodeproj/project.xcworkspace'
     xcodeVersion: 'default' # Options: 8, 9, 10, default, specifyPath
