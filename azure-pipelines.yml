@@ -40,6 +40,7 @@ steps:
   inputs:
     actions: 'archive'
     packageApp: true
+    signingOption: auto
     signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
     provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
     scheme: 'MobileCelestia'
@@ -47,3 +48,15 @@ steps:
     configuration: 'Release'
     xcWorkspacePath: 'MobileCelestia/MobileCelestia.xcodeproj/project.xcworkspace'
     xcodeVersion: 'default' # Options: 8, 9, 10, default, specifyPath
+
+
+- task: AppCenterDistribute@3
+  inputs:
+    serverEndpoint: 'MobileCelestiaAppCenter'
+    appSlug: 'CelestiaProject/Celestia'
+    appFile: '$(build.artifactstagingdirectory)/**/*.ipa'
+    symbolsDsymFiles: '''$(build.artifactstagingdirectory)/**/*.dsym'''
+    releaseNotesOption: 'input'
+    releaseNotesInput: 'release notes'
+    destinationType: 'store'
+    destinationStoreId: 'destination'
