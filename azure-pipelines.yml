@@ -24,7 +24,7 @@ steps:
 - task: CmdLine@2
   inputs:
     script: |
-      ln -sf CelestiaCore/libs/dependency/ios CelestiaCore/thirdparty
+      ln -sf libs/dependency/ios CelestiaCore/thirdparty
       brew install gettext
 
 - task: InstallAppleCertificate@2
@@ -41,6 +41,7 @@ steps:
     actions: 'build'
     scheme: 'MobileCelestia'
     sdk: 'iphoneos'
+    
     configuration: 'Release'
     xcWorkspacePath: 'MobileCelestia/MobileCelestia.xcodeproj/project.xcworkspace'
     xcodeVersion: 'default' # Options: 8, 9, 10, default, specifyPath
