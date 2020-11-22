@@ -2,10 +2,12 @@ resources:
   repositories:
   - repository: Celestia
     type: github
-    name: Celestia
+    endpoint: GithubAuth
+    name: levinli303/Celestia
   - repository: CelestiaCore
     type: github
-    name: CelestiaCore
+    endpoint: GithubAuth
+    name: levinli303/CelestiaCore
 
 trigger:
 - master
