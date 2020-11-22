@@ -339,11 +339,9 @@ extension CelestiaInteractionController {
             targetInteractionView.addInteraction(UIContextMenuInteraction(delegate: self))
         }
 
-        #if targetEnvironment(macCatalyst)
         if let clickGesture = targetInteractionView.gestureRecognizers?.filter({ String(cString: object_getClassName($0)) == "_UISecondaryClickDriverGestureRecognizer" }).first {
             clickGesture.require(toFail: pan1)
         }
-        #endif
     }
 }
 
