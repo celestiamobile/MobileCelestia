@@ -39,7 +39,6 @@ steps:
 - task: Xcode@5
   inputs:
     actions: 'archive'
-    signingOption: 'manual'
     signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
     provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
     scheme: 'MobileCelestia'
