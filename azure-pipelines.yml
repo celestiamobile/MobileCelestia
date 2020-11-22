@@ -1,7 +1,11 @@
-# Xcode
-# Build, test, and archive an Xcode workspace on macOS.
-# Add steps that install certificates, test, sign, and distribute an app, save build artifacts, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/xcode
+resources:
+  repositories:
+  - repository: Celestia
+    type: github
+    name: Celestia
+  - repository: CelestiaCore
+    type: github
+    name: CelestiaCore
 
 trigger:
 - master
@@ -10,6 +14,10 @@ pool:
   vmImage: 'macos-latest'
 
 steps:
+- checkout: Celestia
+- checkout: CelestiaCore
+- checkout: self
+
 - task: InstallAppleCertificate@2
   inputs:
     certSecureFile: 'app-release.p12'
