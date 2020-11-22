@@ -38,10 +38,12 @@ steps:
 
 - task: Xcode@5
   inputs:
-    actions: 'build'
+    actions: 'archive'
+    signingOption: 'manual'
+    signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
+    provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
     scheme: 'MobileCelestia'
     sdk: 'iphoneos'
-    
     configuration: 'Release'
     xcWorkspacePath: 'MobileCelestia/MobileCelestia.xcodeproj/project.xcworkspace'
     xcodeVersion: 'default' # Options: 8, 9, 10, default, specifyPath
