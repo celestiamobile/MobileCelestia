@@ -88,6 +88,7 @@ struct SettingSliderItem: Hashable {
 
 struct SettingPreferenceSwitchItem: Hashable {
     let key: UserDefaultsKey
+    let defaultOn: Bool
 }
 
 struct SettingActionItem: Hashable {
@@ -437,14 +438,14 @@ let mainSetting = [
                                     name: CelestiaString("HiDPI", comment: ""),
                                     type: .prefSwitch,
                                     associatedItem: .init(
-                                        AssociatedPreferenceSwitchItem(key: .fullDPI)
+                                        AssociatedPreferenceSwitchItem(key: .fullDPI, defaultOn: true)
                                     )
                                 ),
                                 SettingItem(
                                     name: CelestiaString("Anti-aliasing", comment: ""),
                                     type: .prefSwitch,
                                     associatedItem: .init(
-                                        AssociatedPreferenceSwitchItem(key: .msaa)
+                                        AssociatedPreferenceSwitchItem(key: .msaa, defaultOn: false)
                                     )
                                 ),
                             ], footer: CelestiaString("Configuration will take effect after a restart.", comment: "")),

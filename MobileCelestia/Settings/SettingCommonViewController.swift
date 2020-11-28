@@ -120,7 +120,7 @@ extension SettingCommonViewController {
         case .prefSwitch:
             if let item = row.associatedItem.base as? AssociatedPreferenceSwitchItem {
                 let cell = tableView.dequeueReusableCell(withIdentifier: "Switch", for: indexPath) as! SettingSwitchCell
-                cell.enabled = UserDefaults.app[item.key] ?? false
+                cell.enabled = UserDefaults.app[item.key] ?? item.defaultOn
                 cell.title = row.name
                 cell.toggleBlock = { (enabled) in
                     UserDefaults.app[item.key] = enabled

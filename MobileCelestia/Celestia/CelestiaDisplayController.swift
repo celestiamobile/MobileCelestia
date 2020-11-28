@@ -138,7 +138,7 @@ extension CelestiaDisplayController {
         #endif
 
         // Set initial scale from user defaults
-        let viewScale = UserDefaults.app[.fullDPI] == true ? traitCollection.displayScale : 1
+        let viewScale = UserDefaults.app[.fullDPI] != false ? traitCollection.displayScale : 1
         glView.contentScaleFactor = viewScale
 
         return true
