@@ -81,13 +81,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
-    func applicationWillTerminate(_ application: UIApplication) {
-        let core = CelestiaAppCore.shared
-        if core.isInitialized {
-            core.storeUserDefaults()
-        }
-    }
-
     func application(_ application: UIApplication, shouldSaveApplicationState coder: NSCoder) -> Bool {
         return false
     }

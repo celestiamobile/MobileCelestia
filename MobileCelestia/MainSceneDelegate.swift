@@ -11,6 +11,8 @@
 
 import UIKit
 
+import CelestiaCore
+
 @available(iOS 13, *)
 class MainSceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
@@ -43,6 +45,10 @@ class MainSceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
+        let core = CelestiaAppCore.shared
+        if core.isInitialized {
+            core.storeUserDefaults()
+        }
         exit(0)
     }
 }
