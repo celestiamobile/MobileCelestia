@@ -48,13 +48,27 @@ steps:
     configuration: 'Release'
     xcWorkspacePath: 'MobileCelestia/MobileCelestia.xcodeproj/project.xcworkspace'
     xcodeVersion: 'default' # Options: 8, 9, 10, default, specifyPath
+    exportPath: '$(agent.buildDirectory)/output/$(sdk)/$(configuration)'
+    archivePath: '$(system.defaultworkingdirectory)/archive'
+
+- task: CopyFiles@2
+  inputs:
+    sourceFolder: '$(agent.buildDirectory)/output/$(sdk)/$(configuration)'
+    contents: '**/*.ipa'
+    targetFolder: '$(build.artifactStagingDirectory)'
+
+- task: CopyFiles@2
+  inputs:
+    sourceFolder: "$(system.defaultworkingdirectory)/archive"
+    contents: '**/*.dSYM/*'
+    targetFolder: '$(build.artifactStagingDirectory)'
 
 - task: AppCenterDistribute@3
   inputs:
     serverEndpoint: 'MobileCelestiaAppCenter'
     appSlug: 'CelestiaProject/Celestia'
     appFile: '$(build.artifactstagingdirectory)/**/*.ipa'
-    symbolsDsymFiles: '$(build.artifactstagingdirectory)/**/*.dsym'
+    symbolsDsymFiles: '$(build.artifactstagingdirectory)/**/*.dSYM'
     releaseNotesOption: 'input'
     releaseNotesInput: 'release notes'
     destinationType: 'store'
