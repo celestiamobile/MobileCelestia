@@ -40,7 +40,7 @@ steps:
   inputs:
     actions: 'archive'
     packageApp: true
-    signingOption: auto
+    signingOption: manual
     signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
     provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
     scheme: 'MobileCelestia'
