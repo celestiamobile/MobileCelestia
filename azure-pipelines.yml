@@ -49,7 +49,6 @@ steps:
     xcWorkspacePath: 'MobileCelestia/MobileCelestia.xcodeproj/project.xcworkspace'
     xcodeVersion: 'default' # Options: 8, 9, 10, default, specifyPath
 
-
 - task: AppCenterDistribute@3
   inputs:
     serverEndpoint: 'MobileCelestiaAppCenter'
