@@ -70,6 +70,5 @@ steps:
     appFile: '$(build.artifactstagingdirectory)/**/*.ipa'
     symbolsDsymFiles: '$(build.artifactstagingdirectory)/**/*.dSYM'
     releaseNotesOption: 'input'
-    releaseNotesInput: 'release notes'
-    destinationType: 'store'
-    destinationStoreId: 'destination'
+    releaseNotesInput: 'Internal testing only.'
+    destinationType: 'groups'
