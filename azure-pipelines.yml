@@ -36,6 +36,15 @@ steps:
   inputs:
     provProfileSecureFile: 'mobile_celestia.mobileprovision'
 
+- task: ios-bundle-version@1
+  inputs:
+    sourcePath: '$(system.defaultworkingdirectory)/MobileCelestia/MobileCelestia/Info.plist'
+    versionCodeOption: 'buildid'
+    versionCode: '$(Build.BuildId)'
+    versionCodeOffset: '65'
+    versionName: 
+    printFile: true
+
 - task: Xcode@5
   inputs:
     actions: 'build'
@@ -46,7 +55,7 @@ steps:
     scheme: 'MobileCelestia'
     sdk: 'iphoneos'
     configuration: 'Release'
-    xcWorkspacePath: 'MobileCelestia/MobileCelestia.xcodeproj/project.xcworkspace'
+    xcWorkspacePath: '$(system.defaultworkingdirectory)/MobileCelestia/MobileCelestia.xcodeproj/project.xcworkspace'
     xcodeVersion: 'default' # Options: 8, 9, 10, default, specifyPath
     exportPath: '$(agent.buildDirectory)/output/$(sdk)/$(configuration)'
     archivePath: '$(system.defaultworkingdirectory)/archive'
