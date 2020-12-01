@@ -69,7 +69,7 @@ steps:
 - task: CopyFiles@2
   inputs:
     sourceFolder: "$(system.defaultworkingdirectory)/archive"
-    contents: '**/*.dSYM/*'
+    contents: '**/*.dSYM/**'
     targetFolder: '$(build.artifactStagingDirectory)'
 
 - task: AppCenterDistribute@3
