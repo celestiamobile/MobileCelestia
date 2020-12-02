@@ -41,7 +41,7 @@ steps:
     sourcePath: '$(system.defaultworkingdirectory)/MobileCelestia/MobileCelestia/Info.plist'
     versionCodeOption: 'buildid'
     versionCode: '$(Build.BuildId)'
-    versionCodeOffset: '65'
+    versionCodeOffset: '53'
     versionName: 
     printFile: true
 
