@@ -130,6 +130,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         })
         return true
     }
+    override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
+        <#code#>
+    }
 }
 
 #if targetEnvironment(macCatalyst)

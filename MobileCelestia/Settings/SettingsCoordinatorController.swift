@@ -10,6 +10,7 @@
 //
 
 import UIKit
+import CelestiaCore
 
 enum SettingAction {
 }
@@ -41,6 +42,11 @@ class SettingsCoordinatorController: UIViewController {
         setup()
     }
 
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+
+        CelestiaAppCore.shared.storeUserDefaults()
+    }
 }
 
 private extension SettingsCoordinatorController {

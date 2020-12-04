@@ -45,10 +45,6 @@ class MainSceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
-        let core = CelestiaAppCore.shared
-        if core.isInitialized {
-            core.storeUserDefaults()
-        }
         exit(0)
     }
 }
