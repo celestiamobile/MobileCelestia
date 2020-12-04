@@ -19,10 +19,8 @@ import AppCenterCrashes
 
 let newURLOpenedNotificationName = Notification.Name("newURLOpenedNotificationName")
 let newURLOpenedNotificationURLKey = "newURLOpenedNotificationURLKey"
-#if targetEnvironment(macCatalyst)
 let showHelpNotificationName = Notification.Name("showHelpNotificationName")
 let requestOpenFileNotificationName = Notification.Name("requestOpenFileNotificationName")
-#endif
 
 let officialWebsiteURL = URL(string: "https://celestia.mobi")!
 let supportForumURL = URL(string: "https://celestia.space/forum")!
@@ -130,12 +128,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         })
         return true
     }
-    override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
-        <#code#>
-    }
 }
 
-#if targetEnvironment(macCatalyst)
+@available(iOS 13.0, *)
 extension AppDelegate {
     override func buildMenu(with builder: UIMenuBuilder) {
         guard builder.system == .main else { return }
@@ -189,6 +184,7 @@ extension AppDelegate {
     }
 }
 
+#if targetEnvironment(macCatalyst)
 class MacBridge {
     private static var clazz = NSClassFromString("MacBridge") as! NSObject.Type // Should only be used after calling initialize
 

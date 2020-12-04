@@ -68,10 +68,8 @@ class MainViewControler: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(newURLOpened(_:)), name: newURLOpenedNotificationName, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(newScreenConnected(_:)), name: UIScreen.didConnectNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(screenDisconnected(_:)), name: UIScreen.didDisconnectNotification, object: nil)
-        #if targetEnvironment(macCatalyst)
         NotificationCenter.default.addObserver(self, selector: #selector(presentHelp), name: showHelpNotificationName, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(requestOpenFile), name: requestOpenFileNotificationName, object: nil)
-        #endif
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -105,8 +103,10 @@ class MainViewControler: UIViewController {
                 #if targetEnvironment(macCatalyst)
                 self.setupToolbar()
                 self.setupTouchBar()
-                UIMenuSystem.main.setNeedsRebuild()
                 #endif
+                if #available(iOS 13.0, *) {
+                    UIMenuSystem.main.setNeedsRebuild()
+                }
                 UIApplication.shared.isIdleTimerDisabled = true
                 self.showOnboardMessageIfNeeded()
                 // we can't present two vcs together, so we delay the action
@@ -132,7 +132,6 @@ class MainViewControler: UIViewController {
 }
 
 extension MainViewControler {
-    #if targetEnvironment(macCatalyst)
     @objc private func requestOpenFile() {
         let browser: UIDocumentPickerViewController
         if #available(iOS 14, *) {
@@ -146,7 +145,6 @@ extension MainViewControler {
         browser.delegate = self
         present(browser, animated: true, completion: nil)
     }
-    #endif
 
     @objc private func newURLOpened(_ notification: Notification) {
         guard let url = notification.userInfo?[newURLOpenedNotificationURLKey] as? URL else { return }
@@ -207,7 +205,6 @@ extension MainViewControler {
     }
 }
 
-#if targetEnvironment(macCatalyst)
 extension MainViewControler: UIDocumentPickerDelegate {
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
         guard let url = urls.first else { return }
@@ -216,7 +213,6 @@ extension MainViewControler: UIDocumentPickerDelegate {
         checkNeedOpeningURL()
     }
 }
-#endif
 
 extension MainViewControler: CelestiaControllerDelegate {
     func celestiaController(_ celestiaController: CelestiaViewController, requestShowActionMenuWithSelection selection: CelestiaSelection) {
