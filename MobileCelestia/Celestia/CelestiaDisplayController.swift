@@ -209,7 +209,12 @@ extension CelestiaDisplayController {
         #if targetEnvironment(macCatalyst)
         let applicationScalingFactor: CGFloat = MacBridge.catalystScaleFactor
         #else
-        let applicationScalingFactor: CGFloat = 1
+        let applicationScalingFactor: CGFloat
+        if #available(iOS 14, *) {
+            applicationScalingFactor = ProcessInfo.processInfo.isiOSAppOnMac ? 0.77 : 1
+        } else {
+            applicationScalingFactor = 1
+        }
         #endif
 
         core.setDPI(Int(96.0 * glView.contentScaleFactor / applicationScalingFactor))
