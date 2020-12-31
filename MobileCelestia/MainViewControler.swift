@@ -251,7 +251,7 @@ extension MainViewControler: CelestiaControllerDelegate {
         case .camera:
             presentCameraControl()
         case .share:
-            presentShare(selection: core.simulation.selection)
+            presentShare()
         case .favorite:
             presentFavorite(.main)
         case .help:
@@ -265,7 +265,39 @@ extension MainViewControler: CelestiaControllerDelegate {
         }
     }
 
-    private func presentShare(selection: CelestiaSelection) {
+    private func presentShare() {
+        let centerView = UIView()
+        centerView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(centerView)
+        NSLayoutConstraint.activate([
+            centerView.widthAnchor.constraint(equalToConstant: 1),
+            centerView.heightAnchor.constraint(equalToConstant: 1),
+            centerView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            centerView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+        ])
+        showSelection(nil, options: [CelestiaString("Image", comment: ""), CelestiaString("URL", comment: "")], sourceView: centerView, sourceRect: CGRect(x: 0, y: 0, width: 1, height: 1)) { [weak self] index in
+            centerView.removeFromSuperview()
+            guard let self = self, let index = index else { return }
+            if index == 0 {
+                self.shareImage()
+            } else {
+                self.shareURL()
+            }
+        }
+    }
+
+    private func shareImage() {
+        core.draw()
+        let path = NSTemporaryDirectory() + "/temp.png"
+        if core.screenshot(to: path, type: .PNG), let data = try? Data(contentsOf: URL(fileURLWithPath: path)), let image = UIImage(data: data) {
+            showShareSheet(for: image)
+        } else {
+            showError(CelestiaString("Unable to generate image.", comment: ""))
+        }
+    }
+
+    private func shareURL() {
+        let selection = core.simulation.selection
         let name = core.simulation.universe.name(for: selection)
         let url = core.currentURL
         showTextInput(CelestiaString("Share", comment: ""),
@@ -275,7 +307,6 @@ extension MainViewControler: CelestiaControllerDelegate {
                         self.submitURL(url, title: title)
         }
     }
-
 
     private func presentFavorite(_ root: FavoriteRoot) {
         let controller = FavoriteCoordinatorController(root: root) { [unowned self] object in
@@ -378,7 +409,7 @@ extension MainViewControler: CelestiaControllerDelegate {
     private func showMarkMenu(with selection: CelestiaSelection, with sender: UIView) {
         let options = (0...CelestiaMarkerRepresentation.crosshair.rawValue).map{ CelestiaMarkerRepresentation(rawValue: $0)?.localizedTitle ?? "" } + [CelestiaString("Unmark", comment: "")]
         front?.showSelection(CelestiaString("Mark", comment: ""), options: options, sourceView: sender, sourceRect: sender.bounds) { [weak self] index in
-            guard let self = self else { return }
+            guard let self = self, let index = index else { return }
             if let marker = CelestiaMarkerRepresentation(rawValue: UInt(index)) {
                 self.core.simulation.universe.mark(selection, with: marker)
                 self.core.showMarkers = true
@@ -391,7 +422,7 @@ extension MainViewControler: CelestiaControllerDelegate {
     private func showAlternateSurfaces(of selection: CelestiaSelection, with sender: UIView) {
         guard let alternativeSurfaces = selection.body?.alternateSurfaceNames, alternativeSurfaces.count > 0 else { return }
         front?.showSelection(CelestiaString("Alternate Surfaces", comment: ""), options: [CelestiaString("Default", comment: "")] + alternativeSurfaces, sourceView: sender, sourceRect: sender.bounds) { [weak self] index in
-            guard let self = self else { return }
+            guard let self = self, let index = index else { return }
 
             if index == 0 {
                 self.core.simulation.activeObserver.displayedSurface = ""
@@ -544,6 +575,12 @@ extension MainViewControler {
 
     private func showShareSheet(for url: URL) {
         let activityController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+        configurePopover(for: activityController)
+        presentAfterDismissCurrent(activityController, animated: true)
+    }
+
+    private func showShareSheet(for image: UIImage) {
+        let activityController = UIActivityViewController(activityItems: [image], applicationActivities: nil)
         configurePopover(for: activityController)
         presentAfterDismissCurrent(activityController, animated: true)
     }

@@ -135,7 +135,7 @@ extension EventFinderInputViewController {
                 showSelection(CelestiaString("Please choose an object.", comment: ""),
                               options: selectableObjects.map { LocalizedString($0, "celestia") },
                               sourceView: cell, sourceRect: cell.bounds) { [weak self] index in
-                                guard let self = self else { return }
+                                guard let self = self, let index = index else { return }
                                 self.objectName = self.selectableObjects[index]
                                 tableView.reloadData()
                 }
