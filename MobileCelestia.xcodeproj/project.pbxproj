@@ -241,6 +241,7 @@
 		EAC8435E252C818700691943 /* MacBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MacBridge.m; sourceTree = "<group>"; };
 		EADE7FBA252B517600D4174F /* CelestiaDisplayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaDisplayController.swift; sourceTree = "<group>"; };
 		EADE7FBF252B54A400D4174F /* CelestiaInteractionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaInteractionController.swift; sourceTree = "<group>"; };
+		EAF4851325A2B0E600F0E9F9 /* bg */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = bg; path = bg.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EAF48514249B2C4700E5B817 /* SubsystemBrowserCoordinatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubsystemBrowserCoordinatorViewController.swift; sourceTree = "<group>"; };
 		EAF4851F249B5C2500E5B817 /* StandardButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandardButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -684,6 +685,7 @@
 				en,
 				Base,
 				zh_CN,
+				bg,
 			);
 			mainGroup = 979D2F7123FEB1A6005D2592;
 			packageReferences = (
@@ -917,6 +919,7 @@
 			children = (
 				EAA5A7A2259DBFE6001AFA82 /* en */,
 				EAA5A7A7259DC062001AFA82 /* zh_CN */,
+				EAF4851325A2B0E600F0E9F9 /* bg */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
