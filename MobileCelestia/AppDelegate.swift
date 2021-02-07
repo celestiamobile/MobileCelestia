@@ -66,7 +66,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if #available(iOS 13.0, *) { return true }
 
         window = UIWindow()
-        let vc = MainViewControler(initialURL: launchOptions?[.url] as? URL)
+        let vc = MainViewController(initialURL: launchOptions?[.url] as? URL)
 
         window?.rootViewController = vc
         window?.makeKeyAndVisible()

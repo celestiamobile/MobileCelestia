@@ -116,7 +116,7 @@ extension UIViewController {
         return alert
     }
 
-    @discardableResult func showSelection(_ title: String?, options: [String], sourceView: UIView?, sourceRect: CGRect?, permittedArrowDirections: UIPopoverArrowDirection = .any, completion: ((Int?) -> Void)?) -> UIAlertController {
+    private func commonSelectionActionSheet(_ title: String?, options: [String], permittedArrowDirections: UIPopoverArrowDirection = .any, completion: ((Int?) -> Void)?) -> UIAlertController {
         let alert = UIAlertController(title: title, message: nil, preferredStyle: .actionSheet)
         for (index, option) in options.enumerated() {
             alert.addAction(UIAlertAction(title: option, style: .default) { _ in
@@ -126,8 +126,21 @@ extension UIViewController {
         alert.addAction(UIAlertAction(title: CelestiaString("Cancel", comment: ""), style: .cancel, handler: { _ in
             completion?(nil)
         }))
+        alert.popoverPresentationController?.permittedArrowDirections = permittedArrowDirections
+        return alert
+    }
+
+    @discardableResult func showSelection(_ title: String?, options: [String], sourceView: UIView?, sourceRect: CGRect?, permittedArrowDirections: UIPopoverArrowDirection = .any, completion: ((Int?) -> Void)?) -> UIAlertController {
+        let alert = commonSelectionActionSheet(title, options: options, permittedArrowDirections: permittedArrowDirections, completion: completion)
         alert.popoverPresentationController?.sourceView = sourceView
-        alert.popoverPresentationController?.sourceRect = sourceView?.bounds ?? .zero
+        alert.popoverPresentationController?.sourceRect = sourceRect ?? sourceView?.bounds ?? .zero
+        present(alert, animated: true, completion: nil)
+        return alert
+    }
+
+    @discardableResult func showSelection(_ title: String?, options: [String], barButtonItem: UIBarButtonItem, permittedArrowDirections: UIPopoverArrowDirection = .any, completion: ((Int?) -> Void)?) -> UIAlertController {
+        let alert = commonSelectionActionSheet(title, options: options, permittedArrowDirections: permittedArrowDirections, completion: completion)
+        alert.popoverPresentationController?.barButtonItem = barButtonItem
         present(alert, animated: true, completion: nil)
         return alert
     }

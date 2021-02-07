@@ -1,5 +1,5 @@
 //
-// MainViewControler.swift
+// MainViewController.swift
 //
 // Copyright © 2020 Celestia Development Team. All rights reserved.
 //
@@ -20,7 +20,7 @@ import UniformTypeIdentifiers
 
 private let userInitiatedDismissalFlag = 1
 
-class MainViewControler: UIViewController {
+class MainViewController: UIViewController {
     enum LoadingStatus {
         case notLoaded
         case loading
@@ -131,7 +131,7 @@ class MainViewControler: UIViewController {
     }
 }
 
-extension MainViewControler {
+extension MainViewController {
     @objc private func requestOpenFile() {
         let browser: UIDocumentPickerViewController
         if #available(iOS 14, *) {
@@ -172,7 +172,7 @@ extension MainViewControler {
     }
 }
 
-extension MainViewControler {
+extension MainViewController {
     @objc private func newScreenConnected(_ notification: Notification) {
         guard let newScreen = notification.object as? UIScreen else { return }
         // Avoid handling connecting to a new screen when we are working on a screen already
@@ -205,7 +205,7 @@ extension MainViewControler {
     }
 }
 
-extension MainViewControler: UIDocumentPickerDelegate {
+extension MainViewController: UIDocumentPickerDelegate {
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
         guard let url = urls.first else { return }
 
@@ -214,7 +214,7 @@ extension MainViewControler: UIDocumentPickerDelegate {
     }
 }
 
-extension MainViewControler: CelestiaControllerDelegate {
+extension MainViewController: CelestiaControllerDelegate {
     func celestiaController(_ celestiaController: CelestiaViewController, requestShowActionMenuWithSelection selection: CelestiaSelection) {
         let actions: [[AppToolbarAction]] = AppToolbarAction.persistentAction
         let controller = ToolbarViewController(actions: actions)
@@ -516,7 +516,7 @@ extension MainViewControler: CelestiaControllerDelegate {
     }
 }
 
-extension MainViewControler {
+extension MainViewController {
     private func handleTutorialAction(_ action: TutorialAction) {
         dismiss(animated: true, completion: nil)
         switch action {
@@ -536,7 +536,7 @@ extension MainViewControler {
     }
 }
 
-extension MainViewControler {
+extension MainViewController {
     private func submitURL(_ url: String, title: String) {
         let requestURL = apiPrefix + "/create"
 
@@ -586,7 +586,7 @@ extension MainViewControler {
     }
 }
 
-extension MainViewControler: UIViewControllerDismissDelegate {
+extension MainViewController: UIViewControllerDismissDelegate {
     func viewControllerDidDismiss(_ viewController: UIViewController) {
         if (viewController.customFlag & userInitiatedDismissalFlag) == 0 {
             popLastAndShow()
@@ -613,7 +613,7 @@ extension MainViewControler: UIViewControllerDismissDelegate {
 }
 
 #if targetEnvironment(macCatalyst)
-extension MainViewControler: NSToolbarDelegate {
+extension MainViewController: NSToolbarDelegate {
     private var undoOrRedoGroupItemIdentifier: NSToolbarItem.Identifier {
         return NSToolbarItem.Identifier("undoOrRedoGroup")
     }
@@ -676,7 +676,7 @@ extension MainViewControler: NSToolbarDelegate {
     }
 }
 
-extension MainViewControler: NSTouchBarDelegate {
+extension MainViewController: NSTouchBarDelegate {
     private func setupTouchBar() {
         touchBar = nil
     }

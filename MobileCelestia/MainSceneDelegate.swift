@@ -25,7 +25,7 @@ class MainSceneDelegate: UIResponder, UIWindowSceneDelegate {
         #endif
         let window = UIWindow(windowScene: windowScene)
         window.overrideUserInterfaceStyle = .dark
-        let vc = MainViewControler(initialURL: connectionOptions.urlContexts.first?.url)
+        let vc = MainViewController(initialURL: connectionOptions.urlContexts.first?.url)
         if let userActivity = connectionOptions.userActivities.first {
             AppDelegate.handleUserActivity(userActivity)
         }

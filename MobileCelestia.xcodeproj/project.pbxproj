@@ -45,7 +45,7 @@
 		977CDD2E240BC6A900137127 /* TutorialDescriptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CDD2D240BC6A900137127 /* TutorialDescriptionCell.swift */; };
 		977CDD30240BD78F00137127 /* TutorialActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CDD2F240BD78F00137127 /* TutorialActionCell.swift */; };
 		977CDD34240BDFE500137127 /* OnboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CDD33240BDFE500137127 /* OnboardViewController.swift */; };
-		978406D724028F0000876FD1 /* MainViewControler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978406D624028F0000876FD1 /* MainViewControler.swift */; };
+		978406D724028F0000876FD1 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978406D624028F0000876FD1 /* MainViewController.swift */; };
 		978406DA2402906C00876FD1 /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978406D92402906C00876FD1 /* UIViewController+Extension.swift */; };
 		978406DC240294D000876FD1 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978406DB240294D000876FD1 /* LoadingViewController.swift */; };
 		978406DF24029D9100876FD1 /* LoadingFailureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978406DE24029D9100876FD1 /* LoadingFailureViewController.swift */; };
@@ -181,7 +181,7 @@
 		977CDD2D240BC6A900137127 /* TutorialDescriptionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialDescriptionCell.swift; sourceTree = "<group>"; };
 		977CDD2F240BD78F00137127 /* TutorialActionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialActionCell.swift; sourceTree = "<group>"; };
 		977CDD33240BDFE500137127 /* OnboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardViewController.swift; sourceTree = "<group>"; };
-		978406D624028F0000876FD1 /* MainViewControler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewControler.swift; sourceTree = "<group>"; };
+		978406D624028F0000876FD1 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		978406D92402906C00876FD1 /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		978406DB240294D000876FD1 /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
 		978406DE24029D9100876FD1 /* LoadingFailureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingFailureViewController.swift; sourceTree = "<group>"; };
@@ -457,7 +457,7 @@
 				973E2EFA2400FA0300B0F059 /* Utils */,
 				973E2EF92400F9E100B0F059 /* Resources */,
 				979D2F7D23FEB1A6005D2592 /* AppDelegate.swift */,
-				978406D624028F0000876FD1 /* MainViewControler.swift */,
+				978406D624028F0000876FD1 /* MainViewController.swift */,
 				EA934C8F251D90C500DD284C /* MainSceneDelegate.swift */,
 				EA934C99251D92A700DD284C /* PanelSceneDelegate.swift */,
 				979D2F8623FEB1A8005D2592 /* Assets.xcassets */,
@@ -844,7 +844,7 @@
 				97401CA52414DAF50015F8E8 /* FavoriteViewController.swift in Sources */,
 				EABF793C2538A1C100F2460C /* ResourceItemViewController.swift in Sources */,
 				974F86E42403C30E00356795 /* BodyInfoModel.swift in Sources */,
-				978406D724028F0000876FD1 /* MainViewControler.swift in Sources */,
+				978406D724028F0000876FD1 /* MainViewController.swift in Sources */,
 				EABF792C25389B3100F2460C /* ResourceItem.swift in Sources */,
 				EABF791E2538986400F2460C /* AsyncListViewController.swift in Sources */,
 				97FF95AA240A3F0900E9F44F /* Data.swift in Sources */,
@@ -983,7 +983,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
-				SHARED_BUILD_NUMBER = 76;
+				SHARED_BUILD_NUMBER = 85;
 				SHARED_BUILD_VERSION = 1.2.4;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1039,7 +1039,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
-				SHARED_BUILD_NUMBER = 76;
+				SHARED_BUILD_NUMBER = 85;
 				SHARED_BUILD_VERSION = 1.2.4;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
