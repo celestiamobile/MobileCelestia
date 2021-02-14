@@ -133,11 +133,20 @@ extension EventFinderInputViewController {
         } else if item is ObjectItem {
             if let cell = tableView.cellForRow(at: indexPath) {
                 showSelection(CelestiaString("Please choose an object.", comment: ""),
-                              options: selectableObjects.map { LocalizedString($0, "celestia") },
+                              options: selectableObjects.map { LocalizedString($0, "celestia") } + [CelestiaString("Other", comment: "")],
                               sourceView: cell, sourceRect: cell.bounds) { [weak self] index in
-                                guard let self = self, let index = index else { return }
-                                self.objectName = self.selectableObjects[index]
-                                tableView.reloadData()
+                    guard let self = self, let index = index else { return }
+                    if index >= self.selectableObjects.count {
+                        // User choose other, show text input for the object name
+                        self.showTextInput(CelestiaString("Please enter an object name.", comment: "")) { text in
+                            guard let objectName = text else { return }
+                            self.objectName = objectName
+                            tableView.reloadData()
+                        }
+                        return
+                    }
+                    self.objectName = self.selectableObjects[index]
+                    tableView.reloadData()
                 }
             }
         } else if item is ProceedItem {
