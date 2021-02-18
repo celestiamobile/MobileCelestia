@@ -203,7 +203,7 @@ extension CelestiaDisplayController {
     }
 
     private func updateContentScale() {
-        let viewScale = UserDefaults.app[.fullDPI] == true ? traitCollection.displayScale : 1
+        let viewScale = UserDefaults.app[.fullDPI] != false ? traitCollection.displayScale : 1
         glView.contentScaleFactor = viewScale
 
         #if targetEnvironment(macCatalyst)
