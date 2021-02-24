@@ -22,7 +22,14 @@ class CelestiaDisplayController: UIViewController {
 
     // MARK: rendering
     private var currentSize: CGSize = .zero
-    private var ready = false
+
+    private var isLoaded = false
+    private var isInBackground = false
+
+    private var isReady: Bool {
+        return isLoaded && !isInBackground
+    }
+
     private var displayLink: CADisplayLink?
     private var displaySource: DispatchSourceUserDataAdd?
 
@@ -47,10 +54,17 @@ class CelestiaDisplayController: UIViewController {
         view = glView
     }
 
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        NotificationCenter.default.addObserver(self, selector: #selector(applicationWillResignActive), name: UIApplication.willResignActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(applicationDidBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
+    }
+
     override func viewSafeAreaInsetsDidChange() {
         super.viewSafeAreaInsetsDidChange()
 
-        guard ready else { return }
+        guard isLoaded else { return }
 
         core?.setSafeAreaInsets(view.safeAreaInsets.scale(by: glView.contentScaleFactor))
     }
@@ -58,11 +72,24 @@ class CelestiaDisplayController: UIViewController {
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
 
-        guard ready else { return }
+        guard isLoaded else { return }
 
         if previousTraitCollection?.displayScale != traitCollection.displayScale {
             updateContentScale()
         }
+    }
+}
+
+extension CelestiaDisplayController {
+    @objc private func applicationWillResignActive() {
+        if isReady {
+            CelestiaAppCore.finish()
+        }
+        isInBackground = true
+    }
+
+    @objc private func applicationDidBecomeActive() {
+        isInBackground = false
     }
 }
 
@@ -75,7 +102,7 @@ private extension CelestiaAppCore {
 #if USE_MGL
 extension CelestiaDisplayController: MGLKViewDelegate {
     func mglkView(_ view: MGLKView!, drawIn rect: CGRect) {
-        guard ready else { return }
+        guard isReady else { return }
 
         let size = view.drawableSize
         if size != currentSize {
@@ -90,7 +117,7 @@ extension CelestiaDisplayController: MGLKViewDelegate {
 #else
 extension CelestiaDisplayController: GLKViewDelegate {
     func glkView(_ view: GLKView, drawIn rect: CGRect) {
-        guard ready else { return }
+        guard isReady else { return }
 
         let size = CGSize(width: view.drawableWidth, height: view.drawableHeight)
         if size != currentSize {
@@ -247,7 +274,7 @@ extension CelestiaDisplayController {
 
             self.setupDisplayLink()
 
-            self.ready = true
+            self.isLoaded = true
 
             completionHandler(.success(()))
         })
