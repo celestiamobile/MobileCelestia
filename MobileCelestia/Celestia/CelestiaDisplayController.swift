@@ -153,8 +153,6 @@ extension CelestiaDisplayController {
         glView.drawableMultisample = UserDefaults.app[.msaa] == true ? MGLDrawableMultisample4X : MGLDrawableMultisampleNone
         #else
         let context = EAGLContext(api: .openGLES2)!
-        context.isMultiThreaded = true
-
         EAGLContext.setCurrent(context)
 
         glView.context = context

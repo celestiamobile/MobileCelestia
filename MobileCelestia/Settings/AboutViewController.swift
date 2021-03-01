@@ -57,7 +57,8 @@ class AboutViewController: BaseTableViewController {
 
         totalItems.append([
             TextItem.link(title: CelestiaString("Development", comment: ""), url: URL(string: "https://github.com/levinli303/Celestia/wiki/Development")!),
-            TextItem.link(title: CelestiaString("Third Party Dependencies", comment: ""), url: URL(string: "https://github.com/levinli303/Celestia/wiki/Third-Party-Dependencies")!)
+            TextItem.link(title: CelestiaString("Third Party Dependencies", comment: ""), url: URL(string: "https://github.com/levinli303/Celestia/wiki/Third-Party-Dependencies")!),
+            TextItem.link(title: CelestiaString("Privacy Policy and Service Agreement", comment: ""), url: URL(string: "https://celestia.mobi/privacy.html")!)
         ])
 
         totalItems.append([
