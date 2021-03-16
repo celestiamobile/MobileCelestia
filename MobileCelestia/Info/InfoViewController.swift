@@ -33,13 +33,15 @@ final class InfoViewController: UIViewController {
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: self.layout)
 
     private let info: CelestiaSelection
+    private let isEmbeddedInNavigationController: Bool
 
     var selectionHandler: ((ObjectAction, UIView) -> Void)?
 
     private var actions: [ObjectAction]
 
-    init(info: CelestiaSelection) {
+    init(info: CelestiaSelection, isEmbeddedInNavigationController: Bool) {
         self.info = info
+        self.isEmbeddedInNavigationController = isEmbeddedInNavigationController
         var actions = ObjectAction.allCases
         if let urlString = info.webInfoURL, let url = URL(string: urlString) {
             actions.append(.web(url: url))
@@ -59,7 +61,7 @@ final class InfoViewController: UIViewController {
 
     override func loadView() {
         view = UIView()
-        view.backgroundColor = .darkSecondaryBackground
+        view.backgroundColor = isEmbeddedInNavigationController ? .darkBackground : .darkSecondaryBackground
     }
 
     override func viewDidLoad() {

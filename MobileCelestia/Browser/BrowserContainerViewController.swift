@@ -20,9 +20,9 @@ class BrowserContainerViewController: UIViewController {
     private lazy var controller = UITabBarController()
     #endif
 
-    private let selected: (CelestiaSelection) -> Void
+    private let selected: (CelestiaSelection) -> UIViewController
 
-    init(selected: @escaping (CelestiaSelection) -> Void) {
+    init(selected: @escaping (CelestiaSelection) -> UIViewController) {
         self.selected = selected
         super.init(nibName: nil, bundle: nil)
     }
@@ -47,9 +47,8 @@ class BrowserContainerViewController: UIViewController {
 private extension BrowserContainerViewController {
     func setup() {
         install(controller)
-        let handler = { [unowned self] (selection: CelestiaSelection) in
-            self.dismiss(animated: true, completion: nil)
-            self.selected(selection)
+        let handler = { [unowned self] (selection: CelestiaSelection) -> UIViewController in
+            return self.selected(selection)
         }
 
         #if targetEnvironment(macCatalyst)

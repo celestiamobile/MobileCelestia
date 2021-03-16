@@ -19,9 +19,9 @@ class BrowserCoordinatorController: UIViewController {
 
     private let item: CelestiaBrowserItem
 
-    private let selection: (CelestiaSelection) -> Void
+    private let selection: (CelestiaSelection) -> UIViewController
 
-    init(item: CelestiaBrowserItem, image: UIImage, selection: @escaping (CelestiaSelection) -> Void) {
+    init(item: CelestiaBrowserItem, image: UIImage, selection: @escaping (CelestiaSelection) -> UIViewController) {
         self.item = item
         self.selection = selection
         super.init(nibName: nil, bundle: nil)
@@ -67,7 +67,7 @@ private extension BrowserCoordinatorController {
                 self.showError(CelestiaString("Object not found", comment: ""))
                 return
             }
-            self.selection(transformed)
+            self.navigation.pushViewController(self.selection(transformed), animated: true)
         })
     }
 }

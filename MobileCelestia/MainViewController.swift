@@ -3,7 +3,7 @@
 //
 // Copyright © 2020 Celestia Development Team. All rights reserved.
 //
-// This program is free software; you can redistribute it and/or
+// This program iree software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
 // as published by the Free Software Foundation; either version 2
 // of the License, or (at your option) any later version.
@@ -13,12 +13,7 @@ import UIKit
 
 import CelestiaCore
 
-#if !targetEnvironment(macCatalyst)
-import SafariServices
-#endif
 import UniformTypeIdentifiers
-
-private let userInitiatedDismissalFlag = 1
 
 class MainViewController: UIViewController {
     enum LoadingStatus {
@@ -157,15 +152,8 @@ extension MainViewController {
         guard let url = urlToRun else { return }
         urlToRun = nil
 
-        if dismissCurrent {
-            addToBackStack()
-        }
         let title = url.isFileURL ? CelestiaString("Run script?", comment: "") : CelestiaString("Open URL?", comment: "")
         front?.showOption(title) { [unowned self] (confirmed) in
-            if dismissCurrent {
-                self.popLastAndShow()
-            }
-
             guard confirmed else { return }
             self.celestiaController.openURL(url, external: external)
         }
@@ -380,22 +368,21 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     private func showSelectionInfo(with selection: CelestiaSelection) {
-        let controller = InfoViewController(info: selection)
-        controller.dismissDelegate = self
+        showViewController(createSelectionInfoViewController(with: selection, isEmbeddedInNavigation: false))
+    }
+
+    private func createSelectionInfoViewController(with selection: CelestiaSelection, isEmbeddedInNavigation: Bool) -> InfoViewController {
+        let controller = InfoViewController(info: selection, isEmbeddedInNavigationController: isEmbeddedInNavigation)
         controller.selectionHandler = { [unowned self] (action, sender) in
             switch action {
             case .select:
-                self.clearBackStack()
                 self.core.simulation.selection = selection
             case .wrapped(let cac):
-                self.clearBackStack()
                 self.core.simulation.selection = selection
                 self.core.receive(cac)
             case .web(let url):
-                self.addToBackStack()
                 self.showWeb(url)
             case .subsystem:
-                self.addToBackStack()
                 self.showSubsystem(with: selection)
             case .alternateSurfaces:
                 self.showAlternateSurfaces(of: selection, with: sender)
@@ -403,7 +390,7 @@ extension MainViewController: CelestiaControllerDelegate {
                 self.showMarkMenu(with: selection, with: sender)
             }
         }
-        showViewController(controller)
+        return controller
     }
 
     private func showMarkMenu(with selection: CelestiaSelection, with sender: UIView) {
@@ -433,23 +420,15 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     private func showWeb(_ url: URL) {
-        #if targetEnvironment(macCatalyst)
         UIApplication.shared.open(url, options: [:], completionHandler: nil)
-        #else
-        let sf = SFSafariViewController(url: url)
-        sf.dismissDelegate = self
-        showViewController(sf)
-        #endif
     }
 
     private func showSubsystem(with selection: CelestiaSelection) {
         guard let entry = selection.object else { return }
         let browserItem = CelestiaBrowserItem(name: core.simulation.universe.name(for: selection), alternativeName: nil, catEntry: entry, provider: core.simulation.universe)
-        let controller = SubsystemBrowserCoordinatorViewController(item: browserItem) { [unowned self] (selection) in
-            self.addToBackStack()
-            self.showSelectionInfo(with: selection)
+        let controller = SubsystemBrowserCoordinatorViewController(item: browserItem) { [unowned self] (selection) -> UIViewController in
+            return self.createSelectionInfoViewController(with: selection, isEmbeddedInNavigation: true)
         }
-        controller.dismissDelegate = self
         showViewController(controller)
     }
 
@@ -461,16 +440,14 @@ extension MainViewController: CelestiaControllerDelegate {
 
     private func showSearch() {
         let controller = SearchCoordinatorController { [unowned self] (info) in
-            self.addToBackStack()
-            self.showSelectionInfo(with: info)
+            return self.createSelectionInfoViewController(with: info, isEmbeddedInNavigation: true)
         }
         showViewController(controller)
     }
 
     private func showBrowser() {
         let controller = BrowserContainerViewController(selected: { [unowned self] (info) in
-            self.addToBackStack()
-            self.showSelectionInfo(with: info)
+            return self.createSelectionInfoViewController(with: info, isEmbeddedInNavigation: true)
         })
         #if targetEnvironment(macCatalyst)
         showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600))
@@ -486,8 +463,6 @@ extension MainViewController: CelestiaControllerDelegate {
         #if targetEnvironment(macCatalyst)
         PanelSceneDelegate.present(viewController, preferredSize: macOSPreferredSize)
         #else
-        viewController.customFlag &= ~userInitiatedDismissalFlag
-
         viewController.regularPreferredContentSize = iOSPreferredSize
         viewController.formSheetPreferredContentSize = formSheetPreferredContentSize
         viewController.modalPresentationStyle = .custom
@@ -583,32 +558,6 @@ extension MainViewController {
         let activityController = UIActivityViewController(activityItems: [image], applicationActivities: nil)
         configurePopover(for: activityController)
         presentAfterDismissCurrent(activityController, animated: true)
-    }
-}
-
-extension MainViewController: UIViewControllerDismissDelegate {
-    func viewControllerDidDismiss(_ viewController: UIViewController) {
-        if (viewController.customFlag & userInitiatedDismissalFlag) == 0 {
-            popLastAndShow()
-        }
-    }
-
-    func popLastAndShow() {
-        if let viewController = viewControllerStack.popLast() {
-            showViewController(viewController)
-        }
-    }
-
-    func clearBackStack() {
-        viewControllerStack.removeAll()
-    }
-
-    func addToBackStack() {
-        if let current = presentedViewController {
-            viewControllerStack.append(current)
-            current.customFlag |= userInitiatedDismissalFlag
-            current.dismiss(animated: true, completion: nil)
-        }
     }
 }
 

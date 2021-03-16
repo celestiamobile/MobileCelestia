@@ -14,14 +14,13 @@ import UIKit
 import CelestiaCore
 
 class SearchCoordinatorController: UIViewController {
-
     private var main: SearchViewController!
     private var navigation: UINavigationController!
 
-    private let selected: (CelestiaSelection) -> Void
+    private let selection: (CelestiaSelection) -> UIViewController
 
-    init(selected: @escaping (CelestiaSelection) -> Void) {
-        self.selected = selected
+    init(selected: @escaping (CelestiaSelection) -> UIViewController) {
+        self.selection = selected
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -45,8 +44,7 @@ class SearchCoordinatorController: UIViewController {
 private extension SearchCoordinatorController {
     func setup() {
         main = SearchViewController(selected: { [unowned self] (info) in
-            self.dismiss(animated: true, completion: nil)
-            self.selected(info)
+            self.navigation.pushViewController(self.selection(info), animated: true)
         })
         navigation = UINavigationController(rootViewController: main)
 
