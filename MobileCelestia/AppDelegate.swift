@@ -32,8 +32,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        swizzleShouldInheritScreenScaleAsContentScaleFactor()
-
         #if targetEnvironment(macCatalyst)
         MacBridge.initialize()
 
@@ -212,16 +210,3 @@ class MacBridge {
     }
 }
 #endif
-
-extension AppDelegate {
-    private func swizzleShouldInheritScreenScaleAsContentScaleFactor() {
-        #if USE_MGL
-        let clazz = MGLKView.self
-        let selector = NSSelectorFromString("_shouldInheritScreenScaleAsContentScaleFactor")
-        guard let method = class_getInstanceMethod(clazz, selector) else { return }
-        class_replaceMethod(clazz, selector, imp_implementationWithBlock({ (_: MGLKView) -> Bool in
-            return false
-        } as @convention(block) (MGLKView) -> Bool), method_getTypeEncoding(method))
-        #endif
-    }
-}
