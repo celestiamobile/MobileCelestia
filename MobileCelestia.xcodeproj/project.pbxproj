@@ -978,8 +978,8 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
-				SHARED_BUILD_NUMBER = 92;
-				SHARED_BUILD_VERSION = 1.2.9;
+				SHARED_BUILD_NUMBER = 95;
+				SHARED_BUILD_VERSION = 1.2.10;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -1035,8 +1035,8 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
-				SHARED_BUILD_NUMBER = 92;
-				SHARED_BUILD_VERSION = 1.2.9;
+				SHARED_BUILD_NUMBER = 95;
+				SHARED_BUILD_VERSION = 1.2.10;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				VALIDATE_PRODUCT = YES;
@@ -1234,15 +1234,15 @@
 /* Begin XCRemoteSwiftPackageReference section */
 		EA09B5EA254BB92900DACC1D /* XCRemoteSwiftPackageReference "mwrequest" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/levinli303/mwrequest.git";
+			repositoryURL = "https://github.com/levinli303/mwrequest";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.2.2;
+				minimumVersion = 0.2.3;
 			};
 		};
 		EABF795125391ECB00F2460C /* XCRemoteSwiftPackageReference "Zip" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/marmelroy/Zip.git";
+			repositoryURL = "https://github.com/marmelroy/Zip";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 2.1.1;
@@ -1250,18 +1250,18 @@
 		};
 		EABF7A012539731300F2460C /* XCRemoteSwiftPackageReference "SDWebImage" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SDWebImage/SDWebImage.git";
+			repositoryURL = "https://github.com/SDWebImage/SDWebImage";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 5.9.3;
+				minimumVersion = 5.10.4;
 			};
 		};
 		EAF4A2EF255E4AA000F67F80 /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/microsoft/appcenter-sdk-apple.git";
+			repositoryURL = "https://github.com/microsoft/appcenter-sdk-apple";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 4.0.0;
+				minimumVersion = 4.1.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
