@@ -17,10 +17,11 @@ import AppCenter
 import AppCenterAnalytics
 import AppCenterCrashes
 
-let newURLOpenedNotificationName = Notification.Name("newURLOpenedNotificationName")
-let newURLOpenedNotificationURLKey = "newURLOpenedNotificationURLKey"
-let showHelpNotificationName = Notification.Name("showHelpNotificationName")
-let requestOpenFileNotificationName = Notification.Name("requestOpenFileNotificationName")
+let newURLOpenedNotificationName = Notification.Name("NewURLOpenedNotificationName")
+let newURLOpenedNotificationIsExternalKey = Notification.Name("NewURLOpenedNotificationURLIsExternalKey")
+let newURLOpenedNotificationURLKey = "NewURLOpenedNotificationURLKey"
+let showHelpNotificationName = Notification.Name("ShowHelpNotificationName")
+let requestOpenFileNotificationName = Notification.Name("RequestOpenFileNotificationName")
 
 let officialWebsiteURL = URL(string: "https://celestia.mobi")!
 let supportForumURL = URL(string: "https://celestia.space/forum")!
@@ -73,7 +74,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-        NotificationCenter.default.post(name: newURLOpenedNotificationName, object: nil, userInfo: [newURLOpenedNotificationURLKey : url])
+        NotificationCenter.default.post(name: newURLOpenedNotificationName, object: nil, userInfo: [
+            newURLOpenedNotificationURLKey: url,
+            newURLOpenedNotificationIsExternalKey: options[.openInPlace] as? Bool == true
+        ])
         return true
     }
 

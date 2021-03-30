@@ -38,6 +38,7 @@ class MainViewController: UIViewController {
     private var currentExternalScreen: UIScreen?
 
     private var urlToRun: URL?
+    private var urlToRunIsExternal: Bool = false
 
     init(initialURL: URL?) {
         self.urlToRun = initialURL
@@ -143,13 +144,16 @@ extension MainViewController {
 
     @objc private func newURLOpened(_ notification: Notification) {
         guard let url = notification.userInfo?[newURLOpenedNotificationURLKey] as? URL else { return }
+        urlToRunIsExternal = notification.userInfo?[newURLOpenedNotificationIsExternalKey] as? Bool == true
         urlToRun = url
         guard status == .loaded else { return }
         checkNeedOpeningURL()
     }
 
-    private func checkNeedOpeningURL(_ external: Bool = true, _ dismissCurrent: Bool = true) {
+    private func checkNeedOpeningURL() {
         guard let url = urlToRun else { return }
+        let external = urlToRunIsExternal
+
         urlToRun = nil
 
         let title = url.isFileURL ? CelestiaString("Run script?", comment: "") : CelestiaString("Open URL?", comment: "")
@@ -198,6 +202,7 @@ extension MainViewController: UIDocumentPickerDelegate {
         guard let url = urls.first else { return }
 
         urlToRun = url
+        urlToRunIsExternal = true
         checkNeedOpeningURL()
     }
 }
@@ -300,7 +305,8 @@ extension MainViewController: CelestiaControllerDelegate {
         let controller = FavoriteCoordinatorController(root: root) { [unowned self] object in
             if let url = object as? URL {
                 urlToRun = url
-                self.checkNeedOpeningURL(false, false)
+                urlToRunIsExternal = false
+                self.checkNeedOpeningURL()
             } else if let destination = object as? CelestiaDestination {
                 self.core.simulation.goToDestination(destination)
             }

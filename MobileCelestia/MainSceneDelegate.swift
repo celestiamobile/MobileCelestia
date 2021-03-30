@@ -40,8 +40,11 @@ class MainSceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
-        guard let url = URLContexts.first?.url else { return }
-        NotificationCenter.default.post(name: newURLOpenedNotificationName, object: nil, userInfo: [newURLOpenedNotificationURLKey : url])
+        guard let urlContext = URLContexts.first else { return }
+        NotificationCenter.default.post(name: newURLOpenedNotificationName, object: nil, userInfo: [
+            newURLOpenedNotificationURLKey: urlContext.url,
+            newURLOpenedNotificationIsExternalKey: urlContext.options.openInPlace
+        ])
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
