@@ -21,7 +21,10 @@ let newURLOpenedNotificationName = Notification.Name("NewURLOpenedNotificationNa
 let newURLOpenedNotificationIsExternalKey = Notification.Name("NewURLOpenedNotificationURLIsExternalKey")
 let newURLOpenedNotificationURLKey = "NewURLOpenedNotificationURLKey"
 let showHelpNotificationName = Notification.Name("ShowHelpNotificationName")
+let showPreferencesNotificationName = Notification.Name("ShowPreferencesNotificationName")
 let requestOpenFileNotificationName = Notification.Name("RequestOpenFileNotificationName")
+let requestCopyNotificationName = Notification.Name("RequestCopyNotificationName")
+let requestPasteNotificationName = Notification.Name("RequestPasteNotificationName")
 
 let officialWebsiteURL = URL(string: "https://celestia.mobi")!
 let supportForumURL = URL(string: "https://celestia.space/forum")!
@@ -130,50 +133,53 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         })
         return true
     }
+
+    override func copy(_ sender: Any?) {
+        NotificationCenter.default.post(name: requestCopyNotificationName, object: nil)
+    }
+
+    override func paste(_ sender: Any?) {
+        NotificationCenter.default.post(name: requestPasteNotificationName, object: nil)
+    }
+
+    @available(iOS 13, *)
+    override func validate(_ command: UICommand) {
+        super.validate(command)
+        let actionName = NSStringFromSelector(command.action)
+        if !CelestiaAppCore.shared.isInitialized {
+            if command.action == #selector(showPreferences) || command.action == #selector(openScriptFile) || actionName == "copy:" || actionName == "paste:" || command.action == #selector(showHelp(_:)) {
+                command.attributes = .disabled
+            }
+        }
+    }
 }
 
 @available(iOS 13.0, *)
 extension AppDelegate {
     override func buildMenu(with builder: UIMenuBuilder) {
+        super.buildMenu(with: builder)
+
         guard builder.system == .main else { return }
+
         builder.remove(menu: .newScene)
 
-        guard CelestiaAppCore.shared.isInitialized else { return }
-
-        let newHelpCommand: UIKeyCommand
-        let oldHelpCommand = builder.command(for: NSSelectorFromString("showHelp:"))
-        if let helpCommand = oldHelpCommand as? UIKeyCommand {
-            newHelpCommand = UIKeyCommand(title: helpCommand.title, image: helpCommand.image, action: #selector(showCelestiaHelp(_:)), input: helpCommand.input ?? "?", modifierFlags: helpCommand.modifierFlags)
-        } else {
-            newHelpCommand = UIKeyCommand(title: oldHelpCommand?.title ?? CelestiaString("", comment: ""), image: oldHelpCommand?.image, action: #selector(showCelestiaHelp(_:)), input: "?", modifierFlags: .command)
-        }
+        let preferencesCommand = UIKeyCommand(title: CelestiaString("Preferences…", comment: ""), action: #selector(showPreferences), input: ",", modifierFlags: .command)
+        builder.insertSibling(UIMenu(identifier: .preferences, options: .displayInline, children: [
+            preferencesCommand
+        ]), afterMenu: .about)
 
         let identifierPrefix = Bundle.app.bundleIdentifier! + "."
 
         builder.insertChild(UIMenu(title: "", image: nil, identifier: UIMenu.Identifier(identifierPrefix + "open"), options: .displayInline, children: [
             UIKeyCommand(title: CelestiaString("Run Script…", comment: ""), image: nil, action: #selector(openScriptFile), input: "O", modifierFlags: .command)
         ]), atStartOfMenu: .file)
-        builder.replaceChildren(ofMenu: .help) { (oldCommands: [UIMenuElement]) -> [UIMenuElement] in
-            var newCommands = oldCommands
-            if let helpCommandIndex = newCommands.firstIndex(where: { $0 == oldHelpCommand }) {
-                newCommands.remove(at: helpCommandIndex)
-                newCommands.insert(newHelpCommand, at: helpCommandIndex)
-            } else {
-                newCommands.insert(newHelpCommand, at: 0)
-            }
-            newCommands.append(UIMenu(title: "", image: nil, identifier: UIMenu.Identifier(identifierPrefix + "help.sub"), options: .displayInline, children: [
-                UICommand(title: CelestiaString("Official Website", comment: ""), image: nil, action: #selector(openOfficialWebsite)),
-                UICommand(title: CelestiaString("Support Forum", comment: ""), image: nil, action: #selector(openSupportForum)),
-            ]))
-            return newCommands
-        }
     }
 
     @objc private func openScriptFile() {
         NotificationCenter.default.post(name: requestOpenFileNotificationName, object: nil)
     }
 
-    @objc private func showCelestiaHelp(_ sender: Any) {
+    @objc private func showHelp(_ sender: Any) {
         NotificationCenter.default.post(name: showHelpNotificationName, object: nil, userInfo: nil)
     }
 
@@ -183,6 +189,10 @@ extension AppDelegate {
 
     @objc private func openSupportForum() {
         UIApplication.shared.open(supportForumURL, options: [:], completionHandler: nil)
+    }
+
+    @objc private func showPreferences() {
+        NotificationCenter.default.post(name: showPreferencesNotificationName, object: nil, userInfo: nil)
     }
 }
 

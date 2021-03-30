@@ -65,7 +65,10 @@ class MainViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(newScreenConnected(_:)), name: UIScreen.didConnectNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(screenDisconnected(_:)), name: UIScreen.didDisconnectNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(presentHelp), name: showHelpNotificationName, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(showSettings), name: showPreferencesNotificationName, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(requestOpenFile), name: requestOpenFileNotificationName, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(requestCopy), name: requestCopyNotificationName, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(requestPaste), name: requestPasteNotificationName, object: nil)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -100,9 +103,6 @@ class MainViewController: UIViewController {
                 self.setupToolbar()
                 self.setupTouchBar()
                 #endif
-                if #available(iOS 13.0, *) {
-                    UIMenuSystem.main.setNeedsRebuild()
-                }
                 UIApplication.shared.isIdleTimerDisabled = true
                 self.showOnboardMessageIfNeeded()
                 // we can't present two vcs together, so we delay the action
@@ -160,6 +160,19 @@ extension MainViewController {
         front?.showOption(title) { [unowned self] (confirmed) in
             guard confirmed else { return }
             self.celestiaController.openURL(url, external: external)
+        }
+    }
+}
+
+extension MainViewController {
+    @objc private func requestCopy() {
+        UIPasteboard.general.url = URL(string: core.currentURL)
+    }
+
+    @objc private func requestPaste() {
+        let pasteboard = UIPasteboard.general
+        if pasteboard.hasURLs, let url = pasteboard.url {
+            core.go(to: url.absoluteString)
         }
     }
 }
@@ -438,7 +451,7 @@ extension MainViewController: CelestiaControllerDelegate {
         showViewController(controller)
     }
 
-    private func showSettings() {
+    @objc private func showSettings() {
         let controller = SettingsCoordinatorController() { (_) in
         }
         showViewController(controller)
