@@ -260,11 +260,11 @@ let mainSetting = [
                             SettingCheckmarkItem(name: CelestiaString("Cities", comment: ""), key: "showCityLabels"),
                             SettingCheckmarkItem(name: CelestiaString("Observatories", comment: ""), key: "showObservatoryLabels"),
                             SettingCheckmarkItem(name: CelestiaString("Landing Sites", comment: ""), key: "showLandingSiteLabels"),
-                            SettingCheckmarkItem(name: CelestiaString("Mons", comment: ""), key: "showMonsLabels"),
-                            SettingCheckmarkItem(name: CelestiaString("Mare", comment: ""), key: "showMareLabels"),
-                            SettingCheckmarkItem(name: CelestiaString("Crater", comment: ""), key: "showCraterLabels"),
-                            SettingCheckmarkItem(name: CelestiaString("Vallis", comment: ""), key: "showVallisLabels"),
-                            SettingCheckmarkItem(name: CelestiaString("Terra", comment: ""), key: "showTerraLabels"),
+                            SettingCheckmarkItem(name: CelestiaString("Montes (Mountains)", comment: ""), key: "showMonsLabels"),
+                            SettingCheckmarkItem(name: CelestiaString("Maria (Seas)", comment: ""), key: "showMareLabels"),
+                            SettingCheckmarkItem(name: CelestiaString("Craters", comment: ""), key: "showCraterLabels"),
+                            SettingCheckmarkItem(name: CelestiaString("Valles (Valleys)", comment: ""), key: "showVallisLabels"),
+                            SettingCheckmarkItem(name: CelestiaString("Terrae (Land masses)", comment: ""), key: "showTerraLabels"),
                             SettingCheckmarkItem(name: CelestiaString("Volcanoes", comment: ""), key: "showEruptiveCenterLabels"),
                         ]
                     )
@@ -419,7 +419,7 @@ let mainSetting = [
                                     )
                                 ),
                                 SettingItem(
-                                    name: CelestiaString("Minimum Labelled Feature Size", comment: ""),
+                                    name: CelestiaString("Minimum Labeled Feature Size", comment: ""),
                                     type: .slider,
                                     associatedItem: .init(
                                         AssociatedSliderItem(key: "minimumFeatureSize", minValue: 0, maxValue: 99)
