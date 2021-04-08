@@ -9,7 +9,6 @@
 // of the License, or (at your option) any later version.
 //
 
-#import "NSObject+Flag.h"
 #import "FontHelper.h"
 
 #if TARGET_OS_MACCATALYST

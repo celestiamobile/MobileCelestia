@@ -152,7 +152,19 @@
 		<integer>1</integer>
 		<key>starStyle</key>
 		<integer>0</integer>
+		<key>showTintedIllumination</key>
+		<integer>0</integer>
 		<key>timeZone</key>
+		<integer>0</integer>
+		<key>showFadingOrbits</key>
+		<integer>1</integer>
+		<key>showEcliptic</key>
+		<integer>0</integer>
+		<key>showEclipticGrid</key>
+		<integer>0</integer>
+		<key>showHorizonGrid</key>
+		<integer>0</integer>
+		<key>showGalacticGrid</key>
 		<integer>0</integer>
 	</dict>
 </dict>

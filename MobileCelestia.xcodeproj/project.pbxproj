@@ -58,7 +58,6 @@
 		979D2FAD23FEB2B4005D2592 /* libbz2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 979D2FAC23FEB2AE005D2592 /* libbz2.tbd */; };
 		979D2FAF23FEB2BD005D2592 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 979D2FAE23FEB2B9005D2592 /* libz.tbd */; };
 		97C3A9F22445FACF00EB365A /* CelestiaControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C3A9F12445FACF00EB365A /* CelestiaControlView.swift */; };
-		97DB1FD924067B76001F222F /* NSObject+Flag.m in Sources */ = {isa = PBXBuildFile; fileRef = 97DB1FD824067B76001F222F /* NSObject+Flag.m */; };
 		97EB41C62408F20700E6D441 /* CameraControlViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EB41C52408F20700E6D441 /* CameraControlViewController.swift */; };
 		97EB41C92408F26200E6D441 /* SettingStepperCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EB41C82408F26200E6D441 /* SettingStepperCell.swift */; };
 		97F1141E2408AE06003A06D7 /* DataLocationSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F1141D2408AE06003A06D7 /* DataLocationSelectionViewController.swift */; };
@@ -197,8 +196,6 @@
 		979D2FAE23FEB2B9005D2592 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		97C3A9F12445FACF00EB365A /* CelestiaControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaControlView.swift; sourceTree = "<group>"; };
 		97DB1FD624067B76001F222F /* MobileCelestia-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MobileCelestia-Bridging-Header.h"; sourceTree = "<group>"; };
-		97DB1FD724067B76001F222F /* NSObject+Flag.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "NSObject+Flag.h"; sourceTree = "<group>"; };
-		97DB1FD824067B76001F222F /* NSObject+Flag.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "NSObject+Flag.m"; sourceTree = "<group>"; };
 		97EB41C52408F20700E6D441 /* CameraControlViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraControlViewController.swift; sourceTree = "<group>"; };
 		97EB41C82408F26200E6D441 /* SettingStepperCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingStepperCell.swift; sourceTree = "<group>"; };
 		97F1141D2408AE06003A06D7 /* DataLocationSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataLocationSelectionViewController.swift; sourceTree = "<group>"; };
@@ -307,8 +304,6 @@
 				978406D92402906C00876FD1 /* UIViewController+Extension.swift */,
 				977394A22403E68800E38B82 /* Color.swift */,
 				EA5E185B2477C78E00F5374B /* Toast.swift */,
-				97DB1FD724067B76001F222F /* NSObject+Flag.h */,
-				97DB1FD824067B76001F222F /* NSObject+Flag.m */,
 				97DB1FD624067B76001F222F /* MobileCelestia-Bridging-Header.h */,
 			);
 			path = Utils;
@@ -794,7 +789,6 @@
 				EABF7911253895FD00F2460C /* ResourceViewController.swift in Sources */,
 				EAA6C4CB253B5CD200ED1D60 /* InstalledResourceViewController.swift in Sources */,
 				EAF48520249B5C2500E5B817 /* StandardButton.swift in Sources */,
-				97DB1FD924067B76001F222F /* NSObject+Flag.m in Sources */,
 				972477D12404A19700729B45 /* BrowserContainerViewController.swift in Sources */,
 				EA28CA4E24A25FE7004B011E /* BottomControlViewController.swift in Sources */,
 				97401CA62414DAF50015F8E8 /* FavoriteCoordinatorController.swift in Sources */,
@@ -978,8 +972,8 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
-				SHARED_BUILD_NUMBER = 96;
-				SHARED_BUILD_VERSION = 1.2.10;
+				SHARED_BUILD_NUMBER = 99;
+				SHARED_BUILD_VERSION = 1.3.0;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
@@ -1035,8 +1029,8 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
-				SHARED_BUILD_NUMBER = 96;
-				SHARED_BUILD_VERSION = 1.2.10;
+				SHARED_BUILD_NUMBER = 99;
+				SHARED_BUILD_VERSION = 1.3.0;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				VALIDATE_PRODUCT = YES;

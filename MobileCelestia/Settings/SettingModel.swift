@@ -181,50 +181,174 @@ let mainSetting = [
             ),
             SettingItem(
                 name: CelestiaString("Orbits", comment: ""),
-                type: .multiSelection,
+                type: .common,
                 associatedItem: .init(
-                    AssociatedMultiSelectionItem(
-                        masterKey: "showOrbits",
-                        items: [
-                            SettingCheckmarkItem(name: CelestiaString("Stars", comment: ""), key: "showStellarOrbits"),
-                            SettingCheckmarkItem(name: CelestiaString("Planets", comment: ""), key: "showPlanetOrbits"),
-                            SettingCheckmarkItem(name: CelestiaString("Dwarf Planets", comment: ""), key: "showDwarfPlanetOrbits"),
-                            SettingCheckmarkItem(name: CelestiaString("Moons", comment: ""), key: "showMoonOrbits"),
-                            SettingCheckmarkItem(name: CelestiaString("Minor Moons", comment: ""), key: "showMinorMoonOrbits"),
-                            SettingCheckmarkItem(name: CelestiaString("Asteroids", comment: ""), key: "showAsteroidOrbits"),
-                            SettingCheckmarkItem(name: CelestiaString("Comets", comment: ""), key: "showCometOrbits"),
-                            SettingCheckmarkItem(name: CelestiaString("Spacecraft", comment: ""), key: "showSpacecraftOrbits"),
-                        ]
-                    )
+                    AssociatedCommonItem(title: CelestiaString("Orbits", comment: ""), sections: [
+                        .init(rows: [
+                            SettingItem(
+                                name: CelestiaString("Show Orbits", comment: ""),
+                                type: .checkmark,
+                                associatedItem: .init(
+                                    SettingCheckmarkItem(name: CelestiaString("Show Orbits", comment: ""), key: "showOrbits", representation: .switch)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Fading Orbits", comment: ""),
+                                type: .checkmark,
+                                associatedItem: .init(
+                                    SettingCheckmarkItem(name: CelestiaString("Fading Orbits", comment: ""), key: "showFadingOrbits", representation: .switch)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Partial Trajectories", comment: ""),
+                                type: .checkmark,
+                                associatedItem: .init(
+                                    SettingCheckmarkItem(name: CelestiaString("Partial Trajectories", comment: ""), key: "showPartialTrajectories", representation: .switch)
+                                )
+                            ),
+                        ], footer: nil),
+                        .init(rows: [
+                            SettingItem(
+                                name: CelestiaString("Stars", comment: ""),
+                                type: .checkmark,
+                                associatedItem: .init(
+                                    SettingCheckmarkItem(name: CelestiaString("Stars", comment: ""), key: "showStellarOrbits", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Planets", comment: ""),
+                                type: .checkmark,
+                                associatedItem: .init(
+                                    SettingCheckmarkItem(name: CelestiaString("Planets", comment: ""), key: "showPlanetOrbits", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Dwarf Planets", comment: ""),
+                                type: .checkmark,
+                                associatedItem: .init(
+                                    SettingCheckmarkItem(name: CelestiaString("Dwarf Planets", comment: ""), key: "showDwarfPlanetOrbits", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Moons", comment: ""),
+                                type: .checkmark,
+                                associatedItem: .init(
+                                    SettingCheckmarkItem(name: CelestiaString("Moons", comment: ""), key: "showMoonOrbits", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Minor Moons", comment: ""),
+                                type: .checkmark,
+                                associatedItem: .init(
+                                    SettingCheckmarkItem(name: CelestiaString("Minor Moons", comment: ""), key: "showMinorMoonOrbits", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Asteroids", comment: ""),
+                                type: .checkmark,
+                                associatedItem: .init(
+                                    SettingCheckmarkItem(name: CelestiaString("Asteroids", comment: ""), key: "showAsteroidOrbits", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Comets", comment: ""),
+                                type: .checkmark,
+                                associatedItem: .init(
+                                    SettingCheckmarkItem(name: CelestiaString("Comets", comment: ""), key: "showCometOrbits", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Spacecraft", comment: ""),
+                                type: .checkmark,
+                                associatedItem: .init(
+                                    SettingCheckmarkItem(name: CelestiaString("Spacecraft", comment: ""), key: "showSpacecraftOrbits", representation: .checkmark)
+                                )
+                            ),
+                        ], footer: nil),
+                    ])
                 )
             ),
             SettingItem(
                 name: CelestiaString("Grids", comment: ""),
-                type: .multiSelection,
+                type: .common,
                 associatedItem: .init(
-                    AssociatedMultiSelectionItem(
-                        masterKey: nil,
-                        items: [
-                            SettingCheckmarkItem(name: CelestiaString("Equatorial", comment: ""), key: "showCelestialSphere"),
-                            SettingCheckmarkItem(name: CelestiaString("Ecliptic", comment: ""), key: "showEclipticGrid"),
-                            SettingCheckmarkItem(name: CelestiaString("Horizontal", comment: ""), key: "showHorizonGrid"),
-                            SettingCheckmarkItem(name: CelestiaString("Galactic", comment: ""), key: "showGalacticGrid"),
-                        ]
-                    )
+                    AssociatedCommonItem(title: CelestiaString("Grids", comment: ""), sections: [
+                        .init(rows: [
+                            SettingItem(
+                                name: CelestiaString("Equatorial", comment: ""),
+                                type: .checkmark,
+                                associatedItem: .init(
+                                    SettingCheckmarkItem(name: CelestiaString("Equatorial", comment: ""), key: "showCelestialSphere", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Ecliptic", comment: ""),
+                                type: .checkmark,
+                                associatedItem: .init(
+                                    SettingCheckmarkItem(name: CelestiaString("Ecliptic", comment: ""), key: "showEclipticGrid", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Horizontal", comment: ""),
+                                type: .checkmark,
+                                associatedItem: .init(
+                                    SettingCheckmarkItem(name: CelestiaString("Horizontal", comment: ""), key: "showHorizonGrid", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Galactic", comment: ""),
+                                type: .checkmark,
+                                associatedItem: .init(
+                                    SettingCheckmarkItem(name: CelestiaString("Galactic", comment: ""), key: "showGalacticGrid", representation: .checkmark)
+                                )
+                            ),
+                        ], footer: nil),
+                        .init(rows: [
+                            SettingItem(
+                                name: CelestiaString("Ecliptic Line", comment: ""),
+                                type: .checkmark,
+                                associatedItem: .init(
+                                    SettingCheckmarkItem(name: CelestiaString("Ecliptic Line", comment: ""), key: "showEcliptic", representation: .checkmark)
+                                )
+                            ),
+                        ], footer: nil)
+                    ])
                 )
             ),
             SettingItem(
                 name: CelestiaString("Constellations", comment: ""),
-                type: .multiSelection,
+                type: .common,
                 associatedItem: .init(
-                    AssociatedMultiSelectionItem(
-                        masterKey: "showDiagrams",
-                        items: [
-                            SettingCheckmarkItem(name: CelestiaString("Constellation Labels", comment: ""), key: "showConstellationLabels"),
-                            SettingCheckmarkItem(name: CelestiaString("Constellations in Latin", comment: ""), key: "showLatinConstellationLabels"),
-                            SettingCheckmarkItem(name: CelestiaString("Show Boundaries", comment: ""), key: "showBoundaries"),
-                        ]
-                    )
+                    AssociatedCommonItem(title: CelestiaString("Constellations", comment: ""), items: [
+                        SettingItem(
+                            name: CelestiaString("Show Constellations", comment: ""),
+                            type: .checkmark,
+                            associatedItem: .init(
+                                SettingCheckmarkItem(name: CelestiaString("Show Constellations", comment: ""), key: "showDiagrams", representation: .checkmark)
+                            )
+                        ),
+                        SettingItem(
+                            name: CelestiaString("Constellation Labels", comment: ""),
+                            type: .checkmark,
+                            associatedItem: .init(
+                                SettingCheckmarkItem(name: CelestiaString("Constellation Labels", comment: ""), key: "showConstellationLabels", representation: .checkmark)
+                            )
+                        ),
+                        SettingItem(
+                            name: CelestiaString("Constellations in Latin", comment: ""),
+                            type: .checkmark,
+                            associatedItem: .init(
+                                SettingCheckmarkItem(name: CelestiaString("Constellations in Latin", comment: ""), key: "showLatinConstellationLabels", representation: .checkmark)
+                            )
+                        ),
+                        SettingItem(
+                            name: CelestiaString("Show Boundaries", comment: ""),
+                            type: .checkmark,
+                            associatedItem: .init(
+                                SettingCheckmarkItem(name: CelestiaString("Show Boundaries", comment: ""), key: "showBoundaries", representation: .checkmark)
+                            )
+                        ),
+                    ])
                 )
             ),
             SettingItem(
@@ -252,22 +376,98 @@ let mainSetting = [
             ),
             SettingItem(
                 name: CelestiaString("Locations", comment: ""),
-                type: .multiSelection,
+                type: .common,
                 associatedItem: .init(
-                    AssociatedMultiSelectionItem(
-                        masterKey: "showLocationLabels",
-                        items: [
-                            SettingCheckmarkItem(name: CelestiaString("Cities", comment: ""), key: "showCityLabels"),
-                            SettingCheckmarkItem(name: CelestiaString("Observatories", comment: ""), key: "showObservatoryLabels"),
-                            SettingCheckmarkItem(name: CelestiaString("Landing Sites", comment: ""), key: "showLandingSiteLabels"),
-                            SettingCheckmarkItem(name: CelestiaString("Montes (Mountains)", comment: ""), key: "showMonsLabels"),
-                            SettingCheckmarkItem(name: CelestiaString("Maria (Seas)", comment: ""), key: "showMareLabels"),
-                            SettingCheckmarkItem(name: CelestiaString("Craters", comment: ""), key: "showCraterLabels"),
-                            SettingCheckmarkItem(name: CelestiaString("Valles (Valleys)", comment: ""), key: "showVallisLabels"),
-                            SettingCheckmarkItem(name: CelestiaString("Terrae (Land masses)", comment: ""), key: "showTerraLabels"),
-                            SettingCheckmarkItem(name: CelestiaString("Volcanoes", comment: ""), key: "showEruptiveCenterLabels"),
-                        ]
-                    )
+                    AssociatedCommonItem(title: CelestiaString("Locations", comment: ""), sections: [
+                        .init(rows: [
+                            SettingItem(
+                                name: CelestiaString("Show Locations", comment: ""),
+                                type: .checkmark,
+                                associatedItem: .init(
+                                    SettingCheckmarkItem(name: CelestiaString("Show Locations", comment: ""), key: "showLocationLabels", representation: .switch)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Minimum Labeled Feature Size", comment: ""),
+                                type: .slider,
+                                associatedItem: .init(
+                                    AssociatedSliderItem(key: "minimumFeatureSize", minValue: 0, maxValue: 99)
+                                )
+                            ),
+                        ], footer: nil),
+                        .init(rows: [
+                            SettingItem(
+                                name: CelestiaString("Cities", comment: ""),
+                                type: .checkmark,
+                                associatedItem: .init(
+                                    SettingCheckmarkItem(name: CelestiaString("Cities", comment: ""), key: "showCityLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Observatories", comment: ""),
+                                type: .checkmark,
+                                associatedItem: .init(
+                                    SettingCheckmarkItem(name: CelestiaString("Observatories", comment: ""), key: "showObservatoryLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Landing Sites", comment: ""),
+                                type: .checkmark,
+                                associatedItem: .init(
+                                    SettingCheckmarkItem(name: CelestiaString("Landing Sites", comment: ""), key: "showLandingSiteLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Montes (Mountains)", comment: ""),
+                                type: .checkmark,
+                                associatedItem: .init(
+                                    SettingCheckmarkItem(name: CelestiaString("Montes (Mountains)", comment: ""), key: "showMonsLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Maria (Seas)", comment: ""),
+                                type: .checkmark,
+                                associatedItem: .init(
+                                    SettingCheckmarkItem(name: CelestiaString("Maria (Seas)", comment: ""), key: "showMareLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Craters", comment: ""),
+                                type: .checkmark,
+                                associatedItem: .init(
+                                    SettingCheckmarkItem(name: CelestiaString("Craters", comment: ""), key: "showCraterLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Valles (Valleys)", comment: ""),
+                                type: .checkmark,
+                                associatedItem: .init(
+                                    SettingCheckmarkItem(name: CelestiaString("Valles (Valleys)", comment: ""), key: "showVallisLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Terrae (Land masses)", comment: ""),
+                                type: .checkmark,
+                                associatedItem: .init(
+                                    SettingCheckmarkItem(name: CelestiaString("Terrae (Land masses)", comment: ""), key: "showTerraLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Volcanoes", comment: ""),
+                                type: .checkmark,
+                                associatedItem: .init(
+                                    SettingCheckmarkItem(name: CelestiaString("Volcanoes", comment: ""), key: "showEruptiveCenterLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Other", comment: ""),
+                                type: .checkmark,
+                                associatedItem: .init(
+                                    SettingCheckmarkItem(name: CelestiaString("Other", comment: ""), key: "showOtherLabels", representation: .checkmark)
+                                )
+                            ),
+                        ], footer: nil)
+                    ])
                 )
             ),
             SettingItem(
@@ -412,17 +612,19 @@ let mainSetting = [
                                     )
                                 ),
                                 SettingItem(
+                                    name: CelestiaString("Tinted Illumination", comment: ""),
+                                    type: .checkmark,
+                                    associatedItem: .init(
+                                        AssociatedCheckmarkItem(name: CelestiaString("Tinted Illumination", comment: ""), key: "showTintedIllumination", representation: .switch)
+                                    )
+                                ),
+                            ], footer: nil),
+                            .init(rows: [
+                                SettingItem(
                                     name: CelestiaString("Faintest Stars", comment: ""),
                                     type: .slider,
                                     associatedItem: .init(
                                         AssociatedSliderItem(key: "faintestVisible", minValue: 3, maxValue: 12)
-                                    )
-                                ),
-                                SettingItem(
-                                    name: CelestiaString("Minimum Labeled Feature Size", comment: ""),
-                                    type: .slider,
-                                    associatedItem: .init(
-                                        AssociatedSliderItem(key: "minimumFeatureSize", minValue: 0, maxValue: 99)
                                     )
                                 ),
                                 SettingItem(
