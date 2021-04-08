@@ -93,6 +93,7 @@
 		EABF7A032539731300F2460C /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = EABF7A022539731300F2460C /* SDWebImage */; };
 		EAC8435F252C818700691943 /* MacBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = EAC8435E252C818700691943 /* MacBridge.m */; };
 		EAC84364252C84B600691943 /* CelestiaMacBridge.bundle in Embed PlugIns */ = {isa = PBXBuildFile; fileRef = EAC84354252C816500691943 /* CelestiaMacBridge.bundle */; platformFilter = maccatalyst; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		EAD94F67261EED7700A93C93 /* UITableView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD94F66261EED7700A93C93 /* UITableView+Extensions.swift */; };
 		EADE7FBB252B517600D4174F /* CelestiaDisplayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE7FBA252B517600D4174F /* CelestiaDisplayController.swift */; };
 		EADE7FC0252B54A400D4174F /* CelestiaInteractionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE7FBF252B54A400D4174F /* CelestiaInteractionController.swift */; };
 		EAF48515249B2C4700E5B817 /* SubsystemBrowserCoordinatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF48514249B2C4700E5B817 /* SubsystemBrowserCoordinatorViewController.swift */; };
@@ -233,6 +234,7 @@
 		EAC84356252C816500691943 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EAC8435D252C818700691943 /* MacBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MacBridge.h; sourceTree = "<group>"; };
 		EAC8435E252C818700691943 /* MacBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MacBridge.m; sourceTree = "<group>"; };
+		EAD94F66261EED7700A93C93 /* UITableView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Extensions.swift"; sourceTree = "<group>"; };
 		EADE7FBA252B517600D4174F /* CelestiaDisplayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaDisplayController.swift; sourceTree = "<group>"; };
 		EADE7FBF252B54A400D4174F /* CelestiaInteractionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaInteractionController.swift; sourceTree = "<group>"; };
 		EAF4851325A2B0E600F0E9F9 /* bg */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = bg; path = bg.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -305,6 +307,7 @@
 				977394A22403E68800E38B82 /* Color.swift */,
 				EA5E185B2477C78E00F5374B /* Toast.swift */,
 				97DB1FD624067B76001F222F /* MobileCelestia-Bridging-Header.h */,
+				EAD94F66261EED7700A93C93 /* UITableView+Extensions.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -829,6 +832,7 @@
 				97EB41C92408F26200E6D441 /* SettingStepperCell.swift in Sources */,
 				977CDD34240BDFE500137127 /* OnboardViewController.swift in Sources */,
 				974F86AA240362BA00356795 /* ToolbarButtonCell.swift in Sources */,
+				EAD94F67261EED7700A93C93 /* UITableView+Extensions.swift in Sources */,
 				977CDD2A240BC50A00137127 /* TutorialViewController.swift in Sources */,
 				97401CA52414DAF50015F8E8 /* FavoriteViewController.swift in Sources */,
 				EABF793C2538A1C100F2460C /* ResourceItemViewController.swift in Sources */,

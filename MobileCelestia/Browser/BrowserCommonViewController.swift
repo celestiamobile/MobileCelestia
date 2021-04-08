@@ -21,7 +21,7 @@ class BrowserCommonViewController: BaseTableViewController {
     init(item: CelestiaBrowserItem, selection: @escaping (CelestiaBrowserItem, Bool) -> Void) {
         self.item = item
         self.selection = selection
-        super.init(style: .grouped)
+        super.init(style: .defaultGrouped)
     }
 
     required init?(coder: NSCoder) {

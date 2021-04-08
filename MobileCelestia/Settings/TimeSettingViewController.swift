@@ -24,7 +24,7 @@ class TimeSettingViewController: BaseTableViewController {
     }()
 
     init() {
-        super.init(style: .grouped)
+        super.init(style: .defaultGrouped)
     }
     
     required init?(coder: NSCoder) {

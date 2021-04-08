@@ -29,7 +29,7 @@ class CameraControlViewController: BaseTableViewController {
     private var lastKey: Int?
 
     init() {
-        super.init(style: .grouped)
+        super.init(style: .defaultGrouped)
     }
 
     required init?(coder: NSCoder) {

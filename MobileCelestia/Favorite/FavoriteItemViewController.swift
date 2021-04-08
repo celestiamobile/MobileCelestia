@@ -182,7 +182,7 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: BaseTableViewContr
         self.itemList = item
         self.selection = selection
         self.add = add
-        super.init(style: .grouped)
+        super.init(style: .defaultGrouped)
     }
 
     required init?(coder: NSCoder) {

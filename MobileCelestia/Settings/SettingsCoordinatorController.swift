@@ -16,7 +16,9 @@ enum SettingAction {
 }
 
 class SettingsCoordinatorController: UIViewController {
-
+    #if targetEnvironment(macCatalyst)
+    private lazy var controller = UISplitViewController()
+    #endif
     private var main: SettingsMainViewController!
     private var navigation: UINavigationController!
 
@@ -56,46 +58,61 @@ private extension SettingsCoordinatorController {
                 fatalError("Wrong associated item \(item.base)")
             }
 
+            let viewController: UIViewController
             switch item.type {
             case .multiSelection:
                 if let associated = item.associatedItem.base as? AssociatedMultiSelectionItem {
-                    let controller = SettingCheckViewController(item: SettingCheckViewController.Item(title: item.name, masterKey: associated.masterKey, subitems: associated.items))
-                    self.navigation.pushViewController(controller, animated: true)
+                    viewController = SettingCheckViewController(item: SettingCheckViewController.Item(title: item.name, masterKey: associated.masterKey, subitems: associated.items))
                 } else {
                     logWrongAssociatedItemType(item.associatedItem)
                 }
             case .selection:
                 if let associated = item.associatedItem.base as? AssociatedSelectionItem {
-                    let controller = SettingSelectionViewController(item: SettingSelectionViewController.Item(title: item.name, key: associated.key, subitems: associated.items))
-                    self.navigation.pushViewController(controller, animated: true)
+                    viewController = SettingSelectionViewController(item: SettingSelectionViewController.Item(title: item.name, key: associated.key, subitems: associated.items))
                 } else {
                     logWrongAssociatedItemType(item.associatedItem)
                 }
             case .common:
                 if let associated = item.associatedItem.base as? AssociatedCommonItem {
-                    let controller = SettingCommonViewController(item: associated)
-                    self.navigation.pushViewController(controller, animated: true)
+                    viewController = SettingCommonViewController(item: associated)
                 } else {
                     logWrongAssociatedItemType(item.associatedItem)
                 }
             case .about:
-                self.navigation.pushViewController(AboutViewController(), animated: true)
+                viewController = AboutViewController()
             case .time:
-                self.navigation.pushViewController(TimeSettingViewController(), animated: true)
+                viewController = TimeSettingViewController()
             case .render:
-                self.navigation.pushViewController(TextViewController(title: item.name, text: renderInfo), animated: true)
+                viewController = TextViewController(title: item.name, text: renderInfo)
             case .dataLocation:
-                self.navigation.pushViewController(DataLocationSelectionViewController(), animated: true)
+                viewController = DataLocationSelectionViewController()
             case .slider, .prefSwitch, .checkmark, .action, .custom:
                 fatalError("Use .common for slider/action setting item.")
             }
+            #if targetEnvironment(macCatalyst)
+            self.navigation = UINavigationController(rootViewController: viewController)
+            self.navigation.navigationBar.barStyle = .black
+            self.navigation.navigationBar.barTintColor = .black
+            self.navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
+            self.controller.viewControllers = [self.controller.viewControllers[0], self.navigation]
+            #else
+            self.navigation.pushViewController(viewController, animated: true)
+            #endif
         })
+        #if targetEnvironment(macCatalyst)
+        controller.primaryBackgroundStyle = .sidebar
+        controller.preferredDisplayMode = .oneBesideSecondary
+        controller.preferredPrimaryColumnWidthFraction = 0.3
+        let emptyVc = UIViewController()
+        emptyVc.view.backgroundColor = .darkBackground
+        controller.viewControllers = [main, emptyVc]
+        install(controller)
+        #else
         navigation = UINavigationController(rootViewController: main)
-
         install(navigation)
-
         navigation.navigationBar.barStyle = .black
         navigation.navigationBar.barTintColor = .black
         navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
+        #endif
     }
 }

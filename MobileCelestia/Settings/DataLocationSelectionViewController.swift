@@ -25,7 +25,7 @@ class DataLocationSelectionViewController: BaseTableViewController {
     private var currentPicker: Location?
 
     init() {
-        super.init(style: .grouped)
+        super.init(style: .defaultGrouped)
     }
 
     required init?(coder: NSCoder) {

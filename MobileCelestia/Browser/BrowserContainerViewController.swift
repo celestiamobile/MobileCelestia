@@ -53,11 +53,7 @@ private extension BrowserContainerViewController {
 
         #if targetEnvironment(macCatalyst)
         controller.primaryBackgroundStyle = .sidebar
-        if #available(macCatalyst 14.0, *) {
-            controller.preferredDisplayMode = .oneBesideSecondary
-        } else {
-            controller.preferredDisplayMode = .allVisible
-        }
+        controller.preferredDisplayMode = .oneBesideSecondary
         controller.preferredPrimaryColumnWidthFraction = 0.3
         let sidebarController = BrowserSidebarController(browserRoots: [solBrowserRoot, starBrowserRoot, dsoBrowserRoot]) { [unowned self] item in
             let newVc = BrowserCoordinatorController(item: item, image: UIImage(), selection: handler)

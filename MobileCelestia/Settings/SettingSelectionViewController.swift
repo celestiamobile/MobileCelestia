@@ -24,7 +24,7 @@ class SettingSelectionViewController: BaseTableViewController {
 
     init(item: Item) {
         self.item = item
-        super.init(style: .grouped)
+        super.init(style: .defaultGrouped)
     }
 
     required init?(coder: NSCoder) {

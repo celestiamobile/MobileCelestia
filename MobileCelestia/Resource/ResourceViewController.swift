@@ -45,11 +45,7 @@ private extension ResourceViewController {
         }
         #if targetEnvironment(macCatalyst)
         controller.primaryBackgroundStyle = .sidebar
-        if #available(macCatalyst 14.0, *) {
-            controller.preferredDisplayMode = .oneBesideSecondary
-        } else {
-            controller.preferredDisplayMode = .allVisible
-        }
+        controller.preferredDisplayMode = .oneBesideSecondary
         controller.preferredPrimaryColumnWidthFraction = 0.3
         let emptyVc = UIViewController()
         emptyVc.view.backgroundColor = .darkBackground

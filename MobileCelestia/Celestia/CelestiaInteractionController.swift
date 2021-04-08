@@ -471,10 +471,7 @@ extension CelestiaInteractionController {
 
 extension CelestiaInteractionController: UIGestureRecognizerDelegate {
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        var area = gestureRecognizer.view!.bounds
-        if #available(iOS 11.0, *) {
-            area = area.inset(by: gestureRecognizer.view!.safeAreaInsets)
-        }
+        var area = gestureRecognizer.view!.bounds.inset(by: gestureRecognizer.view!.safeAreaInsets)
         // reserve area
         area = area.insetBy(dx: 16, dy: 16)
         if !area.contains(gestureRecognizer.location(in: gestureRecognizer.view)) {

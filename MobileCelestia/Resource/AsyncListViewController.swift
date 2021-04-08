@@ -16,8 +16,8 @@ protocol AsyncListItem {
 }
 
 class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
-    var showDisclosureIndicator: Bool { return true }
-    var useStandardUITableViewCell: Bool { return false }
+    class var showDisclosureIndicator: Bool { return true }
+    class var useStandardUITableViewCell: Bool { return false }
 
     private lazy var activityIndicator: UIActivityIndicatorView = {
         if #available(iOS 13, *) {
@@ -33,7 +33,7 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
 
     init(selection: @escaping (T) -> Void) {
         self.selection = selection
-        super.init(style: .grouped)
+        super.init(style: Self.showDisclosureIndicator ? .defaultGrouped : .grouped)
     }
 
     required init?(coder: NSCoder) {
@@ -80,21 +80,21 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = items[indexPath.section][indexPath.row]
-        if useStandardUITableViewCell {
+        if Self.useStandardUITableViewCell {
             let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath)
             if #available(iOS 14, *) {
-                var configuration = cell.defaultContentConfiguration()
+                var configuration = UIListContentConfiguration.sidebarCell()
                 configuration.text = item.name
                 cell.contentConfiguration = configuration
             } else {
                 cell.textLabel?.text = item.name
             }
-            cell.accessoryType = showDisclosureIndicator ? .disclosureIndicator : .none
+            cell.accessoryType = Self.showDisclosureIndicator ? .disclosureIndicator : .none
             return cell
         }
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
         cell.title = item.name
-        cell.accessoryType = showDisclosureIndicator ? .disclosureIndicator : .none
+        cell.accessoryType = Self.showDisclosureIndicator ? .disclosureIndicator : .none
         return cell
     }
 
@@ -103,13 +103,13 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
     }
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return useStandardUITableViewCell ? UITableView.automaticDimension : 44
+        return Self.useStandardUITableViewCell ? UITableView.automaticDimension : 44
     }
 }
 
 private extension AsyncListViewController {
     func setup() {
-        if useStandardUITableViewCell {
+        if Self.useStandardUITableViewCell {
             tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Text")
         } else {
             tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Text")

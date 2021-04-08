@@ -20,7 +20,7 @@ class SettingCommonViewController: BaseTableViewController {
 
     init(item: SettingCommonItem) {
         self.item = item
-        super.init(style: .grouped)
+        super.init(style: .defaultGrouped)
     }
 
     required init?(coder: NSCoder) {

@@ -56,11 +56,11 @@ class ResourceCategoryListViewController: AsyncListViewController<ResourceCatego
     }
 
     #if targetEnvironment(macCatalyst)
-    override var showDisclosureIndicator: Bool {
+    override class var showDisclosureIndicator: Bool {
         return false
     }
 
-    override var useStandardUITableViewCell: Bool {
+    override class var useStandardUITableViewCell: Bool {
         return true
     }
     #endif

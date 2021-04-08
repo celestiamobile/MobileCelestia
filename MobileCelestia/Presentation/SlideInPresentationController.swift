@@ -39,7 +39,7 @@ class SlideInPresentationController: UIPresentationController {
         case .bottomRight, .bottomLeft:
             size = presentedViewController.preferredContentSize
         }
-        if #available(iOS 11.0, *), let safeAreaInset = containerView?.safeAreaInsets {
+        if let safeAreaInset = containerView?.safeAreaInsets {
             switch direction {
             case .top:
                 size.height += safeAreaInset.top

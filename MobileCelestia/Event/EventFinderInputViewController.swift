@@ -58,7 +58,7 @@ class EventFinderInputViewController: BaseTableViewController {
 
     init(resultHandler: @escaping (([CelestiaEclipse]) -> Void)) {
         self.resultHandler = resultHandler
-        super.init(style: .grouped)
+        super.init(style: .defaultGrouped)
     }
 
     required init?(coder: NSCoder) {

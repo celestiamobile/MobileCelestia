@@ -15,7 +15,7 @@ class AboutViewController: BaseTableViewController {
     private var items: [[TextItem]] = []
 
     init() {
-        super.init(style: .grouped)
+        super.init(style: .defaultGrouped)
     }
 
     required init?(coder: NSCoder) {

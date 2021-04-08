@@ -43,7 +43,11 @@ enum AppToolbarAction: String {
     case addons
 
     static var persistentAction: [[AppToolbarAction]] {
+        #if targetEnvironment(macCatalyst)
+        return [[.setting], [.share, .search, .home], [.time, .script], [.browse, .favorite, .event], [.addons], [.help]]
+        #else
         return [[.setting], [.share, .search, .home], [.camera, .time, .script], [.browse, .favorite, .event], [.addons], [.help]]
+        #endif
     }
 }
 
@@ -158,17 +162,10 @@ private extension ToolbarViewController {
             collectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
         ])
 
-        if #available(iOS 11.0, *) {
-            NSLayoutConstraint.activate([
-                collectionView.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor),
-                collectionView.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor)
-            ])
-        } else {
-            NSLayoutConstraint.activate([
-                collectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-                collectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
-            ])
-        }
+        NSLayoutConstraint.activate([
+            collectionView.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor)
+        ])
 
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.showsVerticalScrollIndicator = false

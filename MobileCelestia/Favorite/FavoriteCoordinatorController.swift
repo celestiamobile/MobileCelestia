@@ -19,7 +19,21 @@ enum FavoriteRoot {
 }
 
 class FavoriteCoordinatorController: UIViewController {
+    #if targetEnvironment(macCatalyst)
+    private lazy var controller = UISplitViewController()
+    #endif
     private var navigation: UINavigationController!
+
+    private lazy var main = FavoriteViewController(currentSelection: root == .destinations ? .destination : nil, selected: { [unowned self] (item) in
+        switch item {
+        case .bookmark:
+            self.replace(self.bookmarkRoot)
+        case .script:
+            self.replace(AnyFavoriteItemList(title: CelestiaString("Scripts", comment: ""), items: readScripts()))
+        case .destination:
+            self.replace(AnyFavoriteItemList(title: CelestiaString("Destinations", comment: ""), items: CelestiaAppCore.shared.destinations))
+        }
+    })
 
     private lazy var bookmarkRoot: BookmarkNode = {
         let node = BookmarkNode(name: CelestiaString("Bookmarks", comment: ""),
@@ -61,33 +75,48 @@ class FavoriteCoordinatorController: UIViewController {
 
 private extension FavoriteCoordinatorController {
     func setup() {
-        let rootVC: UIViewController
-        switch root {
-        case .main:
-            rootVC = FavoriteViewController(selected: { [unowned self] (item) in
-                switch item {
-                case .bookmark:
-                    self.show(self.bookmarkRoot)
-                case .script:
-                    self.show(AnyFavoriteItemList(title: CelestiaString("Scripts", comment: ""), items: readScripts()))
-                case .destination:
-                    self.show(AnyFavoriteItemList(title: CelestiaString("Destinations", comment: ""), items: CelestiaAppCore.shared.destinations))
-                }
-            })
-        case .destinations:
-            rootVC = generateVC(AnyFavoriteItemList(title: CelestiaString("Destinations", comment: ""), items: CelestiaAppCore.shared.destinations))
+        let anotherVc = root == .destinations ? generateVC(AnyFavoriteItemList(title: CelestiaString("Destinations", comment: ""), items: CelestiaAppCore.shared.destinations)) : nil
+        #if targetEnvironment(macCatalyst)
+        controller.primaryBackgroundStyle = .sidebar
+        controller.preferredDisplayMode = .oneBesideSecondary
+        controller.preferredPrimaryColumnWidthFraction = 0.3
+        let contentVc: UIViewController
+        if let another = anotherVc {
+            navigation = UINavigationController(rootViewController: another)
+            navigation.navigationBar.barStyle = .black
+            navigation.navigationBar.barTintColor = .black
+            navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
+            contentVc = navigation
+        } else {
+            let emptyVc = UIViewController()
+            emptyVc.view.backgroundColor = .darkBackground
+            contentVc = emptyVc
         }
-        navigation = UINavigationController(rootViewController: rootVC)
-
+        controller.viewControllers = [main, contentVc]
+        install(controller)
+        #else
+        navigation = UINavigationController(rootViewController: anotherVc ?? main)
         install(navigation)
-
         navigation.navigationBar.barStyle = .black
         navigation.navigationBar.barTintColor = .black
         navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
+        #endif
+    }
+
+    func replace<T: FavoriteItemList>(_ itemList: T) {
+        #if targetEnvironment(macCatalyst)
+        navigation = UINavigationController(rootViewController: generateVC(itemList))
+        navigation.navigationBar.barStyle = .black
+        navigation.navigationBar.barTintColor = .black
+        navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
+        controller.viewControllers = [controller.viewControllers[0], navigation]
+        #else
+        show(itemList)
+        #endif
     }
 
     func show<T: FavoriteItemList>(_ itemList: T) {
-        self.navigation.pushViewController(generateVC(itemList), animated: true)
+        navigation.pushViewController(generateVC(itemList), animated: true)
     }
 
     func generateVC<T: FavoriteItemList>(_ itemList: T) -> UIViewController {

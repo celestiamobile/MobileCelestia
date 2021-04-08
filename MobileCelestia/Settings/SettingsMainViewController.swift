@@ -16,7 +16,11 @@ class SettingsMainViewController: BaseTableViewController {
 
     init(selection: @escaping (SettingItem<AnyHashable>) -> Void) {
         self.selection = selection
+        #if targetEnvironment(macCatalyst)
         super.init(style: .grouped)
+        #else
+        super.init(style: .defaultGrouped)
+        #endif
     }
 
     required init?(coder: NSCoder) {
@@ -32,7 +36,11 @@ class SettingsMainViewController: BaseTableViewController {
 
 private extension SettingsMainViewController {
     func setup() {
+        #if targetEnvironment(macCatalyst)
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Text")
+        #else
         tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Text")
+        #endif
         title = CelestiaString("Settings", comment: "")
     }
 }
@@ -48,9 +56,16 @@ extension SettingsMainViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = mainSetting[indexPath.section].items[indexPath.row]
+        #if targetEnvironment(macCatalyst)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath)
+        var configuration = UIListContentConfiguration.sidebarCell()
+        configuration.text = item.name
+        cell.contentConfiguration = configuration
+        #else
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
         cell.title = item.name
         cell.accessoryType = .disclosureIndicator
+        #endif
         return cell
     }
 
@@ -59,7 +74,11 @@ extension SettingsMainViewController {
     }
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        #if targetEnvironment(macCatalyst)
+        return UITableView.automaticDimension
+        #else
         return 44
+        #endif
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

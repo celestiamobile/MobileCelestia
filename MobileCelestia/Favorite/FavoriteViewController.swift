@@ -34,10 +34,16 @@ private extension FavoriteItemType {
 
 class FavoriteViewController: BaseTableViewController {
     private let selected: (FavoriteItemType) -> Void
+    private var currentSelection: FavoriteItemType?
 
-    init(selected: @escaping (FavoriteItemType) -> Void) {
+    init(currentSelection: FavoriteItemType?, selected: @escaping (FavoriteItemType) -> Void) {
+        self.currentSelection = currentSelection
         self.selected = selected
+        #if targetEnvironment(macCatalyst)
         super.init(style: .grouped)
+        #else
+        super.init(style: .defaultGrouped)
+        #endif
     }
 
     required init?(coder: NSCoder) {
@@ -49,11 +55,24 @@ class FavoriteViewController: BaseTableViewController {
 
         setup()
     }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        if let selection = currentSelection {
+            currentSelection = nil
+            tableView.selectRow(at: IndexPath(row: selection.rawValue, section: 0), animated: false, scrollPosition: .none)
+        }
+    }
 }
 
 private extension FavoriteViewController {
     func setup() {
+        #if targetEnvironment(macCatalyst)
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Text")
+        #else
         tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Text")
+        #endif
         title = CelestiaString("Favorites", comment: "")
     }
 }
@@ -64,17 +83,28 @@ extension FavoriteViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let type = FavoriteItemType(rawValue: indexPath.row)
+        #if targetEnvironment(macCatalyst)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath)
+        var configuration = UIListContentConfiguration.sidebarCell()
+        configuration.text = type?.description
+        cell.contentConfiguration = configuration
+        #else
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
-        cell.title = FavoriteItemType(rawValue: indexPath.row)?.description
+        cell.title = type?.description
+        #endif
         return cell
     }
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        #if targetEnvironment(macCatalyst)
+        return UITableView.automaticDimension
+        #else
         return 44
+        #endif
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
         selected(FavoriteItemType(rawValue: indexPath.row)!)
     }
 }

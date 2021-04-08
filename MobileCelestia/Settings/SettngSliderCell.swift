@@ -68,7 +68,9 @@ private extension SettingSliderCell {
             label.centerYAnchor.constraint(equalTo: topContainer.centerYAnchor)
         ])
 
+        #if !targetEnvironment(macCatalyst)
         slider.minimumTrackTintColor = .darkSliderMinimumTrackTintColor
+        #endif
         slider.minimumValue = 0
         slider.maximumValue = 100
         slider.translatesAutoresizingMaskIntoConstraints = false

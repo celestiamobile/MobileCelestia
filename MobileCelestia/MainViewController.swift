@@ -324,7 +324,11 @@ extension MainViewController: CelestiaControllerDelegate {
                 self.core.simulation.goToDestination(destination)
             }
         }
+        #if targetEnvironment(macCatalyst)
+        showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600))
+        #else
         showViewController(controller)
+        #endif
     }
 
     private func presentScriptToolbar() {
@@ -454,7 +458,11 @@ extension MainViewController: CelestiaControllerDelegate {
     @objc private func showSettings() {
         let controller = SettingsCoordinatorController() { (_) in
         }
+        #if targetEnvironment(macCatalyst)
+        showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600))
+        #else
         showViewController(controller)
+        #endif
     }
 
     private func showSearch() {
