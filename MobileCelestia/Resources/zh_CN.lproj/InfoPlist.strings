@@ -6,4 +6,4 @@
   Copyright © 2020 Celestia Development Team. All rights reserved.
 */
 
-"NSPhotoLibraryAddUsageDescription" = "将截图保存到图片资源库需要权限。";
+"NSPhotoLibraryAddUsageDescription" = "将截图保存到“照片”App中需要权限。";
