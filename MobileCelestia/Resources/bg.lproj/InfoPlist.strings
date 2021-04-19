@@ -6,4 +6,4 @@
   Copyright © 2020 Celestia Development Team. All rights reserved.
 */
 
-"NSPhotoLibraryAddUsageDescription" = "Нужно е разрешение за запазване в Библиотеката за изображения.";
+"NSPhotoLibraryAddUsageDescription" = "Нужно е разрешение за запазване в приложението Photos.";
