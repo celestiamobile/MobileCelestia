@@ -24,7 +24,7 @@ struct RenderingTargetGeometry {
 
 typealias CelestiaLoadingResult = Result<Void, CelestiaLoadingError>
 
-protocol CelestiaControllerDelegate: class {
+protocol CelestiaControllerDelegate: AnyObject {
     func celestiaController(_ celestiaController: CelestiaViewController, requestShowActionMenuWithSelection selection: CelestiaSelection)
     func celestiaController(_ celestiaController: CelestiaViewController, requestShowInfoWithSelection selection: CelestiaSelection)
     func celestiaController(_ celestiaController: CelestiaViewController, requestWebInfo webURL: URL)

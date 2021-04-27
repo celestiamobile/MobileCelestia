@@ -45,13 +45,13 @@ extension CelestiaAppCore {
     }
 }
 
-protocol CelestiaInteractionControllerDelegate: class {
+protocol CelestiaInteractionControllerDelegate: AnyObject {
     func celestiaInteractionController(_ celestiaInteractionController: CelestiaInteractionController, requestShowActionMenuWithSelection selection: CelestiaSelection)
     func celestiaInteractionController(_ celestiaInteractionController: CelestiaInteractionController, requestShowInfoWithSelection selection: CelestiaSelection)
     func celestiaInteractionController(_ celestiaInteractionController: CelestiaInteractionController, requestWebInfo webURL: URL)
 }
 
-protocol RenderingTargetInformationProvider: class {
+protocol RenderingTargetInformationProvider: AnyObject {
     var targetGeometry: RenderingTargetGeometry { get }
     var targetImage: UIImage { get }
 }
