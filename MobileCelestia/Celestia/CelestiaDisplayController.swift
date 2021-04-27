@@ -171,8 +171,10 @@ extension CelestiaDisplayController {
 
     private func setupCelestia(statusUpdater: @escaping (String) -> Void, errorHandler: @escaping () -> Bool, completionHandler: @escaping (Bool) -> Void) {
 
-        #if !USE_MGL
         let context = glView.context
+        #if USE_MGL
+        MGLContext.setCurrent(context)
+        #else
         EAGLContext.setCurrent(context)
         #endif
 
