@@ -110,29 +110,49 @@ class ToolbarImageTextButtonCell: UICollectionViewCell, ToolbarCell {
             bg.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
         ])
 
+        let ratio: CGFloat
+        if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
+            ratio = 0.77
+        } else {
+            ratio = 1.0
+        }
+
         bg.addSubview(imageView)
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            imageView.heightAnchor.constraint(equalToConstant: 32),
-            imageView.widthAnchor.constraint(equalToConstant: 32),
+            imageView.heightAnchor.constraint(equalToConstant: 32 * ratio),
+            imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor),
             imageView.centerYAnchor.constraint(equalTo: bg.centerYAnchor),
             imageView.leadingAnchor.constraint(equalTo: bg.leadingAnchor, constant: 16),
+            imageView.topAnchor.constraint(greaterThanOrEqualTo: bg.topAnchor, constant: 6),
         ])
         imageView.tintColor = .darkLabel
 
         bg.addSubview(label)
+        label.font = UIFont.preferredFont(forTextStyle: .body)
+        label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             label.centerYAnchor.constraint(equalTo: bg.centerYAnchor),
             label.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: 8),
-            label.trailingAnchor.constraint(equalTo: bg.trailingAnchor, constant: -16)
+            label.trailingAnchor.constraint(equalTo: bg.trailingAnchor, constant: -16),
+            label.topAnchor.constraint(greaterThanOrEqualTo: bg.topAnchor, constant: 12),
         ])
         label.textColor = .darkLabel
     }
 
     @objc private func buttonTapped() {
         actionHandler?()
+    }
+
+    override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
+        let attributes = super.preferredLayoutAttributesFitting(layoutAttributes)
+        attributes.size = contentView.systemLayoutSizeFitting(
+            CGSize(width: layoutAttributes.size.width, height: 0),
+            withHorizontalFittingPriority: UILayoutPriority.required,
+            verticalFittingPriority: UILayoutPriority.defaultLow)
+        return attributes
     }
 }
 

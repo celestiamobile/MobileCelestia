@@ -110,6 +110,7 @@ extension UIColor {
         return UIColor(rgb: 0x6D6D72)
     }
 
+    #if !targetEnvironment(macCatalyst)
     class var darkSystemBlueColor: UIColor {
         return UIColor(rgb: 0x0A84FF)
     }
@@ -125,8 +126,10 @@ extension UIColor {
     class var lightSliderMinimumTrackTintColor: UIColor {
         return lightSystemBlueColor
     }
+    #endif
 }
 
+#if !targetEnvironment(macCatalyst)
 extension UIColor {
     class var themeBackground: UIColor {
         return UIColor(rgb: 0x114477)
@@ -146,3 +149,4 @@ extension UIColor {
         return UIColor(rgb: 0x4477AA)
     }
 }
+#endif

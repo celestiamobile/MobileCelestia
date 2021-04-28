@@ -88,7 +88,7 @@ extension CameraControlViewController {
     }
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 44
+        return UITableView.automaticDimension
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -96,10 +96,6 @@ extension CameraControlViewController {
 
         let core = CelestiaAppCore.shared
         core.simulation.reverseObserverOrientation()
-    }
-
-    override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 44
     }
 }
 

@@ -16,20 +16,24 @@ public class ProgressButton: UIButton {
     private var progress: CGFloat = 0.0
 
     private let progressLayer = CALayer()
-    private var progressColor = UIColor.progressForeground
 
     override public init(frame: CGRect) {
         super.init(frame: frame)
 
         layer.cornerRadius = cornerRadius
         layer.masksToBounds = true
-        backgroundColor = UIColor.progressBackground
 
         titleLabel?.textAlignment = .center
         titleLabel?.textColor = .white
         titleLabel?.font = UIFont.boldSystemFont(ofSize: 0)
 
+        #if targetEnvironment(macCatalyst)
+        progressLayer.backgroundColor = tintColor.cgColor
+        backgroundColor = tintColor.withAlphaComponent(0.5)
+        #else
         progressLayer.backgroundColor = UIColor.progressForeground.cgColor
+        backgroundColor = UIColor.progressBackground
+        #endif
 
         layer.addSublayer(progressLayer)
         bringSubviewToFront(titleLabel!)
@@ -57,11 +61,6 @@ public class ProgressButton: UIButton {
         setNeedsLayout()
     }
 
-    public func setProgressColor(color: UIColor) {
-        self.progressColor = color
-        self.progressLayer.backgroundColor = color.cgColor
-    }
-
     public func setBackgroundColor(color: UIColor) {
         self.backgroundColor = color
     }
@@ -71,6 +70,21 @@ public class ProgressButton: UIButton {
         UIView.animate(withDuration: 0.05) {
             self.alpha = 0.85
         }
+    }
+
+    public override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        guard #available(iOS 13.0, *), traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) else {
+            return
+        }
+
+        #if targetEnvironment(macCatalyst)
+        progressLayer.backgroundColor = tintColor.cgColor
+        backgroundColor = tintColor.withAlphaComponent(0.5)
+        #else
+        progressLayer.backgroundColor = UIColor.progressForeground.cgColor
+        backgroundColor = UIColor.progressBackground
+        #endif
     }
 
     override public func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {

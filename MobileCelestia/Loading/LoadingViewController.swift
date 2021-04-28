@@ -55,6 +55,7 @@ private extension LoadingViewController {
         container.addSubview(statusLabel)
         statusLabel.translatesAutoresizingMaskIntoConstraints = false
         statusLabel.textColor = .darkLabel
+        statusLabel.font = UIFont.preferredFont(forTextStyle: .body)
         NSLayoutConstraint.activate([
             statusLabel.topAnchor.constraint(equalTo: iconImageView.bottomAnchor, constant: 24),
             statusLabel.centerXAnchor.constraint(equalTo: container.centerXAnchor),

@@ -51,7 +51,6 @@ private extension SettingSliderCell {
             topContainer.topAnchor.constraint(equalTo: contentView.topAnchor),
             topContainer.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             topContainer.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            topContainer.heightAnchor.constraint(equalToConstant: 44),
             bottomContainer.topAnchor.constraint(equalTo: topContainer.bottomAnchor),
             bottomContainer.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             bottomContainer.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
@@ -61,11 +60,14 @@ private extension SettingSliderCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         topContainer.addSubview(label)
         label.textColor = .darkLabel
+        label.font = UIFont.preferredFont(forTextStyle: .body)
+        label.numberOfLines = 0
 
         NSLayoutConstraint.activate([
             label.leadingAnchor.constraint(equalTo: topContainer.leadingAnchor, constant: 16),
             label.trailingAnchor.constraint(equalTo: topContainer.trailingAnchor, constant: -16),
-            label.centerYAnchor.constraint(equalTo: topContainer.centerYAnchor)
+            label.centerYAnchor.constraint(equalTo: topContainer.centerYAnchor),
+            label.topAnchor.constraint(equalTo: topContainer.topAnchor, constant: 12),
         ])
 
         #if !targetEnvironment(macCatalyst)
@@ -78,7 +80,8 @@ private extension SettingSliderCell {
         NSLayoutConstraint.activate([
             slider.leadingAnchor.constraint(equalTo: bottomContainer.leadingAnchor, constant: 16),
             slider.trailingAnchor.constraint(equalTo: bottomContainer.trailingAnchor, constant: -16),
-            slider.centerYAnchor.constraint(equalTo: bottomContainer.centerYAnchor)
+            slider.topAnchor.constraint(equalTo: bottomContainer.topAnchor),
+            slider.bottomAnchor.constraint(equalTo: bottomContainer.bottomAnchor, constant: -12),
         ])
         slider.addTarget(self, action: #selector(handleSlideEnd(_:)), for: .touchUpInside)
         slider.addTarget(self, action: #selector(handleSlideEnd(_:)), for: .touchUpOutside)

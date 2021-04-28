@@ -206,15 +206,22 @@ private extension ResourceItemViewController {
         footnoteLabel.textColor = .darkSecondaryLabel
         footnoteLabel.font = UIFont.preferredFont(forTextStyle: .footnote)
 
+        let ratio: CGFloat
+        if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
+            ratio = 0.77
+        } else {
+            ratio = 1.0
+        }
+
         progressButton.translatesAutoresizingMaskIntoConstraints = false
-        progressButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+        progressButton.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
         view.addSubview(progressButton)
         NSLayoutConstraint.activate([
-            progressButton.topAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 8),
-            progressButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8),
+            progressButton.topAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 12),
+            progressButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -12),
             progressButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             progressButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            progressButton.heightAnchor.constraint(equalToConstant: 40)
+            progressButton.heightAnchor.constraint(equalToConstant: 40 * ratio)
         ])
         progressButton.addTarget(self, action: #selector(progressButtonClicked), for: .touchUpInside)
 

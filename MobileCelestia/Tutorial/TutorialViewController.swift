@@ -137,16 +137,6 @@ extension TutorialViewController {
     }
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let item = tutorialItems[indexPath.section][indexPath.row]
-        switch item {
-        case .description(_):
-            return UITableView.automaticDimension
-        case .action(_), .url(_):
-            return 60
-        }
-    }
-
-    override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 44
+        return UITableView.automaticDimension
     }
 }

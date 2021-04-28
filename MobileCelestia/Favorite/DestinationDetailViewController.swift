@@ -64,8 +64,8 @@ private extension DestinationDetailViewController {
         contentContainer.translatesAutoresizingMaskIntoConstraints = false
         scrollView.addSubview(contentContainer)
         NSLayoutConstraint.activate([
-            contentContainer.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 8),
-            contentContainer.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -8),
+            contentContainer.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 12),
+            contentContainer.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -12),
             contentContainer.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 16),
             contentContainer.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -16),
             contentContainer.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant:  -32)
@@ -97,15 +97,29 @@ private extension DestinationDetailViewController {
 
         goToButton.translatesAutoresizingMaskIntoConstraints = false
         goToButton.layer.cornerRadius = 4
-        goToButton.backgroundColor = .themeBackground
         goToButton.setTitleColor(.darkLabel, for: .normal)
         view.addSubview(goToButton)
+
+        #if targetEnvironment(macCatalyst)
+        goToButton.backgroundColor = goToButton.tintColor
+        #else
+        goToButton.backgroundColor = .themeBackground
+        #endif
+
+        let ratio: CGFloat
+        if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
+            ratio = 0.77
+        } else {
+            ratio = 1.0
+        }
+
+        goToButton.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
         NSLayoutConstraint.activate([
             goToButton.topAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 8),
-            goToButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8),
+            goToButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -12),
             goToButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             goToButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            goToButton.heightAnchor.constraint(equalToConstant: 40)
+            goToButton.heightAnchor.constraint(equalToConstant: 40 * ratio)
         ])
         goToButton.addTarget(self, action: #selector(goToButtonClicked), for: .touchUpInside)
 

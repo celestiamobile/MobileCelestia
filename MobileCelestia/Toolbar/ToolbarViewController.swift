@@ -149,6 +149,7 @@ private extension ToolbarViewController {
         layout.scrollDirection = .vertical
 
         layout.itemSize = CGSize(width: 220, height: 44)
+        layout.estimatedItemSize = layout.itemSize
         layout.footerReferenceSize = CGSize(width: 200, height: 6)
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0

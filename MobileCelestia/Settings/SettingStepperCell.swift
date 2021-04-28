@@ -48,12 +48,15 @@ private extension SettingStepperCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(label)
         label.textColor = .darkLabel
+        label.font = UIFont.preferredFont(forTextStyle: .body)
+        label.numberOfLines = 0
 
         stepper.wraps = true
 
         NSLayoutConstraint.activate([
             label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            label.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
+            label.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            label.topAnchor.constraint(greaterThanOrEqualTo: contentView.topAnchor, constant: 12),
         ])
 
         stepper.translatesAutoresizingMaskIntoConstraints = false
@@ -61,7 +64,8 @@ private extension SettingStepperCell {
         NSLayoutConstraint.activate([
             stepper.leadingAnchor.constraint(equalTo: label.trailingAnchor, constant: 8),
             stepper.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            stepper.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
+            stepper.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            stepper.topAnchor.constraint(greaterThanOrEqualTo: contentView.topAnchor, constant: 6),
         ])
         stepperValue = stepper.value
         stepper.addTarget(self, action: #selector(handleChange(_:)), for: .valueChanged)

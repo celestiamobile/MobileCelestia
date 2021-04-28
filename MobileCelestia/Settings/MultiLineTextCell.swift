@@ -38,6 +38,7 @@ private extension MultiLineTextCell {
         contentView.addSubview(label)
         label.textColor = .darkLabel
         label.numberOfLines = 0
+        label.font = UIFont.preferredFont(forTextStyle: .body)
 
         NSLayoutConstraint.activate([
             label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),

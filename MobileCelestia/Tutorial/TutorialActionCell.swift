@@ -35,6 +35,27 @@ private extension TutorialActionCell {
 
         contentView.addSubview(button)
         button.translatesAutoresizingMaskIntoConstraints = false
+
+        if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
+            if let uiNSView = button.subviews.first?.subviews.first,
+               String(describing: type(of: uiNSView)) == "_UINSView",
+               uiNSView.responds(to: NSSelectorFromString("contentNSView")) {
+                let contentNSView = uiNSView.value(forKey: "contentNSView") as AnyObject
+                if contentNSView.responds(to: NSSelectorFromString("setControlSize:")) {
+                    contentNSView.setValue(3, forKey: "controlSize")
+                }
+            }
+        } else {
+            button.contentEdgeInsets = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
+            button.layer.cornerRadius = 4
+            #if targetEnvironment(macCatalyst)
+            button.backgroundColor = button.tintColor
+            #else
+            button.backgroundColor = .themeBackground
+            #endif
+            button.setTitleColor(.darkLabel, for: .normal)
+        }
+
         NSLayoutConstraint.activate([
             button.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
             button.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
@@ -42,9 +63,6 @@ private extension TutorialActionCell {
             button.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
         ])
 
-        button.layer.cornerRadius = 4
-        button.backgroundColor = .themeBackground
-        button.setTitleColor(.darkLabel, for: .normal)
         button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
     }
 

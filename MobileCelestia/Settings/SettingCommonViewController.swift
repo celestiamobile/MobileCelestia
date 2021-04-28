@@ -157,13 +157,7 @@ extension SettingCommonViewController {
     }
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let rowType = item.sections[indexPath.section].rows[indexPath.row].type
-        switch rowType {
-        case .slider:
-            return 88
-        default:
-            return 44
-        }
+        return UITableView.automaticDimension
     }
 
     override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {

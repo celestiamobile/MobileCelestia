@@ -41,8 +41,8 @@ private extension TutorialDescriptionCell {
         iv.tintColor = .darkLabel
         contentView.addSubview(iv)
         NSLayoutConstraint.activate([
-            iv.widthAnchor.constraint(equalToConstant: 44),
             iv.heightAnchor.constraint(equalToConstant: 44),
+            iv.widthAnchor.constraint(equalTo: iv.heightAnchor),
             iv.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: horizontalSpacing),
             iv.topAnchor.constraint(equalTo: contentView.topAnchor, constant: verticalSpacing),
             iv.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -verticalSpacing),

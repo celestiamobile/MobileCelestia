@@ -83,20 +83,28 @@ private extension SettingTextCell {
 
         NSLayoutConstraint.activate([
             label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            label.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
+            label.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            label.topAnchor.constraint(greaterThanOrEqualTo: contentView.topAnchor, constant: 12),
         ])
 
         label.setContentHuggingPriority(.required, for: .horizontal)
         label.setContentCompressionResistancePriority(.required, for: .horizontal)
 
+        label.font = UIFont.preferredFont(forTextStyle: .body)
+        label.numberOfLines = 0
+
         detailLabel.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(detailLabel)
         detailLabel.textColor = .darkTertiaryLabel
 
+        detailLabel.font = UIFont.preferredFont(forTextStyle: .body)
+        detailLabel.numberOfLines = 0
+
         NSLayoutConstraint.activate([
             detailLabel.leadingAnchor.constraint(greaterThanOrEqualTo: label.trailingAnchor, constant: 16),
             detailLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
-            detailLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor)
+            detailLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            detailLabel.topAnchor.constraint(greaterThanOrEqualTo: contentView.topAnchor, constant: 12),
         ])
     }
 }

@@ -57,7 +57,7 @@ final class BodyDescriptionCell: UICollectionViewCell {
 
     override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
         let attributes = super.preferredLayoutAttributesFitting(layoutAttributes)
-        attributes.size = systemLayoutSizeFitting(
+        attributes.size = contentView.systemLayoutSizeFitting(
             CGSize(width: layoutAttributes.size.width, height: 0),
             withHorizontalFittingPriority: UILayoutPriority.required,
             verticalFittingPriority: UILayoutPriority.defaultLow)

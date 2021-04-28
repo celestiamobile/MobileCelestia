@@ -105,22 +105,18 @@ extension AboutViewController {
         case .link(let title, _):
             let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
             cell.title = title
+            #if targetEnvironment(macCatalyst)
+            cell.titleColor = cell.tintColor
+            #else
             cell.titleColor = UIColor.themeLabel
+            #endif
             cell.selectionStyle = .default
             return cell
         }
     }
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        let item = items[indexPath.section][indexPath.row]
-        switch item {
-        case .short(_, _):
-            fallthrough
-        case .link(_, _):
-            return 44
-        case .long(_):
-            return UITableView.automaticDimension
-        }
+        return UITableView.automaticDimension
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -132,9 +128,5 @@ extension AboutViewController {
         default:
             break
         }
-    }
-
-    override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 44
     }
 }

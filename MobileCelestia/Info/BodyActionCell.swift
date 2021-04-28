@@ -29,15 +29,32 @@ final class BodyActionCell: UICollectionViewCell {
     private func setup() {
         contentView.addSubview(button)
         button.translatesAutoresizingMaskIntoConstraints = false
+
+        if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
+            if let uiNSView = button.subviews.first?.subviews.first,
+               String(describing: type(of: uiNSView)) == "_UINSView",
+               uiNSView.responds(to: NSSelectorFromString("contentNSView")) {
+                let contentNSView = uiNSView.value(forKey: "contentNSView") as AnyObject
+                if contentNSView.responds(to: NSSelectorFromString("setControlSize:")) {
+                    contentNSView.setValue(3, forKey: "controlSize")
+                }
+            }
+        } else {
+            button.contentEdgeInsets = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
+            button.layer.cornerRadius = 4
+            #if targetEnvironment(macCatalyst)
+            button.backgroundColor = button.tintColor
+            #else
+            button.backgroundColor = .themeBackground
+            #endif
+            button.setTitleColor(.darkLabel, for: .normal)
+        }
         NSLayoutConstraint.activate([
             button.topAnchor.constraint(equalTo: contentView.topAnchor),
             button.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             button.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             button.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
         ])
-        button.layer.cornerRadius = 4
-        button.backgroundColor = .themeBackground
-        button.setTitleColor(.darkLabel, for: .normal)
         button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
     }
 
@@ -47,7 +64,10 @@ final class BodyActionCell: UICollectionViewCell {
 
     override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
         let attributes = super.preferredLayoutAttributesFitting(layoutAttributes)
-        attributes.size = CGSize(width: layoutAttributes.size.width, height: 44)
+        attributes.size = contentView.systemLayoutSizeFitting(
+            CGSize(width: layoutAttributes.size.width, height: 0),
+            withHorizontalFittingPriority: UILayoutPriority.required,
+            verticalFittingPriority: UILayoutPriority.defaultLow)
         return attributes
     }
 }

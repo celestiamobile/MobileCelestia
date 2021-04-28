@@ -94,7 +94,11 @@ extension EventFinderInputViewController {
         cell.title = item.title
 
         if item is ProceedItem {
+            #if targetEnvironment(macCatalyst)
+            cell.titleColor = cell.tintColor
+            #else
             cell.titleColor = UIColor.themeLabel
+            #endif
         } else if item is ObjectItem {
             cell.titleColor = UIColor.darkLabel
             cell.detail = LocalizedString(objectName, "celestia")
@@ -107,10 +111,11 @@ extension EventFinderInputViewController {
     }
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 44
+        return UITableView.automaticDimension
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
         let item = allSections[indexPath.section][indexPath.row]
         if let it = item as? DateItem {
             let preferredFormat = DateFormatter.dateFormat(fromTemplate: "yyyyMMddHHmmss", options: 0, locale: Locale.current) ?? "yyyy/MM/dd HH:mm:ss"

@@ -103,7 +103,7 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
     }
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return Self.useStandardUITableViewCell ? UITableView.automaticDimension : 44
+        return UITableView.automaticDimension
     }
 }
 

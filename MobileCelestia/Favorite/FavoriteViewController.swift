@@ -97,11 +97,7 @@ extension FavoriteViewController {
     }
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        #if targetEnvironment(macCatalyst)
         return UITableView.automaticDimension
-        #else
-        return 44
-        #endif
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
