@@ -268,6 +268,8 @@ extension MainViewController: CelestiaControllerDelegate {
             presentEventFinder()
         case .addons:
             presentPlugins()
+        case .paperplane:
+            presentGoTo()
         }
     }
 
@@ -388,6 +390,12 @@ extension MainViewController: CelestiaControllerDelegate {
         #else
         showViewController(controller)
         #endif
+    }
+
+    private func presentGoTo() {
+        showViewController(GoToContainerViewController() { [weak self] location in
+            self?.core.simulation.go(to: location)
+        })
     }
 
     private func showSelectionInfo(with selection: CelestiaSelection) {
@@ -712,6 +720,8 @@ extension AppToolbarAction {
             return UIImage(systemName: "house")
         case .event:
             return UIImage(systemName: "calendar")
+        case .paperplane:
+            return UIImage(systemName: "paperplane")
         }
     }
 }

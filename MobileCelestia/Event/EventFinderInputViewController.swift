@@ -38,7 +38,7 @@ class EventFinderInputViewController: BaseTableViewController {
                 [ProceedItem()]
     ]
 
-    private let selectableObjects = ["Earth", "Jupiter"]
+    private let selectableObjects = [LocalizedString("Earth", "celestia"), LocalizedString("Jupiter", "celestia")]
 
     private let defaultSearchingInterval: TimeInterval = 365 * 24 * 60 * 60
     private lazy var startTime = endTime.addingTimeInterval(-defaultSearchingInterval)
@@ -99,9 +99,10 @@ extension EventFinderInputViewController {
             #else
             cell.titleColor = UIColor.themeLabel
             #endif
+            cell.detail = nil
         } else if item is ObjectItem {
             cell.titleColor = UIColor.darkLabel
-            cell.detail = LocalizedString(objectName, "celestia")
+            cell.detail = objectName
         } else if let it = item as? DateItem {
             cell.titleColor = UIColor.darkLabel
             cell.detail = displayDateFormatter.string(from: it.isStartTime ? startTime : endTime)

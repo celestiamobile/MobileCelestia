@@ -1,7 +1,7 @@
 //
-// EventFinderCoordinatorViewController.swift
+// GoToContainerViewController.swift
 //
-// Copyright © 2020 Celestia Development Team. All rights reserved.
+// Copyright © 2021 Celestia Development Team. All rights reserved.
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -9,17 +9,16 @@
 // of the License, or (at your option) any later version.
 //
 
+import CelestiaCore
 import UIKit
 
-import CelestiaCore
-
-class EventFinderCoordinatorViewController: UIViewController {
+class GoToContainerViewController: UIViewController {
     private var navigation: UINavigationController!
 
-    private let eventHandler: ((CelestiaEclipse) -> Void)
+    private let locationHandler: ((CelestiaGoToLocation) -> Void)
 
-    init(eventHandler: @escaping ((CelestiaEclipse) -> Void)) {
-        self.eventHandler = eventHandler
+    init(locationHandler: @escaping ((CelestiaGoToLocation) -> Void)) {
+        self.locationHandler = locationHandler
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -39,13 +38,11 @@ class EventFinderCoordinatorViewController: UIViewController {
     }
 }
 
-private extension EventFinderCoordinatorViewController {
+private extension GoToContainerViewController {
     func setup() {
-        navigation = UINavigationController(rootViewController: EventFinderInputViewController { [weak self] results in
+        navigation = UINavigationController(rootViewController: GoToInputViewController { [weak self] location in
             guard let self = self else { return }
-            self.navigation.pushViewController(EventFinderResultViewController(results: results, eventHandler: { (eclipse) in
-                self.eventHandler(eclipse)
-            }), animated: true)
+            self.locationHandler(location)
         })
 
         install(navigation)
@@ -55,5 +52,3 @@ private extension EventFinderCoordinatorViewController {
         navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
     }
 }
-
-
