@@ -40,6 +40,8 @@ final class BodyActionCell: UICollectionViewCell {
                 }
             }
         } else {
+            button.titleLabel?.lineBreakMode = .byWordWrapping
+            button.titleLabel?.textAlignment = .center
             button.contentEdgeInsets = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
             button.layer.cornerRadius = 4
             #if targetEnvironment(macCatalyst)

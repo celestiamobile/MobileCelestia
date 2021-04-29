@@ -51,6 +51,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 try? FileManager.default.removeItem(atPath: savedStatePath)
             }
         }
+        #else
+        UISlider.appearance().minimumTrackTintColor = .darkSliderMinimumTrackTintColor
+        UIBarButtonItem.appearance().tintColor = .themeLabel
+        UIButton.appearance().tintColor = .themeLabel
+        UITabBar.appearance().tintColor = .themeLabel
+        UISearchBar.appearance().tintColor = .themeLabel
+        UISegmentedControl.appearance().tintColor = .themeLabel
         #endif
 
         #if !DEBUG
@@ -163,12 +170,12 @@ extension AppDelegate {
 
         builder.remove(menu: .newScene)
 
+        let identifierPrefix = Bundle.app.bundleIdentifier! + "."
+
         let preferencesCommand = UIKeyCommand(title: CelestiaString("Preferences…", comment: ""), action: #selector(showPreferences), input: ",", modifierFlags: .command)
-        builder.insertSibling(UIMenu(identifier: .preferences, options: .displayInline, children: [
+        builder.insertSibling(UIMenu(identifier: UIMenu.Identifier(identifierPrefix + "preferences"), options: .displayInline, children: [
             preferencesCommand
         ]), afterMenu: .about)
-
-        let identifierPrefix = Bundle.app.bundleIdentifier! + "."
 
         builder.insertChild(UIMenu(title: "", image: nil, identifier: UIMenu.Identifier(identifierPrefix + "open"), options: .displayInline, children: [
             UIKeyCommand(title: CelestiaString("Run Script…", comment: ""), image: nil, action: #selector(openScriptFile), input: "O", modifierFlags: .command)

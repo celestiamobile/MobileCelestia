@@ -23,6 +23,7 @@ public class ProgressButton: UIButton {
         layer.cornerRadius = cornerRadius
         layer.masksToBounds = true
 
+        titleLabel?.lineBreakMode = .byWordWrapping
         titleLabel?.textAlignment = .center
         titleLabel?.textColor = .white
         titleLabel?.font = UIFont.boldSystemFont(ofSize: 0)

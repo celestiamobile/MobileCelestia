@@ -15,7 +15,7 @@ class TutorialActionCell: UITableViewCell {
     var title: String? { didSet { button.setTitle(title, for: .normal) } }
     var actionHandler: (() -> Void)?
 
-    private lazy var button = UIButton(type: .system)
+    private lazy var button = StandardButton(type: .system)
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -46,6 +46,8 @@ private extension TutorialActionCell {
                 }
             }
         } else {
+            button.titleLabel?.lineBreakMode = .byWordWrapping
+            button.titleLabel?.textAlignment = .center
             button.contentEdgeInsets = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
             button.layer.cornerRadius = 4
             #if targetEnvironment(macCatalyst)

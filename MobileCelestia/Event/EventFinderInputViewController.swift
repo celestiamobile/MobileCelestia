@@ -43,7 +43,7 @@ class EventFinderInputViewController: BaseTableViewController {
     private let defaultSearchingInterval: TimeInterval = 365 * 24 * 60 * 60
     private lazy var startTime = endTime.addingTimeInterval(-defaultSearchingInterval)
     private lazy var endTime = Date()
-    private var objectName = "Earth"
+    private var objectName = LocalizedString("Earth", "celestia")
 
     private let core = CelestiaAppCore.shared
 

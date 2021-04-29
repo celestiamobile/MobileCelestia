@@ -98,7 +98,9 @@ private extension SettingTextCell {
         detailLabel.textColor = .darkTertiaryLabel
 
         detailLabel.font = UIFont.preferredFont(forTextStyle: .body)
-        detailLabel.numberOfLines = 0
+        detailLabel.numberOfLines = 1
+        detailLabel.adjustsFontSizeToFitWidth = true
+        detailLabel.minimumScaleFactor = 0.4
 
         NSLayoutConstraint.activate([
             detailLabel.leadingAnchor.constraint(greaterThanOrEqualTo: label.trailingAnchor, constant: 16),
