@@ -1,6 +1,7 @@
 {
   "images" : [
     {
+      "filename" : "toolbar_home@1x.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
