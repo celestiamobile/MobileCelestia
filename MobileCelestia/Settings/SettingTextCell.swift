@@ -73,9 +73,12 @@ class SettingTextCell: UITableViewCell {
 
 private extension SettingTextCell {
     func setup() {
-        backgroundColor = .darkSecondaryBackground
-        selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = .darkSelection
+        if #available(iOS 13.0, *) {
+        } else {
+            backgroundColor = .darkSecondaryBackgroundElevated
+            selectedBackgroundView = UIView()
+            selectedBackgroundView?.backgroundColor = .darkSelection
+        }
 
         label.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(label)

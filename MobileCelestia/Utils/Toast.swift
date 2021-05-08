@@ -26,7 +26,13 @@ class Toast {
         }
 
         private func setup() {
-            let view = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
+            let style: UIBlurEffect.Style
+            if #available(iOS 13.0, *) {
+                style = .regular
+            } else {
+                style = .dark
+            }
+            let view = UIVisualEffectView(effect: UIBlurEffect(style: style))
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)
 

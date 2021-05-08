@@ -42,7 +42,7 @@ class OnboardViewController: UIViewController {
 
 private extension OnboardViewController {
     func setup() {
-        view.backgroundColor = .darkSecondaryBackground
+        view.backgroundColor = .darkSecondaryBackgroundElevated
 
         let welcomeView = UILabel()
         welcomeView.font = UIFont.preferredFont(forTextStyle: .largeTitle)

@@ -28,7 +28,7 @@ class GoToContainerViewController: UIViewController {
 
     override func loadView() {
         view = UIView()
-        view.backgroundColor = .darkBackground
+        view.backgroundColor = .darkBackgroundElevated
     }
 
     override func viewDidLoad() {
@@ -47,8 +47,11 @@ private extension GoToContainerViewController {
 
         install(navigation)
 
-        navigation.navigationBar.barStyle = .black
-        navigation.navigationBar.barTintColor = .black
-        navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
+        if #available(iOS 13.0, *) {
+        } else {
+            navigation.navigationBar.barStyle = .black
+            navigation.navigationBar.barTintColor = .darkBackgroundElevated
+            navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
+        }
     }
 }

@@ -35,7 +35,7 @@ class SettingsCoordinatorController: UIViewController {
 
     override func loadView() {
         view = UIView()
-        view.backgroundColor = .darkBackground
+        view.backgroundColor = .darkBackgroundElevated
     }
 
     override func viewDidLoad() {
@@ -91,9 +91,12 @@ private extension SettingsCoordinatorController {
             }
             #if targetEnvironment(macCatalyst)
             self.navigation = UINavigationController(rootViewController: viewController)
-            self.navigation.navigationBar.barStyle = .black
-            self.navigation.navigationBar.barTintColor = .black
-            self.navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
+            if #available(iOS 13.0, *) {
+            } else {
+                self.navigation.navigationBar.barStyle = .black
+                self.navigation.navigationBar.barTintColor = .darkBackgroundElevated
+                self.navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
+            }
             self.controller.viewControllers = [self.controller.viewControllers[0], self.navigation]
             #else
             self.navigation.pushViewController(viewController, animated: true)
@@ -104,15 +107,18 @@ private extension SettingsCoordinatorController {
         controller.preferredDisplayMode = .oneBesideSecondary
         controller.preferredPrimaryColumnWidthFraction = 0.3
         let emptyVc = UIViewController()
-        emptyVc.view.backgroundColor = .darkBackground
+        emptyVc.view.backgroundColor = .darkBackgroundElevated
         controller.viewControllers = [main, emptyVc]
         install(controller)
         #else
         navigation = UINavigationController(rootViewController: main)
         install(navigation)
-        navigation.navigationBar.barStyle = .black
-        navigation.navigationBar.barTintColor = .black
-        navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
+        if #available(iOS 13.0, *) {
+        } else {
+            navigation.navigationBar.barStyle = .black
+            navigation.navigationBar.barTintColor = .darkBackgroundElevated
+            navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
+        }
         #endif
     }
 }

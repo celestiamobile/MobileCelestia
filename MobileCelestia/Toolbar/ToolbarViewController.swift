@@ -135,7 +135,13 @@ extension ToolbarViewController: UICollectionViewDataSource {
 
 private extension ToolbarViewController {
     func setup() {
-        let backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .dark))
+        let style: UIBlurEffect.Style
+        if #available(iOS 13.0, *) {
+            style = .regular
+        } else {
+            style = .dark
+        }
+        let backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: style))
         backgroundView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(backgroundView)
 

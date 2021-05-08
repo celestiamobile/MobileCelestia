@@ -84,7 +84,7 @@ class ResourceItemViewController: UIViewController {
 
     override func loadView() {
         view = UIView()
-        view.backgroundColor = .darkBackground
+        view.backgroundColor = .darkBackgroundElevated
 
         setup()
     }
@@ -214,7 +214,6 @@ private extension ResourceItemViewController {
         }
 
         progressButton.translatesAutoresizingMaskIntoConstraints = false
-        progressButton.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
         view.addSubview(progressButton)
         NSLayoutConstraint.activate([
             progressButton.topAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 12),

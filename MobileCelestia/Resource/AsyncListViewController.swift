@@ -75,7 +75,8 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
         return items.count
     }
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {   return items[section].count
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return items[section].count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -116,7 +117,6 @@ private extension AsyncListViewController {
         }
 
         refreshButton.setTitle(CelestiaString("Refresh", comment: ""), for: .normal)
-        refreshButton.setTitleColor(.darkLabel, for: .normal)
         refreshButton.addTarget(self, action: #selector(callRefresh), for: .touchUpInside)
     }
 }

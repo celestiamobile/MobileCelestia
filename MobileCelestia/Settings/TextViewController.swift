@@ -26,7 +26,7 @@ class TextViewController: UIViewController {
 
     override func loadView() {
         view = UIView()
-        view.backgroundColor = .darkBackground
+        view.backgroundColor = .darkBackgroundElevated
     }
 
     override func viewDidLoad() {

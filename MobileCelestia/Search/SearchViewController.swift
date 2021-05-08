@@ -114,7 +114,8 @@ extension SearchViewController {
     }
 
     override func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
-        if let header = view as? UITableViewHeaderFooterView {
+        if #available(iOS 13.0, *) {
+        } else if let header = view as? UITableViewHeaderFooterView {
             header.textLabel?.textColor = UIColor.darkPlainHeaderLabel
             header.backgroundView = UIView()
             header.backgroundView?.backgroundColor = .darkPlainHeaderBackground

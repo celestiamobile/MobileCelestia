@@ -20,7 +20,7 @@ class ResourceViewController: UIViewController {
 
     override func loadView() {
         view = UIView()
-        view.backgroundColor = .darkBackground
+        view.backgroundColor = .darkBackgroundElevated
     }
 
     override func viewDidLoad() {
@@ -48,15 +48,18 @@ private extension ResourceViewController {
         controller.preferredDisplayMode = .oneBesideSecondary
         controller.preferredPrimaryColumnWidthFraction = 0.3
         let emptyVc = UIViewController()
-        emptyVc.view.backgroundColor = .darkBackground
+        emptyVc.view.backgroundColor = .darkBackgroundElevated
         controller.viewControllers = [main, emptyVc]
         install(controller)
         #else
         navigation = UINavigationController(rootViewController: main)
         install(navigation)
-        navigation.navigationBar.barStyle = .black
-        navigation.navigationBar.barTintColor = .black
-        navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
+        if #available(iOS 13.0, *) {
+        } else {
+            navigation.navigationBar.barStyle = .black
+            navigation.navigationBar.barTintColor = .darkBackgroundElevated
+            navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
+        }
         #endif
     }
 
@@ -66,9 +69,12 @@ private extension ResourceViewController {
         }
         #if targetEnvironment(macCatalyst)
         navigation = UINavigationController(rootViewController: vc)
-        navigation.navigationBar.barStyle = .black
-        navigation.navigationBar.barTintColor = .black
-        navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
+        if #available(iOS 13.0, *) {
+        } else {
+            navigation.navigationBar.barStyle = .black
+            navigation.navigationBar.barTintColor = .darkBackgroundElevated
+            navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
+        }
         controller.viewControllers = [controller.viewControllers[0], navigation]
         #else
         navigation.pushViewController(vc, animated: true)
@@ -85,9 +91,12 @@ private extension ResourceViewController {
         }
         #if targetEnvironment(macCatalyst)
         navigation = UINavigationController(rootViewController: vc)
-        navigation.navigationBar.barStyle = .black
-        navigation.navigationBar.barTintColor = .black
-        navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
+        if #available(iOS 13.0, *) {
+        } else {
+            navigation.navigationBar.barStyle = .black
+            navigation.navigationBar.barTintColor = .darkBackgroundElevated
+            navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
+        }
         controller.viewControllers = [controller.viewControllers[0], navigation]
         #else
         navigation.pushViewController(vc, animated: true)

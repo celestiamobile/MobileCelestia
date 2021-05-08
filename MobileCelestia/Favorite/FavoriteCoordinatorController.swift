@@ -57,7 +57,7 @@ class FavoriteCoordinatorController: UIViewController {
 
     override func loadView() {
         view = UIView()
-        view.backgroundColor = .darkBackground
+        view.backgroundColor = .darkBackgroundElevated
     }
 
     override func viewDidLoad() {
@@ -83,13 +83,16 @@ private extension FavoriteCoordinatorController {
         let contentVc: UIViewController
         if let another = anotherVc {
             navigation = UINavigationController(rootViewController: another)
-            navigation.navigationBar.barStyle = .black
-            navigation.navigationBar.barTintColor = .black
-            navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
+            if #available(iOS 13.0, *) {
+            } else {
+                navigation.navigationBar.barStyle = .black
+                navigation.navigationBar.barTintColor = .darkBackgroundElevated
+                navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
+            }
             contentVc = navigation
         } else {
             let emptyVc = UIViewController()
-            emptyVc.view.backgroundColor = .darkBackground
+            emptyVc.view.backgroundColor = .darkBackgroundElevated
             contentVc = emptyVc
         }
         controller.viewControllers = [main, contentVc]
@@ -97,18 +100,24 @@ private extension FavoriteCoordinatorController {
         #else
         navigation = UINavigationController(rootViewController: anotherVc ?? main)
         install(navigation)
-        navigation.navigationBar.barStyle = .black
-        navigation.navigationBar.barTintColor = .black
-        navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
+        if #available(iOS 13.0, *) {
+        } else {
+            navigation.navigationBar.barStyle = .black
+            navigation.navigationBar.barTintColor = .darkBackgroundElevated
+            navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
+        }
         #endif
     }
 
     func replace<T: FavoriteItemList>(_ itemList: T) {
         #if targetEnvironment(macCatalyst)
         navigation = UINavigationController(rootViewController: generateVC(itemList))
-        navigation.navigationBar.barStyle = .black
-        navigation.navigationBar.barTintColor = .black
-        navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
+        if #available(iOS 13.0, *) {
+        } else {
+            navigation.navigationBar.barStyle = .black
+            navigation.navigationBar.barTintColor = .darkBackgroundElevated
+            navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
+        }
         controller.viewControllers = [controller.viewControllers[0], navigation]
         #else
         show(itemList)

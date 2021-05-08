@@ -30,101 +30,119 @@ public extension UIColor {
 }
 
 extension UIColor {
-    class var lightSeparator: UIColor {
-        return UIColor(rgb: 0x3C3C43).withAlphaComponent(0.29)
-    }
-
     class var darkSeparator: UIColor {
+        if #available(iOS 13.0, *) {
+            return .separator
+        }
         return UIColor(rgb: 0x545458).withAlphaComponent(0.6)
     }
 
-    class var lightLabel: UIColor {
-        return UIColor.black
-    }
-
     class var darkLabel: UIColor {
+        if #available(iOS 13.0, *) {
+            return .label
+        }
         return UIColor.white
-    }
-
-    class var lightSecondaryLabel: UIColor {
-        return UIColor(rgb: 0x3C3C43).withAlphaComponent(0.6)
     }
 
     class var darkSecondaryLabel: UIColor {
+        if #available(iOS 13.0, *) {
+            return .secondaryLabel
+        }
         return UIColor(rgb: 0xEBEBF5).withAlphaComponent(0.6)
     }
 
-    class var lightTertiaryLabel: UIColor {
-        return UIColor(rgb: 0x3C3C43).withAlphaComponent(0.3)
-    }
-
     class var darkTertiaryLabel: UIColor {
+        if #available(iOS 13.0, *) {
+            return .tertiaryLabel
+        }
         return UIColor(rgb: 0xEBEBF5).withAlphaComponent(0.3)
     }
 
-    class var lightSelection: UIColor {
-        return UIColor(rgb: 0xD1D1D6)
-    }
-
     class var darkSelection: UIColor {
+        if UIColor.responds(to: NSSelectorFromString("tableCellPlainSelectedBackgroundColor")) {
+            if let color = UIColor.value(forKey: "tableCellPlainSelectedBackgroundColor") as? UIColor {
+                return color
+            }
+        }
+        if #available(iOS 13.0, *) {
+            return .systemGray4
+        }
         return UIColor(rgb: 0x3A3A3C)
     }
 
-    class var lightBackground: UIColor {
-        return UIColor.white
-    }
-
     class var darkBackground: UIColor {
+        if #available(iOS 13.0, *) {
+            return .systemBackground
+        }
         return UIColor.black
     }
 
-    class var lightSecondaryBackground: UIColor {
-        return UIColor(rgb: 0xF2F2F7)
-    }
-
-    class var darkSecondaryBackground: UIColor {
+    class var darkBackgroundElevated: UIColor {
+        if #available(iOS 13.0, *) {
+            return .systemBackground
+        }
         return UIColor(rgb: 0x1C1C1E)
     }
 
+    class var darkGroupTableViewBackground: UIColor {
+        if #available(iOS 13.0, *) {
+            return .systemGroupedBackground
+        }
+        return UIColor.black
+    }
+
+    class var darkGroupTableViewBackgroundElevated: UIColor {
+        if #available(iOS 13.0, *) {
+            return .systemGroupedBackground
+        }
+        return UIColor(rgb: 0x1C1C1E)
+    }
+
+    class var darkSecondaryBackground: UIColor {
+        if #available(iOS 13.0, *) {
+            return .secondarySystemBackground
+        }
+        return UIColor(rgb: 0x1C1C1E)
+    }
+
+    class var darkSecondaryBackgroundElevated: UIColor {
+        if #available(iOS 13.0, *) {
+            return .secondarySystemBackground
+        }
+        return UIColor(rgb: 0x2C2C2E)
+    }
+
+    class var darkSystemFill: UIColor {
+        if #available(iOS 13.0, *) {
+            return .systemFill
+        }
+        return UIColor(rgb: 0x787880).withAlphaComponent(0.36)
+    }
+
+    @available(iOS, introduced: 2.0, deprecated: 13.0, message: "Compatible color for iOS 12 and lower should not be used on iOS 13")
     class var darkPlainHeaderBackground: UIColor {
         return UIColor(rgb: 0x323234)
     }
 
-    class var lightPlainHeaderBackground: UIColor {
-        return UIColor(rgb: 0xE5E5E5)
-    }
-
+    @available(iOS, introduced: 2.0, deprecated: 13.0, message: "Compatible color for iOS 12 and lower should not be used on iOS 13")
     class var darkPlainHeaderLabel: UIColor {
         return UIColor(rgb: 0xDCDCDC)
     }
 
-    class var lightPlainHeaderLabel: UIColor {
-        return UIColor(rgb: 0x232323)
-    }
-
-    class var darkGroupHeaderFooterLabel: UIColor {
-        return UIColor(rgb: 0x8E8E93)
-    }
-
-    class var lightGroupHeaderFooterLabel: UIColor {
-        return UIColor(rgb: 0x6D6D72)
-    }
-
     #if !targetEnvironment(macCatalyst)
     class var darkSystemBlueColor: UIColor {
+        if #available(iOS 13.0, *) {
+            return .systemBlue
+        }
         return UIColor(rgb: 0x0A84FF)
-    }
-
-    class var lightSystemBlueColor: UIColor {
-        return UIColor(rgb: 0x007AFF)
     }
 
     class var darkSliderMinimumTrackTintColor: UIColor {
         return darkSystemBlueColor
     }
 
-    class var lightSliderMinimumTrackTintColor: UIColor {
-        return lightSystemBlueColor
+    class var darkSliderMaximumTrackTintColor: UIColor {
+        return darkSystemFill
     }
     #endif
 }

@@ -49,7 +49,7 @@ final class BodyActionCell: UICollectionViewCell {
             #else
             button.backgroundColor = .themeBackground
             #endif
-            button.setTitleColor(.darkLabel, for: .normal)
+            button.setTitleColor(.white, for: .normal)
         }
         NSLayoutConstraint.activate([
             button.topAnchor.constraint(equalTo: contentView.topAnchor),

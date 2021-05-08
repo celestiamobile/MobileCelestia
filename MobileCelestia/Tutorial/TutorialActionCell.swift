@@ -55,7 +55,7 @@ private extension TutorialActionCell {
             #else
             button.backgroundColor = .themeBackground
             #endif
-            button.setTitleColor(.darkLabel, for: .normal)
+            button.setTitleColor(.white, for: .normal)
         }
 
         NSLayoutConstraint.activate([

@@ -37,9 +37,10 @@ private extension SettingSliderCell {
     func setup() {
         selectionStyle = .none
 
-        backgroundColor = .darkSecondaryBackground
-        selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = .darkSelection
+        if #available(iOS 13.0, *) {
+        } else {
+            backgroundColor = .darkSecondaryBackgroundElevated
+        }
 
         topContainer.translatesAutoresizingMaskIntoConstraints = false
         bottomContainer.translatesAutoresizingMaskIntoConstraints = false

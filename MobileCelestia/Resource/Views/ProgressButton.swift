@@ -25,8 +25,6 @@ public class ProgressButton: UIButton {
 
         titleLabel?.lineBreakMode = .byWordWrapping
         titleLabel?.textAlignment = .center
-        titleLabel?.textColor = .white
-        titleLabel?.font = UIFont.boldSystemFont(ofSize: 0)
 
         #if targetEnvironment(macCatalyst)
         progressLayer.backgroundColor = tintColor.cgColor
@@ -35,6 +33,8 @@ public class ProgressButton: UIButton {
         progressLayer.backgroundColor = UIColor.progressForeground.cgColor
         backgroundColor = UIColor.progressBackground
         #endif
+
+        setTitleColor(.white, for: .normal)
 
         layer.addSublayer(progressLayer)
         bringSubviewToFront(titleLabel!)
@@ -54,7 +54,6 @@ public class ProgressButton: UIButton {
         progressLayer.frame = CGRect(x: 0, y: 0, width: bounds.width * progress, height: bounds.height)
 
         titleLabel?.frame = self.bounds
-        titleLabel?.font = titleLabel?.font.withSize(titleLabel!.frame.height * 0.45)
     }
 
     public func setProgress(progress: CGFloat) {
@@ -71,6 +70,15 @@ public class ProgressButton: UIButton {
         UIView.animate(withDuration: 0.05) {
             self.alpha = 0.85
         }
+    }
+
+    public override func tintColorDidChange() {
+        super.tintColorDidChange()
+
+        #if targetEnvironment(macCatalyst)
+        progressLayer.backgroundColor = tintColor.cgColor
+        backgroundColor = tintColor.withAlphaComponent(0.5)
+        #endif
     }
 
     public override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {

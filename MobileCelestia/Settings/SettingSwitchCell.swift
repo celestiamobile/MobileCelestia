@@ -35,9 +35,11 @@ private extension SettingSwitchCell {
     func setup() {
         selectionStyle = .none
 
-        backgroundColor = .darkSecondaryBackground
-        selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = .darkSelection
+        if #available(iOS 13.0, *) {
+        } else {
+            backgroundColor = .darkSecondaryBackgroundElevated
+        }
+
         label.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(label)
         label.textColor = .darkLabel

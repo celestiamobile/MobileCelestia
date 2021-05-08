@@ -18,7 +18,7 @@ class DestinationDetailViewController: UIViewController {
     private let goToHandler: () -> Void
 
     private lazy var scrollView = UIScrollView(frame: .zero)
-    private lazy var goToButton = StandardButton(frame: .zero)
+    private lazy var goToButton = StandardButton(type: .system)
 
     private lazy var titleLabel = UILabel()
     private lazy var descriptionLabel = UILabel()
@@ -40,7 +40,7 @@ class DestinationDetailViewController: UIViewController {
 
     override func loadView() {
         view = UIView()
-        view.backgroundColor = .darkBackground
+        view.backgroundColor = .darkBackgroundElevated
 
         setup()
     }
@@ -96,15 +96,7 @@ private extension DestinationDetailViewController {
         descriptionLabel.lineBreakMode = .byCharWrapping
 
         goToButton.translatesAutoresizingMaskIntoConstraints = false
-        goToButton.layer.cornerRadius = 4
-        goToButton.setTitleColor(.darkLabel, for: .normal)
         view.addSubview(goToButton)
-
-        #if targetEnvironment(macCatalyst)
-        goToButton.backgroundColor = goToButton.tintColor
-        #else
-        goToButton.backgroundColor = .themeBackground
-        #endif
 
         let ratio: CGFloat
         if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
@@ -113,7 +105,28 @@ private extension DestinationDetailViewController {
             ratio = 1.0
         }
 
-        goToButton.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
+        if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
+            if let uiNSView = goToButton.subviews.first?.subviews.first,
+               String(describing: type(of: uiNSView)) == "_UINSView",
+               uiNSView.responds(to: NSSelectorFromString("contentNSView")) {
+                let contentNSView = uiNSView.value(forKey: "contentNSView") as AnyObject
+                if contentNSView.responds(to: NSSelectorFromString("setControlSize:")) {
+                    contentNSView.setValue(3, forKey: "controlSize")
+                }
+            }
+        } else {
+            goToButton.titleLabel?.lineBreakMode = .byWordWrapping
+            goToButton.titleLabel?.textAlignment = .center
+            goToButton.contentEdgeInsets = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
+            goToButton.layer.cornerRadius = 4
+            #if targetEnvironment(macCatalyst)
+            goToButton.backgroundColor = goToButton.tintColor
+            #else
+            goToButton.backgroundColor = .themeBackground
+            #endif
+            goToButton.setTitleColor(.white, for: .normal)
+        }
+
         NSLayoutConstraint.activate([
             goToButton.topAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 8),
             goToButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -12),

@@ -15,7 +15,13 @@ class BaseTableViewController: UITableViewController {
     override func loadView() {
         super.loadView()
 
-        tableView.backgroundColor = .darkBackground
+        if tableView.style == .plain {
+            tableView.backgroundColor = .darkBackgroundElevated
+        } else if tableView.style == .grouped {
+            tableView.backgroundColor = .darkGroupTableViewBackgroundElevated
+        } else if #available(iOS 13.0, *), tableView.style == .insetGrouped {
+            tableView.backgroundColor = .darkGroupTableViewBackgroundElevated
+        }
         tableView.alwaysBounceVertical = false
         tableView.separatorColor = .darkSeparator
         tableView.estimatedRowHeight = 44
