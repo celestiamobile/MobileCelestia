@@ -621,9 +621,9 @@ extension MainViewController: NSToolbarDelegate {
     private func defaultToolbarIdentifiers() -> [NSToolbarItem.Identifier] {
         return
             [undoOrRedoGroupItemIdentifier] +
-            [AppToolbarAction.browse, .favorite, .home].map { NSToolbarItem.Identifier($0.rawValue) } +
+            [AppToolbarAction.browse, .favorite, .home, .paperplane].map { NSToolbarItem.Identifier($0.rawValue) } +
             [.flexibleSpace] +
-            [AppToolbarAction.setting, .share, .search].map { NSToolbarItem.Identifier($0.rawValue) }
+            [AppToolbarAction.share, .search].map { NSToolbarItem.Identifier($0.rawValue) }
     }
 
     private func availableIdentifiers() -> [NSToolbarItem.Identifier] {
@@ -641,6 +641,7 @@ extension MainViewController: NSToolbarDelegate {
     private func setupToolbar() {
         let toolbar = NSToolbar(identifier: Bundle.app.bundleIdentifier!)
         toolbar.allowsUserCustomization = true
+        toolbar.autosavesConfiguration = true
         toolbar.delegate = self
         view.window?.windowScene?.titlebar?.titleVisibility = .hidden
         view.window?.windowScene?.titlebar?.toolbar = toolbar
