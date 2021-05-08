@@ -18,7 +18,6 @@ import AppCenterAnalytics
 import AppCenterCrashes
 
 let newURLOpenedNotificationName = Notification.Name("NewURLOpenedNotificationName")
-let newURLOpenedNotificationIsExternalKey = Notification.Name("NewURLOpenedNotificationURLIsExternalKey")
 let newURLOpenedNotificationURLKey = "NewURLOpenedNotificationURLKey"
 let showHelpNotificationName = Notification.Name("ShowHelpNotificationName")
 let showPreferencesNotificationName = Notification.Name("ShowPreferencesNotificationName")
@@ -75,7 +74,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if #available(iOS 13.0, *) { return true }
 
         window = UIWindow()
-        let vc = MainViewController(initialURL: launchOptions?[.url] as? URL)
+
+        var launchURL: UniformedURL?
+        if let url = launchOptions?[.url] as? URL {
+            launchURL = UniformedURL(url: url, securityScoped: url.isFileURL)
+        }
+        let vc = MainViewController(initialURL: launchURL)
 
         window?.rootViewController = vc
         window?.makeKeyAndVisible()
@@ -85,8 +89,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
         NotificationCenter.default.post(name: newURLOpenedNotificationName, object: nil, userInfo: [
-            newURLOpenedNotificationURLKey: url,
-            newURLOpenedNotificationIsExternalKey: options[.openInPlace] as? Bool == true
+            newURLOpenedNotificationURLKey: UniformedURL(url: url, securityScoped: url.isFileURL && options[.openInPlace] as? Bool == true),
         ])
         return true
     }
@@ -136,7 +139,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // Make request to the server to resolve the URL
         let requestURL = apiPrefix + "/resolve"
         _ = RequestHandler.get(url: requestURL, parameters: ["path" : path, "id" : id], success: { (response: Response) in
-            NotificationCenter.default.post(name: newURLOpenedNotificationName, object: nil, userInfo: [newURLOpenedNotificationURLKey : response.resolvedURL])
+            NotificationCenter.default.post(name: newURLOpenedNotificationName, object: nil, userInfo: [newURLOpenedNotificationURLKey: UniformedURL(url: response.resolvedURL, securityScoped: false)])
         })
         return true
     }

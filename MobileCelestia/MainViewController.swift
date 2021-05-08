@@ -37,10 +37,9 @@ class MainViewController: UIViewController {
 
     private var currentExternalScreen: UIScreen?
 
-    private var urlToRun: URL?
-    private var urlToRunIsExternal: Bool = false
+    private var urlToRun: UniformedURL?
 
-    init(initialURL: URL?) {
+    init(initialURL: UniformedURL?) {
         self.urlToRun = initialURL
         super.init(nibName: nil, bundle: nil)
     }
@@ -143,8 +142,7 @@ extension MainViewController {
     }
 
     @objc private func newURLOpened(_ notification: Notification) {
-        guard let url = notification.userInfo?[newURLOpenedNotificationURLKey] as? URL else { return }
-        urlToRunIsExternal = notification.userInfo?[newURLOpenedNotificationIsExternalKey] as? Bool == true
+        guard let url = notification.userInfo?[newURLOpenedNotificationURLKey] as? UniformedURL else { return }
         urlToRun = url
         guard status == .loaded else { return }
         checkNeedOpeningURL()
@@ -152,14 +150,13 @@ extension MainViewController {
 
     private func checkNeedOpeningURL() {
         guard let url = urlToRun else { return }
-        let external = urlToRunIsExternal
 
         urlToRun = nil
 
-        let title = url.isFileURL ? CelestiaString("Run script?", comment: "") : CelestiaString("Open URL?", comment: "")
+        let title = url.url.isFileURL ? CelestiaString("Run script?", comment: "") : CelestiaString("Open URL?", comment: "")
         front?.showOption(title) { [unowned self] (confirmed) in
             guard confirmed else { return }
-            self.celestiaController.openURL(url, external: external)
+            self.celestiaController.openURL(url)
         }
     }
 }
@@ -214,8 +211,7 @@ extension MainViewController: UIDocumentPickerDelegate {
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
         guard let url = urls.first else { return }
 
-        urlToRun = url
-        urlToRunIsExternal = true
+        urlToRun = UniformedURL(url: url, securityScoped: true)
         checkNeedOpeningURL()
     }
 }
@@ -319,8 +315,7 @@ extension MainViewController: CelestiaControllerDelegate {
     private func presentFavorite(_ root: FavoriteRoot) {
         let controller = FavoriteCoordinatorController(root: root) { [unowned self] object in
             if let url = object as? URL {
-                urlToRun = url
-                urlToRunIsExternal = false
+                urlToRun = UniformedURL(url: url, securityScoped: false)
                 self.checkNeedOpeningURL()
             } else if let destination = object as? CelestiaDestination {
                 self.core.simulation.goToDestination(destination)

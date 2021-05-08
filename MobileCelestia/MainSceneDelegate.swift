@@ -25,7 +25,11 @@ class MainSceneDelegate: UIResponder, UIWindowSceneDelegate {
         #endif
         let window = UIWindow(windowScene: windowScene)
         window.overrideUserInterfaceStyle = .dark
-        let vc = MainViewController(initialURL: connectionOptions.urlContexts.first?.url)
+        var launchURL: UniformedURL?
+        if let url = connectionOptions.urlContexts.first {
+            launchURL = UniformedURL(url: url.url, securityScoped: url.url.isFileURL && url.options.openInPlace)
+        }
+        let vc = MainViewController(initialURL: launchURL)
         if let userActivity = connectionOptions.userActivities.first {
             AppDelegate.handleUserActivity(userActivity)
         }
@@ -42,8 +46,7 @@ class MainSceneDelegate: UIResponder, UIWindowSceneDelegate {
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         guard let urlContext = URLContexts.first else { return }
         NotificationCenter.default.post(name: newURLOpenedNotificationName, object: nil, userInfo: [
-            newURLOpenedNotificationURLKey: urlContext.url,
-            newURLOpenedNotificationIsExternalKey: urlContext.options.openInPlace
+            newURLOpenedNotificationURLKey: UniformedURL(url: urlContext.url, securityScoped: urlContext.url.isFileURL && urlContext.options.openInPlace)
         ])
     }
 

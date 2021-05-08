@@ -108,8 +108,8 @@ extension CelestiaViewController {
         }
     }
 
-    func openURL(_ url: URL, external: Bool) {
-        interactionController?.openURL(url, external: external)
+    func openURL(_ url: UniformedURL) {
+        interactionController?.openURL(url)
     }
 
     func moveToNewScreen(_ newScreen: UIScreen) -> Bool {

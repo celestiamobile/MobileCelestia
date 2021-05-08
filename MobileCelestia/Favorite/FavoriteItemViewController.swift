@@ -127,7 +127,7 @@ extension CelestiaScript: FavoriteItem {
     typealias Representation = URL
 
     var associatedObject: URL? {
-        return URL(fileURLWithPath: FileManager.default.currentDirectoryPath + "/" + filename)
+        return URL(fileURLWithPath: filename)
     }
 
     var isLeaf: Bool {

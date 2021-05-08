@@ -666,12 +666,11 @@ extension CelestiaInteractionController {
         core.keyUp(with: input, modifiers: modifiers)
     }
 
-    func openURL(_ url: URL, external: Bool) {
-        if url.isFileURL {
-            let uniformed = UniformedURL(url: url, securityScoped: external)
-            core.runScript(at: uniformed.url.path)
+    func openURL(_ url: UniformedURL) {
+        if url.url.isFileURL {
+            core.runScript(at: url.url.path)
         } else {
-            core.go(to: url.absoluteString)
+            core.go(to: url.url.absoluteString)
         }
     }
 }
