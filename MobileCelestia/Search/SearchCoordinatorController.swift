@@ -15,10 +15,11 @@ import CelestiaCore
 
 class SearchCoordinatorController: UIViewController {
     private var main: SearchViewController!
-    private var navigation: UINavigationController!
 
     #if targetEnvironment(macCatalyst)
     private var split: UISplitViewController!
+    #else
+    private var navigation: UINavigationController!
     #endif
 
     private let selection: (CelestiaSelection) -> UIViewController
@@ -48,19 +49,11 @@ private extension SearchCoordinatorController {
     func setUp() {
         main = SearchViewController(selected: { [unowned self] (info) in
             #if targetEnvironment(macCatalyst)
-            self.split.viewControllers = [navigation, self.selection(info)]
+            self.split.viewControllers = [self.split.viewControllers[0], self.selection(info)]
             #else
             self.navigation.pushViewController(self.selection(info), animated: true)
             #endif
         })
-        navigation = UINavigationController(rootViewController: main)
-
-        if #available(iOS 13.0, *) {
-        } else {
-            navigation.navigationBar.barStyle = .black
-            navigation.navigationBar.barTintColor = .darkBackground
-            navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
-        }
 
         #if targetEnvironment(macCatalyst)
         split = UISplitViewController()
@@ -69,9 +62,17 @@ private extension SearchCoordinatorController {
         split.preferredPrimaryColumnWidthFraction = 0.3
         let emptyVc = UIViewController()
         emptyVc.view.backgroundColor = .darkBackground
-        split.viewControllers = [navigation, emptyVc]
+        split.viewControllers = [UINavigationController(rootViewController: main), emptyVc]
         install(split)
         #else
+        navigation = UINavigationController(rootViewController: main)
+
+        if #available(iOS 13.0, *) {
+        } else {
+            navigation.navigationBar.barStyle = .black
+            navigation.navigationBar.barTintColor = .darkBackground
+            navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
+        }
         install(navigation)
         #endif
     }

@@ -70,6 +70,8 @@
 		EA1BC6E724A0E94900F3F51B /* EventFinderResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E624A0E94900F3F51B /* EventFinderResultViewController.swift */; };
 		EA28CA4E24A25FE7004B011E /* BottomControlViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA28CA4D24A25FE7004B011E /* BottomControlViewController.swift */; };
 		EA28CA5324A2F399004B011E /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = EA28CA5124A2F399004B011E /* Fonts */; };
+		EA2C08702554FBC8000AD126 /* MetalANGLE.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA2C086F2554FBC8000AD126 /* MetalANGLE.xcframework */; };
+		EA2C08712554FBC8000AD126 /* MetalANGLE.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EA2C086F2554FBC8000AD126 /* MetalANGLE.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EA374CD2263A8B320069589C /* GoToContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA374CD1263A8B320069589C /* GoToContainerViewController.swift */; };
 		EA374CDA263A8B770069589C /* GoToInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA374CD9263A8B770069589C /* GoToInputViewController.swift */; };
 		EA544E5F2566BC50003F351D /* DestinationDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA544E5E2566BC50003F351D /* DestinationDetailViewController.swift */; };
@@ -93,6 +95,7 @@
 		EABF794A2538A86500F2460C /* ResourceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF79492538A86500F2460C /* ResourceManager.swift */; };
 		EABF795325391ECB00F2460C /* Zip in Frameworks */ = {isa = PBXBuildFile; productRef = EABF795225391ECB00F2460C /* Zip */; };
 		EABF7A032539731300F2460C /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = EABF7A022539731300F2460C /* SDWebImage */; };
+		EAC2F4D02647F2920039DF2F /* SearchResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC2F4CF2647F2920039DF2F /* SearchResultViewController.swift */; };
 		EAC8435F252C818700691943 /* MacBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = EAC8435E252C818700691943 /* MacBridge.m */; };
 		EAC84364252C84B600691943 /* CelestiaMacBridge.bundle in Embed PlugIns */ = {isa = PBXBuildFile; fileRef = EAC84354252C816500691943 /* CelestiaMacBridge.bundle */; platformFilter = maccatalyst; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EAD94F67261EED7700A93C93 /* UITableView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD94F66261EED7700A93C93 /* UITableView+Extensions.swift */; };
@@ -213,6 +216,7 @@
 		EA1EF056249393BE0039F493 /* Celestia.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Celestia.entitlements; sourceTree = "<group>"; };
 		EA28CA4D24A25FE7004B011E /* BottomControlViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomControlViewController.swift; sourceTree = "<group>"; };
 		EA28CA5124A2F399004B011E /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Fonts; path = ../../../CelestiaCore/Fonts; sourceTree = "<group>"; };
+		EA2C086F2554FBC8000AD126 /* MetalANGLE.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = MetalANGLE.xcframework; path = ../CelestiaCore/libs/dependency/xcframeworks/MetalANGLE.xcframework; sourceTree = "<group>"; };
 		EA374CD1263A8B320069589C /* GoToContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoToContainerViewController.swift; sourceTree = "<group>"; };
 		EA374CD9263A8B770069589C /* GoToInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoToInputViewController.swift; sourceTree = "<group>"; };
 		EA544E5E2566BC50003F351D /* DestinationDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DestinationDetailViewController.swift; sourceTree = "<group>"; };
@@ -236,6 +240,7 @@
 		EABF793B2538A1C100F2460C /* ResourceItemViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceItemViewController.swift; sourceTree = "<group>"; };
 		EABF79412538A4EB00F2460C /* ProgressButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressButton.swift; sourceTree = "<group>"; };
 		EABF79492538A86500F2460C /* ResourceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceManager.swift; sourceTree = "<group>"; };
+		EAC2F4CF2647F2920039DF2F /* SearchResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultViewController.swift; sourceTree = "<group>"; };
 		EAC84354252C816500691943 /* CelestiaMacBridge.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CelestiaMacBridge.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		EAC84356252C816500691943 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EAC8435D252C818700691943 /* MacBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MacBridge.h; sourceTree = "<group>"; };
@@ -392,6 +397,7 @@
 			children = (
 				977394BC2404189000E38B82 /* SearchViewController.swift */,
 				977394BE24041A9A00E38B82 /* SearchCoordinatorController.swift */,
+				EAC2F4CF2647F2920039DF2F /* SearchResultViewController.swift */,
 			);
 			path = Search;
 			sourceTree = "<group>";
@@ -881,6 +887,7 @@
 				979D2F7E23FEB1A6005D2592 /* AppDelegate.swift in Sources */,
 				EA5E185D2477C78E00F5374B /* Toast.swift in Sources */,
 				977394A32403E68800E38B82 /* Color.swift in Sources */,
+				EAC2F4D02647F2920039DF2F /* SearchResultViewController.swift in Sources */,
 				EABDE367247170F000E0A5FA /* SettngSliderCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
