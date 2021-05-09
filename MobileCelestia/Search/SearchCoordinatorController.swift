@@ -17,6 +17,10 @@ class SearchCoordinatorController: UIViewController {
     private var main: SearchViewController!
     private var navigation: UINavigationController!
 
+    #if targetEnvironment(macCatalyst)
+    private var split: UISplitViewController!
+    #endif
+
     private let selection: (CelestiaSelection) -> UIViewController
 
     init(selected: @escaping (CelestiaSelection) -> UIViewController) {
@@ -36,19 +40,20 @@ class SearchCoordinatorController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        setup()
+        setUp()
     }
-
 }
 
 private extension SearchCoordinatorController {
-    func setup() {
+    func setUp() {
         main = SearchViewController(selected: { [unowned self] (info) in
+            #if targetEnvironment(macCatalyst)
+            self.split.viewControllers = [navigation, self.selection(info)]
+            #else
             self.navigation.pushViewController(self.selection(info), animated: true)
+            #endif
         })
         navigation = UINavigationController(rootViewController: main)
-
-        install(navigation)
 
         if #available(iOS 13.0, *) {
         } else {
@@ -56,5 +61,18 @@ private extension SearchCoordinatorController {
             navigation.navigationBar.barTintColor = .darkBackgroundElevated
             navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
         }
+
+        #if targetEnvironment(macCatalyst)
+        split = UISplitViewController()
+        split.primaryBackgroundStyle = .sidebar
+        split.preferredDisplayMode = .oneBesideSecondary
+        split.preferredPrimaryColumnWidthFraction = 0.3
+        let emptyVc = UIViewController()
+        emptyVc.view.backgroundColor = .darkBackground
+        split.viewControllers = [navigation, emptyVc]
+        install(split)
+        #else
+        install(navigation)
+        #endif
     }
 }

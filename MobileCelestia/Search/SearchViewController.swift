@@ -35,7 +35,11 @@ class SearchViewController: BaseTableViewController {
 
     init(selected: @escaping (CelestiaSelection) -> Void) {
         self.selected = selected
+        #if targetEnvironment(macCatalyst)
+        super.init(style: .defaultGrouped)
+        #else
         super.init(style: .plain)
+        #endif
     }
 
     required init?(coder: NSCoder) {
@@ -45,7 +49,7 @@ class SearchViewController: BaseTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        setup()
+        setUp()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -70,10 +74,14 @@ class SearchViewController: BaseTableViewController {
 }
 
 private extension SearchViewController {
-    func setup() {
+    func setUp() {
         searchQueue.maxConcurrentOperationCount = 1
 
+        #if targetEnvironment(macCatalyst)
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Text")
+        #else
         tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Text")
+        #endif
 
         // Configure search bar
         definesPresentationContext = true
@@ -100,8 +108,15 @@ extension SearchViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let result = resultSections[indexPath.section].results[indexPath.row]
+        #if targetEnvironment(macCatalyst)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath)
+        var configuration = UIListContentConfiguration.sidebarCell()
+        configuration.text = result.name
+        cell.contentConfiguration = configuration
+        #else
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
         cell.title = result.name
+        #endif
         return cell
     }
 
@@ -125,7 +140,6 @@ extension SearchViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         view.endEditing(true)
 
-        tableView.deselectRow(at: indexPath, animated: true)
         let selection = resultSections[indexPath.section].results[indexPath.row]
         itemSelected(with: selection.name)
     }

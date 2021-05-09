@@ -475,7 +475,11 @@ extension MainViewController: CelestiaControllerDelegate {
         let controller = SearchCoordinatorController { [unowned self] (info) in
             return self.createSelectionInfoViewController(with: info, isEmbeddedInNavigation: true)
         }
+        #if targetEnvironment(macCatalyst)
+        showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600))
+        #else
         showViewController(controller)
+        #endif
     }
 
     private func showBrowser() {
