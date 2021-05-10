@@ -358,7 +358,7 @@ extension MainViewController: CelestiaControllerDelegate {
         if #available(iOS 13.0, *) {
         } else {
             controller.navigationBar.barStyle = .black
-            controller.navigationBar.barTintColor = .darkBackgroundElevated
+            controller.navigationBar.barTintColor = .darkBackground
             controller.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
         }
         showViewController(controller)

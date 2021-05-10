@@ -39,7 +39,7 @@ private extension SettingSliderCell {
 
         if #available(iOS 13.0, *) {
         } else {
-            backgroundColor = .darkSecondaryBackgroundElevated
+            backgroundColor = .darkSecondaryBackground
         }
 
         topContainer.translatesAutoresizingMaskIntoConstraints = false

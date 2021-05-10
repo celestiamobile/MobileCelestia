@@ -40,7 +40,7 @@ class DestinationDetailViewController: UIViewController {
 
     override func loadView() {
         view = UIView()
-        view.backgroundColor = .darkBackgroundElevated
+        view.backgroundColor = .darkBackground
 
         setup()
     }

@@ -20,7 +20,7 @@ class ResourceViewController: UIViewController {
 
     override func loadView() {
         view = UIView()
-        view.backgroundColor = .darkBackgroundElevated
+        view.backgroundColor = .darkBackground
     }
 
     override func viewDidLoad() {
@@ -48,7 +48,7 @@ private extension ResourceViewController {
         controller.preferredDisplayMode = .oneBesideSecondary
         controller.preferredPrimaryColumnWidthFraction = 0.3
         let emptyVc = UIViewController()
-        emptyVc.view.backgroundColor = .darkBackgroundElevated
+        emptyVc.view.backgroundColor = .darkBackground
         controller.viewControllers = [main, emptyVc]
         install(controller)
         #else
@@ -57,7 +57,7 @@ private extension ResourceViewController {
         if #available(iOS 13.0, *) {
         } else {
             navigation.navigationBar.barStyle = .black
-            navigation.navigationBar.barTintColor = .darkBackgroundElevated
+            navigation.navigationBar.barTintColor = .darkBackground
             navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
         }
         #endif
@@ -72,7 +72,7 @@ private extension ResourceViewController {
         if #available(iOS 13.0, *) {
         } else {
             navigation.navigationBar.barStyle = .black
-            navigation.navigationBar.barTintColor = .darkBackgroundElevated
+            navigation.navigationBar.barTintColor = .darkBackground
             navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
         }
         controller.viewControllers = [controller.viewControllers[0], navigation]
@@ -94,7 +94,7 @@ private extension ResourceViewController {
         if #available(iOS 13.0, *) {
         } else {
             navigation.navigationBar.barStyle = .black
-            navigation.navigationBar.barTintColor = .darkBackgroundElevated
+            navigation.navigationBar.barTintColor = .darkBackground
             navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
         }
         controller.viewControllers = [controller.viewControllers[0], navigation]

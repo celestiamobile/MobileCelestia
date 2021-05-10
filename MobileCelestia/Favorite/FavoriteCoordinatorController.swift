@@ -57,7 +57,7 @@ class FavoriteCoordinatorController: UIViewController {
 
     override func loadView() {
         view = UIView()
-        view.backgroundColor = .darkBackgroundElevated
+        view.backgroundColor = .darkBackground
     }
 
     override func viewDidLoad() {
@@ -86,13 +86,13 @@ private extension FavoriteCoordinatorController {
             if #available(iOS 13.0, *) {
             } else {
                 navigation.navigationBar.barStyle = .black
-                navigation.navigationBar.barTintColor = .darkBackgroundElevated
+                navigation.navigationBar.barTintColor = .darkBackground
                 navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
             }
             contentVc = navigation
         } else {
             let emptyVc = UIViewController()
-            emptyVc.view.backgroundColor = .darkBackgroundElevated
+            emptyVc.view.backgroundColor = .darkBackground
             contentVc = emptyVc
         }
         controller.viewControllers = [main, contentVc]
@@ -103,7 +103,7 @@ private extension FavoriteCoordinatorController {
         if #available(iOS 13.0, *) {
         } else {
             navigation.navigationBar.barStyle = .black
-            navigation.navigationBar.barTintColor = .darkBackgroundElevated
+            navigation.navigationBar.barTintColor = .darkBackground
             navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
         }
         #endif
@@ -115,7 +115,7 @@ private extension FavoriteCoordinatorController {
         if #available(iOS 13.0, *) {
         } else {
             navigation.navigationBar.barStyle = .black
-            navigation.navigationBar.barTintColor = .darkBackgroundElevated
+            navigation.navigationBar.barTintColor = .darkBackground
             navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
         }
         controller.viewControllers = [controller.viewControllers[0], navigation]

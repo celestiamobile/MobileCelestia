@@ -16,11 +16,11 @@ class BaseTableViewController: UITableViewController {
         super.loadView()
 
         if tableView.style == .plain {
-            tableView.backgroundColor = .darkBackgroundElevated
+            tableView.backgroundColor = .darkBackground
         } else if tableView.style == .grouped {
-            tableView.backgroundColor = .darkGroupTableViewBackgroundElevated
+            tableView.backgroundColor = .darkGroupedBackground
         } else if #available(iOS 13.0, *), tableView.style == .insetGrouped {
-            tableView.backgroundColor = .darkGroupTableViewBackgroundElevated
+            tableView.backgroundColor = .darkGroupedBackground
         }
         tableView.alwaysBounceVertical = false
         tableView.separatorColor = .darkSeparator

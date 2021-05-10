@@ -33,7 +33,7 @@ class BrowserContainerViewController: UIViewController {
 
     override func loadView() {
         view = UIView()
-        view.backgroundColor = .darkBackgroundElevated
+        view.backgroundColor = .darkBackground
     }
 
     override func viewDidLoad() {
@@ -60,7 +60,7 @@ private extension BrowserContainerViewController {
             controller.viewControllers = [self.controller.viewControllers[0], newVc]
         }
         let emptyVc = UIViewController()
-        emptyVc.view.backgroundColor = .darkBackgroundElevated
+        emptyVc.view.backgroundColor = .darkBackground
         controller.viewControllers = [sidebarController, emptyVc]
         #else
         controller.setViewControllers([
@@ -72,7 +72,7 @@ private extension BrowserContainerViewController {
         if #available(iOS 13.0, *) {
         } else {
             controller.tabBar.barStyle = .black
-            controller.tabBar.barTintColor = .darkBackgroundElevated
+            controller.tabBar.barTintColor = .darkBackground
         }
         #endif
     }

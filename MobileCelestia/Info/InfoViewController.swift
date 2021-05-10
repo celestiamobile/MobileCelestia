@@ -61,7 +61,7 @@ final class InfoViewController: UIViewController {
 
     override func loadView() {
         view = UIView()
-        view.backgroundColor = isEmbeddedInNavigationController ? .darkBackgroundElevated : .darkSecondaryBackgroundElevated
+        view.backgroundColor = isEmbeddedInNavigationController ? .darkBackground : .darkSecondaryBackground
     }
 
     override func viewDidLoad() {

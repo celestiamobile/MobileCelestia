@@ -37,7 +37,7 @@ private extension SettingSwitchCell {
 
         if #available(iOS 13.0, *) {
         } else {
-            backgroundColor = .darkSecondaryBackgroundElevated
+            backgroundColor = .darkSecondaryBackground
         }
 
         label.translatesAutoresizingMaskIntoConstraints = false

@@ -84,7 +84,7 @@ class ResourceItemViewController: UIViewController {
 
     override func loadView() {
         view = UIView()
-        view.backgroundColor = .darkBackgroundElevated
+        view.backgroundColor = .darkBackground
 
         setup()
     }

@@ -21,6 +21,10 @@ class SlideInPresentationController: UIPresentationController {
         self.direction = direction
         super.init(presentedViewController: presentedViewController, presenting: presentingViewController)
 
+        if #available(iOS 13.0, *) {
+            overrideTraitCollection = UITraitCollection(userInterfaceLevel: .base)
+        }
+
         setupDimmingViewIfNeeded()
     }
 

@@ -35,7 +35,7 @@ class SettingsCoordinatorController: UIViewController {
 
     override func loadView() {
         view = UIView()
-        view.backgroundColor = .darkBackgroundElevated
+        view.backgroundColor = .darkBackground
     }
 
     override func viewDidLoad() {
@@ -94,7 +94,7 @@ private extension SettingsCoordinatorController {
             if #available(iOS 13.0, *) {
             } else {
                 self.navigation.navigationBar.barStyle = .black
-                self.navigation.navigationBar.barTintColor = .darkBackgroundElevated
+                self.navigation.navigationBar.barTintColor = .darkBackground
                 self.navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
             }
             self.controller.viewControllers = [self.controller.viewControllers[0], self.navigation]
@@ -107,7 +107,7 @@ private extension SettingsCoordinatorController {
         controller.preferredDisplayMode = .oneBesideSecondary
         controller.preferredPrimaryColumnWidthFraction = 0.3
         let emptyVc = UIViewController()
-        emptyVc.view.backgroundColor = .darkBackgroundElevated
+        emptyVc.view.backgroundColor = .darkBackground
         controller.viewControllers = [main, emptyVc]
         install(controller)
         #else
@@ -116,7 +116,7 @@ private extension SettingsCoordinatorController {
         if #available(iOS 13.0, *) {
         } else {
             navigation.navigationBar.barStyle = .black
-            navigation.navigationBar.barTintColor = .darkBackgroundElevated
+            navigation.navigationBar.barTintColor = .darkBackground
             navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
         }
         #endif

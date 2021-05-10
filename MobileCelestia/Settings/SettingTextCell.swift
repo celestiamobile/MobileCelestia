@@ -75,7 +75,7 @@ private extension SettingTextCell {
     func setup() {
         if #available(iOS 13.0, *) {
         } else {
-            backgroundColor = .darkSecondaryBackgroundElevated
+            backgroundColor = .darkSecondaryBackground
             selectedBackgroundView = UIView()
             selectedBackgroundView?.backgroundColor = .darkSelection
         }

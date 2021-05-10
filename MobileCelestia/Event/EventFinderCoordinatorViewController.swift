@@ -29,7 +29,7 @@ class EventFinderCoordinatorViewController: UIViewController {
 
     override func loadView() {
         view = UIView()
-        view.backgroundColor = .darkBackgroundElevated
+        view.backgroundColor = .darkBackground
     }
 
     override func viewDidLoad() {
@@ -53,7 +53,7 @@ private extension EventFinderCoordinatorViewController {
         if #available(iOS 13.0, *) {
         } else {
             navigation.navigationBar.barStyle = .black
-            navigation.navigationBar.barTintColor = .darkBackgroundElevated
+            navigation.navigationBar.barTintColor = .darkBackground
             navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
         }
     }

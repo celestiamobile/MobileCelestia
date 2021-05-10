@@ -77,25 +77,11 @@ extension UIColor {
         return UIColor.black
     }
 
-    class var darkBackgroundElevated: UIColor {
-        if #available(iOS 13.0, *) {
-            return .systemBackground
-        }
-        return UIColor(rgb: 0x1C1C1E)
-    }
-
-    class var darkGroupTableViewBackground: UIColor {
+    class var darkGroupedBackground: UIColor {
         if #available(iOS 13.0, *) {
             return .systemGroupedBackground
         }
         return UIColor.black
-    }
-
-    class var darkGroupTableViewBackgroundElevated: UIColor {
-        if #available(iOS 13.0, *) {
-            return .systemGroupedBackground
-        }
-        return UIColor(rgb: 0x1C1C1E)
     }
 
     class var darkSecondaryBackground: UIColor {
@@ -103,13 +89,6 @@ extension UIColor {
             return .secondarySystemBackground
         }
         return UIColor(rgb: 0x1C1C1E)
-    }
-
-    class var darkSecondaryBackgroundElevated: UIColor {
-        if #available(iOS 13.0, *) {
-            return .secondarySystemBackground
-        }
-        return UIColor(rgb: 0x2C2C2E)
     }
 
     class var darkSystemFill: UIColor {
