@@ -70,9 +70,9 @@ extension SettingCheckViewController {
             let key = item.masterKey!
             cell.toggleBlock = { [unowned self] (enabled) in
                 let core = CelestiaAppCore.shared
-                core.setValue(enabled, forKey: key)
-
-                self.tableView.reloadData()
+                core.setValueAsync(enabled, forKey: key) { [weak self] in
+                    self?.tableView.reloadData()
+                }
             }
             return cell
         }
@@ -97,8 +97,9 @@ extension SettingCheckViewController {
         let subitem = item.subitems[indexPath.row]
         let key = subitem.key
         let enabled = (core.value(forKey: subitem.key) as! Bool)
-        core.setValue(!enabled, forKey: key)
-        tableView.reloadData()
+        core.setValueAsync(enabled, forKey: key) { [weak self] in
+            self?.tableView.reloadData()
+        }
     }
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

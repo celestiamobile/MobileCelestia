@@ -25,6 +25,10 @@ struct RenderingTargetGeometry {
 typealias CelestiaLoadingResult = Result<Void, CelestiaLoadingError>
 
 protocol CelestiaControllerDelegate: AnyObject {
+    func celestiaController(_ celestiaController: CelestiaViewController, loadingStatusUpdated status: String)
+    func celestiaControllerLoadingFailedShouldRetry(_ celestiaController: CelestiaViewController) -> Bool
+    func celestiaControllerLoadingFailed(_ celestiaController: CelestiaViewController)
+    func celestiaControllerLoadingSucceeded(_ celestiaController: CelestiaViewController)
     func celestiaController(_ celestiaController: CelestiaViewController, requestShowActionMenuWithSelection selection: CelestiaSelection)
     func celestiaController(_ celestiaController: CelestiaViewController, requestShowInfoWithSelection selection: CelestiaSelection)
     func celestiaController(_ celestiaController: CelestiaViewController, requestWebInfo webURL: URL)
@@ -33,7 +37,7 @@ protocol CelestiaControllerDelegate: AnyObject {
 class CelestiaViewController: UIViewController {
     weak var delegate: CelestiaControllerDelegate!
 
-    private lazy var displayController = CelestiaDisplayController()
+    private lazy var displayController = CelestiaDisplayController(msaaEnabled: UserDefaults.app[.msaa] == true)
     private var interactionController: CelestiaInteractionController?
 
     private lazy var auxiliaryWindows = [UIWindow]()
@@ -49,6 +53,7 @@ class CelestiaViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        displayController.delegate = self
         install(displayController)
     }
 
@@ -91,23 +96,36 @@ extension CelestiaViewController: CelestiaInteractionControllerDelegate {
     }
 }
 
-extension CelestiaViewController {
-    func load(statusUpdater: @escaping (String) -> Void, errorHandler: @escaping () -> Bool, completionHandler: @escaping (CelestiaLoadingResult) -> Void) {
-        displayController.load(statusUpdater: statusUpdater, errorHandler: errorHandler) { [unowned self] result in
-            if case CelestiaLoadingResult.success() = result {
-                let interactionController = CelestiaInteractionController()
-                interactionController.delegate = self
-                interactionController.targetProvider = self
-                self.install(interactionController)
-                self.interactionController = interactionController
-                if isMirroring {
-                    interactionController.startMirroring()
-                }
+extension CelestiaViewController: CelestiaDisplayControllerDelegate {
+    func celestiaDisplayControllerLoadingSucceeded(_ celestiaDisplayController: CelestiaDisplayController) {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            let interactionController = CelestiaInteractionController()
+            interactionController.delegate = self
+            interactionController.targetProvider = self
+            self.install(interactionController)
+            self.interactionController = interactionController
+            if self.isMirroring {
+                interactionController.startMirroring()
             }
-            completionHandler(result)
         }
+        delegate?.celestiaControllerLoadingSucceeded(self)
     }
 
+    func celestiaDisplayControllerLoadingFailedShouldRetry(_ celestiaDisplayController: CelestiaDisplayController) -> Bool {
+        return delegate?.celestiaControllerLoadingFailedShouldRetry(self) ?? false
+    }
+
+    func celestiaDisplayControllerLoadingFailed(_ celestiaDisplayController: CelestiaDisplayController) {
+        delegate?.celestiaControllerLoadingFailed(self)
+    }
+
+    func celestiaDisplayController(_ celestiaDisplayController: CelestiaDisplayController, loadingStatusUpdated status: String) {
+        delegate.celestiaController(self, loadingStatusUpdated: status)
+    }
+}
+
+extension CelestiaViewController {
     func openURL(_ url: UniformedURL) {
         interactionController?.openURL(url)
     }

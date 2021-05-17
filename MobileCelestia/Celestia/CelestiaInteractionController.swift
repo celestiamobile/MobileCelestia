@@ -36,15 +36,6 @@ extension CelestiaAction {
     }
 }
 
-extension CelestiaAppCore {
-    func receive(_ action: CelestiaAction) {
-        if textEnterMode != .normal {
-            textEnterMode = .normal
-        }
-        charEnter(action.rawValue)
-    }
-}
-
 protocol CelestiaInteractionControllerDelegate: AnyObject {
     func celestiaInteractionController(_ celestiaInteractionController: CelestiaInteractionController, requestShowActionMenuWithSelection selection: CelestiaSelection)
     func celestiaInteractionController(_ celestiaInteractionController: CelestiaInteractionController, requestShowInfoWithSelection selection: CelestiaSelection)
@@ -202,18 +193,24 @@ extension CelestiaInteractionController: CelestiaControlViewDelegate {
     }
 
     func celestiaControlView(_ celestiaControlView: CelestiaControlView, didTapWith action: CelestiaControlAction) {
-        let sel = core.simulation.selection
-        switch action {
-        case .showMenu:
-            delegate?.celestiaInteractionController(self, requestShowActionMenuWithSelection: sel)
-        case .info:
-            delegate?.celestiaInteractionController(self, requestShowInfoWithSelection: sel)
-        case .hide:
-            hideControlView()
-        case .show:
-            showControlView()
-        default:
-            break
+        if action == .hide {
+            self.hideControlView()
+        } else if action == .show {
+            self.showControlView()
+        } else if action == .showMenu {
+            core.getSelectionAsync { [weak self] sel, _ in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    self.delegate?.celestiaInteractionController(self, requestShowActionMenuWithSelection: sel)
+                }
+            }
+        } else if action == .info {
+            core.getSelectionAsync { [weak self] sel, _ in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    self.delegate?.celestiaInteractionController(self, requestShowInfoWithSelection: sel)
+                }
+            }
         }
     }
 
@@ -336,11 +333,6 @@ extension CelestiaInteractionController {
         tap.delegate = self
         targetInteractionView.addGestureRecognizer(tap)
 
-        let rightEdge = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(handleEdgePan(_:)))
-        rightEdge.edges = .right
-        pan1.require(toFail: rightEdge)
-        targetInteractionView.addGestureRecognizer(rightEdge)
-
         if #available(iOS 13.0, *) {
             targetInteractionView.addInteraction(UIContextMenuInteraction(delegate: self))
         }
@@ -391,19 +383,19 @@ extension CelestiaInteractionController {
             NSCursor.hide()
             #endif
             oneFingerStartPoint = location
-            core.mouseButtonDown(at: location, modifiers: UInt(modifiers.rawValue), with: button)
+            core.run { $0.mouseButtonDown(at: location, modifiers: UInt(modifiers.rawValue), with: button) }
         case .changed:
             let current = oneFingerStartPoint!
             let offset = CGPoint(x: location.x - current.x, y: location.y - current.y)
             oneFingerStartPoint = location
-            core.mouseMove(by: offset, modifiers: UInt(modifiers.rawValue), with: button)
+            core.run { $0.mouseMove(by: offset, modifiers: UInt(modifiers.rawValue), with: button) }
         case .ended, .cancelled, .failed:
             fallthrough
         @unknown default:
             #if targetEnvironment(macCatalyst)
             NSCursor.unhide()
             #endif
-            core.mouseButtonUp(at: location, modifiers: UInt(modifiers.rawValue), with: button)
+            core.run { $0.mouseButtonUp(at: location, modifiers: UInt(modifiers.rawValue), with: button) }
             oneFingerStartPoint = nil
         }
     }
@@ -427,7 +419,7 @@ extension CelestiaInteractionController {
             let length = hypot(abs(point1.x - point2.x), abs(point1.y - point2.y))
             let center = CGPoint(x: (point1.x + point2.x) / 2, y: (point1.y + point2.y) / 2)
             currentPanDistance = length
-            core.mouseButtonDown(at: center, modifiers: 0, with: .left)
+            core.run { $0.mouseButtonDown(at: center, modifiers: 0, with: .left) }
         case .changed:
             if gesture.numberOfTouches < 2 {
                 // cancel the gesture recognizer
@@ -457,20 +449,10 @@ extension CelestiaInteractionController {
         switch tap.state {
         case .ended:
             let location = tap.location(with: renderingTargetGeometry)
-            core.mouseButtonDown(at: location, modifiers: 0, with: .left)
-            core.mouseButtonUp(at: location, modifiers: 0, with: .left)
-        default:
-            break
-        }
-    }
-
-    @objc private func handleEdgePan(_ pan: UIScreenEdgePanGestureRecognizer) {
-        showControlViewIfNeeded()
-
-        switch pan.state {
-        case .ended:
-            let sel = core.simulation.selection
-            delegate?.celestiaInteractionController(self, requestShowActionMenuWithSelection: sel)
+            core.run { core in
+                core.mouseButtonDown(at: location, modifiers: 0, with: .left)
+                core.mouseButtonUp(at: location, modifiers: 0, with: .left)
+            }
         default:
             break
         }
@@ -478,9 +460,9 @@ extension CelestiaInteractionController {
 
     private func zoom(deltaY: CGFloat, modifiers: UInt = 0, scrolling: Bool = false) {
         if scrolling || interactionMode == .object {
-            core.mouseWheel(by: deltaY, modifiers: modifiers)
+            core.run { $0.mouseWheel(by: deltaY, modifiers: modifiers) }
         } else {
-            core.mouseMove(by: CGPoint(x: 0, y: deltaY), modifiers: UInt(UIKeyModifierFlags.shift.rawValue), with: .left)
+            core.run { $0.mouseMove(by: CGPoint(x: 0, y: deltaY), modifiers: UInt(UIKeyModifierFlags.shift.rawValue), with: .left) }
         }
     }
 }
@@ -503,43 +485,48 @@ extension CelestiaInteractionController: UIGestureRecognizerDelegate {
 @available(iOS 13.0, *)
 extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
-        core.mouseButtonDown(at: interaction.location(with: renderingTargetGeometry), modifiers: 0, with: .right)
-        core.mouseButtonUp(at: interaction.location(with: renderingTargetGeometry), modifiers: 0, with: .right)
+        let location = interaction.location(with: renderingTargetGeometry)
+
+        let semaphore = DispatchSemaphore(value: 0)
+        core.run { core in
+            core.mouseButtonDown(at: location, modifiers: 0, with: .right)
+            core.mouseButtonUp(at: location, modifiers: 0, with: .right)
+            semaphore.signal()
+        }
+        semaphore.wait()
 
         guard let selection = pendingSelection else { return nil }
         pendingSelection = nil
-        let core = self.core
 
-        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { _ -> UIMenu? in
-            let titleAction = UIAction(title: core.simulation.universe.name(for: selection)) { _ in }
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { [weak self] _ -> UIMenu? in
+            guard let self = self else { return nil }
+            let titleAction = UIAction(title: self.core.simulation.universe.name(for: selection)) { _ in }
             titleAction.attributes = [.disabled]
             var actions: [UIMenuElement] = [titleAction]
 
             actions.append(UIMenu(title: "", options: .displayInline, children: CelestiaAction.allCases.map { action in
                 return UIAction(title: action.description) { (_) in
-                    core.simulation.selection = selection
-                    core.receive(action)
+                    self.core.selectAndReceiveAsync(selection, action: action)
                 }
             }))
 
             if let entry = selection.object {
-                let browserItem = CelestiaBrowserItem(name: core.simulation.universe.name(for: selection), catEntry: entry, provider: core.simulation.universe)
+                let browserItem = CelestiaBrowserItem(name: self.core.simulation.universe.name(for: selection), catEntry: entry, provider: self.core.simulation.universe)
                 actions.append(UIMenu(title: "", options: .displayInline, children: browserItem.children.compactMap { $0.createMenuItems(additionalItemName: CelestiaString("Go", comment: "")) { (selection) in
-                    core.simulation.selection = selection
-                    core.receive(.goTo)
+                    self.core.selectAndReceiveAsync(selection, action: .goTo)
                 }
                 }))
             }
 
             if let alternativeSurfaces = selection.body?.alternateSurfaceNames, alternativeSurfaces.count > 0 {
-                let displaySurface = core.simulation.activeObserver.displayedSurface
+                let displaySurface = self.core.get { $0.simulation.activeObserver.displayedSurface }
                 let defaultSurfaceItem = UIAction(title: CelestiaString("Default", comment: "")) { _ in
-                    core.simulation.activeObserver.displayedSurface = ""
+                    self.core.run { $0.simulation.activeObserver.displayedSurface = "" }
                 }
                 defaultSurfaceItem.state = displaySurface == "" ? .on : .off
                 let otherSurfaces = alternativeSurfaces.map { name -> UIAction in
                     let action = UIAction(title: name) { _ in
-                        core.simulation.activeObserver.displayedSurface = name
+                        self.core.run { $0.simulation.activeObserver.displayedSurface = name }
                     }
                     action.state = displaySurface == name ? .on : .off
                     return action
@@ -553,10 +540,9 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
                 return UIAction(title: name) { [weak self] _ in
                     guard let self = self else { return }
                     if let marker = CelestiaMarkerRepresentation(rawValue: UInt(index)) {
-                        self.core.simulation.universe.mark(selection, with: marker)
-                        self.core.showMarkers = true
+                        self.core.markAsync(selection, markerType: marker)
                     } else {
-                        self.core.simulation.universe.unmark(selection)
+                        self.core.run { $0.simulation.universe.unmark(selection) }
                     }
                 }
             }
@@ -675,18 +661,18 @@ extension CelestiaInteractionController {
     }
 
     func keyDown(with input: String?, modifiers: UInt) {
-        core.keyDown(with: input, modifiers: modifiers)
+        core.run { $0.keyDown(with: input, modifiers: modifiers) }
     }
 
     func keyUp(with input: String?, modifiers: UInt) {
-        core.keyUp(with: input, modifiers: modifiers)
+        core.run { $0.keyUp(with: input, modifiers: modifiers) }
     }
 
     func openURL(_ url: UniformedURL) {
         if url.url.isFileURL {
-            core.runScript(at: url.url.path)
+            core.run { $0.runScript(at: url.url.path) }
         } else {
-            core.go(to: url.url.absoluteString)
+            core.run { $0.go(to: url.url.absoluteString) }
         }
     }
 }

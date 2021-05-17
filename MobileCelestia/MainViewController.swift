@@ -24,8 +24,10 @@ class MainViewController: UIViewController {
     }
 
     private lazy var celestiaController = CelestiaViewController()
+    private lazy var loadingController = LoadingViewController()
 
     private var status: LoadingStatus = .notLoaded
+    private var retried: Bool = false
 
     private lazy var toolbarSlideInManager = SlideInPresentationManager(direction: UIView.userInterfaceLayoutDirection(for: self.view.semanticContentAttribute) == .rightToLeft ? .left : .right)
     private lazy var endSlideInManager = SlideInPresentationManager(direction: UIView.userInterfaceLayoutDirection(for: self.view.semanticContentAttribute) == .rightToLeft ? .left : .right, usesFormSheetForRegular: true)
@@ -57,8 +59,10 @@ class MainViewController: UIViewController {
 
         view.backgroundColor = .darkBackground
 
-        install(celestiaController)
         celestiaController.delegate = self
+        install(celestiaController)
+
+        install(loadingController)
 
         NotificationCenter.default.addObserver(self, selector: #selector(newURLOpened(_:)), name: newURLOpenedNotificationName, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(newScreenConnected(_:)), name: UIScreen.didConnectNotification, object: nil)
@@ -68,53 +72,6 @@ class MainViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(requestOpenFile), name: requestOpenFileNotificationName, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(requestCopy), name: requestCopyNotificationName, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(requestPaste), name: requestPasteNotificationName, object: nil)
-    }
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-
-        guard status == .notLoaded else { return }
-
-        status = .loading
-
-        var retried = false
-
-        let loadingController = LoadingViewController()
-        install(loadingController)
-
-        celestiaController.load(statusUpdater: { (status) in
-            loadingController.update(with: status)
-        }, errorHandler: { [unowned self] in
-            if retried { return false }
-            DispatchQueue.main.async { self.showError(CelestiaString("Error loading data, fallback to original configuration.", comment: "")) }
-            retried = true
-            saveConfigFile(nil)
-            saveDataDirectory(nil)
-            return true
-        }, completionHandler: { [unowned self] (result) in
-            loadingController.remove()
-
-            switch result {
-            case .success():
-                print("loading success")
-                self.status = .loaded
-                #if targetEnvironment(macCatalyst)
-                self.setupToolbar()
-                self.setupTouchBar()
-                #endif
-                UIApplication.shared.isIdleTimerDisabled = true
-                self.showOnboardMessageIfNeeded()
-                // we can't present two vcs together, so we delay the action
-                DispatchQueue.main.asyncAfter(deadline: .now() + 1)  {
-                    self.checkNeedOpeningURL()
-                }
-            case .failure(_):
-                print("loading failed")
-                self.status = .loadingFailed
-                let failure = LoadingFailureViewController()
-                self.install(failure)
-            }
-        })
     }
 
     override var prefersHomeIndicatorAutoHidden: Bool {
@@ -163,13 +120,18 @@ extension MainViewController {
 
 extension MainViewController {
     @objc private func requestCopy() {
-        UIPasteboard.general.url = URL(string: core.currentURL)
+        core.run { core in
+            let url = core.currentURL
+            DispatchQueue.main.async {
+                UIPasteboard.general.url = URL(string: url)
+            }
+        }
     }
 
     @objc private func requestPaste() {
         let pasteboard = UIPasteboard.general
         if pasteboard.hasURLs, let url = pasteboard.url {
-            core.go(to: url.absoluteString)
+            core.run { $0.go(to: url.absoluteString) }
         }
     }
 }
@@ -217,6 +179,55 @@ extension MainViewController: UIDocumentPickerDelegate {
 }
 
 extension MainViewController: CelestiaControllerDelegate {
+    func celestiaController(_ celestiaController: CelestiaViewController, loadingStatusUpdated status: String) {
+        DispatchQueue.main.async { [weak self] in
+            self?.loadingController.update(with: status)
+        }
+    }
+
+    func celestiaControllerLoadingFailedShouldRetry(_ celestiaController: CelestiaViewController) -> Bool {
+        if retried { return false }
+        DispatchQueue.main.async { [weak self] in
+            self?.showError(CelestiaString("Error loading data, fallback to original configuration.", comment: ""))
+        }
+        retried = true
+        saveConfigFile(nil)
+        saveDataDirectory(nil)
+        return true
+    }
+
+    func celestiaControllerLoadingFailed(_ celestiaController: CelestiaViewController) {
+        print("loading failed")
+
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.status = .loadingFailed
+            self.loadingController.remove()
+            let failure = LoadingFailureViewController()
+            self.install(failure)
+        }
+    }
+
+    func celestiaControllerLoadingSucceeded(_ celestiaController: CelestiaViewController) {
+        print("loading success")
+
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            self.status = .loaded
+            self.loadingController.remove()
+            #if targetEnvironment(macCatalyst)
+            self.setupToolbar()
+            self.setupTouchBar()
+            #endif
+            UIApplication.shared.isIdleTimerDisabled = true
+            self.showOnboardMessageIfNeeded()
+            // we can't present two vcs together, so we delay the action
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1)  {
+                self.checkNeedOpeningURL()
+            }
+        }
+    }
+
     func celestiaController(_ celestiaController: CelestiaViewController, requestShowActionMenuWithSelection selection: CelestiaSelection) {
         let actions: [[AppToolbarAction]] = AppToolbarAction.persistentAction
         let controller = ToolbarViewController(actions: actions)
@@ -259,7 +270,7 @@ extension MainViewController: CelestiaControllerDelegate {
         case .help:
             presentHelp()
         case .home:
-            core.receive(.home)
+            core.receiveAsync(.home)
         case .event:
             presentEventFinder()
         case .addons:
@@ -291,31 +302,40 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     private func shareImage() {
-        core.draw()
-        let path = (NSTemporaryDirectory() as NSString).appendingPathComponent("CelestiaScreenshot.png")
+        core.run { [weak self] core in
+            CelestiaAppCore.makeRenderContextCurrent()
 
-        if core.screenshot(to: path, type: .PNG) {
-            #if targetEnvironment(macCatalyst)
-            saveFile(path)
-            #else
-            if let data = try? Data(contentsOf: URL(fileURLWithPath: path)), let image = UIImage(data: data) {
-                showShareSheet(for: image)
+            core.draw()
+            let path = (NSTemporaryDirectory() as NSString).appendingPathComponent("CelestiaScreenshot.png")
+
+            if core.screenshot(to: path, type: .PNG), let data = try? Data(contentsOf: URL(fileURLWithPath: path)), let image = UIImage(data: data) {
+                DispatchQueue.main.async {
+                    self?.showShareSheet(for: image)
+                }
+            } else {
+                DispatchQueue.main.async {
+                    self?.showError(CelestiaString("Unable to generate image.", comment: ""))
+                }
             }
-            #endif
-        } else {
-            showError(CelestiaString("Unable to generate image.", comment: ""))
         }
     }
 
     private func shareURL() {
-        let selection = core.simulation.selection
-        let name = core.simulation.universe.name(for: selection)
-        let url = core.currentURL
-        showTextInput(CelestiaString("Share", comment: ""),
-                      message: CelestiaString("Please enter a description of the content.", comment: ""),
-                      text: name) { (description) in
-                        guard let title = description else { return }
-                        self.submitURL(url, title: title)
+        core.run { [weak self] core in
+            let selection = core.simulation.selection
+            let name = core.simulation.universe.name(for: selection)
+            let url = core.currentURL
+
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                self.showTextInput(
+                    CelestiaString("Share", comment: ""),
+                    message: CelestiaString("Please enter a description of the content.", comment: ""),
+                    text: name) { description in
+                    guard let title = description else { return }
+                    self.submitURL(url, title: title)
+                }
+            }
         }
     }
 
@@ -325,7 +345,7 @@ extension MainViewController: CelestiaControllerDelegate {
                 urlToRun = UniformedURL(url: url, securityScoped: false)
                 self.checkNeedOpeningURL()
             } else if let destination = object as? CelestiaDestination {
-                self.core.simulation.goToDestination(destination)
+                self.core.run { $0.simulation.goToDestination(destination) }
             }
         }
         #if targetEnvironment(macCatalyst)
@@ -347,7 +367,7 @@ extension MainViewController: CelestiaControllerDelegate {
         let controller = BottomControlViewController(actions: actions, finishOnSelection: false)
         controller.selectionHandler = { [unowned self] (action) in
             guard let ac = action as? CelestiaAction else { return }
-            self.core.receive(ac)
+            self.core.receiveAsync(ac)
         }
         #if targetEnvironment(macCatalyst)
         controller.touchBarActionConversionBlock = { (identifier) in
@@ -384,7 +404,7 @@ extension MainViewController: CelestiaControllerDelegate {
 
     private func presentEventFinder() {
         showViewController(EventFinderCoordinatorViewController { [unowned self] eclipse in
-            self.core.simulation.goToEclipse(eclipse)
+            self.core.run { $0.simulation.goToEclipse(eclipse) }
         })
     }
 
@@ -399,7 +419,7 @@ extension MainViewController: CelestiaControllerDelegate {
 
     private func presentGoTo() {
         showViewController(GoToContainerViewController() { [weak self] location in
-            self?.core.simulation.go(to: location)
+            self?.core.run { $0.simulation.go(to: location) }
         })
     }
 
@@ -412,10 +432,9 @@ extension MainViewController: CelestiaControllerDelegate {
         controller.selectionHandler = { [unowned self] (action, sender) in
             switch action {
             case .select:
-                self.core.simulation.selection = selection
+                self.core.run { $0.simulation.selection = selection }
             case .wrapped(let cac):
-                self.core.simulation.selection = selection
-                self.core.receive(cac)
+                self.core.selectAndReceiveAsync(selection, action: cac)
             case .web(let url):
                 self.showWeb(url)
             case .subsystem:
@@ -434,10 +453,9 @@ extension MainViewController: CelestiaControllerDelegate {
         front?.showSelection(CelestiaString("Mark", comment: ""), options: options, sourceView: sender, sourceRect: sender.bounds) { [weak self] index in
             guard let self = self, let index = index else { return }
             if let marker = CelestiaMarkerRepresentation(rawValue: UInt(index)) {
-                self.core.simulation.universe.mark(selection, with: marker)
-                self.core.showMarkers = true
+                self.core.markAsync(selection, markerType: marker)
             } else {
-                self.core.simulation.universe.unmark(selection)
+                self.core.run { $0.simulation.universe.unmark(selection) }
             }
         }
     }
@@ -448,10 +466,10 @@ extension MainViewController: CelestiaControllerDelegate {
             guard let self = self, let index = index else { return }
 
             if index == 0 {
-                self.core.simulation.activeObserver.displayedSurface = ""
+                self.core.run { $0.simulation.activeObserver.displayedSurface = "" }
                 return
             }
-            self.core.simulation.activeObserver.displayedSurface = alternativeSurfaces[index - 1]
+            self.core.run { $0.simulation.activeObserver.displayedSurface = alternativeSurfaces[index - 1] }
         }
     }
 
@@ -540,7 +558,7 @@ extension MainViewController {
         dismiss(animated: true, completion: nil)
         switch action {
         case .runDemo:
-            core.receive(.runDemo)
+            core.receiveAsync(.runDemo)
         case .showDestinations:
             presentFavorite(.destinations)
         }
@@ -677,9 +695,9 @@ extension MainViewController: NSToolbarDelegate {
 
     @objc private func undoOrRedo(_ sender: NSToolbarItemGroup) {
         if sender.selectedIndex == 0 {
-            core.back()
+            core.run { $0.back() }
         } else {
-            core.forward()
+            core.run { $0.forward() }
         }
     }
 }

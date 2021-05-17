@@ -83,7 +83,11 @@ private extension SettingsCoordinatorController {
             case .time:
                 viewController = TimeSettingViewController()
             case .render:
-                viewController = TextViewController(title: item.name, text: CelestiaAppCore.shared.renderInfo)
+                let renderInfo = CelestiaAppCore.shared.get { core -> String in
+                    CelestiaAppCore.makeRenderContextCurrent()
+                    return core.renderInfo
+                }
+                viewController = TextViewController(title: item.name, text: renderInfo)
             case .dataLocation:
                 viewController = DataLocationSelectionViewController()
             case .slider, .prefSwitch, .checkmark, .action, .custom:

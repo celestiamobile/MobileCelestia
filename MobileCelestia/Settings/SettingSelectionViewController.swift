@@ -68,8 +68,10 @@ extension SettingSelectionViewController {
         let core = CelestiaAppCore.shared
 
         let subitem = item.subitems[indexPath.row]
-        core.setValue(subitem.index, forKey: item.key)
-        tableView.reloadData()
+        let itemKey = item.key
+        core.setValueAsync(subitem.index, forKey: itemKey) { [weak self] in
+            self?.tableView.reloadData()
+        }
     }
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

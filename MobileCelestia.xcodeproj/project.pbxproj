@@ -74,6 +74,7 @@
 		EA374CDA263A8B770069589C /* GoToInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA374CD9263A8B770069589C /* GoToInputViewController.swift */; };
 		EA544E5F2566BC50003F351D /* DestinationDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA544E5E2566BC50003F351D /* DestinationDetailViewController.swift */; };
 		EA5E185D2477C78E00F5374B /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5E185B2477C78E00F5374B /* Toast.swift */; };
+		EA8961E92662076000081B3B /* AsyncGL in Frameworks */ = {isa = PBXBuildFile; productRef = EA8961E82662076000081B3B /* AsyncGL */; };
 		EA934C90251D90C500DD284C /* MainSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA934C8F251D90C500DD284C /* MainSceneDelegate.swift */; };
 		EA934C9A251D92AD00DD284C /* PanelSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA934C99251D92A700DD284C /* PanelSceneDelegate.swift */; };
 		EA982BFF25496B6D00CDC642 /* BaseTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA982BFE25496B6D00CDC642 /* BaseTableViewController.swift */; };
@@ -198,7 +199,6 @@
 		979D2FAC23FEB2AE005D2592 /* libbz2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbz2.tbd; path = usr/lib/libbz2.tbd; sourceTree = SDKROOT; };
 		979D2FAE23FEB2B9005D2592 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		97C3A9F12445FACF00EB365A /* CelestiaControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaControlView.swift; sourceTree = "<group>"; };
-		97DB1FD624067B76001F222F /* MobileCelestia-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MobileCelestia-Bridging-Header.h"; sourceTree = "<group>"; };
 		97EB41C52408F20700E6D441 /* CameraControlViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraControlViewController.swift; sourceTree = "<group>"; };
 		97EB41C82408F26200E6D441 /* SettingStepperCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingStepperCell.swift; sourceTree = "<group>"; };
 		97F1141D2408AE06003A06D7 /* DataLocationSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataLocationSelectionViewController.swift; sourceTree = "<group>"; };
@@ -260,6 +260,7 @@
 				EA09B5EC254BB92900DACC1D /* MWRequest in Frameworks */,
 				979D2FAB23FEB2AA005D2592 /* libc++.tbd in Frameworks */,
 				EAF4A2F1255E4AA000F67F80 /* AppCenterCrashes in Frameworks */,
+				EA8961E92662076000081B3B /* AsyncGL in Frameworks */,
 				EAF4A2F3255E4AA000F67F80 /* AppCenterAnalytics in Frameworks */,
 				979D2FA623FEB1DD005D2592 /* CelestiaCore.framework in Frameworks */,
 			);
@@ -311,7 +312,6 @@
 				978406D92402906C00876FD1 /* UIViewController+Extension.swift */,
 				977394A22403E68800E38B82 /* Color.swift */,
 				EA5E185B2477C78E00F5374B /* Toast.swift */,
-				97DB1FD624067B76001F222F /* MobileCelestia-Bridging-Header.h */,
 				EAD94F66261EED7700A93C93 /* UITableView+Extensions.swift */,
 			);
 			path = Utils;
@@ -621,6 +621,7 @@
 				EA09B5EB254BB92900DACC1D /* MWRequest */,
 				EAF4A2F0255E4AA000F67F80 /* AppCenterCrashes */,
 				EAF4A2F2255E4AA000F67F80 /* AppCenterAnalytics */,
+				EA8961E82662076000081B3B /* AsyncGL */,
 			);
 			productName = MobileCelestia;
 			productReference = 979D2F7A23FEB1A6005D2592 /* Celestia.app */;
@@ -702,6 +703,7 @@
 				EABF7A012539731300F2460C /* XCRemoteSwiftPackageReference "SDWebImage" */,
 				EA09B5EA254BB92900DACC1D /* XCRemoteSwiftPackageReference "mwrequest" */,
 				EAF4A2EF255E4AA000F67F80 /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */,
+				EA8961E72662076000081B3B /* XCRemoteSwiftPackageReference "AsyncGL" */,
 			);
 			productRefGroup = 979D2F7B23FEB1A6005D2592 /* Products */;
 			projectDirPath = "";
@@ -1086,7 +1088,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.MobileCelestia;
 				PRODUCT_NAME = Celestia;
 				SUPPORTS_MACCATALYST = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "MobileCelestia/Utils/MobileCelestia-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,6";
 			};
@@ -1111,7 +1112,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.MobileCelestia;
 				PRODUCT_NAME = Celestia;
 				SUPPORTS_MACCATALYST = YES;
-				SWIFT_OBJC_BRIDGING_HEADER = "MobileCelestia/Utils/MobileCelestia-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,6";
 			};
@@ -1245,6 +1245,14 @@
 				minimumVersion = 0.2.3;
 			};
 		};
+		EA8961E72662076000081B3B /* XCRemoteSwiftPackageReference "AsyncGL" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/levinli303/AsyncGL";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.0.1;
+			};
+		};
 		EABF795125391ECB00F2460C /* XCRemoteSwiftPackageReference "Zip" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/marmelroy/Zip";
@@ -1276,6 +1284,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = EA09B5EA254BB92900DACC1D /* XCRemoteSwiftPackageReference "mwrequest" */;
 			productName = MWRequest;
+		};
+		EA8961E82662076000081B3B /* AsyncGL */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EA8961E72662076000081B3B /* XCRemoteSwiftPackageReference "AsyncGL" */;
+			productName = AsyncGL;
 		};
 		EABF795225391ECB00F2460C /* Zip */ = {
 			isa = XCSwiftPackageProductDependency;

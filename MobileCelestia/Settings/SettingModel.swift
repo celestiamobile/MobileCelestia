@@ -490,7 +490,7 @@ let mainSetting = [
                                     type: .custom,
                                     associatedItem: .init(
                                         AssociatedCustomItem(){ core in
-                                            core.simulation.universe.unmarkAll()
+                                            core.run { $0.simulation.universe.unmarkAll() }
                                         }
                                     )
                                 )

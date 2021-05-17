@@ -73,8 +73,9 @@ extension SettingCommonViewController {
                 cell.valueChangeBlock = { [weak self] (value) in
                     guard let self = self else { return }
                     let transformed = value * (maxValue - minValue) + minValue
-                    self.core.setValue(transformed, forKey: key)
-                    self.tableView.reloadData()
+                    self.core.setValueAsync(transformed, forKey: key) { [weak self] in
+                        self?.tableView.reloadData()
+                    }
                 }
                 return cell
             } else {
@@ -105,7 +106,7 @@ extension SettingCommonViewController {
                     cell.enabled = enabled
                     cell.toggleBlock = { [weak self] newValue in
                         guard let self = self else { return }
-                        self.core.setValue(newValue, forKey: item.key)
+                        self.core.setValueAsync(newValue, forKey: item.key)
                     }
                     return cell
                 } else {
@@ -146,8 +147,9 @@ extension SettingCommonViewController {
             guard let item = row.associatedItem.base as? AssociatedCheckmarkItem, item.representation == .checkmark else { break }
             guard let cell = tableView.cellForRow(at: indexPath) else { break }
             let checked = cell.accessoryType == .checkmark
-            core.setValue(!checked, forKey: item.key)
-            tableView.reloadData()
+            self.core.setValueAsync(!checked, forKey: item.key) { [weak self] in
+                self?.tableView.reloadData()
+            }
         case .custom:
             guard let item = row.associatedItem.base as? AssociatedCustomItem else { break }
             item.block(core)

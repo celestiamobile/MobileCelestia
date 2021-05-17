@@ -12,12 +12,16 @@
 import UIKit
 import CelestiaCore
 
-#if !USE_MGL
-import GLKit
-#endif
+import AsyncGL
 
-class CelestiaDisplayController: UIViewController {
+protocol CelestiaDisplayControllerDelegate: AnyObject {
+    func celestiaDisplayController(_ celestiaDisplayController: CelestiaDisplayController, loadingStatusUpdated status: String)
+    func celestiaDisplayControllerLoadingFailedShouldRetry(_ celestiaDisplayController: CelestiaDisplayController) -> Bool
+    func celestiaDisplayControllerLoadingFailed(_ celestiaDisplayController: CelestiaDisplayController)
+    func celestiaDisplayControllerLoadingSucceeded(_ celestiaDisplayController: CelestiaDisplayController)
+}
 
+class CelestiaDisplayController: AsyncGLViewController {
     private var core: CelestiaAppCore!
 
     // MARK: rendering
@@ -30,43 +34,22 @@ class CelestiaDisplayController: UIViewController {
         return isLoaded && !isInBackground
     }
 
-    private var displayLink: CADisplayLink?
-    private var displaySource: DispatchSourceUserDataAdd?
-
-    #if USE_MGL
-    private lazy var glView = MGLKView(frame: .zero)
-    #else
-    private lazy var glView = GLKView(frame: .zero)
-    #endif
-
-    // MARK: gesture
-    private var oneFingerStartPoint: CGPoint?
-    private var currentPanDistance: CGFloat?
-
     private var dataDirectoryURL: UniformedURL!
     private var configFileURL: UniformedURL!
 
-    override func loadView() {
-        glView.translatesAutoresizingMaskIntoConstraints = false
-        setupOpenGL()
-        glView.delegate = self
+    private var currentViewScale: CGFloat = 1
 
-        view = glView
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        NotificationCenter.default.addObserver(self, selector: #selector(applicationWillResignActive), name: UIApplication.willResignActiveNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(applicationDidBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
-    }
+    weak var delegate: CelestiaDisplayControllerDelegate?
 
     override func viewSafeAreaInsetsDidChange() {
         super.viewSafeAreaInsetsDidChange()
 
         guard isLoaded else { return }
 
-        core?.setSafeAreaInsets(view.safeAreaInsets.scale(by: glView.contentScaleFactor))
+        let insets = view.safeAreaInsets.scale(by: view.contentScaleFactor)
+        core.run { core in
+            core.setSafeAreaInsets(insets)
+        }
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -75,21 +58,67 @@ class CelestiaDisplayController: UIViewController {
         guard isLoaded else { return }
 
         if previousTraitCollection?.displayScale != traitCollection.displayScale {
-            updateContentScale()
+            core.run { [weak self] _ in
+                self?.updateContentScale()
+            }
         }
     }
 }
 
 extension CelestiaDisplayController {
-    @objc private func applicationWillResignActive() {
-        if isReady {
-            CelestiaAppCore.finish()
+    override func prepareGL(_ size: CGSize) {
+        _ = CelestiaAppCore.initGL()
+        core = CelestiaAppCore.shared
+
+        var success = false
+        var shouldRetry = true
+
+        while !success && shouldRetry {
+            self.dataDirectoryURL = currentDataDirectory()
+            self.configFileURL = currentConfigFile()
+
+            FileManager.default.changeCurrentDirectoryPath(self.dataDirectoryURL.url.path)
+            CelestiaAppCore.setLocaleDirectory(self.dataDirectoryURL.url.path + "/locale")
+
+            guard self.core.startSimulation(configFileName: self.configFileURL.url.path, extraDirectories: [extraDirectory].compactMap{$0?.path}, progress: { (st) in
+                delegate?.celestiaDisplayController(self, loadingStatusUpdated: st)
+            }) else {
+                shouldRetry = delegate?.celestiaDisplayControllerLoadingFailedShouldRetry(self) ?? false
+                continue
+            }
+
+            guard self.core.startRenderer() else {
+                print("Failed to start renderer.")
+                shouldRetry = delegate?.celestiaDisplayControllerLoadingFailedShouldRetry(self) ?? false
+                continue
+            }
+
+            self.core.loadUserDefaultsWithAppDefaults(atPath: Bundle.app.path(forResource: "defaults", ofType: "plist"))
+            success = true
         }
-        isInBackground = true
+
+        if !success {
+            delegate?.celestiaDisplayControllerLoadingFailed(self)
+            return
+        }
+
+        CelestiaAppCore.renderViewController = self
+
+        updateContentScale()
+        start()
+
+        isLoaded = true
+        delegate?.celestiaDisplayControllerLoadingSucceeded(self)
     }
 
-    @objc private func applicationDidBecomeActive() {
-        isInBackground = false
+    override func drawGL(_ size: CGSize) {
+        if size != currentSize {
+            currentSize = size
+            core.resize(to: currentSize)
+        }
+
+        core.draw()
+        core.tick()
     }
 }
 
@@ -99,190 +128,45 @@ private extension CelestiaAppCore {
     }
 }
 
-#if USE_MGL
-extension CelestiaDisplayController: MGLKViewDelegate {
-    func mglkView(_ view: MGLKView!, drawIn rect: CGRect) {
-        guard isReady else { return }
-
-        let size = view.drawableSize
-        if size != currentSize {
-            currentSize = size
-            core.resize(to: currentSize)
-        }
-
-        core.draw()
-        core.tick()
-    }
-}
-#else
-extension CelestiaDisplayController: GLKViewDelegate {
-    func glkView(_ view: GLKView, drawIn rect: CGRect) {
-        guard isReady else { return }
-
-        let size = CGSize(width: view.drawableWidth, height: view.drawableHeight)
-        if size != currentSize {
-            currentSize = size
-            core.resize(to: currentSize)
-        }
-
-        core.draw()
-        core.tick()
-    }
-}
-#endif
-
 extension CelestiaDisplayController {
-    @objc private func handleDisplayLink(_ sender: CADisplayLink) {
-        displaySource?.add(data: 1)
-    }
+    private func updateContentScale() {
+        var viewSafeAreaInsets: UIEdgeInsets = .zero
+        var viewScale: CGFloat = 1.0
+        var applicationScalingFactor: CGFloat = 1.0
 
-    private func displaySourceCallback() {
-        glView.display()
-    }
-}
+        DispatchQueue.main.sync {
+            viewScale = UserDefaults.app[.fullDPI] != false ? self.traitCollection.displayScale : 1
+            self.view.contentScaleFactor = viewScale
 
-extension CelestiaDisplayController {
-    @discardableResult private func setupOpenGL() -> Bool {
-        #if USE_MGL
-        let context = MGLContext(api: kMGLRenderingAPIOpenGLES2)
-        MGLContext.setCurrent(context)
-
-        glView.context = context
-        glView.drawableDepthFormat = MGLDrawableDepthFormat24
-
-        glView.drawableMultisample = UserDefaults.app[.msaa] == true ? MGLDrawableMultisample4X : MGLDrawableMultisampleNone
-        #else
-        let context = EAGLContext(api: .openGLES2)!
-        EAGLContext.setCurrent(context)
-
-        glView.context = context
-        glView.enableSetNeedsDisplay = false
-        glView.drawableDepthFormat = .format24
-
-        glView.drawableMultisample = UserDefaults.app[.msaa] == true ? .multisample4X : .multisampleNone
-        #endif
-
-        // Set initial scale from user defaults
-        let viewScale = UserDefaults.app[.fullDPI] != false ? traitCollection.displayScale : 1
-        glView.contentScaleFactor = viewScale
-
-        return true
-    }
-
-    private func setupCelestia(statusUpdater: @escaping (String) -> Void, errorHandler: @escaping () -> Bool, completionHandler: @escaping (Bool) -> Void) {
-
-        let context = glView.context
-        #if USE_MGL
-        MGLContext.setCurrent(context)
-        #else
-        EAGLContext.setCurrent(context)
-        #endif
-
-        _ = CelestiaAppCore.initGL()
-
-        core = CelestiaAppCore.shared
-
-        DispatchQueue.global().async { [unowned self] in
-            #if !USE_MGL
-            EAGLContext.setCurrent(context)
+            #if targetEnvironment(macCatalyst)
+            applicationScalingFactor = MacBridge.catalystScaleFactor
+            #else
+            if #available(iOS 14, *) {
+                applicationScalingFactor = ProcessInfo.processInfo.isiOSAppOnMac ? 0.77 : 1
+            } else {
+                applicationScalingFactor = 1
+            }
             #endif
 
-            var success = false
-            var shouldRetry = true
-
-            while !success && shouldRetry {
-                self.dataDirectoryURL = currentDataDirectory()
-                self.configFileURL = currentConfigFile()
-
-                FileManager.default.changeCurrentDirectoryPath(self.dataDirectoryURL.url.path)
-                CelestiaAppCore.setLocaleDirectory(self.dataDirectoryURL.url.path + "/locale")
-
-                guard self.core.startSimulation(configFileName: self.configFileURL.url.path, extraDirectories: [extraDirectory].compactMap{$0?.path}, progress: { (st) in
-                    DispatchQueue.main.async { statusUpdater(st) }
-                }) else {
-                    shouldRetry = errorHandler()
-                    continue
-                }
-
-                guard self.core.startRenderer() else {
-                    print("Failed to start renderer.")
-                    shouldRetry = errorHandler()
-                    continue
-                }
-
-                self.core.loadUserDefaultsWithAppDefaults(atPath: Bundle.app.path(forResource: "defaults", ofType: "plist"))
-                success = true
-            }
-
-            DispatchQueue.main.async { completionHandler(success) }
+            viewSafeAreaInsets = self.view.safeAreaInsets
         }
-    }
 
-    private func setupDisplayLink() {
-        displaySource = DispatchSource.makeUserDataAddSource(queue: .main)
-        displaySource?.setEventHandler() { [weak self] in
-            self?.displaySourceCallback()
-        }
-        displaySource?.resume()
-
-        displayLink = CADisplayLink(target: self, selector: #selector(handleDisplayLink(_:)))
-        displayLink?.add(to: .current, forMode: .default)
-    }
-
-    private func updateContentScale() {
-        let viewScale = UserDefaults.app[.fullDPI] != false ? traitCollection.displayScale : 1
-        glView.contentScaleFactor = viewScale
-
+        core.setDPI(Int(96.0 * viewScale / applicationScalingFactor))
+        core.setSafeAreaInsets(viewSafeAreaInsets.scale(by: viewScale))
         #if targetEnvironment(macCatalyst)
-        let applicationScalingFactor: CGFloat = MacBridge.catalystScaleFactor
+        core.setPickTolerance(4 * viewScale / applicationScalingFactor)
         #else
-        let applicationScalingFactor: CGFloat
-        if #available(iOS 14, *) {
-            applicationScalingFactor = ProcessInfo.processInfo.isiOSAppOnMac ? 0.77 : 1
-        } else {
-            applicationScalingFactor = 1
-        }
-        #endif
-
-        core.setDPI(Int(96.0 * glView.contentScaleFactor / applicationScalingFactor))
-        core.setSafeAreaInsets(view.safeAreaInsets.scale(by: glView.contentScaleFactor))
-        #if targetEnvironment(macCatalyst)
-        core.setPickTolerance(4 * glView.contentScaleFactor / applicationScalingFactor)
-        #else
-        core.setPickTolerance(10 * glView.contentScaleFactor / applicationScalingFactor)
+        core.setPickTolerance(10 * viewScale / applicationScalingFactor)
         #endif
     }
 }
 
 extension CelestiaDisplayController {
     var targetGeometry: RenderingTargetGeometry {
-        return RenderingTargetGeometry(size: glView.frame.size, scale: glView.contentScaleFactor)
-    }
-
-    func load(statusUpdater: @escaping (String) -> Void, errorHandler: @escaping () -> Bool, completionHandler: @escaping (CelestiaLoadingResult) -> Void) {
-        setupCelestia(statusUpdater: { (st) in
-            statusUpdater(st)
-        }, errorHandler: {
-            return errorHandler()
-        }, completionHandler: { (success) in
-            guard success else {
-                completionHandler(.failure(.celestiaError))
-                return
-            }
-
-            self.start()
-
-            self.setupDisplayLink()
-
-            self.isLoaded = true
-
-            completionHandler(.success(()))
-        })
+        return RenderingTargetGeometry(size: view.frame.size, scale: view.contentScaleFactor)
     }
 
     private func start() {
-        updateContentScale()
-
         let locale = LocalizedString("LANGUAGE", "celestia")
         let (font, boldFont) = getInstalledFontFor(locale: locale)
         core.setFont(font.filePath, collectionIndex: font.collectionIndex, fontSize: 9)
@@ -329,8 +213,8 @@ private func getInstalledFontFor(locale: String) -> (font: FallbackFont, boldFon
 
 extension CelestiaDisplayController {
     func screenshot() -> UIImage {
-        return UIGraphicsImageRenderer(size: glView.bounds.size, format: UIGraphicsImageRendererFormat(for: UITraitCollection(displayScale: glView.contentScaleFactor))).image { (_) in
-            self.glView.drawHierarchy(in: self.glView.bounds, afterScreenUpdates: false)
+        return UIGraphicsImageRenderer(size: view.bounds.size, format: UIGraphicsImageRendererFormat(for: UITraitCollection(displayScale: view.contentScaleFactor))).image { (_) in
+            self.view.drawHierarchy(in: self.view.bounds, afterScreenUpdates: false)
         }
     }
 }
@@ -338,5 +222,85 @@ extension CelestiaDisplayController {
 private extension UIEdgeInsets {
     func scale(by factor: CGFloat) -> UIEdgeInsets {
         return UIEdgeInsets(top: top * factor, left: left * factor, bottom: bottom * factor, right: right * factor)
+    }
+}
+
+extension CelestiaAppCore {
+    fileprivate static var renderQueue: DispatchQueue? {
+        return renderViewController?.glView?.renderQueue
+    }
+
+    fileprivate static weak var renderViewController: AsyncGLViewController?
+
+    func run(_ task: @escaping (CelestiaAppCore) -> Void) {
+        guard let queue = Self.renderQueue else { return }
+        queue.async { [weak self] in
+            guard let self = self else { return }
+            task(self)
+        }
+    }
+
+    static func makeRenderContextCurrent() {
+        Self.renderViewController?.makeRenderContextCurrent()
+    }
+
+    func get<T>(_ task: (CelestiaAppCore) -> T) -> T {
+        guard let queue = Self.renderQueue else { fatalError() }
+        var item: T?
+        queue.sync { [weak self] in
+            guard let self = self else { return }
+            item = task(self)
+        }
+        guard let returnItem = item else { fatalError() }
+        return returnItem
+    }
+
+    func receive(_ action: CelestiaAction) {
+        if textEnterMode != .normal {
+            textEnterMode = .normal
+        }
+        charEnter(action.rawValue)
+    }
+
+    func receiveAsync(_ action: CelestiaAction, completion: (() -> Void)? = nil) {
+        run {
+            $0.receive(action)
+            completion?()
+        }
+    }
+
+    func selectAndReceiveAsync(_ selection: CelestiaSelection, action: CelestiaAction) {
+        run {
+            $0.simulation.selection = selection
+            $0.receive(action)
+        }
+    }
+
+    func charEnterAsync(_ char: Int8) {
+        run {
+            $0.charEnter(char)
+        }
+    }
+
+    func getSelectionAsync(_ completion: @escaping (CelestiaSelection, CelestiaAppCore) -> Void) {
+        run { core in
+            completion(core.simulation.selection, core)
+        }
+    }
+
+    func markAsync(_ selection: CelestiaSelection, markerType: CelestiaMarkerRepresentation) {
+        run { core in
+            core.simulation.universe.mark(selection, with: markerType)
+            core.showMarkers = true
+        }
+    }
+
+    func setValueAsync(_ value: Any?, forKey key: String, completionOnMainQueue: (() -> Void)? = nil) {
+        run { core in
+            core.setValue(value, forKey: key)
+            DispatchQueue.main.async {
+                completionOnMainQueue?()
+            }
+        }
     }
 }

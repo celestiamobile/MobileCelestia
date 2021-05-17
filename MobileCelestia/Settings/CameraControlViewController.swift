@@ -95,7 +95,7 @@ extension CameraControlViewController {
         tableView.deselectRow(at: indexPath, animated: true)
 
         let core = CelestiaAppCore.shared
-        core.simulation.reverseObserverOrientation()
+        core.run { $0.simulation.reverseObserverOrientation() }
     }
 }
 
@@ -105,10 +105,10 @@ private extension CameraControlViewController {
         let key = plus ? controlItems[index].plusKey : controlItems[index].minusKey
         if let prev = lastKey {
             if key == prev { return }
-            core.keyUp(prev)
+            core.run { $0.keyUp(prev) }
         }
 
-        core.keyDown(key)
+        core.run { $0.keyDown(key) }
         lastKey = key
     }
 
