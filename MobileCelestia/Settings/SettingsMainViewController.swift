@@ -58,9 +58,13 @@ extension SettingsMainViewController {
         let item = mainSetting[indexPath.section].items[indexPath.row]
         #if targetEnvironment(macCatalyst)
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath)
-        var configuration = UIListContentConfiguration.sidebarCell()
-        configuration.text = item.name
-        cell.contentConfiguration = configuration
+        if #available(iOS 14.0, *) {
+            var configuration = UIListContentConfiguration.sidebarCell()
+            configuration.text = item.name
+            cell.contentConfiguration = configuration
+        } else {
+            cell.textLabel?.text = item.name
+        }
         #else
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
         cell.title = item.name

@@ -70,8 +70,6 @@
 		EA1BC6E724A0E94900F3F51B /* EventFinderResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E624A0E94900F3F51B /* EventFinderResultViewController.swift */; };
 		EA28CA4E24A25FE7004B011E /* BottomControlViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA28CA4D24A25FE7004B011E /* BottomControlViewController.swift */; };
 		EA28CA5324A2F399004B011E /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = EA28CA5124A2F399004B011E /* Fonts */; };
-		EA2C08702554FBC8000AD126 /* MetalANGLE.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA2C086F2554FBC8000AD126 /* MetalANGLE.xcframework */; };
-		EA2C08712554FBC8000AD126 /* MetalANGLE.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EA2C086F2554FBC8000AD126 /* MetalANGLE.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EA374CD2263A8B320069589C /* GoToContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA374CD1263A8B320069589C /* GoToContainerViewController.swift */; };
 		EA374CDA263A8B770069589C /* GoToInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA374CD9263A8B770069589C /* GoToInputViewController.swift */; };
 		EA544E5F2566BC50003F351D /* DestinationDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA544E5E2566BC50003F351D /* DestinationDetailViewController.swift */; };
@@ -216,7 +214,6 @@
 		EA1EF056249393BE0039F493 /* Celestia.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Celestia.entitlements; sourceTree = "<group>"; };
 		EA28CA4D24A25FE7004B011E /* BottomControlViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomControlViewController.swift; sourceTree = "<group>"; };
 		EA28CA5124A2F399004B011E /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Fonts; path = ../../../CelestiaCore/Fonts; sourceTree = "<group>"; };
-		EA2C086F2554FBC8000AD126 /* MetalANGLE.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = MetalANGLE.xcframework; path = ../CelestiaCore/libs/dependency/xcframeworks/MetalANGLE.xcframework; sourceTree = "<group>"; };
 		EA374CD1263A8B320069589C /* GoToContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoToContainerViewController.swift; sourceTree = "<group>"; };
 		EA374CD9263A8B770069589C /* GoToInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoToInputViewController.swift; sourceTree = "<group>"; };
 		EA544E5E2566BC50003F351D /* DestinationDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DestinationDetailViewController.swift; sourceTree = "<group>"; };
@@ -1001,8 +998,8 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				"IPHONEOS_DEPLOYMENT_TARGET[sdk=macosx*]" = 14.0;
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				"IPHONEOS_DEPLOYMENT_TARGET[sdk=macosx*]" = 13.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -1011,6 +1008,7 @@
 				SHARED_BUILD_VERSION = 1.3.2;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				TARGETED_DEVICE_FAMILY = "1,2,6";
 			};
 			name = Debug;
 		};
@@ -1061,8 +1059,8 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
-				"IPHONEOS_DEPLOYMENT_TARGET[sdk=macosx*]" = 14.0;
-				MACOSX_DEPLOYMENT_TARGET = 11.0;
+				"IPHONEOS_DEPLOYMENT_TARGET[sdk=macosx*]" = 13.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -1070,6 +1068,7 @@
 				SHARED_BUILD_VERSION = 1.3.2;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				TARGETED_DEVICE_FAMILY = "1,2,6";
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -1151,7 +1150,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = cc.meowssage.MobileCelestiaTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MobileCelestia.app/MobileCelestia";
 			};
 			name = Debug;
@@ -1172,7 +1170,6 @@
 				PRODUCT_BUNDLE_IDENTIFIER = cc.meowssage.MobileCelestiaTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MobileCelestia.app/MobileCelestia";
 			};
 			name = Release;
