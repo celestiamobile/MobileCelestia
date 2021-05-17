@@ -112,10 +112,6 @@ class CelestiaInteractionController: UIViewController {
     ])
     #endif
 
-    private lazy var inactiveControlView = CelestiaControlView(items: [
-        CelestiaControlButton.tap(image: #imageLiteral(resourceName: "control_show"), action: .show),
-    ])
-
     private var currentControlView: CelestiaControlView?
 
     private var pendingSelection: CelestiaSelection?
@@ -144,6 +140,10 @@ class CelestiaInteractionController: UIViewController {
     private lazy var mirroringDisplayLink = CADisplayLink(target: self, selector: #selector(mirroringDisplayLinkHandler))
     private var isMirroring = false
 
+    private var isControlViewVisible = true
+    private weak var currentShowAnimator: UIViewPropertyAnimator?
+    private weak var currentHideAnimator: UIViewPropertyAnimator?
+
     override func loadView() {
         let container = UIView()
 
@@ -160,18 +160,13 @@ class CelestiaInteractionController: UIViewController {
         ])
 
         activeControlView.delegate = self
-        inactiveControlView.delegate = self
         activeControlView.translatesAutoresizingMaskIntoConstraints = false
-        inactiveControlView.translatesAutoresizingMaskIntoConstraints = false
 
         container.addSubview(activeControlView)
-        container.addSubview(inactiveControlView)
 
         NSLayoutConstraint.activate([
             activeControlView.centerYAnchor.constraint(equalTo: container.centerYAnchor),
             activeControlView.trailingAnchor.constraint(equalTo: container.safeAreaLayoutGuide.trailingAnchor, constant: -Constant.controlViewTrailingMargin),
-            inactiveControlView.centerYAnchor.constraint(equalTo: container.centerYAnchor),
-            inactiveControlView.leadingAnchor.constraint(equalTo: container.trailingAnchor)
         ])
 
         currentControlView = activeControlView
@@ -214,49 +209,60 @@ extension CelestiaInteractionController: CelestiaControlViewDelegate {
         case .info:
             delegate?.celestiaInteractionController(self, requestShowInfoWithSelection: sel)
         case .hide:
-            hideCurrentControlViewToShow(inactiveControlView)
+            hideControlView()
         case .show:
-            hideCurrentControlViewToShow(activeControlView)
+            showControlView()
         default:
             break
         }
     }
 
-    private func hideCurrentControlViewToShow(_ anotherView: CelestiaControlView) {
-        guard let activeView = currentControlView else { return }
-        guard let superview = activeView.superview else { return }
-        guard anotherView != activeView else { return }
+    private func hideControlView() {
+        guard currentHideAnimator == nil else { return }
+        currentShowAnimator?.stopAnimation(true)
+        currentShowAnimator?.finishAnimation(at: .current)
+        currentShowAnimator = nil
 
-        guard let activeViewConstraint = activeView.constraintsAffectingLayout(for: .horizontal).filter({ ($0.firstItem as? UIView) == activeView && ($0.secondItem as? NSObject) == superview.safeAreaLayoutGuide }).first else {
-            return
-        }
-        guard let anotherViewConstrant = anotherView.constraintsAffectingLayout(for: .horizontal).filter({ ($0.firstItem as? UIView) == anotherView && ($0.secondItem as? UIView) == superview }).first else {
-            return
+        let animator = UIViewPropertyAnimator(duration: Constant.controlViewHideAnimationDuration, curve: .linear) { [weak self] in
+            self?.activeControlView.alpha = 0
         }
 
-        activeViewConstraint.isActive = false
-        activeView.leadingAnchor.constraint(equalTo: superview.trailingAnchor).isActive = true
-        let hideAnimator = UIViewPropertyAnimator(duration: Constant.controlViewHideAnimationDuration, curve: .linear) { [weak self] in
-            self?.view.setNeedsLayout()
-            self?.view.layoutIfNeeded()
+        animator.addCompletion { [weak self] _ in
+            self?.currentHideAnimator = nil
+            self?.isControlViewVisible = false
         }
 
-        let showAnimator = UIViewPropertyAnimator(duration: Constant.controlViewShowAnimationDuration, curve: .linear) { [weak self] in
-            self?.view.setNeedsLayout()
-            self?.view.layoutIfNeeded()
+        currentHideAnimator = animator
+        animator.startAnimation()
+    }
+
+    private func showControlView() {
+        guard currentShowAnimator == nil else { return }
+        currentHideAnimator?.stopAnimation(true)
+        currentHideAnimator?.finishAnimation(at: .current)
+        currentHideAnimator = nil
+
+        let animator = UIViewPropertyAnimator(duration: Constant.controlViewShowAnimationDuration, curve: .linear) { [weak self] in
+            self?.activeControlView.alpha = 1
         }
 
-        hideAnimator.addCompletion { (_) in
-            anotherViewConstrant.isActive = false
-            anotherView.trailingAnchor.constraint(equalTo: superview.safeAreaLayoutGuide.trailingAnchor, constant: -Constant.controlViewTrailingMargin).isActive = true
-            showAnimator.startAnimation()
+        animator.addCompletion { [weak self] _ in
+            self?.currentShowAnimator = nil
+            self?.isControlViewVisible = true
         }
 
-        showAnimator.addAnimations { [weak self] in
-            self?.currentControlView = anotherView
-        }
+        currentShowAnimator = animator
+        animator.startAnimation()
+    }
 
-        hideAnimator.startAnimation()
+    private func showControlViewIfNeeded() {
+        guard !isControlViewVisible else { return }
+        showControlView()
+    }
+
+    private func hideControlViewIfNeeded() {
+        guard isControlViewVisible else { return }
+        hideControlView()
     }
 
     func celestiaControlView(_ celestiaControlView: CelestiaControlView, didToggleTo action: CelestiaControlAction) {
@@ -347,6 +353,8 @@ extension CelestiaInteractionController {
 
 extension CelestiaInteractionController {
     @objc private func handlePanZoom(_ pan: UIPanGestureRecognizer) {
+        showControlViewIfNeeded()
+
         var modifiers: UIKeyModifierFlags = []
         if #available(iOS 13.4, *) {
             modifiers = pan.modifierFlags
@@ -362,6 +370,8 @@ extension CelestiaInteractionController {
     }
 
     @objc private func handlePan(_ pan: UIPanGestureRecognizer) {
+        showControlViewIfNeeded()
+
         let location = pan.location(with: renderingTargetGeometry)
         var modifiers: UIKeyModifierFlags = []
         var button = interactionMode.button
@@ -400,6 +410,8 @@ extension CelestiaInteractionController {
 
     #if !targetEnvironment(macCatalyst)
     @objc private func handlePinch(_ gesture: UIPinchGestureRecognizer) {
+        showControlViewIfNeeded()
+
         switch gesture.state {
         case .possible:
             break
@@ -440,6 +452,8 @@ extension CelestiaInteractionController {
     #endif
 
     @objc private func handleTap(_ tap: UITapGestureRecognizer) {
+        showControlViewIfNeeded()
+
         switch tap.state {
         case .ended:
             let location = tap.location(with: renderingTargetGeometry)
@@ -451,6 +465,8 @@ extension CelestiaInteractionController {
     }
 
     @objc private func handleEdgePan(_ pan: UIScreenEdgePanGestureRecognizer) {
+        showControlViewIfNeeded()
+
         switch pan.state {
         case .ended:
             let sel = core.simulation.selection
