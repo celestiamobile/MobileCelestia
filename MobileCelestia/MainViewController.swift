@@ -292,9 +292,16 @@ extension MainViewController: CelestiaControllerDelegate {
 
     private func shareImage() {
         core.draw()
-        let path = NSTemporaryDirectory() + "/temp.png"
-        if core.screenshot(to: path, type: .PNG), let data = try? Data(contentsOf: URL(fileURLWithPath: path)), let image = UIImage(data: data) {
-            showShareSheet(for: image)
+        let path = (NSTemporaryDirectory() as NSString).appendingPathComponent("CelestiaScreenshot.png")
+
+        if core.screenshot(to: path, type: .PNG) {
+            #if targetEnvironment(macCatalyst)
+            saveFile(path)
+            #else
+            if let data = try? Data(contentsOf: URL(fileURLWithPath: path)), let image = UIImage(data: data) {
+                showShareSheet(for: image)
+            }
+            #endif
         } else {
             showError(CelestiaString("Unable to generate image.", comment: ""))
         }
@@ -591,11 +598,25 @@ extension MainViewController {
         presentAfterDismissCurrent(activityController, animated: true)
     }
 
+    #if targetEnvironment(macCatalyst)
+    private func saveFile(_ path: String) {
+        let picker: UIDocumentPickerViewController
+        if #available(iOS 14.0, *) {
+            picker = UIDocumentPickerViewController(forExporting: [URL(fileURLWithPath: path)], asCopy: false)
+        } else {
+            picker = UIDocumentPickerViewController(url: URL(fileURLWithPath: path), in: .moveToService)
+        }
+        picker.shouldShowFileExtensions = true
+        picker.allowsMultipleSelection = false
+        present(picker, animated: true, completion: nil)
+    }
+    #else
     private func showShareSheet(for image: UIImage) {
         let activityController = UIActivityViewController(activityItems: [image], applicationActivities: nil)
         configurePopover(for: activityController)
         presentAfterDismissCurrent(activityController, animated: true)
     }
+    #endif
 }
 
 #if targetEnvironment(macCatalyst)
