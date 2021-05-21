@@ -1076,10 +1076,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(SHARED_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = 22NR5428TD;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/AppCenter",
-				);
 				INFOPLIST_FILE = MobileCelestia/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1091,10 +1087,8 @@
 				PRODUCT_NAME = Celestia;
 				SUPPORTS_MACCATALYST = YES;
 				SWIFT_OBJC_BRIDGING_HEADER = "MobileCelestia/Utils/MobileCelestia-Bridging-Header.h";
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,6";
-				VALID_ARCHS = "arm64 arm64e x86_64";
 			};
 			name = Debug;
 		};
@@ -1107,10 +1101,6 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(SHARED_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = 22NR5428TD;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)/AppCenter",
-				);
 				INFOPLIST_FILE = MobileCelestia/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -1124,7 +1114,6 @@
 				SWIFT_OBJC_BRIDGING_HEADER = "MobileCelestia/Utils/MobileCelestia-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,6";
-				VALID_ARCHS = "arm64 arm64e x86_64";
 			};
 			name = Release;
 		};
