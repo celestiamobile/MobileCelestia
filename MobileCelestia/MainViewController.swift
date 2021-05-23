@@ -37,7 +37,9 @@ class MainViewController: UIViewController {
 
     private var viewControllerStack: [UIViewController] = []
 
+    #if !targetEnvironment(macCatalyst)
     private var currentExternalScreen: UIScreen?
+    #endif
 
     private var urlToRun: UniformedURL?
 
@@ -65,8 +67,10 @@ class MainViewController: UIViewController {
         install(loadingController)
 
         NotificationCenter.default.addObserver(self, selector: #selector(newURLOpened(_:)), name: newURLOpenedNotificationName, object: nil)
+        #if !targetEnvironment(macCatalyst)
         NotificationCenter.default.addObserver(self, selector: #selector(newScreenConnected(_:)), name: UIScreen.didConnectNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(screenDisconnected(_:)), name: UIScreen.didDisconnectNotification, object: nil)
+        #endif
         NotificationCenter.default.addObserver(self, selector: #selector(presentHelp), name: showHelpNotificationName, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(showSettings), name: showPreferencesNotificationName, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(requestOpenFile), name: requestOpenFileNotificationName, object: nil)
@@ -137,6 +141,7 @@ extension MainViewController {
 }
 
 extension MainViewController {
+    #if !targetEnvironment(macCatalyst)
     @objc private func newScreenConnected(_ notification: Notification) {
         guard let newScreen = notification.object as? UIScreen else { return }
         // Avoid handling connecting to a new screen when we are working on a screen already
@@ -167,6 +172,7 @@ extension MainViewController {
 
         celestiaController.moveBack(from: screen)
     }
+    #endif
 }
 
 extension MainViewController: UIDocumentPickerDelegate {
@@ -304,18 +310,23 @@ extension MainViewController: CelestiaControllerDelegate {
     private func shareImage() {
         core.run { [weak self] core in
             CelestiaAppCore.makeRenderContextCurrent()
-
             core.draw()
             let path = (NSTemporaryDirectory() as NSString).appendingPathComponent("CelestiaScreenshot.png")
-
-            if core.screenshot(to: path, type: .PNG), let data = try? Data(contentsOf: URL(fileURLWithPath: path)), let image = UIImage(data: data) {
+            if core.screenshot(to: path, type: .PNG) {
+                #if targetEnvironment(macCatalyst)
                 DispatchQueue.main.async {
-                    self?.showShareSheet(for: image)
+                    guard let self = self else { return }
+                    self.saveFile(path)
                 }
-            } else {
-                DispatchQueue.main.async {
-                    self?.showError(CelestiaString("Unable to generate image.", comment: ""))
+                #else
+                if let data = try? Data(contentsOf: URL(fileURLWithPath: path)), let image = UIImage(data: data) {
+                    try? FileManager.default.removeItem(atPath: path)
+                    DispatchQueue.main.async {
+                        guard let self = self else { return }
+                        self.showShareSheet(for: image)
+                    }
                 }
+                #endif
             }
         }
     }

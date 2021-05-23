@@ -128,7 +128,7 @@ class CelestiaInteractionController: UIViewController {
 
     private lazy var targetInteractionView = UIImageView()
     private lazy var auxillaryContextMenuPreviewView = UIView()
-    private lazy var mirroringDisplayLink = CADisplayLink(target: self, selector: #selector(mirroringDisplayLinkHandler))
+    private var mirroringDisplayLink: CADisplayLink?
     private var isMirroring = false
 
     private var isControlViewVisible = true
@@ -640,14 +640,15 @@ extension CelestiaInteractionController {
     }
 
     func startMirroring() {
-        stopMirroring()
-        mirroringDisplayLink.add(to: .main, forMode: .common)
+        let displayLink = CADisplayLink(target: self, selector: #selector(mirroringDisplayLinkHandler))
+        displayLink.add(to: .main, forMode: .common)
+        mirroringDisplayLink = displayLink
         isMirroring = true
     }
 
     func stopMirroring() {
-        guard isMirroring else { return }
-        mirroringDisplayLink.remove(from: .main, forMode: .common)
+        mirroringDisplayLink?.invalidate()
+        mirroringDisplayLink = nil
         targetInteractionView.image = nil
         isMirroring = false
     }

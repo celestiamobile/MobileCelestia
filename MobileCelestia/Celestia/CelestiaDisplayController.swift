@@ -52,6 +52,14 @@ class CelestiaDisplayController: AsyncGLViewController {
         }
     }
 
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        isPaused = true
+        coordinator.animate(alongsideTransition: nil) { [weak self] _ in
+            self?.isPaused = false
+        }
+    }
+
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
 
@@ -158,6 +166,16 @@ extension CelestiaDisplayController {
         #else
         core.setPickTolerance(10 * viewScale / applicationScalingFactor)
         #endif
+
+        CelestiaAppCore.makeRenderContextCurrent()
+
+        let locale = LocalizedString("LANGUAGE", "celestia")
+        let (font, boldFont) = getInstalledFontFor(locale: locale)
+        core.clearFonts()
+        core.setFont(font.filePath, collectionIndex: font.collectionIndex, fontSize: 9)
+        core.setTitleFont(boldFont.filePath, collectionIndex: boldFont.collectionIndex, fontSize: 15)
+        core.setRendererFont(font.filePath, collectionIndex: font.collectionIndex, fontSize: 9, fontStyle: .normal)
+        core.setRendererFont(boldFont.filePath, collectionIndex: boldFont.collectionIndex, fontSize: 15, fontStyle: .large)
     }
 }
 
@@ -167,12 +185,6 @@ extension CelestiaDisplayController {
     }
 
     private func start() {
-        let locale = LocalizedString("LANGUAGE", "celestia")
-        let (font, boldFont) = getInstalledFontFor(locale: locale)
-        core.setFont(font.filePath, collectionIndex: font.collectionIndex, fontSize: 9)
-        core.setTitleFont(boldFont.filePath, collectionIndex: boldFont.collectionIndex, fontSize: 15)
-        core.setRendererFont(font.filePath, collectionIndex: font.collectionIndex, fontSize: 9, fontStyle: .normal)
-        core.setRendererFont(boldFont.filePath, collectionIndex: boldFont.collectionIndex, fontSize: 15, fontStyle: .large)
         core.tick()
         core.start()
     }

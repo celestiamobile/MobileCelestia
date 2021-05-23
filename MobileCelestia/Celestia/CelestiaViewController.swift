@@ -130,6 +130,7 @@ extension CelestiaViewController {
         interactionController?.openURL(url)
     }
 
+    #if !targetEnvironment(macCatalyst)
     func moveToNewScreen(_ newScreen: UIScreen) -> Bool {
         let newWindow = UIWindow(frame: newScreen.bounds)
         if #available(iOS 13, *) {
@@ -143,7 +144,10 @@ extension CelestiaViewController {
         }
         // Only move the display controller to the new screen
         displayController.remove()
-        newWindow.rootViewController = self.displayController
+        let dummyViewController = UIViewController()
+        dummyViewController.view.backgroundColor = .black
+        newWindow.rootViewController = dummyViewController
+        dummyViewController.install(displayController)
         newWindow.isHidden = false
         auxiliaryWindows.append(newWindow)
         interactionController?.startMirroring()
@@ -158,13 +162,15 @@ extension CelestiaViewController {
         }
         let window = auxiliaryWindows.remove(at: windowIndex)
         // Only move back when it has the display view controller
-        guard window.rootViewController == displayController else { return }
+        guard let rootViewController = window.rootViewController, rootViewController.children.contains(displayController) else { return }
+        displayController.remove()
         window.rootViewController = nil
         install(displayController)
         view.sendSubviewToBack(displayController.view)
         isMirroring = false
         interactionController?.stopMirroring()
     }
+    #endif
 }
 
 extension CelestiaViewController: RenderingTargetInformationProvider {
