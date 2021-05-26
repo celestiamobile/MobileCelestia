@@ -97,7 +97,7 @@ extension SettingCheckViewController {
         let subitem = item.subitems[indexPath.row]
         let key = subitem.key
         let enabled = (core.value(forKey: subitem.key) as! Bool)
-        core.setValueAsync(enabled, forKey: key) { [weak self] in
+        core.setValueAsync(!enabled, forKey: key) { [weak self] in
             self?.tableView.reloadData()
         }
     }

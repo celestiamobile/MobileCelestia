@@ -47,11 +47,18 @@ class SearchCoordinatorController: UIViewController {
 
 private extension SearchCoordinatorController {
     func setUp() {
-        main = SearchViewController(selected: { [unowned self] (info) in
+        main = SearchViewController(selected: { [unowned self] name in
+            let sim = CelestiaAppCore.shared.simulation
+            let object = sim.findObject(from: name)
+            guard !object.isEmpty else {
+                self.showError(CelestiaString("Object not found", comment: ""))
+                return
+            }
+
             #if targetEnvironment(macCatalyst)
-            self.split.viewControllers = [self.split.viewControllers[0], self.selection(info)]
+            self.split.viewControllers = [self.split.viewControllers[0], self.selection(object)]
             #else
-            self.navigation.pushViewController(self.selection(info), animated: true)
+            self.navigation.pushViewController(self.selection(object), animated: true)
             #endif
         })
 

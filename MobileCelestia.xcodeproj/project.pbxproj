@@ -72,6 +72,7 @@
 		EA28CA5324A2F399004B011E /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = EA28CA5124A2F399004B011E /* Fonts */; };
 		EA374CD2263A8B320069589C /* GoToContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA374CD1263A8B320069589C /* GoToContainerViewController.swift */; };
 		EA374CDA263A8B770069589C /* GoToInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA374CD9263A8B770069589C /* GoToInputViewController.swift */; };
+		EA445D15265CF6CD00E5D46A /* LinkPreviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA445D14265CF6CD00E5D46A /* LinkPreviewCell.swift */; };
 		EA544E5F2566BC50003F351D /* DestinationDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA544E5E2566BC50003F351D /* DestinationDetailViewController.swift */; };
 		EA5E185D2477C78E00F5374B /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5E185B2477C78E00F5374B /* Toast.swift */; };
 		EA8961E92662076000081B3B /* AsyncGL in Frameworks */ = {isa = PBXBuildFile; productRef = EA8961E82662076000081B3B /* AsyncGL */; };
@@ -210,11 +211,13 @@
 		EA1BC6E224A0E92B00F3F51B /* EventFinderCoordinatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventFinderCoordinatorViewController.swift; sourceTree = "<group>"; };
 		EA1BC6E424A0E93D00F3F51B /* EventFinderInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventFinderInputViewController.swift; sourceTree = "<group>"; };
 		EA1BC6E624A0E94900F3F51B /* EventFinderResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventFinderResultViewController.swift; sourceTree = "<group>"; };
+		EA1BCA92265AA8E2001A0D89 /* MetalANGLE.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = MetalANGLE.xcframework; path = ../CelestiaCore/libs/dependency/xcframeworks/MetalANGLE.xcframework; sourceTree = "<group>"; };
 		EA1EF056249393BE0039F493 /* Celestia.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Celestia.entitlements; sourceTree = "<group>"; };
 		EA28CA4D24A25FE7004B011E /* BottomControlViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomControlViewController.swift; sourceTree = "<group>"; };
 		EA28CA5124A2F399004B011E /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Fonts; path = ../../../CelestiaCore/Fonts; sourceTree = "<group>"; };
 		EA374CD1263A8B320069589C /* GoToContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoToContainerViewController.swift; sourceTree = "<group>"; };
 		EA374CD9263A8B770069589C /* GoToInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoToInputViewController.swift; sourceTree = "<group>"; };
+		EA445D14265CF6CD00E5D46A /* LinkPreviewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkPreviewCell.swift; sourceTree = "<group>"; };
 		EA544E5E2566BC50003F351D /* DestinationDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DestinationDetailViewController.swift; sourceTree = "<group>"; };
 		EA5E185B2477C78E00F5374B /* Toast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
 		EA934C8F251D90C500DD284C /* MainSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSceneDelegate.swift; sourceTree = "<group>"; };
@@ -347,6 +350,7 @@
 				974F86DD2403BD3B00356795 /* BodyInfoLayoutDelegate.swift */,
 				974F86DE2403BD3B00356795 /* InfoViewController.swift */,
 				974F86E32403C30E00356795 /* BodyInfoModel.swift */,
+				EA445D14265CF6CD00E5D46A /* LinkPreviewCell.swift */,
 			);
 			path = Info;
 			sourceTree = "<group>";
@@ -488,6 +492,7 @@
 		979D2FA523FEB1DD005D2592 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				EA1BCA92265AA8E2001A0D89 /* MetalANGLE.xcframework */,
 				EA10553224935A4700E49C6D /* Metal.framework */,
 				979D2FAE23FEB2B9005D2592 /* libz.tbd */,
 				979D2FAC23FEB2AE005D2592 /* libbz2.tbd */,
@@ -877,6 +882,7 @@
 				EA1BC6E724A0E94900F3F51B /* EventFinderResultViewController.swift in Sources */,
 				EABF792425389B2400F2460C /* ResourceCategory.swift in Sources */,
 				973BBA6624054E9900E3B061 /* TextViewController.swift in Sources */,
+				EA445D15265CF6CD00E5D46A /* LinkPreviewCell.swift in Sources */,
 				979D2F7E23FEB1A6005D2592 /* AppDelegate.swift in Sources */,
 				EA5E185D2477C78E00F5374B /* Toast.swift in Sources */,
 				977394A32403E68800E38B82 /* Color.swift in Sources */,
@@ -1000,7 +1006,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
-				SHARED_BUILD_NUMBER = 112;
+				SHARED_BUILD_NUMBER = 115;
 				SHARED_BUILD_VERSION = 1.3.3;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1060,7 +1066,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
-				SHARED_BUILD_NUMBER = 112;
+				SHARED_BUILD_NUMBER = 115;
 				SHARED_BUILD_VERSION = 1.3.3;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";

@@ -33,11 +33,11 @@ class SearchViewController: UIViewController {
 
     private var resultSections: [SearchResultSection] = []
 
-    private let selected: (CelestiaSelection) -> Void
+    private let selected: (String) -> Void
 
     private var shouldActivate = true
 
-    init(selected: @escaping (CelestiaSelection) -> Void) {
+    init(selected: @escaping (String) -> Void) {
         self.selected = selected
         super.init(nibName: nil, bundle: nil)
     }
@@ -128,14 +128,7 @@ extension SearchViewController: UISearchBarDelegate {
     private func itemSelected(with name: String) {
         view.endEditing(true)
 
-        let sim = CelestiaAppCore.shared.simulation
-        let object = sim.findObject(from: name)
-        guard !object.isEmpty else {
-            showError(CelestiaString("Object not found", comment: ""))
-            return
-        }
-
-        selected(object)
+        selected(name)
     }
 }
 

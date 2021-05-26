@@ -79,6 +79,7 @@ class GoToInputViewController: BaseTableViewController {
     }
 
     private let locationHandler: ((CelestiaGoToLocation) -> Void)
+    private let objectNameHandler: ((GoToInputViewController) -> Void)
 
     private var objectName: String = LocalizedString("Earth", "celestia")
     private var longitude: Float = 0
@@ -93,7 +94,8 @@ class GoToInputViewController: BaseTableViewController {
 
     private var allSections: [[GoToInputItem]] = []
 
-    init(locationHandler: @escaping ((CelestiaGoToLocation) -> Void)) {
+    init(objectNameHandler: @escaping (GoToInputViewController) -> Void, locationHandler: @escaping ((CelestiaGoToLocation) -> Void)) {
+        self.objectNameHandler = objectNameHandler
         self.locationHandler = locationHandler
         super.init(style: .defaultGrouped)
     }
@@ -102,16 +104,21 @@ class GoToInputViewController: BaseTableViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
         setUp()
     }
+
+    func updateObjectName(_ name: String) {
+        objectName = name
+        reload()
+    }
 }
 
 private extension GoToInputViewController {
     func setUp() {
+        navigationItem.backButtonTitle = ""
         title = CelestiaString("Go to Object", comment: "")
         tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Text")
 
@@ -170,13 +177,8 @@ extension GoToInputViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let item = allSections[indexPath.section][indexPath.row]
-        if let objectItem = item as? ObjectNameItem {
-            showTextInput(CelestiaString("Please enter an object name.", comment: ""), text: objectItem.name) { [weak self] text in
-                guard let self = self else { return }
-                guard let objectName = text else { return }
-                self.objectName = objectName
-                self.reload()
-            }
+        if item is ObjectNameItem {
+            objectNameHandler(self)
         } else if item is UnitItem {
             guard let cell = tableView.cellForRow(at: indexPath) else { return }
             showSelection(nil, options: Self.availableUnits.map({ CelestiaString($0.name, comment: "") }), sourceView: cell, sourceRect: cell.bounds) { [weak self] index in

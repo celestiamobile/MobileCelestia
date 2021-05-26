@@ -9,6 +9,7 @@
 // of the License, or (at your option) any later version.
 //
 
+import LinkPresentation
 import UIKit
 
 import CelestiaCore
@@ -39,6 +40,8 @@ final class InfoViewController: UIViewController {
 
     private var actions: [ObjectAction]
 
+    private var linkMetaData: AnyObject?
+
     init(info: CelestiaSelection, isEmbeddedInNavigationController: Bool) {
         self.info = info
         self.isEmbeddedInNavigationController = isEmbeddedInNavigationController
@@ -68,6 +71,26 @@ final class InfoViewController: UIViewController {
         super.viewDidLoad()
 
         setup()
+
+        guard let urlString = info.webInfoURL, let url = URL(string: urlString), #available(iOS 13.0, *) else { return }
+
+        let metaDataProvider = LPMetadataProvider()
+        metaDataProvider.startFetchingMetadata(for: url) { [weak self] metaData, error in
+            guard let data = metaData, error == nil else { return }
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                self.linkMetaData = data
+                self.actions.removeAll(where: {
+                    switch $0 {
+                    case .web:
+                        return true
+                    default:
+                        return false
+                    }
+                })
+                self.collectionView.reloadData()
+            }
+        }
     }
 }
 
@@ -90,6 +113,9 @@ private extension InfoViewController {
         (collectionView.collectionViewLayout as! UICollectionViewFlowLayout).estimatedItemSize = CGSize(width: 1, height: 1)
         collectionView.register(BodyDescriptionCell.self, forCellWithReuseIdentifier: "Description")
         collectionView.register(BodyActionCell.self, forCellWithReuseIdentifier: "Action")
+        if #available(iOS 13.0, *) {
+            collectionView.register(LinkPreviewCell.self, forCellWithReuseIdentifier: "LinkPreview")
+        }
 
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -102,15 +128,28 @@ extension InfoViewController: UICollectionViewDataSource {
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if section == 0 { return 1 }
+        if section == 0 {
+            if #available(iOS 13.0, *), linkMetaData is LPLinkMetadata {
+                return 2
+            }
+            return 1
+        }
         return actions.count
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if indexPath.section == 0 {
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Description", for: indexPath) as! BodyDescriptionCell
-            cell.update(with: BodyInfo(selection: info))
-            return cell
+            if indexPath.item == 0 {
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Description", for: indexPath) as! BodyDescriptionCell
+                cell.update(with: BodyInfo(selection: info))
+                return cell
+            }
+            if #available(iOS 13.0, *), let metaData = linkMetaData as? LPLinkMetadata {
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LinkPreview", for: indexPath) as! LinkPreviewCell
+                cell.setMetaData(metaData)
+                return cell
+            }
+            fatalError()
         }
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Action", for: indexPath) as! BodyActionCell
         let action = actions[indexPath.item]
