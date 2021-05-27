@@ -78,6 +78,8 @@
 		EA8961E92662076000081B3B /* AsyncGL in Frameworks */ = {isa = PBXBuildFile; productRef = EA8961E82662076000081B3B /* AsyncGL */; };
 		EA934C90251D90C500DD284C /* MainSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA934C8F251D90C500DD284C /* MainSceneDelegate.swift */; };
 		EA934C9A251D92AD00DD284C /* PanelSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA934C99251D92A700DD284C /* PanelSceneDelegate.swift */; };
+		EA936F36265FA363007EED66 /* MetalANGLE.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA1BCA92265AA8E2001A0D89 /* MetalANGLE.xcframework */; platformFilter = maccatalyst; };
+		EA936F37265FA363007EED66 /* MetalANGLE.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EA1BCA92265AA8E2001A0D89 /* MetalANGLE.xcframework */; platformFilter = maccatalyst; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EA982BFF25496B6D00CDC642 /* BaseTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA982BFE25496B6D00CDC642 /* BaseTableViewController.swift */; };
 		EAA5A7A1259DBFE6001AFA82 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = EAA5A7A3259DBFE6001AFA82 /* InfoPlist.strings */; };
 		EAA6C4CB253B5CD200ED1D60 /* InstalledResourceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAA6C4CA253B5CD200ED1D60 /* InstalledResourceViewController.swift */; };
@@ -131,6 +133,17 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
+		EA936F38265FA363007EED66 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+				EA936F37265FA363007EED66 /* MetalANGLE.xcframework in Embed Frameworks */,
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		EAC84367252C84B600691943 /* Embed PlugIns */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -258,6 +271,7 @@
 				EABF795325391ECB00F2460C /* Zip in Frameworks */,
 				EA10553324935A4700E49C6D /* Metal.framework in Frameworks */,
 				979D2FAD23FEB2B4005D2592 /* libbz2.tbd in Frameworks */,
+				EA936F36265FA363007EED66 /* MetalANGLE.xcframework in Frameworks */,
 				979D2FAF23FEB2BD005D2592 /* libz.tbd in Frameworks */,
 				EABF7A032539731300F2460C /* SDWebImage in Frameworks */,
 				EA09B5EC254BB92900DACC1D /* MWRequest in Frameworks */,
@@ -613,6 +627,7 @@
 				973BBA5724052FFB00E3B061 /* Copy General Data */,
 				973BBA592405305100E3B061 /* Convert PO */,
 				EAC84367252C84B600691943 /* Embed PlugIns */,
+				EA936F38265FA363007EED66 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -1084,7 +1099,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(SHARED_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = 22NR5428TD;
-				INFOPLIST_FILE = MobileCelestia/Info.plist;
+				INFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";
+				"INFOPLIST_FILE[sdk=macosx*]" = "$(TARGET_NAME)/Info-macos.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -1108,7 +1124,8 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(SHARED_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = 22NR5428TD;
-				INFOPLIST_FILE = MobileCelestia/Info.plist;
+				INFOPLIST_FILE = "$(TARGET_NAME)/Info.plist";
+				"INFOPLIST_FILE[sdk=macosx*]" = "$(TARGET_NAME)/Info-macos.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
