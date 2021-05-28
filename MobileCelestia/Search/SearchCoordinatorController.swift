@@ -47,7 +47,12 @@ class SearchCoordinatorController: UIViewController {
 
 private extension SearchCoordinatorController {
     func setUp() {
-        main = SearchViewController(selected: { [unowned self] name in
+        #if targetEnvironment(macCatalyst)
+        let resultsInSidebar = true
+        #else
+        let resultsInSidebar = false
+        #endif
+        main = SearchViewController(resultsInSidebar: resultsInSidebar) { [unowned self] name in
             let sim = CelestiaAppCore.shared.simulation
             let object = sim.findObject(from: name)
             guard !object.isEmpty else {
@@ -60,7 +65,7 @@ private extension SearchCoordinatorController {
             #else
             self.navigation.pushViewController(self.selection(object), animated: true)
             #endif
-        })
+        }
 
         #if targetEnvironment(macCatalyst)
         split = UISplitViewController()

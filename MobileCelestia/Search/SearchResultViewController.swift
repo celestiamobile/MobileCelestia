@@ -18,13 +18,12 @@ class SearchResultViewController: BaseTableViewController {
 
     private let selected: (String) -> Void
 
-    init(selected: @escaping (String) -> Void) {
+    private let inSidebar: Bool
+
+    init(inSidebar: Bool, selected: @escaping (String) -> Void) {
+        self.inSidebar = inSidebar
         self.selected = selected
-        #if targetEnvironment(macCatalyst)
-        super.init(style: .defaultGrouped)
-        #else
-        super.init(style: .plain)
-        #endif
+        super.init(style: inSidebar ? .defaultGrouped : .plain)
     }
 
     required init?(coder: NSCoder) {
@@ -40,11 +39,7 @@ class SearchResultViewController: BaseTableViewController {
 
 private extension SearchResultViewController {
     func setUp() {
-        #if targetEnvironment(macCatalyst)
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Text")
-        #else
-        tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Text")
-        #endif
+        tableView.register(inSidebar ? UITableViewCell.self : SettingTextCell.self, forCellReuseIdentifier: "Text")
     }
 }
 
@@ -66,19 +61,19 @@ extension SearchResultViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let result = resultSections[indexPath.section].results[indexPath.row]
-        #if targetEnvironment(macCatalyst)
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath)
-        if #available(iOS 14.0, *) {
-            var configuration = UIListContentConfiguration.sidebarCell()
-            configuration.text = result.name
-            cell.contentConfiguration = configuration
-        } else {
-            cell.textLabel?.text = result.name
+        if inSidebar {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath)
+            if #available(iOS 14.0, *) {
+                var configuration = UIListContentConfiguration.sidebarCell()
+                configuration.text = result.name
+                cell.contentConfiguration = configuration
+            } else {
+                cell.textLabel?.text = result.name
+            }
+            return cell
         }
-        #else
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
         cell.title = result.name
-        #endif
         return cell
     }
 

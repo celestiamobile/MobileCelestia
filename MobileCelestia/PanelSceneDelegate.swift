@@ -44,6 +44,9 @@ class PanelSceneDelegate: UIResponder, UIWindowSceneDelegate {
     @objc private func handleNSWindowDidBecomeKey(_ notification: Notification) {
         guard let window = notification.object as? NSObject else { return }
         guard window == self.window?.nsWindow else { return }
+        if window.responds(to: NSSelectorFromString("setRestorable:")) {
+            window.setValue(false, forKey: "restorable")
+        }
         MacBridge.disableFullScreenForNSWindow(window)
     }
 

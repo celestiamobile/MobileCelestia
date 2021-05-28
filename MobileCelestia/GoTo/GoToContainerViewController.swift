@@ -42,7 +42,7 @@ private extension GoToContainerViewController {
     func setup() {
         navigation = UINavigationController(rootViewController: GoToInputViewController(objectNameHandler: { [weak self] controller in
             guard let self = self else { return }
-            let searchController = SearchViewController { [weak self, weak controller] name in
+            let searchController = SearchViewController(resultsInSidebar: false) { [weak self, weak controller] name in
                 guard let self = self else { return }
                 guard let controller = controller else { return }
                 self.navigation.popViewController(animated: true)

@@ -25,7 +25,9 @@ struct SearchResultSection {
 class SearchViewController: UIViewController {
     private lazy var searchController = UISearchController(searchResultsController: resultController)
 
-    private lazy var resultController = SearchResultViewController { [weak self] name in
+    private let resultsInSidebar: Bool
+
+    private lazy var resultController = SearchResultViewController(inSidebar: resultsInSidebar) { [weak self] name in
         self?.itemSelected(with: name)
     }
 
@@ -37,7 +39,8 @@ class SearchViewController: UIViewController {
 
     private var shouldActivate = true
 
-    init(selected: @escaping (String) -> Void) {
+    init(resultsInSidebar: Bool, selected: @escaping (String) -> Void) {
+        self.resultsInSidebar = resultsInSidebar
         self.selected = selected
         super.init(nibName: nil, bundle: nil)
     }
@@ -89,14 +92,6 @@ private extension SearchViewController {
         let searchBar = searchController.searchBar
         searchBar.searchBarStyle = .minimal
         navigationItem.titleView = searchBar
-
-        #if targetEnvironment(macCatalyst)
-        // Apply a transparent background to blend in
-        // to the sidebar
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithTransparentBackground()
-        navigationItem.standardAppearance = appearance
-        #endif
 
         if #available(iOS 13.0, *) {
         } else {
