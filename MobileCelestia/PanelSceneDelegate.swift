@@ -16,6 +16,8 @@ import UIKit
 class PanelSceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
 
+    private static let windowDidBecomeKeyNotification = NSNotification.Name("NSWindowDidBecomeKeyNotification")
+
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = scene as? UIWindowScene else { return }
         guard let userInfo = connectionOptions.userActivities.first?.userInfo else { return }
@@ -34,11 +36,11 @@ class PanelSceneDelegate: UIResponder, UIWindowSceneDelegate {
         self.window = window
         window.makeKeyAndVisible()
 
-        NotificationCenter.default.addObserver(self, selector: #selector(handleNSWindowDidBecomeKey(_:)), name: NSNotification.Name("NSWindowDidBecomeKeyNotification"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleNSWindowDidBecomeKey(_:)), name: Self.windowDidBecomeKeyNotification, object: nil)
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
-        NotificationCenter.default.removeObserver(self)
+        NotificationCenter.default.removeObserver(self, name: Self.windowDidBecomeKeyNotification, object: nil)
     }
 
     @objc private func handleNSWindowDidBecomeKey(_ notification: Notification) {

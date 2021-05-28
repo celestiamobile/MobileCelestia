@@ -41,6 +41,25 @@ class CelestiaDisplayController: AsyncGLViewController {
 
     weak var delegate: CelestiaDisplayControllerDelegate?
 
+    #if targetEnvironment(macCatalyst)
+    private static let windowWillStartLiveResizeNotification = Notification.Name("NSWindowWillStartLiveResizeNotification")
+    private static let windowDidEndLiveResizeNotification = Notification.Name("NSWindowDidEndLiveResizeNotification")
+    #endif
+
+    #if targetEnvironment(macCatalyst)
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        NotificationCenter.default.addObserver(self, selector: #selector(windowWillStartLiveResizing(_:)), name: Self.windowWillStartLiveResizeNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(windowDidEndLiveResizing(_:)), name: Self.windowDidEndLiveResizeNotification, object: nil)
+    }
+
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: Self.windowWillStartLiveResizeNotification, object: nil)
+        NotificationCenter.default.removeObserver(self, name: Self.windowDidEndLiveResizeNotification, object: nil)
+    }
+    #endif
+
     override func viewSafeAreaInsetsDidChange() {
         super.viewSafeAreaInsetsDidChange()
 
@@ -49,14 +68,6 @@ class CelestiaDisplayController: AsyncGLViewController {
         let insets = view.safeAreaInsets.scale(by: view.contentScaleFactor)
         core.run { core in
             core.setSafeAreaInsets(insets)
-        }
-    }
-
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
-        isPaused = true
-        coordinator.animate(alongsideTransition: nil) { [weak self] _ in
-            self?.isPaused = false
         }
     }
 
@@ -71,6 +82,34 @@ class CelestiaDisplayController: AsyncGLViewController {
             }
         }
     }
+
+    #if targetEnvironment(macCatalyst)
+    @objc private func windowWillStartLiveResizing(_ notification: Notification) {
+        guard let window = view.window else { return }
+
+        if notification.object as? NSObject == MacBridge.nsWindowForUIWindow(window) {
+            isPaused = true
+        }
+    }
+
+    @objc private func windowDidEndLiveResizing(_ notification: Notification) {
+        guard let window = view.window else { return }
+
+        if notification.object as? NSObject == MacBridge.nsWindowForUIWindow(window) {
+            isPaused = false
+        }
+    }
+    #else
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+
+        isPaused = true
+        coordinator.animate(alongsideTransition: nil) { [weak self] _ in
+            self?.isPaused = false
+        }
+    }
+
+    #endif
 }
 
 extension CelestiaDisplayController {
