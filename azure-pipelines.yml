@@ -29,12 +29,12 @@ steps:
 
 - task: InstallAppleCertificate@2
   inputs:
-    certSecureFile: 'app-release.p12'
+    certSecureFile: '20210508.p12'
     certPwd: $(P12Password)
 
 - task: InstallAppleProvisioningProfile@1
   inputs:
-    provProfileSecureFile: 'mobile_celestia.mobileprovision'
+    provProfileSecureFile: 'MobileCelestiaDistrition20210508.mobileprovision'
 
 - task: ios-bundle-version@1
   inputs:
