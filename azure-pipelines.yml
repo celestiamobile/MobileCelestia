@@ -17,6 +17,7 @@ pool:
 
 steps:
 - checkout: Celestia
+  submodules: true
 - checkout: CelestiaCore
   submodules: true
 - checkout: self
@@ -24,7 +25,6 @@ steps:
 - task: CmdLine@2
   inputs:
     script: |
-      ln -sf libs/dependency/ios CelestiaCore/thirdparty
       brew install gettext
 
 - task: InstallAppleCertificate@2
