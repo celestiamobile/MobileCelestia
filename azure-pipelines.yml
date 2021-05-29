@@ -20,17 +20,17 @@ trigger:
 strategy:
  matrix:
    iOS:
-     useAngle: false
-     useMobileProvision: true
-     sdk: iphoneos
-     destinationPlatform: iOS
-     distribute: true
+     useAngle: ${{ false }}
+     useMobileProvision: ${{ true }}
+     sdk: 'iphoneos'
+     destinationPlatform: 'iOS'
+     distribute: ${{ true }}
    Catalyst:
-     useAngle: true
-     useMobileProvision: false
-     sdk: macosx
-     destinationPlatform: macOS
-     distribute: false
+     useAngle: ${{ true }}
+     useMobileProvision: ${{ false }}
+     sdk: 'macosx'
+     destinationPlatform: 'macOS'
+     distribute: ${{ false }}
 
 pool:
   vmImage: 'macos-latest'
