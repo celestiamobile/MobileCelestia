@@ -27,9 +27,7 @@ stages:
       sdk: iphoneos
       useMobileProvision: true
       destinationPlatform: iOS
-      appCenterEndPoint: MobileCelestiaAppCenter
-      appCenterAppSlug: 'CelestiaProject/Celestia'
-      appExtension: ipa
+      distributeIPA: true
 - stage: Build_ARM64
   displayName: 'Build Catalyst'
   dependsOn: []
@@ -40,6 +38,4 @@ stages:
       sdk: macosx
       useMobileProvision: false
       destinationPlatform: macOS
-      appCenterEndPoint: MobileCelestiaAppCenter
-      appCenterAppSlug: 'CelestiaProject/Celestia-3'
-      appExtension: pkg
+      distributeIPA: false

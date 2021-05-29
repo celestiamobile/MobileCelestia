@@ -9,10 +9,7 @@ jobs:
     sdk: ${{ parameters.sdk }}
     useMobileProvision: ${{ parameters.useMobileProvision }}
     destinationPlatform: ${{ parameters.destinationPlatform }}
-    distribute: ${{ parameters.distribute }}
-    appCenterEndPoint: ${{ parameters.appCenterEndPoint }}
-    appCenterAppSlug: ${{ parameters.appCenterAppSlug }}
-    appExtension: ${{ parameters.appExtension }}
+    distributeIPA: ${{ parameters.distributeIPA }}
 
   steps:
   - checkout: Celestia
@@ -92,11 +89,22 @@ jobs:
 
   - task: AppCenterDistribute@3
     inputs:
-      serverEndpoint: $(appCenterEndPoint)
-      appSlug: $(appCenterAppSlug)
-      appFile: '$(build.artifactstagingdirectory)/**/*.$(appExtension)'
+      serverEndpoint: MobileCelestiaAppCenter
+      appSlug: 'CelestiaProject/Celestia'
+      appFile: '$(build.artifactstagingdirectory)/**/*.ipa'
       symbolsDsymFiles: '$(build.artifactstagingdirectory)/**/*.dSYM'
       releaseNotesOption: 'input'
       releaseNotesInput: 'Internal testing only.'
       destinationType: 'groups'
-    condition: $(distribute)
+    condition: $(distributeIPA)
+
+  - task: AppCenterDistribute@3
+    inputs:
+      serverEndpoint: MobileCatalystCelestiaAppCenter
+      appSlug: 'CelestiaProject/Celestia-3'
+      appFile: '$(build.artifactstagingdirectory)/**/*.pkg'
+      symbolsDsymFiles: '$(build.artifactstagingdirectory)/**/*.dSYM'
+      releaseNotesOption: 'input'
+      releaseNotesInput: 'Internal testing only.'
+      destinationType: 'groups'
+    condition: $(!distributeIPA)
