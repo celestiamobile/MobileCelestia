@@ -12,11 +12,11 @@
       },
       {
         "package": "AsyncGL",
-        "repositoryURL": "git@github.com:levinli303/AsyncGL.git",
+        "repositoryURL": "https://github.com/levinli303/AsyncGL",
         "state": {
-          "branch": "main",
+          "branch": null,
           "revision": "54c527786721d53005aa8df24e8a02ca58baa5e2",
-          "version": null
+          "version": "0.0.1"
         }
       },
       {
