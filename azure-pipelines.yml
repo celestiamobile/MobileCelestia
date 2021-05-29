@@ -24,10 +24,3 @@ stages:
   - template: jobs/build.yml
     parameters:
       sdk: iphoneos
-- stage: Build_ARM64
-  displayName: 'Build Catalyst'
-  dependsOn: []
-  jobs:
-  - template: jobs/build.yml
-    parameters:
-      sdk: macosx

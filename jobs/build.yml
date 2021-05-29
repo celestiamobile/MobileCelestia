@@ -21,6 +21,11 @@ jobs:
     condition: eq( variables['sdk'], 'macosx' )
 
   - script: |
+      cd CelestiaCore/libs/dependency
+      git reset --hard 43735316698933c20d51406454af80b5ccced6c0
+    displayName: 'Downgrade Thirdparty Dependencies'
+
+  - script: |
       brew install gettext
     displayName: 'Install Gettext'
 
