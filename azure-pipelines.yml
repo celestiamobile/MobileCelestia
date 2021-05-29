@@ -21,13 +21,13 @@ strategy:
  matrix:
    iOS:
      useAngle: false
-     provisioningProfile: 'MobileCelestiaDistrition20210508.mobileprovision'
+     useMobileProvision: true
      sdk: iphoneos
      destinationPlatform: iOS
      distribute: true
    Catalyst:
      useAngle: true
-     provisioningProfile: 'MobileCelestiaDistrition20210508.mobileprovision'
+     useMobileProvision: false
      sdk: macosx
      destinationPlatform: macOS
      distribute: false
@@ -59,7 +59,13 @@ steps:
 
 - task: InstallAppleProvisioningProfile@1
   inputs:
-    provProfileSecureFile: $(provisioningProfile)
+    provProfileSecureFile: MobileCelestiaDistrition20210508.mobileprovision
+  condition: $(useMobileProvision)
+
+- task: InstallAppleProvisioningProfile@1
+  inputs:
+    provProfileSecureFile: MobileCelestiaCatalystDistrition20210508.provisionprofile
+  condition: $(!useMobileProvision)
 
 - task: ios-bundle-version@1
   inputs:
