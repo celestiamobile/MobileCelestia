@@ -23,19 +23,13 @@ stages:
   jobs:
   - template: jobs/build.yml
     parameters:
-      useAngle: false
       sdk: iphoneos
-      useMobileProvision: true
       destinationPlatform: iOS
-      distributeIPA: true
 - stage: Build_ARM64
   displayName: 'Build Catalyst'
   dependsOn: []
   jobs:
   - template: jobs/build.yml
     parameters:
-      useAngle: true
       sdk: macosx
-      useMobileProvision: false
       destinationPlatform: macOS
-      distributeIPA: false

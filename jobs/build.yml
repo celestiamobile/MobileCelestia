@@ -5,11 +5,8 @@ jobs:
     vmImage: 'macos-latest'
 
   variables:
-    useAngle: ${{ parameters.useAngle }}
     sdk: ${{ parameters.sdk }}
-    useMobileProvision: ${{ parameters.useMobileProvision }}
     destinationPlatform: ${{ parameters.destinationPlatform }}
-    distributeIPA: ${{ parameters.distributeIPA }}
 
   steps:
   - checkout: Celestia
@@ -21,7 +18,7 @@ jobs:
   - script:
       cd Celestia
       git cherry-pick origin/angle
-    condition: $(useAngle)
+    condition: eq( variables['sdk'], 'macosx' )
 
   - task: CmdLine@2
     inputs:
@@ -36,12 +33,12 @@ jobs:
   - task: InstallAppleProvisioningProfile@1
     inputs:
       provProfileSecureFile: MobileCelestiaDistrition20210508.mobileprovision
-    condition: $(useMobileProvision)
+    condition: ne( variables['sdk'], 'macosx' )
 
   - task: InstallAppleProvisioningProfile@1
     inputs:
       provProfileSecureFile: MobileCelestiaCatalystDistrition20210508.provisionprofile
-    condition: $(!useMobileProvision)
+    condition: eq( variables['sdk'], 'macosx' )
 
   - task: ios-bundle-version@1
     inputs:
@@ -96,7 +93,7 @@ jobs:
       releaseNotesOption: 'input'
       releaseNotesInput: 'Internal testing only.'
       destinationType: 'groups'
-    condition: $(distributeIPA)
+    condition: ne( variables['sdk'], 'macosx' )
 
   - task: AppCenterDistribute@3
     inputs:
@@ -107,4 +104,4 @@ jobs:
       releaseNotesOption: 'input'
       releaseNotesInput: 'Internal testing only.'
       destinationType: 'groups'
-    condition: $(!distributeIPA)
+    condition: eq( variables['sdk'], 'macosx' )
