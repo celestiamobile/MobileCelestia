@@ -17,6 +17,21 @@ trigger:
     - releases/*
     - master
 
+strategy:
+ matrix:
+   iOS:
+     useAngle: false
+     provisioningProfile: 'MobileCelestiaDistrition20210508.mobileprovision'
+     sdk: iphoneos
+     destinationPlatform: iOS
+     distribute: true
+   Catalyst:
+     useAngle: true
+     provisioningProfile: 'MobileCelestiaCatalystDistrition20210508.provisionprofile'
+     sdk: macosx
+     destinationPlatform: macOS
+     distribute: false
+
 pool:
   vmImage: 'macos-latest'
 
@@ -26,6 +41,11 @@ steps:
 - checkout: CelestiaCore
   submodules: true
 - checkout: self
+
+- script:
+    cd Celestia
+    git cherry-pick origin/angle
+  condition: $(useAngle)
 
 - task: CmdLine@2
   inputs:
@@ -39,7 +59,7 @@ steps:
 
 - task: InstallAppleProvisioningProfile@1
   inputs:
-    provProfileSecureFile: 'MobileCelestiaDistrition20210508.mobileprovision'
+    provProfileSecureFile: $(provisioningProfile)
 
 - task: ios-bundle-version@1
   inputs:
@@ -58,7 +78,9 @@ steps:
     signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
     provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
     scheme: 'MobileCelestia'
-    sdk: 'iphoneos'
+    sdk: $(sdk)
+    destinationPlatformOption: custom
+    destinationPlatform: $(destinationPlatform)
     configuration: 'Release'
     xcWorkspacePath: '$(system.defaultworkingdirectory)/MobileCelestia/MobileCelestia.xcodeproj/project.xcworkspace'
     xcodeVersion: 'default'
@@ -77,6 +99,12 @@ steps:
     contents: '**/*.dSYM/**'
     targetFolder: '$(build.artifactStagingDirectory)'
 
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: '$(sdk)'
+    publishLocation: 'Container'
+
 - task: AppCenterDistribute@3
   inputs:
     serverEndpoint: 'MobileCelestiaAppCenter'
@@ -86,3 +114,4 @@ steps:
     releaseNotesOption: 'input'
     releaseNotesInput: 'Internal testing only.'
     destinationType: 'groups'
+  condition: $(distribute)
