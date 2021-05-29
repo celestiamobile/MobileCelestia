@@ -6,7 +6,6 @@ jobs:
 
   variables:
     sdk: ${{ parameters.sdk }}
-    destinationPlatform: ${{ parameters.destinationPlatform }}
 
   steps:
   - checkout: Celestia
@@ -62,10 +61,6 @@ jobs:
       provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
       scheme: 'MobileCelestia'
       sdk: $(sdk)
-      destinationPlatformOption: custom
-      destinationPlatform: $(destinationPlatform)
-      destinationTypeOption: devices
-      destinationDevices: 'Any iOS Device'
       configuration: 'Release'
       xcWorkspacePath: '$(system.defaultworkingdirectory)/MobileCelestia/MobileCelestia.xcodeproj/project.xcworkspace'
       xcodeVersion: 'default'
