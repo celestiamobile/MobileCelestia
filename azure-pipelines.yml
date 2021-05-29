@@ -45,7 +45,7 @@ steps:
 - script:
     cd Celestia
     git cherry-pick origin/angle
-  condition: $(useAngle)
+  condition: ${{ useAngle }}
 
 - task: CmdLine@2
   inputs:
@@ -60,12 +60,12 @@ steps:
 - task: InstallAppleProvisioningProfile@1
   inputs:
     provProfileSecureFile: MobileCelestiaDistrition20210508.mobileprovision
-  condition: $(useMobileProvision)
+  condition: ${{ useMobileProvision }}
 
 - task: InstallAppleProvisioningProfile@1
   inputs:
     provProfileSecureFile: MobileCelestiaCatalystDistrition20210508.provisionprofile
-  condition: $(!useMobileProvision)
+  condition: ${{ !useMobileProvision }}
 
 - task: ios-bundle-version@1
   inputs:
@@ -120,4 +120,4 @@ steps:
     releaseNotesOption: 'input'
     releaseNotesInput: 'Internal testing only.'
     destinationType: 'groups'
-  condition: $(distribute)
+  condition: ${{ distribute }}
