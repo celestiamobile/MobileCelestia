@@ -17,107 +17,29 @@ trigger:
     - releases/*
     - master
 
-strategy:
- matrix:
-   iOS:
-     useAngle: ${{ false }}
-     useMobileProvision: ${{ true }}
-     sdk: 'iphoneos'
-     destinationPlatform: 'iOS'
-     distribute: ${{ true }}
-   Catalyst:
-     useAngle: ${{ true }}
-     useMobileProvision: ${{ false }}
-     sdk: 'macosx'
-     destinationPlatform: 'macOS'
-     distribute: ${{ false }}
-
-pool:
-  vmImage: 'macos-latest'
-
-steps:
-- checkout: Celestia
-  submodules: true
-- checkout: CelestiaCore
-  submodules: true
-- checkout: self
-
-- script:
-    cd Celestia
-    git cherry-pick origin/angle
-  condition: ${{ useAngle }}
-
-- task: CmdLine@2
-  inputs:
-    script: |
-      brew install gettext
-
-- task: InstallAppleCertificate@2
-  inputs:
-    certSecureFile: '20210508.p12'
-    certPwd: $(P12Password)
-
-- task: InstallAppleProvisioningProfile@1
-  inputs:
-    provProfileSecureFile: MobileCelestiaDistrition20210508.mobileprovision
-  condition: ${{ useMobileProvision }}
-
-- task: InstallAppleProvisioningProfile@1
-  inputs:
-    provProfileSecureFile: MobileCelestiaCatalystDistrition20210508.provisionprofile
-  condition: ${{ !useMobileProvision }}
-
-- task: ios-bundle-version@1
-  inputs:
-    sourcePath: '$(system.defaultworkingdirectory)/MobileCelestia/MobileCelestia/Info.plist'
-    versionCodeOption: 'buildid'
-    versionCode: '$(Build.BuildId)'
-    versionCodeOffset: '53'
-    versionName: 
-    printFile: true
-
-- task: Xcode@5
-  inputs:
-    actions: 'build'
-    packageApp: true
-    signingOption: manual
-    signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
-    provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
-    scheme: 'MobileCelestia'
-    sdk: $(sdk)
-    destinationPlatformOption: custom
-    destinationPlatform: $(destinationPlatform)
-    configuration: 'Release'
-    xcWorkspacePath: '$(system.defaultworkingdirectory)/MobileCelestia/MobileCelestia.xcodeproj/project.xcworkspace'
-    xcodeVersion: 'default'
-    exportPath: '$(agent.buildDirectory)/output/$(sdk)/$(configuration)'
-    archivePath: '$(system.defaultworkingdirectory)/archive'
-
-- task: CopyFiles@2
-  inputs:
-    sourceFolder: '$(agent.buildDirectory)/output/$(sdk)/$(configuration)'
-    contents: '**/*.ipa'
-    targetFolder: '$(build.artifactStagingDirectory)'
-
-- task: CopyFiles@2
-  inputs:
-    sourceFolder: "$(system.defaultworkingdirectory)/archive"
-    contents: '**/*.dSYM/**'
-    targetFolder: '$(build.artifactStagingDirectory)'
-
-- task: PublishBuildArtifacts@1
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: '$(sdk)'
-    publishLocation: 'Container'
-
-- task: AppCenterDistribute@3
-  inputs:
-    serverEndpoint: 'MobileCelestiaAppCenter'
-    appSlug: 'CelestiaProject/Celestia'
-    appFile: '$(build.artifactstagingdirectory)/**/*.ipa'
-    symbolsDsymFiles: '$(build.artifactstagingdirectory)/**/*.dSYM'
-    releaseNotesOption: 'input'
-    releaseNotesInput: 'Internal testing only.'
-    destinationType: 'groups'
-  condition: ${{ distribute }}
+stages:
+- stage: Build_iOS
+  displayName: 'Build iOS'
+  jobs:
+  - template: jobs/build.yml
+    parameters:
+      useAngle: false
+      sdk: iphoneos
+      useMobileProvision: true
+      destinationPlatform: iOS
+      appCenterEndPoint: MobileCelestiaAppCenter
+      appCenterAppSlug: 'CelestiaProject/Celestia'
+      appExtension: ipa
+- stage: Build_ARM64
+  displayName: 'Build Catalyst'
+  dependsOn: []
+  jobs:
+  - template: jobs/build.yml
+    parameters:
+      useAngle: true
+      sdk: macosx
+      useMobileProvision: false
+      destinationPlatform: macOS
+      appCenterEndPoint: MobileCelestiaAppCenter
+      appCenterAppSlug: 'CelestiaProject/Celestia-3'
+      appExtension: pkg
