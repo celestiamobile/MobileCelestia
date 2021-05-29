@@ -2,12 +2,12 @@ resources:
   repositories:
   - repository: Celestia
     type: github
-    ref: $(Build.TargetBranchName)
+    ref: $(Build.SourceBranchName)
     endpoint: GithubAuth
     name: levinli303/Celestia
   - repository: CelestiaCore
     type: github
-    ref: $(Build.TargetBranchName)
+    ref: $(Build.SourceBranchName)
     endpoint: GithubAuth
     name: levinli303/CelestiaCore
 
