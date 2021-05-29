@@ -27,7 +27,7 @@ strategy:
      distribute: true
    Catalyst:
      useAngle: true
-     provisioningProfile: 'MobileCelestiaCatalystDistrition20210508.provisionprofile'
+     provisioningProfile: 'MobileCelestiaDistrition20210508.mobileprovision'
      sdk: macosx
      destinationPlatform: macOS
      distribute: false
