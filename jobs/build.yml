@@ -15,29 +15,32 @@ jobs:
     submodules: true
   - checkout: self
 
-  - script:
+  - script: |
       cd Celestia
       git cherry-pick origin/angle
+    displayName: 'Cherry-Pick ANGLE Commit'
     condition: eq( variables['sdk'], 'macosx' )
 
-  - task: CmdLine@2
-    inputs:
-      script: |
-        brew install gettext
+  - script: |
+      brew install gettext
+    displayName: 'Install Gettext'
 
   - task: InstallAppleCertificate@2
     inputs:
       certSecureFile: '20210508.p12'
       certPwd: $(P12Password)
+    displayName: 'Install Certificate'
 
   - task: InstallAppleProvisioningProfile@1
     inputs:
       provProfileSecureFile: MobileCelestiaDistrition20210508.mobileprovision
+    displayName: 'Install Provision File'
     condition: ne( variables['sdk'], 'macosx' )
 
   - task: InstallAppleProvisioningProfile@1
     inputs:
       provProfileSecureFile: MobileCelestiaCatalystDistrition20210508.provisionprofile
+    displayName: 'Install Provision File'
     condition: eq( variables['sdk'], 'macosx' )
 
   - task: ios-bundle-version@1
@@ -48,6 +51,7 @@ jobs:
       versionCodeOffset: '53'
       versionName:
       printFile: true
+    displayName: 'Update Bundle Version'
 
   - task: Xcode@5
     inputs:
@@ -60,29 +64,43 @@ jobs:
       sdk: $(sdk)
       destinationPlatformOption: custom
       destinationPlatform: $(destinationPlatform)
+      destinationTypeOption: devices
       configuration: 'Release'
       xcWorkspacePath: '$(system.defaultworkingdirectory)/MobileCelestia/MobileCelestia.xcodeproj/project.xcworkspace'
       xcodeVersion: 'default'
       exportPath: '$(agent.buildDirectory)/output/$(sdk)/$(configuration)'
       archivePath: '$(system.defaultworkingdirectory)/archive'
+    displayName: 'Build'
 
   - task: CopyFiles@2
     inputs:
       sourceFolder: '$(agent.buildDirectory)/output/$(sdk)/$(configuration)'
       contents: '**/*.ipa'
       targetFolder: '$(build.artifactStagingDirectory)'
+    displayName: 'Copy .ipa'
+    condition: ne( variables['sdk'], 'macosx' )
+
+  - task: CopyFiles@2
+    inputs:
+      sourceFolder: '$(agent.buildDirectory)/output/$(sdk)/$(configuration)'
+      contents: '**/*.pkg'
+      targetFolder: '$(build.artifactStagingDirectory)'
+    displayName: 'Copy .pkg'
+    condition: eq( variables['sdk'], 'macosx' )
 
   - task: CopyFiles@2
     inputs:
       sourceFolder: "$(system.defaultworkingdirectory)/archive"
       contents: '**/*.dSYM/**'
       targetFolder: '$(build.artifactStagingDirectory)'
+    displayName: 'Copy .dsym'
 
   - task: PublishBuildArtifacts@1
     inputs:
       PathtoPublish: '$(Build.ArtifactStagingDirectory)'
       ArtifactName: '$(sdk)'
       publishLocation: 'Container'
+    displayName: 'Publish Build Artifacts'
 
   - task: AppCenterDistribute@3
     inputs:
@@ -93,6 +111,7 @@ jobs:
       releaseNotesOption: 'input'
       releaseNotesInput: 'Internal testing only.'
       destinationType: 'groups'
+    displayName: 'Publish to App Center'
     condition: ne( variables['sdk'], 'macosx' )
 
   - task: AppCenterDistribute@3
@@ -104,4 +123,5 @@ jobs:
       releaseNotesOption: 'input'
       releaseNotesInput: 'Internal testing only.'
       destinationType: 'groups'
+    displayName: 'Publish to App Center'
     condition: eq( variables['sdk'], 'macosx' )
