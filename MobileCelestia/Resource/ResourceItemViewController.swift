@@ -119,7 +119,7 @@ class ResourceItemViewController: UIViewController {
         if dm.isInstalled(identifier: item.id) {
             // Already installed, offer option for uninstalling
             showOption(CelestiaString("Do you want to uninstall this add-on?", comment: "")) { [weak self] confirm in
-                guard let self = self else { return }
+                guard confirm, let self = self else { return }
                 do {
                     try dm.uninstall(identifier: self.item.id)
                     self.currentState = .none
