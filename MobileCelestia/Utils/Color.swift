@@ -139,11 +139,11 @@ extension UIColor {
 
 extension UIColor {
     class var progressBackground: UIColor {
-        return UIColor(rgb: 0x114477)
+        return themeBackground.withAlphaComponent(0.5)
     }
 
     class var progressForeground: UIColor {
-        return UIColor(rgb: 0x4477AA)
+        return themeBackground
     }
 }
 #endif

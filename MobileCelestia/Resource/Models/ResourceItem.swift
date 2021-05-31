@@ -19,6 +19,7 @@ struct ResourceItem: Codable {
     let item: URL
     let authors: [String]?
     let publishTime: Date?
+    let objectName: String?
 
     static let networkResponseDecoder: JSONDecoder = {
         let decoder = JSONDecoder()

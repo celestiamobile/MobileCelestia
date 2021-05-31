@@ -39,7 +39,14 @@ class ResourceItemViewController: UIViewController {
     private var item: ResourceItem
 
     private lazy var scrollView = UIScrollView(frame: .zero)
-    private lazy var progressButton = ProgressButton(frame: .zero)
+    private lazy var progressButton: ProgressButton = {
+        if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
+            return ProgressButton(type: .custom)
+        }
+        return ProgressButton(type: .system)
+    }()
+    private lazy var goToButton = ActionButton(type: .system)
+    private lazy var buttonStack = UIStackView(arrangedSubviews: [goToButton, progressButton])
 
     private lazy var titleLabel = UILabel()
     private lazy var authorsLabel = UILabel()
@@ -111,6 +118,17 @@ class ResourceItemViewController: UIViewController {
             self?.item = item
             self?.updateContents()
         }, decoder: ResourceItem.networkResponseDecoder)
+    }
+
+    @objc private func goToButtonClicked() {
+        guard let objectName = item.objectName else { return }
+        let core = CelestiaAppCore.shared
+        let object = core.simulation.findObject(from: objectName)
+        if object.isEmpty {
+            showError(CelestiaString("Object not found", comment: ""))
+            return
+        }
+        core.selectAndReceiveAsync(object, action: .goTo)
     }
 
     @objc private func progressButtonClicked() {
@@ -205,23 +223,23 @@ private extension ResourceItemViewController {
         footnoteLabel.numberOfLines = 0
         footnoteLabel.textColor = .darkSecondaryLabel
         footnoteLabel.font = UIFont.preferredFont(forTextStyle: .footnote)
+        progressButton.contentEdgeInsets = ActionButton.Constants.contentEdgeInsets
+        progressButton.layer.cornerRadius = ActionButton.Constants.cornerRadius
 
-        let ratio: CGFloat
-        if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
-            ratio = 0.77
-        } else {
-            ratio = 1.0
-        }
+        goToButton.isHidden = true
+        goToButton.setTitle(CelestiaString("Go", comment: ""), for: .normal)
 
-        progressButton.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(progressButton)
+        buttonStack.axis = .vertical
+        buttonStack.spacing = 8
+        buttonStack.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(buttonStack)
         NSLayoutConstraint.activate([
-            progressButton.topAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 12),
-            progressButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -12),
-            progressButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            progressButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            progressButton.heightAnchor.constraint(equalToConstant: 40 * ratio)
+            buttonStack.topAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 12),
+            buttonStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -12),
+            buttonStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            buttonStack.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
         ])
+        goToButton.addTarget(self, action: #selector(goToButtonClicked), for: .touchUpInside)
         progressButton.addTarget(self, action: #selector(progressButtonClicked), for: .touchUpInside)
 
         updateContents()
@@ -280,7 +298,6 @@ private extension ResourceItemViewController {
             currentState = .downloading
         }
 
-        // TODO: Localization
         switch currentState {
         case .none:
             progressButton.resetProgress()
@@ -290,6 +307,12 @@ private extension ResourceItemViewController {
         case .installed:
             progressButton.setProgress(progress: 1.0)
             progressButton.setTitle(CelestiaString("INSTALLED", comment: ""), for: .normal)
+        }
+
+        if currentState == .installed, let objectName = item.objectName, !CelestiaAppCore.shared.simulation.findObject(from: objectName).isEmpty {
+            goToButton.isHidden = false
+        } else {
+            goToButton.isHidden = true
         }
     }
 }

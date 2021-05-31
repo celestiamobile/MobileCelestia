@@ -12,7 +12,6 @@
 import UIKit
 
 public class ProgressButton: UIButton {
-    private let cornerRadius: CGFloat = 5
     private var progress: CGFloat = 0.0
 
     private let progressLayer = CALayer()
@@ -20,7 +19,6 @@ public class ProgressButton: UIButton {
     override public init(frame: CGRect) {
         super.init(frame: frame)
 
-        layer.cornerRadius = cornerRadius
         layer.masksToBounds = true
 
         titleLabel?.lineBreakMode = .byWordWrapping

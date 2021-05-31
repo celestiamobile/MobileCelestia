@@ -15,7 +15,7 @@ final class BodyActionCell: UICollectionViewCell {
     var title: String? { didSet { button.setTitle(title, for: .normal) } }
     var actionHandler: ((BodyActionCell) -> Void)?
 
-    private lazy var button = StandardButton(type: .system)
+    private lazy var button = ActionButton(type: .system)
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -30,27 +30,6 @@ final class BodyActionCell: UICollectionViewCell {
         contentView.addSubview(button)
         button.translatesAutoresizingMaskIntoConstraints = false
 
-        if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
-            if let uiNSView = button.subviews.first?.subviews.first,
-               String(describing: type(of: uiNSView)) == "_UINSView",
-               uiNSView.responds(to: NSSelectorFromString("contentNSView")) {
-                let contentNSView = uiNSView.value(forKey: "contentNSView") as AnyObject
-                if contentNSView.responds(to: NSSelectorFromString("setControlSize:")) {
-                    contentNSView.setValue(3, forKey: "controlSize")
-                }
-            }
-        } else {
-            button.titleLabel?.lineBreakMode = .byWordWrapping
-            button.titleLabel?.textAlignment = .center
-            button.contentEdgeInsets = UIEdgeInsets(top: 12, left: 0, bottom: 12, right: 0)
-            button.layer.cornerRadius = 4
-            #if targetEnvironment(macCatalyst)
-            button.backgroundColor = button.tintColor
-            #else
-            button.backgroundColor = .themeBackground
-            #endif
-            button.setTitleColor(.white, for: .normal)
-        }
         NSLayoutConstraint.activate([
             button.topAnchor.constraint(equalTo: contentView.topAnchor),
             button.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
