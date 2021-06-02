@@ -19,6 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)forceDarkAppearance;
 + (nullable id)nsWindowForUIWindow:(id)uiWindow;
 + (void)disableFullScreenForNSWindow:(NSWindow *)window;
++ (void)disableTabbingForAllWindows;
 
 @end
 

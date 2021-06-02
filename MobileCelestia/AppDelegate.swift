@@ -42,6 +42,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Force dark aqua appearance
         MacBridge.forceDarkAppearance()
+        MacBridge.disableTabbingForAllWindows()
 
         // Avoid reading saved state
         if let libraryPath = NSSearchPathForDirectoriesInDomains(.libraryDirectory, .userDomainMask, true).first {
@@ -232,6 +233,10 @@ class MacBridge {
 
     static func disableFullScreenForNSWindow(_ nsWindow: NSObject) {
         clazz.perform(NSSelectorFromString("disableFullScreenForNSWindow:"), with: nsWindow)
+    }
+
+    static func disableTabbingForAllWindows() {
+        clazz.perform(NSSelectorFromString("disableTabbingForAllWindows"))
     }
 }
 #endif

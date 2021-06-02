@@ -71,4 +71,8 @@
     [button setEnabled:NO];
 }
 
++ (void)disableTabbingForAllWindows {
+    [NSWindow setAllowsAutomaticWindowTabbing:NO];
+}
+
 @end
