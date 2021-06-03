@@ -24,6 +24,7 @@ stages:
       sdk: iphoneos
 - stage: Build_Catalyst
   displayName: 'Build Catalyst'
+  dependsOn: []
   jobs:
   - template: jobs/build.yml
     parameters:

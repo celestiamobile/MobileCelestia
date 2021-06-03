@@ -168,3 +168,4 @@ jobs:
   - script: |
       xcrun altool --notarize-app --primary-bundle-id space.celestia.MobileCelestia --username $(AC_ACCOUNT_NAME) --password $(AC_ACCOUNT_PASSWORD) -f $(Build.ArtifactStagingDirectory)/App.zip
     displayName: "Notarize App"
+    condition: eq( variables['sdk'], 'macosx' )
