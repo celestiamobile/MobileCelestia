@@ -105,15 +105,10 @@ jobs:
       archivePath: '$(system.defaultworkingdirectory)/archive'
     displayName: 'Build'
 
-  - task: ArchiveFiles@2
-    displayName: 'Create .zip Archive for .xcarchive'
-    inputs:
-      rootFolderOrFile: $(system.defaultworkingdirectory)/archive
-      includeRootFolder: false
-      archiveType: 'zip'
-      archiveFile: '$(Build.ArtifactStagingDirectory)/Archive.zip'
-      replaceExistingArchive: true
-      verbose: true
+  - script: |
+      cd $(system.defaultworkingdirectory)/archive
+      zip -r -v -y $(Build.ArtifactStagingDirectory)/Archive.zip *.xcarchive
+    displayName: 'Create .zip for .xcarchive'
 
   - task: CopyFiles@2
     inputs:
@@ -123,15 +118,10 @@ jobs:
     displayName: 'Copy .ipa'
     condition: ne( variables['sdk'], 'macosx' )
 
-  - task: ArchiveFiles@2
+  - script: |
+      cd $(agent.buildDirectory)/output/$(sdk)
+      zip -r -v -y $(Build.ArtifactStagingDirectory)/App.zip *.app
     displayName: 'Create .zip Archive for .app'
-    inputs:
-      rootFolderOrFile: $(agent.buildDirectory)/output
-      includeRootFolder: false
-      archiveType: 'zip'
-      archiveFile: '$(Build.ArtifactStagingDirectory)/App.zip'
-      replaceExistingArchive: true
-      verbose: true
     condition: eq( variables['sdk'], 'macosx' )
 
   - task: PublishBuildArtifacts@1
