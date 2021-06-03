@@ -1,0 +1,6 @@
+framework module MWRequest {
+  umbrella header "MWRequest-umbrella.h"
+
+  export *
+  module * { export * }
+}

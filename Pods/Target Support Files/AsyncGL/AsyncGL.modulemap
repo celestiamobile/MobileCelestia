@@ -1,0 +1,6 @@
+framework module AsyncGL {
+  umbrella header "AsyncGL-umbrella.h"
+
+  export *
+  module * { export * }
+}

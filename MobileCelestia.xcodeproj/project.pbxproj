@@ -63,7 +63,7 @@
 		97F1141E2408AE06003A06D7 /* DataLocationSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F1141D2408AE06003A06D7 /* DataLocationSelectionViewController.swift */; };
 		97FF95A5240A340300E9F44F /* BaseResultHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FF95A4240A340300E9F44F /* BaseResultHandler.swift */; };
 		97FF95AA240A3F0900E9F44F /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FF95A9240A3F0900E9F44F /* Data.swift */; };
-		EA09B5EC254BB92900DACC1D /* MWRequest in Frameworks */ = {isa = PBXBuildFile; productRef = EA09B5EB254BB92900DACC1D /* MWRequest */; };
+		C3E2AA8FA42CCD40BE6ECA28 /* Pods_MobileCelestia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BB5B90AF9C3832FD04B47BF /* Pods_MobileCelestia.framework */; };
 		EA10553324935A4700E49C6D /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA10553224935A4700E49C6D /* Metal.framework */; };
 		EA1BC6E324A0E92B00F3F51B /* EventFinderCoordinatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E224A0E92B00F3F51B /* EventFinderCoordinatorViewController.swift */; };
 		EA1BC6E524A0E93D00F3F51B /* EventFinderInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E424A0E93D00F3F51B /* EventFinderInputViewController.swift */; };
@@ -76,7 +76,6 @@
 		EA544E5F2566BC50003F351D /* DestinationDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA544E5E2566BC50003F351D /* DestinationDetailViewController.swift */; };
 		EA5E185D2477C78E00F5374B /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5E185B2477C78E00F5374B /* Toast.swift */; };
 		EA775EB42664B63F00479295 /* ActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA775EB32664B63F00479295 /* ActionButton.swift */; };
-		EA8961E92662076000081B3B /* AsyncGL in Frameworks */ = {isa = PBXBuildFile; productRef = EA8961E82662076000081B3B /* AsyncGL */; };
 		EA934C90251D90C500DD284C /* MainSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA934C8F251D90C500DD284C /* MainSceneDelegate.swift */; };
 		EA934C9A251D92AD00DD284C /* PanelSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA934C99251D92A700DD284C /* PanelSceneDelegate.swift */; };
 		EA936F36265FA363007EED66 /* MetalANGLE.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA1BCA92265AA8E2001A0D89 /* MetalANGLE.xcframework */; platformFilter = maccatalyst; };
@@ -95,8 +94,6 @@
 		EABF793C2538A1C100F2460C /* ResourceItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF793B2538A1C100F2460C /* ResourceItemViewController.swift */; };
 		EABF79422538A4EB00F2460C /* ProgressButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF79412538A4EB00F2460C /* ProgressButton.swift */; };
 		EABF794A2538A86500F2460C /* ResourceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF79492538A86500F2460C /* ResourceManager.swift */; };
-		EABF795325391ECB00F2460C /* Zip in Frameworks */ = {isa = PBXBuildFile; productRef = EABF795225391ECB00F2460C /* Zip */; };
-		EABF7A032539731300F2460C /* SDWebImage in Frameworks */ = {isa = PBXBuildFile; productRef = EABF7A022539731300F2460C /* SDWebImage */; };
 		EAC2F4D02647F2920039DF2F /* SearchResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC2F4CF2647F2920039DF2F /* SearchResultViewController.swift */; };
 		EAC8435F252C818700691943 /* MacBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = EAC8435E252C818700691943 /* MacBridge.m */; };
 		EAC84364252C84B600691943 /* CelestiaMacBridge.bundle in Embed PlugIns */ = {isa = PBXBuildFile; fileRef = EAC84354252C816500691943 /* CelestiaMacBridge.bundle */; platformFilter = maccatalyst; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
@@ -105,8 +102,6 @@
 		EADE7FC0252B54A400D4174F /* CelestiaInteractionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE7FBF252B54A400D4174F /* CelestiaInteractionController.swift */; };
 		EAF48515249B2C4700E5B817 /* SubsystemBrowserCoordinatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF48514249B2C4700E5B817 /* SubsystemBrowserCoordinatorViewController.swift */; };
 		EAF48520249B5C2500E5B817 /* StandardButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF4851F249B5C2500E5B817 /* StandardButton.swift */; };
-		EAF4A2F1255E4AA000F67F80 /* AppCenterCrashes in Frameworks */ = {isa = PBXBuildFile; productRef = EAF4A2F0255E4AA000F67F80 /* AppCenterCrashes */; };
-		EAF4A2F3255E4AA000F67F80 /* AppCenterAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = EAF4A2F2255E4AA000F67F80 /* AppCenterAnalytics */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -130,6 +125,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = EAC84353252C816500691943;
 			remoteInfo = CelestiaMacBridge;
+		};
+		EACF64402668973F00A649B1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 979D2F9F23FEB1D5005D2592 /* CelestiaCore.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 971A65CB23019BC5009E4EA1;
+			remoteInfo = CelestiaCore;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -159,6 +161,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		4BB5B90AF9C3832FD04B47BF /* Pods_MobileCelestia.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MobileCelestia.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		672BC2EFB053F58AB6405384 /* Pods-MobileCelestia.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileCelestia.debug.xcconfig"; path = "Target Support Files/Pods-MobileCelestia/Pods-MobileCelestia.debug.xcconfig"; sourceTree = "<group>"; };
+		8C2CF5A2ED6F57EAB50BFE7F /* Pods-MobileCelestia.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileCelestia.release.xcconfig"; path = "Target Support Files/Pods-MobileCelestia/Pods-MobileCelestia.release.xcconfig"; sourceTree = "<group>"; };
 		97143F1623FFAEFD00F35D87 /* defaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = defaults.plist; sourceTree = "<group>"; };
 		972477D02404A19700729B45 /* BrowserContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserContainerViewController.swift; sourceTree = "<group>"; };
 		972477D42404A63800729B45 /* BrowserCommonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserCommonViewController.swift; sourceTree = "<group>"; };
@@ -270,18 +275,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EABF795325391ECB00F2460C /* Zip in Frameworks */,
 				EA10553324935A4700E49C6D /* Metal.framework in Frameworks */,
 				979D2FAD23FEB2B4005D2592 /* libbz2.tbd in Frameworks */,
 				EA936F36265FA363007EED66 /* MetalANGLE.xcframework in Frameworks */,
 				979D2FAF23FEB2BD005D2592 /* libz.tbd in Frameworks */,
-				EABF7A032539731300F2460C /* SDWebImage in Frameworks */,
-				EA09B5EC254BB92900DACC1D /* MWRequest in Frameworks */,
 				979D2FAB23FEB2AA005D2592 /* libc++.tbd in Frameworks */,
-				EAF4A2F1255E4AA000F67F80 /* AppCenterCrashes in Frameworks */,
-				EA8961E92662076000081B3B /* AsyncGL in Frameworks */,
-				EAF4A2F3255E4AA000F67F80 /* AppCenterAnalytics in Frameworks */,
 				979D2FA623FEB1DD005D2592 /* CelestiaCore.framework in Frameworks */,
+				C3E2AA8FA42CCD40BE6ECA28 /* Pods_MobileCelestia.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -443,6 +443,7 @@
 				EAC84355252C816500691943 /* CelestiaMacBridge */,
 				979D2F7B23FEB1A6005D2592 /* Products */,
 				979D2FA523FEB1DD005D2592 /* Frameworks */,
+				D065056EEA0615965A87D9B4 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -513,6 +514,7 @@
 				979D2FAE23FEB2B9005D2592 /* libz.tbd */,
 				979D2FAC23FEB2AE005D2592 /* libbz2.tbd */,
 				979D2FAA23FEB2A5005D2592 /* libc++.tbd */,
+				4BB5B90AF9C3832FD04B47BF /* Pods_MobileCelestia.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -543,6 +545,15 @@
 				97FF95A4240A340300E9F44F /* BaseResultHandler.swift */,
 			);
 			path = Request;
+			sourceTree = "<group>";
+		};
+		D065056EEA0615965A87D9B4 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				672BC2EFB053F58AB6405384 /* Pods-MobileCelestia.debug.xcconfig */,
+				8C2CF5A2ED6F57EAB50BFE7F /* Pods-MobileCelestia.release.xcconfig */,
+			);
+			path = Pods;
 			sourceTree = "<group>";
 		};
 		EA1BC6E024A0E90A00F3F51B /* Event */ = {
@@ -624,6 +635,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 979D2F9923FEB1A8005D2592 /* Build configuration list for PBXNativeTarget "MobileCelestia" */;
 			buildPhases = (
+				F412BCB514349FAAD8AEB3A1 /* [CP] Check Pods Manifest.lock */,
 				979D2F7623FEB1A6005D2592 /* Sources */,
 				979D2F7723FEB1A6005D2592 /* Frameworks */,
 				979D2F7823FEB1A6005D2592 /* Resources */,
@@ -635,17 +647,10 @@
 			buildRules = (
 			);
 			dependencies = (
+				EACF64412668973F00A649B1 /* PBXTargetDependency */,
 				EAC84366252C84B600691943 /* PBXTargetDependency */,
 			);
 			name = MobileCelestia;
-			packageProductDependencies = (
-				EABF795225391ECB00F2460C /* Zip */,
-				EABF7A022539731300F2460C /* SDWebImage */,
-				EA09B5EB254BB92900DACC1D /* MWRequest */,
-				EAF4A2F0255E4AA000F67F80 /* AppCenterCrashes */,
-				EAF4A2F2255E4AA000F67F80 /* AppCenterAnalytics */,
-				EA8961E82662076000081B3B /* AsyncGL */,
-			);
 			productName = MobileCelestia;
 			productReference = 979D2F7A23FEB1A6005D2592 /* Celestia.app */;
 			productType = "com.apple.product-type.application";
@@ -721,13 +726,6 @@
 				ru,
 			);
 			mainGroup = 979D2F7123FEB1A6005D2592;
-			packageReferences = (
-				EABF795125391ECB00F2460C /* XCRemoteSwiftPackageReference "Zip" */,
-				EABF7A012539731300F2460C /* XCRemoteSwiftPackageReference "SDWebImage" */,
-				EA09B5EA254BB92900DACC1D /* XCRemoteSwiftPackageReference "mwrequest" */,
-				EAF4A2EF255E4AA000F67F80 /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */,
-				EA8961E72662076000081B3B /* XCRemoteSwiftPackageReference "AsyncGL" */,
-			);
 			productRefGroup = 979D2F7B23FEB1A6005D2592 /* Products */;
 			projectDirPath = "";
 			projectReferences = (
@@ -820,6 +818,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "CELESTIA_CORE_ROOT=$SRCROOT/../CelestiaCore\n\nSH_FILE=$CELESTIA_CORE_ROOT/convert_po.sh\n\nchmod +x $SH_FILE\n\n$SH_FILE\n";
+		};
+		F412BCB514349FAAD8AEB3A1 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-MobileCelestia-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -939,6 +959,11 @@
 			platformFilter = maccatalyst;
 			target = EAC84353252C816500691943 /* CelestiaMacBridge */;
 			targetProxy = EAC84365252C84B600691943 /* PBXContainerItemProxy */;
+		};
+		EACF64412668973F00A649B1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = CelestiaCore;
+			targetProxy = EACF64402668973F00A649B1 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -1096,6 +1121,7 @@
 		};
 		979D2F9A23FEB1A8005D2592 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 672BC2EFB053F58AB6405384 /* Pods-MobileCelestia.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1110,7 +1136,6 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.3.4;
-				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.MobileCelestia;
 				PRODUCT_NAME = Celestia;
 				SUPPORTS_MACCATALYST = YES;
@@ -1121,6 +1146,7 @@
 		};
 		979D2F9B23FEB1A8005D2592 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8C2CF5A2ED6F57EAB50BFE7F /* Pods-MobileCelestia.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1135,7 +1161,6 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.3.4;
-				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.MobileCelestia;
 				PRODUCT_NAME = Celestia;
 				SUPPORTS_MACCATALYST = YES;
@@ -1188,6 +1213,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = "$(SHARED_BUILD_NUMBER)";
@@ -1207,6 +1234,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = "$(SHARED_BUILD_NUMBER)";
@@ -1262,82 +1291,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		EA09B5EA254BB92900DACC1D /* XCRemoteSwiftPackageReference "mwrequest" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/levinli303/mwrequest";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.2.3;
-			};
-		};
-		EA8961E72662076000081B3B /* XCRemoteSwiftPackageReference "AsyncGL" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/levinli303/AsyncGL";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.0.3;
-			};
-		};
-		EABF795125391ECB00F2460C /* XCRemoteSwiftPackageReference "Zip" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/marmelroy/Zip";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.1.1;
-			};
-		};
-		EABF7A012539731300F2460C /* XCRemoteSwiftPackageReference "SDWebImage" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/SDWebImage/SDWebImage";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 5.10.4;
-			};
-		};
-		EAF4A2EF255E4AA000F67F80 /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/microsoft/appcenter-sdk-apple";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 4.1.1;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
-
-/* Begin XCSwiftPackageProductDependency section */
-		EA09B5EB254BB92900DACC1D /* MWRequest */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = EA09B5EA254BB92900DACC1D /* XCRemoteSwiftPackageReference "mwrequest" */;
-			productName = MWRequest;
-		};
-		EA8961E82662076000081B3B /* AsyncGL */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = EA8961E72662076000081B3B /* XCRemoteSwiftPackageReference "AsyncGL" */;
-			productName = AsyncGL;
-		};
-		EABF795225391ECB00F2460C /* Zip */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = EABF795125391ECB00F2460C /* XCRemoteSwiftPackageReference "Zip" */;
-			productName = Zip;
-		};
-		EABF7A022539731300F2460C /* SDWebImage */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = EABF7A012539731300F2460C /* XCRemoteSwiftPackageReference "SDWebImage" */;
-			productName = SDWebImage;
-		};
-		EAF4A2F0255E4AA000F67F80 /* AppCenterCrashes */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = EAF4A2EF255E4AA000F67F80 /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
-			productName = AppCenterCrashes;
-		};
-		EAF4A2F2255E4AA000F67F80 /* AppCenterAnalytics */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = EAF4A2EF255E4AA000F67F80 /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
-			productName = AppCenterAnalytics;
-		};
-/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 979D2F7223FEB1A6005D2592 /* Project object */;
 }

@@ -1,0 +1,21 @@
+{
+  "name": "MWRequest",
+  "version": "0.2.4",
+  "summary": "HTTP request wrapper.",
+  "homepage": "https://github.com/levinli303/mwrequest.git",
+  "license": "MIT",
+  "authors": {
+    "Levin Li": "lilinfeng303@outlook.com"
+  },
+  "platforms": {
+    "ios": "8.0",
+    "osx": "10.9"
+  },
+  "swift_versions": "5.0",
+  "source": {
+    "git": "https://github.com/levinli303/mwrequest.git",
+    "tag": "0.2.4"
+  },
+  "source_files": "Sources/**/*.swift",
+  "swift_version": "5.0"
+}

@@ -1,0 +1,28 @@
+{
+  "name": "AsyncGL",
+  "version": "0.0.5",
+  "summary": "A framework that allows rendering OpenGL (ES) contents on a GCD dispatch queue.",
+  "homepage": "https://github.com/levinli303/AsyncGL.git",
+  "license": "MIT",
+  "authors": {
+    "Levin Li": "lilinfeng303@outlook.com"
+  },
+  "platforms": {
+    "ios": "8.0",
+    "osx": "10.9"
+  },
+  "source": {
+    "git": "https://github.com/levinli303/AsyncGL.git",
+    "tag": "0.0.5"
+  },
+  "source_files": [
+    "AsyncGL/**/*.{h,m}",
+    "GL/**/*.{h,inc}"
+  ],
+  "public_header_files": "AsyncGL/include/*.h",
+  "xcconfig": {
+    "HEADER_SEARCH_PATHS": [
+      "\"$(PODS_TARGET_SRCROOT)/GL\""
+    ]
+  }
+}
