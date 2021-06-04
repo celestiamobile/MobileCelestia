@@ -52,10 +52,11 @@ private extension BrowserContainerViewController {
         }
 
         #if targetEnvironment(macCatalyst)
+        let browserRoots = [solBrowserRoot, starBrowserRoot, dsoBrowserRoot].compactMap { $0 }
         controller.primaryBackgroundStyle = .sidebar
         controller.preferredDisplayMode = .oneBesideSecondary
         controller.preferredPrimaryColumnWidthFraction = 0.3
-        let sidebarController = BrowserSidebarController(browserRoots: [solBrowserRoot, starBrowserRoot, dsoBrowserRoot]) { [unowned self] item in
+        let sidebarController = BrowserSidebarController(browserRoots: browserRoots) { [unowned self] item in
             let newVc = BrowserCoordinatorController(item: item, image: UIImage(), selection: handler)
             controller.viewControllers = [self.controller.viewControllers[0], newVc]
         }
@@ -63,11 +64,14 @@ private extension BrowserContainerViewController {
         emptyVc.view.backgroundColor = .darkBackground
         controller.viewControllers = [sidebarController, emptyVc]
         #else
-        controller.setViewControllers([
-            BrowserCoordinatorController(item: solBrowserRoot, image: #imageLiteral(resourceName: "browser_tab_sso"), selection: handler),
+        var allControllers = [
             BrowserCoordinatorController(item: starBrowserRoot, image: #imageLiteral(resourceName: "browser_tab_star"), selection: handler),
             BrowserCoordinatorController(item: dsoBrowserRoot, image: #imageLiteral(resourceName: "browser_tab_dso"), selection: handler),
-        ], animated: false)
+        ]
+        if let solRoot = solBrowserRoot {
+            allControllers.insert(BrowserCoordinatorController(item: solRoot, image: #imageLiteral(resourceName: "browser_tab_sso"), selection: handler), at: 0)
+        }
+        controller.setViewControllers(allControllers, animated: false)
 
         if #available(iOS 13.0, *) {
         } else {
