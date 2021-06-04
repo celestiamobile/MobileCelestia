@@ -35,13 +35,14 @@ class SlideInPresentationController: UIPresentationController {
     override func size(forChildContentContainer container: UIContentContainer,
                        withParentContainerSize parentSize: CGSize) -> CGSize {
         var size: CGSize = .zero
+        let preferredSize = presentedViewController.preferredContentSize
         switch direction {
         case .left, .right:
-            size = CGSize(width: presentedViewController.preferredContentSize.width, height: parentSize.height)
+            size = CGSize(width: min(preferredSize.width, parentSize.width * 0.6), height: parentSize.height)
         case .bottom, .top:
-            size = CGSize(width: parentSize.width, height: presentedViewController.preferredContentSize.height)
+            size = CGSize(width: parentSize.width, height: preferredSize.height)
         case .bottomRight, .bottomLeft:
-            size = presentedViewController.preferredContentSize
+            size = CGSize(width: min(preferredSize.width, parentSize.width * 0.8), height: preferredSize.height)
         }
         if let safeAreaInset = containerView?.safeAreaInsets {
             switch direction {
