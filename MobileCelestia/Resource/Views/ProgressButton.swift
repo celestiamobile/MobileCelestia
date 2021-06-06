@@ -49,7 +49,11 @@ public class ProgressButton: UIButton {
     override public func layoutSubviews() {
         super.layoutSubviews()
 
-        progressLayer.frame = CGRect(x: 0, y: 0, width: bounds.width * progress, height: bounds.height)
+        if UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft {
+            progressLayer.frame = CGRect(x: bounds.width * (1 - progress), y: 0, width: bounds.width * progress, height: bounds.height)
+        } else {
+            progressLayer.frame = CGRect(x: 0, y: 0, width: bounds.width * progress, height: bounds.height)
+        }
 
         titleLabel?.frame = self.bounds
     }

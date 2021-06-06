@@ -371,7 +371,11 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     private func presentTimeToolbar() {
-        presentActionToolbar(for: [.slower, .playpause, .faster, .reverse])
+        if UIView.userInterfaceLayoutDirection(for: view.semanticContentAttribute) == .rightToLeft {
+            presentActionToolbar(for: [.faster, .playpause, .slower, .reverse])
+        } else {
+            presentActionToolbar(for: [.slower, .playpause, .faster, .reverse])
+        }
     }
 
     private func presentActionToolbar(for actions: [CelestiaAction]) {
