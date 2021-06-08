@@ -29,7 +29,7 @@
 		974F86E42403C30E00356795 /* BodyInfoModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974F86E32403C30E00356795 /* BodyInfoModel.swift */; };
 		9773949C2402A8F700E38B82 /* ToolbarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9773949B2402A8F700E38B82 /* ToolbarViewController.swift */; };
 		9773949E2402A96B00E38B82 /* SlideInPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9773949D2402A96B00E38B82 /* SlideInPresentationController.swift */; };
-		977394A02402A9AF00E38B82 /* SlideInPresentationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9773949F2402A9AF00E38B82 /* SlideInPresentationManager.swift */; };
+		977394A02402A9AF00E38B82 /* PresentationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9773949F2402A9AF00E38B82 /* PresentationManager.swift */; };
 		977394A32403E68800E38B82 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394A22403E68800E38B82 /* Color.swift */; };
 		977394AC2403F07C00E38B82 /* SettingsCoordinatorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394AB2403F07C00E38B82 /* SettingsCoordinatorController.swift */; };
 		977394AE2403F08800E38B82 /* SettingsMainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394AD2403F08800E38B82 /* SettingsMainViewController.swift */; };
@@ -74,6 +74,7 @@
 		EA374CDA263A8B770069589C /* GoToInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA374CD9263A8B770069589C /* GoToInputViewController.swift */; };
 		EA445D15265CF6CD00E5D46A /* LinkPreviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA445D14265CF6CD00E5D46A /* LinkPreviewCell.swift */; };
 		EA544E5F2566BC50003F351D /* DestinationDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA544E5E2566BC50003F351D /* DestinationDetailViewController.swift */; };
+		EA5D32E7266F9518005D5931 /* SheetPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5D32E6266F9518005D5931 /* SheetPresentationController.swift */; };
 		EA5E185D2477C78E00F5374B /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5E185B2477C78E00F5374B /* Toast.swift */; };
 		EA775EB42664B63F00479295 /* ActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA775EB32664B63F00479295 /* ActionButton.swift */; };
 		EA934C90251D90C500DD284C /* MainSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA934C8F251D90C500DD284C /* MainSceneDelegate.swift */; };
@@ -186,7 +187,7 @@
 		974F86E32403C30E00356795 /* BodyInfoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyInfoModel.swift; sourceTree = "<group>"; };
 		9773949B2402A8F700E38B82 /* ToolbarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarViewController.swift; sourceTree = "<group>"; };
 		9773949D2402A96B00E38B82 /* SlideInPresentationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideInPresentationController.swift; sourceTree = "<group>"; };
-		9773949F2402A9AF00E38B82 /* SlideInPresentationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SlideInPresentationManager.swift; sourceTree = "<group>"; };
+		9773949F2402A9AF00E38B82 /* PresentationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentationManager.swift; sourceTree = "<group>"; };
 		977394A22403E68800E38B82 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		977394AB2403F07C00E38B82 /* SettingsCoordinatorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCoordinatorController.swift; sourceTree = "<group>"; };
 		977394AD2403F08800E38B82 /* SettingsMainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsMainViewController.swift; sourceTree = "<group>"; };
@@ -238,6 +239,7 @@
 		EA374CD9263A8B770069589C /* GoToInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoToInputViewController.swift; sourceTree = "<group>"; };
 		EA445D14265CF6CD00E5D46A /* LinkPreviewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkPreviewCell.swift; sourceTree = "<group>"; };
 		EA544E5E2566BC50003F351D /* DestinationDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DestinationDetailViewController.swift; sourceTree = "<group>"; };
+		EA5D32E6266F9518005D5931 /* SheetPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SheetPresentationController.swift; sourceTree = "<group>"; };
 		EA5E185B2477C78E00F5374B /* Toast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
 		EA775EB32664B63F00479295 /* ActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButton.swift; sourceTree = "<group>"; };
 		EA934C8F251D90C500DD284C /* MainSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSceneDelegate.swift; sourceTree = "<group>"; };
@@ -533,7 +535,8 @@
 		97DB1FD424067757001F222F /* Presentation */ = {
 			isa = PBXGroup;
 			children = (
-				9773949F2402A9AF00E38B82 /* SlideInPresentationManager.swift */,
+				EA5D32E6266F9518005D5931 /* SheetPresentationController.swift */,
+				9773949F2402A9AF00E38B82 /* PresentationManager.swift */,
 				9773949D2402A96B00E38B82 /* SlideInPresentationController.swift */,
 			);
 			path = Presentation;
@@ -848,7 +851,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				977394A02402A9AF00E38B82 /* SlideInPresentationManager.swift in Sources */,
+				977394A02402A9AF00E38B82 /* PresentationManager.swift in Sources */,
 				97401C9E2414D3460015F8E8 /* Celestia+Extension.swift in Sources */,
 				EABF7911253895FD00F2460C /* ResourceViewController.swift in Sources */,
 				EAA6C4CB253B5CD200ED1D60 /* InstalledResourceViewController.swift in Sources */,
@@ -911,6 +914,7 @@
 				977394B52403FD4400E38B82 /* SettingCheckViewController.swift in Sources */,
 				97F1141E2408AE06003A06D7 /* DataLocationSelectionViewController.swift in Sources */,
 				97FF95A5240A340300E9F44F /* BaseResultHandler.swift in Sources */,
+				EA5D32E7266F9518005D5931 /* SheetPresentationController.swift in Sources */,
 				977394BF24041A9A00E38B82 /* SearchCoordinatorController.swift in Sources */,
 				EADE7FC0252B54A400D4174F /* CelestiaInteractionController.swift in Sources */,
 				978406DC240294D000876FD1 /* LoadingViewController.swift in Sources */,
@@ -1050,7 +1054,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
-				SHARED_BUILD_NUMBER = 133;
+				SHARED_BUILD_NUMBER = 134;
 				SHARED_BUILD_VERSION = 1.4.0;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1110,7 +1114,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
-				SHARED_BUILD_NUMBER = 133;
+				SHARED_BUILD_NUMBER = 134;
 				SHARED_BUILD_VERSION = 1.4.0;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";

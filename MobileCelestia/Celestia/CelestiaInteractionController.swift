@@ -70,7 +70,7 @@ class CelestiaInteractionController: UIViewController {
         }
     }
 
-    struct Constant {
+    struct Constants {
         static let controlViewTrailingMargin: CGFloat = 8
         static let controlViewHideAnimationDuration: TimeInterval = 0.2
         static let controlViewShowAnimationDuration: TimeInterval = 0.2
@@ -157,7 +157,7 @@ class CelestiaInteractionController: UIViewController {
 
         NSLayoutConstraint.activate([
             activeControlView.centerYAnchor.constraint(equalTo: container.centerYAnchor),
-            activeControlView.trailingAnchor.constraint(equalTo: container.safeAreaLayoutGuide.trailingAnchor, constant: -Constant.controlViewTrailingMargin),
+            activeControlView.trailingAnchor.constraint(equalTo: container.safeAreaLayoutGuide.trailingAnchor, constant: -Constants.controlViewTrailingMargin),
         ])
 
         currentControlView = activeControlView
@@ -220,7 +220,7 @@ extension CelestiaInteractionController: CelestiaControlViewDelegate {
         currentShowAnimator?.finishAnimation(at: .current)
         currentShowAnimator = nil
 
-        let animator = UIViewPropertyAnimator(duration: Constant.controlViewHideAnimationDuration, curve: .linear) { [weak self] in
+        let animator = UIViewPropertyAnimator(duration: Constants.controlViewHideAnimationDuration, curve: .linear) { [weak self] in
             self?.activeControlView.alpha = 0
         }
 
@@ -239,7 +239,7 @@ extension CelestiaInteractionController: CelestiaControlViewDelegate {
         currentHideAnimator?.finishAnimation(at: .current)
         currentHideAnimator = nil
 
-        let animator = UIViewPropertyAnimator(duration: Constant.controlViewShowAnimationDuration, curve: .linear) { [weak self] in
+        let animator = UIViewPropertyAnimator(duration: Constants.controlViewShowAnimationDuration, curve: .linear) { [weak self] in
             self?.activeControlView.alpha = 1
         }
 

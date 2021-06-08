@@ -13,11 +13,11 @@ import UIKit
 
 class SlideInPresentationController: UIPresentationController {
 
-    private var direction: SlideInPresentationManager.PresentationDirection
+    private var direction: PresentationManager.PresentationDirection
 
     private var dimmingView: UIView?
 
-    init(presentedViewController: UIViewController, presenting presentingViewController: UIViewController?, direction: SlideInPresentationManager.PresentationDirection) {
+    init(presentedViewController: UIViewController, presenting presentingViewController: UIViewController?, direction: PresentationManager.PresentationDirection) {
         self.direction = direction
         super.init(presentedViewController: presentedViewController, presenting: presentingViewController)
 
@@ -86,7 +86,9 @@ class SlideInPresentationController: UIPresentationController {
 
     override func presentationTransitionWillBegin() {
         guard let dimmingView = dimmingView else {
-            containerView?.setValue(true, forKey: "ignoreDirectTouchEvents")
+            if let container = containerView, container.responds(to: NSSelectorFromString("setIgnoreDirectTouchEvents:")) {
+                container.setValue(true, forKey: "ignoreDirectTouchEvents")
+            }
             return
         }
         containerView?.insertSubview(dimmingView, at: 0)
