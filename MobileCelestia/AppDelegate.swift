@@ -35,6 +35,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+
+        setlocale(LC_ALL, "")
+        setlocale(LC_NUMERIC, "C");
+
         #if targetEnvironment(macCatalyst)
         MacBridge.initialize()
 
