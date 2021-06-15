@@ -79,16 +79,6 @@ jobs:
     displayName: 'Install Provision File (Catalyst)'
     condition: eq( variables['sdk'], 'macosx' )
 
-  - task: ios-bundle-version@1
-    inputs:
-      sourcePath: '$(system.defaultworkingdirectory)/MobileCelestia/MobileCelestia/Info.plist'
-      versionCodeOption: 'buildid'
-      versionCode: '$(Build.BuildId)'
-      versionCodeOffset: '53'
-      versionName:
-      printFile: true
-    displayName: 'Update Bundle Version'
-
   - task: Xcode@5
     inputs:
       actions: 'build'
