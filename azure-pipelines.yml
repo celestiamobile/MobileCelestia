@@ -1,0 +1,31 @@
+resources:
+  repositories:
+  - repository: Celestia
+    type: github
+    endpoint: GithubAuth
+    name: levinli303/Celestia
+  - repository: CelestiaCore
+    type: github
+    endpoint: GithubAuth
+    name: levinli303/CelestiaCore
+
+trigger:
+  branches:
+    include: 
+    - releases/*
+    - master
+
+stages:
+- stage: Build_iOS
+  displayName: 'Build iOS'
+  jobs:
+  - template: jobs/build.yml
+    parameters:
+      sdk: iphoneos
+- stage: Build_Catalyst
+  displayName: 'Build Catalyst'
+  dependsOn: []
+  jobs:
+  - template: jobs/build.yml
+    parameters:
+      sdk: macosx
