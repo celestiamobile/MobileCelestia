@@ -39,11 +39,6 @@ jobs:
     condition: eq( variables['sdk'], 'macosx' )
 
   - script: |
-      cd CelestiaCore/libs/dependency
-      git reset --hard 43735316698933c20d51406454af80b5ccced6c0
-    displayName: 'Downgrade Thirdparty Dependencies'
-
-  - script: |
       cd MobileCelestia
       pod deintegrate
       pod install
@@ -90,7 +85,8 @@ jobs:
       sdk: $(sdk)
       configuration: 'Release'
       xcWorkspacePath: '$(system.defaultworkingdirectory)/MobileCelestia/MobileCelestia.xcworkspace'
-      xcodeVersion: 'default'
+      xcodeVersion: 'specifyPath'
+      xcodeDeveloperDir: '/Applications/Xcode_12.5.app/Contents/Developer'
       exportPath: '$(agent.buildDirectory)/output/$(sdk)'
       archivePath: '$(system.defaultworkingdirectory)/archive'
     displayName: 'Build'
