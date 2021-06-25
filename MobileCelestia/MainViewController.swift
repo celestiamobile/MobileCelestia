@@ -29,9 +29,9 @@ class MainViewController: UIViewController {
     private var status: LoadingStatus = .notLoaded
     private var retried: Bool = false
 
-    private lazy var toolbarSlideInManager = SlideInPresentationManager(direction: UIView.userInterfaceLayoutDirection(for: self.view.semanticContentAttribute) == .rightToLeft ? .left : .right)
-    private lazy var endSlideInManager = SlideInPresentationManager(direction: UIView.userInterfaceLayoutDirection(for: self.view.semanticContentAttribute) == .rightToLeft ? .left : .right, usesFormSheetForRegular: true)
-    private lazy var bottomSlideInManager = SlideInPresentationManager(direction: UIView.userInterfaceLayoutDirection(for: self.view.semanticContentAttribute) == .rightToLeft ? .bottomRight : .bottomLeft)
+    private lazy var toolbarSlideInManager = PresentationManager(direction: UIView.userInterfaceLayoutDirection(for: self.view.semanticContentAttribute) == .rightToLeft ? .left : .right)
+    private lazy var endSlideInManager = PresentationManager(direction: UIView.userInterfaceLayoutDirection(for: self.view.semanticContentAttribute) == .rightToLeft ? .left : .right, useSheetIfPossible: true)
+    private lazy var bottomSlideInManager = PresentationManager(direction: UIView.userInterfaceLayoutDirection(for: self.view.semanticContentAttribute) == .rightToLeft ? .bottomRight : .bottomLeft)
 
     private lazy var core = CelestiaAppCore.shared
 
@@ -99,7 +99,7 @@ extension MainViewController {
         }
         browser.allowsMultipleSelection = false
         browser.delegate = self
-        present(browser, animated: true, completion: nil)
+        presentAfterDismissCurrent(browser, animated: true)
     }
 
     @objc private func newURLOpened(_ notification: Notification) {
@@ -534,14 +534,12 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     private func showViewController(_ viewController: UIViewController,
-                                    iOSPreferredSize: CGSize = CGSize(width: 300, height: 300),
-                                    macOSPreferredSize: CGSize = CGSize(width: 400, height: 500),
-                                    formSheetPreferredContentSize: CGSize = CGSize(width: 400, height: 500)) {
+                                    iOSPreferredSize: CGSize = CGSize(width: 320, height: 320),
+                                    macOSPreferredSize: CGSize = CGSize(width: 400, height: 500)) {
         #if targetEnvironment(macCatalyst)
         PanelSceneDelegate.present(viewController, preferredSize: macOSPreferredSize)
         #else
-        viewController.regularPreferredContentSize = iOSPreferredSize
-        viewController.formSheetPreferredContentSize = formSheetPreferredContentSize
+        viewController.preferredContentSize = iOSPreferredSize
         viewController.modalPresentationStyle = .custom
         viewController.transitioningDelegate = endSlideInManager
 
@@ -641,7 +639,7 @@ extension MainViewController {
         }
         picker.shouldShowFileExtensions = true
         picker.allowsMultipleSelection = false
-        present(picker, animated: true, completion: nil)
+        presentAfterDismissCurrent(picker, animated: true)
     }
     #else
     private func showShareSheet(for image: UIImage) {

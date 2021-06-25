@@ -13,11 +13,11 @@ import UIKit
 
 final class SlideInPresentationAnimator: NSObject {
     // MARK: - Properties
-    let direction: SlideInPresentationManager.PresentationDirection
+    let direction: PresentationManager.PresentationDirection
     let isPresentation: Bool
 
     // MARK: - Initializers
-    init(direction: SlideInPresentationManager.PresentationDirection, isPresentation: Bool) {
+    init(direction: PresentationManager.PresentationDirection, isPresentation: Bool) {
         self.direction = direction
         self.isPresentation = isPresentation
         super.init()
@@ -68,7 +68,53 @@ extension SlideInPresentationAnimator: UIViewControllerAnimatedTransitioning {
     }
 }
 
-class SlideInPresentationManager: NSObject {
+final class SheetPresentationAnimator: NSObject {
+    // MARK: - Properties
+    let isPresentation: Bool
+
+    // MARK: - Initializers
+    init(isPresentation: Bool) {
+        self.isPresentation = isPresentation
+        super.init()
+    }
+}
+
+extension SheetPresentationAnimator: UIViewControllerAnimatedTransitioning {
+    func transitionDuration(using transitionContext: UIViewControllerContextTransitioning?) -> TimeInterval {
+        return 0.3
+    }
+
+    func animateTransition(using transitionContext: UIViewControllerContextTransitioning) {
+        let key: UITransitionContextViewControllerKey = isPresentation ? .to : .from
+
+        guard let controller = transitionContext.viewController(forKey: key)
+            else { return }
+
+        if isPresentation {
+            transitionContext.containerView.addSubview(controller.view)
+        }
+
+        let presentedFrame = transitionContext.finalFrame(for: controller)
+        var dismissedFrame = presentedFrame
+        dismissedFrame.origin.y = transitionContext.containerView.frame.size.height
+
+        let initialFrame = isPresentation ? dismissedFrame : presentedFrame
+        let finalFrame = isPresentation ? presentedFrame : dismissedFrame
+
+        let animationDuration = transitionDuration(using: transitionContext)
+        controller.view.frame = initialFrame
+        UIView.animate(withDuration: animationDuration, animations: {
+            controller.view.frame = finalFrame
+        }, completion: { finished in
+            if !self.isPresentation {
+                controller.view.removeFromSuperview()
+            }
+            transitionContext.completeTransition(finished)
+        })
+    }
+}
+
+class PresentationManager: NSObject {
     enum PresentationDirection {
         case left
         case top
@@ -79,65 +125,46 @@ class SlideInPresentationManager: NSObject {
     }
 
     private let direction: PresentationDirection
-    private let usesFormSheetForRegular: Bool
+    private let useSheetIfPossible: Bool
 
     private var currentTraitCollection: UITraitCollection?
 
-    init(direction: PresentationDirection, usesFormSheetForRegular: Bool = false) {
+    init(direction: PresentationDirection, useSheetIfPossible: Bool = false) {
         self.direction = direction
-        self.usesFormSheetForRegular = usesFormSheetForRegular
+        self.useSheetIfPossible = useSheetIfPossible
         super.init()
     }
 }
 
-extension UIViewController {
-    private struct AssociatedKeys {
-        static var formSheetPreferredContentSize: UInt8 = 0
-        static var regularPreferredContentSize: UInt8 = 0
-    }
-
-    var formSheetPreferredContentSize: CGSize {
-        get { return objc_getAssociatedObject(self, &AssociatedKeys.formSheetPreferredContentSize) as? CGSize ?? regularPreferredContentSize }
-        set { objc_setAssociatedObject(self, &AssociatedKeys.formSheetPreferredContentSize, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
-    }
-
-    var regularPreferredContentSize: CGSize {
-        get { return objc_getAssociatedObject(self, &AssociatedKeys.regularPreferredContentSize) as? CGSize ?? preferredContentSize }
-        set { objc_setAssociatedObject(self, &AssociatedKeys.regularPreferredContentSize, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
-    }
-}
-
-extension SlideInPresentationManager: UIViewControllerTransitioningDelegate {
+extension PresentationManager: UIViewControllerTransitioningDelegate {
     func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
+        if useSheetIfPossible {
+            let pc = SheetPresentationController(presentedViewController: presented, presenting: presenting)
+            pc.delegate = self
+            return pc
+        }
         let pc = SlideInPresentationController(presentedViewController: presented, presenting: presenting, direction: direction)
         pc.delegate = self
         return pc
     }
 
     func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        if #available(iOS 13.0, *), currentTraitCollection?.verticalSizeClass == .regular && currentTraitCollection?.horizontalSizeClass == .regular && usesFormSheetForRegular {
-            return nil
+        if useSheetIfPossible {
+            return SheetPresentationAnimator(isPresentation: true)
         }
         return SlideInPresentationAnimator(direction: direction, isPresentation: true)
     }
 
     func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        if #available(iOS 13.0, *), currentTraitCollection?.verticalSizeClass == .regular && currentTraitCollection?.horizontalSizeClass == .regular && usesFormSheetForRegular {
-            return nil
+        if useSheetIfPossible {
+            return SheetPresentationAnimator(isPresentation: false)
         }
         return SlideInPresentationAnimator(direction: direction, isPresentation: false)
     }
 }
 
-extension SlideInPresentationManager: UIAdaptivePresentationControllerDelegate {
+extension PresentationManager: UIAdaptivePresentationControllerDelegate {
     func adaptivePresentationStyle(for controller: UIPresentationController, traitCollection: UITraitCollection) -> UIModalPresentationStyle {
-        if #available(iOS 13.0, *), traitCollection.horizontalSizeClass == .regular && traitCollection.verticalSizeClass == .regular && usesFormSheetForRegular {
-            currentTraitCollection = traitCollection
-            controller.presentedViewController.preferredContentSize = controller.presentedViewController.formSheetPreferredContentSize
-            return .formSheet
-        }
-        currentTraitCollection = traitCollection
-        controller.presentedViewController.preferredContentSize = controller.presentedViewController.regularPreferredContentSize
         return .none
     }
 }
