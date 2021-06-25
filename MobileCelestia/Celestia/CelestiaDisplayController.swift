@@ -58,6 +58,12 @@ class CelestiaDisplayController: AsyncGLViewController {
         NotificationCenter.default.removeObserver(self, name: Self.windowWillStartLiveResizeNotification, object: nil)
         NotificationCenter.default.removeObserver(self, name: Self.windowDidEndLiveResizeNotification, object: nil)
     }
+    #else
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        view.contentMode = .center
+    }
     #endif
 
     override func viewSafeAreaInsetsDidChange() {
@@ -108,7 +114,6 @@ class CelestiaDisplayController: AsyncGLViewController {
             self?.isPaused = false
         }
     }
-
     #endif
 }
 
