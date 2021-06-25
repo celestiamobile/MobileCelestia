@@ -44,10 +44,12 @@ class FavoriteCoordinatorController: UIViewController {
 
     private let root: FavoriteRoot
     private let selected: (Any) -> Void
+    private let share: (Any, UIViewController) -> Void
 
-    init(root: FavoriteRoot, selected: @escaping (Any) -> Void) {
+    init(root: FavoriteRoot, selected: @escaping (Any) -> Void, share: @escaping (Any, UIViewController) -> Void) {
         self.root = root
         self.selected = selected
+        self.share = share
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -149,6 +151,8 @@ private extension FavoriteCoordinatorController {
                 fatalError()
             }
             return CelestiaAppCore.shared.currentBookmark as? T.Item
+        }, share: { [weak self] object, viewController in
+            self?.share(object, viewController)
         })
     }
 }

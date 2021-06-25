@@ -94,6 +94,7 @@ protocol FavoriteItem {
     var isLeaf: Bool { get }
     var itemList: ItemList? { get }
     var canBeRenamed: Bool { get }
+    var canBeShared: Bool { get }
 
     func rename(to name: String)
 }
@@ -116,6 +117,7 @@ extension BookmarkNode: FavoriteItem {
     }
 
     var canBeRenamed: Bool { return true }
+    var canBeShared: Bool { return isLeaf }
 
     func rename(to name: String) {
         self.name = name
@@ -139,6 +141,7 @@ extension CelestiaScript: FavoriteItem {
     }
 
     var canBeRenamed: Bool { return false }
+    var canBeShared: Bool { return false }
 
     func rename(to name: String) {
         fatalError()
@@ -166,6 +169,7 @@ extension CelestiaDestination: FavoriteItem {
     }
 
     var canBeRenamed: Bool { return false }
+    var canBeShared: Bool { return false }
 
     func rename(to name: String) {
         fatalError()
@@ -177,11 +181,13 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: BaseTableViewContr
 
     private let selection: (ItemList.Item) -> Void
     private let add: (() -> ItemList.Item?)?
+    private let share: (ItemList.Item, FavoriteItemViewController<ItemList>) -> Void
 
-    init(item: ItemList, selection: @escaping (ItemList.Item) -> Void, add: (() -> ItemList.Item?)?) {
+    init(item: ItemList, selection: @escaping (ItemList.Item) -> Void, add: (() -> ItemList.Item?)?, share: @escaping (ItemList.Item, FavoriteItemViewController<ItemList>) -> Void) {
         self.itemList = item
         self.selection = selection
         self.add = add
+        self.share = share
         super.init(style: .defaultGrouped)
     }
 
@@ -295,6 +301,13 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: BaseTableViewContr
                     }
                 )
             }
+            if item.canBeShared {
+                actions.append(
+                    UIAction(title: CelestiaString("Share", comment: ""), image: UIImage(systemName: "square.and.arrow.up"), identifier: nil) { (_) in
+                        self.requestShareObject(at: indexPath.row)
+                    }
+                )
+            }
             guard actions.count > 0 else { return nil }
             return UIMenu(title: "", image: nil, identifier: nil, children: actions)
         }
@@ -336,6 +349,11 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: BaseTableViewContr
             self.tableView.reloadData()
             completionHandler?(true)
         }
+    }
+
+    private func requestShareObject(at index: Int) {
+        let item = itemList[index]
+        share(item, self)
     }
 }
 

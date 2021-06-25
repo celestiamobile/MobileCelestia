@@ -339,26 +339,23 @@ extension MainViewController: CelestiaControllerDelegate {
 
             DispatchQueue.main.async {
                 guard let self = self else { return }
-                self.showTextInput(
-                    CelestiaString("Share", comment: ""),
-                    message: CelestiaString("Please enter a description of the content.", comment: ""),
-                    text: name) { description in
-                    guard let title = description else { return }
-                    self.submitURL(url, title: title)
-                }
+                self.requestShareURL(url, placeholder: name)
             }
         }
     }
 
     private func presentFavorite(_ root: FavoriteRoot) {
-        let controller = FavoriteCoordinatorController(root: root) { [unowned self] object in
+        let controller = FavoriteCoordinatorController(root: root, selected: { [unowned self] object in
             if let url = object as? URL {
                 urlToRun = UniformedURL(url: url, securityScoped: false)
                 self.checkNeedOpeningURL()
             } else if let destination = object as? CelestiaDestination {
                 self.core.run { $0.simulation.goToDestination(destination) }
             }
-        }
+        }, share: { object, viewController in
+            guard let node = object as? BookmarkNode, node.isLeaf else { return }
+            viewController.requestShareURL(node.url, placeholder: node.name)
+        })
         #if targetEnvironment(macCatalyst)
         showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600))
         #else
@@ -546,24 +543,6 @@ extension MainViewController: CelestiaControllerDelegate {
         presentAfterDismissCurrent(viewController, animated: true)
         #endif
     }
-
-    private func configurePopover(for viewController: UIViewController) {
-        viewController.modalPresentationStyle = .popover
-        viewController.popoverPresentationController?.sourceView = view
-        viewController.popoverPresentationController?.sourceRect = CGRect(x: view.frame.midX, y: view.frame.midY, width: 0, height: 0)
-        viewController.popoverPresentationController?.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
-        viewController.preferredContentSize = CGSize(width: 400, height: 500)
-    }
-
-    private func presentAfterDismissCurrent(_ viewController: UIViewController, animated: Bool) {
-        if presentedViewController == nil || presentedViewController?.isBeingDismissed == true {
-            present(viewController, animated: animated)
-        } else {
-            dismiss(animated: animated) { [weak self] in
-                self?.present(viewController, animated: animated)
-            }
-        }
-    }
 }
 
 extension MainViewController {
@@ -586,20 +565,30 @@ extension MainViewController {
     }
 }
 
-extension MainViewController {
-    private func submitURL(_ url: String, title: String) {
+extension UIViewController {
+    func requestShareURL(_ url: String, placeholder: String) {
+        showTextInput(
+            CelestiaString("Share", comment: ""),
+            message: CelestiaString("Please enter a description of the content.", comment: ""),
+            text: placeholder) { [unowned self] description in
+            guard let title = description else { return }
+            self.submitURL(url, title: title)
+        }
+    }
+
+    func submitURL(_ url: String, title: String) {
         let requestURL = apiPrefix + "/create"
 
         struct URLCreationResponse: Decodable {
             let publicURL: String
         }
 
-        let showUnknownError: () -> Void = { [unowned self] in
-            self.showError(CelestiaString("Unknown error", comment: ""))
+        let showShareFail: () -> Void = { [unowned self] in
+            self.showError(CelestiaString("Cannot share URL", comment: ""))
         }
 
         guard let data = url.data(using: .utf8) else {
-            showUnknownError()
+            showShareFail()
             return
         }
 
@@ -611,24 +600,44 @@ extension MainViewController {
         ], success: { [unowned self] (result: URLCreationResponse) in
             alert.dismiss(animated: true) {
                 guard let url = URL(string: result.publicURL) else {
-                    showUnknownError()
+                    showShareFail()
                     return
                 }
                 self.showShareSheet(for: url)
             }
-        }, failure: { (error) in
+        }, failure: { _ in
             alert.dismiss(animated: true) {
-                showUnknownError()
+                showShareFail()
             }
         })
     }
 
-    private func showShareSheet(for url: URL) {
+    func showShareSheet(for url: URL) {
         let activityController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
         configurePopover(for: activityController)
         presentAfterDismissCurrent(activityController, animated: true)
     }
 
+    func configurePopover(for viewController: UIViewController) {
+        viewController.modalPresentationStyle = .popover
+        viewController.popoverPresentationController?.sourceView = view
+        viewController.popoverPresentationController?.sourceRect = CGRect(x: view.frame.midX, y: view.frame.midY, width: 0, height: 0)
+        viewController.popoverPresentationController?.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
+        viewController.preferredContentSize = CGSize(width: 400, height: 500)
+    }
+
+    func presentAfterDismissCurrent(_ viewController: UIViewController, animated: Bool) {
+        if presentedViewController == nil || presentedViewController?.isBeingDismissed == true {
+            present(viewController, animated: animated)
+        } else {
+            dismiss(animated: animated) { [weak self] in
+                self?.present(viewController, animated: animated)
+            }
+        }
+    }
+}
+
+extension MainViewController {
     #if targetEnvironment(macCatalyst)
     private func saveFile(_ path: String) {
         let picker: UIDocumentPickerViewController
