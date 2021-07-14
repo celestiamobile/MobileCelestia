@@ -17,8 +17,21 @@ import CelestiaCore
 class MainSceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
 
+    static var mainWindowSessionIdentifier: String?
+
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = scene as? UIWindowScene else { return }
+
+        if Self.mainWindowSessionIdentifier != nil {
+            let window = UIWindow(windowScene: windowScene)
+            window.overrideUserInterfaceStyle = .dark
+            window.rootViewController = UnsupportedViewController()
+            self.window = window
+            window.makeKeyAndVisible()
+            return
+        }
+
+        Self.mainWindowSessionIdentifier = scene.session.persistentIdentifier
 
         #if targetEnvironment(macCatalyst)
         windowScene.titlebar?.autoHidesToolbarInFullScreen = true
@@ -51,6 +64,30 @@ class MainSceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
+        if scene.session.persistentIdentifier != Self.mainWindowSessionIdentifier {
+            return
+        }
         exit(0)
+    }
+
+    // Temporary workaround for multiple windows
+    class UnsupportedViewController: UIViewController {
+        override func loadView() {
+            let containerView = UIView()
+            containerView.backgroundColor = .systemBackground
+            let label = UILabel()
+            label.numberOfLines = 0
+            label.text = "Multiple Celestia windows within a single instance is supported, please send an e-mail to lilinfeng.app@outlook.com with reproduction steps."
+            containerView.addSubview(label)
+            label.translatesAutoresizingMaskIntoConstraints = false
+            label.textColor = .label
+            label.font = UIFont.preferredFont(forTextStyle: .body)
+            NSLayoutConstraint.activate([
+                label.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+                label.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
+                label.leadingAnchor.constraint(greaterThanOrEqualTo: containerView.leadingAnchor, constant: 16),
+            ])
+            view = containerView
+        }
     }
 }
