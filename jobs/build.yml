@@ -84,8 +84,8 @@ jobs:
       scheme: 'MobileCelestia'
       sdk: $(sdk)
       configuration: 'Release'
+      xcWorkspacePath: '$(system.defaultworkingdirectory)/MobileCelestia/MobileCelestia.xcworkspace'
       xcodeVersion: 'default'
-      xcodeDeveloperDir: '/Applications/Xcode_12.5.app/Contents/Developer'
       exportPath: '$(agent.buildDirectory)/output/$(sdk)'
       archivePath: '$(system.defaultworkingdirectory)/archive'
     displayName: 'Build'
