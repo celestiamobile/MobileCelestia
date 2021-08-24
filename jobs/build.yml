@@ -2,7 +2,7 @@ jobs:
 - job: Build
   displayName: 'Build'
   pool:
-    vmImage: 'macos-latest'
+    vmImage: 'macos-11'
 
   variables:
     sdk: ${{ parameters.sdk }}
