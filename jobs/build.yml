@@ -2,7 +2,7 @@ jobs:
 - job: Build
   displayName: 'Build'
   pool:
-    vmImage: 'macos-latest'
+    vmImage: 'macos-11'
 
   variables:
     sdk: ${{ parameters.sdk }}
@@ -37,11 +37,6 @@ jobs:
       git cherry-pick origin/angle
     displayName: 'Cherry-Pick ANGLE Commit'
     condition: eq( variables['sdk'], 'macosx' )
-
-  - script: |
-      cd CelestiaCore/libs/dependency
-      git reset --hard 43735316698933c20d51406454af80b5ccced6c0
-    displayName: 'Downgrade Thirdparty Dependencies'
 
   - script: |
       cd MobileCelestia
