@@ -85,7 +85,7 @@ jobs:
       sdk: $(sdk)
       configuration: 'Release'
       xcWorkspacePath: '$(system.defaultworkingdirectory)/MobileCelestia/MobileCelestia.xcworkspace'
-      xcodeVersion: 'default'
+      xcodeVersion: '13'
       exportPath: '$(agent.buildDirectory)/output/$(sdk)'
       archivePath: '$(system.defaultworkingdirectory)/archive'
     displayName: 'Build'
