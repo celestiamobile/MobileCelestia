@@ -6,7 +6,7 @@ target 'MobileCelestia' do
   pod 'AppCenter/Analytics'
   pod 'AppCenter/Crashes'
   pod 'SDWebImage', '~> 5.0'
-  pod 'Zip', '~> 2.1'
+  pod 'Zip', :git => 'https://github.com/maparoni/Zip', :commit => '059e7346082d02de16220cd79df7db18ddeba8c3'
 
   pod "MWRequest", :git => "https://github.com/levinli303/mwrequest.git", :tag => "0.2.4"
   pod "AsyncGL", :git => "https://github.com/levinli303/AsyncGL.git", :tag => "0.0.5"
