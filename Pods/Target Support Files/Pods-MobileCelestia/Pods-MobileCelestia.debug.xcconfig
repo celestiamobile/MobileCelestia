@@ -1,10 +1,10 @@
 ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES
 CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = NO
-FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/AsyncGL" "${PODS_CONFIGURATION_BUILD_DIR}/MWRequest" "${PODS_CONFIGURATION_BUILD_DIR}/SDWebImage" "${PODS_CONFIGURATION_BUILD_DIR}/Zip" "${PODS_ROOT}/AppCenter/AppCenter-SDK-Apple" "${PODS_XCFRAMEWORKS_BUILD_DIR}/AppCenter/Analytics" "${PODS_XCFRAMEWORKS_BUILD_DIR}/AppCenter/Core" "${PODS_XCFRAMEWORKS_BUILD_DIR}/AppCenter/Crashes"
+FRAMEWORK_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/AsyncGL" "${PODS_CONFIGURATION_BUILD_DIR}/MWRequest" "${PODS_CONFIGURATION_BUILD_DIR}/SDWebImage" "${PODS_CONFIGURATION_BUILD_DIR}/ZIPFoundation" "${PODS_ROOT}/AppCenter/AppCenter-SDK-Apple" "${PODS_XCFRAMEWORKS_BUILD_DIR}/AppCenter/Analytics" "${PODS_XCFRAMEWORKS_BUILD_DIR}/AppCenter/Core" "${PODS_XCFRAMEWORKS_BUILD_DIR}/AppCenter/Crashes"
 GCC_PREPROCESSOR_DEFINITIONS = $(inherited) COCOAPODS=1
-HEADER_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/AsyncGL/AsyncGL.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/MWRequest/MWRequest.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/SDWebImage/SDWebImage.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/Zip/Zip.framework/Headers" "$(PODS_TARGET_SRCROOT)/GL"
+HEADER_SEARCH_PATHS = $(inherited) "${PODS_CONFIGURATION_BUILD_DIR}/AsyncGL/AsyncGL.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/MWRequest/MWRequest.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/SDWebImage/SDWebImage.framework/Headers" "${PODS_CONFIGURATION_BUILD_DIR}/ZIPFoundation/ZIPFoundation.framework/Headers" "$(PODS_TARGET_SRCROOT)/GL"
 LIBRARY_SEARCH_PATHS = $(inherited) "${DT_TOOLCHAIN_DIR}/usr/lib/swift/${PLATFORM_NAME}" /usr/lib/swift
-OTHER_LDFLAGS = $(inherited) -ObjC -l"c++" -l"sqlite3" -l"z" -framework "AppCenter" -framework "AppCenterAnalytics" -framework "AppCenterCrashes" -framework "AsyncGL" -framework "CoreTelephony" -framework "Foundation" -framework "ImageIO" -framework "MWRequest" -framework "SDWebImage" -framework "SystemConfiguration" -framework "UIKit" -framework "Zip"
+OTHER_LDFLAGS = $(inherited) -ObjC -l"c++" -l"sqlite3" -l"z" -framework "AppCenter" -framework "AppCenterAnalytics" -framework "AppCenterCrashes" -framework "AsyncGL" -framework "CoreTelephony" -framework "Foundation" -framework "ImageIO" -framework "MWRequest" -framework "SDWebImage" -framework "SystemConfiguration" -framework "UIKit" -framework "ZIPFoundation"
 OTHER_SWIFT_FLAGS = $(inherited) -D COCOAPODS
 PODS_BUILD_DIR = ${BUILD_DIR}
 PODS_CONFIGURATION_BUILD_DIR = ${PODS_BUILD_DIR}/$(CONFIGURATION)$(EFFECTIVE_PLATFORM_NAME)

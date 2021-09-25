@@ -10,7 +10,7 @@
 //
 
 import Foundation
-import Zip
+import ZIPFoundation
 
 enum ResourceManagerError: Error {
     case addonDirectoryNotExists
@@ -129,11 +129,15 @@ final class ResourceManager {
         guard let addonDirectory = Self.extraAddonDirectory else {
             throw ResourceManagerError.addonDirectoryNotExists
         }
+        let fm = FileManager.default
         // We need to first move to a .zip path
         let movedPath = URL(fileURLWithPath: NSTemporaryDirectory() + "/\(UUID().uuidString).zip")
-        try FileManager.default.moveItem(at: zipFilePath, to: movedPath)
+        try fm.moveItem(at: zipFilePath, to: movedPath)
         let destinationURL = addonDirectory.appendingPathComponent(identifier)
-        _ = try Zip.unzipFile(movedPath, destination: destinationURL, overwrite: true, password: nil)
+        if !fm.fileExists(atPath: destinationURL.path) {
+            try fm.createDirectory(at: destinationURL, withIntermediateDirectories: true, attributes: nil)
+        }
+        try fm.unzipItem(at: movedPath, to: destinationURL)
         return destinationURL
     }
 }

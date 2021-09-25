@@ -9,7 +9,7 @@ PODS:
   - SDWebImage (5.11.1):
     - SDWebImage/Core (= 5.11.1)
   - SDWebImage/Core (5.11.1)
-  - Zip (2.1.1)
+  - ZIPFoundation (0.9.11)
 
 DEPENDENCIES:
   - AppCenter/Analytics
@@ -17,12 +17,14 @@ DEPENDENCIES:
   - AsyncGL (from `https://github.com/levinli303/AsyncGL.git`, tag `0.0.5`)
   - MWRequest (from `https://github.com/levinli303/mwrequest.git`, tag `0.2.4`)
   - SDWebImage (~> 5.0)
-  - Zip (from `https://github.com/maparoni/Zip`, commit `059e7346082d02de16220cd79df7db18ddeba8c3`)
+  - ZIPFoundation (~> 0.9)
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
     - AppCenter
     - SDWebImage
+  trunk:
+    - ZIPFoundation
 
 EXTERNAL SOURCES:
   AsyncGL:
@@ -31,9 +33,6 @@ EXTERNAL SOURCES:
   MWRequest:
     :git: https://github.com/levinli303/mwrequest.git
     :tag: 0.2.4
-  Zip:
-    :commit: 059e7346082d02de16220cd79df7db18ddeba8c3
-    :git: https://github.com/maparoni/Zip
 
 CHECKOUT OPTIONS:
   AsyncGL:
@@ -42,17 +41,14 @@ CHECKOUT OPTIONS:
   MWRequest:
     :git: https://github.com/levinli303/mwrequest.git
     :tag: 0.2.4
-  Zip:
-    :commit: 059e7346082d02de16220cd79df7db18ddeba8c3
-    :git: https://github.com/maparoni/Zip
 
 SPEC CHECKSUMS:
   AppCenter: cd53e3ed3563cc720bcb806c9731a12389b40d44
   AsyncGL: 928a54852bcb9221106641b372913c28ad574de9
   MWRequest: 8cbe368d811864da8c7398aa5007be520e685274
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
-  Zip: 414f59909701fda9a84ab774ebe0f5449b1082cc
+  ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
 
-PODFILE CHECKSUM: 16462717741402cd60ddc61c6dd3e477824e9998
+PODFILE CHECKSUM: 4fa44db3d051557b8e24b7c91355e7d291766dda
 
 COCOAPODS: 1.11.2
