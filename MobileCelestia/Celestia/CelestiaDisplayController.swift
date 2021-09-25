@@ -38,6 +38,7 @@ class CelestiaDisplayController: AsyncGLViewController {
     private var configFileURL: UniformedURL!
 
     private var currentViewScale: CGFloat = 1
+    private let initialFrameRate: Int
 
     weak var delegate: CelestiaDisplayControllerDelegate?
 
@@ -45,6 +46,15 @@ class CelestiaDisplayController: AsyncGLViewController {
     private static let windowWillStartLiveResizeNotification = Notification.Name("NSWindowWillStartLiveResizeNotification")
     private static let windowDidEndLiveResizeNotification = Notification.Name("NSWindowDidEndLiveResizeNotification")
     #endif
+
+    init(msaaEnabled: Bool, frameRate: Int) {
+        initialFrameRate = frameRate
+        super.init(msaaEnabled: msaaEnabled)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     #if targetEnvironment(macCatalyst)
     override func viewDidLoad() {

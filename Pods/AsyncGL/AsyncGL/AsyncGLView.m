@@ -56,6 +56,7 @@ typedef enum EGLRenderingAPI : int
 @property (nonatomic) GLuint renderProgVboId;
 @property (nonatomic) GLsizei width;
 @property (nonatomic) GLsizei height;
+@property (atomic) NSThread *thread;
 @end
 
 @implementation PassthroughGLLayer
@@ -71,7 +72,7 @@ typedef enum EGLRenderingAPI : int
 
 - (BOOL)canDrawInCGLContext:(CGLContextObj)ctx pixelFormat:(CGLPixelFormatObj)pf forLayerTime:(CFTimeInterval)t displayTime:(const CVTimeStamp *)ts
 {
-    return ![NSThread isMainThread];
+    return [[NSThread currentThread] isEqual:_thread];
 }
 
 - (void)drawInCGLContext:(CGLContextObj)ctx pixelFormat:(CGLPixelFormatObj)pf forLayerTime:(CFTimeInterval)t displayTime:(const CVTimeStamp *)ts
@@ -311,7 +312,9 @@ typedef enum EGLRenderingAPI : int
     glBindRenderbuffer(GL_RENDERBUFFER, _renderbuffer);
     [_renderContext presentRenderbuffer:_renderbuffer];
 #else
+    [_glLayer setThread:[NSThread currentThread]];
     [_glLayer display];
+    [_glLayer setThread:nil];
 #endif
 #endif
 }

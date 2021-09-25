@@ -24,6 +24,7 @@ enum SettingType: Hashable {
     case render
     case time
     case dataLocation
+    case frameRate
     case checkmark
     case custom
 }
@@ -655,6 +656,7 @@ let mainSetting = [
                     )
                 )
             ),
+            SettingItem(name: CelestiaString("Frame Rate", comment: ""), type: .frameRate, associatedItem: .init(0)),
             SettingItem(name: CelestiaString("Data Location", comment: ""), type: .dataLocation, associatedItem: .init(0)),
         ]),
     SettingSection(

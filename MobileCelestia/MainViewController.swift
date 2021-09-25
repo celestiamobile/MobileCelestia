@@ -38,7 +38,8 @@ class MainViewController: UIViewController {
     private var viewControllerStack: [UIViewController] = []
 
     #if !targetEnvironment(macCatalyst)
-    private var currentExternalScreen: UIScreen?
+    private var currentExternalScreenToSwitchTo: UIScreen?
+    private var currentDisplayingScreen: UIScreen = .main
     #endif
 
     private var urlToRun: UniformedURL?
@@ -145,32 +146,34 @@ extension MainViewController {
     @objc private func newScreenConnected(_ notification: Notification) {
         guard let newScreen = notification.object as? UIScreen else { return }
         // Avoid handling connecting to a new screen when we are working on a screen already
-        guard currentExternalScreen == nil else { return }
+        guard currentExternalScreenToSwitchTo == nil else { return }
 
-        currentExternalScreen = newScreen
+        currentExternalScreenToSwitchTo = newScreen
         showOption(CelestiaString("An external screen is connected, do you want to display Celestia on the external screen?", comment: "")) { [weak self] choice in
             guard choice, let self = self else { return }
-            self.currentExternalScreen = nil
+            self.currentExternalScreenToSwitchTo = nil
 
             guard self.celestiaController.moveToNewScreen(newScreen) else {
                 self.showError(CelestiaString("Failed to connect to the external screen.", comment: ""))
                 return
             }
+            self.currentDisplayingScreen = newScreen
         }
     }
 
     @objc private func screenDisconnected(_ notification: Notification) {
         guard let screen = notification.object as? UIScreen else { return }
 
-        if screen == currentExternalScreen {
+        if screen == currentExternalScreenToSwitchTo {
             // The screen we are asking to connect is disconnected, dismiss
             // the presented alert controller
             dismiss(animated: true, completion: nil)
-            currentExternalScreen = nil
+            currentExternalScreenToSwitchTo = nil
             return
         }
 
         celestiaController.moveBack(from: screen)
+        currentDisplayingScreen = .main
     }
     #endif
 }
@@ -499,8 +502,19 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     @objc private func showSettings() {
-        let controller = SettingsCoordinatorController() { (_) in
-        }
+        let controller = SettingsCoordinatorController(actionHandler: { [weak self] settingsAction in
+            switch settingsAction {
+            case .refreshFrameRate(let newFrameRate):
+                UserDefaults.app[.frameRate] = newFrameRate
+                self?.celestiaController.updateFrameRate(newFrameRate)
+            }
+        }, screenProvider: { [weak self] in
+            #if targetEnvironment(macCatalyst)
+            return .main
+            #else
+            return self?.currentDisplayingScreen ?? .main
+            #endif
+        })
         #if targetEnvironment(macCatalyst)
         showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600))
         #else

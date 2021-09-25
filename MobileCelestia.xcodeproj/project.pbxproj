@@ -77,6 +77,7 @@
 		EA5D32E7266F9518005D5931 /* SheetPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5D32E6266F9518005D5931 /* SheetPresentationController.swift */; };
 		EA5E185D2477C78E00F5374B /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5E185B2477C78E00F5374B /* Toast.swift */; };
 		EA775EB42664B63F00479295 /* ActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA775EB32664B63F00479295 /* ActionButton.swift */; };
+		EA86E38426FE20C000FF2278 /* SettingsFrameRateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA86E38326FE20C000FF2278 /* SettingsFrameRateViewController.swift */; };
 		EA934C90251D90C500DD284C /* MainSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA934C8F251D90C500DD284C /* MainSceneDelegate.swift */; };
 		EA934C9A251D92AD00DD284C /* PanelSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA934C99251D92A700DD284C /* PanelSceneDelegate.swift */; };
 		EA936F36265FA363007EED66 /* MetalANGLE.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA1BCA92265AA8E2001A0D89 /* MetalANGLE.xcframework */; platformFilter = maccatalyst; };
@@ -242,6 +243,7 @@
 		EA5D32E6266F9518005D5931 /* SheetPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SheetPresentationController.swift; sourceTree = "<group>"; };
 		EA5E185B2477C78E00F5374B /* Toast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
 		EA775EB32664B63F00479295 /* ActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButton.swift; sourceTree = "<group>"; };
+		EA86E38326FE20C000FF2278 /* SettingsFrameRateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsFrameRateViewController.swift; sourceTree = "<group>"; };
 		EA934C8F251D90C500DD284C /* MainSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSceneDelegate.swift; sourceTree = "<group>"; };
 		EA934C99251D92A700DD284C /* PanelSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelSceneDelegate.swift; sourceTree = "<group>"; };
 		EA982BFE25496B6D00CDC642 /* BaseTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTableViewController.swift; sourceTree = "<group>"; };
@@ -390,6 +392,7 @@
 				977394AD2403F08800E38B82 /* SettingsMainViewController.swift */,
 				977394B42403FD4400E38B82 /* SettingCheckViewController.swift */,
 				977394B9240413EF00E38B82 /* SettingSelectionViewController.swift */,
+				EA86E38326FE20C000FF2278 /* SettingsFrameRateViewController.swift */,
 				973BBA632405481200E3B061 /* TimeSettingViewController.swift */,
 				973BBA442405216700E3B061 /* AboutViewController.swift */,
 				97F1141D2408AE06003A06D7 /* DataLocationSelectionViewController.swift */,
@@ -926,6 +929,7 @@
 				EABF792425389B2400F2460C /* ResourceCategory.swift in Sources */,
 				973BBA6624054E9900E3B061 /* TextViewController.swift in Sources */,
 				EA445D15265CF6CD00E5D46A /* LinkPreviewCell.swift in Sources */,
+				EA86E38426FE20C000FF2278 /* SettingsFrameRateViewController.swift in Sources */,
 				979D2F7E23FEB1A6005D2592 /* AppDelegate.swift in Sources */,
 				EA5E185D2477C78E00F5374B /* Toast.swift in Sources */,
 				977394A32403E68800E38B82 /* Color.swift in Sources */,

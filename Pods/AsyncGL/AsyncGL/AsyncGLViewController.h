@@ -33,6 +33,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)clearGL;
 - (void)makeRenderContextCurrent;
 
+#if TARGET_OS_IOS
+- (void)setPreferredFramesPerSecond:(NSInteger)preferredFramesPerSecond API_AVAILABLE(ios(10.0), tvos(10.0));
+- (void)setScreen:(UIScreen *)screen;
+#endif
+
 @end
 
 NS_ASSUME_NONNULL_END
