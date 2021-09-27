@@ -10,6 +10,8 @@
 
 #if TARGET_OS_IOS
 @property (nonatomic) CADisplayLink *displayLink;
+@property (nonatomic) NSInteger internalPreferredFramesPerSecond;
+@property (weak, nonatomic) UIScreen *internalScreen;
 #else
 @property (nonatomic) CVDisplayLinkRef displayLink;
 #endif
@@ -33,6 +35,8 @@
 #if TARGET_OS_IOS
         _pauseOnWillResignActive = YES;
         _resumeOnDidBecomeActive = YES;
+        _internalPreferredFramesPerSecond = -1;
+        _internalScreen = [UIScreen mainScreen];
 #else
         _pauseOnWillResignActive = NO;
         _resumeOnDidBecomeActive = NO;
@@ -166,7 +170,8 @@ static CVReturn displayCallback(CVDisplayLinkRef displayLink,
         });
         dispatch_resume(self.displaySource);
 #if TARGET_OS_IOS
-        self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(requestRender)];
+        self.displayLink = [self.internalScreen displayLinkWithTarget:self selector:@selector(requestRender)];
+        [self setPreferredFramesPerSecond:self.internalPreferredFramesPerSecond displayLink:self.displayLink];
         [self.displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
 #else
         CVDisplayLinkCreateWithActiveCGDisplays(&self->_displayLink);
@@ -205,6 +210,24 @@ static CVReturn displayCallback(CVDisplayLinkRef displayLink,
     [_glView makeRenderContextCurrent];
 }
 
+#if TARGET_OS_IOS
+- (void)setPreferredFramesPerSecond:(NSInteger)preferredFramesPerSecond {
+    _internalPreferredFramesPerSecond = preferredFramesPerSecond;
+    [self setPreferredFramesPerSecond:preferredFramesPerSecond displayLink:_displayLink];
+}
+
+- (void)setScreen:(UIScreen *)screen
+{
+    _internalScreen = screen;
+    if (_displayLink != nil) {
+        [_displayLink invalidate];
+        _displayLink = [screen displayLinkWithTarget:self selector:@selector(requestRender)];
+        [self setPreferredFramesPerSecond:_internalPreferredFramesPerSecond displayLink:_displayLink];
+        [_displayLink addToRunLoop:[NSRunLoop currentRunLoop] forMode:NSRunLoopCommonModes];
+    }
+}
+#endif
+
 #pragma mark - private methods
 - (void)_configureNotifications
 {
@@ -230,6 +253,30 @@ static CVReturn displayCallback(CVDisplayLinkRef displayLink,
 {
     if (_resumeOnDidBecomeActive && _viewIsVisible)
         [self setPaused:NO];
+}
+
+- (void)setPreferredFramesPerSecond:(NSInteger)preferredFramesPerSecond displayLink:(CADisplayLink *)displayLink
+{
+    if (@available(iOS 10.0, *)) {
+        if (preferredFramesPerSecond >= 0) {
+            if (@available(iOS 15, *)) {
+                [displayLink setPreferredFrameRateRange:CAFrameRateRangeMake(1, preferredFramesPerSecond, preferredFramesPerSecond)];
+            } else {
+                [displayLink setPreferredFramesPerSecond:preferredFramesPerSecond];
+            }
+        } else {
+            if (@available(iOS 10.3, *)) {
+                CGFloat maxFramesPerSecond = [self.internalScreen maximumFramesPerSecond];
+                if (@available(iOS 15, *)) {
+                    [displayLink setPreferredFrameRateRange:CAFrameRateRangeMake(1, maxFramesPerSecond, maxFramesPerSecond)];
+                } else {
+                    [displayLink setPreferredFramesPerSecond:maxFramesPerSecond];
+                }
+            } else {
+                [displayLink setPreferredFramesPerSecond:60];
+            }
+        }
+    }
 }
 
 @end

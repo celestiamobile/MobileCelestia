@@ -13,6 +13,7 @@ import UIKit
 import CelestiaCore
 
 enum SettingAction {
+    case refreshFrameRate(newFrameRate: Int)
 }
 
 class SettingsCoordinatorController: UIViewController {
@@ -23,9 +24,11 @@ class SettingsCoordinatorController: UIViewController {
     private var navigation: UINavigationController!
 
     private let actionHandler: ((SettingAction) -> Void)
+    private let screenProvider: (() -> UIScreen)
 
-    init(actionHandler: @escaping ((SettingAction) -> Void)) {
+    init(actionHandler: @escaping ((SettingAction) -> Void), screenProvider: @escaping () -> UIScreen) {
         self.actionHandler = actionHandler
+        self.screenProvider = screenProvider
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -90,6 +93,10 @@ private extension SettingsCoordinatorController {
                 viewController = TextViewController(title: item.name, text: renderInfo)
             case .dataLocation:
                 viewController = DataLocationSelectionViewController()
+            case .frameRate:
+                viewController = SettingsFrameRateViewController(screen: self.screenProvider(), frameRateUpdateHandler: { [weak self] newFrameRate in
+                    self?.actionHandler(.refreshFrameRate(newFrameRate: newFrameRate))
+                })
             case .slider, .prefSwitch, .checkmark, .action, .custom:
                 fatalError("Use .common for slider/action setting item.")
             }

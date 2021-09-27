@@ -37,7 +37,7 @@ protocol CelestiaControllerDelegate: AnyObject {
 class CelestiaViewController: UIViewController {
     weak var delegate: CelestiaControllerDelegate!
 
-    private lazy var displayController = CelestiaDisplayController(msaaEnabled: UserDefaults.app[.msaa] == true)
+    private lazy var displayController = CelestiaDisplayController(msaaEnabled: UserDefaults.app[.msaa] == true, frameRate: UserDefaults.app[.frameRate] ?? 60)
     private var interactionController: CelestiaInteractionController?
 
     private lazy var auxiliaryWindows = [UIWindow]()
@@ -130,6 +130,10 @@ extension CelestiaViewController {
         interactionController?.openURL(url)
     }
 
+    func updateFrameRate(_ newFrameRate: Int) {
+        displayController.setPreferredFramesPerSecond(newFrameRate)
+    }
+
     #if !targetEnvironment(macCatalyst)
     func moveToNewScreen(_ newScreen: UIScreen) -> Bool {
         let newWindow = UIWindow(frame: newScreen.bounds)
@@ -147,6 +151,7 @@ extension CelestiaViewController {
         let dummyViewController = UIViewController()
         dummyViewController.view.backgroundColor = .black
         newWindow.rootViewController = dummyViewController
+        displayController.setScreen(newScreen)
         dummyViewController.install(displayController)
         newWindow.isHidden = false
         auxiliaryWindows.append(newWindow)
@@ -165,6 +170,7 @@ extension CelestiaViewController {
         guard let rootViewController = window.rootViewController, rootViewController.children.contains(displayController) else { return }
         displayController.remove()
         window.rootViewController = nil
+        displayController.setScreen(.main)
         install(displayController)
         view.sendSubviewToBack(displayController.view)
         isMirroring = false
