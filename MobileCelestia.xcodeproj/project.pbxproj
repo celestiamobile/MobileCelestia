@@ -35,9 +35,7 @@
 		977394AE2403F08800E38B82 /* SettingsMainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394AD2403F08800E38B82 /* SettingsMainViewController.swift */; };
 		977394B12403F30900E38B82 /* SettingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394B02403F30900E38B82 /* SettingModel.swift */; };
 		977394B32403F74800E38B82 /* SettingTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394B22403F74800E38B82 /* SettingTextCell.swift */; };
-		977394B52403FD4400E38B82 /* SettingCheckViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394B42403FD4400E38B82 /* SettingCheckViewController.swift */; };
 		977394B8240409CF00E38B82 /* SettingSwitchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394B7240409CF00E38B82 /* SettingSwitchCell.swift */; };
-		977394BA240413EF00E38B82 /* SettingSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394B9240413EF00E38B82 /* SettingSelectionViewController.swift */; };
 		977394BD2404189000E38B82 /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394BC2404189000E38B82 /* SearchViewController.swift */; };
 		977394BF24041A9A00E38B82 /* SearchCoordinatorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394BE24041A9A00E38B82 /* SearchCoordinatorController.swift */; };
 		977CDD2A240BC50A00137127 /* TutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CDD29240BC50A00137127 /* TutorialViewController.swift */; };
@@ -194,9 +192,7 @@
 		977394AD2403F08800E38B82 /* SettingsMainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsMainViewController.swift; sourceTree = "<group>"; };
 		977394B02403F30900E38B82 /* SettingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingModel.swift; sourceTree = "<group>"; };
 		977394B22403F74800E38B82 /* SettingTextCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingTextCell.swift; sourceTree = "<group>"; };
-		977394B42403FD4400E38B82 /* SettingCheckViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingCheckViewController.swift; sourceTree = "<group>"; };
 		977394B7240409CF00E38B82 /* SettingSwitchCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingSwitchCell.swift; sourceTree = "<group>"; };
-		977394B9240413EF00E38B82 /* SettingSelectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingSelectionViewController.swift; sourceTree = "<group>"; };
 		977394BC2404189000E38B82 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		977394BE24041A9A00E38B82 /* SearchCoordinatorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchCoordinatorController.swift; sourceTree = "<group>"; };
 		977CDD29240BC50A00137127 /* TutorialViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialViewController.swift; sourceTree = "<group>"; };
@@ -390,8 +386,6 @@
 			children = (
 				977394AB2403F07C00E38B82 /* SettingsCoordinatorController.swift */,
 				977394AD2403F08800E38B82 /* SettingsMainViewController.swift */,
-				977394B42403FD4400E38B82 /* SettingCheckViewController.swift */,
-				977394B9240413EF00E38B82 /* SettingSelectionViewController.swift */,
 				EA86E38326FE20C000FF2278 /* SettingsFrameRateViewController.swift */,
 				973BBA632405481200E3B061 /* TimeSettingViewController.swift */,
 				973BBA442405216700E3B061 /* AboutViewController.swift */,
@@ -879,7 +873,6 @@
 				973BBA452405216700E3B061 /* AboutViewController.swift in Sources */,
 				EA934C90251D90C500DD284C /* MainSceneDelegate.swift in Sources */,
 				EADE7FBB252B517600D4174F /* CelestiaDisplayController.swift in Sources */,
-				977394BA240413EF00E38B82 /* SettingSelectionViewController.swift in Sources */,
 				973BBA642405481200E3B061 /* TimeSettingViewController.swift in Sources */,
 				EABF794A2538A86500F2460C /* ResourceManager.swift in Sources */,
 				EA544E5F2566BC50003F351D /* DestinationDetailViewController.swift in Sources */,
@@ -914,7 +907,6 @@
 				EA374CDA263A8B770069589C /* GoToInputViewController.swift in Sources */,
 				EA934C9A251D92AD00DD284C /* PanelSceneDelegate.swift in Sources */,
 				97EB41C62408F20700E6D441 /* CameraControlViewController.swift in Sources */,
-				977394B52403FD4400E38B82 /* SettingCheckViewController.swift in Sources */,
 				97F1141E2408AE06003A06D7 /* DataLocationSelectionViewController.swift in Sources */,
 				97FF95A5240A340300E9F44F /* BaseResultHandler.swift in Sources */,
 				EA5D32E7266F9518005D5931 /* SheetPresentationController.swift in Sources */,

@@ -63,18 +63,6 @@ private extension SettingsCoordinatorController {
 
             let viewController: UIViewController
             switch item.type {
-            case .multiSelection:
-                if let associated = item.associatedItem.base as? AssociatedMultiSelectionItem {
-                    viewController = SettingCheckViewController(item: SettingCheckViewController.Item(title: item.name, masterKey: associated.masterKey, subitems: associated.items))
-                } else {
-                    logWrongAssociatedItemType(item.associatedItem)
-                }
-            case .selection:
-                if let associated = item.associatedItem.base as? AssociatedSelectionItem {
-                    viewController = SettingSelectionViewController(item: SettingSelectionViewController.Item(title: item.name, key: associated.key, subitems: associated.items))
-                } else {
-                    logWrongAssociatedItemType(item.associatedItem)
-                }
             case .common:
                 if let associated = item.associatedItem.base as? AssociatedCommonItem {
                     viewController = SettingCommonViewController(item: associated)
@@ -97,7 +85,7 @@ private extension SettingsCoordinatorController {
                 viewController = SettingsFrameRateViewController(screen: self.screenProvider(), frameRateUpdateHandler: { [weak self] newFrameRate in
                     self?.actionHandler(.refreshFrameRate(newFrameRate: newFrameRate))
                 })
-            case .slider, .prefSwitch, .checkmark, .action, .custom:
+            case .slider, .prefSwitch, .checkmark, .action, .custom, .keyedSelection:
                 fatalError("Use .common for slider/action setting item.")
             }
             #if targetEnvironment(macCatalyst)
