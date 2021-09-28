@@ -63,12 +63,6 @@ private extension SettingsCoordinatorController {
 
             let viewController: UIViewController
             switch item.type {
-            case .multiSelection:
-                if let associated = item.associatedItem.base as? AssociatedMultiSelectionItem {
-                    viewController = SettingCheckViewController(item: SettingCheckViewController.Item(title: item.name, masterKey: associated.masterKey, subitems: associated.items))
-                } else {
-                    logWrongAssociatedItemType(item.associatedItem)
-                }
             case .common:
                 if let associated = item.associatedItem.base as? AssociatedCommonItem {
                     viewController = SettingCommonViewController(item: associated)

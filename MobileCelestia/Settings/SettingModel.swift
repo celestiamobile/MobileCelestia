@@ -14,7 +14,6 @@ import Foundation
 import CelestiaCore
 
 enum SettingType: Hashable {
-    case multiSelection
     case slider
     case action
     case prefSwitch
@@ -27,11 +26,6 @@ enum SettingType: Hashable {
     case checkmark
     case custom
     case keyedSelection
-}
-
-struct AssociatedMultiSelectionItem: Hashable {
-    let masterKey: String?
-    let items: [SettingCheckmarkItem]
 }
 
 struct AssociatedSelectionItem: Hashable {
@@ -84,6 +78,22 @@ struct SettingCheckmarkItem: Hashable {
 
     init(name: String, key: String) {
         self.init(name: name, key: key, representation: .checkmark)
+    }
+}
+
+extension Array where Element == SettingCheckmarkItem {
+    func toSection(header: String? = nil, footer: String? = nil) -> SettingCommonItem.Section {
+        return SettingCommonItem.Section(
+            header: header,
+            rows: map({ item in
+                return SettingItem(
+                    name: item.name,
+                    type: .checkmark,
+                    associatedItem: item
+                )
+            }),
+            footer: footer
+        )
     }
 }
 
@@ -158,42 +168,46 @@ let mainSetting = [
         items: [
             SettingItem(
                 name: CelestiaString("Objects", comment: ""),
-                type: .multiSelection,
+                type: .common,
                 associatedItem: .init(
-                    AssociatedMultiSelectionItem(
-                        masterKey: nil,
-                        items: [
-                            SettingCheckmarkItem(name: CelestiaString("Stars", comment: ""), key: "showStars"),
-                            SettingCheckmarkItem(name: CelestiaString("Planets", comment: ""), key: "showPlanets"),
-                            SettingCheckmarkItem(name: CelestiaString("Dwarf Planets", comment: ""), key: "showDwarfPlanets"),
-                            SettingCheckmarkItem(name: CelestiaString("Moons", comment: ""), key: "showMoons"),
-                            SettingCheckmarkItem(name: CelestiaString("Minor Moons", comment: ""), key: "showMinorMoons"),
-                            SettingCheckmarkItem(name: CelestiaString("Asteroids", comment: ""), key: "showAsteroids"),
-                            SettingCheckmarkItem(name: CelestiaString("Comets", comment: ""), key: "showComets"),
-                            SettingCheckmarkItem(name: CelestiaString("Spacecraft", comment: ""), key: "showSpacecrafts"),
-                            SettingCheckmarkItem(name: CelestiaString("Galaxies", comment: ""), key: "showGalaxies"),
-                            SettingCheckmarkItem(name: CelestiaString("Nebulae", comment: ""), key: "showNebulae"),
-                            SettingCheckmarkItem(name: CelestiaString("Globulars", comment: ""), key: "showGlobulars"),
-                            SettingCheckmarkItem(name: CelestiaString("Open Clusters", comment: ""), key: "showOpenClusters"),
+                    AssociatedCommonItem(
+                        title: CelestiaString("Objects", comment: ""),
+                        sections: [
+                            [
+                                SettingCheckmarkItem(name: CelestiaString("Stars", comment: ""), key: "showStars"),
+                                SettingCheckmarkItem(name: CelestiaString("Planets", comment: ""), key: "showPlanets"),
+                                SettingCheckmarkItem(name: CelestiaString("Dwarf Planets", comment: ""), key: "showDwarfPlanets"),
+                                SettingCheckmarkItem(name: CelestiaString("Moons", comment: ""), key: "showMoons"),
+                                SettingCheckmarkItem(name: CelestiaString("Minor Moons", comment: ""), key: "showMinorMoons"),
+                                SettingCheckmarkItem(name: CelestiaString("Asteroids", comment: ""), key: "showAsteroids"),
+                                SettingCheckmarkItem(name: CelestiaString("Comets", comment: ""), key: "showComets"),
+                                SettingCheckmarkItem(name: CelestiaString("Spacecraft", comment: ""), key: "showSpacecrafts"),
+                                SettingCheckmarkItem(name: CelestiaString("Galaxies", comment: ""), key: "showGalaxies"),
+                                SettingCheckmarkItem(name: CelestiaString("Nebulae", comment: ""), key: "showNebulae"),
+                                SettingCheckmarkItem(name: CelestiaString("Globulars", comment: ""), key: "showGlobulars"),
+                                SettingCheckmarkItem(name: CelestiaString("Open Clusters", comment: ""), key: "showOpenClusters"),
+                            ].toSection()
                         ]
                     )
                 )
             ),
             SettingItem(
                 name: CelestiaString("Features", comment: ""),
-                type: .multiSelection,
+                type: .common,
                 associatedItem: .init(
-                    AssociatedMultiSelectionItem(
-                        masterKey: nil,
-                        items: [
-                            SettingCheckmarkItem(name: CelestiaString("Atmospheres", comment: ""), key: "showAtmospheres"),
-                            SettingCheckmarkItem(name: CelestiaString("Clouds", comment: ""), key: "showCloudMaps"),
-                            SettingCheckmarkItem(name: CelestiaString("Cloud Shadows", comment: ""), key: "showCloudShadows"),
-                            SettingCheckmarkItem(name: CelestiaString("Night Lights", comment: ""), key: "showNightMaps"),
-                            SettingCheckmarkItem(name: CelestiaString("Planet Rings", comment: ""), key: "showPlanetRings"),
-                            SettingCheckmarkItem(name: CelestiaString("Ring Shadows", comment: ""), key: "showRingShadows"),
-                            SettingCheckmarkItem(name: CelestiaString("Comet Tails", comment: ""), key: "showCometTails"),
-                            SettingCheckmarkItem(name: CelestiaString("Eclipse Shadows", comment: ""), key: "showEclipseShadows"),
+                    AssociatedCommonItem(
+                        title: CelestiaString("Features", comment: ""),
+                        sections: [
+                            [
+                                SettingCheckmarkItem(name: CelestiaString("Atmospheres", comment: ""), key: "showAtmospheres"),
+                                SettingCheckmarkItem(name: CelestiaString("Clouds", comment: ""), key: "showCloudMaps"),
+                                SettingCheckmarkItem(name: CelestiaString("Cloud Shadows", comment: ""), key: "showCloudShadows"),
+                                SettingCheckmarkItem(name: CelestiaString("Night Lights", comment: ""), key: "showNightMaps"),
+                                SettingCheckmarkItem(name: CelestiaString("Planet Rings", comment: ""), key: "showPlanetRings"),
+                                SettingCheckmarkItem(name: CelestiaString("Ring Shadows", comment: ""), key: "showRingShadows"),
+                                SettingCheckmarkItem(name: CelestiaString("Comet Tails", comment: ""), key: "showCometTails"),
+                                SettingCheckmarkItem(name: CelestiaString("Eclipse Shadows", comment: ""), key: "showEclipseShadows"),
+                            ].toSection()
                         ]
                     )
                 )
@@ -380,23 +394,25 @@ let mainSetting = [
             ),
             SettingItem(
                 name: CelestiaString("Object Labels", comment: ""),
-                type: .multiSelection,
+                type: .common,
                 associatedItem: .init(
-                    AssociatedMultiSelectionItem(
-                        masterKey: nil,
-                        items: [
-                            SettingCheckmarkItem(name: CelestiaString("Stars", comment: ""), key: "showStarLabels"),
-                            SettingCheckmarkItem(name: CelestiaString("Planets", comment: ""), key: "showPlanetLabels"),
-                            SettingCheckmarkItem(name: CelestiaString("Dwarf Planets", comment: ""), key: "showDwarfPlanetLabels"),
-                            SettingCheckmarkItem(name: CelestiaString("Moons", comment: ""), key: "showMoonLabels"),
-                            SettingCheckmarkItem(name: CelestiaString("Minor Moons", comment: ""), key: "showMinorMoonLabels"),
-                            SettingCheckmarkItem(name: CelestiaString("Asteroids", comment: ""), key: "showAsteroidLabels"),
-                            SettingCheckmarkItem(name: CelestiaString("Comets", comment: ""), key: "showCometLabels"),
-                            SettingCheckmarkItem(name: CelestiaString("Spacecraft", comment: ""), key: "showSpacecraftLabels"),
-                            SettingCheckmarkItem(name: CelestiaString("Galaxies", comment: ""), key: "showGalaxyLabels"),
-                            SettingCheckmarkItem(name: CelestiaString("Nebulae", comment: ""), key: "showNebulaLabels"),
-                            SettingCheckmarkItem(name: CelestiaString("Globulars", comment: ""), key: "showGlobularLabels"),
-                            SettingCheckmarkItem(name: CelestiaString("Open Clusters", comment: ""), key: "showOpenClusterLabels"),
+                    AssociatedCommonItem(
+                        title: CelestiaString("Object Labels", comment: ""),
+                        sections: [
+                            [
+                                SettingCheckmarkItem(name: CelestiaString("Stars", comment: ""), key: "showStarLabels"),
+                                SettingCheckmarkItem(name: CelestiaString("Planets", comment: ""), key: "showPlanetLabels"),
+                                SettingCheckmarkItem(name: CelestiaString("Dwarf Planets", comment: ""), key: "showDwarfPlanetLabels"),
+                                SettingCheckmarkItem(name: CelestiaString("Moons", comment: ""), key: "showMoonLabels"),
+                                SettingCheckmarkItem(name: CelestiaString("Minor Moons", comment: ""), key: "showMinorMoonLabels"),
+                                SettingCheckmarkItem(name: CelestiaString("Asteroids", comment: ""), key: "showAsteroidLabels"),
+                                SettingCheckmarkItem(name: CelestiaString("Comets", comment: ""), key: "showCometLabels"),
+                                SettingCheckmarkItem(name: CelestiaString("Spacecraft", comment: ""), key: "showSpacecraftLabels"),
+                                SettingCheckmarkItem(name: CelestiaString("Galaxies", comment: ""), key: "showGalaxyLabels"),
+                                SettingCheckmarkItem(name: CelestiaString("Nebulae", comment: ""), key: "showNebulaLabels"),
+                                SettingCheckmarkItem(name: CelestiaString("Globulars", comment: ""), key: "showGlobularLabels"),
+                                SettingCheckmarkItem(name: CelestiaString("Open Clusters", comment: ""), key: "showOpenClusterLabels"),
+                            ].toSection()
                         ]
                     )
                 )
