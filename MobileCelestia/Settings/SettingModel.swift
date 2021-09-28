@@ -15,7 +15,6 @@ import CelestiaCore
 
 enum SettingType: Hashable {
     case multiSelection
-    case selection
     case slider
     case action
     case prefSwitch
@@ -27,6 +26,7 @@ enum SettingType: Hashable {
     case frameRate
     case checkmark
     case custom
+    case keyedSelection
 }
 
 struct AssociatedMultiSelectionItem: Hashable {
@@ -37,6 +37,16 @@ struct AssociatedMultiSelectionItem: Hashable {
 struct AssociatedSelectionItem: Hashable {
     let key: String
     let items: [SettingSelectionItem]
+
+    func toSection(header: String? = nil, footer: String? = nil) -> SettingCommonItem.Section {
+        return SettingCommonItem.Section(header: header, rows: items.map { item in
+            return SettingItem(
+                name: item.name,
+                type: .keyedSelection,
+                associatedItem: SettingKeyedSelectionItem(name: item.name, key: key, index: item.index)
+            )
+        }, footer: footer)
+    }
 }
 
 typealias AssociatedCommonItem = SettingCommonItem
@@ -44,6 +54,7 @@ typealias AssociatedSliderItem = SettingSliderItem
 typealias AssociatedActionItem = SettingActionItem
 typealias AssociatedPreferenceSwitchItem = SettingPreferenceSwitchItem
 typealias AssociatedCheckmarkItem = SettingCheckmarkItem
+typealias AssociatedKeyedSelectionItem = SettingKeyedSelectionItem
 typealias AssociatedCustomItem = BlockHolder<CelestiaAppCore>
 
 class BlockHolder<T>: NSObject {
@@ -81,6 +92,12 @@ struct SettingSelectionItem: Hashable {
     let index: Int
 }
 
+struct SettingKeyedSelectionItem: Hashable {
+    let name: String
+    let key: String
+    let index: Int
+}
+
 struct SettingSliderItem: Hashable {
     let key: String
     let minValue: Double
@@ -115,6 +132,7 @@ enum TextItem {
 
 struct SettingCommonItem: Hashable {
     struct Section: Hashable {
+        let header: String?
         let rows: [SettingItem<AnyHashable>]
         let footer: String?
     }
@@ -124,7 +142,7 @@ struct SettingCommonItem: Hashable {
 
 extension SettingCommonItem {
     init(title: String, items: [SettingItem<AnyHashable>]) {
-        self.init(title: title, sections: [Section(rows: items, footer: nil)])
+        self.init(title: title, sections: [Section(header: nil, rows: items, footer: nil)])
     }
 }
 
@@ -185,7 +203,9 @@ let mainSetting = [
                 type: .common,
                 associatedItem: .init(
                     AssociatedCommonItem(title: CelestiaString("Orbits", comment: ""), sections: [
-                        .init(rows: [
+                        .init(
+                            header: nil,
+                            rows: [
                             SettingItem(
                                 name: CelestiaString("Show Orbits", comment: ""),
                                 type: .checkmark,
@@ -208,7 +228,9 @@ let mainSetting = [
                                 )
                             ),
                         ], footer: nil),
-                        .init(rows: [
+                        .init(
+                            header: nil,
+                            rows: [
                             SettingItem(
                                 name: CelestiaString("Stars", comment: ""),
                                 type: .checkmark,
@@ -274,7 +296,9 @@ let mainSetting = [
                 type: .common,
                 associatedItem: .init(
                     AssociatedCommonItem(title: CelestiaString("Grids", comment: ""), sections: [
-                        .init(rows: [
+                        .init(
+                            header: nil,
+                            rows: [
                             SettingItem(
                                 name: CelestiaString("Equatorial", comment: ""),
                                 type: .checkmark,
@@ -304,7 +328,9 @@ let mainSetting = [
                                 )
                             ),
                         ], footer: nil),
-                        .init(rows: [
+                        .init(
+                            header: nil,
+                            rows: [
                             SettingItem(
                                 name: CelestiaString("Ecliptic Line", comment: ""),
                                 type: .checkmark,
@@ -380,7 +406,9 @@ let mainSetting = [
                 type: .common,
                 associatedItem: .init(
                     AssociatedCommonItem(title: CelestiaString("Locations", comment: ""), sections: [
-                        .init(rows: [
+                        .init(
+                            header: nil,
+                            rows: [
                             SettingItem(
                                 name: CelestiaString("Show Locations", comment: ""),
                                 type: .checkmark,
@@ -396,7 +424,9 @@ let mainSetting = [
                                 )
                             ),
                         ], footer: nil),
-                        .init(rows: [
+                        .init(
+                            header: nil,
+                            rows: [
                             SettingItem(
                                 name: CelestiaString("Cities", comment: ""),
                                 type: .checkmark,
@@ -478,7 +508,9 @@ let mainSetting = [
                     AssociatedCommonItem(
                         title: CelestiaString("Markers", comment: ""),
                         sections: [
-                            .init(rows: [
+                            .init(
+                                header: nil,
+                                rows: [
                                 SettingItem(
                                     name: CelestiaString("Show Markers", comment: ""),
                                     type: .checkmark,
@@ -507,7 +539,7 @@ let mainSetting = [
                     AssociatedCommonItem(
                         title: CelestiaString("Reference Vectors", comment: ""),
                         sections: [
-                            .init(rows: [
+                            .init(header: nil, rows: [
                                 AssociatedCheckmarkItem(name: CelestiaString("Show Body Axes", comment: ""), key: "showBodyAxes"),
                                 AssociatedCheckmarkItem(name: CelestiaString("Show Frame Axes", comment: ""), key: "showFrameAxes"),
                                 AssociatedCheckmarkItem(name: CelestiaString("Show Sun Direction", comment: ""), key: "showSunDirection"),
@@ -527,27 +559,37 @@ let mainSetting = [
         items: [
             SettingItem(
                 name: CelestiaString("Time Zone", comment: ""),
-                type: .selection,
+                type: .common,
                 associatedItem: .init(
-                    AssociatedSelectionItem(
-                        key: "timeZone",
-                        items: [
-                            SettingSelectionItem(name: CelestiaString("Local Time", comment: ""), index: 0),
-                            SettingSelectionItem(name: CelestiaString("UTC", comment: ""), index: 1),
+                    AssociatedCommonItem(
+                        title: CelestiaString("Time Zone", comment: ""),
+                        sections: [
+                            AssociatedSelectionItem(
+                                key: "timeZone",
+                                items: [
+                                    SettingSelectionItem(name: CelestiaString("Local Time", comment: ""), index: 0),
+                                    SettingSelectionItem(name: CelestiaString("UTC", comment: ""), index: 1),
+                                ]
+                            ).toSection()
                         ]
                     )
                 )
             ),
             SettingItem(
                 name: CelestiaString("Date Format", comment: ""),
-                type: .selection,
+                type: .common,
                 associatedItem: .init(
-                    AssociatedSelectionItem(
-                        key: "dateFormat",
-                        items: [
-                            SettingSelectionItem(name: CelestiaString("Default", comment: ""), index: 0),
-                            SettingSelectionItem(name: CelestiaString("YYYY MMM DD HH:MM:SS TZ", comment: ""), index: 1),
-                            SettingSelectionItem(name: CelestiaString("UTC Offset", comment: ""), index: 2),
+                    AssociatedCommonItem(
+                        title: CelestiaString("Date Format", comment: ""),
+                        sections: [
+                            AssociatedSelectionItem(
+                                key: "dateFormat",
+                                items: [
+                                    SettingSelectionItem(name: CelestiaString("Default", comment: ""), index: 0),
+                                    SettingSelectionItem(name: CelestiaString("YYYY MMM DD HH:MM:SS TZ", comment: ""), index: 1),
+                                    SettingSelectionItem(name: CelestiaString("UTC Offset", comment: ""), index: 2),
+                                ]
+                            ).toSection()
                         ]
                     )
                 )
@@ -559,40 +601,57 @@ let mainSetting = [
         items: [
             SettingItem(
                 name: CelestiaString("Texture Resolution", comment: ""),
-                type: .selection,
+                type: .common,
                 associatedItem: .init(
-                    AssociatedSelectionItem(
-                        key: "resolution",
-                        items: [
-                            SettingSelectionItem(name: CelestiaString("Low", comment: ""), index: 0),
-                            SettingSelectionItem(name: CelestiaString("Medium", comment: ""), index: 1),
-                            SettingSelectionItem(name: CelestiaString("High", comment: ""), index: 2),
+                    AssociatedCommonItem(
+                        title: CelestiaString("Texture Resolution", comment: ""),
+                        sections: [
+                            AssociatedSelectionItem(
+                                key: "resolution",
+                                items: [
+                                    SettingSelectionItem(name: CelestiaString("Low", comment: ""), index: 0),
+                                    SettingSelectionItem(name: CelestiaString("Medium", comment: ""), index: 1),
+                                    SettingSelectionItem(name: CelestiaString("High", comment: ""), index: 2),
+                                ]
+                            ).toSection()
                         ]
                     )
                 )
             ),
             SettingItem(
                 name: CelestiaString("Star Style", comment: ""),
-                type: .selection,
+                type: .common,
                 associatedItem: .init(
-                    AssociatedSelectionItem(
-                        key: "starStyle", items: [
-                            SettingSelectionItem(name: CelestiaString("Fuzzy Points", comment: ""), index: 0),
-                            SettingSelectionItem(name: CelestiaString("Points", comment: ""), index: 1),
-                            SettingSelectionItem(name: CelestiaString("Scaled Discs", comment: ""), index: 2),
+                    AssociatedCommonItem(
+                        title: CelestiaString("Star Style", comment: ""),
+                        sections: [
+                            AssociatedSelectionItem(
+                                key: "starStyle",
+                                items: [
+                                    SettingSelectionItem(name: CelestiaString("Fuzzy Points", comment: ""), index: 0),
+                                    SettingSelectionItem(name: CelestiaString("Points", comment: ""), index: 1),
+                                    SettingSelectionItem(name: CelestiaString("Scaled Discs", comment: ""), index: 2),
+                                ]
+                            ).toSection()
                         ]
                     )
                 )
             ),
             SettingItem(
                 name: CelestiaString("Info Display", comment: ""),
-                type: .selection,
+                type: .common,
                 associatedItem: .init(
-                    AssociatedSelectionItem(
-                        key: "hudDetail", items: [
-                            SettingSelectionItem(name: CelestiaString("None", comment: ""), index: 0),
-                            SettingSelectionItem(name: CelestiaString("Terse", comment: ""), index: 1),
-                            SettingSelectionItem(name: CelestiaString("Verbose", comment: ""), index: 2),
+                    AssociatedCommonItem(
+                        title: CelestiaString("Info Display", comment: ""),
+                        sections: [
+                            AssociatedSelectionItem(
+                                key: "hudDetail",
+                                items: [
+                                    SettingSelectionItem(name: CelestiaString("None", comment: ""), index: 0),
+                                    SettingSelectionItem(name: CelestiaString("Terse", comment: ""), index: 1),
+                                    SettingSelectionItem(name: CelestiaString("Verbose", comment: ""), index: 2),
+                                ]
+                            ).toSection()
                         ]
                     )
                 )
@@ -604,7 +663,7 @@ let mainSetting = [
                     AssociatedCommonItem(
                         title: CelestiaString("Render Parameters", comment: ""),
                         sections: [
-                            .init(rows: [
+                            .init(header: nil, rows: [
                                 SettingItem(
                                     name: CelestiaString("Ambient Light", comment: ""),
                                     type: .slider,
@@ -620,7 +679,7 @@ let mainSetting = [
                                     )
                                 ),
                             ], footer: nil),
-                            .init(rows: [
+                            .init(header: nil, rows: [
                                 SettingItem(
                                     name: CelestiaString("Faintest Stars", comment: ""),
                                     type: .slider,
@@ -636,7 +695,7 @@ let mainSetting = [
                                     )
                                 ),
                             ], footer: nil),
-                            .init(rows: [
+                            .init(header: nil, rows: [
                                 SettingItem(
                                     name: CelestiaString("HiDPI", comment: ""),
                                     type: .prefSwitch,

@@ -118,6 +118,16 @@ extension SettingCommonViewController {
             } else {
                 logWrongAssociatedItemType(row.associatedItem)
             }
+        case .keyedSelection:
+            if let item = row.associatedItem.base as? AssociatedKeyedSelectionItem {
+                let selectedIndex = core.value(forKey: item.key) as? Int ?? 0
+                let cell = tableView.dequeueReusableCell(withIdentifier: "Checkmark", for: indexPath) as! SettingTextCell
+                cell.title = row.name
+                cell.accessoryType = selectedIndex == item.index ? .checkmark : .none
+                return cell
+            } else {
+                logWrongAssociatedItemType(row.associatedItem)
+            }
         case .prefSwitch:
             if let item = row.associatedItem.base as? AssociatedPreferenceSwitchItem {
                 let cell = tableView.dequeueReusableCell(withIdentifier: "Switch", for: indexPath) as! SettingSwitchCell
@@ -150,6 +160,11 @@ extension SettingCommonViewController {
             self.core.setValueAsync(!checked, forKey: item.key) { [weak self] in
                 self?.tableView.reloadData()
             }
+        case .keyedSelection:
+            guard let item = row.associatedItem.base as? AssociatedKeyedSelectionItem else { break }
+            self.core.setValueAsync(item.index, forKey: item.key) { [weak self] in
+                self?.tableView.reloadData()
+            }
         case .custom:
             guard let item = row.associatedItem.base as? AssociatedCustomItem else { break }
             item.block(core)
@@ -160,6 +175,10 @@ extension SettingCommonViewController {
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
+    }
+
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return item.sections[section].header
     }
 
     override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
