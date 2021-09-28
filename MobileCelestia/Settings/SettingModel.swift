@@ -731,6 +731,24 @@ let mainSetting = [
                     )
                 )
             ),
+            SettingItem(
+                name: CelestiaString("Measure Units", comment: ""),
+                type: .common,
+                associatedItem: .init(
+                    AssociatedCommonItem(
+                        title: CelestiaString("Measure Units", comment: ""),
+                        sections: [
+                            AssociatedSelectionItem(
+                                key: "measurementSystem",
+                                items: [
+                                    SettingSelectionItem(name: CelestiaString("Metric", comment: ""), index: 0),
+                                    SettingSelectionItem(name: CelestiaString("Imperial", comment: ""), index: 1),
+                                ]
+                            ).toSection()
+                        ]
+                    )
+                )
+            ),
             SettingItem(name: CelestiaString("Frame Rate", comment: ""), type: .frameRate, associatedItem: .init(0)),
             SettingItem(name: CelestiaString("Data Location", comment: ""), type: .dataLocation, associatedItem: .init(0)),
         ]),
