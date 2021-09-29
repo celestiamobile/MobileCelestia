@@ -206,6 +206,8 @@ extension CelestiaAction {
             return CelestiaString("Lock", comment: "")
         case .chase:
             return CelestiaString("Chase", comment: "")
+        case .track:
+            return CelestiaString("Track", comment: "")
         case .follow:
             return CelestiaString("Follow", comment: "")
         case .runDemo:
