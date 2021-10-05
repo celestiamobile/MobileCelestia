@@ -42,12 +42,13 @@ enum AppToolbarAction: String {
     case event
     case addons
     case paperplane
+    case speedometer
 
     static var persistentAction: [[AppToolbarAction]] {
         #if targetEnvironment(macCatalyst)
-        return [[.setting], [.share, .search, .home, .paperplane], [.time, .script], [.browse, .favorite, .event], [.addons], [.help]]
+        return [[.setting], [.share, .search, .home, .paperplane], [.time, .script, .speedometer], [.browse, .favorite, .event], [.addons], [.help]]
         #else
-        return [[.setting], [.share, .search, .home, .paperplane], [.camera, .time, .script], [.browse, .favorite, .event], [.addons], [.help]]
+        return [[.setting], [.share, .search, .home, .paperplane], [.camera, .time, .script, .speedometer], [.browse, .favorite, .event], [.addons], [.help]]
         #endif
     }
 }
@@ -57,11 +58,6 @@ class ToolbarViewController: UIViewController {
 
     private let actions: [[ToolbarAction]]
 
-    #if targetEnvironment(macCatalyst)
-    private var touchBarActions: [ToolbarTouchBarAction]
-    var touchBarActionConversionBlock: ((NSTouchBarItem.Identifier) -> ToolbarTouchBarAction?)?
-    #endif
-
     private let finishOnSelection: Bool
 
     private var selectedAction: ToolbarAction?
@@ -70,9 +66,6 @@ class ToolbarViewController: UIViewController {
 
     init(actions: [[ToolbarAction]], finishOnSelection: Bool = true) {
         self.actions = actions
-        #if targetEnvironment(macCatalyst)
-        self.touchBarActions = actions.reduce([], { $0 + $1.compactMap { $0 as? ToolbarTouchBarAction } })
-        #endif
         self.finishOnSelection = finishOnSelection
         super.init(nibName: nil, bundle: nil)
     }
@@ -116,7 +109,8 @@ extension ToolbarViewController: UICollectionViewDataSource {
         let action = actions[indexPath.section][indexPath.row]
         cell.itemImage = action.image
         cell.itemTitle = action.title
-        cell.actionHandler = { [unowned self] in
+        cell.touchUpHandler = { [unowned self] _, inside in
+            guard inside else { return }
             if self.finishOnSelection {
                 self.dismiss(animated: true, completion: nil)
             }
@@ -186,45 +180,6 @@ private extension ToolbarViewController {
     }
 }
 
-#if targetEnvironment(macCatalyst)
-extension ToolbarViewController: NSTouchBarDelegate {
-    private var closeTouchBarIdentifier: NSTouchBarItem.Identifier {
-        return NSTouchBarItem.Identifier(rawValue: "close")
-    }
-
-    override func makeTouchBar() -> NSTouchBar? {
-        guard touchBarActions.count > 0 else { return nil }
-        let tbar = NSTouchBar()
-        tbar.defaultItemIdentifiers = touchBarActions.map { $0.touchBarItemIdentifier } + [closeTouchBarIdentifier]
-        tbar.delegate = self
-        return tbar
-    }
-
-    func touchBar(_ touchBar: NSTouchBar, makeItemForIdentifier identifier: NSTouchBarItem.Identifier) -> NSTouchBarItem? {
-        if identifier == closeTouchBarIdentifier {
-            return NSButtonTouchBarItem(identifier: identifier, image: UIImage(systemName: "xmark.circle.fill") ?? UIImage(), target: self, action: #selector(requestClose))
-        }
-        guard let action = touchBarActionConversionBlock?(identifier) else { return nil }
-        if let image = action.touchBarImage {
-            return NSButtonTouchBarItem(identifier: identifier, image: image, target: self, action: #selector(touchBarButtonItemClicked(_:)))
-        }
-        return NSButtonTouchBarItem(identifier: identifier, title: action.title ?? "", target: self, action: #selector(touchBarButtonItemClicked(_:)))
-    }
-
-    @objc private func touchBarButtonItemClicked(_ sender: NSTouchBarItem) {
-        guard let action = touchBarActionConversionBlock?(sender.identifier) else { return }
-        if finishOnSelection {
-            dismiss(animated: true, completion: nil)
-        }
-        selectionHandler?(action)
-    }
-
-    @objc private func requestClose() {
-        dismiss(animated: true, completion: nil)
-    }
-}
-#endif
-
 extension AppToolbarAction: ToolbarAction {
     var image: UIImage? { return UIImage(named: "toolbar_\(rawValue)") }
 }
@@ -258,6 +213,8 @@ extension AppToolbarAction {
             return CelestiaString("Add-ons", comment: "")
         case .paperplane:
             return CelestiaString("Go to Object", comment: "")
+        case .speedometer:
+            return CelestiaString("Speed Control", comment: "")
         }
     }
 }

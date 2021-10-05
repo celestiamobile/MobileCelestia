@@ -216,6 +216,10 @@ extension CelestiaAction {
             return CelestiaString("Cancel Script", comment: "")
         case .home:
             return CelestiaString("Home (Sol)", comment: "")
+        case .stop:
+            return CelestiaString("Stop", comment: "")
+        case .reverseSpeed:
+            return CelestiaString("Reverse Direction", comment: "")
         }
     }
 }

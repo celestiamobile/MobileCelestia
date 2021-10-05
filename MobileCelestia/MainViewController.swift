@@ -286,6 +286,8 @@ extension MainViewController: CelestiaControllerDelegate {
             presentPlugins()
         case .paperplane:
             presentGoTo()
+        case .speedometer:
+            presentSpeedControl()
         }
     }
 
@@ -367,22 +369,46 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     private func presentScriptToolbar() {
-        presentActionToolbar(for: [.playpause, .cancelScript])
+        presentActionToolbar(for: [CelestiaAction.playpause, .cancelScript].map { .toolbarAction($0) })
     }
 
     private func presentTimeToolbar() {
+        let layoutDirectionDependentActions: [ToolbarAction]
         if UIView.userInterfaceLayoutDirection(for: view.semanticContentAttribute) == .rightToLeft {
-            presentActionToolbar(for: [.faster, .playpause, .slower, .reverse])
+            layoutDirectionDependentActions = [
+                CelestiaAction.faster,
+                CelestiaAction.playpause,
+                CelestiaAction.slower
+            ]
         } else {
-            presentActionToolbar(for: [.slower, .playpause, .faster, .reverse])
+            layoutDirectionDependentActions = [
+                CelestiaAction.slower,
+                CelestiaAction.playpause,
+                CelestiaAction.faster
+            ]
         }
+        presentActionToolbar(for: (layoutDirectionDependentActions + [CelestiaAction.reverse]).map { .toolbarAction($0) })
     }
 
-    private func presentActionToolbar(for actions: [CelestiaAction]) {
+    private func presentActionToolbar(for actions: [BottomControlAction]) {
         let controller = BottomControlViewController(actions: actions, finishOnSelection: false)
-        controller.selectionHandler = { [unowned self] (action) in
-            guard let ac = action as? CelestiaAction else { return }
-            self.core.receiveAsync(ac)
+        controller.touchUpHandler = { [unowned self] action, inside in
+            if let ac = action as? CelestiaAction {
+                if inside {
+                    self.core.receiveAsync(ac)
+                }
+            } else if let ac = action as? CelestiaContinuousAction {
+                self.core.run { core in
+                    core.keyUp(ac.rawValue)
+                }
+            }
+        }
+        controller.touchDownHandler = { [unowned self] action in
+            if let ac = action as? CelestiaContinuousAction {
+                self.core.run { core in
+                    core.keyDown(ac.rawValue)
+                }
+            }
         }
         #if targetEnvironment(macCatalyst)
         controller.touchBarActionConversionBlock = { (identifier) in
@@ -436,6 +462,33 @@ extension MainViewController: CelestiaControllerDelegate {
         showViewController(GoToContainerViewController() { [weak self] location in
             self?.core.run { $0.simulation.go(to: location) }
         })
+    }
+
+    private func presentSpeedControl() {
+        let layoutDirectionDependentActions: [ToolbarAction]
+        if UIView.userInterfaceLayoutDirection(for: view.semanticContentAttribute) == .rightToLeft {
+            layoutDirectionDependentActions = [
+                CelestiaContinuousAction.travelFaster,
+                CelestiaContinuousAction.travelSlower,
+            ]
+        } else {
+            layoutDirectionDependentActions = [
+                CelestiaContinuousAction.travelSlower,
+                CelestiaContinuousAction.travelFaster,
+            ]
+        }
+        presentActionToolbar(for: layoutDirectionDependentActions.map { .toolbarAction($0) } + [
+            .toolbarAction(CelestiaAction.stop),
+            .toolbarAction(CelestiaAction.reverseSpeed),
+            .groupedActions([
+                CelestiaContinuousAction.f2,
+                CelestiaContinuousAction.f3,
+                CelestiaContinuousAction.f4,
+                CelestiaContinuousAction.f5,
+                CelestiaContinuousAction.f6,
+                CelestiaContinuousAction.f7,
+            ])
+        ])
     }
 
     private func showSelectionInfo(with selection: CelestiaSelection) {
@@ -800,6 +853,8 @@ extension AppToolbarAction {
             return UIImage(systemName: "calendar")
         case .paperplane:
             return UIImage(systemName: "paperplane")
+        case .speedometer:
+            return UIImage(systemName: "speedometer")
         }
     }
 }
@@ -814,10 +869,42 @@ extension CelestiaAction: ToolbarAction {
             return #imageLiteral(resourceName: "time_faster")
         case .slower:
             return #imageLiteral(resourceName: "time_slower")
-        case .reverse:
+        case .reverse, .reverseSpeed:
             return #imageLiteral(resourceName: "time_reverse")
-        case .cancelScript:
+        case .cancelScript, .stop:
             return #imageLiteral(resourceName: "time_stop")
+        default:
+            return nil
+        }
+    }
+}
+
+extension CelestiaContinuousAction: ToolbarAction {
+    var image: UIImage? {
+        switch self {
+        case .travelFaster:
+            return #imageLiteral(resourceName: "time_faster")
+        case .travelSlower:
+            return #imageLiteral(resourceName: "time_slower")
+        default:
+            return nil
+        }
+    }
+
+    var title: String? {
+        switch self {
+        case .f2:
+            return CelestiaString("1 km/s", comment: "")
+        case .f3:
+            return CelestiaString("1000 km/s", comment: "")
+        case .f4:
+            return CelestiaString("c (lightspeed)", comment: "")
+        case .f5:
+            return CelestiaString("10c", comment: "")
+        case .f6:
+            return CelestiaString("1 AU/s", comment: "")
+        case .f7:
+            return CelestiaString("1 ly/s", comment: "")
         default:
             return nil
         }
@@ -834,9 +921,9 @@ extension CelestiaAction: ToolbarTouchBarAction {
             return UIImage(systemName: "forward.fill")
         case .slower:
             return UIImage(systemName: "backward.fill")
-        case .reverse:
+        case .reverse, .reverseSpeed:
             return UIImage(systemName: "repeat")
-        case .cancelScript:
+        case .cancelScript, .stop:
             return UIImage(systemName: "stop.fill")
         default:
             return nil

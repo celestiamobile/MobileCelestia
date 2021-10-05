@@ -30,6 +30,20 @@ enum CelestiaAction: Int8 {
     case cancelScript = 27
     case home = 104
     case track = 116
+    case stop = 115
+    case reverseSpeed = 113
+}
+
+enum CelestiaContinuousAction: Int {
+    case travelFaster = 97
+    case travelSlower = 122
+    case f1 = 11
+    case f2 = 12
+    case f3 = 13
+    case f4 = 14
+    case f5 = 15
+    case f6 = 16
+    case f7 = 17
 }
 
 extension CelestiaAction {

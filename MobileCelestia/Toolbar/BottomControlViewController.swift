@@ -13,12 +13,15 @@ import UIKit
 
 enum BottomControlAction {
     case toolbarAction(_ toolbarAction: ToolbarAction)
+    case groupedActions(_ actions: [ToolbarAction])
     case close
 
     var image: UIImage? {
         switch self {
         case .toolbarAction(let action):
             return action.image
+        case .groupedActions:
+            return #imageLiteral(resourceName: "common_other")
         case .close:
             return #imageLiteral(resourceName: "bottom_control_hide")
         }
@@ -39,12 +42,18 @@ class BottomControlViewController: UIViewController {
 
     private var selectedAction: ToolbarAction?
 
-    var selectionHandler: ((ToolbarAction) -> Void)?
+    var touchUpHandler: ((ToolbarAction, Bool) -> Void)?
+    var touchDownHandler: ((ToolbarAction) -> Void)?
 
-    init(actions: [ToolbarAction], finishOnSelection: Bool = true) {
-        self.actions = actions.map { BottomControlAction.toolbarAction($0) } + [.close]
+    init(actions: [BottomControlAction], finishOnSelection: Bool = true) {
+        self.actions = actions + [.close]
         #if targetEnvironment(macCatalyst)
-        self.touchBarActions = actions.compactMap { $0 as? ToolbarTouchBarAction }
+        self.touchBarActions = actions.compactMap { action in
+            if case .toolbarAction(let ac) = action, let ttba = ac as? ToolbarTouchBarAction {
+                return ttba
+            }
+            return nil
+        }
         #endif
         self.finishOnSelection = finishOnSelection
         super.init(nibName: nil, bundle: nil)
@@ -91,16 +100,36 @@ extension BottomControlViewController: UICollectionViewDataSource {
 
         switch action {
         case .toolbarAction(let action):
-            cell.actionHandler = { [unowned self] in
-                if self.finishOnSelection {
+            cell.touchDownHandler = { [unowned self] _ in
+                self.touchDownHandler?(action)
+            }
+            cell.touchUpHandler = { [unowned self] _, inside in
+                if inside, self.finishOnSelection {
                     self.dismiss(animated: true, completion: nil)
                 }
-                self.selectionHandler?(action)
+                self.touchUpHandler?(action, inside)
             }
+        case .groupedActions(let actions):
+            cell.touchUpHandler = { [unowned self] button, inside in
+                guard inside else { return }
+                self.showSelection(nil, options: actions.map { $0.title ?? "" }, sourceView: button, sourceRect: button.bounds) { [unowned self] selectedIndex in
+                    if let index = selectedIndex {
+                        if self.finishOnSelection {
+                            self.dismiss(animated: true, completion: nil)
+                        }
+                        let item = actions[index]
+                        self.touchDownHandler?(item)
+                        self.touchUpHandler?(item, true)
+                    }
+                }
+            }
+            cell.touchDownHandler = nil
         case .close:
-            cell.actionHandler = { [unowned self] in
+            cell.touchUpHandler = { [unowned self] _, inside in
+                guard inside else { return }
                 self.dismiss(animated: true, completion: nil)
             }
+            cell.touchDownHandler = nil
         }
         return cell
     }
@@ -192,7 +221,7 @@ extension BottomControlViewController: NSTouchBarDelegate {
         if finishOnSelection {
             dismiss(animated: true, completion: nil)
         }
-        selectionHandler?(action)
+        touchUpHandler?(action, true)
     }
 
     @objc private func requestClose() {

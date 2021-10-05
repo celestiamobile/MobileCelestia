@@ -14,13 +14,15 @@ import UIKit
 protocol ToolbarCell: UICollectionViewCell {
     var itemTitle: String? { get set }
     var itemImage: UIImage? { get set }
-    var actionHandler: (() -> Void)? { get set }
+    var touchDownHandler: ((UIButton) -> Void)? { get set }
+    var touchUpHandler: ((UIButton, Bool) -> Void)? { get set }
 }
 
 class ToolbarImageButtonCell: UICollectionViewCell, ToolbarCell {
     var itemTitle: String?
     var itemImage: UIImage? { didSet { button.setImage(itemImage, for: .normal) } }
-    var actionHandler: (() -> Void)?
+    var touchDownHandler: ((UIButton) -> Void)?
+    var touchUpHandler: ((UIButton, Bool) -> Void)?
 
     private lazy var button = StandardButton(type: .system)
 
@@ -43,11 +45,27 @@ class ToolbarImageButtonCell: UICollectionViewCell, ToolbarCell {
             button.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
         ])
         button.tintColor = .darkLabel
-        button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(touchDown(_:)), for: .touchDown)
+        button.addTarget(self, action: #selector(touchUpInside(_:)), for: .touchUpInside)
+        button.addTarget(self, action: #selector(touchUpOutside(_:)), for: .touchUpOutside)
+        button.addTarget(self, action: #selector(touchCancelled(_:)), for: .touchCancel)
     }
 
-    @objc private func buttonTapped() {
-        actionHandler?()
+    @objc private func touchDown(_ sender: UIButton) {
+        touchDownHandler?(sender)
+    }
+
+    @objc private func touchUpInside(_ sender: UIButton) {
+        touchUpHandler?(sender, true)
+    }
+
+
+    @objc private func touchUpOutside(_ sender: UIButton) {
+        touchUpHandler?(sender, false)
+    }
+
+    @objc private func touchCancelled(_ sender: UIButton) {
+        touchUpHandler?(sender, false)
     }
 }
 
@@ -87,7 +105,8 @@ class ToolbarImageTextButtonCell: UICollectionViewCell, ToolbarCell {
 
     var itemTitle: String? { didSet { label.text = itemTitle } }
     var itemImage: UIImage? { didSet { imageView.image = itemImage?.withRenderingMode(.alwaysTemplate) } }
-    var actionHandler: (() -> Void)?
+    var touchDownHandler: ((UIButton) -> Void)?
+    var touchUpHandler: ((UIButton, Bool) -> Void)?
 
     private lazy var imageView = UIImageView()
     private lazy var label = UILabel()
@@ -104,7 +123,10 @@ class ToolbarImageTextButtonCell: UICollectionViewCell, ToolbarCell {
     private func setup() {
         let bg = SelectionView(frame: .zero)
         bg.translatesAutoresizingMaskIntoConstraints = false
-        bg.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
+        bg.addTarget(self, action: #selector(touchDown(_:)), for: .touchDown)
+        bg.addTarget(self, action: #selector(touchUpInside(_:)), for: .touchUpInside)
+        bg.addTarget(self, action: #selector(touchUpOutside(_:)), for: .touchUpOutside)
+        bg.addTarget(self, action: #selector(touchCancelled(_:)), for: .touchCancel)
 
         contentView.addSubview(bg)
         NSLayoutConstraint.activate([
@@ -146,8 +168,21 @@ class ToolbarImageTextButtonCell: UICollectionViewCell, ToolbarCell {
         label.textColor = .darkLabel
     }
 
-    @objc private func buttonTapped() {
-        actionHandler?()
+    @objc private func touchDown(_ sender: UIButton) {
+        touchDownHandler?(sender)
+    }
+
+    @objc private func touchUpInside(_ sender: UIButton) {
+        touchUpHandler?(sender, true)
+    }
+
+
+    @objc private func touchUpOutside(_ sender: UIButton) {
+        touchUpHandler?(sender, false)
+    }
+
+    @objc private func touchCancelled(_ sender: UIButton) {
+        touchUpHandler?(sender, false)
     }
 
     override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
