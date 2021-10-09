@@ -6,6 +6,7 @@ jobs:
 
   variables:
     sdk: ${{ parameters.sdk }}
+    signing: ${{ parameters.signing }}
 
   steps:
   - checkout: Celestia
@@ -50,29 +51,42 @@ jobs:
 
   - task: InstallAppleCertificate@2
     inputs:
+      certSecureFile: 'MacInstaller20210729.p12'
+      certPwd: $(MAC_INSTALLER_P12_PASSWORD)
+    displayName: 'Install Mac Installer Certificate'
+    condition: and(eq( variables['sdk'], 'macosx' ), eq( variables['signing'], 'appStore' ))
+
+  - task: InstallAppleCertificate@2
+    inputs:
       certSecureFile: '20210508.p12'
       certPwd: $(P12Password)
     displayName: 'Install Distribution Certificate'
-    condition: ne( variables['sdk'], 'macosx' )
+    condition: eq( variables['signing'], 'appStore' )
 
   - task: InstallAppleCertificate@2
     inputs:
       certSecureFile: 'DeveloperID.p12'
       certPwd: $(P12Password)
     displayName: 'Install Developer ID Certificate'
-    condition: eq( variables['sdk'], 'macosx' )
+    condition: and(eq( variables['sdk'], 'iphoneos' ), eq( variables['signing'], 'developerID' ))
 
   - task: InstallAppleProvisioningProfile@1
     inputs:
       provProfileSecureFile: MobileCelestiaDistrition20210508.mobileprovision
     displayName: 'Install Provision File (iOS)'
-    condition: ne( variables['sdk'], 'macosx' )
+    condition: eq( variables['sdk'], 'iphoneos' )
 
   - task: InstallAppleProvisioningProfile@1
     inputs:
       provProfileSecureFile: MobileCelestiaDeveloperID20250605.provisionprofile
-    displayName: 'Install Provision File (Catalyst)'
-    condition: eq( variables['sdk'], 'macosx' )
+    displayName: 'Install Provision File (Catalyst, Developer ID)'
+    condition: and(eq( variables['sdk'], 'macosx' ), eq( variables['signing'], 'developerID' ))
+
+  - task: InstallAppleProvisioningProfile@1
+    inputs:
+      provProfileSecureFile: Ado_Mobile_Celestia_Catalyst_20211009.provisionprofile
+    displayName: 'Install Provision File (Catalyst, App Store)'
+    condition: and(eq( variables['sdk'], 'macosx' ), eq( variables['signing'], 'appStore' ))
 
   - task: Xcode@5
     inputs:
@@ -101,18 +115,23 @@ jobs:
       contents: '**/*.ipa'
       targetFolder: '$(build.artifactStagingDirectory)'
     displayName: 'Copy .ipa'
-    condition: ne( variables['sdk'], 'macosx' )
+    condition: eq( variables['sdk'], 'iphoneos' )
 
   - script: |
       cd $(agent.buildDirectory)/output/$(sdk)
       zip -r -v -y $(Build.ArtifactStagingDirectory)/App.zip *.app
     displayName: 'Create .zip Archive for .app'
-    condition: eq( variables['sdk'], 'macosx' )
+    condition: and(eq( variables['sdk'], 'macosx' ), eq( variables['signing'], 'developerID' ))
+
+  - script: |
+      cp -r $(agent.buildDirectory)/output/$(sdk)/**/*.pkg $(Build.ArtifactStagingDirectory)
+    displayName: 'Copy .pkg'
+    condition: and(eq( variables['sdk'], 'macosx' ), eq( variables['signing'], 'appStore' ))
 
   - task: PublishBuildArtifacts@1
     inputs:
       PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-      ArtifactName: '$(sdk)'
+      ArtifactName: '$(sdk)-$(signing)'
       publishLocation: 'Container'
     displayName: 'Publish Build Artifacts'
 
@@ -126,7 +145,7 @@ jobs:
       releaseNotesInput: 'Internal testing only.'
       destinationType: 'groups'
     displayName: 'Publish to App Center (iOS)'
-    condition: ne( variables['sdk'], 'macosx' )
+    condition: eq( variables['sdk'], 'iphoneos' )
 
   - task: AppCenterDistribute@3
     inputs:
@@ -137,10 +156,22 @@ jobs:
       releaseNotesOption: 'input'
       releaseNotesInput: 'Internal testing only.'
       destinationType: 'groups'
-    displayName: 'Publish to App Center (Catalyst)'
-    condition: eq( variables['sdk'], 'macosx' )
+    displayName: 'Publish to App Center (Developer ID)'
+    condition: and(eq( variables['sdk'], 'macosx' ), eq( variables['signing'], 'developerID' ))
+
+  - task: AppCenterDistribute@3
+    inputs:
+      serverEndpoint: MobileCatalystCelestiaAppCenter
+      appSlug: 'CelestiaProject/Celestia-3'
+      appFile: '$(build.artifactstagingdirectory)/**/*.pkg'
+      symbolsDsymFiles: '$(system.defaultworkingdirectory)/archive/**/*.dSYM'
+      releaseNotesOption: 'input'
+      releaseNotesInput: 'Internal testing only.'
+      destinationType: 'groups'
+    displayName: 'Publish to App Center (App Store)'
+    condition: and(eq( variables['sdk'], 'macosx' ), eq( variables['signing'], 'appStore' ))
 
   - script: |
       xcrun altool --notarize-app --primary-bundle-id space.celestia.MobileCelestia --username $(AC_ACCOUNT_NAME) --password $(AC_ACCOUNT_PASSWORD) -f $(Build.ArtifactStagingDirectory)/App.zip
     displayName: "Notarize App"
-    condition: eq( variables['sdk'], 'macosx' )
+    condition: and(eq( variables['sdk'], 'macosx' ), eq( variables['siging'], 'developerID' ))
