@@ -1,8 +1,8 @@
 PODS:
-  - AppCenter/Analytics (4.1.1):
+  - AppCenter/Analytics (4.3.0):
     - AppCenter/Core
-  - AppCenter/Core (4.1.1)
-  - AppCenter/Crashes (4.1.1):
+  - AppCenter/Core (4.3.0)
+  - AppCenter/Crashes (4.3.0):
     - AppCenter/Core
   - AsyncGL (0.0.8)
   - MWRequest (0.2.4)
@@ -12,8 +12,8 @@ PODS:
   - ZIPFoundation (0.9.11)
 
 DEPENDENCIES:
-  - AppCenter/Analytics
-  - AppCenter/Crashes
+  - AppCenter/Analytics (~> 4.3.0)
+  - AppCenter/Crashes (~> 4.3.0)
   - AsyncGL (from `https://github.com/levinli303/AsyncGL.git`, tag `0.0.8`)
   - MWRequest (from `https://github.com/levinli303/mwrequest.git`, tag `0.2.4`)
   - SDWebImage (~> 5.0)
@@ -21,9 +21,9 @@ DEPENDENCIES:
 
 SPEC REPOS:
   https://github.com/CocoaPods/Specs.git:
-    - AppCenter
     - SDWebImage
   trunk:
+    - AppCenter
     - ZIPFoundation
 
 EXTERNAL SOURCES:
@@ -43,12 +43,12 @@ CHECKOUT OPTIONS:
     :tag: 0.2.4
 
 SPEC CHECKSUMS:
-  AppCenter: cd53e3ed3563cc720bcb806c9731a12389b40d44
+  AppCenter: 883369ab78427b0561c688158d689dfe1f993ea9
   AsyncGL: 5de4ef0c14f33eea0b545778c758cc3c3b28a460
   MWRequest: 8cbe368d811864da8c7398aa5007be520e685274
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   ZIPFoundation: b1f0de4eed33e74a676f76e12559ab6b75990197
 
-PODFILE CHECKSUM: 432067bbf23ea2e13a9ec846343cb70a6697beb6
+PODFILE CHECKSUM: 8f5c3227b4a706ef743bd13578259d004078e702
 
 COCOAPODS: 1.11.2
