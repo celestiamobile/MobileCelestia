@@ -7,6 +7,12 @@ jobs:
   variables:
     sdk: ${{ parameters.sdk }}
     signing: ${{ parameters.signing }}
+    XC_VERSION: ${{ '13.0' }}
+    XC_WORKSPACE: ${{ 'MobileCelestia/MobileCelestia.xcworkspace' }}
+    XC_SCHEME: ${{ 'MobileCelestia' }}
+    XC_ARCHIVE_PATH: ${{ './MobileCelestia.xcarchive' }}
+    XC_EXPORT_OPTIONS_FILE_PATH: ${{ './ExportOptions.plist' }}
+    XC_EXPORT_PATH: ${{ './artifacts/' }}
 
   steps:
   - checkout: Celestia
@@ -40,6 +46,10 @@ jobs:
     condition: eq( variables['sdk'], 'macosx' )
 
   - script: |
+      sudo xcode-select -s /Applications/Xcode_$XC_VERSION.app
+    displayName: 'Select Latest Xcode'
+
+  - script: |
       cd MobileCelestia
       pod deintegrate
       pod install
@@ -49,60 +59,69 @@ jobs:
       brew install gettext
     displayName: 'Install Gettext'
 
-  - task: InstallAppleCertificate@2
+  - task: DownloadSecureFile@1
+    name: macInstallerP12
     inputs:
-      certSecureFile: 'MacInstaller20210729.p12'
-      certPwd: $(MAC_INSTALLER_P12_PASSWORD)
-    displayName: 'Install Mac Installer Certificate'
-    condition: and(eq( variables['sdk'], 'macosx' ), eq( variables['signing'], 'appStore' ))
+      secureFile: 'MacInstaller20210729.p12'
+    displayName: 'Download Mac Installer Certificate'
 
-  - task: InstallAppleCertificate@2
+  - task: DownloadSecureFile@1
+    name: distributionP12
     inputs:
-      certSecureFile: '20210508.p12'
-      certPwd: $(P12Password)
-    displayName: 'Install Distribution Certificate'
-    condition: eq( variables['signing'], 'appStore' )
+      secureFile: '20210508.p12'
+    displayName: 'Download Distribution Certificate'
 
-  - task: InstallAppleCertificate@2
+  - task: DownloadSecureFile@1
+    name: developerIDP12
     inputs:
-      certSecureFile: 'DeveloperID.p12'
-      certPwd: $(P12Password)
-    displayName: 'Install Developer ID Certificate'
-    condition: and(eq( variables['sdk'], 'iphoneos' ), eq( variables['signing'], 'developerID' ))
+      secureFile: 'DeveloperID.p12'
+    displayName: 'Download Developer ID Certificate'
 
-  - task: InstallAppleProvisioningProfile@1
+  - task: DownloadSecureFile@1
+    name: iosProvisioningProfile
     inputs:
-      provProfileSecureFile: MobileCelestiaDistrition20210508.mobileprovision
-    displayName: 'Install Provision File (iOS)'
-    condition: eq( variables['sdk'], 'iphoneos' )
+      secureFile: 'MobileCelestiaDistrition20210508.mobileprovision'
+    displayName: 'Download iOS Provisioning Profile'
 
-  - task: InstallAppleProvisioningProfile@1
+  - task: DownloadSecureFile@1
+    name: macAppStoreProvisioningProfile
     inputs:
-      provProfileSecureFile: MobileCelestiaDeveloperID20250605.provisionprofile
-    displayName: 'Install Provision File (Catalyst, Developer ID)'
-    condition: and(eq( variables['sdk'], 'macosx' ), eq( variables['signing'], 'developerID' ))
+      secureFile: 'Ado_Mobile_Celestia_Catalyst_20211009.provisionprofile'
+    displayName: 'Download Mac (App Store) Provisioning Profile'
 
-  - task: InstallAppleProvisioningProfile@1
+  - task: DownloadSecureFile@1
+    name: macDeveloperIDProvisioningProfile
     inputs:
-      provProfileSecureFile: Ado_Mobile_Celestia_Catalyst_20211009.provisionprofile
-    displayName: 'Install Provision File (Catalyst, App Store)'
-    condition: and(eq( variables['sdk'], 'macosx' ), eq( variables['signing'], 'appStore' ))
+      secureFile: 'MobileCelestiaDeveloperID20250605.provisionprofile'
+    displayName: 'Download Mac (Developer ID) Provisioning Profile'
 
-  - task: Xcode@5
-    inputs:
-      actions: 'build'
-      packageApp: true
-      signingOption: manual
-      signingIdentity: '$(APPLE_CERTIFICATE_SIGNING_IDENTITY)'
-      provisioningProfileUuid: '$(APPLE_PROV_PROFILE_UUID)'
-      scheme: 'MobileCelestia'
-      sdk: $(sdk)
-      configuration: 'Release'
-      xcWorkspacePath: '$(system.defaultworkingdirectory)/MobileCelestia/MobileCelestia.xcworkspace'
-      xcodeVersion: '13'
-      exportPath: '$(agent.buildDirectory)/output/$(sdk)'
-      archivePath: '$(system.defaultworkingdirectory)/archive'
-    displayName: 'Build'
+  - script: |
+      # create variables
+      KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+      KEYCHAIN_PASSWORD=temppassword
+      # create temporary keychain
+      security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+      security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+      security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+      # import certificate to keychain
+      security import "$(macInstallerP12.secureFilePath)" -P "$MAC_INSTALLER_P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+      security import "$(distributionP12.secureFilePath)" -P "$P12Password" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+      security import "$(developerIDP12.secureFilePath)" -P "$P12Password" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+      security list-keychain -d user -s $KEYCHAIN_PATH
+      # apply provisioning profile
+      mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+      cp "$(iosProvisioningProfile.secureFilePath)" ~/Library/MobileDevice/Provisioning\ Profiles
+      cp "$(macAppStoreProvisioningProfile.secureFilePath)" ~/Library/MobileDevice/Provisioning\ Profiles
+      cp "$(macDeveloperIDProvisioningProfile.secureFilePath)" ~/Library/MobileDevice/Provisioning\ Profiles
+    displayName: 'Install Certificates and Provisioning Profiles'
+
+  - script: |
+      /usr/bin/xcodebuild archive -workspace "$XC_WORKSPACE" -scheme "$XC_SCHEME" -configuration "Release" -destination "generic/platform=iOS" -archivePath "$XC_ARCHIVE_PATH" PROVISIONING_PROFILE="AppCenterMC20210529" CODE_SIGN_IDENTITY="Apple Distribution: Linfeng Li (22NR5428TD)"
+    displayName: 'Build Archive'
+
+  - script: |
+      /usr/bin/xcodebuild -exportArchive -archivePath "$XC_ARCHIVE_PATH" -exportOptionsPlist "$XC_EXPORT_OPTIONS_FILE_PATH" -exportPath "$XC_EXPORT_PATH"
+    displayName: 'Export Archive'
 
   - script: |
       cd $(system.defaultworkingdirectory)/archive
