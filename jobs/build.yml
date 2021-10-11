@@ -105,7 +105,7 @@ jobs:
       security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
       # import certificate to keychain
       security import "$(macInstallerP12.secureFilePath)" -P "$(MAC_INSTALLER_P12_PASSWORD)" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
-      security import "$(distributionP12.secureFilePath)" -P "$(P12Password" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+      security import "$(distributionP12.secureFilePath)" -P "$(P12Password)" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
       security import "$(developerIDP12.secureFilePath)" -P "$(P12Password)" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
       security list-keychain -d user -s $KEYCHAIN_PATH
       # apply provisioning profile
