@@ -116,7 +116,7 @@ jobs:
     displayName: 'Install Certificates and Provisioning Profiles'
 
   - script: |
-      /usr/bin/xcodebuild archive -workspace "$XC_WORKSPACE" -scheme "$XC_SCHEME" -configuration "Release" -destination "generic/platform=iOS" -archivePath "$XC_ARCHIVE_PATH" PROVISIONING_PROFILE="AppCenterMC20210529" CODE_SIGN_IDENTITY="Apple Distribution: Linfeng Li (22NR5428TD)"
+      /usr/bin/xcodebuild archive -workspace "$XC_WORKSPACE" -scheme "$XC_SCHEME" -configuration "Release" -destination "generic/platform=iOS" -archivePath "$XC_ARCHIVE_PATH" CODE_SIGN_STYLE="Manual" PROVISIONING_PROFILE="AppCenterMC20210529" CODE_SIGN_IDENTITY="Apple Distribution: Linfeng Li (22NR5428TD)"
     displayName: 'Build Archive'
 
   - script: |
