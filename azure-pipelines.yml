@@ -22,10 +22,22 @@ stages:
   - template: jobs/build.yml
     parameters:
       sdk: iphoneos
-- stage: Build_Catalyst
-  displayName: 'Build Catalyst'
+      signing: appStore
+
+- stage: Build_Catalyst_DeveloperID
+  displayName: 'Build Catalyst (Developer ID)'
   dependsOn: []
   jobs:
   - template: jobs/build.yml
     parameters:
       sdk: macosx
+      signing: developerID
+
+- stage: Build_Catalyst_App_Store
+  displayName: 'Build Catalyst (App Store)'
+  dependsOn: []
+  jobs:
+  - template: jobs/build.yml
+    parameters:
+      sdk: macosx
+      signing: appStore
