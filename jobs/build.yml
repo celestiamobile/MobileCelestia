@@ -97,13 +97,14 @@ jobs:
 
   - script: |
       # create variables
-      KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+      KEYCHAIN_PATH=$(Agent.TempDirectory)/app-signing.keychain-db
       KEYCHAIN_PASSWORD=temppassword
       # create temporary keychain
       security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
       security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
       security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
       # import certificate to keychain
+      echo "$(macInstallerP12.secureFilePath)"
       security import "$(macInstallerP12.secureFilePath)" -P "$MAC_INSTALLER_P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
       security import "$(distributionP12.secureFilePath)" -P "$P12Password" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
       security import "$(developerIDP12.secureFilePath)" -P "$P12Password" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
