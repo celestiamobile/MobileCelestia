@@ -1,6 +1,6 @@
 {
   "name": "AsyncGL",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "summary": "A framework that allows rendering OpenGL (ES) contents on a GCD dispatch queue.",
   "homepage": "https://github.com/levinli303/AsyncGL.git",
   "license": "MIT",
@@ -13,7 +13,7 @@
   },
   "source": {
     "git": "https://github.com/levinli303/AsyncGL.git",
-    "tag": "0.0.9"
+    "tag": "0.0.10"
   },
   "source_files": [
     "AsyncGL/**/*.{h,m}",

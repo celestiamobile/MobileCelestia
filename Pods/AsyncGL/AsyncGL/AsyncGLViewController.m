@@ -255,6 +255,7 @@ static CVReturn displayCallback(CVDisplayLinkRef displayLink,
         [self setPaused:NO];
 }
 
+#if TARGET_OS_IOS
 - (void)setPreferredFramesPerSecond:(NSInteger)preferredFramesPerSecond displayLink:(CADisplayLink *)displayLink
 {
     if (@available(iOS 10.0, *)) {
@@ -286,5 +287,6 @@ static CVReturn displayCallback(CVDisplayLinkRef displayLink,
         }
     }
 }
+#endif
 
 @end
