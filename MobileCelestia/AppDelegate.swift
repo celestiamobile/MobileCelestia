@@ -168,6 +168,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
     }
+
+    func applicationWillResignActive(_ application: UIApplication) {
+        let backgroundTaskID = application.beginBackgroundTask(expirationHandler: nil)
+        if backgroundTaskID == .invalid {
+            return
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+            application.endBackgroundTask(backgroundTaskID)
+        }
+    }
 }
 
 @available(iOS 13.0, *)

@@ -56,6 +56,17 @@ class MainSceneDelegate: UIResponder, UIWindowSceneDelegate {
         AppDelegate.handleUserActivity(userActivity)
     }
 
+    func sceneWillResignActive(_ scene: UIScene) {
+        let application = UIApplication.shared
+        let backgroundTaskID = application.beginBackgroundTask(expirationHandler: nil)
+        if backgroundTaskID == .invalid {
+            return
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+            application.endBackgroundTask(backgroundTaskID)
+        }
+    }
+
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         guard let urlContext = URLContexts.first else { return }
         NotificationCenter.default.post(name: newURLOpenedNotificationName, object: nil, userInfo: [
