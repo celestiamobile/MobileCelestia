@@ -52,6 +52,17 @@ class SearchViewController: UIViewController {
     override func loadView() {
         view = UIView()
 
+        if #available(iOS 13, *) {
+            let appearance = UINavigationBarAppearance()
+            appearance.configureWithDefaultBackground()
+            navigationItem.standardAppearance = appearance
+            navigationItem.compactAppearance = appearance
+            navigationItem.scrollEdgeAppearance = appearance
+            if #available(iOS 15, *) {
+                navigationItem.compactScrollEdgeAppearance = appearance
+            }
+        }
+
         #if !targetEnvironment(macCatalyst)
         view.backgroundColor = .darkBackground
         #endif
