@@ -7,7 +7,7 @@ jobs:
   variables:
     sdk: ${{ parameters.sdk }}
     signing: ${{ parameters.signing }}
-    XC_VERSION: ${{ '13.0' }}
+    XC_VERSION: ${{ '13.1' }}
     XC_WORKSPACE: ${{ 'MobileCelestia/MobileCelestia.xcworkspace' }}
     XC_SCHEME: ${{ 'MobileCelestia' }}
     XC_ARCHIVE_PARENT_PATH: ${{ '$(system.defaultworkingdirectory)/archive' }}
