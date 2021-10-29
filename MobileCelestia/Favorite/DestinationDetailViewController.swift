@@ -14,7 +14,7 @@ import UIKit
 import CelestiaCore
 
 class DestinationDetailViewController: UIViewController {
-    private let destination: CelestiaDestination
+    private let destination: Destination
     private let goToHandler: () -> Void
 
     private lazy var scrollView = UIScrollView(frame: .zero)
@@ -28,7 +28,7 @@ class DestinationDetailViewController: UIViewController {
         descriptionLabel,
     ])
 
-    init(destination: CelestiaDestination, goToHandler: @escaping () -> Void) {
+    init(destination: Destination, goToHandler: @escaping () -> Void) {
         self.destination = destination
         self.goToHandler = goToHandler
         super.init(nibName: nil, bundle: nil)

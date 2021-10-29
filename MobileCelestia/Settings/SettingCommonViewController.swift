@@ -16,7 +16,7 @@ import CelestiaCore
 class SettingCommonViewController: BaseTableViewController {
     private let item: SettingCommonItem
 
-    private lazy var core = CelestiaAppCore.shared
+    private lazy var core = AppCore.shared
 
     init(item: SettingCommonItem) {
         self.item = item
@@ -152,7 +152,7 @@ extension SettingCommonViewController {
         switch row.type {
         case .action:
             guard let item = row.associatedItem.base as? AssociatedActionItem else { break }
-            CelestiaAppCore.shared.charEnter(item.action)
+            AppCore.shared.charEnter(item.action)
         case .checkmark:
             guard let item = row.associatedItem.base as? AssociatedCheckmarkItem, item.representation == .checkmark else { break }
             guard let cell = tableView.cellForRow(at: indexPath) else { break }

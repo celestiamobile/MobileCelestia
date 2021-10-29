@@ -17,7 +17,7 @@ protocol GoToInputItem {
     var detail: String { get }
 }
 
-private extension CelestiaSimulationDistanceUnit {
+private extension DistanceUnit {
     var name: String {
         switch self {
         case .AU:
@@ -61,7 +61,7 @@ class GoToInputViewController: BaseTableViewController {
 
         var detail: String { CelestiaString(unit.name, comment: "") }
 
-        let unit: CelestiaSimulationDistanceUnit
+        let unit: DistanceUnit
     }
 
     struct ProcceedItem: GoToInputItem {
@@ -78,7 +78,7 @@ class GoToInputViewController: BaseTableViewController {
         let name: String
     }
 
-    private let locationHandler: ((CelestiaGoToLocation) -> Void)
+    private let locationHandler: ((GoToLocation) -> Void)
     private let objectNameHandler: ((GoToInputViewController) -> Void)
 
     private var objectName: String = LocalizedString("Earth", "celestia")
@@ -86,15 +86,15 @@ class GoToInputViewController: BaseTableViewController {
     private var latitude: Float = 0
 
     private var distance: Double = 8
-    private var unit: CelestiaSimulationDistanceUnit = .radii
+    private var unit: DistanceUnit = .radii
 
-    private let core = CelestiaAppCore.shared
+    private let core = AppCore.shared
 
-    private static let availableUnits: [CelestiaSimulationDistanceUnit] = [.radii, .KM, .AU]
+    private static let availableUnits: [DistanceUnit] = [.radii, .KM, .AU]
 
     private var allSections: [[GoToInputItem]] = []
 
-    init(objectNameHandler: @escaping (GoToInputViewController) -> Void, locationHandler: @escaping ((CelestiaGoToLocation) -> Void)) {
+    init(objectNameHandler: @escaping (GoToInputViewController) -> Void, locationHandler: @escaping ((GoToLocation) -> Void)) {
         self.objectNameHandler = objectNameHandler
         self.locationHandler = locationHandler
         super.init(style: .defaultGrouped)
@@ -215,7 +215,7 @@ extension GoToInputViewController {
                 showError(CelestiaString("Object not found", comment: ""))
                 return
             }
-            locationHandler(CelestiaGoToLocation(selection: selection, longitude: longitude, latitude: latitude, distance: distance, unit: unit))
+            locationHandler(GoToLocation(selection: selection, longitude: longitude, latitude: latitude, distance: distance, unit: unit))
         }
     }
 }

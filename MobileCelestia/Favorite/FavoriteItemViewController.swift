@@ -124,8 +124,8 @@ extension BookmarkNode: FavoriteItem {
     }
 }
 
-extension CelestiaScript: FavoriteItem {
-    typealias ItemList = AnyFavoriteItemList<CelestiaScript>
+extension Script: FavoriteItem {
+    typealias ItemList = AnyFavoriteItemList<Script>
     typealias Representation = URL
 
     var associatedObject: URL? {
@@ -136,7 +136,7 @@ extension CelestiaScript: FavoriteItem {
         return true
     }
 
-    var itemList: AnyFavoriteItemList<CelestiaScript>? {
+    var itemList: AnyFavoriteItemList<Script>? {
         return nil
     }
 
@@ -148,15 +148,15 @@ extension CelestiaScript: FavoriteItem {
     }
 }
 
-extension CelestiaDestination: FavoriteItem {
+extension Destination: FavoriteItem {
     var title: String {
         return name
     }
 
-    typealias ItemList = AnyFavoriteItemList<CelestiaDestination>
-    typealias Representation = CelestiaDestination
+    typealias ItemList = AnyFavoriteItemList<Destination>
+    typealias Representation = Destination
 
-    var associatedObject: CelestiaDestination? {
+    var associatedObject: Destination? {
         return self
     }
 
@@ -164,7 +164,7 @@ extension CelestiaDestination: FavoriteItem {
         return true
     }
 
-    var itemList: AnyFavoriteItemList<CelestiaDestination>? {
+    var itemList: AnyFavoriteItemList<Destination>? {
         return nil
     }
 

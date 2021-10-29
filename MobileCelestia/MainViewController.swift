@@ -33,7 +33,7 @@ class MainViewController: UIViewController {
     private lazy var endSlideInManager = PresentationManager(direction: UIView.userInterfaceLayoutDirection(for: self.view.semanticContentAttribute) == .rightToLeft ? .left : .right, useSheetIfPossible: true)
     private lazy var bottomSlideInManager = PresentationManager(direction: UIView.userInterfaceLayoutDirection(for: self.view.semanticContentAttribute) == .rightToLeft ? .bottomRight : .bottomLeft)
 
-    private lazy var core = CelestiaAppCore.shared
+    private lazy var core = AppCore.shared
 
     private var viewControllerStack: [UIViewController] = []
 
@@ -237,7 +237,7 @@ extension MainViewController: CelestiaControllerDelegate {
         }
     }
 
-    func celestiaController(_ celestiaController: CelestiaViewController, requestShowActionMenuWithSelection selection: CelestiaSelection) {
+    func celestiaController(_ celestiaController: CelestiaViewController, requestShowActionMenuWithSelection selection: Selection) {
         let actions: [[AppToolbarAction]] = AppToolbarAction.persistentAction
         let controller = ToolbarViewController(actions: actions)
         controller.selectionHandler = { [unowned self] (action) in
@@ -249,7 +249,7 @@ extension MainViewController: CelestiaControllerDelegate {
         presentAfterDismissCurrent(controller, animated: true)
     }
 
-    func celestiaController(_ celestiaController: CelestiaViewController, requestShowInfoWithSelection selection: CelestiaSelection) {
+    func celestiaController(_ celestiaController: CelestiaViewController, requestShowInfoWithSelection selection: Selection) {
         guard !selection.isEmpty else { return }
         showSelectionInfo(with: selection)
     }
@@ -314,7 +314,7 @@ extension MainViewController: CelestiaControllerDelegate {
 
     private func shareImage() {
         core.run { [weak self] core in
-            CelestiaAppCore.makeRenderContextCurrent()
+            AppCore.makeRenderContextCurrent()
             core.draw()
             let path = (NSTemporaryDirectory() as NSString).appendingPathComponent("CelestiaScreenshot.png")
             if core.screenshot(to: path, type: .PNG) {
@@ -354,7 +354,7 @@ extension MainViewController: CelestiaControllerDelegate {
             if let url = object as? URL {
                 urlToRun = UniformedURL(url: url, securityScoped: false)
                 self.checkNeedOpeningURL()
-            } else if let destination = object as? CelestiaDestination {
+            } else if let destination = object as? Destination {
                 self.core.run { $0.simulation.goToDestination(destination) }
             }
         }, share: { object, viewController in
@@ -491,11 +491,11 @@ extension MainViewController: CelestiaControllerDelegate {
         ])
     }
 
-    private func showSelectionInfo(with selection: CelestiaSelection) {
+    private func showSelectionInfo(with selection: Selection) {
         showViewController(createSelectionInfoViewController(with: selection, isEmbeddedInNavigation: false))
     }
 
-    private func createSelectionInfoViewController(with selection: CelestiaSelection, isEmbeddedInNavigation: Bool) -> InfoViewController {
+    private func createSelectionInfoViewController(with selection: Selection, isEmbeddedInNavigation: Bool) -> InfoViewController {
         let controller = InfoViewController(info: selection, isEmbeddedInNavigationController: isEmbeddedInNavigation)
         controller.selectionHandler = { [unowned self] (action, sender) in
             switch action {
@@ -516,11 +516,11 @@ extension MainViewController: CelestiaControllerDelegate {
         return controller
     }
 
-    private func showMarkMenu(with selection: CelestiaSelection, with sender: UIView) {
-        let options = (0...CelestiaMarkerRepresentation.crosshair.rawValue).map{ CelestiaMarkerRepresentation(rawValue: $0)?.localizedTitle ?? "" } + [CelestiaString("Unmark", comment: "")]
+    private func showMarkMenu(with selection: Selection, with sender: UIView) {
+        let options = (0...MarkerRepresentation.crosshair.rawValue).map{ MarkerRepresentation(rawValue: $0)?.localizedTitle ?? "" } + [CelestiaString("Unmark", comment: "")]
         front?.showSelection(CelestiaString("Mark", comment: ""), options: options, sourceView: sender, sourceRect: sender.bounds) { [weak self] index in
             guard let self = self, let index = index else { return }
-            if let marker = CelestiaMarkerRepresentation(rawValue: UInt(index)) {
+            if let marker = MarkerRepresentation(rawValue: UInt(index)) {
                 self.core.markAsync(selection, markerType: marker)
             } else {
                 self.core.run { $0.simulation.universe.unmark(selection) }
@@ -528,7 +528,7 @@ extension MainViewController: CelestiaControllerDelegate {
         }
     }
 
-    private func showAlternateSurfaces(of selection: CelestiaSelection, with sender: UIView) {
+    private func showAlternateSurfaces(of selection: Selection, with sender: UIView) {
         guard let alternativeSurfaces = selection.body?.alternateSurfaceNames, alternativeSurfaces.count > 0 else { return }
         front?.showSelection(CelestiaString("Alternate Surfaces", comment: ""), options: [CelestiaString("Default", comment: "")] + alternativeSurfaces, sourceView: sender, sourceRect: sender.bounds) { [weak self] index in
             guard let self = self, let index = index else { return }
@@ -545,9 +545,9 @@ extension MainViewController: CelestiaControllerDelegate {
         UIApplication.shared.open(url, options: [:], completionHandler: nil)
     }
 
-    private func showSubsystem(with selection: CelestiaSelection) {
+    private func showSubsystem(with selection: Selection) {
         guard let entry = selection.object else { return }
-        let browserItem = CelestiaBrowserItem(name: core.simulation.universe.name(for: selection), alternativeName: nil, catEntry: entry, provider: core.simulation.universe)
+        let browserItem = BrowserItem(name: core.simulation.universe.name(for: selection), alternativeName: nil, catEntry: entry, provider: core.simulation.universe)
         let controller = SubsystemBrowserCoordinatorViewController(item: browserItem) { [unowned self] (selection) -> UIViewController in
             return self.createSelectionInfoViewController(with: selection, isEmbeddedInNavigation: true)
         }
@@ -941,7 +941,7 @@ extension CelestiaAction: ToolbarTouchBarAction {
 }
 #endif
 
-extension CelestiaMarkerRepresentation {
+extension MarkerRepresentation {
     var localizedTitle: String {
         return CelestiaString(unlocalizedTitle, comment: "")
     }

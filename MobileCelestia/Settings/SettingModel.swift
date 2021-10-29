@@ -49,7 +49,7 @@ typealias AssociatedActionItem = SettingActionItem
 typealias AssociatedPreferenceSwitchItem = SettingPreferenceSwitchItem
 typealias AssociatedCheckmarkItem = SettingCheckmarkItem
 typealias AssociatedKeyedSelectionItem = SettingKeyedSelectionItem
-typealias AssociatedCustomItem = BlockHolder<CelestiaAppCore>
+typealias AssociatedCustomItem = BlockHolder<AppCore>
 
 class BlockHolder<T>: NSObject {
     let block: (T) -> Void

@@ -50,7 +50,7 @@ class SettingsCoordinatorController: UIViewController {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
 
-        CelestiaAppCore.shared.storeUserDefaults()
+        AppCore.shared.storeUserDefaults()
     }
 }
 
@@ -74,8 +74,8 @@ private extension SettingsCoordinatorController {
             case .time:
                 viewController = TimeSettingViewController()
             case .render:
-                let renderInfo = CelestiaAppCore.shared.get { core -> String in
-                    CelestiaAppCore.makeRenderContextCurrent()
+                let renderInfo = AppCore.shared.get { core -> String in
+                    AppCore.makeRenderContextCurrent()
                     return core.renderInfo
                 }
                 viewController = TextViewController(title: item.name, text: renderInfo)

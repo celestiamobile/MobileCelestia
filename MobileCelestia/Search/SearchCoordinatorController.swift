@@ -22,9 +22,9 @@ class SearchCoordinatorController: UIViewController {
     private var navigation: UINavigationController!
     #endif
 
-    private let selection: (CelestiaSelection) -> UIViewController
+    private let selection: (Selection) -> UIViewController
 
-    init(selected: @escaping (CelestiaSelection) -> UIViewController) {
+    init(selected: @escaping (Selection) -> UIViewController) {
         self.selection = selected
         super.init(nibName: nil, bundle: nil)
     }
@@ -53,7 +53,7 @@ private extension SearchCoordinatorController {
         let resultsInSidebar = false
         #endif
         main = SearchViewController(resultsInSidebar: resultsInSidebar) { [unowned self] name in
-            let sim = CelestiaAppCore.shared.simulation
+            let sim = AppCore.shared.simulation
             let object = sim.findObject(from: name)
             guard !object.isEmpty else {
                 self.showError(CelestiaString("Object not found", comment: ""))

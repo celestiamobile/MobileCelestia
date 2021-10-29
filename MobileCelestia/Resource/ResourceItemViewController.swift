@@ -122,7 +122,7 @@ class ResourceItemViewController: UIViewController {
 
     @objc private func goToButtonClicked() {
         guard let objectName = item.objectName else { return }
-        let core = CelestiaAppCore.shared
+        let core = AppCore.shared
         let object = core.simulation.findObject(from: objectName)
         if object.isEmpty {
             showError(CelestiaString("Object not found", comment: ""))
@@ -309,7 +309,7 @@ private extension ResourceItemViewController {
             progressButton.setTitle(CelestiaString("INSTALLED", comment: ""), for: .normal)
         }
 
-        if currentState == .installed, let objectName = item.objectName, !CelestiaAppCore.shared.simulation.findObject(from: objectName).isEmpty {
+        if currentState == .installed, let objectName = item.objectName, !AppCore.shared.simulation.findObject(from: objectName).isEmpty {
             goToButton.isHidden = false
         } else {
             goToButton.isHidden = true

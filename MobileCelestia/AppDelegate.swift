@@ -162,7 +162,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     override func validate(_ command: UICommand) {
         super.validate(command)
         let actionName = NSStringFromSelector(command.action)
-        if !CelestiaAppCore.shared.isInitialized {
+        if !AppCore.shared.isInitialized {
             if command.action == #selector(showPreferences) || command.action == #selector(openScriptFile) || actionName == "copy:" || actionName == "paste:" || command.action == #selector(showHelp(_:)) {
                 command.attributes = .disabled
             }

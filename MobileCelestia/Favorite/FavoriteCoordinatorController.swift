@@ -31,7 +31,7 @@ class FavoriteCoordinatorController: UIViewController {
         case .script:
             self.replace(AnyFavoriteItemList(title: CelestiaString("Scripts", comment: ""), items: readScripts()))
         case .destination:
-            self.replace(AnyFavoriteItemList(title: CelestiaString("Destinations", comment: ""), items: CelestiaAppCore.shared.destinations))
+            self.replace(AnyFavoriteItemList(title: CelestiaString("Destinations", comment: ""), items: AppCore.shared.destinations))
         }
     })
 
@@ -77,7 +77,7 @@ class FavoriteCoordinatorController: UIViewController {
 
 private extension FavoriteCoordinatorController {
     func setup() {
-        let anotherVc = root == .destinations ? generateVC(AnyFavoriteItemList(title: CelestiaString("Destinations", comment: ""), items: CelestiaAppCore.shared.destinations)) : nil
+        let anotherVc = root == .destinations ? generateVC(AnyFavoriteItemList(title: CelestiaString("Destinations", comment: ""), items: AppCore.shared.destinations)) : nil
         #if targetEnvironment(macCatalyst)
         controller.primaryBackgroundStyle = .sidebar
         controller.preferredDisplayMode = .oneBesideSecondary
@@ -133,7 +133,7 @@ private extension FavoriteCoordinatorController {
     func generateVC<T: FavoriteItemList>(_ itemList: T) -> UIViewController {
         FavoriteItemViewController(item: itemList, selection: { [unowned self] (item) in
             if item.isLeaf {
-                if let destination = item.associatedObject as? CelestiaDestination {
+                if let destination = item.associatedObject as? Destination {
                     let vc = DestinationDetailViewController(destination: destination) {
                         self.selected(destination)
                     }
@@ -150,7 +150,7 @@ private extension FavoriteCoordinatorController {
             guard itemList is BookmarkNode else {
                 fatalError()
             }
-            return CelestiaAppCore.shared.currentBookmark as? T.Item
+            return AppCore.shared.currentBookmark as? T.Item
         }, share: { [weak self] object, viewController in
             self?.share(object, viewController)
         })

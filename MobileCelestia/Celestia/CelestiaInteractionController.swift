@@ -53,8 +53,8 @@ extension CelestiaAction {
 }
 
 protocol CelestiaInteractionControllerDelegate: AnyObject {
-    func celestiaInteractionController(_ celestiaInteractionController: CelestiaInteractionController, requestShowActionMenuWithSelection selection: CelestiaSelection)
-    func celestiaInteractionController(_ celestiaInteractionController: CelestiaInteractionController, requestShowInfoWithSelection selection: CelestiaSelection)
+    func celestiaInteractionController(_ celestiaInteractionController: CelestiaInteractionController, requestShowActionMenuWithSelection selection: Selection)
+    func celestiaInteractionController(_ celestiaInteractionController: CelestiaInteractionController, requestShowInfoWithSelection selection: Selection)
     func celestiaInteractionController(_ celestiaInteractionController: CelestiaInteractionController, requestWebInfo webURL: URL)
 }
 
@@ -68,7 +68,7 @@ class CelestiaInteractionController: UIViewController {
         case object
         case camera
 
-        var button: CelestiaMouseButton {
+        var button: MouseButton {
             return self == .object ? .right : .left
         }
 
@@ -121,13 +121,13 @@ class CelestiaInteractionController: UIViewController {
 
     private var currentControlView: CelestiaControlView?
 
-    private var pendingSelection: CelestiaSelection?
+    private var pendingSelection: Selection?
 
     // MARK: gesture
     private var oneFingerStartPoint: CGPoint?
     private var currentPanDistance: CGFloat?
 
-    private lazy var core = CelestiaAppCore.shared
+    private lazy var core = AppCore.shared
 
     weak var delegate: CelestiaInteractionControllerDelegate?
     weak var targetProvider: RenderingTargetInformationProvider?
@@ -530,7 +530,7 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
             }))
 
             if let entry = selection.object {
-                let browserItem = CelestiaBrowserItem(name: self.core.simulation.universe.name(for: selection), catEntry: entry, provider: self.core.simulation.universe)
+                let browserItem = BrowserItem(name: self.core.simulation.universe.name(for: selection), catEntry: entry, provider: self.core.simulation.universe)
                 actions.append(UIMenu(title: "", options: .displayInline, children: browserItem.children.compactMap { $0.createMenuItems(additionalItemName: CelestiaString("Go", comment: "")) { (selection) in
                     self.core.selectAndReceiveAsync(selection, action: .goTo)
                 }
@@ -554,11 +554,11 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
                 actions.append(menu)
             }
 
-            let markerOptions = (0...CelestiaMarkerRepresentation.crosshair.rawValue).map { CelestiaMarkerRepresentation(rawValue: $0)?.localizedTitle ?? "" } + [CelestiaString("Unmark", comment: "")]
+            let markerOptions = (0...MarkerRepresentation.crosshair.rawValue).map { MarkerRepresentation(rawValue: $0)?.localizedTitle ?? "" } + [CelestiaString("Unmark", comment: "")]
             let markerMenu = UIMenu(title: CelestiaString("Mark", comment: ""), children: markerOptions.enumerated().map() { index, name -> UIAction in
                 return UIAction(title: name) { [weak self] _ in
                     guard let self = self else { return }
-                    if let marker = CelestiaMarkerRepresentation(rawValue: UInt(index)) {
+                    if let marker = MarkerRepresentation(rawValue: UInt(index)) {
                         self.core.markAsync(selection, markerType: marker)
                     } else {
                         self.core.run { $0.simulation.universe.unmark(selection) }
@@ -591,13 +591,13 @@ extension UIContextMenuInteraction {
 }
 
 @available(iOS 13.0, *)
-extension CelestiaBrowserItem {
-    func createMenuItems(additionalItemName: String, with callback: @escaping (CelestiaSelection) -> Void) -> UIMenu? {
+extension BrowserItem {
+    func createMenuItems(additionalItemName: String, with callback: @escaping (Selection) -> Void) -> UIMenu? {
         var items = [UIMenuElement]()
 
         if let ent = entry {
             items.append(UIAction(title: CelestiaString(additionalItemName, comment: ""), handler: { (_) in
-                guard let selection = CelestiaSelection(object: ent) else { return }
+                guard let selection = Selection(object: ent) else { return }
                 callback(selection)
             }))
         }
@@ -641,16 +641,16 @@ extension UIPanGestureRecognizer {
     }
 }
 
-extension CelestiaInteractionController: CelestiaAppCoreDelegate {
+extension CelestiaInteractionController: AppCoreDelegate {
     func celestiaAppCoreFatalErrorHappened(_ error: String) {}
 
-    func celestiaAppCoreCursorShapeChanged(_ shape: CelestiaCursorShape) {}
+    func celestiaAppCoreCursorShapeChanged(_ shape: CursorShape) {}
 
-    func celestiaAppCoreCursorDidRequestContextMenu(at location: CGPoint, with selection: CelestiaSelection) {
+    func celestiaAppCoreCursorDidRequestContextMenu(at location: CGPoint, with selection: Selection) {
         pendingSelection = selection
     }
 
-    func celestiaAppCoreWatchedFlagDidChange(_ changedFlag: CelestiaWatcherFlag) {}
+    func celestiaAppCoreWatchedFlagDidChange(_ changedFlag: WatcherFlag) {}
 }
 
 extension CelestiaInteractionController {

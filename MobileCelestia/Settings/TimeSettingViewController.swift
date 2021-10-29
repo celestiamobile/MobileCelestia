@@ -14,7 +14,7 @@ import UIKit
 import CelestiaCore
 
 class TimeSettingViewController: BaseTableViewController {
-    private lazy var core = CelestiaAppCore.shared
+    private lazy var core = AppCore.shared
 
     private lazy var displayDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -64,7 +64,7 @@ extension TimeSettingViewController {
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let core = CelestiaAppCore.shared
+        let core = AppCore.shared
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.row == 0 {
             let preferredFormat = DateFormatter.dateFormat(fromTemplate: "yyyyMMddHHmmss", options: 0, locale: Locale.current) ?? "yyyy/MM/dd HH:mm:ss"

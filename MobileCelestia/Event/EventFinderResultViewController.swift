@@ -21,10 +21,10 @@ class EventFinderResultViewController: BaseTableViewController {
         return formatter
     }()
 
-    private let eventHandler: ((CelestiaEclipse) -> Void)
-    private let events: [CelestiaEclipse]
+    private let eventHandler: ((Eclipse) -> Void)
+    private let events: [Eclipse]
 
-    init(results: [CelestiaEclipse], eventHandler: @escaping ((CelestiaEclipse) -> Void)) {
+    init(results: [Eclipse], eventHandler: @escaping ((Eclipse) -> Void)) {
         self.eventHandler = eventHandler
         self.events = results
         super.init(style: .defaultGrouped)

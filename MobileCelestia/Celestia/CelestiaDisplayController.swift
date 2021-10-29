@@ -22,7 +22,7 @@ protocol CelestiaDisplayControllerDelegate: AnyObject {
 }
 
 class CelestiaDisplayController: AsyncGLViewController {
-    private var core: CelestiaAppCore!
+    private var core: AppCore!
 
     // MARK: rendering
     private var currentSize: CGSize = .zero
@@ -129,8 +129,8 @@ class CelestiaDisplayController: AsyncGLViewController {
 
 extension CelestiaDisplayController {
     override func prepareGL(_ size: CGSize) {
-        _ = CelestiaAppCore.initGL()
-        core = CelestiaAppCore.shared
+        _ = AppCore.initGL()
+        core = AppCore.shared
 
         var success = false
         var shouldRetry = true
@@ -140,7 +140,7 @@ extension CelestiaDisplayController {
             self.configFileURL = currentConfigFile()
 
             FileManager.default.changeCurrentDirectoryPath(self.dataDirectoryURL.url.path)
-            CelestiaAppCore.setLocaleDirectory(self.dataDirectoryURL.url.path + "/locale")
+            AppCore.setLocaleDirectory(self.dataDirectoryURL.url.path + "/locale")
 
             guard self.core.startSimulation(configFileName: self.configFileURL.url.path, extraDirectories: [extraDirectory].compactMap{$0?.path}, progress: { (st) in
                 delegate?.celestiaDisplayController(self, loadingStatusUpdated: st)
@@ -164,7 +164,7 @@ extension CelestiaDisplayController {
             return
         }
 
-        CelestiaAppCore.renderViewController = self
+        AppCore.renderViewController = self
 
         updateContentScale()
         start()
@@ -184,7 +184,7 @@ extension CelestiaDisplayController {
     }
 }
 
-private extension CelestiaAppCore {
+private extension AppCore {
     func setSafeAreaInsets(_ safeAreaInsets: UIEdgeInsets) {
         setSafeAreaInsets(left: safeAreaInsets.left, top: safeAreaInsets.top, right: safeAreaInsets.right, bottom: safeAreaInsets.bottom)
     }
@@ -221,7 +221,7 @@ extension CelestiaDisplayController {
         core.setPickTolerance(10 * viewScale / applicationScalingFactor)
         #endif
 
-        CelestiaAppCore.makeRenderContextCurrent()
+        AppCore.makeRenderContextCurrent()
 
         let locale = LocalizedString("LANGUAGE", "celestia")
         let (font, boldFont) = getInstalledFontFor(locale: locale)
@@ -291,14 +291,14 @@ private extension UIEdgeInsets {
     }
 }
 
-extension CelestiaAppCore {
+extension AppCore {
     fileprivate static var renderQueue: DispatchQueue? {
         return renderViewController?.glView?.renderQueue
     }
 
     fileprivate static weak var renderViewController: AsyncGLViewController?
 
-    func run(_ task: @escaping (CelestiaAppCore) -> Void) {
+    func run(_ task: @escaping (AppCore) -> Void) {
         guard let queue = Self.renderQueue else { return }
         queue.async { [weak self] in
             guard let self = self else { return }
@@ -310,7 +310,7 @@ extension CelestiaAppCore {
         Self.renderViewController?.makeRenderContextCurrent()
     }
 
-    func get<T>(_ task: (CelestiaAppCore) -> T) -> T {
+    func get<T>(_ task: (AppCore) -> T) -> T {
         guard let queue = Self.renderQueue else { fatalError() }
         var item: T?
         queue.sync { [weak self] in
@@ -335,7 +335,7 @@ extension CelestiaAppCore {
         }
     }
 
-    func selectAndReceiveAsync(_ selection: CelestiaSelection, action: CelestiaAction) {
+    func selectAndReceiveAsync(_ selection: Selection, action: CelestiaAction) {
         run {
             $0.simulation.selection = selection
             $0.receive(action)
@@ -348,13 +348,13 @@ extension CelestiaAppCore {
         }
     }
 
-    func getSelectionAsync(_ completion: @escaping (CelestiaSelection, CelestiaAppCore) -> Void) {
+    func getSelectionAsync(_ completion: @escaping (Selection, AppCore) -> Void) {
         run { core in
             completion(core.simulation.selection, core)
         }
     }
 
-    func markAsync(_ selection: CelestiaSelection, markerType: CelestiaMarkerRepresentation) {
+    func markAsync(_ selection: Selection, markerType: MarkerRepresentation) {
         run { core in
             core.simulation.universe.mark(selection, with: markerType)
             core.showMarkers = true

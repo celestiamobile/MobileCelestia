@@ -20,9 +20,9 @@ class BrowserContainerViewController: UIViewController {
     private lazy var controller = UITabBarController()
     #endif
 
-    private let selected: (CelestiaSelection) -> UIViewController
+    private let selected: (Selection) -> UIViewController
 
-    init(selected: @escaping (CelestiaSelection) -> UIViewController) {
+    init(selected: @escaping (Selection) -> UIViewController) {
         self.selected = selected
         super.init(nibName: nil, bundle: nil)
     }
@@ -47,7 +47,7 @@ class BrowserContainerViewController: UIViewController {
 private extension BrowserContainerViewController {
     func setup() {
         install(controller)
-        let handler = { [unowned self] (selection: CelestiaSelection) -> UIViewController in
+        let handler = { [unowned self] (selection: Selection) -> UIViewController in
             return self.selected(selection)
         }
 
@@ -88,9 +88,9 @@ class BrowserSidebarController: BaseTableViewController {
         case single
     }
 
-    private lazy var dataSource: UITableViewDiffableDataSource<Section, CelestiaBrowserItem> = {
+    private lazy var dataSource: UITableViewDiffableDataSource<Section, BrowserItem> = {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
-        let dataSource = UITableViewDiffableDataSource<Section, CelestiaBrowserItem>(tableView: tableView) { (view, indexPath, item) -> UITableViewCell? in
+        let dataSource = UITableViewDiffableDataSource<Section, BrowserItem>(tableView: tableView) { (view, indexPath, item) -> UITableViewCell? in
             let cell = view.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
             cell.textLabel?.text = item.alternativeName ?? item.name
             return cell
@@ -98,10 +98,10 @@ class BrowserSidebarController: BaseTableViewController {
         return dataSource
     }()
 
-    private let browserRoots: [CelestiaBrowserItem]
-    private let handler: (CelestiaBrowserItem) -> Void
+    private let browserRoots: [BrowserItem]
+    private let handler: (BrowserItem) -> Void
 
-    init(browserRoots: [CelestiaBrowserItem], handler: @escaping (CelestiaBrowserItem) -> Void) {
+    init(browserRoots: [BrowserItem], handler: @escaping (BrowserItem) -> Void) {
         self.browserRoots = browserRoots
         self.handler = handler
         super.init(style: .grouped)
@@ -114,7 +114,7 @@ class BrowserSidebarController: BaseTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        var snapshot = NSDiffableDataSourceSnapshot<Section, CelestiaBrowserItem>()
+        var snapshot = NSDiffableDataSourceSnapshot<Section, BrowserItem>()
         snapshot.appendSections([.single])
         snapshot.appendItems(browserRoots, toSection: .single)
         tableView.dataSource = dataSource

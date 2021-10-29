@@ -10,7 +10,7 @@
 //
 
 import UIKit
-import CelestiaCore.CelestiaSelection
+import CelestiaCore
 
 enum CelestiaLoadingError: Error {
     case openGLError
@@ -29,8 +29,8 @@ protocol CelestiaControllerDelegate: AnyObject {
     func celestiaControllerLoadingFailedShouldRetry(_ celestiaController: CelestiaViewController) -> Bool
     func celestiaControllerLoadingFailed(_ celestiaController: CelestiaViewController)
     func celestiaControllerLoadingSucceeded(_ celestiaController: CelestiaViewController)
-    func celestiaController(_ celestiaController: CelestiaViewController, requestShowActionMenuWithSelection selection: CelestiaSelection)
-    func celestiaController(_ celestiaController: CelestiaViewController, requestShowInfoWithSelection selection: CelestiaSelection)
+    func celestiaController(_ celestiaController: CelestiaViewController, requestShowActionMenuWithSelection selection: Selection)
+    func celestiaController(_ celestiaController: CelestiaViewController, requestShowInfoWithSelection selection: Selection)
     func celestiaController(_ celestiaController: CelestiaViewController, requestWebInfo webURL: URL)
 }
 
@@ -83,11 +83,11 @@ class CelestiaViewController: UIViewController {
 }
 
 extension CelestiaViewController: CelestiaInteractionControllerDelegate {
-    func celestiaInteractionController(_ celestiaInteractionController: CelestiaInteractionController, requestShowActionMenuWithSelection selection: CelestiaSelection) {
+    func celestiaInteractionController(_ celestiaInteractionController: CelestiaInteractionController, requestShowActionMenuWithSelection selection: Selection) {
         delegate?.celestiaController(self, requestShowActionMenuWithSelection: selection)
     }
 
-    func celestiaInteractionController(_ celestiaInteractionController: CelestiaInteractionController, requestShowInfoWithSelection selection: CelestiaSelection) {
+    func celestiaInteractionController(_ celestiaInteractionController: CelestiaInteractionController, requestShowInfoWithSelection selection: Selection) {
         delegate?.celestiaController(self, requestShowInfoWithSelection: selection)
     }
 

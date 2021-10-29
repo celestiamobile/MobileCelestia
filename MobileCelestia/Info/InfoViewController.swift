@@ -33,7 +33,7 @@ final class InfoViewController: UIViewController {
     private lazy var layout = UICollectionViewFlowLayout()
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: self.layout)
 
-    private let info: CelestiaSelection
+    private let info: Selection
     private let isEmbeddedInNavigationController: Bool
 
     var selectionHandler: ((ObjectAction, UIView) -> Void)?
@@ -42,7 +42,7 @@ final class InfoViewController: UIViewController {
 
     private var linkMetaData: AnyObject?
 
-    init(info: CelestiaSelection, isEmbeddedInNavigationController: Bool) {
+    init(info: Selection, isEmbeddedInNavigationController: Bool) {
         self.info = info
         self.isEmbeddedInNavigationController = isEmbeddedInNavigationController
         var actions = ObjectAction.allCases

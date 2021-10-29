@@ -15,9 +15,9 @@ import UIKit
 class GoToContainerViewController: UIViewController {
     private var navigation: UINavigationController!
 
-    private let locationHandler: ((CelestiaGoToLocation) -> Void)
+    private let locationHandler: ((GoToLocation) -> Void)
 
-    init(locationHandler: @escaping ((CelestiaGoToLocation) -> Void)) {
+    init(locationHandler: @escaping ((GoToLocation) -> Void)) {
         self.locationHandler = locationHandler
         super.init(nibName: nil, bundle: nil)
     }

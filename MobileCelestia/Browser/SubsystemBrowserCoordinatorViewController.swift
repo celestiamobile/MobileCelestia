@@ -17,11 +17,11 @@ class SubsystemBrowserCoordinatorViewController: UIViewController {
 
     private var navigation: UINavigationController!
 
-    private let item: CelestiaBrowserItem
+    private let item: BrowserItem
 
-    private let selection: (CelestiaSelection) -> UIViewController
+    private let selection: (Selection) -> UIViewController
 
-    init(item: CelestiaBrowserItem, selection: @escaping (CelestiaSelection) -> UIViewController) {
+    init(item: BrowserItem, selection: @escaping (Selection) -> UIViewController) {
         self.item = item
         self.selection = selection
         super.init(nibName: nil, bundle: nil)
@@ -58,13 +58,13 @@ private extension SubsystemBrowserCoordinatorViewController {
         }
     }
 
-    func create(for item: CelestiaBrowserItem) -> BrowserCommonViewController {
+    func create(for item: BrowserItem) -> BrowserCommonViewController {
         return BrowserCommonViewController(item: item, selection: { [unowned self] (sel, finish) in
             if !finish {
                 self.navigation.pushViewController(self.create(for: sel), animated: true)
                 return
             }
-            guard let transformed = CelestiaSelection(item: sel) else {
+            guard let transformed = Selection(item: sel) else {
                 self.showError(CelestiaString("Object not found", comment: ""))
                 return
             }

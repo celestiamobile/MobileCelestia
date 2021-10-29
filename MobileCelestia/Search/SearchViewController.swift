@@ -161,7 +161,7 @@ extension SearchViewController: UISearchResultsUpdating {
 
 extension SearchViewController {
     private func search(with text: String) -> [SearchResultSection] {
-        let simulation = CelestiaAppCore.shared.simulation
+        let simulation = AppCore.shared.simulation
         return [SearchResultSection(title: nil, results: simulation.completion(for: text).map { SearchResult(name: $0) })]
     }
 }

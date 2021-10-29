@@ -17,7 +17,7 @@ struct BodyInfo {
     let name: String
     let overview: String
 
-    fileprivate let selection: CelestiaSelection
+    fileprivate let selection: Selection
 }
 
 extension BodyInfo {
@@ -27,7 +27,7 @@ extension BodyInfo {
     }
 }
 
-extension CelestiaAppCore {
+extension AppCore {
     var selection: BodyInfo {
         get { return BodyInfo(selection: simulation.selection) }
         set { simulation.selection = newValue.selection }
@@ -35,8 +35,8 @@ extension CelestiaAppCore {
 }
 
 extension BodyInfo {
-    init(selection: CelestiaSelection) {
-        let core = CelestiaAppCore.shared
+    init(selection: Selection) {
+        let core = AppCore.shared
         self.init(name: core.simulation.universe.name(for: selection),
                   overview: core.overviewForSelection(selection), selection: selection)
     }

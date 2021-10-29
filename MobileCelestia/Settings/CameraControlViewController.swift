@@ -94,14 +94,14 @@ extension CameraControlViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        let core = CelestiaAppCore.shared
+        let core = AppCore.shared
         core.run { $0.simulation.reverseObserverOrientation() }
     }
 }
 
 private extension CameraControlViewController {
     func handleItemChange(index: Int, plus: Bool) {
-        let core = CelestiaAppCore.shared
+        let core = AppCore.shared
         let key = plus ? controlItems[index].plusKey : controlItems[index].minusKey
         if let prev = lastKey {
             if key == prev { return }
@@ -114,7 +114,7 @@ private extension CameraControlViewController {
 
     func handleStop() {
         if let key = lastKey {
-            CelestiaAppCore.shared.keyUp(key)
+            AppCore.shared.keyUp(key)
             lastKey = nil
         }
     }

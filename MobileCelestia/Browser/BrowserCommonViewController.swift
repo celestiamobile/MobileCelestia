@@ -14,11 +14,11 @@ import UIKit
 import CelestiaCore
 
 class BrowserCommonViewController: BaseTableViewController {
-    private let item: CelestiaBrowserItem
+    private let item: BrowserItem
 
-    private let selection: (CelestiaBrowserItem, Bool) -> Void
+    private let selection: (BrowserItem, Bool) -> Void
 
-    init(item: CelestiaBrowserItem, selection: @escaping (CelestiaBrowserItem, Bool) -> Void) {
+    init(item: BrowserItem, selection: @escaping (BrowserItem, Bool) -> Void) {
         self.item = item
         self.selection = selection
         super.init(style: .defaultGrouped)

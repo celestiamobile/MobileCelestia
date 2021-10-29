@@ -16,9 +16,9 @@ import CelestiaCore
 class EventFinderCoordinatorViewController: UIViewController {
     private var navigation: UINavigationController!
 
-    private let eventHandler: ((CelestiaEclipse) -> Void)
+    private let eventHandler: ((Eclipse) -> Void)
 
-    init(eventHandler: @escaping ((CelestiaEclipse) -> Void)) {
+    init(eventHandler: @escaping ((Eclipse) -> Void)) {
         self.eventHandler = eventHandler
         super.init(nibName: nil, bundle: nil)
     }
