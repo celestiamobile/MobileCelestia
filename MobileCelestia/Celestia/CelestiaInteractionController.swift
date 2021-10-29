@@ -68,7 +68,7 @@ class CelestiaInteractionController: UIViewController {
         case object
         case camera
 
-        var button: MouseButton {
+        var button: CelestiaMouseButton {
             return self == .object ? .right : .left
         }
 
@@ -644,7 +644,7 @@ extension UIPanGestureRecognizer {
 extension CelestiaInteractionController: CelestiaAppCoreDelegate {
     func celestiaAppCoreFatalErrorHappened(_ error: String) {}
 
-    func celestiaAppCoreCursorShapeChanged(_ shape: CursorShape) {}
+    func celestiaAppCoreCursorShapeChanged(_ shape: CelestiaCursorShape) {}
 
     func celestiaAppCoreCursorDidRequestContextMenu(at location: CGPoint, with selection: CelestiaSelection) {
         pendingSelection = selection

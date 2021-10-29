@@ -17,7 +17,7 @@ protocol GoToInputItem {
     var detail: String { get }
 }
 
-private extension SimulationDistanceUnit {
+private extension CelestiaSimulationDistanceUnit {
     var name: String {
         switch self {
         case .AU:
@@ -61,7 +61,7 @@ class GoToInputViewController: BaseTableViewController {
 
         var detail: String { CelestiaString(unit.name, comment: "") }
 
-        let unit: SimulationDistanceUnit
+        let unit: CelestiaSimulationDistanceUnit
     }
 
     struct ProcceedItem: GoToInputItem {
@@ -86,11 +86,11 @@ class GoToInputViewController: BaseTableViewController {
     private var latitude: Float = 0
 
     private var distance: Double = 8
-    private var unit: SimulationDistanceUnit = .radii
+    private var unit: CelestiaSimulationDistanceUnit = .radii
 
     private let core = CelestiaAppCore.shared
 
-    private static let availableUnits: [SimulationDistanceUnit] = [.radii, .KM, .AU]
+    private static let availableUnits: [CelestiaSimulationDistanceUnit] = [.radii, .KM, .AU]
 
     private var allSections: [[GoToInputItem]] = []
 
