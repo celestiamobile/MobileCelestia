@@ -260,27 +260,19 @@ static CVReturn displayCallback(CVDisplayLinkRef displayLink,
 {
     if (@available(iOS 10.0, *)) {
         if (preferredFramesPerSecond >= 0) {
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 150000
             if (@available(iOS 15, *)) {
                 [displayLink setPreferredFrameRateRange:CAFrameRateRangeMake(preferredFramesPerSecond / 2, preferredFramesPerSecond, preferredFramesPerSecond)];
             } else {
-#endif
                 [displayLink setPreferredFramesPerSecond:preferredFramesPerSecond];
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 150000
             }
-#endif
         } else {
             if (@available(iOS 10.3, *)) {
                 CGFloat maxFramesPerSecond = [self.internalScreen maximumFramesPerSecond];
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 150000
                 if (@available(iOS 15, *)) {
                     [displayLink setPreferredFrameRateRange:CAFrameRateRangeMake(maxFramesPerSecond / 2, maxFramesPerSecond, maxFramesPerSecond)];
                 } else {
-#endif
                     [displayLink setPreferredFramesPerSecond:maxFramesPerSecond];
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 150000
                 }
-#endif
             } else {
                 [displayLink setPreferredFramesPerSecond:60];
             }

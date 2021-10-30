@@ -243,7 +243,7 @@ typedef enum EGLRenderingAPI : int
 #endif
 #endif
 
-    dispatch_async(_renderQueue, ^{
+    dispatch_sync(_renderQueue, ^{
         [self makeRenderContextCurrent];
         [self flush];
     });
