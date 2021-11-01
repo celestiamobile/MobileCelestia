@@ -108,10 +108,10 @@ extension DataLocationSelectionViewController {
         } else {
             let browser: UIDocumentPickerViewController
             if #available(iOS 14, *) {
-                let types = [UTType.folder, UTType(filenameExtension: "cfg") ?? UTType(exportedAs: "space.celestia.config")]
+                let types = [UTType.folder, UTType.data]
                 browser = UIDocumentPickerViewController(forOpeningContentTypes: [types[indexPath.row]])
             } else {
-                let types = [kUTTypeFolder as String, "space.celestia.config"]
+                let types = [kUTTypeFolder as String, kUTTypeData as String]
                 browser = UIDocumentPickerViewController(documentTypes: [types[indexPath.row]], in: .open)
             }
             currentPicker = Location(rawValue: indexPath.row)
