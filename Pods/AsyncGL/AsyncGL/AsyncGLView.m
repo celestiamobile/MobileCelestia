@@ -201,7 +201,6 @@ typedef enum EGLRenderingAPI : int
 #else
     PassthroughGLLayer *layer = [[PassthroughGLLayer alloc] init];
     layer.backgroundColor = [[NSColor blackColor] CGColor];
-    layer.asynchronous = YES;
     return layer;
 #endif
 }
@@ -341,6 +340,7 @@ typedef enum EGLRenderingAPI : int
     _renderContext = nil;
     _renderbuffer = 0;
 #else
+    _mainContext = nil;
     _renderContext = nil;
 #endif
     _framebuffer = 0;
@@ -364,6 +364,7 @@ typedef enum EGLRenderingAPI : int
 #else
 #if TARGET_OS_OSX
     _glLayer = (PassthroughGLLayer *)self.layer;
+    _glLayer.asynchronous = YES;
 #endif
 #endif
 }
@@ -916,18 +917,16 @@ typedef enum EGLRenderingAPI : int
         glDeleteRenderbuffers(1, &_renderbuffer);
         _renderbuffer = 0;
     }
-    [self destroyMainContext];
 #endif
+    [self destroyMainContext];
 #endif
 }
 
 #ifndef USE_EGL
-#if TARGET_OS_IOS
 - (void)destroyMainContext
 {
     _mainContext = nil;
 }
-#endif
 #endif
 
 - (void)destroyRenderContext
