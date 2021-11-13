@@ -89,14 +89,7 @@ private extension SettingsCoordinatorController {
                 fatalError("Use .common for slider/action setting item.")
             }
             #if targetEnvironment(macCatalyst)
-            self.navigation = UINavigationController(rootViewController: viewController)
-            if #available(iOS 13.0, *) {
-            } else {
-                self.navigation.navigationBar.barStyle = .black
-                self.navigation.navigationBar.barTintColor = .darkBackground
-                self.navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
-            }
-            self.controller.viewControllers = [self.controller.viewControllers[0], self.navigation]
+            self.controller.viewControllers = [self.controller.viewControllers[0], viewController]
             #else
             self.navigation.pushViewController(viewController, animated: true)
             #endif
