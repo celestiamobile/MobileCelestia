@@ -140,7 +140,9 @@ extension CelestiaDisplayController {
             self.configFileURL = currentConfigFile()
 
             FileManager.default.changeCurrentDirectoryPath(self.dataDirectoryURL.url.path)
-            AppCore.setLocaleDirectory(self.dataDirectoryURL.url.path + "/locale")
+            DispatchQueue.main.sync {
+                AppCore.setLocaleDirectory(self.dataDirectoryURL.url.path + "/locale")
+            }
 
             guard self.core.startSimulation(configFileName: self.configFileURL.url.path, extraDirectories: [extraDirectory].compactMap{$0?.path}, progress: { (st) in
                 delegate?.celestiaDisplayController(self, loadingStatusUpdated: st)
