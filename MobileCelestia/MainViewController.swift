@@ -228,6 +228,9 @@ extension MainViewController: CelestiaControllerDelegate {
             self.setupToolbar()
             self.setupTouchBar()
             #endif
+            if #available(iOS 13.0, *) {
+                UIMenuSystem.main.setNeedsRebuild()
+            }
             UIApplication.shared.isIdleTimerDisabled = true
             self.showOnboardMessageIfNeeded()
             // we can't present two vcs together, so we delay the action
