@@ -7,6 +7,7 @@ jobs:
   variables:
     sdk: ${{ parameters.sdk }}
     signing: ${{ parameters.signing }}
+    backend: ${{ parameters.backend }}
     XC_VERSION: ${{ '13.1' }}
     XC_WORKSPACE: ${{ 'MobileCelestia/MobileCelestia.xcworkspace' }}
     XC_SCHEME: ${{ 'MobileCelestia' }}
@@ -48,7 +49,19 @@ jobs:
       cd Celestia
       git cherry-pick origin/angle
     displayName: 'Cherry-Pick ANGLE Commit'
-    condition: eq( variables['sdk'], 'macosx' )
+    condition: eq( variables['backend'], 'metalAngle' )
+
+  - script: |
+      cd CelestiaCore
+      git cherry-pick origin/gl-for-catalyst
+    displayName: 'Cherry-Pick GL for Catalyst Commit (1)'
+    condition: and(eq( variables['sdk'], 'macosx' ), eq( variables['backend'], 'openGL' ))
+
+  - script: |
+      cd MobileCelestia
+      git cherry-pick origin/gl-for-catalyst
+    displayName: 'Cherry-Pick GL for Catalyst Commit (2)'
+    condition: and(eq( variables['sdk'], 'macosx' ), eq( variables['backend'], 'openGL' ))
 
   - script: |
       sudo xcode-select -s /Applications/Xcode_$XC_VERSION.app
@@ -177,7 +190,7 @@ jobs:
   - task: PublishBuildArtifacts@1
     inputs:
       PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-      ArtifactName: '$(sdk)-$(signing)'
+      ArtifactName: '$(sdk)-$(signing)-$(backend)'
       publishLocation: 'Container'
     displayName: 'Publish Build Artifacts'
 
