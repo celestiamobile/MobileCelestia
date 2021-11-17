@@ -6,9 +6,9 @@
 #import "AsyncGLView+Private.h"
 
 #if TARGET_OS_MACCATALYST
-#ifndef USE_EGL
-#define USE_EGL
-#endif
+#define TARGET_OSX_OR_CATALYST          1
+#elif TARGET_OS_OSX
+#define TARGET_OSX_OR_CATALYST          1
 #endif
 
 #ifdef USE_EGL
@@ -33,19 +33,19 @@ typedef enum EGLRenderingAPI : int
 } EGLRenderingAPI;
 
 #else
-#if TARGET_OS_IOS
+#if TARGET_OSX_OR_CATALYST
+@import OpenGL.GL;
+#else
 @import OpenGLES.ES2;
 @import OpenGLES.ES3;
-#else
-@import OpenGL.GL;
 #endif
 #endif
 
 #ifndef USE_EGL
-#if TARGET_OS_OSX
+#if TARGET_OSX_OR_CATALYST
 @interface PassthroughGLLayer : CAOpenGLLayer
-@property (nonatomic) NSOpenGLContext *renderContext;
-@property (nonatomic) NSOpenGLPixelFormat *pixelFormat;
+@property (nonatomic) CGLContextObj renderContext;
+@property (nonatomic) CGLPixelFormatObj pixelFormat;
 @property (nonatomic) GLuint renderTex;
 @property (nonatomic) GLuint renderProg;
 @property (nonatomic) GLuint renderVShader;
@@ -62,12 +62,12 @@ typedef enum EGLRenderingAPI : int
 @implementation PassthroughGLLayer
 - (CGLPixelFormatObj)copyCGLPixelFormatForDisplayMask:(uint32_t)mask
 {
-    return _pixelFormat.CGLPixelFormatObj;
+    return _pixelFormat;
 }
 
 - (CGLContextObj)copyCGLContextForPixelFormat:(CGLPixelFormatObj)pf
 {
-    return _renderContext.CGLContextObj;
+    return _renderContext;
 }
 
 - (BOOL)canDrawInCGLContext:(CGLContextObj)ctx pixelFormat:(CGLPixelFormatObj)pf forLayerTime:(CFTimeInterval)t displayTime:(const CVTimeStamp *)ts
@@ -158,14 +158,14 @@ typedef enum EGLRenderingAPI : int
 @property (nonatomic) GLuint sampleDepthbuffer;
 @property (nonatomic) GLuint sampleRenderbuffer;
 @property (nonatomic) CGSize savedBufferSize;
-#if TARGET_OS_IOS
+#if !TARGET_OSX_OR_CATALYST
 @property (nonatomic) EAGLRenderingAPI api;
 @property (nonatomic, strong) EAGLContext *renderContext;
 @property (nonatomic, strong) EAGLContext *mainContext;
 @property (nonatomic) GLuint renderbuffer;
 #else
-@property (nonatomic, strong) NSOpenGLContext *mainContext;
-@property (nonatomic, strong) NSOpenGLContext *renderContext;
+@property (nonatomic) CGLContextObj mainContext;
+@property (nonatomic) CGLContextObj renderContext;
 @property (nonatomic, strong) PassthroughGLLayer *glLayer;
 #endif
 #endif
@@ -190,7 +190,11 @@ typedef enum EGLRenderingAPI : int
 #ifdef USE_EGL
     return [CAMetalLayer class];
 #else
+#if TARGET_OS_MACCATALYST
+    return [PassthroughGLLayer class];
+#else
     return [CAEAGLLayer class];
+#endif
 #endif
 }
 #else
@@ -236,7 +240,7 @@ typedef enum EGLRenderingAPI : int
     [self setPaused:YES];
     [self setShouldRender:NO];
 #ifndef USE_EGL
-#if TARGET_OS_IOS
+#if !TARGET_OSX_OR_CATALYST
     [self makeMainContextCurrent];
     [self flush];
 #endif
@@ -273,11 +277,11 @@ typedef enum EGLRenderingAPI : int
 #ifdef USE_EGL
     eglMakeCurrent(_display, _renderSurface, _renderSurface, _renderContext);
 #else
-#if TARGET_OS_IOS
+#if !TARGET_OSX_OR_CATALYST
     [EAGLContext setCurrentContext:_renderContext];
     glBindFramebuffer(GL_FRAMEBUFFER, _framebuffer);
 #else
-    [_renderContext makeCurrentContext];
+    CGLSetCurrentContext(_renderContext);
     glBindFramebuffer(GL_FRAMEBUFFER, _framebuffer);
 #endif
 #endif
@@ -307,7 +311,7 @@ typedef enum EGLRenderingAPI : int
     eglSwapBuffers(_display, _renderSurface);
 #else
     [self flush];
-#if TARGET_OS_IOS
+#if !TARGET_OSX_OR_CATALYST
     glBindRenderbuffer(GL_RENDERBUFFER, _renderbuffer);
     [_renderContext presentRenderbuffer:_renderbuffer];
 #else
@@ -334,14 +338,14 @@ typedef enum EGLRenderingAPI : int
     _renderSurface = EGL_NO_SURFACE;
     _renderContext = EGL_NO_CONTEXT;
 #else
-#if TARGET_OS_IOS
+#if !TARGET_OSX_OR_CATALYST
     _api = kEAGLRenderingAPIOpenGLES2;
     _mainContext = nil;
     _renderContext = nil;
     _renderbuffer = 0;
 #else
-    _mainContext = nil;
-    _renderContext = nil;
+    _mainContext = NULL;
+    _renderContext = NULL;
 #endif
     _framebuffer = 0;
     _depthBuffer = 0;
@@ -362,7 +366,7 @@ typedef enum EGLRenderingAPI : int
 #ifdef USE_EGL
     _metalLayer = (CAMetalLayer *)self.layer;
 #else
-#if TARGET_OS_OSX
+#if TARGET_OSX_OR_CATALYST
     _glLayer = (PassthroughGLLayer *)self.layer;
     _glLayer.asynchronous = YES;
 #endif
@@ -447,7 +451,7 @@ typedef enum EGLRenderingAPI : int
         [self createRenderContext];
     });
 #else
-#if TARGET_OS_IOS
+#if !TARGET_OSX_OR_CATALYST
     _mainContext = [[EAGLContext alloc] initWithAPI:_api];
     if (_mainContext == nil) {
         return;
@@ -456,14 +460,16 @@ typedef enum EGLRenderingAPI : int
         [self createRenderContext];
     });
 #else
-    const NSOpenGLPixelFormatAttribute attr[] = {
-        NSOpenGLPFADoubleBuffer, 0
+    const CGLPixelFormatAttribute attr[] = {
+        kCGLPFADoubleBuffer, 0
     };
-    NSOpenGLPixelFormat *pixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attr];
-    if (!pixelFormat) {
+    CGLPixelFormatObj pixelFormat = NULL;
+    GLint npix;
+    CGLError error = CGLChoosePixelFormat(attr, &pixelFormat, &npix);
+    if (pixelFormat == NULL)
         return;
-    }
-    _mainContext = [[NSOpenGLContext alloc] initWithFormat:pixelFormat shareContext:nil];
+    error = CGLCreateContext(pixelFormat, NULL, &_mainContext);
+    CGLReleasePixelFormat(pixelFormat);
     _glLayer.pixelFormat = pixelFormat;
     _glLayer.renderContext = _mainContext;
     if (!_mainContext) {
@@ -513,7 +519,7 @@ typedef enum EGLRenderingAPI : int
     [self makeRenderContextCurrent];
     [self setupGL:size];
 #else
-#if TARGET_OS_IOS
+#if !TARGET_OSX_OR_CATALYST
     _renderContext = [[EAGLContext alloc] initWithAPI:_mainContext.API sharegroup:_mainContext.sharegroup];
     if (_renderContext == nil) {
         return;
@@ -527,28 +533,31 @@ typedef enum EGLRenderingAPI : int
     [self makeRenderContextCurrent];
     [self createRenderBuffers:size];
 #else
-    const NSOpenGLPixelFormatAttribute attr[] = {
-        NSOpenGLPFADepthSize, 32,
+    const CGLPixelFormatAttribute attr[] = {
+        kCGLPFADepthSize, 32,
         0
     };
-    const NSOpenGLPixelFormatAttribute msaaAttr[] = {
-        NSOpenGLPFADepthSize, 32,
-        NSOpenGLPFAMultisample,
-        NSOpenGLPFASampleBuffers, 1,
-        NSOpenGLPFASamples, 4,
+    const CGLPixelFormatAttribute msaaAttr[] = {
+        kCGLPFADepthSize, 32,
+        kCGLPFAMultisample,
+        kCGLPFASampleBuffers, 1,
+        kCGLPFASamples, 4,
         0
     };
-    NSOpenGLPixelFormat *pixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes:_msaaEnabled ? msaaAttr : attr];
+    CGLPixelFormatObj pixelFormat = NULL;
+    GLint npix;
+    CGLError error = CGLChoosePixelFormat(_msaaEnabled ? msaaAttr : attr, &pixelFormat, &npix);
     if (!pixelFormat) {
         if (_msaaEnabled) {
             // Fallback to non-MSAA
             _msaaEnabled = NO;
-            pixelFormat = [[NSOpenGLPixelFormat alloc] initWithAttributes:attr];
+            error = CGLChoosePixelFormat(attr, &pixelFormat, &npix);
         }
         if (!pixelFormat)
             return;
     }
-    _renderContext = [[NSOpenGLContext alloc] initWithFormat:pixelFormat shareContext:_mainContext];
+    error = CGLCreateContext(pixelFormat, _mainContext, &_renderContext);
+    CGLReleasePixelFormat(pixelFormat);
     if (!_renderContext) {
         return;
     }
@@ -567,7 +576,7 @@ typedef enum EGLRenderingAPI : int
 #ifndef USE_EGL
 #pragma mark shaders
 #ifndef USE_EGL
-#if TARGET_OS_OSX
+#if TARGET_OSX_OR_CATALYST
 - (GLuint)compileShader:(const GLchar*)shaderString shaderType:(GLenum)shaderType
 {
     GLuint shader = glCreateShader(shaderType);
@@ -688,7 +697,7 @@ typedef enum EGLRenderingAPI : int
 #endif
 
 #pragma mark - buffer creation
-#if TARGET_OS_IOS
+#if !TARGET_OSX_OR_CATALYST
 - (void)createMainBuffers
 {
     glGenRenderbuffers(1, &_renderbuffer);
@@ -701,7 +710,7 @@ typedef enum EGLRenderingAPI : int
 {
     glGenFramebuffers(1, &_framebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, _framebuffer);
-#if TARGET_OS_IOS
+#if !TARGET_OSX_OR_CATALYST
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _renderbuffer);
 #endif
 
@@ -757,7 +766,7 @@ typedef enum EGLRenderingAPI : int
         glGetIntegerv(GL_MAX_SAMPLES, &samples);
 
         glBindRenderbuffer(GL_RENDERBUFFER, _sampleRenderbuffer);
-#if TARGET_OS_IOS
+#if !TARGET_OSX_OR_CATALYST
         glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, GL_RGBA8_OES, width, height);
 #else
         glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, GL_RGBA8, width, height);
@@ -770,7 +779,7 @@ typedef enum EGLRenderingAPI : int
         glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, width, height);
     }
 
-#if TARGET_OS_OSX
+#if TARGET_OSX_OR_CATALYST
     GLuint renderTex = _glLayer.renderTex;
     if (renderTex) {
         glDeleteTextures(1, &renderTex);
@@ -797,7 +806,7 @@ typedef enum EGLRenderingAPI : int
 #endif
 }
 
-#if TARGET_OS_IOS
+#if !TARGET_OSX_OR_CATALYST
 - (void)makeMainContextCurrent
 {
     [EAGLContext setCurrentContext:_mainContext];
@@ -843,7 +852,7 @@ typedef enum EGLRenderingAPI : int
         glBindFramebuffer(GL_READ_FRAMEBUFFER, _sampleFramebuffer);
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _framebuffer);
 
-#if TARGET_OS_IOS
+#if !TARGET_OSX_OR_CATALYST
         if (_api == kEAGLRenderingAPIOpenGLES2) {
             glDiscardFramebufferEXT(GL_READ_FRAMEBUFFER, 1, (GLenum[]){GL_DEPTH_ATTACHMENT});
             glResolveMultisampleFramebufferAPPLE();
@@ -911,7 +920,7 @@ typedef enum EGLRenderingAPI : int
 {
     [self _stopObservingViewStateNotifications];
 #ifndef USE_EGL
-#if TARGET_OS_IOS
+#if !TARGET_OSX_OR_CATALYST
     [self makeMainContextCurrent];
     if (_renderbuffer != 0) {
         glDeleteRenderbuffers(1, &_renderbuffer);
@@ -925,7 +934,12 @@ typedef enum EGLRenderingAPI : int
 #ifndef USE_EGL
 - (void)destroyMainContext
 {
+#if TARGET_OSX_OR_CATALYST
+    CGLReleaseContext(_mainContext);
+    _mainContext = NULL;
+#else
     _mainContext = nil;
+#endif
 }
 #endif
 
@@ -948,7 +962,12 @@ typedef enum EGLRenderingAPI : int
         _display = EGL_NO_DISPLAY;
     }
 #else
+#if TARGET_OSX_OR_CATALYST
+    CGLReleaseContext(_renderContext);
+    _renderContext = NULL;
+#else
     _renderContext = nil;
+#endif
 #endif
 }
 
@@ -998,7 +1017,7 @@ typedef enum EGLRenderingAPI : int
         [self setIsUpdatingSize:YES];
         _isUpdatingSize = YES;
 #ifndef USE_EGL
-#if TARGET_OS_IOS
+#if !TARGET_OSX_OR_CATALYST
         [self makeMainContextCurrent];
         glBindRenderbuffer(GL_RENDERBUFFER, _renderbuffer);
         [_mainContext renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)self.layer];

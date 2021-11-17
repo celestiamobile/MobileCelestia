@@ -9,7 +9,7 @@ target 'MobileCelestia' do
   pod 'ZIPFoundation', '~> 0.9'
 
   pod "MWRequest", :git => "https://github.com/levinli303/mwrequest.git", :tag => "0.2.4"
-  pod "AsyncGL", :git => "https://github.com/levinli303/AsyncGL.git", :tag => "0.0.12"
+  pod "AsyncGL", :git => "https://github.com/levinli303/AsyncGL.git", :tag => "0.0.13"
 end
 
 post_install do |installer|
@@ -19,6 +19,10 @@ post_install do |installer|
             config.build_settings['CODE_SIGNING_REQUIRED'] = "NO"
             config.build_settings['CODE_SIGNING_ALLOWED'] = "NO"
             config.build_settings['SUPPORTS_MACCATALYST'] = "YES"
+
+            if target.name == 'AsyncGL'
+                config.build_settings['OTHER_CFLAGS[sdk=macosx*]'] = ['$(inherited)', '-DUSE_EGL']
+            end
         end
     end
 end
