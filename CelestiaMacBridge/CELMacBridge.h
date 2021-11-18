@@ -1,5 +1,5 @@
 //
-// MacBridge.h
+// CELMacBridge.h
 //
 // Copyright © 2020 Celestia Development Team. All rights reserved.
 //
@@ -13,9 +13,10 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface MacBridge : NSObject
+@interface CELMacBridge : NSObject
 
 + (CGFloat)catalystScaleFactor;
++ (CGPoint)currentMouseLocation;
 + (void)forceDarkAppearance;
 + (nullable id)nsWindowForUIWindow:(id)uiWindow;
 + (void)disableFullScreenForNSWindow:(NSWindow *)window;

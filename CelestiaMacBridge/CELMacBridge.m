@@ -1,5 +1,5 @@
 //
-// MacBridge.m
+// CELMacBridge.m
 //
 // Copyright © 2020 Celestia Development Team. All rights reserved.
 //
@@ -9,9 +9,9 @@
 // of the License, or (at your option) any later version.
 //
 
-#import "MacBridge.h"
+#import "CELMacBridge.h"
 
-@implementation MacBridge
+@implementation CELMacBridge
 
 + (CGFloat)catalystScaleFactor {
     Class clazz = NSClassFromString(@"_UIiOSMacIdiomManager");
@@ -35,6 +35,13 @@
         }
     }
     return 1.0;
+}
+
++ (CGPoint)currentMouseLocation {
+    CGEventRef event = CGEventCreate(NULL);
+    CGPoint point = CGEventGetLocation(event);
+    CFRelease(event);
+    return point;
 }
 
 + (void)forceDarkAppearance {

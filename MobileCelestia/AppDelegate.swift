@@ -224,7 +224,7 @@ extension AppDelegate {
 
 #if targetEnvironment(macCatalyst)
 class MacBridge {
-    private static var clazz = NSClassFromString("MacBridge") as! NSObject.Type // Should only be used after calling initialize
+    private static var clazz = NSClassFromString("CELMacBridge") as! NSObject.Type // Should only be used after calling initialize
 
     static func initialize() {
         guard let appBundleUrl = Bundle.app.builtInPlugInsURL else { return }
@@ -235,6 +235,10 @@ class MacBridge {
 
     static var catalystScaleFactor: CGFloat {
         return (clazz.value(forKey: "catalystScaleFactor") as? CGFloat) ?? 1.0
+    }
+
+    static var currentMouseLocation: CGPoint? {
+        return clazz.value(forKey: "currentMouseLocation") as? CGPoint
     }
 
     static func forceDarkAppearance() {

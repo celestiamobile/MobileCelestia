@@ -124,8 +124,11 @@ class CelestiaInteractionController: UIViewController {
     private var pendingSelection: Selection?
 
     // MARK: gesture
-    private var oneFingerStartPoint: CGPoint?
-    private var currentPanDistance: CGFloat?
+    private var currentPanPoint: CGPoint?
+    #if targetEnvironment(macCatalyst)
+    private var currentPanStartPoint: CGPoint?
+    #endif
+    private var currentPinchDistance: CGFloat?
 
     private lazy var core = AppCore.shared
 
@@ -399,23 +402,28 @@ extension CelestiaInteractionController {
             break
         case .began:
             #if targetEnvironment(macCatalyst)
+            currentPanStartPoint = MacBridge.currentMouseLocation
             NSCursor.hide()
             #endif
-            oneFingerStartPoint = location
+            currentPanPoint = location
             core.run { $0.mouseButtonDown(at: location, modifiers: UInt(modifiers.rawValue), with: button) }
         case .changed:
-            let current = oneFingerStartPoint!
+            let current = currentPanPoint!
             let offset = CGPoint(x: location.x - current.x, y: location.y - current.y)
-            oneFingerStartPoint = location
+            currentPanPoint = location
             core.run { $0.mouseMove(by: offset, modifiers: UInt(modifiers.rawValue), with: button) }
         case .ended, .cancelled, .failed:
             fallthrough
         @unknown default:
             #if targetEnvironment(macCatalyst)
+            if let startLocation = currentPanStartPoint {
+                CGWarpMouseCursorPosition(startLocation)
+                currentPanStartPoint = nil
+            }
             NSCursor.unhide()
             #endif
             core.run { $0.mouseButtonUp(at: location, modifiers: UInt(modifiers.rawValue), with: button) }
-            oneFingerStartPoint = nil
+            currentPanPoint = nil
         }
     }
 
@@ -437,7 +445,7 @@ extension CelestiaInteractionController {
             let point2 = gesture.location(ofTouch: 1, with: renderingTargetGeometry)
             let length = hypot(abs(point1.x - point2.x), abs(point1.y - point2.y))
             let center = CGPoint(x: (point1.x + point2.x) / 2, y: (point1.y + point2.y) / 2)
-            currentPanDistance = length
+            currentPinchDistance = length
             core.run { $0.mouseButtonDown(at: center, modifiers: 0, with: .left) }
         case .changed:
             if gesture.numberOfTouches < 2 {
@@ -449,15 +457,15 @@ extension CelestiaInteractionController {
             let point1 = gesture.location(ofTouch: 0, with: renderingTargetGeometry)
             let point2 = gesture.location(ofTouch: 1, with: renderingTargetGeometry)
             let length = hypot(abs(point1.x - point2.x), abs(point1.y - point2.y))
-            let delta = length / currentPanDistance!
+            let delta = length / currentPinchDistance!
             // FIXME: 8 is a magic number
-            let y = (1 - delta) * currentPanDistance! / 8
+            let y = (1 - delta) * currentPinchDistance! / 8
             zoom(deltaY: y)
-            currentPanDistance = length
+            currentPinchDistance = length
         case .ended, .cancelled, .failed:
             fallthrough
         @unknown default:
-            currentPanDistance = nil
+            currentPinchDistance = nil
         }
     }
     #endif

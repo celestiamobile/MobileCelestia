@@ -21,6 +21,6 @@
 	<key>NSHumanReadableCopyright</key>
 	<string>Copyright © 2020 Celestia Development Team. All rights reserved.</string>
 	<key>NSPrincipalClass</key>
-	<string>MacBridge</string>
+	<string>CELMacBridge</string>
 </dict>
 </plist>
