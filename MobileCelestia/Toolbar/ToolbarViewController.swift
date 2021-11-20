@@ -43,6 +43,9 @@ enum AppToolbarAction: String {
     case addons
     case paperplane
     case speedometer
+    #if targetEnvironment(macCatalyst)
+    case mirror
+    #endif
 
     static var persistentAction: [[AppToolbarAction]] {
         #if targetEnvironment(macCatalyst)
@@ -215,6 +218,10 @@ extension AppToolbarAction {
             return CelestiaString("Go to Object", comment: "")
         case .speedometer:
             return CelestiaString("Speed Control", comment: "")
+        #if targetEnvironment(macCatalyst)
+        case .mirror:
+            return nil
+        #endif
         }
     }
 }

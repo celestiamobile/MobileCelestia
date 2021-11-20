@@ -12,7 +12,6 @@
 import UIKit
 
 #if targetEnvironment(macCatalyst)
-@available(iOS 13, *)
 class PanelSceneDelegate: UIResponder, UIWindowSceneDelegate {
     var window: UIWindow?
 
@@ -63,7 +62,7 @@ class PanelSceneDelegate: UIResponder, UIWindowSceneDelegate {
         if let existingSession = weakSessionTable.object(forKey: String(describing: type(of: viewController)) as NSString) {
             UIApplication.shared.requestSceneSessionDestruction(existingSession, options: nil) { _ in }
         }
-        let activity = NSUserActivity(activityType: "\(Bundle.app.bundleIdentifier!).Panel")
+        let activity = NSUserActivity(activityType: Self.activityType)
         let id = UUID()
         activity.userInfo = [idKey : id, widthKey : preferredSize.width, heightKey : preferredSize.height]
         viewControllersToPresent[id] = viewController

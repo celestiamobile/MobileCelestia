@@ -134,6 +134,30 @@ extension CelestiaViewController {
         displayController.setPreferredFramesPerSecond(newFrameRate)
     }
 
+    func moveToNewWindow(_ window: UIWindow) {
+        // Only move the display controller to the new screen
+        displayController.remove()
+        let dummyViewController = UIViewController()
+        dummyViewController.view.backgroundColor = .black
+        window.rootViewController = dummyViewController
+        displayController.setScreen(window.screen)
+        dummyViewController.install(displayController)
+        interactionController?.startMirroring()
+        isMirroring = true
+    }
+
+    func moveBack(from window: UIWindow) {
+        // Only move back when it has the display view controller
+        guard let rootViewController = window.rootViewController, rootViewController.children.contains(displayController) else { return }
+        displayController.remove()
+        window.rootViewController = nil
+        displayController.setScreen(.main)
+        install(displayController)
+        view.sendSubviewToBack(displayController.view)
+        isMirroring = false
+        interactionController?.stopMirroring()
+    }
+
     #if !targetEnvironment(macCatalyst)
     func moveToNewScreen(_ newScreen: UIScreen) -> Bool {
         let newWindow = UIWindow(frame: newScreen.bounds)
@@ -146,17 +170,9 @@ extension CelestiaViewController {
         } else {
             newWindow.screen = newScreen
         }
-        // Only move the display controller to the new screen
-        displayController.remove()
-        let dummyViewController = UIViewController()
-        dummyViewController.view.backgroundColor = .black
-        newWindow.rootViewController = dummyViewController
-        displayController.setScreen(newScreen)
-        dummyViewController.install(displayController)
-        newWindow.isHidden = false
         auxiliaryWindows.append(newWindow)
-        interactionController?.startMirroring()
-        isMirroring = true
+        moveToNewWindow(newWindow)
+        newWindow.isHidden = false
         return true
     }
 
@@ -166,15 +182,7 @@ extension CelestiaViewController {
             return
         }
         let window = auxiliaryWindows.remove(at: windowIndex)
-        // Only move back when it has the display view controller
-        guard let rootViewController = window.rootViewController, rootViewController.children.contains(displayController) else { return }
-        displayController.remove()
-        window.rootViewController = nil
-        displayController.setScreen(.main)
-        install(displayController)
-        view.sendSubviewToBack(displayController.view)
-        isMirroring = false
-        interactionController?.stopMirroring()
+        moveBack(from: window)
     }
     #endif
 }

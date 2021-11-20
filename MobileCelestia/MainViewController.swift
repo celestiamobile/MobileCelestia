@@ -23,7 +23,7 @@ class MainViewController: UIViewController {
         case loaded
     }
 
-    private lazy var celestiaController = CelestiaViewController()
+    lazy var celestiaController = CelestiaViewController()
     private lazy var loadingController = LoadingViewController()
 
     private var status: LoadingStatus = .notLoaded
@@ -291,6 +291,14 @@ extension MainViewController: CelestiaControllerDelegate {
             presentGoTo()
         case .speedometer:
             presentSpeedControl()
+        #if targetEnvironment(macCatalyst)
+        case .mirror:
+            if UIApplication.shared.connectedScenes.contains(where: { $0.delegate is DisplaySceneDelegate }) {
+                return
+            }
+            let activity = NSUserActivity(activityType: DisplaySceneDelegate.activityType)
+            UIApplication.shared.requestSceneSessionActivation(nil, userActivity: activity, options: nil) { _ in }
+        #endif
         }
     }
 
@@ -744,6 +752,7 @@ extension MainViewController: NSToolbarDelegate {
         guard let action = AppToolbarAction(rawValue: itemIdentifier.rawValue) else { return nil }
         let toolbarItem = NSToolbarItem(itemIdentifier: itemIdentifier, barButtonItem: UIBarButtonItem())
         toolbarItem.label = action.title ?? ""
+        toolbarItem.toolTip = action.title
         toolbarItem.image = action.toolBarImage
         toolbarItem.target = self
         toolbarItem.action = #selector(toolbarButtonItemClicked(_:))
@@ -756,11 +765,13 @@ extension MainViewController: NSToolbarDelegate {
             [undoOrRedoGroupItemIdentifier] +
             [AppToolbarAction.browse, .favorite, .home, .paperplane].map { NSToolbarItem.Identifier($0.rawValue) } +
             [.flexibleSpace] +
-            [AppToolbarAction.share, .search].map { NSToolbarItem.Identifier($0.rawValue) }
+            [AppToolbarAction.share, .mirror, .search].map { NSToolbarItem.Identifier($0.rawValue) }
     }
 
     private func availableIdentifiers() -> [NSToolbarItem.Identifier] {
-        return AppToolbarAction.persistentAction.reduce([AppToolbarAction](), { $0 + $1 }).map { NSToolbarItem.Identifier(rawValue: $0.rawValue) } + [.flexibleSpace, .space] + [undoOrRedoGroupItemIdentifier]
+        var actions = AppToolbarAction.persistentAction.reduce([AppToolbarAction](), { $0 + $1 })
+        actions.append(.mirror)
+        return actions.map { NSToolbarItem.Identifier(rawValue: $0.rawValue) } + [.flexibleSpace, .space] + [undoOrRedoGroupItemIdentifier]
     }
 
     func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
@@ -858,6 +869,8 @@ extension AppToolbarAction {
             return UIImage(systemName: "paperplane")
         case .speedometer:
             return UIImage(systemName: "speedometer")
+        case .mirror:
+            return UIImage(systemName: "pip")
         }
     }
 }

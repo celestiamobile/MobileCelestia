@@ -66,6 +66,7 @@
 		EA1BC6E324A0E92B00F3F51B /* EventFinderCoordinatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E224A0E92B00F3F51B /* EventFinderCoordinatorViewController.swift */; };
 		EA1BC6E524A0E93D00F3F51B /* EventFinderInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E424A0E93D00F3F51B /* EventFinderInputViewController.swift */; };
 		EA1BC6E724A0E94900F3F51B /* EventFinderResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E624A0E94900F3F51B /* EventFinderResultViewController.swift */; };
+		EA1BE1572748E9DC0046074C /* DisplaySceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BE1562748E9DC0046074C /* DisplaySceneDelegate.swift */; };
 		EA28CA4E24A25FE7004B011E /* BottomControlViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA28CA4D24A25FE7004B011E /* BottomControlViewController.swift */; };
 		EA28CA5324A2F399004B011E /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = EA28CA5124A2F399004B011E /* Fonts */; };
 		EA374CD2263A8B320069589C /* GoToContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA374CD1263A8B320069589C /* GoToContainerViewController.swift */; };
@@ -230,6 +231,7 @@
 		EA1BC6E424A0E93D00F3F51B /* EventFinderInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventFinderInputViewController.swift; sourceTree = "<group>"; };
 		EA1BC6E624A0E94900F3F51B /* EventFinderResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventFinderResultViewController.swift; sourceTree = "<group>"; };
 		EA1BCA92265AA8E2001A0D89 /* MetalANGLE.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = MetalANGLE.xcframework; path = ../CelestiaCore/libs/dependency/xcframeworks/MetalANGLE.xcframework; sourceTree = "<group>"; };
+		EA1BE1562748E9DC0046074C /* DisplaySceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplaySceneDelegate.swift; sourceTree = "<group>"; };
 		EA1EF056249393BE0039F493 /* Celestia.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Celestia.entitlements; sourceTree = "<group>"; };
 		EA28CA4D24A25FE7004B011E /* BottomControlViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomControlViewController.swift; sourceTree = "<group>"; };
 		EA28CA5124A2F399004B011E /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Fonts; path = ../../../CelestiaCore/Fonts; sourceTree = "<group>"; };
@@ -483,6 +485,7 @@
 				978406D624028F0000876FD1 /* MainViewController.swift */,
 				EA934C8F251D90C500DD284C /* MainSceneDelegate.swift */,
 				EA934C99251D92A700DD284C /* PanelSceneDelegate.swift */,
+				EA1BE1562748E9DC0046074C /* DisplaySceneDelegate.swift */,
 				979D2F8623FEB1A8005D2592 /* Assets.xcassets */,
 				EA1EF056249393BE0039F493 /* Celestia.entitlements */,
 				979D2F8823FEB1A8005D2592 /* LaunchScreen.storyboard */,
@@ -888,6 +891,7 @@
 				977394B12403F30900E38B82 /* SettingModel.swift in Sources */,
 				972477D52404A63800729B45 /* BrowserCommonViewController.swift in Sources */,
 				974F86E22403BD3C00356795 /* InfoViewController.swift in Sources */,
+				EA1BE1572748E9DC0046074C /* DisplaySceneDelegate.swift in Sources */,
 				978406DF24029D9100876FD1 /* LoadingFailureViewController.swift in Sources */,
 				EA374CD2263A8B320069589C /* GoToContainerViewController.swift in Sources */,
 				EA1BC6E524A0E93D00F3F51B /* EventFinderInputViewController.swift in Sources */,
