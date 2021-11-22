@@ -192,7 +192,7 @@ extension CelestiaViewController: RenderingTargetInformationProvider {
         return displayController.targetGeometry
     }
 
-    var targetImage: UIImage {
+    var targetContents: Any? {
         return displayController.screenshot()
     }
 }

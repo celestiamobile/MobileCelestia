@@ -60,7 +60,7 @@ protocol CelestiaInteractionControllerDelegate: AnyObject {
 
 protocol RenderingTargetInformationProvider: AnyObject {
     var targetGeometry: RenderingTargetGeometry { get }
-    var targetImage: UIImage { get }
+    var targetContents: Any? { get }
 }
 
 class CelestiaInteractionController: UIViewController {
@@ -141,11 +141,11 @@ class CelestiaInteractionController: UIViewController {
         return targetProvider?.targetGeometry ?? RenderingTargetGeometry(size: view.frame.size, scale: view.contentScaleFactor)
     }
 
-    private var renderingTargetImage: UIImage? {
-        return targetProvider?.targetImage
+    private var renderingTargetContents: Any? {
+        return targetProvider?.targetContents
     }
 
-    private lazy var targetInteractionView = UIImageView()
+    private lazy var targetInteractionView = UIView()
     private lazy var auxillaryContextMenuPreviewView = UIView()
     private var mirroringDisplayLink: CADisplayLink?
     private var isMirroring = false
@@ -663,7 +663,7 @@ extension CelestiaInteractionController: AppCoreDelegate {
 
 extension CelestiaInteractionController {
     @objc private func mirroringDisplayLinkHandler() {
-        targetInteractionView.image = renderingTargetImage
+        targetInteractionView.layer.contents = renderingTargetContents
     }
 
     func startMirroring() {
@@ -676,7 +676,7 @@ extension CelestiaInteractionController {
     func stopMirroring() {
         mirroringDisplayLink?.invalidate()
         mirroringDisplayLink = nil
-        targetInteractionView.image = nil
+        targetInteractionView.layer.contents = nil
         isMirroring = false
     }
 }

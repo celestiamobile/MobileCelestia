@@ -280,10 +280,8 @@ private func getInstalledFontFor(locale: String) -> (font: FallbackFont, boldFon
 }
 
 extension CelestiaDisplayController {
-    func screenshot() -> UIImage {
-        return UIGraphicsImageRenderer(size: view.bounds.size, format: UIGraphicsImageRendererFormat(for: UITraitCollection(displayScale: view.contentScaleFactor))).image { (_) in
-            self.view.drawHierarchy(in: self.view.bounds, afterScreenUpdates: false)
-        }
+    func screenshot() -> Any? {
+        return self.view.snapshotView(afterScreenUpdates: false)?.layer.contents
     }
 }
 
