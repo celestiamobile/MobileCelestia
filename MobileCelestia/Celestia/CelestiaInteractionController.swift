@@ -558,7 +558,7 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
                     action.state = displaySurface == name ? .on : .off
                     return action
                 }
-                let menu = UIMenu(title: "Alternate Surfaces", children: [defaultSurfaceItem] + otherSurfaces)
+                let menu = UIMenu(title: CelestiaString("Alternate Surfaces", comment: ""), children: [defaultSurfaceItem] + otherSurfaces)
                 actions.append(menu)
             }
 
