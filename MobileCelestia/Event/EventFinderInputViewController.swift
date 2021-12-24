@@ -38,12 +38,12 @@ class EventFinderInputViewController: BaseTableViewController {
                 [ProceedItem()]
     ]
 
-    private let selectableObjects = [LocalizedString("Earth", "celestia"), LocalizedString("Jupiter", "celestia")]
+    private let selectableObjects = [LocalizedString("Earth", "celestia-data"), LocalizedString("Jupiter", "celestia-data")]
 
     private let defaultSearchingInterval: TimeInterval = 365 * 24 * 60 * 60
     private lazy var startTime = endTime.addingTimeInterval(-defaultSearchingInterval)
     private lazy var endTime = Date()
-    private var objectName = LocalizedString("Earth", "celestia")
+    private var objectName = LocalizedString("Earth", "celestia-data")
 
     private let core = AppCore.shared
 
@@ -139,7 +139,7 @@ extension EventFinderInputViewController {
         } else if item is ObjectItem {
             if let cell = tableView.cellForRow(at: indexPath) {
                 showSelection(CelestiaString("Please choose an object.", comment: ""),
-                              options: selectableObjects.map { LocalizedString($0, "celestia") } + [CelestiaString("Other", comment: "")],
+                              options: selectableObjects.map { LocalizedString($0, "celestia-data") } + [CelestiaString("Other", comment: "")],
                               sourceView: cell, sourceRect: cell.bounds) { [weak self] index in
                     guard let self = self, let index = index else { return }
                     if index >= self.selectableObjects.count {

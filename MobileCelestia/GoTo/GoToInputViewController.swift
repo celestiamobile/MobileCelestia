@@ -81,7 +81,7 @@ class GoToInputViewController: BaseTableViewController {
     private let locationHandler: ((GoToLocation) -> Void)
     private let objectNameHandler: ((GoToInputViewController) -> Void)
 
-    private var objectName: String = LocalizedString("Earth", "celestia")
+    private var objectName: String = LocalizedString("Earth", "celestia-data")
     private var longitude: Float = 0
     private var latitude: Float = 0
 
