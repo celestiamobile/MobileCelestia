@@ -7,15 +7,15 @@ jobs:
   variables:
     sdk: ${{ parameters.sdk }}
     signing: ${{ parameters.signing }}
-    XC_VERSION: ${{ '13.1' }}
+    XC_VERSION: ${{ '13.2.1' }}
     XC_WORKSPACE: ${{ 'MobileCelestia/MobileCelestia.xcworkspace' }}
     XC_SCHEME: ${{ 'MobileCelestia' }}
     XC_ARCHIVE_PARENT_PATH: ${{ '$(system.defaultworkingdirectory)/archive' }}
     XC_ARCHIVE_PATH: ${{ '$(system.defaultworkingdirectory)/archive/MobileCelestia.xcarchive' }}
     XC_EXPORT_PATH: ${{ '$(agent.buildDirectory)/output' }}
-    IOS_PROVISIONING_PROFILE_UUID: ${{ 'b983e449-4a4f-4161-83f6-0f8b56857daf' }}
-    MAC_APP_STORE_PROVISIONING_PROFILE_UUID: ${{ '881db652-35fe-4d56-9182-8492e389041b' }}
-    MAC_DEVELOPER_ID_PROVISIONING_PROFILE_UUID: ${{ 'e3e3d42c-c581-4693-82e1-2794fee35edb' }}
+    IOS_PROVISIONING_PROFILE_UUID: ${{ 'e840c955-a055-413b-bf1f-d0529b5f6ead' }}
+    MAC_APP_STORE_PROVISIONING_PROFILE_UUID: ${{ '23537496-ccc8-4b80-bd89-3bd602ef40e2' }}
+    MAC_DEVELOPER_ID_PROVISIONING_PROFILE_UUID: ${{ '6700a055-c231-4a7f-86e8-2409fc00e06d' }}
     DISTRIBUTION_IDENTITY: 'Apple Distribution: Linfeng Li (22NR5428TD)'
     DEVELOPER_ID_IDENTITY: 'Developer ID Application: Linfeng Li (22NR5428TD)'
 
@@ -93,19 +93,19 @@ jobs:
   - task: DownloadSecureFile@1
     name: iosProvisioningProfile
     inputs:
-      secureFile: 'MobileCelestiaDistrition20210508.mobileprovision'
+      secureFile: 'MC_iOS_AppStore_20211225.mobileprovision'
     displayName: 'Download iOS Provisioning Profile'
 
   - task: DownloadSecureFile@1
     name: macAppStoreProvisioningProfile
     inputs:
-      secureFile: 'Ado_Mobile_Celestia_Catalyst_20211009.provisionprofile'
+      secureFile: 'MC_macOS_AppStore_20211225.provisionprofile'
     displayName: 'Download Mac (App Store) Provisioning Profile'
 
   - task: DownloadSecureFile@1
     name: macDeveloperIDProvisioningProfile
     inputs:
-      secureFile: 'MobileCelestiaDeveloperID20250605.provisionprofile'
+      secureFile: 'MC_macOS_DeveloperID_20211225.provisionprofile'
     displayName: 'Download Mac (Developer ID) Provisioning Profile'
 
   - script: |
