@@ -744,7 +744,15 @@ let mainSetting = [
                                     SettingSelectionItem(name: CelestiaString("Metric", comment: ""), index: 0),
                                     SettingSelectionItem(name: CelestiaString("Imperial", comment: ""), index: 1),
                                 ]
-                            ).toSection()
+                            ).toSection(),
+                            AssociatedSelectionItem(
+                                key: "temperatureScale",
+                                items: [
+                                    SettingSelectionItem(name: CelestiaString("Kelvin", comment: ""), index: 0),
+                                    SettingSelectionItem(name: CelestiaString("Celsius", comment: ""), index: 1),
+                                    SettingSelectionItem(name: CelestiaString("Fahrenheit", comment: ""), index: 2),
+                                ]
+                            ).toSection(header: CelestiaString("Temperature Scale", comment: ""))
                         ]
                     )
                 )

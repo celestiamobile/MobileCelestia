@@ -168,6 +168,8 @@
 		<integer>0</integer>
 		<key>measurementSystem</key>
 		<integer>0</integer>
+		<key>temperatureScale</key>
+		<integer>0</integer>
 	</dict>
 </dict>
 </plist>
