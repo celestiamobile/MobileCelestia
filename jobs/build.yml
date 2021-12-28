@@ -22,12 +22,14 @@ jobs:
   steps:
   - checkout: Celestia
   - checkout: CelestiaCore
+  - checkout: CelestiaContent
+    fetchDepth: 1
   - checkout: self
+
 
   - script: |
       cd Celestia
       git checkout origin/$(Build.SourceBranchName)
-      git submodule update --init
       cd ../CelestiaCore
       git checkout origin/$(Build.SourceBranchName)
       git submodule update --init
@@ -37,7 +39,6 @@ jobs:
   - script: |
       cd Celestia
       git checkout origin/$(System.PullRequest.TargetBranch)
-      git submodule update --init
       cd ../CelestiaCore
       git checkout origin/$(System.PullRequest.TargetBranch)
       git submodule update --init
