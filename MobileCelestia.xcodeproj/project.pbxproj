@@ -237,6 +237,7 @@
 		EA28CA5124A2F399004B011E /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Fonts; path = ../../../CelestiaCore/Fonts; sourceTree = "<group>"; };
 		EA374CD1263A8B320069589C /* GoToContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoToContainerViewController.swift; sourceTree = "<group>"; };
 		EA374CD9263A8B770069589C /* GoToInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoToInputViewController.swift; sourceTree = "<group>"; };
+		EA3EC553277C8EAD00936D4F /* Celestia-macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Celestia-macOS.entitlements"; sourceTree = "<group>"; };
 		EA445D14265CF6CD00E5D46A /* LinkPreviewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkPreviewCell.swift; sourceTree = "<group>"; };
 		EA544E5E2566BC50003F351D /* DestinationDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DestinationDetailViewController.swift; sourceTree = "<group>"; };
 		EA5D32E6266F9518005D5931 /* SheetPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SheetPresentationController.swift; sourceTree = "<group>"; };
@@ -487,6 +488,7 @@
 				EA934C99251D92A700DD284C /* PanelSceneDelegate.swift */,
 				EA1BE1562748E9DC0046074C /* DisplaySceneDelegate.swift */,
 				979D2F8623FEB1A8005D2592 /* Assets.xcassets */,
+				EA3EC553277C8EAD00936D4F /* Celestia-macOS.entitlements */,
 				EA1EF056249393BE0039F493 /* Celestia.entitlements */,
 				979D2F8823FEB1A8005D2592 /* LaunchScreen.storyboard */,
 				979D2F8B23FEB1A8005D2592 /* Info.plist */,
@@ -1132,6 +1134,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = MobileCelestia/Celestia.entitlements;
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "MobileCelestia/Celestia-macOS.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(SHARED_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = 22NR5428TD;
@@ -1157,6 +1160,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = MobileCelestia/Celestia.entitlements;
+				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "MobileCelestia/Celestia-macOS.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(SHARED_BUILD_NUMBER)";
 				DEVELOPMENT_TEAM = 22NR5428TD;
