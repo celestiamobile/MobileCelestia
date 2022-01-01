@@ -85,6 +85,9 @@
 		EA982BFF25496B6D00CDC642 /* BaseTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA982BFE25496B6D00CDC642 /* BaseTableViewController.swift */; };
 		EAA5A7A1259DBFE6001AFA82 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = EAA5A7A3259DBFE6001AFA82 /* InfoPlist.strings */; };
 		EAA6C4CB253B5CD200ED1D60 /* InstalledResourceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAA6C4CA253B5CD200ED1D60 /* InstalledResourceViewController.swift */; };
+		EAB08FE02780464C00BB82F0 /* ImageCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAB08FDF2780464C00BB82F0 /* ImageCacheManager.swift */; };
+		EAB08FE22780471200BB82F0 /* StylizedResourceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAB08FE12780471200BB82F0 /* StylizedResourceCell.swift */; };
+		EAB08FE42780550600BB82F0 /* Font.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAB08FE32780550600BB82F0 /* Font.swift */; };
 		EABDE367247170F000E0A5FA /* SettngSliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABDE366247170F000E0A5FA /* SettngSliderCell.swift */; };
 		EABDE3A92473DAA300E0A5FA /* SettingCommonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABDE3A82473DAA300E0A5FA /* SettingCommonViewController.swift */; };
 		EABF7911253895FD00F2460C /* ResourceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF7910253895FD00F2460C /* ResourceViewController.swift */; };
@@ -251,6 +254,9 @@
 		EAA5A7A2259DBFE6001AFA82 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EAA5A7A7259DC062001AFA82 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EAA6C4CA253B5CD200ED1D60 /* InstalledResourceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstalledResourceViewController.swift; sourceTree = "<group>"; };
+		EAB08FDF2780464C00BB82F0 /* ImageCacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCacheManager.swift; sourceTree = "<group>"; };
+		EAB08FE12780471200BB82F0 /* StylizedResourceCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StylizedResourceCell.swift; sourceTree = "<group>"; };
+		EAB08FE32780550600BB82F0 /* Font.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Font.swift; sourceTree = "<group>"; };
 		EABDE366247170F000E0A5FA /* SettngSliderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettngSliderCell.swift; sourceTree = "<group>"; };
 		EABDE3A82473DAA300E0A5FA /* SettingCommonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingCommonViewController.swift; sourceTree = "<group>"; };
 		EABF7910253895FD00F2460C /* ResourceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceViewController.swift; sourceTree = "<group>"; };
@@ -338,6 +344,8 @@
 				977394A22403E68800E38B82 /* Color.swift */,
 				EA5E185B2477C78E00F5374B /* Toast.swift */,
 				EAD94F66261EED7700A93C93 /* UITableView+Extensions.swift */,
+				EAB08FDF2780464C00BB82F0 /* ImageCacheManager.swift */,
+				EAB08FE32780550600BB82F0 /* Font.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -613,6 +621,7 @@
 			isa = PBXGroup;
 			children = (
 				EABF79412538A4EB00F2460C /* ProgressButton.swift */,
+				EAB08FE12780471200BB82F0 /* StylizedResourceCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -868,6 +877,7 @@
 				97401CA62414DAF50015F8E8 /* FavoriteCoordinatorController.swift in Sources */,
 				977CDD2E240BC6A900137127 /* TutorialDescriptionCell.swift in Sources */,
 				977394B8240409CF00E38B82 /* SettingSwitchCell.swift in Sources */,
+				EAB08FE42780550600BB82F0 /* Font.swift in Sources */,
 				977394B32403F74800E38B82 /* SettingTextCell.swift in Sources */,
 				97401C9D2414D3460015F8E8 /* UserDefaults.swift in Sources */,
 				977CDD30240BD78F00137127 /* TutorialActionCell.swift in Sources */,
@@ -895,6 +905,8 @@
 				974F86E22403BD3C00356795 /* InfoViewController.swift in Sources */,
 				EA1BE1572748E9DC0046074C /* DisplaySceneDelegate.swift in Sources */,
 				978406DF24029D9100876FD1 /* LoadingFailureViewController.swift in Sources */,
+				EAB08FE02780464C00BB82F0 /* ImageCacheManager.swift in Sources */,
+				EAB08FE22780471200BB82F0 /* StylizedResourceCell.swift in Sources */,
 				EA374CD2263A8B320069589C /* GoToContainerViewController.swift in Sources */,
 				EA1BC6E524A0E93D00F3F51B /* EventFinderInputViewController.swift in Sources */,
 				977394AC2403F07C00E38B82 /* SettingsCoordinatorController.swift in Sources */,

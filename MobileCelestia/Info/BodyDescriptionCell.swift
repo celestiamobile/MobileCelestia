@@ -35,7 +35,7 @@ final class BodyDescriptionCell: UICollectionViewCell {
         ])
 
         titleLabel.textColor = .darkLabel
-        titleLabel.font = UIFont.preferredFont(forTextStyle: .headline)
+        titleLabel.font = UIFont.preferredFont(forTextStyle: .title2, weight: .semibold)
         titleLabel.numberOfLines = 0
         titleLabel.lineBreakMode = .byCharWrapping
 

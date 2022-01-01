@@ -13,11 +13,20 @@ import UIKit
 
 protocol AsyncListItem {
     var name: String { get }
+    var imageURL: (URL, String)? { get }
 }
 
 class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
     class var showDisclosureIndicator: Bool { return true }
     class var useStandardUITableViewCell: Bool { return false }
+
+    static var useStylizedCells: Bool {
+        #if targetEnvironment(macCatalyst)
+        return false
+        #else
+        return true
+        #endif
+    }
 
     private lazy var activityIndicator: UIActivityIndicatorView = {
         if #available(iOS 13, *) {
@@ -33,7 +42,7 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
 
     init(selection: @escaping (T) -> Void) {
         self.selection = selection
-        super.init(style: Self.showDisclosureIndicator ? .defaultGrouped : .grouped)
+        super.init(style: Self.useStylizedCells ? .plain : (Self.showDisclosureIndicator ? .defaultGrouped : .grouped))
     }
 
     required init?(coder: NSCoder) {
@@ -93,9 +102,14 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
             cell.accessoryType = Self.showDisclosureIndicator ? .disclosureIndicator : .none
             return cell
         }
+        if Self.useStylizedCells {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! StylizedResourceCell
+            cell.title = item.name
+            cell.imageURL = item.imageURL
+            return cell
+        }
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
         cell.title = item.name
-        cell.accessoryType = Self.showDisclosureIndicator ? .disclosureIndicator : .none
         return cell
     }
 
@@ -113,7 +127,12 @@ private extension AsyncListViewController {
         if Self.useStandardUITableViewCell {
             tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Text")
         } else {
-            tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Text")
+            if Self.useStylizedCells {
+                tableView.register(StylizedResourceCell.self, forCellReuseIdentifier: "Text")
+                tableView.separatorStyle = .none
+            } else {
+                tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Text")
+            }
         }
 
         refreshButton.setTitle(CelestiaString("Refresh", comment: ""), for: .normal)

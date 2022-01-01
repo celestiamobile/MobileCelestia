@@ -13,7 +13,14 @@ import UIKit
 
 import CelestiaCore
 
-extension ResourceItem: AsyncListItem {}
+extension ResourceItem: AsyncListItem {
+    var imageURL: (URL, String)? {
+        if let image = self.image {
+            return (image, id)
+        }
+        return nil
+    }
+}
 
 class ResourceItemListViewController: AsyncListViewController<ResourceItem> {
     private let category: ResourceCategory

@@ -15,4 +15,5 @@ struct ResourceCategory: Decodable {
     let name: String
     let description: String
     let id: String
+    let image: URL?
 }

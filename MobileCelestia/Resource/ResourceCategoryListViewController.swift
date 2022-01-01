@@ -19,6 +19,18 @@ enum ResourceCategoryItem {
 }
 
 extension ResourceCategoryItem: AsyncListItem {
+    var imageURL: (URL, String)? {
+        switch self {
+        case .installed:
+            return nil
+        case .wrapped(let category):
+            if let image = category.image {
+                return (image, category.id)
+            }
+            return nil
+        }
+    }
+
     var name: String {
         switch self {
         case .installed:

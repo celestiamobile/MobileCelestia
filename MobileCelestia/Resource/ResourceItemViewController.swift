@@ -15,21 +15,6 @@ import SDWebImage
 import CelestiaCore
 
 class ResourceItemViewController: UIViewController {
-    class ImageCacheManager {
-        static let shared: ImageCacheManager = ImageCacheManager()
-        private var cacheKeyDictionary: [String: String] = [:]
-
-        private init() {
-            SDWebImageManager.shared.cacheKeyFilter = SDWebImageCacheKeyFilter(block: { [weak self] url in
-                return self?.cacheKeyDictionary[url.absoluteString] ?? url.absoluteString
-            })
-        }
-
-        func save(url: String, id: String) {
-            cacheKeyDictionary[url] = id
-        }
-    }
-
     enum ResourceItemState {
         case none
         case downloading
@@ -206,7 +191,7 @@ private extension ResourceItemViewController {
 
         titleLabel.numberOfLines = 0
         titleLabel.textColor = .darkLabel
-        titleLabel.font = UIFont.preferredFont(forTextStyle: .title2)
+        titleLabel.font = UIFont.preferredFont(forTextStyle: .title2, weight: .semibold)
         authorsLabel.numberOfLines = 0
         authorsLabel.textColor = .darkSecondaryLabel
         authorsLabel.font = UIFont.preferredFont(forTextStyle: .footnote)

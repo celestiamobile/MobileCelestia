@@ -86,7 +86,7 @@ private extension DestinationDetailViewController {
         ])
 
         titleLabel.textColor = .darkLabel
-        titleLabel.font = UIFont.preferredFont(forTextStyle: .title3)
+        titleLabel.font = UIFont.preferredFont(forTextStyle: .title2, weight: .semibold)
         titleLabel.numberOfLines = 0
         titleLabel.lineBreakMode = .byCharWrapping
 
