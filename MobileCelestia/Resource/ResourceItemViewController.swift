@@ -40,10 +40,40 @@ class ResourceItemViewController: UIViewController {
     private lazy var imageView = UIImageView()
     private lazy var footnoteLabel = UILabel()
 
-    private lazy var contentStack = UIStackView(arrangedSubviews: [
+    private lazy var topStack = UIStackView(arrangedSubviews: [
         titleLabel,
         authorsLabel,
         releaseDateLabel,
+    ])
+
+    private lazy var topContentView: UIView = {
+        let view = UIView()
+        topStack.translatesAutoresizingMaskIntoConstraints = false
+        topStack.axis = .vertical
+        topStack.spacing = 4
+        view.addSubview(topStack)
+        shareButton.setImage(UIImage(named: "share_common_small")?.withRenderingMode(.alwaysTemplate), for: .normal)
+        shareButton.tintColor = .darkLabel
+        shareButton.setContentHuggingPriority(.required, for: .horizontal)
+        shareButton.setContentCompressionResistancePriority(.required, for: .horizontal)
+        shareButton.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(shareButton)
+        NSLayoutConstraint.activate([
+            topStack.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            topStack.topAnchor.constraint(equalTo: view.topAnchor),
+            topStack.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor),
+            shareButton.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            shareButton.topAnchor.constraint(equalTo: view.topAnchor),
+            shareButton.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor),
+            topStack.trailingAnchor.constraint(equalTo: shareButton.leadingAnchor, constant: -8),
+        ])
+        return view
+    }()
+
+    private lazy var shareButton = StandardButton()
+
+    private lazy var contentStack = UIStackView(arrangedSubviews: [
+        topContentView,
         descriptionLabel,
         imageView,
         footnoteLabel
@@ -86,6 +116,8 @@ class ResourceItemViewController: UIViewController {
 
         updateUI()
 
+        shareButton.addTarget(self, action: #selector(showShare(_:)), for: .touchUpInside)
+
         NotificationCenter.default.addObserver(self, selector: #selector(downloadProgress(_:)), name: ResourceManager.downloadProgress, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(resourceFetchError(_:)), name: ResourceManager.resourceError, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(downloadSuccess(_:)), name: ResourceManager.downloadSuccess, object: nil)
@@ -103,6 +135,15 @@ class ResourceItemViewController: UIViewController {
             self?.item = item
             self?.updateContents()
         }, decoder: ResourceItem.networkResponseDecoder)
+    }
+
+    @objc private func showShare(_ sender: UIButton) {
+        let baseURL = "https://celestia.mobi/resources/item"
+        let locale = LocalizedString("LANGUAGE", "celestia")
+        guard var components = URLComponents(string: baseURL) else { return }
+        components.queryItems = [URLQueryItem(name: "item", value: item.id), URLQueryItem(name: "lang", value: locale)]
+        guard let url = components.url else { return }
+        showShareSheet(for: url)
     }
 
     @objc private func goToButtonClicked() {

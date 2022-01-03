@@ -43,6 +43,7 @@ class MainViewController: UIViewController {
     #endif
 
     private var urlToRun: UniformedURL?
+    private var addonToOpen: String?
 
     init(initialURL: UniformedURL?) {
         self.urlToRun = initialURL
@@ -68,6 +69,7 @@ class MainViewController: UIViewController {
         install(loadingController)
 
         NotificationCenter.default.addObserver(self, selector: #selector(newURLOpened(_:)), name: newURLOpenedNotificationName, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(newAddonOpened(_:)), name: newAddonOpenedNotificationName, object: nil)
         #if !targetEnvironment(macCatalyst)
         NotificationCenter.default.addObserver(self, selector: #selector(newScreenConnected(_:)), name: UIScreen.didConnectNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(screenDisconnected(_:)), name: UIScreen.didDisconnectNotification, object: nil)
@@ -110,6 +112,13 @@ extension MainViewController {
         checkNeedOpeningURL()
     }
 
+    @objc private func newAddonOpened(_ notification: Notification) {
+        guard let addon = notification.userInfo?[newAddonOpenedNotificationIDKey] as? String else { return }
+        addonToOpen = addon
+        guard status == .loaded else { return }
+        checkNeedOpeningAddon()
+    }
+
     private func checkNeedOpeningURL() {
         guard let url = urlToRun else { return }
 
@@ -120,6 +129,18 @@ extension MainViewController {
             guard confirmed else { return }
             self.celestiaController.openURL(url)
         }
+    }
+
+    private func checkNeedOpeningAddon() {
+        guard let addon = addonToOpen else { return }
+
+        addonToOpen = nil
+
+        let requestURL = apiPrefix + "/resource/item"
+        let locale = LocalizedString("LANGUAGE", "celestia")
+        _ = RequestHandler.get(url: requestURL, parameters: ["lang": locale, "item": addon], success: { [weak self] (item: ResourceItem) in
+            self?.showViewController(ResourceItemViewController(item: item))
+        }, decoder: ResourceItem.networkResponseDecoder)
     }
 }
 
@@ -233,9 +254,10 @@ extension MainViewController: CelestiaControllerDelegate {
             }
             UIApplication.shared.isIdleTimerDisabled = true
             self.showOnboardMessageIfNeeded()
-            // we can't present two vcs together, so we delay the action
+            // FIXME: we can't present multiple vcs together
             DispatchQueue.main.asyncAfter(deadline: .now() + 1)  {
                 self.checkNeedOpeningURL()
+                self.checkNeedOpeningAddon()
             }
         }
     }

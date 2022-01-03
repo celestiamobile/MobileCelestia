@@ -19,6 +19,8 @@ import AppCenterCrashes
 
 let newURLOpenedNotificationName = Notification.Name("NewURLOpenedNotificationName")
 let newURLOpenedNotificationURLKey = "NewURLOpenedNotificationURLKey"
+let newAddonOpenedNotificationName = Notification.Name("NewAddonOpenedNotificationName")
+let newAddonOpenedNotificationIDKey = "NewAddonOpenedNotificationIDKey"
 let showHelpNotificationName = Notification.Name("ShowHelpNotificationName")
 let showPreferencesNotificationName = Notification.Name("ShowPreferencesNotificationName")
 let requestOpenFileNotificationName = Notification.Name("RequestOpenFileNotificationName")
@@ -137,20 +139,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     @discardableResult static func handleUserActivity(_ userActivity: NSUserActivity) -> Bool {
         guard let url = userActivity.webpageURL else { return false }
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false) else { return false }
-        // Path and ID are needed to resolve a URL with API
-        guard let id = components.queryItems?.first(where: { $0.name == "id" })?.value else { return false }
-        let path = components.path
+        if components.path == "/api/url" {
+            // Handle shared cel URL
 
-        struct Response: Decodable {
-            let resolvedURL: URL
+            // Path and ID are needed to resolve a URL with API
+            guard let id = components.queryItems?.first(where: { $0.name == "id" })?.value else { return false }
+
+            struct Response: Decodable {
+                let resolvedURL: URL
+            }
+
+            // Make request to the server to resolve the URL
+            let requestURL = apiPrefix + "/resolve"
+            _ = RequestHandler.get(url: requestURL, parameters: ["path" : components.path, "id" : id], success: { (response: Response) in
+                NotificationCenter.default.post(name: newURLOpenedNotificationName, object: nil, userInfo: [newURLOpenedNotificationURLKey: UniformedURL(url: response.resolvedURL, securityScoped: false)])
+            })
+
+            return true
+        } else if components.path == "/resources/item" {
+            // Handle shared add-on
+            guard let id = components.queryItems?.first(where: { $0.name == "item" })?.value else { return false }
+
+            NotificationCenter.default.post(name: newAddonOpenedNotificationName, object: nil, userInfo: [newAddonOpenedNotificationIDKey: id])
+            return true
         }
-
-        // Make request to the server to resolve the URL
-        let requestURL = apiPrefix + "/resolve"
-        _ = RequestHandler.get(url: requestURL, parameters: ["path" : path, "id" : id], success: { (response: Response) in
-            NotificationCenter.default.post(name: newURLOpenedNotificationName, object: nil, userInfo: [newURLOpenedNotificationURLKey: UniformedURL(url: response.resolvedURL, securityScoped: false)])
-        })
-        return true
+        return false
     }
 
     override func copy(_ sender: Any?) {
