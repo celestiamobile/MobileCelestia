@@ -143,7 +143,7 @@ class ResourceItemViewController: UIViewController {
         guard var components = URLComponents(string: baseURL) else { return }
         components.queryItems = [URLQueryItem(name: "item", value: item.id), URLQueryItem(name: "lang", value: locale)]
         guard let url = components.url else { return }
-        showShareSheet(for: url)
+        showShareSheet(for: url, sourceView: sender, sourceRect: sender.bounds)
     }
 
     @objc private func goToButtonClicked() {

@@ -124,10 +124,23 @@ extension MainViewController {
 
         urlToRun = nil
 
-        let title = url.url.isFileURL ? CelestiaString("Run script?", comment: "") : CelestiaString("Open URL?", comment: "")
-        front?.showOption(title) { [unowned self] (confirmed) in
-            guard confirmed else { return }
-            self.celestiaController.openURL(url)
+        if url.url.isFileURL {
+            front?.showOption(CelestiaString("Run script?", comment: "")) { [unowned self] (confirmed) in
+                guard confirmed else { return }
+                self.celestiaController.openURL(url)
+            }
+        } else if url.url.scheme == "cel" {
+            front?.showOption(CelestiaString("Open URL?", comment: "")) { [unowned self] (confirmed) in
+                guard confirmed else { return }
+                self.celestiaController.openURL(url)
+            }
+        } else if url.url.scheme == "celaddon" {
+            guard let components = URLComponents(url: url.url, resolvingAgainstBaseURL: false) else { return }
+            if components.host == "item" {
+                guard let id = components.queryItems?.first(where: { $0.name == "item" })?.value else { return }
+                addonToOpen = id
+                checkNeedOpeningAddon()
+            }
         }
     }
 
@@ -712,16 +725,18 @@ extension UIViewController {
         })
     }
 
-    func showShareSheet(for url: URL) {
+    func showShareSheet(for url: URL, sourceView: UIView? = nil, sourceRect: CGRect? = nil) {
         let activityController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
-        configurePopover(for: activityController)
+        configurePopover(for: activityController, sourceView: sourceView, sourceRect: sourceRect)
         presentAfterDismissCurrent(activityController, animated: true)
     }
 
-    func configurePopover(for viewController: UIViewController) {
+    func configurePopover(for viewController: UIViewController, sourceView: UIView? = nil, sourceRect: CGRect? = nil) {
         viewController.modalPresentationStyle = .popover
-        viewController.popoverPresentationController?.sourceView = view
-        viewController.popoverPresentationController?.sourceRect = CGRect(x: view.frame.midX, y: view.frame.midY, width: 0, height: 0)
+        let popoverSource: UIView = sourceView ?? view
+        let popoverRect = sourceRect ?? CGRect(x: popoverSource.frame.midX, y: popoverSource.frame.midY, width: 0, height: 0)
+        viewController.popoverPresentationController?.sourceView = popoverSource
+        viewController.popoverPresentationController?.sourceRect = popoverRect
         viewController.popoverPresentationController?.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
         viewController.preferredContentSize = CGSize(width: 400, height: 500)
     }
