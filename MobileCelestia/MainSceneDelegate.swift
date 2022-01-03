@@ -43,13 +43,17 @@ class MainSceneDelegate: UIResponder, UIWindowSceneDelegate {
             launchURL = UniformedURL(url: url.url, securityScoped: url.url.isFileURL && url.options.openInPlace)
         }
         let vc = MainViewController(initialURL: launchURL)
-        if let userActivity = connectionOptions.userActivities.first {
-            AppDelegate.handleUserActivity(userActivity)
-        }
         window.rootViewController = vc
 
         self.window = window
         window.makeKeyAndVisible()
+
+        if let userActivity = connectionOptions.userActivities.first {
+            // Delay this so the view gets loaded before user activity gets handled
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                AppDelegate.handleUserActivity(userActivity)
+            }
+        }
     }
 
     func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
