@@ -152,7 +152,12 @@ extension MainViewController {
         let requestURL = apiPrefix + "/resource/item"
         let locale = LocalizedString("LANGUAGE", "celestia")
         _ = RequestHandler.get(url: requestURL, parameters: ["lang": locale, "item": addon], success: { [weak self] (item: ResourceItem) in
-            self?.showViewController(ResourceItemViewController(item: item))
+            guard let self = self else { return }
+            // Need to wrap it in a NavVC without NavBar to make sure
+            // the scrolling behavior is correct on macCatalyst
+            let nav = UINavigationController(rootViewController: ResourceItemViewController(item: item))
+            nav.setNavigationBarHidden(true, animated: false)
+            self.showViewController(nav)
         }, decoder: ResourceItem.networkResponseDecoder)
     }
 }
