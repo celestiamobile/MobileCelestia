@@ -274,6 +274,7 @@
 		EAC8435D252C818700691943 /* CELMacBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CELMacBridge.h; sourceTree = "<group>"; };
 		EAC8435E252C818700691943 /* CELMacBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CELMacBridge.m; sourceTree = "<group>"; };
 		EAD94F66261EED7700A93C93 /* UITableView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Extensions.swift"; sourceTree = "<group>"; };
+		EAD962992782BA2B00CDF86E /* Info-macos.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-macos.plist"; sourceTree = "<group>"; };
 		EADE7FBA252B517600D4174F /* CelestiaDisplayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaDisplayController.swift; sourceTree = "<group>"; };
 		EADE7FBF252B54A400D4174F /* CelestiaInteractionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaInteractionController.swift; sourceTree = "<group>"; };
 		EAF4851325A2B0E600F0E9F9 /* bg */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = bg; path = bg.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -500,6 +501,7 @@
 				EA1EF056249393BE0039F493 /* Celestia.entitlements */,
 				979D2F8823FEB1A8005D2592 /* LaunchScreen.storyboard */,
 				979D2F8B23FEB1A8005D2592 /* Info.plist */,
+				EAD962992782BA2B00CDF86E /* Info-macos.plist */,
 			);
 			path = MobileCelestia;
 			sourceTree = "<group>";
