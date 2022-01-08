@@ -102,6 +102,7 @@
 		EAC2F4D02647F2920039DF2F /* SearchResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC2F4CF2647F2920039DF2F /* SearchResultViewController.swift */; };
 		EAC8435F252C818700691943 /* CELMacBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = EAC8435E252C818700691943 /* CELMacBridge.m */; };
 		EAC84364252C84B600691943 /* CelestiaMacBridge.bundle in Embed PlugIns */ = {isa = PBXBuildFile; fileRef = EAC84354252C816500691943 /* CelestiaMacBridge.bundle */; platformFilter = maccatalyst; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		EAC9FC21278934DF00292D59 /* CompatProgressButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC9FC20278934DF00292D59 /* CompatProgressButton.swift */; };
 		EAD94F67261EED7700A93C93 /* UITableView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD94F66261EED7700A93C93 /* UITableView+Extensions.swift */; };
 		EADE7FBB252B517600D4174F /* CelestiaDisplayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE7FBA252B517600D4174F /* CelestiaDisplayController.swift */; };
 		EADE7FC0252B54A400D4174F /* CelestiaInteractionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE7FBF252B54A400D4174F /* CelestiaInteractionController.swift */; };
@@ -273,6 +274,7 @@
 		EAC84356252C816500691943 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EAC8435D252C818700691943 /* CELMacBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CELMacBridge.h; sourceTree = "<group>"; };
 		EAC8435E252C818700691943 /* CELMacBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CELMacBridge.m; sourceTree = "<group>"; };
+		EAC9FC20278934DF00292D59 /* CompatProgressButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CompatProgressButton.swift; sourceTree = "<group>"; };
 		EAD94F66261EED7700A93C93 /* UITableView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Extensions.swift"; sourceTree = "<group>"; };
 		EAD962992782BA2B00CDF86E /* Info-macos.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-macos.plist"; sourceTree = "<group>"; };
 		EADE7FBA252B517600D4174F /* CelestiaDisplayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaDisplayController.swift; sourceTree = "<group>"; };
@@ -624,6 +626,7 @@
 			children = (
 				EABF79412538A4EB00F2460C /* ProgressButton.swift */,
 				EAB08FE12780471200BB82F0 /* StylizedResourceCell.swift */,
+				EAC9FC20278934DF00292D59 /* CompatProgressButton.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -886,6 +889,7 @@
 				EABDE3A92473DAA300E0A5FA /* SettingCommonViewController.swift in Sources */,
 				EABF79422538A4EB00F2460C /* ProgressButton.swift in Sources */,
 				9773949C2402A8F700E38B82 /* ToolbarViewController.swift in Sources */,
+				EAC9FC21278934DF00292D59 /* CompatProgressButton.swift in Sources */,
 				979D2F8223FEB1A6005D2592 /* CelestiaViewController.swift in Sources */,
 				EABF79192538967500F2460C /* ResourceCategoryListViewController.swift in Sources */,
 				97401C9C2414D3460015F8E8 /* URL.swift in Sources */,

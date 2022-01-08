@@ -24,12 +24,7 @@ class ResourceItemViewController: UIViewController {
     private var item: ResourceItem
 
     private lazy var scrollView = UIScrollView(frame: .zero)
-    private lazy var progressButton: ProgressButton = {
-        if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
-            return ProgressButton(type: .custom)
-        }
-        return ProgressButton(type: .system)
-    }()
+    private lazy var progressButton = CompatProgressButton()
     private lazy var goToButton = ActionButton(type: .system)
     private lazy var buttonStack = UIStackView(arrangedSubviews: [goToButton, progressButton])
 
@@ -249,8 +244,6 @@ private extension ResourceItemViewController {
         footnoteLabel.numberOfLines = 0
         footnoteLabel.textColor = .darkSecondaryLabel
         footnoteLabel.font = UIFont.preferredFont(forTextStyle: .footnote)
-        progressButton.contentEdgeInsets = ActionButton.Constants.contentEdgeInsets
-        progressButton.layer.cornerRadius = ActionButton.Constants.cornerRadius
 
         goToButton.isHidden = true
         goToButton.setTitle(CelestiaString("Go", comment: ""), for: .normal)
@@ -324,15 +317,22 @@ private extension ResourceItemViewController {
             currentState = .downloading
         }
 
+        let isMacIdiom: Bool
+        if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
+            isMacIdiom = true
+        } else {
+            isMacIdiom = false
+        }
+
         switch currentState {
         case .none:
             progressButton.resetProgress()
-            progressButton.setTitle(CelestiaString("DOWNLOAD", comment: ""), for: .normal)
+            progressButton.setTitle(CelestiaString(isMacIdiom ? "Install" : "DOWNLOAD", comment: ""), for: .normal)
         case .downloading:
-            progressButton.setTitle(CelestiaString("DOWNLOADING", comment: ""), for: .normal)
+            progressButton.setTitle(CelestiaString(isMacIdiom ? "Cancel" : "DOWNLOADING", comment: ""), for: .normal)
         case .installed:
-            progressButton.setProgress(progress: 1.0)
-            progressButton.setTitle(CelestiaString("INSTALLED", comment: ""), for: .normal)
+            progressButton.complete()
+            progressButton.setTitle(CelestiaString(isMacIdiom ? "Uninstall" : "INSTALLED", comment: ""), for: .normal)
         }
 
         if currentState == .installed, let objectName = item.objectName, !AppCore.shared.simulation.findObject(from: objectName).isEmpty {
