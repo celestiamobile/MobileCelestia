@@ -3,8 +3,8 @@ platform :ios, '11.0'
 use_frameworks! :linkage => :static
 
 target 'MobileCelestia' do
-  pod 'AppCenter/Analytics', '~> 4.3.0'
-  pod 'AppCenter/Crashes', '~> 4.3.0'
+  pod 'AppCenter/Analytics', '~> 4.4.1'
+  pod 'AppCenter/Crashes', '~> 4.4.1'
   pod 'SDWebImage', '~> 5.0'
   pod 'ZIPFoundation', '~> 0.9'
 
