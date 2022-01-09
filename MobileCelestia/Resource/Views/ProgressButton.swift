@@ -11,12 +11,12 @@
 
 import UIKit
 
-public class ProgressButton: UIButton {
+class ProgressButton: StandardButton {
     private var progress: CGFloat = 0.0
 
     private let progressLayer = CALayer()
 
-    override public init(frame: CGRect) {
+    override init(frame: CGRect) {
         super.init(frame: frame)
 
         layer.masksToBounds = true
@@ -46,7 +46,7 @@ public class ProgressButton: UIButton {
         self.setProgress(progress: 0.0)
     }
 
-    override public func layoutSubviews() {
+    override func layoutSubviews() {
         super.layoutSubviews()
 
         if UIView.userInterfaceLayoutDirection(for: semanticContentAttribute) == .rightToLeft {
@@ -58,23 +58,16 @@ public class ProgressButton: UIButton {
         titleLabel?.frame = self.bounds
     }
 
-    public func setProgress(progress: CGFloat) {
+    func setProgress(progress: CGFloat) {
         self.progress = progress
         setNeedsLayout()
     }
 
-    public func setBackgroundColor(color: UIColor) {
+    func setBackgroundColor(color: UIColor) {
         self.backgroundColor = color
     }
 
-    override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesBegan(touches, with: event)
-        UIView.animate(withDuration: 0.05) {
-            self.alpha = 0.85
-        }
-    }
-
-    public override func tintColorDidChange() {
+    override func tintColorDidChange() {
         super.tintColorDidChange()
 
         #if targetEnvironment(macCatalyst)
@@ -83,7 +76,7 @@ public class ProgressButton: UIButton {
         #endif
     }
 
-    public override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         guard #available(iOS 13.0, *), traitCollection.hasDifferentColorAppearance(comparedTo: previousTraitCollection) else {
             return
@@ -96,12 +89,5 @@ public class ProgressButton: UIButton {
         progressLayer.backgroundColor = UIColor.progressForeground.cgColor
         backgroundColor = UIColor.progressBackground
         #endif
-    }
-
-    override public func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        super.touchesEnded(touches, with: event)
-        UIView.animate(withDuration: 0.1) {
-            self.alpha = 1.0
-        }
     }
 }

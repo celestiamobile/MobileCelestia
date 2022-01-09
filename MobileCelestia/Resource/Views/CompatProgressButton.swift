@@ -14,7 +14,7 @@ import UIKit
 class CompatProgressButton: UIView {
     private lazy var macProgressView = UIProgressView()
     private lazy var macActionButton = ActionButton(type: .system)
-    private lazy var iosProgressButton = ProgressButton()
+    private lazy var iosProgressButton = ProgressButton(type: .system)
 
     override init(frame: CGRect) {
         super.init(frame: frame)
