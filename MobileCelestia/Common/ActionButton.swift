@@ -22,11 +22,11 @@ class ActionButton: StandardButton {
         }
 
         static var contentEdgeInsets: UIEdgeInsets {
-            return UIEdgeInsets(top: 12 * scale, left: 0, bottom: 12 * scale, right: 0)
+            return UIEdgeInsets(top: 10 * scale, left: 0, bottom: 10 * scale, right: 0)
         }
 
         static var cornerRadius: CGFloat {
-            return 4 * scale
+            return 6 * scale
         }
     }
 

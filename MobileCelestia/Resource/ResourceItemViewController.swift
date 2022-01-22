@@ -24,9 +24,27 @@ class ResourceItemViewController: UIViewController {
     private var item: ResourceItem
 
     private lazy var scrollView = UIScrollView(frame: .zero)
-    private lazy var progressButton = CompatProgressButton()
+    private lazy var progressView: UIProgressView = {
+        if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
+            return UIProgressView(progressViewStyle: .default)
+        } else {
+            return UIProgressView(progressViewStyle: .bar)
+        }
+    }()
+    private lazy var statusButton = ActionButton(type: .system)
+    private lazy var statusButtonContainer: UIView = {
+        if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
+            let stackView = UIStackView(arrangedSubviews: [progressView, statusButton])
+            stackView.axis = .horizontal
+            stackView.spacing = 6
+            stackView.alignment = .center
+            return stackView
+        } else {
+            return statusButton
+        }
+    }()
     private lazy var goToButton = ActionButton(type: .system)
-    private lazy var buttonStack = UIStackView(arrangedSubviews: [goToButton, progressButton])
+    private lazy var buttonStack = UIStackView(arrangedSubviews: [goToButton, statusButtonContainer])
 
     private lazy var titleLabel = UILabel()
     private lazy var authorsLabel = UILabel()
@@ -75,6 +93,8 @@ class ResourceItemViewController: UIViewController {
     ])
 
     private var aspectRatioConstraint: NSLayoutConstraint?
+    private var scrollViewTopToViewTopConstrant: NSLayoutConstraint?
+    private var scrollViewTopToProgressViewBottomConstrant: NSLayoutConstraint?
 
     private var currentState: ResourceItemState = .none
 
@@ -152,7 +172,7 @@ class ResourceItemViewController: UIViewController {
         core.selectAndReceiveAsync(object, action: .goTo)
     }
 
-    @objc private func progressButtonClicked() {
+    @objc private func statusButtonClicked() {
         let dm = ResourceManager.shared
 
         if dm.isInstalled(identifier: item.id) {
@@ -193,10 +213,37 @@ private extension ResourceItemViewController {
         view.addSubview(scrollView)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            scrollView.topAnchor.constraint(equalTo: view.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
+
+        if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
+            NSLayoutConstraint.activate([
+                scrollView.topAnchor.constraint(equalTo: view.topAnchor),
+            ])
+        } else {
+            view.addSubview(progressView)
+            progressView.translatesAutoresizingMaskIntoConstraints = false
+
+            NSLayoutConstraint.activate([
+                progressView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+                progressView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                progressView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            ])
+
+            scrollViewTopToViewTopConstrant = scrollView.topAnchor.constraint(equalTo: view.topAnchor)
+            scrollViewTopToProgressViewBottomConstrant = scrollView.topAnchor.constraint(equalTo: progressView.bottomAnchor)
+
+            scrollViewTopToProgressViewBottomConstrant?.isActive = false
+            scrollViewTopToViewTopConstrant?.isActive = true
+        }
+
+        #if !targetEnvironment(macCatalyst)
+        progressView.trackTintColor = .progressBackground
+        progressView.progressTintColor = .progressForeground
+        #endif
+
+        progressView.isHidden = true
 
         let contentContainer = UIView()
         contentContainer.translatesAutoresizingMaskIntoConstraints = false
@@ -259,7 +306,7 @@ private extension ResourceItemViewController {
             buttonStack.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
         ])
         goToButton.addTarget(self, action: #selector(goToButtonClicked), for: .touchUpInside)
-        progressButton.addTarget(self, action: #selector(progressButtonClicked), for: .touchUpInside)
+        statusButton.addTarget(self, action: #selector(statusButtonClicked), for: .touchUpInside)
 
         updateContents()
     }
@@ -317,22 +364,33 @@ private extension ResourceItemViewController {
             currentState = .downloading
         }
 
-        let isMacIdiom: Bool
-        if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
-            isMacIdiom = true
-        } else {
-            isMacIdiom = false
-        }
-
         switch currentState {
         case .none:
-            progressButton.resetProgress()
-            progressButton.setTitle(CelestiaString(isMacIdiom ? "Install" : "DOWNLOAD", comment: ""), for: .normal)
+            progressView.isHidden = true
+            progressView.progress = 0
+            statusButton.setTitle(CelestiaString("Install", comment: ""), for: .normal)
+            if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
+            } else {
+                scrollViewTopToViewTopConstrant?.isActive = true
+                scrollViewTopToProgressViewBottomConstrant?.isActive = false
+            }
         case .downloading:
-            progressButton.setTitle(CelestiaString(isMacIdiom ? "Cancel" : "DOWNLOADING", comment: ""), for: .normal)
+            progressView.isHidden = false
+            statusButton.setTitle(CelestiaString("Cancel", comment: ""), for: .normal)
+            if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
+            } else {
+                scrollViewTopToViewTopConstrant?.isActive = false
+                scrollViewTopToProgressViewBottomConstrant?.isActive = true
+            }
         case .installed:
-            progressButton.complete()
-            progressButton.setTitle(CelestiaString(isMacIdiom ? "Uninstall" : "INSTALLED", comment: ""), for: .normal)
+            progressView.isHidden = true
+            progressView.progress = 0
+            statusButton.setTitle(CelestiaString("Uninstall", comment: ""), for: .normal)
+            if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
+            } else {
+                scrollViewTopToViewTopConstrant?.isActive = true
+                scrollViewTopToProgressViewBottomConstrant?.isActive = false
+            }
         }
 
         if currentState == .installed, let objectName = item.objectName, !AppCore.shared.simulation.findObject(from: objectName).isEmpty {
@@ -354,7 +412,7 @@ private extension ResourceItemViewController {
         }
 
         DispatchQueue.main.async { [weak self] in
-            self?.progressButton.setProgress(progress: CGFloat(progress))
+            self?.progressView.progress = Float(progress)
             self?.updateUI()
         }
     }
