@@ -129,11 +129,15 @@ extension UIColor {
 #if !targetEnvironment(macCatalyst)
 extension UIColor {
     class var themeBackground: UIColor {
-        return UIColor(rgb: 0x007AC1)
+        return UIColor(rgb: 0xAFC6FF)
+    }
+
+    class var onThemeBackground: UIColor {
+        return UIColor(rgb: 0x002C72)
     }
 
     class var themeLabel: UIColor {
-        return UIColor(rgb: 0x03A9F4)
+        return themeBackground
     }
 }
 

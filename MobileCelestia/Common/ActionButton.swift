@@ -49,10 +49,11 @@ class ActionButton: StandardButton {
             layer.cornerRadius = Constants.cornerRadius
             #if targetEnvironment(macCatalyst)
             backgroundColor = tintColor
+            setTitleColor(.white, for: .normal)
             #else
             backgroundColor = .themeBackground
+            setTitleColor(.onThemeBackground, for: .normal)
             #endif
-            setTitleColor(.white, for: .normal)
         }
     }
 

@@ -371,8 +371,8 @@ private extension ResourceItemViewController {
             statusButton.setTitle(CelestiaString("Install", comment: ""), for: .normal)
             if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
             } else {
-                scrollViewTopToViewTopConstrant?.isActive = true
                 scrollViewTopToProgressViewBottomConstrant?.isActive = false
+                scrollViewTopToViewTopConstrant?.isActive = true
             }
         case .downloading:
             progressView.isHidden = false
@@ -388,8 +388,8 @@ private extension ResourceItemViewController {
             statusButton.setTitle(CelestiaString("Uninstall", comment: ""), for: .normal)
             if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
             } else {
-                scrollViewTopToViewTopConstrant?.isActive = true
                 scrollViewTopToProgressViewBottomConstrant?.isActive = false
+                scrollViewTopToViewTopConstrant?.isActive = true
             }
         }
 
