@@ -51,8 +51,8 @@ class ActionButton: StandardButton {
             backgroundColor = tintColor
             setTitleColor(.white, for: .normal)
             #else
-            backgroundColor = .themeBackground
-            setTitleColor(.onThemeBackground, for: .normal)
+            backgroundColor = .buttonBackground
+            setTitleColor(.buttonForeground, for: .normal)
             #endif
         }
     }

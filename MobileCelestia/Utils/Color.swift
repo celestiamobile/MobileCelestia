@@ -128,26 +128,26 @@ extension UIColor {
 
 #if !targetEnvironment(macCatalyst)
 extension UIColor {
-    class var themeBackground: UIColor {
-        return UIColor(rgb: 0xAFC6FF)
+    class var buttonBackground: UIColor {
+        return UIColor(rgb: 0x404659)
     }
 
-    class var onThemeBackground: UIColor {
-        return UIColor(rgb: 0x002C72)
+    class var buttonForeground: UIColor {
+        return UIColor(rgb: 0xDCE1F9)
     }
 
     class var themeLabel: UIColor {
-        return themeBackground
+        return UIColor(rgb: 0xAFC6FF)
     }
 }
 
 extension UIColor {
     class var progressBackground: UIColor {
-        return themeBackground.withAlphaComponent(0.38)
+        return themeLabel.withAlphaComponent(0.38)
     }
 
     class var progressForeground: UIColor {
-        return themeBackground
+        return themeLabel
     }
 }
 #endif
