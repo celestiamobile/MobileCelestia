@@ -19,7 +19,7 @@ class StandardButton: UIButton {
         set {
             super.isHighlighted = newValue
             UIView.animate(withDuration: animationDuration) {
-                self.alpha = newValue ? 0.3 : 1
+                self.alpha = newValue ? 0.38 : 1
             }
         }
     }
