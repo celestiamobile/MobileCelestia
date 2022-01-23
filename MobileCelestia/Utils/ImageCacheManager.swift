@@ -10,18 +10,26 @@
 //
 
 import SDWebImage
+import Foundation
 
 final class ImageCacheManager {
     static let shared: ImageCacheManager = ImageCacheManager()
     private var cacheKeyDictionary: [String: String] = [:]
+    private let lock = NSLock()
 
     private init() {
         SDWebImageManager.shared.cacheKeyFilter = SDWebImageCacheKeyFilter(block: { [weak self] url in
-            return self?.cacheKeyDictionary[url.absoluteString] ?? url.absoluteString
+            guard let self = self else { return url.absoluteString }
+            self.lock.lock()
+            let key = self.cacheKeyDictionary[url.absoluteString] ?? url.absoluteString
+            self.lock.unlock()
+            return key
         })
     }
 
     func save(url: String, id: String) {
+        lock.lock()
         cacheKeyDictionary[url] = id
+        lock.unlock()
     }
 }
