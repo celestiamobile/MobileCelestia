@@ -58,8 +58,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
         #else
-        UISlider.appearance().minimumTrackTintColor = .darkSliderMinimumTrackTintColor
-        UISlider.appearance().maximumTrackTintColor = .darkSliderMaximumTrackTintColor
+        UISlider.appearance().minimumTrackTintColor = .themeLabel
+        UISlider.appearance().maximumTrackTintColor = .darkSystemFill
+        UISwitch.appearance().onTintColor = .themeLabel
         UIBarButtonItem.appearance().tintColor = .themeLabel
         UIButton.appearance().tintColor = .themeLabel
         UITabBar.appearance().tintColor = .themeLabel

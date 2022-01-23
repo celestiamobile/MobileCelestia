@@ -115,14 +115,6 @@ extension UIColor {
         }
         return UIColor(rgb: 0x0A84FF)
     }
-
-    class var darkSliderMinimumTrackTintColor: UIColor {
-        return darkSystemBlueColor
-    }
-
-    class var darkSliderMaximumTrackTintColor: UIColor {
-        return darkSystemFill
-    }
     #endif
 }
 

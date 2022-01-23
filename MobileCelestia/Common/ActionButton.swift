@@ -57,6 +57,17 @@ class ActionButton: StandardButton {
         }
     }
 
+    #if targetEnvironment(macCatalyst)
+    override func tintColorDidChange() {
+        super.tintColorDidChange()
+
+        if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
+        } else {
+            backgroundColor = tintColor
+        }
+    }
+    #endif
+
     override func didAddSubview(_ subview: UIView) {
         super.didAddSubview(subview)
 
