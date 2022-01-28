@@ -156,7 +156,6 @@ extension MainViewController {
             // Need to wrap it in a NavVC without NavBar to make sure
             // the scrolling behavior is correct on macCatalyst
             let nav = UINavigationController(rootViewController: ResourceItemViewController(item: item))
-            nav.setNavigationBarHidden(true, animated: false)
             self.showViewController(nav)
         }, decoder: ResourceItem.networkResponseDecoder)
     }
@@ -734,6 +733,18 @@ extension UIViewController {
         let activityController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
         configurePopover(for: activityController, sourceView: sourceView, sourceRect: sourceRect)
         presentAfterDismissCurrent(activityController, animated: true)
+    }
+
+    func showShareSheet(for url: URL, barButtonItem: UIBarButtonItem) {
+        let activityController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+        configurePopover(for: activityController, barButtonItem: barButtonItem)
+        presentAfterDismissCurrent(activityController, animated: true)
+    }
+
+    func configurePopover(for viewController: UIViewController, barButtonItem: UIBarButtonItem) {
+        viewController.modalPresentationStyle = .popover
+        viewController.popoverPresentationController?.barButtonItem = barButtonItem
+        viewController.preferredContentSize = CGSize(width: 400, height: 500)
     }
 
     func configurePopover(for viewController: UIViewController, sourceView: UIView? = nil, sourceRect: CGRect? = nil) {

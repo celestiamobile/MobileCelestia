@@ -104,6 +104,7 @@
 		EAD94F67261EED7700A93C93 /* UITableView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD94F66261EED7700A93C93 /* UITableView+Extensions.swift */; };
 		EADE7FBB252B517600D4174F /* CelestiaDisplayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE7FBA252B517600D4174F /* CelestiaDisplayController.swift */; };
 		EADE7FC0252B54A400D4174F /* CelestiaInteractionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE7FBF252B54A400D4174F /* CelestiaInteractionController.swift */; };
+		EAE6AC0D27A4336F00F953DF /* ResourceItemInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE6AC0C27A4336F00F953DF /* ResourceItemInfoViewController.swift */; };
 		EAF48515249B2C4700E5B817 /* SubsystemBrowserCoordinatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF48514249B2C4700E5B817 /* SubsystemBrowserCoordinatorViewController.swift */; };
 		EAF48520249B5C2500E5B817 /* StandardButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF4851F249B5C2500E5B817 /* StandardButton.swift */; };
 /* End PBXBuildFile section */
@@ -275,6 +276,7 @@
 		EAD962992782BA2B00CDF86E /* Info-macos.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-macos.plist"; sourceTree = "<group>"; };
 		EADE7FBA252B517600D4174F /* CelestiaDisplayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaDisplayController.swift; sourceTree = "<group>"; };
 		EADE7FBF252B54A400D4174F /* CelestiaInteractionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaInteractionController.swift; sourceTree = "<group>"; };
+		EAE6AC0C27A4336F00F953DF /* ResourceItemInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceItemInfoViewController.swift; sourceTree = "<group>"; };
 		EAF4851325A2B0E600F0E9F9 /* bg */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = bg; path = bg.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EAF48514249B2C4700E5B817 /* SubsystemBrowserCoordinatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubsystemBrowserCoordinatorViewController.swift; sourceTree = "<group>"; };
 		EAF4851F249B5C2500E5B817 /* StandardButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandardButton.swift; sourceTree = "<group>"; };
@@ -603,6 +605,7 @@
 				EABF793B2538A1C100F2460C /* ResourceItemViewController.swift */,
 				EABF791D2538986400F2460C /* AsyncListViewController.swift */,
 				EAA6C4CA253B5CD200ED1D60 /* InstalledResourceViewController.swift */,
+				EAE6AC0C27A4336F00F953DF /* ResourceItemInfoViewController.swift */,
 			);
 			path = Resource;
 			sourceTree = "<group>";
@@ -875,6 +878,7 @@
 				EA28CA4E24A25FE7004B011E /* BottomControlViewController.swift in Sources */,
 				97401CA62414DAF50015F8E8 /* FavoriteCoordinatorController.swift in Sources */,
 				977CDD2E240BC6A900137127 /* TutorialDescriptionCell.swift in Sources */,
+				EAE6AC0D27A4336F00F953DF /* ResourceItemInfoViewController.swift in Sources */,
 				977394B8240409CF00E38B82 /* SettingSwitchCell.swift in Sources */,
 				EAB08FE42780550600BB82F0 /* Font.swift in Sources */,
 				977394B32403F74800E38B82 /* SettingTextCell.swift in Sources */,

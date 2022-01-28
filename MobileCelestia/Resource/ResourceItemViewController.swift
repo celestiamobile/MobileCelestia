@@ -11,7 +11,6 @@
 
 import UIKit
 
-import SDWebImage
 import CelestiaCore
 
 class ResourceItemViewController: UIViewController {
@@ -23,7 +22,6 @@ class ResourceItemViewController: UIViewController {
 
     private var item: ResourceItem
 
-    private lazy var scrollView = UIScrollView(frame: .zero)
     private lazy var progressView: UIProgressView = {
         if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
             return UIProgressView(progressViewStyle: .default)
@@ -46,71 +44,14 @@ class ResourceItemViewController: UIViewController {
     private lazy var goToButton = ActionButton(type: .system)
     private lazy var buttonStack = UIStackView(arrangedSubviews: [goToButton, statusButtonContainer])
 
-    private lazy var titleLabel = UILabel()
-    private lazy var authorsLabel = UILabel()
-    private lazy var releaseDateLabel = UILabel()
-    private lazy var descriptionLabel = UILabel()
-    private lazy var imageView = UIImageView()
-    private lazy var footnoteLabel = UILabel()
+    private lazy var itemInfoController = ResourceItemInfoViewController(item: item)
 
-    private lazy var topStack = UIStackView(arrangedSubviews: [
-        titleLabel,
-        authorsLabel,
-        releaseDateLabel,
-    ])
-
-    private lazy var topContentView: UIView = {
-        let view = UIView()
-        topStack.translatesAutoresizingMaskIntoConstraints = false
-        topStack.axis = .vertical
-        topStack.spacing = 4
-        view.addSubview(topStack)
-        shareButton.setImage(UIImage(named: "share_common_small")?.withRenderingMode(.alwaysTemplate), for: .normal)
-        shareButton.tintColor = .darkLabel
-        shareButton.setContentHuggingPriority(.required, for: .horizontal)
-        shareButton.setContentCompressionResistancePriority(.required, for: .horizontal)
-        shareButton.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(shareButton)
-        NSLayoutConstraint.activate([
-            topStack.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            topStack.topAnchor.constraint(equalTo: view.topAnchor),
-            topStack.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor),
-            shareButton.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            shareButton.topAnchor.constraint(equalTo: view.topAnchor),
-            shareButton.bottomAnchor.constraint(lessThanOrEqualTo: view.bottomAnchor),
-            topStack.trailingAnchor.constraint(equalTo: shareButton.leadingAnchor, constant: -8),
-        ])
-        return view
-    }()
-
-    private lazy var shareButton = StandardButton()
-
-    private lazy var contentStack = UIStackView(arrangedSubviews: [
-        topContentView,
-        descriptionLabel,
-        imageView,
-        footnoteLabel
-    ])
-
-    private var aspectRatioConstraint: NSLayoutConstraint?
     private var scrollViewTopToViewTopConstrant: NSLayoutConstraint?
     private var scrollViewTopToProgressViewBottomConstrant: NSLayoutConstraint?
 
     private var currentState: ResourceItemState = .none
 
-    private lazy var dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .none
-        return formatter
-    }()
-
     init(item: ResourceItem) {
-        // Store to cache key dictionary
-        if let imageURL = item.image {
-            let manager = ImageCacheManager.shared
-            manager.save(url: imageURL.absoluteString, id: item.id)
-        }
         self.item = item
         super.init(nibName: nil, bundle: nil)
     }
@@ -129,9 +70,10 @@ class ResourceItemViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        updateUI()
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(showShare(_:)))
+        navigationItem.title = item.name
 
-        shareButton.addTarget(self, action: #selector(showShare(_:)), for: .touchUpInside)
+        updateUI()
 
         NotificationCenter.default.addObserver(self, selector: #selector(downloadProgress(_:)), name: ResourceManager.downloadProgress, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(resourceFetchError(_:)), name: ResourceManager.resourceError, object: nil)
@@ -148,17 +90,18 @@ class ResourceItemViewController: UIViewController {
         let locale = LocalizedString("LANGUAGE", "celestia")
         _ = RequestHandler.get(url: requestURL, parameters: ["lang": locale, "item": item.id], success: { [weak self] (item: ResourceItem) in
             self?.item = item
-            self?.updateContents()
+            self?.title = item.name
+            self?.itemInfoController.update(item: item)
         }, decoder: ResourceItem.networkResponseDecoder)
     }
 
-    @objc private func showShare(_ sender: UIButton) {
+    @objc private func showShare(_ sender: UIBarButtonItem) {
         let baseURL = "https://celestia.mobi/resources/item"
         let locale = LocalizedString("LANGUAGE", "celestia")
         guard var components = URLComponents(string: baseURL) else { return }
         components.queryItems = [URLQueryItem(name: "item", value: item.id), URLQueryItem(name: "lang", value: locale)]
         guard let url = components.url else { return }
-        showShareSheet(for: url, sourceView: sender, sourceRect: sender.bounds)
+        showShareSheet(for: url, barButtonItem: sender)
     }
 
     @objc private func goToButtonClicked() {
@@ -210,16 +153,19 @@ class ResourceItemViewController: UIViewController {
 
 private extension ResourceItemViewController {
     func setup() {
-        view.addSubview(scrollView)
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        addChild(itemInfoController)
+
+        itemInfoController.view.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(itemInfoController.view)
+
         NSLayoutConstraint.activate([
-            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            itemInfoController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            itemInfoController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
 
         if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
             NSLayoutConstraint.activate([
-                scrollView.topAnchor.constraint(equalTo: view.topAnchor),
+                itemInfoController.view.topAnchor.constraint(equalTo: view.topAnchor),
             ])
         } else {
             view.addSubview(progressView)
@@ -231,12 +177,14 @@ private extension ResourceItemViewController {
                 progressView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             ])
 
-            scrollViewTopToViewTopConstrant = scrollView.topAnchor.constraint(equalTo: view.topAnchor)
-            scrollViewTopToProgressViewBottomConstrant = scrollView.topAnchor.constraint(equalTo: progressView.bottomAnchor)
+            scrollViewTopToViewTopConstrant = itemInfoController.view.topAnchor.constraint(equalTo: view.topAnchor)
+            scrollViewTopToProgressViewBottomConstrant = itemInfoController.view.topAnchor.constraint(equalTo: progressView.bottomAnchor)
 
             scrollViewTopToProgressViewBottomConstrant?.isActive = false
             scrollViewTopToViewTopConstrant?.isActive = true
         }
+
+        itemInfoController.didMove(toParent: self)
 
         #if !targetEnvironment(macCatalyst)
         progressView.trackTintColor = .progressBackground
@@ -244,53 +192,6 @@ private extension ResourceItemViewController {
         #endif
 
         progressView.isHidden = true
-
-        let contentContainer = UIView()
-        contentContainer.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.addSubview(contentContainer)
-        NSLayoutConstraint.activate([
-            contentContainer.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 8),
-            contentContainer.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -8),
-            contentContainer.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 16),
-            contentContainer.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -16),
-            contentContainer.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant:  -32)
-        ])
-
-        contentContainer.backgroundColor = .clear
-
-        contentStack.translatesAutoresizingMaskIntoConstraints = false
-        contentContainer.addSubview(contentStack)
-        contentStack.axis = .vertical
-        contentStack.spacing = 4
-        contentStack.setCustomSpacing(8, after: descriptionLabel)
-        contentStack.setCustomSpacing(8, after: imageView)
-
-        NSLayoutConstraint.activate([
-            contentStack.topAnchor.constraint(equalTo: contentContainer.topAnchor),
-            contentStack.bottomAnchor.constraint(equalTo: contentContainer.bottomAnchor),
-            contentStack.leadingAnchor.constraint(equalTo: contentContainer.leadingAnchor),
-            contentStack.trailingAnchor.constraint(equalTo: contentContainer.trailingAnchor),
-        ])
-
-        titleLabel.numberOfLines = 0
-        titleLabel.textColor = .darkLabel
-        titleLabel.font = UIFont.preferredFont(forTextStyle: .title2, weight: .semibold)
-        authorsLabel.numberOfLines = 0
-        authorsLabel.textColor = .darkSecondaryLabel
-        authorsLabel.font = UIFont.preferredFont(forTextStyle: .footnote)
-        releaseDateLabel.numberOfLines = 0
-        releaseDateLabel.textColor = .darkSecondaryLabel
-        releaseDateLabel.font = UIFont.preferredFont(forTextStyle: .footnote)
-        descriptionLabel.numberOfLines = 0
-        descriptionLabel.textColor = .darkSecondaryLabel
-        descriptionLabel.font = UIFont.preferredFont(forTextStyle: .body)
-
-        imageView.isHidden = true
-
-        footnoteLabel.text = CelestiaString("Note: restarting Celestia is needed to use any new installed add-on.", comment: "")
-        footnoteLabel.numberOfLines = 0
-        footnoteLabel.textColor = .darkSecondaryLabel
-        footnoteLabel.font = UIFont.preferredFont(forTextStyle: .footnote)
 
         goToButton.isHidden = true
         goToButton.setTitle(CelestiaString("Go", comment: ""), for: .normal)
@@ -300,59 +201,13 @@ private extension ResourceItemViewController {
         buttonStack.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(buttonStack)
         NSLayoutConstraint.activate([
-            buttonStack.topAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 12),
+            buttonStack.topAnchor.constraint(equalTo: itemInfoController.view.bottomAnchor, constant: 12),
             buttonStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -12),
             buttonStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             buttonStack.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
         ])
         goToButton.addTarget(self, action: #selector(goToButtonClicked), for: .touchUpInside)
         statusButton.addTarget(self, action: #selector(statusButtonClicked), for: .touchUpInside)
-
-        updateContents()
-    }
-
-    private func updateContents() {
-        titleLabel.text = item.name
-        descriptionLabel.text = item.description
-        imageView.sd_cancelCurrentImageLoad()
-        if let imageURL = item.image {
-            imageView.sd_setImage(with: imageURL) { [weak self] image, _, _, _ in
-                guard let self = self else { return }
-                guard let size = image?.size else {
-                    self.imageView.image = nil
-                    self.imageView.isHidden = true
-                    self.aspectRatioConstraint?.isActive = false
-                    self.aspectRatioConstraint = nil
-                    return
-                }
-                self.imageView.isHidden = false
-                self.aspectRatioConstraint?.isActive = false
-                self.aspectRatioConstraint = self.imageView.heightAnchor.constraint(equalTo: self.imageView.widthAnchor, multiplier: size.height / size.width)
-                self.aspectRatioConstraint?.isActive = true
-            }
-        } else {
-            imageView.isHidden = true
-            imageView.image = nil
-            aspectRatioConstraint?.isActive = false
-            aspectRatioConstraint = nil
-        }
-        if let releaseDate = item.publishTime {
-            releaseDateLabel.isHidden = false
-            releaseDateLabel.text = String(format: CelestiaString("Release date: %s", comment: "").toLocalizationTemplate, dateFormatter.string(from: releaseDate))
-        } else {
-            releaseDateLabel.isHidden = true
-        }
-        if let authors = item.authors, authors.count > 0 {
-            authorsLabel.isHidden = false
-            let template = CelestiaString("Authors: %s", comment: "").toLocalizationTemplate
-            if #available(iOS 13, *) {
-                authorsLabel.text = String(format: template, ListFormatter.localizedString(byJoining: authors))
-            } else {
-                authorsLabel.text = String(format: template, authors.joined(separator: ", "))
-            }
-        } else {
-            authorsLabel.isHidden = true
-        }
     }
 
     private func updateUI() {
