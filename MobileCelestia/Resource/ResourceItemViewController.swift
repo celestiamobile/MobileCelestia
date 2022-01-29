@@ -44,7 +44,7 @@ class ResourceItemViewController: UIViewController {
     private lazy var goToButton = ActionButton(type: .system)
     private lazy var buttonStack = UIStackView(arrangedSubviews: [goToButton, statusButtonContainer])
 
-    private lazy var itemInfoController = ResourceItemInfoViewController(item: item)
+    private lazy var itemInfoController = ResourceItemWebInfoViewController(item: item)
 
     private var scrollViewTopToViewTopConstrant: NSLayoutConstraint?
     private var scrollViewTopToProgressViewBottomConstrant: NSLayoutConstraint?
@@ -62,8 +62,7 @@ class ResourceItemViewController: UIViewController {
 
     override func loadView() {
         view = UIView()
-        view.backgroundColor = .darkBackground
-
+        view.backgroundColor = .black
         setup()
     }
 
@@ -79,7 +78,6 @@ class ResourceItemViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(resourceFetchError(_:)), name: ResourceManager.resourceError, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(downloadSuccess(_:)), name: ResourceManager.downloadSuccess, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(unzipSuccess(_:)), name: ResourceManager.unzipSuccess, object: nil)
-
         refresh()
     }
 
@@ -90,8 +88,8 @@ class ResourceItemViewController: UIViewController {
         let locale = LocalizedString("LANGUAGE", "celestia")
         _ = RequestHandler.get(url: requestURL, parameters: ["lang": locale, "item": item.id], success: { [weak self] (item: ResourceItem) in
             self?.item = item
-            self?.title = item.name
-            self?.itemInfoController.update(item: item)
+            self?.navigationItem.title = item.name
+            self?.updateUI()
         }, decoder: ResourceItem.networkResponseDecoder)
     }
 
