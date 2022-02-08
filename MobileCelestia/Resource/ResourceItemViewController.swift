@@ -44,7 +44,19 @@ class ResourceItemViewController: UIViewController {
     private lazy var goToButton = ActionButton(type: .system)
     private lazy var buttonStack = UIStackView(arrangedSubviews: [goToButton, statusButtonContainer])
 
-    private lazy var itemInfoController = ResourceItemWebInfoViewController(item: item)
+    private lazy var itemInfoController: CommonWebViewController = {
+        let baseURL = "https://celestia.mobi/resources/item"
+        let locale = LocalizedString("LANGUAGE", "celestia")
+        var components = URLComponents(string: baseURL)!
+        components.queryItems = [
+            URLQueryItem(name: "item", value: item.id),
+            URLQueryItem(name: "lang", value: locale),
+            URLQueryItem(name: "environment", value: "app"),
+            URLQueryItem(name: "theme", value: "dark")
+        ]
+        let url = components.url!
+        return CommonWebViewController(url: url)
+    }()
 
     private var scrollViewTopToViewTopConstrant: NSLayoutConstraint?
     private var scrollViewTopToProgressViewBottomConstrant: NSLayoutConstraint?

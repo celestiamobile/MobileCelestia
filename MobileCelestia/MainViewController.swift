@@ -44,6 +44,7 @@ class MainViewController: UIViewController {
 
     private var urlToRun: UniformedURL?
     private var addonToOpen: String?
+    private var guideToOpen: String?
 
     init(initialURL: UniformedURL?) {
         self.urlToRun = initialURL
@@ -70,6 +71,7 @@ class MainViewController: UIViewController {
 
         NotificationCenter.default.addObserver(self, selector: #selector(newURLOpened(_:)), name: newURLOpenedNotificationName, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(newAddonOpened(_:)), name: newAddonOpenedNotificationName, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(newGuideOpened(_:)), name: newGuideOpenedNotificationName, object: nil)
         #if !targetEnvironment(macCatalyst)
         NotificationCenter.default.addObserver(self, selector: #selector(newScreenConnected(_:)), name: UIScreen.didConnectNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(screenDisconnected(_:)), name: UIScreen.didDisconnectNotification, object: nil)
@@ -119,6 +121,13 @@ extension MainViewController {
         checkNeedOpeningAddon()
     }
 
+    @objc private func newGuideOpened(_ notification: Notification) {
+        guard let guide = notification.userInfo?[newGuideOpenedNotificationIDKey] as? String else { return }
+        guideToOpen = guide
+        guard status == .loaded else { return }
+        checkNeedOpeningGuide()
+    }
+
     private func checkNeedOpeningURL() {
         guard let url = urlToRun else { return }
 
@@ -141,6 +150,13 @@ extension MainViewController {
                 addonToOpen = id
                 checkNeedOpeningAddon()
             }
+        } else if url.url.scheme == "celguide" {
+            guard let components = URLComponents(url: url.url, resolvingAgainstBaseURL: false) else { return }
+            if components.host == "guide" {
+                guard let id = components.queryItems?.first(where: { $0.name == "guide" })?.value else { return }
+                guideToOpen = id
+                checkNeedOpeningGuide()
+            }
         }
     }
 
@@ -158,6 +174,28 @@ extension MainViewController {
             let nav = UINavigationController(rootViewController: ResourceItemViewController(item: item))
             self.showViewController(nav)
         }, decoder: ResourceItem.networkResponseDecoder)
+    }
+
+    private func checkNeedOpeningGuide() {
+        guard let guide = guideToOpen else { return }
+
+        guideToOpen = nil
+
+        let baseURL = "https://celestia.mobi/resources/guide"
+        let locale = LocalizedString("LANGUAGE", "celestia")
+        var components = URLComponents(string: baseURL)!
+        components.queryItems = [
+            URLQueryItem(name: "guide", value: guide),
+            URLQueryItem(name: "lang", value: locale),
+            URLQueryItem(name: "environment", value: "app"),
+            URLQueryItem(name: "theme", value: "dark")
+        ]
+        guard let url = components.url else { return }
+        // Need to wrap it in a NavVC without NavBar to make sure
+        // the scrolling behavior is correct on macCatalyst
+        let nav = UINavigationController(rootViewController: CommonWebViewController(url: url))
+        nav.setNavigationBarHidden(true, animated: false)
+        self.showViewController(nav)
     }
 }
 
@@ -275,6 +313,7 @@ extension MainViewController: CelestiaControllerDelegate {
             DispatchQueue.main.asyncAfter(deadline: .now() + 1)  {
                 self.checkNeedOpeningURL()
                 self.checkNeedOpeningAddon()
+                self.checkNeedOpeningGuide()
             }
         }
     }

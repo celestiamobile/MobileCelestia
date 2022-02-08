@@ -63,6 +63,7 @@
 		97FF95AA240A3F0900E9F44F /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FF95A9240A3F0900E9F44F /* Data.swift */; };
 		C3E2AA8FA42CCD40BE6ECA28 /* Pods_MobileCelestia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BB5B90AF9C3832FD04B47BF /* Pods_MobileCelestia.framework */; };
 		EA10553324935A4700E49C6D /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA10553224935A4700E49C6D /* Metal.framework */; };
+		EA17951B27B1510500D47397 /* CelestiaScriptHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA17951A27B1510500D47397 /* CelestiaScriptHandler.swift */; };
 		EA1BC6E324A0E92B00F3F51B /* EventFinderCoordinatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E224A0E92B00F3F51B /* EventFinderCoordinatorViewController.swift */; };
 		EA1BC6E524A0E93D00F3F51B /* EventFinderInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E424A0E93D00F3F51B /* EventFinderInputViewController.swift */; };
 		EA1BC6E724A0E94900F3F51B /* EventFinderResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E624A0E94900F3F51B /* EventFinderResultViewController.swift */; };
@@ -104,7 +105,7 @@
 		EAD94F67261EED7700A93C93 /* UITableView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD94F66261EED7700A93C93 /* UITableView+Extensions.swift */; };
 		EADE7FBB252B517600D4174F /* CelestiaDisplayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE7FBA252B517600D4174F /* CelestiaDisplayController.swift */; };
 		EADE7FC0252B54A400D4174F /* CelestiaInteractionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE7FBF252B54A400D4174F /* CelestiaInteractionController.swift */; };
-		EAE6AC0F27A438E400F953DF /* ResourceItemWebInfoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE6AC0E27A438E400F953DF /* ResourceItemWebInfoViewController.swift */; };
+		EAE6AC0F27A438E400F953DF /* CommonWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE6AC0E27A438E400F953DF /* CommonWebViewController.swift */; };
 		EAF48515249B2C4700E5B817 /* SubsystemBrowserCoordinatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF48514249B2C4700E5B817 /* SubsystemBrowserCoordinatorViewController.swift */; };
 		EAF48520249B5C2500E5B817 /* StandardButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF4851F249B5C2500E5B817 /* StandardButton.swift */; };
 /* End PBXBuildFile section */
@@ -230,6 +231,7 @@
 		EA10553224935A4700E49C6D /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		EA113708262C72AA002E49DA /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EA113709262C72B2002E49DA /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		EA17951A27B1510500D47397 /* CelestiaScriptHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaScriptHandler.swift; sourceTree = "<group>"; };
 		EA1BC6E224A0E92B00F3F51B /* EventFinderCoordinatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventFinderCoordinatorViewController.swift; sourceTree = "<group>"; };
 		EA1BC6E424A0E93D00F3F51B /* EventFinderInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventFinderInputViewController.swift; sourceTree = "<group>"; };
 		EA1BC6E624A0E94900F3F51B /* EventFinderResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventFinderResultViewController.swift; sourceTree = "<group>"; };
@@ -276,7 +278,7 @@
 		EAD962992782BA2B00CDF86E /* Info-macos.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-macos.plist"; sourceTree = "<group>"; };
 		EADE7FBA252B517600D4174F /* CelestiaDisplayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaDisplayController.swift; sourceTree = "<group>"; };
 		EADE7FBF252B54A400D4174F /* CelestiaInteractionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaInteractionController.swift; sourceTree = "<group>"; };
-		EAE6AC0E27A438E400F953DF /* ResourceItemWebInfoViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceItemWebInfoViewController.swift; sourceTree = "<group>"; };
+		EAE6AC0E27A438E400F953DF /* CommonWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonWebViewController.swift; sourceTree = "<group>"; };
 		EAF4851325A2B0E600F0E9F9 /* bg */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = bg; path = bg.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EAF48514249B2C4700E5B817 /* SubsystemBrowserCoordinatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubsystemBrowserCoordinatorViewController.swift; sourceTree = "<group>"; };
 		EAF4851F249B5C2500E5B817 /* StandardButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandardButton.swift; sourceTree = "<group>"; };
@@ -605,7 +607,7 @@
 				EABF793B2538A1C100F2460C /* ResourceItemViewController.swift */,
 				EABF791D2538986400F2460C /* AsyncListViewController.swift */,
 				EAA6C4CA253B5CD200ED1D60 /* InstalledResourceViewController.swift */,
-				EAE6AC0E27A438E400F953DF /* ResourceItemWebInfoViewController.swift */,
+				EAE6AC0E27A438E400F953DF /* CommonWebViewController.swift */,
 			);
 			path = Resource;
 			sourceTree = "<group>";
@@ -616,6 +618,7 @@
 				EABF792325389B2400F2460C /* ResourceCategory.swift */,
 				EABF792B25389B3100F2460C /* ResourceItem.swift */,
 				EABF79492538A86500F2460C /* ResourceManager.swift */,
+				EA17951A27B1510500D47397 /* CelestiaScriptHandler.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -925,7 +928,7 @@
 				978406D724028F0000876FD1 /* MainViewController.swift in Sources */,
 				EABF792C25389B3100F2460C /* ResourceItem.swift in Sources */,
 				EABF791E2538986400F2460C /* AsyncListViewController.swift in Sources */,
-				EAE6AC0F27A438E400F953DF /* ResourceItemWebInfoViewController.swift in Sources */,
+				EAE6AC0F27A438E400F953DF /* CommonWebViewController.swift in Sources */,
 				97FF95AA240A3F0900E9F44F /* Data.swift in Sources */,
 				974F86DF2403BD3C00356795 /* BodyActionCell.swift in Sources */,
 				EA374CDA263A8B770069589C /* GoToInputViewController.swift in Sources */,
@@ -943,6 +946,7 @@
 				9773949E2402A96B00E38B82 /* SlideInPresentationController.swift in Sources */,
 				EA1BC6E724A0E94900F3F51B /* EventFinderResultViewController.swift in Sources */,
 				EABF792425389B2400F2460C /* ResourceCategory.swift in Sources */,
+				EA17951B27B1510500D47397 /* CelestiaScriptHandler.swift in Sources */,
 				973BBA6624054E9900E3B061 /* TextViewController.swift in Sources */,
 				EA445D15265CF6CD00E5D46A /* LinkPreviewCell.swift in Sources */,
 				EA86E38426FE20C000FF2278 /* SettingsFrameRateViewController.swift in Sources */,
@@ -1073,7 +1077,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
-				SHARED_BUILD_NUMBER = 187;
+				SHARED_BUILD_NUMBER = 188;
 				SHARED_BUILD_VERSION = 1.5.2;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1132,7 +1136,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
-				SHARED_BUILD_NUMBER = 187;
+				SHARED_BUILD_NUMBER = 188;
 				SHARED_BUILD_VERSION = 1.5.2;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
