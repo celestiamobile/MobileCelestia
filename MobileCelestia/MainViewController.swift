@@ -15,6 +15,34 @@ import CelestiaCore
 
 import UniformTypeIdentifiers
 
+extension URL {
+    static func fromGuide(guideItemID: String, language: String) -> URL {
+        let baseURL = "https://celestia.mobi/resources/guide"
+        let locale = LocalizedString("LANGUAGE", "celestia")
+        var components = URLComponents(string: baseURL)!
+        components.queryItems = [
+            URLQueryItem(name: "guide", value: guideItemID),
+            URLQueryItem(name: "lang", value: locale),
+            URLQueryItem(name: "environment", value: "app"),
+            URLQueryItem(name: "theme", value: "dark")
+        ]
+        return components.url!
+    }
+
+    static func fromAddon(addonItemID: String, language: String) -> URL {
+        let baseURL = "https://celestia.mobi/resources/item"
+        let locale = LocalizedString("LANGUAGE", "celestia")
+        var components = URLComponents(string: baseURL)!
+        components.queryItems = [
+            URLQueryItem(name: "item", value: addonItemID),
+            URLQueryItem(name: "lang", value: locale),
+            URLQueryItem(name: "environment", value: "app"),
+            URLQueryItem(name: "theme", value: "dark")
+        ]
+        return components.url!
+    }
+}
+
 class MainViewController: UIViewController {
     enum LoadingStatus {
         case notLoaded
@@ -42,13 +70,16 @@ class MainViewController: UIViewController {
     private var currentDisplayingScreen: UIScreen = .main
     #endif
 
-    private var urlToRun: UniformedURL?
+    private var scriptOrCelURL: UniformedURL?
     private var addonToOpen: String?
     private var guideToOpen: String?
 
     init(initialURL: UniformedURL?) {
-        self.urlToRun = initialURL
         super.init(nibName: nil, bundle: nil)
+
+        if let url = initialURL {
+            receivedURL(url)
+        }
     }
 
     required init?(coder: NSCoder) {
@@ -93,6 +124,26 @@ class MainViewController: UIViewController {
 }
 
 extension MainViewController {
+    private func receivedURL(_ url: UniformedURL) {
+        if url.url.isFileURL {
+            scriptOrCelURL = url
+        } else if url.url.scheme == "cel" {
+            scriptOrCelURL = url
+        } else if url.url.scheme == "celaddon" {
+            guard let components = URLComponents(url: url.url, resolvingAgainstBaseURL: false) else { return }
+            if components.host == "item" {
+                guard let id = components.queryItems?.first(where: { $0.name == "item" })?.value else { return }
+                addonToOpen = id
+            }
+        } else if url.url.scheme == "celguide" {
+            guard let components = URLComponents(url: url.url, resolvingAgainstBaseURL: false) else { return }
+            if components.host == "guide" {
+                guard let id = components.queryItems?.first(where: { $0.name == "guide" })?.value else { return }
+                guideToOpen = id
+            }
+        }
+    }
+
     @objc private func requestOpenFile() {
         let browser: UIDocumentPickerViewController
         if #available(iOS 14, *) {
@@ -109,93 +160,89 @@ extension MainViewController {
 
     @objc private func newURLOpened(_ notification: Notification) {
         guard let url = notification.userInfo?[newURLOpenedNotificationURLKey] as? UniformedURL else { return }
-        urlToRun = url
+        receivedURL(url)
         guard status == .loaded else { return }
-        checkNeedOpeningURL()
+        openURLOrScriptOrGreeting()
     }
 
     @objc private func newAddonOpened(_ notification: Notification) {
         guard let addon = notification.userInfo?[newAddonOpenedNotificationIDKey] as? String else { return }
         addonToOpen = addon
         guard status == .loaded else { return }
-        checkNeedOpeningAddon()
+        openURLOrScriptOrGreeting()
     }
 
     @objc private func newGuideOpened(_ notification: Notification) {
         guard let guide = notification.userInfo?[newGuideOpenedNotificationIDKey] as? String else { return }
         guideToOpen = guide
         guard status == .loaded else { return }
-        checkNeedOpeningGuide()
+        openURLOrScriptOrGreeting()
     }
 
-    private func checkNeedOpeningURL() {
-        guard let url = urlToRun else { return }
-
-        urlToRun = nil
-
-        if url.url.isFileURL {
-            front?.showOption(CelestiaString("Run script?", comment: "")) { [unowned self] (confirmed) in
-                guard confirmed else { return }
-                self.celestiaController.openURL(url)
-            }
-        } else if url.url.scheme == "cel" {
-            front?.showOption(CelestiaString("Open URL?", comment: "")) { [unowned self] (confirmed) in
-                guard confirmed else { return }
-                self.celestiaController.openURL(url)
-            }
-        } else if url.url.scheme == "celaddon" {
-            guard let components = URLComponents(url: url.url, resolvingAgainstBaseURL: false) else { return }
-            if components.host == "item" {
-                guard let id = components.queryItems?.first(where: { $0.name == "item" })?.value else { return }
-                addonToOpen = id
-                checkNeedOpeningAddon()
-            }
-        } else if url.url.scheme == "celguide" {
-            guard let components = URLComponents(url: url.url, resolvingAgainstBaseURL: false) else { return }
-            if components.host == "guide" {
-                guard let id = components.queryItems?.first(where: { $0.name == "guide" })?.value else { return }
-                guideToOpen = id
-                checkNeedOpeningGuide()
-            }
+    private func openURLOrScriptOrGreeting() {
+        func cleanup() {
+            // Just clean up everything, only the first message gets presented
+            addonToOpen = nil
+            guideToOpen = nil
+            scriptOrCelURL = nil
         }
-    }
 
-    private func checkNeedOpeningAddon() {
-        guard let addon = addonToOpen else { return }
+        let onboardMessageDisplayed: Bool? = UserDefaults.app[.onboardMessageDisplayed]
+        if onboardMessageDisplayed == nil {
+            UserDefaults.app[.onboardMessageDisplayed] = true
+            presentHelp()
+            cleanup()
+            return
+        }
 
-        addonToOpen = nil
+        if let url = scriptOrCelURL {
+            if url.url.isFileURL {
+                front?.showOption(CelestiaString("Run script?", comment: "")) { [unowned self] (confirmed) in
+                    guard confirmed else { return }
+                    self.celestiaController.openURL(url)
+                }
+            } else if url.url.scheme == "cel" {
+                front?.showOption(CelestiaString("Open URL?", comment: "")) { [unowned self] (confirmed) in
+                    guard confirmed else { return }
+                    self.celestiaController.openURL(url)
+                }
+            }
+            cleanup()
+            return
+        }
 
-        let requestURL = apiPrefix + "/resource/item"
         let locale = LocalizedString("LANGUAGE", "celestia")
-        _ = RequestHandler.get(url: requestURL, parameters: ["lang": locale, "item": addon], success: { [weak self] (item: ResourceItem) in
-            guard let self = self else { return }
+        if let guide = guideToOpen {
             // Need to wrap it in a NavVC without NavBar to make sure
             // the scrolling behavior is correct on macCatalyst
-            let nav = UINavigationController(rootViewController: ResourceItemViewController(item: item))
-            self.showViewController(nav)
-        }, decoder: ResourceItem.networkResponseDecoder)
-    }
+            let nav = UINavigationController(rootViewController: CommonWebViewController(url: .fromAddon(addonItemID: guide, language: locale)))
+            nav.setNavigationBarHidden(true, animated: false)
+            showViewController(nav)
+            cleanup()
+            return
+        }
 
-    private func checkNeedOpeningGuide() {
-        guard let guide = guideToOpen else { return }
+        if let addon = addonToOpen {
+            let requestURL = apiPrefix + "/resource/item"
+            _ = RequestHandler.get(url: requestURL, parameters: ["lang": locale, "item": addon], success: { [weak self] (item: ResourceItem) in
+                guard let self = self else { return }
+                // Need to wrap it in a NavVC without NavBar to make sure
+                // the scrolling behavior is correct on macCatalyst
+                let nav = UINavigationController(rootViewController: ResourceItemViewController(item: item))
+                self.showViewController(nav)
+            }, decoder: ResourceItem.networkResponseDecoder)
+            cleanup()
+            return
+        }
 
-        guideToOpen = nil
-
-        let baseURL = "https://celestia.mobi/resources/guide"
-        let locale = LocalizedString("LANGUAGE", "celestia")
-        var components = URLComponents(string: baseURL)!
-        components.queryItems = [
-            URLQueryItem(name: "guide", value: guide),
-            URLQueryItem(name: "lang", value: locale),
-            URLQueryItem(name: "environment", value: "app"),
-            URLQueryItem(name: "theme", value: "dark")
-        ]
-        guard let url = components.url else { return }
-        // Need to wrap it in a NavVC without NavBar to make sure
-        // the scrolling behavior is correct on macCatalyst
-        let nav = UINavigationController(rootViewController: CommonWebViewController(url: url))
-        nav.setNavigationBarHidden(true, animated: false)
-        self.showViewController(nav)
+        // Check news
+        let requestURL = apiPrefix + "/resource/latest"
+        _ = RequestHandler.get(url: requestURL, parameters: ["lang": locale, "type": "news"], success: { [weak self] (item: GuideItem) in
+            guard let self = self else { return }
+            if UserDefaults.app[.lastNewsID] == item.id { return }
+            UserDefaults.app[.lastNewsID] = item.id
+            self.showViewController(CommonWebViewController(url: .fromGuide(guideItemID: item.id, language: locale)))
+        }, failure: nil)
     }
 }
 
@@ -258,8 +305,8 @@ extension MainViewController: UIDocumentPickerDelegate {
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
         guard let url = urls.first else { return }
 
-        urlToRun = UniformedURL(url: url, securityScoped: true)
-        checkNeedOpeningURL()
+        scriptOrCelURL = UniformedURL(url: url, securityScoped: true)
+        openURLOrScriptOrGreeting()
     }
 }
 
@@ -308,13 +355,8 @@ extension MainViewController: CelestiaControllerDelegate {
                 UIMenuSystem.main.setNeedsRebuild()
             }
             UIApplication.shared.isIdleTimerDisabled = true
-            self.showOnboardMessageIfNeeded()
-            // FIXME: we can't present multiple vcs together
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1)  {
-                self.checkNeedOpeningURL()
-                self.checkNeedOpeningAddon()
-                self.checkNeedOpeningGuide()
-            }
+
+            self.openURLOrScriptOrGreeting()
         }
     }
 
@@ -369,6 +411,8 @@ extension MainViewController: CelestiaControllerDelegate {
             presentGoTo()
         case .speedometer:
             presentSpeedControl()
+        case .newsarchive:
+            showViewController(GuideViewController(type: "news", title: CelestiaString("News", comment: ""), defaultErrorMessage: CelestiaString("Failed to load news.", comment: "")))
         #if targetEnvironment(macCatalyst)
         case .mirror:
             if UIApplication.shared.connectedScenes.contains(where: { $0.delegate is DisplaySceneDelegate }) {
@@ -441,8 +485,7 @@ extension MainViewController: CelestiaControllerDelegate {
     private func presentFavorite(_ root: FavoriteRoot) {
         let controller = FavoriteCoordinatorController(root: root, selected: { [unowned self] object in
             if let url = object as? URL {
-                urlToRun = UniformedURL(url: url, securityScoped: false)
-                self.checkNeedOpeningURL()
+                self.celestiaController.openURL(UniformedURL(url: url, securityScoped: false))
             } else if let destination = object as? Destination {
                 self.core.run { $0.simulation.goToDestination(destination) }
             }
@@ -711,14 +754,6 @@ extension MainViewController {
             presentFavorite(.destinations)
         }
     }
-
-    private func showOnboardMessageIfNeeded() {
-        let onboardMessageDisplayed: Bool? = UserDefaults.app[.onboardMessageDisplayed]
-        if onboardMessageDisplayed == nil {
-            UserDefaults.app[.onboardMessageDisplayed] = true
-            presentHelp()
-        }
-    }
 }
 
 extension UIViewController {
@@ -963,6 +998,8 @@ extension AppToolbarAction {
             return UIImage(systemName: "speedometer")
         case .mirror:
             return UIImage(systemName: "pip")
+        case .newsarchive:
+            return UIImage(systemName: "newspaper")
         }
     }
 }

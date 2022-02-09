@@ -43,15 +43,16 @@ enum AppToolbarAction: String {
     case addons
     case paperplane
     case speedometer
+    case newsarchive
     #if targetEnvironment(macCatalyst)
     case mirror
     #endif
 
     static var persistentAction: [[AppToolbarAction]] {
         #if targetEnvironment(macCatalyst)
-        return [[.setting], [.share, .search, .home, .paperplane], [.time, .script, .speedometer], [.browse, .favorite, .event], [.addons], [.help]]
+        return [[.setting], [.share, .search, .home, .paperplane], [.time, .script, .speedometer], [.browse, .favorite, .event], [.addons, .newsarchive], [.help]]
         #else
-        return [[.setting], [.share, .search, .home, .paperplane], [.camera, .time, .script, .speedometer], [.browse, .favorite, .event], [.addons], [.help]]
+        return [[.setting], [.share, .search, .home, .paperplane], [.camera, .time, .script, .speedometer], [.browse, .favorite, .event], [.addons, .newsarchive], [.help]]
         #endif
     }
 }
@@ -218,6 +219,8 @@ extension AppToolbarAction {
             return CelestiaString("Go to Object", comment: "")
         case .speedometer:
             return CelestiaString("Speed Control", comment: "")
+        case .newsarchive:
+            return CelestiaString("News Archive", comment: "")
         #if targetEnvironment(macCatalyst)
         case .mirror:
             return nil

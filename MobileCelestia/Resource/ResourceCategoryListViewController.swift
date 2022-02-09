@@ -67,6 +67,10 @@ class ResourceCategoryListViewController: AsyncListViewController<ResourceCatego
         #endif
     }
 
+    override var defaultErrorMessage: String? {
+        return CelestiaString("Failed to load add-ons.", comment: "")
+    }
+
     #if targetEnvironment(macCatalyst)
     override class var showDisclosureIndicator: Bool {
         return false

@@ -40,6 +40,10 @@ class ResourceItemListViewController: AsyncListViewController<ResourceItem> {
         title = category.name
     }
 
+    override var defaultErrorMessage: String? {
+        return CelestiaString("Failed to load add-ons.", comment: "")
+    }
+
     override func refresh(success: @escaping ([[ResourceItem]]) -> Void, failure: @escaping (Error) -> Void) {
         let requestURL = apiPrefix + "/resource/items"
         let locale = LocalizedString("LANGUAGE", "celestia")

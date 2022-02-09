@@ -20,7 +20,7 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
     class var showDisclosureIndicator: Bool { return true }
     class var useStandardUITableViewCell: Bool { return false }
 
-    static var useStylizedCells: Bool {
+    class var useStylizedCells: Bool {
         #if targetEnvironment(macCatalyst)
         return false
         #else
@@ -56,9 +56,14 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
         callRefresh()
     }
 
+    var defaultErrorMessage: String? {
+        return nil
+    }
+
     func refresh(success: @escaping ([[T]]) -> Void, failure: @escaping (Error) -> Void) {}
 
     @objc private func callRefresh() {
+        let defaultErrorMessage = self.defaultErrorMessage
         startRefreshing()
         refresh { [weak self] items in
             self?.items = items
@@ -66,7 +71,7 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
             self?.stopRefreshing(success: true)
         } failure: { [weak self] error in
             self?.stopRefreshing(success: false)
-            self?.showError(error.localizedDescription)
+            self?.showError(defaultErrorMessage ?? error.localizedDescription)
         }
     }
 

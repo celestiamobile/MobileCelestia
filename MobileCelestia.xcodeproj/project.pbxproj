@@ -64,6 +64,9 @@
 		C3E2AA8FA42CCD40BE6ECA28 /* Pods_MobileCelestia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BB5B90AF9C3832FD04B47BF /* Pods_MobileCelestia.framework */; };
 		EA10553324935A4700E49C6D /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA10553224935A4700E49C6D /* Metal.framework */; };
 		EA17951B27B1510500D47397 /* CelestiaScriptHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA17951A27B1510500D47397 /* CelestiaScriptHandler.swift */; };
+		EA17952027B371D700D47397 /* GuideItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA17951F27B371D700D47397 /* GuideItem.swift */; };
+		EA17952227B3723000D47397 /* GuideViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA17952127B3723000D47397 /* GuideViewController.swift */; };
+		EA17952427B3724300D47397 /* GuideListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA17952327B3724300D47397 /* GuideListViewController.swift */; };
 		EA1BC6E324A0E92B00F3F51B /* EventFinderCoordinatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E224A0E92B00F3F51B /* EventFinderCoordinatorViewController.swift */; };
 		EA1BC6E524A0E93D00F3F51B /* EventFinderInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E424A0E93D00F3F51B /* EventFinderInputViewController.swift */; };
 		EA1BC6E724A0E94900F3F51B /* EventFinderResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E624A0E94900F3F51B /* EventFinderResultViewController.swift */; };
@@ -232,6 +235,9 @@
 		EA113708262C72AA002E49DA /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EA113709262C72B2002E49DA /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EA17951A27B1510500D47397 /* CelestiaScriptHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaScriptHandler.swift; sourceTree = "<group>"; };
+		EA17951F27B371D700D47397 /* GuideItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideItem.swift; sourceTree = "<group>"; };
+		EA17952127B3723000D47397 /* GuideViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideViewController.swift; sourceTree = "<group>"; };
+		EA17952327B3724300D47397 /* GuideListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideListViewController.swift; sourceTree = "<group>"; };
 		EA1BC6E224A0E92B00F3F51B /* EventFinderCoordinatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventFinderCoordinatorViewController.swift; sourceTree = "<group>"; };
 		EA1BC6E424A0E93D00F3F51B /* EventFinderInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventFinderInputViewController.swift; sourceTree = "<group>"; };
 		EA1BC6E624A0E94900F3F51B /* EventFinderResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventFinderResultViewController.swift; sourceTree = "<group>"; };
@@ -608,6 +614,8 @@
 				EABF791D2538986400F2460C /* AsyncListViewController.swift */,
 				EAA6C4CA253B5CD200ED1D60 /* InstalledResourceViewController.swift */,
 				EAE6AC0E27A438E400F953DF /* CommonWebViewController.swift */,
+				EA17952127B3723000D47397 /* GuideViewController.swift */,
+				EA17952327B3724300D47397 /* GuideListViewController.swift */,
 			);
 			path = Resource;
 			sourceTree = "<group>";
@@ -619,6 +627,7 @@
 				EABF792B25389B3100F2460C /* ResourceItem.swift */,
 				EABF79492538A86500F2460C /* ResourceManager.swift */,
 				EA17951A27B1510500D47397 /* CelestiaScriptHandler.swift */,
+				EA17951F27B371D700D47397 /* GuideItem.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -882,6 +891,7 @@
 				97401CA62414DAF50015F8E8 /* FavoriteCoordinatorController.swift in Sources */,
 				977CDD2E240BC6A900137127 /* TutorialDescriptionCell.swift in Sources */,
 				977394B8240409CF00E38B82 /* SettingSwitchCell.swift in Sources */,
+				EA17952427B3724300D47397 /* GuideListViewController.swift in Sources */,
 				EAB08FE42780550600BB82F0 /* Font.swift in Sources */,
 				977394B32403F74800E38B82 /* SettingTextCell.swift in Sources */,
 				97401C9D2414D3460015F8E8 /* UserDefaults.swift in Sources */,
@@ -913,6 +923,7 @@
 				EAB08FE22780471200BB82F0 /* StylizedResourceCell.swift in Sources */,
 				EA374CD2263A8B320069589C /* GoToContainerViewController.swift in Sources */,
 				EA1BC6E524A0E93D00F3F51B /* EventFinderInputViewController.swift in Sources */,
+				EA17952027B371D700D47397 /* GuideItem.swift in Sources */,
 				977394AC2403F07C00E38B82 /* SettingsCoordinatorController.swift in Sources */,
 				974F86E02403BD3C00356795 /* BodyDescriptionCell.swift in Sources */,
 				972477D72404A65C00729B45 /* BrowserCoordinatorController.swift in Sources */,
@@ -939,6 +950,7 @@
 				EA5D32E7266F9518005D5931 /* SheetPresentationController.swift in Sources */,
 				977394BF24041A9A00E38B82 /* SearchCoordinatorController.swift in Sources */,
 				EADE7FC0252B54A400D4174F /* CelestiaInteractionController.swift in Sources */,
+				EA17952227B3723000D47397 /* GuideViewController.swift in Sources */,
 				978406DC240294D000876FD1 /* LoadingViewController.swift in Sources */,
 				EAF48515249B2C4700E5B817 /* SubsystemBrowserCoordinatorViewController.swift in Sources */,
 				EA1BC6E324A0E92B00F3F51B /* EventFinderCoordinatorViewController.swift in Sources */,
