@@ -192,7 +192,7 @@ extension AppToolbarAction {
     var title: String? {
         switch self {
         case .browse:
-            return CelestiaString("Browser", comment: "")
+            return CelestiaString("Star Browser", comment: "")
         case .favorite:
             return CelestiaString("Favorites", comment: "")
         case .search:

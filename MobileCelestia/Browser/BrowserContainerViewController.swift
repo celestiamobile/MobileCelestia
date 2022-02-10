@@ -22,6 +22,8 @@ class BrowserContainerViewController: UIViewController {
 
     private let selected: (Selection) -> UIViewController
 
+    private let activityIndicator = UIActivityIndicatorView(style: .large)
+
     init(selected: @escaping (Selection) -> UIViewController) {
         self.selected = selected
         super.init(nibName: nil, bundle: nil)
@@ -39,13 +41,36 @@ class BrowserContainerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        setup()
-    }
+        setUp()
 
+        let core = AppCore.shared
+        activityIndicator.startAnimating()
+        core.run { [weak self] core in
+            createStaticBrowserItems()
+            createDynamicBrowserItems()
+            DispatchQueue.main.async {
+                guard let self = self else { return }
+                self.activityIndicator.stopAnimating()
+                self.rootItemsLoaded()
+            }
+        }
+    }
 }
 
 private extension BrowserContainerViewController {
-    func setup() {
+    func setUp() {
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(activityIndicator)
+
+        NSLayoutConstraint.activate([
+            activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+        ])
+    }
+
+    private func rootItemsLoaded() {
+        activityIndicator.isHidden = true
+
         install(controller)
         let handler = { [unowned self] (selection: Selection) -> UIViewController in
             return self.selected(selection)
@@ -64,12 +89,15 @@ private extension BrowserContainerViewController {
         emptyVc.view.backgroundColor = .darkBackground
         controller.viewControllers = [sidebarController, emptyVc]
         #else
-        var allControllers = [
-            BrowserCoordinatorController(item: starBrowserRoot, image: #imageLiteral(resourceName: "browser_tab_star"), selection: handler),
-            BrowserCoordinatorController(item: dsoBrowserRoot, image: #imageLiteral(resourceName: "browser_tab_dso"), selection: handler),
-        ]
+        var allControllers = [BrowserCoordinatorController]()
         if let solRoot = solBrowserRoot {
-            allControllers.insert(BrowserCoordinatorController(item: solRoot, image: #imageLiteral(resourceName: "browser_tab_sso"), selection: handler), at: 0)
+            allControllers.append(BrowserCoordinatorController(item: solRoot, image: #imageLiteral(resourceName: "browser_tab_sso"), selection: handler))
+        }
+        if let starRoot = starBrowserRoot {
+            allControllers.append(BrowserCoordinatorController(item: starRoot, image: #imageLiteral(resourceName: "browser_tab_star"), selection: handler))
+        }
+        if let dsoRoot = dsoBrowserRoot {
+            allControllers.append(BrowserCoordinatorController(item: dsoRoot, image: #imageLiteral(resourceName: "browser_tab_dso"), selection: handler))
         }
         controller.setViewControllers(allControllers, animated: false)
 
