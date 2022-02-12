@@ -670,6 +670,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 979D2F9923FEB1A8005D2592 /* Build configuration list for PBXNativeTarget "MobileCelestia" */;
 			buildPhases = (
+				EA9FB24027B7B0E800E0DC1F /* Copy Localized Files */,
 				F412BCB514349FAAD8AEB3A1 /* [CP] Check Pods Manifest.lock */,
 				979D2F7623FEB1A6005D2592 /* Sources */,
 				979D2F7723FEB1A6005D2592 /* Frameworks */,
@@ -853,6 +854,24 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "CELESTIA_CORE_ROOT=$SRCROOT/../CelestiaCore\n\nSH_FILE=$CELESTIA_CORE_ROOT/convert_po.sh\n\nchmod +x $SH_FILE\n\n$SH_FILE\n";
+		};
+		EA9FB24027B7B0E800E0DC1F /* Copy Localized Files */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Localized Files";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "SH_FILE=$SRCROOT/copy_localized_files.sh\n\nchmod +x $SH_FILE\n\n$SH_FILE\n";
 		};
 		F412BCB514349FAAD8AEB3A1 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
