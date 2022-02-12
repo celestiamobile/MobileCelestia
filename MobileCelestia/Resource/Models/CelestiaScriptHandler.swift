@@ -21,6 +21,11 @@ struct RunScriptContext: Decodable {
     let scriptType: String
 }
 
+struct ShareURLContext: Decodable {
+    let title: String
+    let url: URL
+}
+
 protocol BaseJavascriptHandler {
     var operation: String { get }
     func executeWithContent(content: String, delegate: CelestiaScriptHandlerDelegate)
@@ -50,8 +55,17 @@ class RunScriptHandler: JavascriptHandler<RunScriptContext> {
     }
 }
 
+class ShareURLHandler: JavascriptHandler<ShareURLContext> {
+    override var operation: String { return "shareURL" }
+
+    override func execute(context: ShareURLContext, delegate: CelestiaScriptHandlerDelegate) {
+        delegate.shareURL(title: context.title, url: context.url)
+    }
+}
+
 protocol CelestiaScriptHandlerDelegate: AnyObject {
     func runScript(type: String, content: String)
+    func shareURL(title: String, url: URL)
 }
 
 class CelestiaScriptHandler: NSObject, WKScriptMessageHandler {
@@ -59,6 +73,7 @@ class CelestiaScriptHandler: NSObject, WKScriptMessageHandler {
 
     private static let handlers: [BaseJavascriptHandler] = [
         RunScriptHandler(),
+        ShareURLHandler(),
     ]
 
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {

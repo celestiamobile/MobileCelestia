@@ -84,4 +84,10 @@ extension CommonWebViewController: CelestiaScriptHandlerDelegate {
             } catch {}
         }
     }
+
+    func shareURL(title: String, url: URL) {
+        DispatchQueue.main.async {
+            self.showShareSheet(for: url)
+        }
+    }
 }

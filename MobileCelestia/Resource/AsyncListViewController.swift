@@ -114,6 +114,7 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
             return cell
         }
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
+        cell.accessoryType = Self.showDisclosureIndicator ? .disclosureIndicator : .none
         cell.title = item.name
         return cell
     }
