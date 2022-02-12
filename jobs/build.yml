@@ -24,6 +24,8 @@ jobs:
   - checkout: CelestiaCore
   - checkout: CelestiaContent
     fetchDepth: 1
+  - checkout: CelestiaLocalization
+    fetchDepth: 1
   - checkout: self
 
 
