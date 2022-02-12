@@ -8,6 +8,7 @@ resources:
     type: github
     endpoint: GithubAuth
     name: levinli303/CelestiaCore
+    ref: separate-localization
   - repository: CelestiaContent
     type: github
     endpoint: GithubAuth
