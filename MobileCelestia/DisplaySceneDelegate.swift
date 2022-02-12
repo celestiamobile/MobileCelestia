@@ -12,7 +12,7 @@
 import UIKit
 
 #if targetEnvironment(macCatalyst)
-class DisplaySceneDelegate: UIResponder, UIWindowSceneDelegate {
+class DisplaySceneDelegate: CommonSceneDelegate {
     var window: UIWindow?
 
     static var activityType = "\(Bundle.app.bundleIdentifier!).Display"
@@ -51,10 +51,6 @@ class DisplaySceneDelegate: UIResponder, UIWindowSceneDelegate {
 
         self.window = window
         window.makeKeyAndVisible()
-    }
-
-    func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
-        AppDelegate.handleUserActivity(userActivity)
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

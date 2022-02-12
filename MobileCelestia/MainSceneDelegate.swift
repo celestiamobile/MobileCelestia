@@ -14,7 +14,7 @@ import UIKit
 import CelestiaCore
 
 @available(iOS 13, *)
-class MainSceneDelegate: UIResponder, UIWindowSceneDelegate {
+class MainSceneDelegate: CommonSceneDelegate {
     var window: UIWindow?
 
     static var mainWindowSessionIdentifier: String?
@@ -56,10 +56,6 @@ class MainSceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
     }
 
-    func scene(_ scene: UIScene, continue userActivity: NSUserActivity) {
-        AppDelegate.handleUserActivity(userActivity)
-    }
-
     func sceneWillResignActive(_ scene: UIScene) {
         let application = UIApplication.shared
         let backgroundTaskID = application.beginBackgroundTask(expirationHandler: nil)
@@ -69,13 +65,6 @@ class MainSceneDelegate: UIResponder, UIWindowSceneDelegate {
         DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
             application.endBackgroundTask(backgroundTaskID)
         }
-    }
-
-    func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
-        guard let urlContext = URLContexts.first else { return }
-        NotificationCenter.default.post(name: newURLOpenedNotificationName, object: nil, userInfo: [
-            newURLOpenedNotificationURLKey: UniformedURL(url: urlContext.url, securityScoped: urlContext.url.isFileURL && urlContext.options.openInPlace)
-        ])
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

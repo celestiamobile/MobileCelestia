@@ -87,6 +87,7 @@
 		EA936F36265FA363007EED66 /* MetalANGLE.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA1BCA92265AA8E2001A0D89 /* MetalANGLE.xcframework */; platformFilter = maccatalyst; };
 		EA936F37265FA363007EED66 /* MetalANGLE.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EA1BCA92265AA8E2001A0D89 /* MetalANGLE.xcframework */; platformFilter = maccatalyst; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EA982BFF25496B6D00CDC642 /* BaseTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA982BFE25496B6D00CDC642 /* BaseTableViewController.swift */; };
+		EA9FB23F27B7852A00E0DC1F /* CommonSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9FB23E27B7852A00E0DC1F /* CommonSceneDelegate.swift */; };
 		EAA5A7A1259DBFE6001AFA82 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = EAA5A7A3259DBFE6001AFA82 /* InfoPlist.strings */; };
 		EAA6C4CB253B5CD200ED1D60 /* InstalledResourceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAA6C4CA253B5CD200ED1D60 /* InstalledResourceViewController.swift */; };
 		EAB08FE02780464C00BB82F0 /* ImageCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAB08FDF2780464C00BB82F0 /* ImageCacheManager.swift */; };
@@ -259,6 +260,7 @@
 		EA934C8F251D90C500DD284C /* MainSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSceneDelegate.swift; sourceTree = "<group>"; };
 		EA934C99251D92A700DD284C /* PanelSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelSceneDelegate.swift; sourceTree = "<group>"; };
 		EA982BFE25496B6D00CDC642 /* BaseTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTableViewController.swift; sourceTree = "<group>"; };
+		EA9FB23E27B7852A00E0DC1F /* CommonSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonSceneDelegate.swift; sourceTree = "<group>"; };
 		EAA5A7A2259DBFE6001AFA82 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EAA5A7A7259DC062001AFA82 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EAA6C4CA253B5CD200ED1D60 /* InstalledResourceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstalledResourceViewController.swift; sourceTree = "<group>"; };
@@ -504,6 +506,7 @@
 				EA934C8F251D90C500DD284C /* MainSceneDelegate.swift */,
 				EA934C99251D92A700DD284C /* PanelSceneDelegate.swift */,
 				EA1BE1562748E9DC0046074C /* DisplaySceneDelegate.swift */,
+				EA9FB23E27B7852A00E0DC1F /* CommonSceneDelegate.swift */,
 				979D2F8623FEB1A8005D2592 /* Assets.xcassets */,
 				EA3EC553277C8EAD00936D4F /* Celestia-macOS.entitlements */,
 				EA1EF056249393BE0039F493 /* Celestia.entitlements */,
@@ -942,6 +945,7 @@
 				EAE6AC0F27A438E400F953DF /* CommonWebViewController.swift in Sources */,
 				97FF95AA240A3F0900E9F44F /* Data.swift in Sources */,
 				974F86DF2403BD3C00356795 /* BodyActionCell.swift in Sources */,
+				EA9FB23F27B7852A00E0DC1F /* CommonSceneDelegate.swift in Sources */,
 				EA374CDA263A8B770069589C /* GoToInputViewController.swift in Sources */,
 				EA934C9A251D92AD00DD284C /* PanelSceneDelegate.swift in Sources */,
 				97EB41C62408F20700E6D441 /* CameraControlViewController.swift in Sources */,
@@ -1089,7 +1093,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
-				SHARED_BUILD_NUMBER = 192;
+				SHARED_BUILD_NUMBER = 193;
 				SHARED_BUILD_VERSION = 1.5.2;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1148,7 +1152,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
-				SHARED_BUILD_NUMBER = 192;
+				SHARED_BUILD_NUMBER = 193;
 				SHARED_BUILD_VERSION = 1.5.2;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";

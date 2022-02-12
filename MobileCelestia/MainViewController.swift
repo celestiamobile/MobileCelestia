@@ -217,7 +217,7 @@ extension MainViewController {
             // the scrolling behavior is correct on macCatalyst
             let nav = UINavigationController(rootViewController: CommonWebViewController(url: .fromGuide(guideItemID: guide, language: locale)))
             nav.setNavigationBarHidden(true, animated: false)
-            showViewController(nav)
+            showViewController(nav, key: guide)
             cleanup()
             return
         }
@@ -229,7 +229,7 @@ extension MainViewController {
                 // Need to wrap it in a NavVC without NavBar to make sure
                 // the scrolling behavior is correct on macCatalyst
                 let nav = UINavigationController(rootViewController: ResourceItemViewController(item: item))
-                self.showViewController(nav)
+                self.showViewController(nav, key: addon)
             }, decoder: ResourceItem.networkResponseDecoder)
             cleanup()
             return
@@ -730,10 +730,11 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     private func showViewController(_ viewController: UIViewController,
+                                    key: String? = nil,
                                     iOSPreferredSize: CGSize = CGSize(width: 320, height: 320),
                                     macOSPreferredSize: CGSize = CGSize(width: 400, height: 500)) {
         #if targetEnvironment(macCatalyst)
-        PanelSceneDelegate.present(viewController, preferredSize: macOSPreferredSize)
+        PanelSceneDelegate.present(viewController, key: key, preferredSize: macOSPreferredSize)
         #else
         viewController.preferredContentSize = iOSPreferredSize
         viewController.modalPresentationStyle = .custom
