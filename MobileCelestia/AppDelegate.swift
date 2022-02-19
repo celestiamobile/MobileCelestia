@@ -12,6 +12,9 @@
 import UIKit
 
 import CelestiaCore
+#if targetEnvironment(macCatalyst)
+import CelestiaHelper
+#endif
 
 import AppCenter
 import AppCenterAnalytics
@@ -45,6 +48,26 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         #if targetEnvironment(macCatalyst)
         MacBridge.initialize()
+
+        if #available(iOS 15.0, *) {
+            /// -[UIFocusSytem _topEnvironment] throws a failed assertion `Expected a UIWindowScene but found (null).`
+            /// when a window is closed with a list item focused. Swizzle to avoid the exception by catching it in Objective-C.
+            let selector = NSSelectorFromString("_topEnvironment")
+            if UIFocusSystem.instancesRespond(to: selector),
+               let method = class_getInstanceMethod(UIFocusSystem.self, selector) {
+                let imp = method_getImplementation(method)
+                class_replaceMethod(UIFocusSystem.self, selector, imp_implementationWithBlock({ (self: UIFocusSystem) -> UIFocusEnvironment? in
+                    var environment: UIFocusEnvironment?
+                    ExceptionCatching.execute {
+                        let oldIMP = unsafeBitCast(imp, to: (@convention(c) (UIFocusSystem, Selector) -> UIFocusEnvironment?).self)
+                        environment = oldIMP(self, selector)
+                    } exceptionHandler: { exception in
+                        print("Ignoring exception: \(exception)")
+                    }
+                  return environment
+                } as @convention(block) (UIFocusSystem) -> UIFocusEnvironment?), method_getTypeEncoding(method))
+            }
+        }
 
         UserDefaults.standard.register(defaults: ["NSApplicationCrashOnExceptions": true])
 

@@ -19,14 +19,7 @@ protocol AsyncListItem {
 class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
     class var showDisclosureIndicator: Bool { return true }
     class var useStandardUITableViewCell: Bool { return false }
-
-    class var useStylizedCells: Bool {
-        #if targetEnvironment(macCatalyst)
-        return false
-        #else
-        return true
-        #endif
-    }
+    class var useStylizedCells: Bool { return true }
 
     private lazy var activityIndicator: UIActivityIndicatorView = {
         if #available(iOS 13, *) {
