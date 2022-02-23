@@ -42,6 +42,7 @@ private extension TextViewController {
         textView.backgroundColor = .clear
         textView.isEditable = false
         textView.textColor = .darkLabel
+        textView.adjustsFontForContentSizeCategory = true
         textView.font = UIFont.preferredFont(forTextStyle: .footnote)
 
         textView.translatesAutoresizingMaskIntoConstraints = false

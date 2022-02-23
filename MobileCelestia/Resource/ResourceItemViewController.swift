@@ -29,7 +29,7 @@ class ResourceItemViewController: UIViewController {
             return UIProgressView(progressViewStyle: .bar)
         }
     }()
-    private lazy var statusButton = ActionButton(type: .system)
+    private lazy var statusButton = ActionButtonHelper.newButton()
     private lazy var statusButtonContainer: UIView = {
         if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
             let stackView = UIStackView(arrangedSubviews: [progressView, statusButton])
@@ -41,7 +41,7 @@ class ResourceItemViewController: UIViewController {
             return statusButton
         }
     }()
-    private lazy var goToButton = ActionButton(type: .system)
+    private lazy var goToButton = ActionButtonHelper.newButton()
     private lazy var buttonStack = UIStackView(arrangedSubviews: [goToButton, statusButtonContainer])
 
     private lazy var itemInfoController: CommonWebViewController = {
@@ -71,37 +71,12 @@ class ResourceItemViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(showShare(_:)))
-        navigationItem.title = item.name
-
         updateUI()
 
         NotificationCenter.default.addObserver(self, selector: #selector(downloadProgress(_:)), name: ResourceManager.downloadProgress, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(resourceFetchError(_:)), name: ResourceManager.resourceError, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(downloadSuccess(_:)), name: ResourceManager.downloadSuccess, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(unzipSuccess(_:)), name: ResourceManager.unzipSuccess, object: nil)
-        refresh()
-    }
-
-    private func refresh() {
-        // Fetch the latest item, this is needed as user might come
-        // here from Installed where the URL might be incorrect
-        let requestURL = apiPrefix + "/resource/item"
-        let locale = LocalizedString("LANGUAGE", "celestia")
-        _ = RequestHandler.get(url: requestURL, parameters: ["lang": locale, "item": item.id], success: { [weak self] (item: ResourceItem) in
-            self?.item = item
-            self?.navigationItem.title = item.name
-            self?.updateUI()
-        }, decoder: ResourceItem.networkResponseDecoder)
-    }
-
-    @objc private func showShare(_ sender: UIBarButtonItem) {
-        let baseURL = "https://celestia.mobi/resources/item"
-        let locale = LocalizedString("LANGUAGE", "celestia")
-        guard var components = URLComponents(string: baseURL) else { return }
-        components.queryItems = [URLQueryItem(name: "item", value: item.id), URLQueryItem(name: "lang", value: locale)]
-        guard let url = components.url else { return }
-        showShareSheet(for: url, barButtonItem: sender)
     }
 
     @objc private func goToButtonClicked() {
@@ -185,11 +160,6 @@ private extension ResourceItemViewController {
         }
 
         itemInfoController.didMove(toParent: self)
-
-        #if !targetEnvironment(macCatalyst)
-        progressView.trackTintColor = .progressBackground
-        progressView.progressTintColor = .progressForeground
-        #endif
 
         progressView.isHidden = true
 

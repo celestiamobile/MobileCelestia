@@ -37,7 +37,8 @@ extension URL {
             URLQueryItem(name: "item", value: addonItemID),
             URLQueryItem(name: "lang", value: locale),
             URLQueryItem(name: "environment", value: "app"),
-            URLQueryItem(name: "theme", value: "dark")
+            URLQueryItem(name: "theme", value: "dark"),
+            URLQueryItem(name: "titleVisibility", value: "visible"),
         ]
         return components.url!
     }
@@ -229,6 +230,7 @@ extension MainViewController {
                 // Need to wrap it in a NavVC without NavBar to make sure
                 // the scrolling behavior is correct on macCatalyst
                 let nav = UINavigationController(rootViewController: ResourceItemViewController(item: item))
+                nav.setNavigationBarHidden(true, animated: false)
                 self.showViewController(nav, key: addon)
             }, decoder: ResourceItem.networkResponseDecoder)
             cleanup()

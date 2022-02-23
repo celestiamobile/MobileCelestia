@@ -12,7 +12,7 @@
 import UIKit
 
 class TutorialDescriptionCell: UITableViewCell {
-    private lazy var label = UILabel()
+    private lazy var label = UILabel(textStyle: .body)
     private lazy var iv = UIImageView()
 
     var img: UIImage? { didSet { iv.image = img?.withRenderingMode(.alwaysTemplate) } }

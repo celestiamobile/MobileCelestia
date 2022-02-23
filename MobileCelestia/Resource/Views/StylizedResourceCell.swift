@@ -43,7 +43,7 @@ final class StylizedResourceCell: UITableViewCell {
         static let textVerticalMargin: CGFloat = 8
     }
 
-    private lazy var label = UILabel()
+    private lazy var label = UILabel(textStyle: .title3, weight: .semibold)
     private lazy var backgroundImageView = UIImageView(image: UIImage(named: "resource_item_placeholder"))
 
     var title: String? { didSet { label.text = title }  }
@@ -127,8 +127,7 @@ private extension StylizedResourceCell {
         ])
 
         label.textColor = .darkLabel
-
-        label.font = UIFont.preferredFont(forTextStyle: .title3, weight: .semibold)
+        label.adjustsFontSizeToFitWidth = true
         label.numberOfLines = 0
 
         label.translatesAutoresizingMaskIntoConstraints = false

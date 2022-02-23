@@ -14,7 +14,7 @@ import UIKit
 class SettingSliderCell: UITableViewCell {
     private lazy var topContainer = UIView()
     private lazy var bottomContainer = UIView()
-    private lazy var label = UILabel()
+    private lazy var label = UILabel(textStyle: .body)
     private lazy var slider = UISlider()
 
     var title: String? { didSet { label.text = title }  }
@@ -61,7 +61,6 @@ private extension SettingSliderCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         topContainer.addSubview(label)
         label.textColor = .darkLabel
-        label.font = UIFont.preferredFont(forTextStyle: .body)
         label.numberOfLines = 0
 
         NSLayoutConstraint.activate([

@@ -31,10 +31,11 @@ final class LinkPreviewCell: UICollectionViewCell {
 
     override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
         let attributes = super.preferredLayoutAttributesFitting(layoutAttributes)
-        attributes.size = contentView.systemLayoutSizeFitting(
+        let fittingSize = contentView.systemLayoutSizeFitting(
             CGSize(width: layoutAttributes.size.width, height: 0),
             withHorizontalFittingPriority: UILayoutPriority.required,
             verticalFittingPriority: UILayoutPriority.defaultLow)
+        attributes.size = CGSize(width: fittingSize.width.rounded(.down), height: fittingSize.height)
         return attributes
     }
 }

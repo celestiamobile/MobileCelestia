@@ -79,13 +79,12 @@ class MainSceneDelegate: CommonSceneDelegate {
         override func loadView() {
             let containerView = UIView()
             containerView.backgroundColor = .systemBackground
-            let label = UILabel()
+            let label = UILabel(textStyle: .body)
             label.numberOfLines = 0
             label.text = "Multiple Celestia windows within a single instance is supported, please send an e-mail to lilinfeng.app@outlook.com with reproduction steps."
             containerView.addSubview(label)
             label.translatesAutoresizingMaskIntoConstraints = false
             label.textColor = .label
-            label.font = UIFont.preferredFont(forTextStyle: .body)
             NSLayoutConstraint.activate([
                 label.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
                 label.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),

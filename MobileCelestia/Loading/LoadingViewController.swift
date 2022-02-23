@@ -13,7 +13,7 @@ import UIKit
 
 class LoadingViewController: UIViewController {
 
-    private var statusLabel = UILabel()
+    private var statusLabel = UILabel(textStyle: .body)
 
     override func loadView() {
         view = UIView()
@@ -55,7 +55,6 @@ private extension LoadingViewController {
         container.addSubview(statusLabel)
         statusLabel.translatesAutoresizingMaskIntoConstraints = false
         statusLabel.textColor = .darkLabel
-        statusLabel.font = UIFont.preferredFont(forTextStyle: .body)
         NSLayoutConstraint.activate([
             statusLabel.topAnchor.constraint(equalTo: iconImageView.bottomAnchor, constant: 24),
             statusLabel.centerXAnchor.constraint(equalTo: container.centerXAnchor),

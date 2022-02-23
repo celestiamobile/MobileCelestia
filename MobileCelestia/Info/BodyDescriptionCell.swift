@@ -12,8 +12,8 @@
 import UIKit
 
 final class BodyDescriptionCell: UICollectionViewCell {
-    private var titleLabel = UILabel()
-    private var bodyLabel = UILabel()
+    private var titleLabel = UILabel(textStyle: .title2, weight: .semibold)
+    private var bodyLabel = UILabel(textStyle: .body)
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -35,7 +35,6 @@ final class BodyDescriptionCell: UICollectionViewCell {
         ])
 
         titleLabel.textColor = .darkLabel
-        titleLabel.font = UIFont.preferredFont(forTextStyle: .title2, weight: .semibold)
         titleLabel.numberOfLines = 0
         titleLabel.lineBreakMode = .byCharWrapping
 
@@ -50,17 +49,17 @@ final class BodyDescriptionCell: UICollectionViewCell {
         ])
 
         bodyLabel.textColor = .darkSecondaryLabel
-        bodyLabel.font = UIFont.preferredFont(forTextStyle: .body)
         bodyLabel.numberOfLines = 0
         bodyLabel.lineBreakMode = .byCharWrapping
     }
 
     override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
         let attributes = super.preferredLayoutAttributesFitting(layoutAttributes)
-        attributes.size = contentView.systemLayoutSizeFitting(
+        let fittingSize = contentView.systemLayoutSizeFitting(
             CGSize(width: layoutAttributes.size.width, height: 0),
             withHorizontalFittingPriority: UILayoutPriority.required,
             verticalFittingPriority: UILayoutPriority.defaultLow)
+        attributes.size = CGSize(width: fittingSize.width.rounded(.down), height: fittingSize.height)
         return attributes
     }
 }

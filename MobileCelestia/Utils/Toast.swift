@@ -13,7 +13,7 @@ import UIKit
 
 class Toast {
     private class View: UIView {
-        lazy var label = UILabel()
+        lazy var label = UILabel(textStyle: .footnote)
 
         override init(frame: CGRect) {
             super.init(frame: frame)
@@ -44,7 +44,6 @@ class Toast {
             ])
 
             label.textColor = .darkLabel
-            label.font = UIFont.preferredFont(forTextStyle: .footnote)
             label.numberOfLines = 2
             label.translatesAutoresizingMaskIntoConstraints = false
             label.textAlignment = .center

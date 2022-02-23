@@ -30,7 +30,7 @@ private extension ObjectAction {
 }
 
 final class InfoViewController: UIViewController {
-    private lazy var layout = UICollectionViewFlowLayout()
+    private lazy var layout = InfoCollectionLayout()
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: self.layout)
 
     private let info: Selection
@@ -72,6 +72,8 @@ final class InfoViewController: UIViewController {
 
         setup()
 
+        NotificationCenter.default.addObserver(self, selector: #selector(handleContentSizeCategoryChanged), name: UIContentSizeCategory.didChangeNotification, object: nil)
+
         guard let urlString = info.webInfoURL, let url = URL(string: urlString), #available(iOS 13.0, *) else { return }
 
         let metaDataProvider = LPMetadataProvider()
@@ -91,6 +93,10 @@ final class InfoViewController: UIViewController {
                 self.collectionView.reloadData()
             }
         }
+    }
+
+    @objc private func handleContentSizeCategoryChanged() {
+        collectionView.collectionViewLayout.invalidateLayout()
     }
 }
 
@@ -159,7 +165,65 @@ extension InfoViewController: UICollectionViewDataSource {
         }
         return cell
     }
+}
 
+class InfoCollectionLayout: UICollectionViewFlowLayout {
+    private var attributesCache: [Int: UICollectionViewLayoutAttributes] = [:]
+
+    // Only section 1 needs special handling
+    private let twoColumnSection = 1
+
+    override func prepare() {
+        attributesCache = [:]
+
+        guard let collectionView = self.collectionView else { super.prepare(); return }
+
+        super.prepare()
+
+        guard let dataSource = collectionView.dataSource else { return }
+        let numberOfItems = dataSource.collectionView(collectionView, numberOfItemsInSection: twoColumnSection)
+        var previousAttributes: UICollectionViewLayoutAttributes?
+        for item in 0..<numberOfItems {
+            let indexPath = IndexPath(item: item, section: twoColumnSection)
+            guard let attributes = super.layoutAttributesForItem(at: indexPath) else { break }
+
+            if item % 2 == 0 {
+                previousAttributes = attributes
+            } else {
+                let height = max(previousAttributes!.size.height, attributes.size.height)
+                previousAttributes!.size = CGSize(width: previousAttributes!.size.width, height: height)
+                attributes.size = CGSize(width: attributes.size.width, height: height)
+            }
+            attributesCache[item] = attributes
+        }
+    }
+
+    override func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
+        let attributes = super.layoutAttributesForElements(in: rect)
+
+        var updatedAttributes: [UICollectionViewLayoutAttributes] = []
+        attributes?.forEach({ attr in
+            let ip = attr.indexPath
+            if ip.section == twoColumnSection, let updatedAttr = attributesCache[ip.item] {
+                updatedAttributes.append(updatedAttr)
+            } else {
+                updatedAttributes.append(attr)
+            }
+        })
+
+        return updatedAttributes
+    }
+
+    override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
+        let attributes = super.layoutAttributesForItem(at: indexPath)
+
+        var updatedAttributes = attributes
+        if let ip = attributes?.indexPath, ip.section == twoColumnSection, let updated = attributesCache[ip.item] {
+            updatedAttributes = updated
+        }
+
+        return updatedAttributes
+    }
 }
 
 private extension ObjectAction {

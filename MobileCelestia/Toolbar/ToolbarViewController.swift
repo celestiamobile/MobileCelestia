@@ -86,6 +86,8 @@ class ToolbarViewController: UIViewController {
         super.viewDidLoad()
 
         setup()
+
+        NotificationCenter.default.addObserver(self, selector: #selector(handleContentSizeCategoryChanged), name: UIContentSizeCategory.didChangeNotification, object: nil)
     }
 
     override var preferredContentSize: CGSize {
@@ -95,6 +97,9 @@ class ToolbarViewController: UIViewController {
         set {}
     }
 
+    @objc private func handleContentSizeCategoryChanged() {
+        collectionView.collectionViewLayout.invalidateLayout()
+    }
 }
 
 extension ToolbarViewController: UICollectionViewDataSource {

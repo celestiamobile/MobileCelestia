@@ -37,7 +37,9 @@ class ActionButton: StandardButton {
     }
 
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: coder)
+
+        setup()
     }
 
     private func setup() {
@@ -81,5 +83,19 @@ class ActionButton: StandardButton {
                 contentNSView.setValue(3, forKey: "controlSize")
             }
         }
+    }
+}
+
+class ActionButtonHelper {
+    static func newButton() -> UIButton {
+        #if !targetEnvironment(macCatalyst)
+        if #available(iOS 15.0, *) {
+            var configuration = UIButton.Configuration.filled()
+            configuration.baseBackgroundColor = .buttonBackground
+            configuration.baseForegroundColor = .buttonForeground
+            return UIButton(configuration: configuration)
+        }
+        #endif
+        return ActionButton(type: .system)
     }
 }

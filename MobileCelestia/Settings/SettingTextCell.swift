@@ -19,8 +19,8 @@ class SettingTextCell: UITableViewCell {
         static let verticalSpacing: CGFloat = 6
     }
 
-    private lazy var label = UILabel()
-    private lazy var detailLabel = UILabel()
+    private lazy var label = UILabel(textStyle: .body)
+    private lazy var detailLabel = UILabel(textStyle: .body)
 
     var title: String? { didSet { label.text = title }  }
     var titleColor: UIColor? { didSet { label.textColor = titleColor } }
@@ -136,13 +136,11 @@ private extension SettingTextCell {
         contentView.addSubview(label)
         label.textColor = .darkLabel
 
-        label.font = UIFont.preferredFont(forTextStyle: .body)
         label.numberOfLines = 0
 
         contentView.addSubview(detailLabel)
         detailLabel.textColor = .darkTertiaryLabel
 
-        detailLabel.font = UIFont.preferredFont(forTextStyle: .body)
         detailLabel.numberOfLines = 0
     }
 }

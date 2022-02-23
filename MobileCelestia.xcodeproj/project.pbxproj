@@ -83,6 +83,7 @@
 		EA544E5F2566BC50003F351D /* DestinationDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA544E5E2566BC50003F351D /* DestinationDetailViewController.swift */; };
 		EA5D32E7266F9518005D5931 /* SheetPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5D32E6266F9518005D5931 /* SheetPresentationController.swift */; };
 		EA5E185D2477C78E00F5374B /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5E185B2477C78E00F5374B /* Toast.swift */; };
+		EA7209E027C64270004C1400 /* UILabel+DynamicType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA7209DF27C64270004C1400 /* UILabel+DynamicType.swift */; };
 		EA775EB42664B63F00479295 /* ActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA775EB32664B63F00479295 /* ActionButton.swift */; };
 		EA7BF37C27033AE40058F704 /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA7BF37B27033AE40058F704 /* GameController.framework */; };
 		EA86E38426FE20C000FF2278 /* SettingsFrameRateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA86E38326FE20C000FF2278 /* SettingsFrameRateViewController.swift */; };
@@ -269,6 +270,7 @@
 		EA544E5E2566BC50003F351D /* DestinationDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DestinationDetailViewController.swift; sourceTree = "<group>"; };
 		EA5D32E6266F9518005D5931 /* SheetPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SheetPresentationController.swift; sourceTree = "<group>"; };
 		EA5E185B2477C78E00F5374B /* Toast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
+		EA7209DF27C64270004C1400 /* UILabel+DynamicType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+DynamicType.swift"; sourceTree = "<group>"; };
 		EA775EB32664B63F00479295 /* ActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButton.swift; sourceTree = "<group>"; };
 		EA7BF37B27033AE40058F704 /* GameController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameController.framework; path = System/Library/Frameworks/GameController.framework; sourceTree = SDKROOT; };
 		EA86E38326FE20C000FF2278 /* SettingsFrameRateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsFrameRateViewController.swift; sourceTree = "<group>"; };
@@ -380,6 +382,7 @@
 				EAD94F66261EED7700A93C93 /* UITableView+Extensions.swift */,
 				EAB08FDF2780464C00BB82F0 /* ImageCacheManager.swift */,
 				EAB08FE32780550600BB82F0 /* Font.swift */,
+				EA7209DF27C64270004C1400 /* UILabel+DynamicType.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -998,6 +1001,7 @@
 				EABDE3A92473DAA300E0A5FA /* SettingCommonViewController.swift in Sources */,
 				9773949C2402A8F700E38B82 /* ToolbarViewController.swift in Sources */,
 				979D2F8223FEB1A6005D2592 /* CelestiaViewController.swift in Sources */,
+				EA7209E027C64270004C1400 /* UILabel+DynamicType.swift in Sources */,
 				EABF79192538967500F2460C /* ResourceCategoryListViewController.swift in Sources */,
 				97401C9C2414D3460015F8E8 /* URL.swift in Sources */,
 				EABF793125389EE200F2460C /* ResourceItemListViewController.swift in Sources */,

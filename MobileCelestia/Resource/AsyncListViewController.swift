@@ -28,7 +28,13 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
             return UIActivityIndicatorView(style: .whiteLarge)
         }
     }()
-    private lazy var refreshButton = UIButton(type: .system)
+    private lazy var refreshButton: UIButton = {
+        if #available(iOS 15.0, *) {
+            return UIButton(configuration: .plain())
+        } else {
+            return UIButton(type: .system)
+        }
+    }()
 
     private var items: [[T]] = []
     private var selection: (T) -> Void

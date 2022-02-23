@@ -109,7 +109,7 @@ class ToolbarImageTextButtonCell: UICollectionViewCell, ToolbarCell {
     var touchUpHandler: ((UIButton, Bool) -> Void)?
 
     private lazy var imageView = UIImageView()
-    private lazy var label = UILabel()
+    private lazy var label = UILabel(textStyle: .body)
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -156,7 +156,6 @@ class ToolbarImageTextButtonCell: UICollectionViewCell, ToolbarCell {
         imageView.tintColor = .darkLabel
 
         bg.addSubview(label)
-        label.font = UIFont.preferredFont(forTextStyle: .body)
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -187,10 +186,11 @@ class ToolbarImageTextButtonCell: UICollectionViewCell, ToolbarCell {
 
     override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
         let attributes = super.preferredLayoutAttributesFitting(layoutAttributes)
-        attributes.size = contentView.systemLayoutSizeFitting(
+        let fittingSize = contentView.systemLayoutSizeFitting(
             CGSize(width: layoutAttributes.size.width, height: 0),
             withHorizontalFittingPriority: UILayoutPriority.required,
             verticalFittingPriority: UILayoutPriority.defaultLow)
+        attributes.size = CGSize(width: fittingSize.width.rounded(.down), height: fittingSize.height)
         return attributes
     }
 }

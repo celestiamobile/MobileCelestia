@@ -12,7 +12,7 @@
 import UIKit
 
 class MultiLineTextCell: UITableViewCell {
-    private lazy var label = UILabel()
+    private lazy var label = UILabel(textStyle: .body)
 
     var title: String? { didSet { label.text = title }  }
     var attributedTitle: NSAttributedString? { didSet { label.attributedText = attributedTitle } }
@@ -41,7 +41,6 @@ private extension MultiLineTextCell {
         contentView.addSubview(label)
         label.textColor = .darkLabel
         label.numberOfLines = 0
-        label.font = UIFont.preferredFont(forTextStyle: .body)
 
         NSLayoutConstraint.activate([
             label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),

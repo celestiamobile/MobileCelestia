@@ -24,7 +24,7 @@ class LoadingFailureViewController: UIViewController {
     }
 
     private func setup() {
-        let label = UILabel()
+        let label = UILabel(textStyle: .body)
         view.addSubview(label)
         label.textColor = .darkLabel
         label.translatesAutoresizingMaskIntoConstraints = false

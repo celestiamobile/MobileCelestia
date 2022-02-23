@@ -18,10 +18,10 @@ class DestinationDetailViewController: UIViewController {
     private let goToHandler: () -> Void
 
     private lazy var scrollView = UIScrollView(frame: .zero)
-    private lazy var goToButton = ActionButton(type: .system)
+    private lazy var goToButton = ActionButtonHelper.newButton()
 
-    private lazy var titleLabel = UILabel()
-    private lazy var descriptionLabel = UILabel()
+    private lazy var titleLabel = UILabel(textStyle: .title2, weight: .semibold)
+    private lazy var descriptionLabel = UILabel(textStyle: .body)
 
     private lazy var contentStack = UIStackView(arrangedSubviews: [
         titleLabel,
@@ -86,12 +86,10 @@ private extension DestinationDetailViewController {
         ])
 
         titleLabel.textColor = .darkLabel
-        titleLabel.font = UIFont.preferredFont(forTextStyle: .title2, weight: .semibold)
         titleLabel.numberOfLines = 0
         titleLabel.lineBreakMode = .byCharWrapping
 
         descriptionLabel.textColor = .darkSecondaryLabel
-        descriptionLabel.font = UIFont.preferredFont(forTextStyle: .body)
         descriptionLabel.numberOfLines = 0
         descriptionLabel.lineBreakMode = .byCharWrapping
 

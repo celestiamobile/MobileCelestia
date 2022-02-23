@@ -44,7 +44,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
         setlocale(LC_ALL, "")
-        setlocale(LC_NUMERIC, "C");
+        setlocale(LC_NUMERIC, "C")
 
         #if targetEnvironment(macCatalyst)
         MacBridge.initialize()
@@ -91,6 +91,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UITabBar.appearance().tintColor = .themeLabel
         UISearchBar.appearance().tintColor = .themeLabel
         UISegmentedControl.appearance().tintColor = .themeLabel
+        UIProgressView.appearance().trackTintColor = .progressBackground
+        UIProgressView.appearance().progressTintColor = .progressForeground
         #endif
 
         #if !DEBUG

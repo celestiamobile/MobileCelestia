@@ -12,7 +12,7 @@
 import UIKit
 
 class SettingStepperCell: UITableViewCell {
-    private lazy var label = UILabel()
+    private lazy var label = UILabel(textStyle: .body)
     private lazy var stepper = UIStepper()
 
     var title: String? { didSet { label.text = title }  }
@@ -50,7 +50,6 @@ private extension SettingStepperCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(label)
         label.textColor = .darkLabel
-        label.font = UIFont.preferredFont(forTextStyle: .body)
         label.numberOfLines = 0
 
         stepper.wraps = true

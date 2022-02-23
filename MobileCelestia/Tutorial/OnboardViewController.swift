@@ -44,8 +44,7 @@ private extension OnboardViewController {
     func setup() {
         view.backgroundColor = .darkSecondaryBackground
 
-        let welcomeView = UILabel()
-        welcomeView.font = UIFont.preferredFont(forTextStyle: .largeTitle)
+        let welcomeView = UILabel(textStyle: .largeTitle)
         welcomeView.text = CelestiaString("Welcome to Celestia", comment: "")
         welcomeView.textColor = .darkLabel
         welcomeView.numberOfLines = 0
