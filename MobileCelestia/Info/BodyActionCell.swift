@@ -49,7 +49,13 @@ final class BodyActionCell: UICollectionViewCell {
             CGSize(width: layoutAttributes.size.width, height: 0),
             withHorizontalFittingPriority: UILayoutPriority.required,
             verticalFittingPriority: UILayoutPriority.defaultLow)
-        attributes.size = CGSize(width: fittingSize.width.rounded(.down), height: max(fittingSize.height, layoutAttributes.size.height))
+        let height: CGFloat
+        if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
+            height = fittingSize.height
+        } else {
+            height = max(fittingSize.height, layoutAttributes.size.height)
+        }
+        attributes.size = CGSize(width: fittingSize.width.rounded(.down), height: height)
         return attributes
     }
 }

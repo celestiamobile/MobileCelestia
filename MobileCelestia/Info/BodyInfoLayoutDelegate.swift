@@ -18,7 +18,7 @@ extension InfoViewController: UICollectionViewDelegateFlowLayout {
         let width = collectionView.bounds.width - 2 * buttonSpacing
         let height = collectionView.bounds.height
         if indexPath.section == 0 { return CGSize(width: width.rounded(.towardZero), height: height) }
-        return CGSize(width: ((width - buttonSpacing) / 2).rounded(.towardZero), height: 44)
+        return CGSize(width: ((width - buttonSpacing) / 2).rounded(.towardZero), height: 1)
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
