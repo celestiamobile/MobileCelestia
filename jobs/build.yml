@@ -112,6 +112,14 @@ jobs:
     displayName: 'Download Mac (Developer ID) Provisioning Profile'
 
   - script: |
+      sed -i '' 's/APPCENTER-APP-CATALYST/63a9e404-a07b-40eb-a5e7-320f65934b05/g' MobileCelestia/AppDelegate.swift
+      sed -i '' 's/APPCENTER-APP-IOS/4c46cd7d-ea97-452b-920c-4328ac062db3/g' MobileCelestia/AppDelegate.swift
+      echo "New Content:"
+      cat MobileCelestia/AppDelegate.swift
+    workingDirectory: '$(System.DefaultWorkingDirectory)/MobileCelestia'
+    displayName: 'Replace AppCenter Placeholders'
+
+  - script: |
       # create variables
       KEYCHAIN_PATH=$(Agent.TempDirectory)/app-signing.keychain-db
       KEYCHAIN_PASSWORD=temppassword

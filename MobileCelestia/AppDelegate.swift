@@ -97,9 +97,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         #if !DEBUG
         #if targetEnvironment(macCatalyst)
-        let appCenterID = "63a9e404-a07b-40eb-a5e7-320f65934b05"
+        let appCenterID = "APPCENTER-APP-CATALYST"
         #else
-        let appCenterID = "4c46cd7d-ea97-452b-920c-4328ac062db3"
+        let appCenterID = "APPCENTER-APP-IOS"
         #endif
         AppCenter.start(withAppSecret: appCenterID, services: [
             Analytics.self,
