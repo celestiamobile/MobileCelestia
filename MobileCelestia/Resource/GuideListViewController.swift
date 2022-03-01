@@ -25,16 +25,14 @@ extension GuideItem: AsyncListItem {
 class GuideListViewController: AsyncListViewController<GuideItem> {
     private let type: String
     private let listTitle: String
-    private let errorMessage: String
 
     override class var useStylizedCells: Bool {
         return false
     }
 
-    init(type: String, title: String, defaultErrorMessage: String, selection: @escaping (GuideItem) -> Void) {
+    init(type: String, title: String, selection: @escaping (GuideItem) -> Void) {
         self.type = type
         self.listTitle = title
-        self.errorMessage = defaultErrorMessage
         super.init(selection: selection)
     }
 
@@ -48,15 +46,16 @@ class GuideListViewController: AsyncListViewController<GuideItem> {
         title = listTitle
     }
 
-    override var defaultErrorMessage: String? {
-        return errorMessage
-    }
-
-    override func refresh(success: @escaping ([[GuideItem]]) -> Void, failure: @escaping (Error) -> Void) {
+    override func loadItems(pageStart: Int, pageSize: Int, success: @escaping ([GuideItem]) -> Void, failure: @escaping (Error) -> Void) {
         let requestURL = apiPrefix + "/resource/guides"
         let locale = LocalizedString("LANGUAGE", "celestia")
-        _ = RequestHandler.get(url: requestURL, parameters: ["lang": locale, "type": type], success: { (items: [GuideItem]) in
-            success([items])
+        _ = RequestHandler.get(url: requestURL, parameters: [
+            "lang": locale,
+            "type": type,
+            "pageStart": "\(pageStart)",
+            "pageSize": "\(pageSize)",
+        ], success: { (items: [GuideItem]) in
+            success(items)
         }, failure: failure)
     }
 }

@@ -414,7 +414,7 @@ extension MainViewController: CelestiaControllerDelegate {
         case .speedometer:
             presentSpeedControl()
         case .newsarchive:
-            showViewController(GuideViewController(type: "news", title: CelestiaString("News", comment: ""), defaultErrorMessage: CelestiaString("Failed to load news.", comment: "")))
+            showViewController(GuideViewController(type: "news", title: CelestiaString("News", comment: "")))
         #if targetEnvironment(macCatalyst)
         case .mirror:
             if UIApplication.shared.connectedScenes.contains(where: { $0.delegate is DisplaySceneDelegate }) {

@@ -18,12 +18,10 @@ class GuideViewController: UIViewController {
 
     private let type: String
     private let listTitle: String
-    private let defaultErrorMessage: String
 
-    init(type: String, title: String, defaultErrorMessage: String) {
+    init(type: String, title: String) {
         self.type = type
         self.listTitle = title
-        self.defaultErrorMessage = defaultErrorMessage
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -45,7 +43,7 @@ class GuideViewController: UIViewController {
 
 private extension GuideViewController {
     func setUp() {
-        main = GuideListViewController(type: type, title: listTitle, defaultErrorMessage: defaultErrorMessage, selection: { [weak self] item in
+        main = GuideListViewController(type: type, title: listTitle, selection: { [weak self] item in
             guard let self = self else { return }
             self.navigation.pushViewController(CommonWebViewController(url: .fromGuide(guideItemID: item.id, language: LocalizedString("LANGUAGE", "celestia"))), animated: true)
         })
