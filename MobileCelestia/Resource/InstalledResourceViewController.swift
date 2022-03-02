@@ -14,17 +14,32 @@ import UIKit
 import CelestiaCore
 
 class InstalledResourceViewController: AsyncListViewController<ResourceItem> {
+    private var savedItems: [ResourceItem] = []
+
     override func viewDidLoad() {
         super.viewDidLoad()
         title = CelestiaString("Installed", comment: "")
     }
 
-    override func refresh(success: @escaping ([[ResourceItem]]) -> Void, failure: @escaping (Error) -> Void) {
+    override func loadItems(pageStart: Int, pageSize: Int, success: @escaping ([ResourceItem]) -> Void, failure: @escaping (Error) -> Void) {
+        if !savedItems.isEmpty {
+            success(getItemsForRange(pageStart: pageStart, pageSize: pageSize))
+            return
+        }
         DispatchQueue.global().async {
             let items = ResourceManager.shared.installedResources()
-            DispatchQueue.main.async {
-                success([items])
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else { return }
+                self.savedItems = items
+                success(self.getItemsForRange(pageStart: pageStart, pageSize: pageSize))
             }
         }
+    }
+
+    private func getItemsForRange(pageStart: Int, pageSize: Int) -> [ResourceItem] {
+        if pageStart < 0 || pageStart >= savedItems.count || pageSize <= 0 {
+            return []
+        }
+        return Array(savedItems[pageStart..<min(pageStart + pageSize, savedItems.count)])
     }
 }

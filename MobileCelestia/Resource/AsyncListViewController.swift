@@ -28,6 +28,7 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
             return UIActivityIndicatorView(style: .whiteLarge)
         }
     }()
+
     private lazy var refreshButton: UIButton = {
         if #available(iOS 15.0, *) {
             return UIButton(configuration: .plain())
@@ -36,7 +37,11 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
         }
     }()
 
-    private var items: [[T]] = []
+    var additionalItem: T?
+
+    private var items: [T] = []
+    private var hasMoreToLoad = true
+    private var isLoading = false
     private var selection: (T) -> Void
 
     init(selection: @escaping (T) -> Void) {
@@ -55,22 +60,41 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
         callRefresh()
     }
 
-    var defaultErrorMessage: String? {
-        return nil
-    }
-
-    func refresh(success: @escaping ([[T]]) -> Void, failure: @escaping (Error) -> Void) {}
+    func loadItems(pageStart: Int, pageSize: Int, success: @escaping ([T]) -> Void, failure: @escaping (Error) -> Void) {}
 
     @objc private func callRefresh() {
-        let defaultErrorMessage = self.defaultErrorMessage
-        startRefreshing()
-        refresh { [weak self] items in
-            self?.items = items
-            self?.tableView.reloadData()
-            self?.stopRefreshing(success: true)
+        loadNewItems()
+    }
+
+    private func loadNewItems() {
+        guard hasMoreToLoad, !isLoading else { return }
+
+        isLoading = true
+        let pageStart = items.count
+        let freshLoad = pageStart == 0
+        let pageSize = freshLoad ? 40 : 20
+        if freshLoad {
+            startRefreshing()
+        }
+        loadItems(pageStart: pageStart, pageSize: pageSize) { [weak self] newItems in
+            guard let self = self else { return }
+            if freshLoad {
+                self.stopRefreshing(success: true)
+            }
+            self.hasMoreToLoad = newItems.count > 0
+            self.isLoading = false
+            self.items.append(contentsOf: newItems)
+            if freshLoad {
+                self.tableView.reloadData()
+            } else {
+                self.tableView.insertRows(at: (pageStart..<(pageStart + newItems.count)).map{ IndexPath(row: $0, section: 0) }, with: .automatic)
+            }
         } failure: { [weak self] error in
-            self?.stopRefreshing(success: false)
-            self?.showError(defaultErrorMessage ?? error.localizedDescription)
+            guard let self = self else { return }
+            if freshLoad {
+                self.stopRefreshing(success: false)
+            }
+            self.isLoading = false
         }
     }
 
@@ -85,15 +109,15 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
     }
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return items.count
+        return additionalItem == nil ? 1 : 2
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return items[section].count
+        return section == 0 ? items.count : additionalItem == nil ? 0 : 1
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let item = items[indexPath.section][indexPath.row]
+        let item = indexPath.section == 0 ? items[indexPath.row] : additionalItem!
         if Self.useStandardUITableViewCell {
             let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath)
             if #available(iOS 14, *) {
@@ -119,7 +143,17 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        selection(items[indexPath.section][indexPath.row])
+        if indexPath.section == 0 {
+            selection(items[indexPath.row])
+        } else if let item = additionalItem {
+            selection(item)
+        }
+    }
+
+    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.section == 0 && indexPath.row == items.count - 1 {
+            loadNewItems()
+        }
     }
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

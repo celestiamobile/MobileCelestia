@@ -67,10 +67,6 @@ class ResourceCategoryListViewController: AsyncListViewController<ResourceCatego
         #endif
     }
 
-    override var defaultErrorMessage: String? {
-        return CelestiaString("Failed to load add-ons.", comment: "")
-    }
-
     #if targetEnvironment(macCatalyst)
     override class var showDisclosureIndicator: Bool {
         return false
@@ -79,18 +75,23 @@ class ResourceCategoryListViewController: AsyncListViewController<ResourceCatego
     override class var useStandardUITableViewCell: Bool {
         return true
     }
+
+    override var additionalItem: ResourceCategoryItem? {
+        get { return .installed }
+        set {}
+    }
     #endif
 
-    override func refresh(success: @escaping ([[ResourceCategoryItem]]) -> Void, failure: @escaping (Error) -> Void) {
+    override func loadItems(pageStart: Int, pageSize: Int, success: @escaping ([ResourceCategoryItem]) -> Void, failure: @escaping (Error) -> Void) {
         let requestURL = apiPrefix + "/resource/categories"
         let locale = LocalizedString("LANGUAGE", "celestia")
-        _ = RequestHandler.get(url: requestURL, parameters: ["lang" : locale], success: { (categories: [ResourceCategory]) in
+        _ = RequestHandler.get(url: requestURL, parameters: [
+            "lang" : locale,
+            "pageStart": "\(pageStart)",
+            "pageSize": "\(pageSize)",
+        ], success: { (categories: [ResourceCategory]) in
             let items = categories.map{ ResourceCategoryItem.wrapped(category: $0) }
-            #if targetEnvironment(macCatalyst)
-            success([items, [.installed]])
-            #else
-            success([items])
-            #endif
+            success(items)
         }, failure: failure)
     }
 
