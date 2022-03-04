@@ -225,8 +225,7 @@ extension CelestiaDisplayController {
 
         AppCore.makeRenderContextCurrent()
 
-        let locale = LocalizedString("LANGUAGE", "celestia")
-        let (font, boldFont) = getInstalledFontFor(locale: locale)
+        let (font, boldFont) = getInstalledFontFor(locale: AppCore.language)
         core.clearFonts()
         core.setFont(font.filePath, collectionIndex: font.collectionIndex, fontSize: 9)
         core.setTitleFont(boldFont.filePath, collectionIndex: boldFont.collectionIndex, fontSize: 15)

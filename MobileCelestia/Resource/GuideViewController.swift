@@ -45,7 +45,7 @@ private extension GuideViewController {
     func setUp() {
         main = GuideListViewController(type: type, title: listTitle, selection: { [weak self] item in
             guard let self = self else { return }
-            self.navigation.pushViewController(CommonWebViewController(url: .fromGuide(guideItemID: item.id, language: LocalizedString("LANGUAGE", "celestia"))), animated: true)
+            self.navigation.pushViewController(CommonWebViewController(url: .fromGuide(guideItemID: item.id, language: AppCore.language)), animated: true)
         })
         navigation = UINavigationController(rootViewController: main)
         install(navigation)

@@ -42,9 +42,8 @@ class ResourceItemListViewController: AsyncListViewController<ResourceItem> {
 
     override func loadItems(pageStart: Int, pageSize: Int, success: @escaping ([ResourceItem]) -> Void, failure: @escaping (Error) -> Void) {
         let requestURL = apiPrefix + "/resource/items"
-        let locale = LocalizedString("LANGUAGE", "celestia")
         _ = RequestHandler.get(url: requestURL, parameters: [
-            "lang": locale,
+            "lang": AppCore.language,
             "category": category.id,
             "pageStart": "\(pageStart)",
             "pageSize": "\(pageSize)",

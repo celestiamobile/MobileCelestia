@@ -84,9 +84,8 @@ class ResourceCategoryListViewController: AsyncListViewController<ResourceCatego
 
     override func loadItems(pageStart: Int, pageSize: Int, success: @escaping ([ResourceCategoryItem]) -> Void, failure: @escaping (Error) -> Void) {
         let requestURL = apiPrefix + "/resource/categories"
-        let locale = LocalizedString("LANGUAGE", "celestia")
         _ = RequestHandler.get(url: requestURL, parameters: [
-            "lang" : locale,
+            "lang" : AppCore.language,
             "pageStart": "\(pageStart)",
             "pageSize": "\(pageSize)",
         ], success: { (categories: [ResourceCategory]) in

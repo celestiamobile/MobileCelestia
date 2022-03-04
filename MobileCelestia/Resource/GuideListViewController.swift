@@ -48,9 +48,8 @@ class GuideListViewController: AsyncListViewController<GuideItem> {
 
     override func loadItems(pageStart: Int, pageSize: Int, success: @escaping ([GuideItem]) -> Void, failure: @escaping (Error) -> Void) {
         let requestURL = apiPrefix + "/resource/guides"
-        let locale = LocalizedString("LANGUAGE", "celestia")
         _ = RequestHandler.get(url: requestURL, parameters: [
-            "lang": locale,
+            "lang": AppCore.language,
             "type": type,
             "pageStart": "\(pageStart)",
             "pageSize": "\(pageSize)",

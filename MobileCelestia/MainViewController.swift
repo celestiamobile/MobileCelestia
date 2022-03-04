@@ -18,11 +18,10 @@ import UniformTypeIdentifiers
 extension URL {
     static func fromGuide(guideItemID: String, language: String) -> URL {
         let baseURL = "https://celestia.mobi/resources/guide"
-        let locale = LocalizedString("LANGUAGE", "celestia")
         var components = URLComponents(string: baseURL)!
         components.queryItems = [
             URLQueryItem(name: "guide", value: guideItemID),
-            URLQueryItem(name: "lang", value: locale),
+            URLQueryItem(name: "lang", value: language),
             URLQueryItem(name: "environment", value: "app"),
             URLQueryItem(name: "theme", value: "dark")
         ]
@@ -31,11 +30,10 @@ extension URL {
 
     static func fromAddon(addonItemID: String, language: String) -> URL {
         let baseURL = "https://celestia.mobi/resources/item"
-        let locale = LocalizedString("LANGUAGE", "celestia")
         var components = URLComponents(string: baseURL)!
         components.queryItems = [
             URLQueryItem(name: "item", value: addonItemID),
-            URLQueryItem(name: "lang", value: locale),
+            URLQueryItem(name: "lang", value: language),
             URLQueryItem(name: "environment", value: "app"),
             URLQueryItem(name: "theme", value: "dark"),
             URLQueryItem(name: "titleVisibility", value: "visible"),
@@ -212,7 +210,7 @@ extension MainViewController {
             return
         }
 
-        let locale = LocalizedString("LANGUAGE", "celestia")
+        let locale = AppCore.language
         if let guide = guideToOpen {
             // Need to wrap it in a NavVC without NavBar to make sure
             // the scrolling behavior is correct on macCatalyst

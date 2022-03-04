@@ -45,7 +45,7 @@ class ResourceItemViewController: UIViewController {
     private lazy var buttonStack = UIStackView(arrangedSubviews: [goToButton, statusButtonContainer])
 
     private lazy var itemInfoController: CommonWebViewController = {
-        return CommonWebViewController(url: .fromAddon(addonItemID: item.id, language: LocalizedString("LANGUAGE", "celestia")))
+        return CommonWebViewController(url: .fromAddon(addonItemID: item.id, language: AppCore.language))
     }()
 
     private var scrollViewTopToViewTopConstrant: NSLayoutConstraint?
