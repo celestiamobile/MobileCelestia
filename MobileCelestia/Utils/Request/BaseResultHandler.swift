@@ -24,22 +24,28 @@ struct BaseResult: JSONDecodable {
     let info: Info
 }
 
+enum WrappedError: Error {
+    case requestError(error: RequestError)
+    case serverError(message: String?)
+    case otherError
+}
+
 typealias RequestHandler = JSONRequestHandler<BaseResult>
 
 extension RequestHandler {
     class func post<T: Decodable>(url: String,
                                   parameters: [String: String] = [:],
                                   success: ((T) -> Void)? = nil,
-                                  failure: FailureHandler? = nil,
+                                  failure: ((WrappedError) -> Void)? = nil,
                                   decoder: JSONDecoder = JSONDecoder(),
                                   session: URLSession = .shared) -> Self {
         return post(url: url, parameters: parameters, success: { (output) in
             func unexpectedServerError() {
-                DispatchQueue.main.async { failure?(.unknown) }
+                DispatchQueue.main.async { failure?(.otherError) }
             }
 
             guard output.status == 0, let data = output.info.detail?.data(using: .utf8) else {
-                unexpectedServerError()
+                DispatchQueue.main.async { failure?(.serverError(message: output.info.reason)) }
                 return
             }
             do {
@@ -49,24 +55,24 @@ extension RequestHandler {
                 unexpectedServerError()
             }
         }, failure: { error in
-            DispatchQueue.main.async { failure?(error) }
+            DispatchQueue.main.async { failure?(.requestError(error: error)) }
         }, session: session)
     }
 
     class func get<T: Decodable>(url: String,
-                                  parameters: [String: String] = [:],
-                                  success: ((T) -> Void)? = nil,
-                                  failure: FailureHandler? = nil,
-                                  decoder: JSONDecoder = JSONDecoder(),
-                                  queue: DispatchQueue = .main,
-                                  session: URLSession = .shared) -> Self {
+                                 parameters: [String: String] = [:],
+                                 success: ((T) -> Void)? = nil,
+                                 failure: ((WrappedError) -> Void)? = nil,
+                                 decoder: JSONDecoder = JSONDecoder(),
+                                 queue: DispatchQueue = .main,
+                                 session: URLSession = .shared) -> Self {
         return get(url: url, parameters: parameters, success: { (output) in
             func unexpectedServerError() {
-                DispatchQueue.main.async { failure?(.unknown) }
+                DispatchQueue.main.async { failure?(.otherError) }
             }
 
             guard output.status == 0, let data = output.info.detail?.data(using: .utf8) else {
-                unexpectedServerError()
+                DispatchQueue.main.async { failure?(.serverError(message: output.info.reason)) }
                 return
             }
             do {
@@ -76,7 +82,7 @@ extension RequestHandler {
                 unexpectedServerError()
             }
         }, failure: { error in
-            DispatchQueue.main.async { failure?(error) }
+            DispatchQueue.main.async { failure?(.requestError(error: error)) }
         }, session: session)
     }
 }

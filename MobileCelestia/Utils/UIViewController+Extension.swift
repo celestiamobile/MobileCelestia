@@ -46,8 +46,8 @@ extension UIViewController {
 }
 
 extension UIViewController {
-    @discardableResult func showError(_ title: String) -> UIAlertController {
-        let alert = UIAlertController(title: title, message: nil, preferredStyle: .alert)
+    @discardableResult func showError(_ title: String, detail: String? = nil) -> UIAlertController {
+        let alert = UIAlertController(title: title, message: detail, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: CelestiaString("OK", comment: ""), style: .default, handler: nil))
         presentAlert(alert)
         return alert

@@ -775,31 +775,37 @@ extension UIViewController {
             let publicURL: String
         }
 
-        let showShareFail: () -> Void = { [unowned self] in
-            self.showError(CelestiaString("Cannot share URL", comment: ""))
+        let showShareFail: (String?) -> Void = { [unowned self] message in
+            self.showError(CelestiaString("Cannot share URL", comment: ""), detail: message)
         }
 
         guard let data = url.data(using: .utf8) else {
-            showShareFail()
+            showShareFail(nil)
             return
         }
 
         let alert = showLoading(CelestiaString("Generating sharing link…", comment: ""))
         _ = RequestHandler.post(url: requestURL, parameters: [
-            "title" : title,
-            "url" : data.base64EncodedURLString(),
-            "version" : Bundle.app.infoDictionary!["CFBundleVersion"] as! String
+            "title": title,
+            "url": data.base64EncodedURLString(),
+            "version": Bundle.app.infoDictionary!["CFBundleVersion"] as! String,
+            "lang": AppCore.language,
         ], success: { [unowned self] (result: URLCreationResponse) in
             alert.dismiss(animated: true) {
                 guard let url = URL(string: result.publicURL) else {
-                    showShareFail()
+                    showShareFail(nil)
                     return
                 }
                 self.showShareSheet(for: url)
             }
-        }, failure: { _ in
+        }, failure: { error in
             alert.dismiss(animated: true) {
-                showShareFail()
+                switch error {
+                case .serverError(let message):
+                    showShareFail(message)
+                default:
+                    showShareFail(nil)
+                }
             }
         })
     }
