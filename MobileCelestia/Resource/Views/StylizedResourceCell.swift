@@ -41,6 +41,7 @@ final class StylizedResourceCell: UITableViewCell {
         static let verticalMargin: CGFloat = 8
         static let textHorizontalMargin: CGFloat = 12
         static let textVerticalMargin: CGFloat = 8
+        static let contentAspectRatio: CGFloat = 3
     }
 
     private lazy var label = UILabel(textStyle: .title3, weight: .semibold)
@@ -101,7 +102,7 @@ private extension StylizedResourceCell {
             containerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -Constants.verticalMargin),
             containerView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Constants.horizontalMargin),
             containerView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -Constants.horizontalMargin),
-            containerView.heightAnchor.constraint(equalTo: containerView.widthAnchor, multiplier: 0.3333),
+            containerView.widthAnchor.constraint(equalTo: containerView.heightAnchor, multiplier: Constants.contentAspectRatio),
         ])
 
         containerView.addSubview(backgroundImageView)

@@ -159,6 +159,13 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
+
+    override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        if Self.useStylizedCells {
+            return (tableView.bounds.width - 2 * StylizedResourceCell.Constants.horizontalMargin) / StylizedResourceCell.Constants.contentAspectRatio + 2 * StylizedResourceCell.Constants.verticalMargin
+        }
+        return 44
+    }
 }
 
 private extension AsyncListViewController {
