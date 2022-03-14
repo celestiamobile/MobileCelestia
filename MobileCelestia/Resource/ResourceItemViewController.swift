@@ -9,9 +9,9 @@
 // of the License, or (at your option) any later version.
 //
 
-import UIKit
-
 import CelestiaCore
+import MWRequest
+import UIKit
 
 class ResourceItemViewController: UIViewController {
     enum ResourceItemState {
@@ -77,6 +77,19 @@ class ResourceItemViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(resourceFetchError(_:)), name: ResourceManager.resourceError, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(downloadSuccess(_:)), name: ResourceManager.downloadSuccess, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(unzipSuccess(_:)), name: ResourceManager.unzipSuccess, object: nil)
+
+        // Fetch the latest item, this is needed as user might come
+        // here from Installed where the URL might be incorrect
+        refresh()
+    }
+
+    private func refresh() {
+        let requestURL = apiPrefix + "/resource/item"
+        _ = RequestHandler.get(url: requestURL, parameters: ["lang": AppCore.language, "item": item.id], success: { [weak self] (item: ResourceItem) in
+            guard let self = self else { return }
+            self.item = item
+            self.updateUI()
+        }, decoder: ResourceItem.networkResponseDecoder)
     }
 
     @objc private func goToButtonClicked() {
