@@ -65,8 +65,6 @@
 		EA10553324935A4700E49C6D /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA10553224935A4700E49C6D /* Metal.framework */; };
 		EA17951B27B1510500D47397 /* CelestiaScriptHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA17951A27B1510500D47397 /* CelestiaScriptHandler.swift */; };
 		EA17952027B371D700D47397 /* GuideItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA17951F27B371D700D47397 /* GuideItem.swift */; };
-		EA17952227B3723000D47397 /* GuideViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA17952127B3723000D47397 /* GuideViewController.swift */; };
-		EA17952427B3724300D47397 /* GuideListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA17952327B3724300D47397 /* GuideListViewController.swift */; };
 		EA1823ED27C08D3D00E0F5E4 /* CelestiaHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = EA1823EC27C08D3D00E0F5E4 /* CelestiaHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		EA1823F027C08D3D00E0F5E4 /* CelestiaHelper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA1823EA27C08D3D00E0F5E4 /* CelestiaHelper.framework */; platformFilter = maccatalyst; };
 		EA1823F727C08E3500E0F5E4 /* CEHExceptionCatching.h in Headers */ = {isa = PBXBuildFile; fileRef = EA1823F527C08E3500E0F5E4 /* CEHExceptionCatching.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -95,17 +93,12 @@
 		EA9FB23F27B7852A00E0DC1F /* CommonSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9FB23E27B7852A00E0DC1F /* CommonSceneDelegate.swift */; };
 		EAA5A7A1259DBFE6001AFA82 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = EAA5A7A3259DBFE6001AFA82 /* InfoPlist.strings */; };
 		EAA6C4CB253B5CD200ED1D60 /* InstalledResourceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAA6C4CA253B5CD200ED1D60 /* InstalledResourceViewController.swift */; };
-		EAB08FE02780464C00BB82F0 /* ImageCacheManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAB08FDF2780464C00BB82F0 /* ImageCacheManager.swift */; };
-		EAB08FE22780471200BB82F0 /* StylizedResourceCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAB08FE12780471200BB82F0 /* StylizedResourceCell.swift */; };
 		EAB08FE42780550600BB82F0 /* Font.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAB08FE32780550600BB82F0 /* Font.swift */; };
 		EABDE367247170F000E0A5FA /* SettngSliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABDE366247170F000E0A5FA /* SettngSliderCell.swift */; };
 		EABDE3A92473DAA300E0A5FA /* SettingCommonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABDE3A82473DAA300E0A5FA /* SettingCommonViewController.swift */; };
 		EABF7911253895FD00F2460C /* ResourceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF7910253895FD00F2460C /* ResourceViewController.swift */; };
-		EABF79192538967500F2460C /* ResourceCategoryListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF79182538967500F2460C /* ResourceCategoryListViewController.swift */; };
 		EABF791E2538986400F2460C /* AsyncListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF791D2538986400F2460C /* AsyncListViewController.swift */; };
-		EABF792425389B2400F2460C /* ResourceCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF792325389B2400F2460C /* ResourceCategory.swift */; };
 		EABF792C25389B3100F2460C /* ResourceItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF792B25389B3100F2460C /* ResourceItem.swift */; };
-		EABF793125389EE200F2460C /* ResourceItemListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF793025389EE200F2460C /* ResourceItemListViewController.swift */; };
 		EABF793C2538A1C100F2460C /* ResourceItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF793B2538A1C100F2460C /* ResourceItemViewController.swift */; };
 		EABF794A2538A86500F2460C /* ResourceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF79492538A86500F2460C /* ResourceManager.swift */; };
 		EAC2F4D02647F2920039DF2F /* SearchResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC2F4CF2647F2920039DF2F /* SearchResultViewController.swift */; };
@@ -249,8 +242,6 @@
 		EA113709262C72B2002E49DA /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EA17951A27B1510500D47397 /* CelestiaScriptHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaScriptHandler.swift; sourceTree = "<group>"; };
 		EA17951F27B371D700D47397 /* GuideItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideItem.swift; sourceTree = "<group>"; };
-		EA17952127B3723000D47397 /* GuideViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideViewController.swift; sourceTree = "<group>"; };
-		EA17952327B3724300D47397 /* GuideListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideListViewController.swift; sourceTree = "<group>"; };
 		EA1823EA27C08D3D00E0F5E4 /* CelestiaHelper.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CelestiaHelper.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA1823EC27C08D3D00E0F5E4 /* CelestiaHelper.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CelestiaHelper.h; sourceTree = "<group>"; };
 		EA1823F527C08E3500E0F5E4 /* CEHExceptionCatching.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CEHExceptionCatching.h; sourceTree = "<group>"; };
@@ -281,17 +272,12 @@
 		EAA5A7A2259DBFE6001AFA82 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EAA5A7A7259DC062001AFA82 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EAA6C4CA253B5CD200ED1D60 /* InstalledResourceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstalledResourceViewController.swift; sourceTree = "<group>"; };
-		EAB08FDF2780464C00BB82F0 /* ImageCacheManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageCacheManager.swift; sourceTree = "<group>"; };
-		EAB08FE12780471200BB82F0 /* StylizedResourceCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StylizedResourceCell.swift; sourceTree = "<group>"; };
 		EAB08FE32780550600BB82F0 /* Font.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Font.swift; sourceTree = "<group>"; };
 		EABDE366247170F000E0A5FA /* SettngSliderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettngSliderCell.swift; sourceTree = "<group>"; };
 		EABDE3A82473DAA300E0A5FA /* SettingCommonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingCommonViewController.swift; sourceTree = "<group>"; };
 		EABF7910253895FD00F2460C /* ResourceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceViewController.swift; sourceTree = "<group>"; };
-		EABF79182538967500F2460C /* ResourceCategoryListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceCategoryListViewController.swift; sourceTree = "<group>"; };
 		EABF791D2538986400F2460C /* AsyncListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncListViewController.swift; sourceTree = "<group>"; };
-		EABF792325389B2400F2460C /* ResourceCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceCategory.swift; sourceTree = "<group>"; };
 		EABF792B25389B3100F2460C /* ResourceItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceItem.swift; sourceTree = "<group>"; };
-		EABF793025389EE200F2460C /* ResourceItemListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceItemListViewController.swift; sourceTree = "<group>"; };
 		EABF793B2538A1C100F2460C /* ResourceItemViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceItemViewController.swift; sourceTree = "<group>"; };
 		EABF79492538A86500F2460C /* ResourceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceManager.swift; sourceTree = "<group>"; };
 		EAC2F4CF2647F2920039DF2F /* SearchResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultViewController.swift; sourceTree = "<group>"; };
@@ -380,7 +366,6 @@
 				977394A22403E68800E38B82 /* Color.swift */,
 				EA5E185B2477C78E00F5374B /* Toast.swift */,
 				EAD94F66261EED7700A93C93 /* UITableView+Extensions.swift */,
-				EAB08FDF2780464C00BB82F0 /* ImageCacheManager.swift */,
 				EAB08FE32780550600BB82F0 /* Font.swift */,
 				EA7209DF27C64270004C1400 /* UILabel+DynamicType.swift */,
 			);
@@ -649,14 +634,10 @@
 				EABF79402538A4DF00F2460C /* Views */,
 				EABF792225389B1700F2460C /* Models */,
 				EABF7910253895FD00F2460C /* ResourceViewController.swift */,
-				EABF79182538967500F2460C /* ResourceCategoryListViewController.swift */,
-				EABF793025389EE200F2460C /* ResourceItemListViewController.swift */,
 				EABF793B2538A1C100F2460C /* ResourceItemViewController.swift */,
 				EABF791D2538986400F2460C /* AsyncListViewController.swift */,
 				EAA6C4CA253B5CD200ED1D60 /* InstalledResourceViewController.swift */,
 				EAE6AC0E27A438E400F953DF /* CommonWebViewController.swift */,
-				EA17952127B3723000D47397 /* GuideViewController.swift */,
-				EA17952327B3724300D47397 /* GuideListViewController.swift */,
 			);
 			path = Resource;
 			sourceTree = "<group>";
@@ -664,7 +645,6 @@
 		EABF792225389B1700F2460C /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				EABF792325389B2400F2460C /* ResourceCategory.swift */,
 				EABF792B25389B3100F2460C /* ResourceItem.swift */,
 				EABF79492538A86500F2460C /* ResourceManager.swift */,
 				EA17951A27B1510500D47397 /* CelestiaScriptHandler.swift */,
@@ -676,7 +656,6 @@
 		EABF79402538A4DF00F2460C /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				EAB08FE12780471200BB82F0 /* StylizedResourceCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -720,8 +699,8 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 979D2F9923FEB1A8005D2592 /* Build configuration list for PBXNativeTarget "MobileCelestia" */;
 			buildPhases = (
-				EA9FB24027B7B0E800E0DC1F /* Copy Localized Files */,
 				F412BCB514349FAAD8AEB3A1 /* [CP] Check Pods Manifest.lock */,
+				EA9FB24027B7B0E800E0DC1F /* Copy Localized Files */,
 				979D2F7623FEB1A6005D2592 /* Sources */,
 				979D2F7723FEB1A6005D2592 /* Frameworks */,
 				979D2F7823FEB1A6005D2592 /* Resources */,
@@ -993,7 +972,6 @@
 				97401CA62414DAF50015F8E8 /* FavoriteCoordinatorController.swift in Sources */,
 				977CDD2E240BC6A900137127 /* TutorialDescriptionCell.swift in Sources */,
 				977394B8240409CF00E38B82 /* SettingSwitchCell.swift in Sources */,
-				EA17952427B3724300D47397 /* GuideListViewController.swift in Sources */,
 				EAB08FE42780550600BB82F0 /* Font.swift in Sources */,
 				977394B32403F74800E38B82 /* SettingTextCell.swift in Sources */,
 				97401C9D2414D3460015F8E8 /* UserDefaults.swift in Sources */,
@@ -1002,9 +980,7 @@
 				9773949C2402A8F700E38B82 /* ToolbarViewController.swift in Sources */,
 				979D2F8223FEB1A6005D2592 /* CelestiaViewController.swift in Sources */,
 				EA7209E027C64270004C1400 /* UILabel+DynamicType.swift in Sources */,
-				EABF79192538967500F2460C /* ResourceCategoryListViewController.swift in Sources */,
 				97401C9C2414D3460015F8E8 /* URL.swift in Sources */,
-				EABF793125389EE200F2460C /* ResourceItemListViewController.swift in Sources */,
 				977394AE2403F08800E38B82 /* SettingsMainViewController.swift in Sources */,
 				973BBA452405216700E3B061 /* AboutViewController.swift in Sources */,
 				EA934C90251D90C500DD284C /* MainSceneDelegate.swift in Sources */,
@@ -1022,8 +998,6 @@
 				974F86E22403BD3C00356795 /* InfoViewController.swift in Sources */,
 				EA1BE1572748E9DC0046074C /* DisplaySceneDelegate.swift in Sources */,
 				978406DF24029D9100876FD1 /* LoadingFailureViewController.swift in Sources */,
-				EAB08FE02780464C00BB82F0 /* ImageCacheManager.swift in Sources */,
-				EAB08FE22780471200BB82F0 /* StylizedResourceCell.swift in Sources */,
 				EA374CD2263A8B320069589C /* GoToContainerViewController.swift in Sources */,
 				EA1BC6E524A0E93D00F3F51B /* EventFinderInputViewController.swift in Sources */,
 				EA17952027B371D700D47397 /* GuideItem.swift in Sources */,
@@ -1054,14 +1028,12 @@
 				EA5D32E7266F9518005D5931 /* SheetPresentationController.swift in Sources */,
 				977394BF24041A9A00E38B82 /* SearchCoordinatorController.swift in Sources */,
 				EADE7FC0252B54A400D4174F /* CelestiaInteractionController.swift in Sources */,
-				EA17952227B3723000D47397 /* GuideViewController.swift in Sources */,
 				978406DC240294D000876FD1 /* LoadingViewController.swift in Sources */,
 				EAF48515249B2C4700E5B817 /* SubsystemBrowserCoordinatorViewController.swift in Sources */,
 				EA1BC6E324A0E92B00F3F51B /* EventFinderCoordinatorViewController.swift in Sources */,
 				978406DA2402906C00876FD1 /* UIViewController+Extension.swift in Sources */,
 				9773949E2402A96B00E38B82 /* SlideInPresentationController.swift in Sources */,
 				EA1BC6E724A0E94900F3F51B /* EventFinderResultViewController.swift in Sources */,
-				EABF792425389B2400F2460C /* ResourceCategory.swift in Sources */,
 				EA17951B27B1510500D47397 /* CelestiaScriptHandler.swift in Sources */,
 				973BBA6624054E9900E3B061 /* TextViewController.swift in Sources */,
 				EA445D15265CF6CD00E5D46A /* LinkPreviewCell.swift in Sources */,

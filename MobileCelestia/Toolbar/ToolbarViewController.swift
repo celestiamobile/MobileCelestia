@@ -41,6 +41,7 @@ enum AppToolbarAction: String {
     case home
     case event
     case addons
+    case download
     case paperplane
     case speedometer
     case newsarchive
@@ -50,9 +51,9 @@ enum AppToolbarAction: String {
 
     static var persistentAction: [[AppToolbarAction]] {
         #if targetEnvironment(macCatalyst)
-        return [[.setting], [.share, .search, .home, .paperplane], [.time, .script, .speedometer], [.browse, .favorite, .event], [.addons, .newsarchive], [.help]]
+        return [[.setting], [.share, .search, .home, .paperplane], [.time, .script, .speedometer], [.browse, .favorite, .event], [.addons, .download, .newsarchive], [.help]]
         #else
-        return [[.setting], [.share, .search, .home, .paperplane], [.camera, .time, .script, .speedometer], [.browse, .favorite, .event], [.addons, .newsarchive], [.help]]
+        return [[.setting], [.share, .search, .home, .paperplane], [.camera, .time, .script, .speedometer], [.browse, .favorite, .event], [.addons, .download, .newsarchive], [.help]]
         #endif
     }
 }
@@ -219,7 +220,9 @@ extension AppToolbarAction {
         case .event:
             return CelestiaString("Eclipse Finder", comment: "")
         case .addons:
-            return CelestiaString("Add-ons", comment: "")
+            return CelestiaString("Manage Installed Add-ons", comment: "")
+        case .download:
+            return CelestiaString("Download Add-ons", comment: "")
         case .paperplane:
             return CelestiaString("Go to Object", comment: "")
         case .speedometer:

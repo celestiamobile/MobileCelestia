@@ -19,7 +19,6 @@ protocol AsyncListItem {
 class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
     class var showDisclosureIndicator: Bool { return true }
     class var useStandardUITableViewCell: Bool { return false }
-    class var useStylizedCells: Bool { return true }
 
     private lazy var activityIndicator: UIActivityIndicatorView = {
         if #available(iOS 13, *) {
@@ -46,7 +45,7 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
 
     init(selection: @escaping (T) -> Void) {
         self.selection = selection
-        super.init(style: Self.useStylizedCells ? .plain : (Self.showDisclosureIndicator ? .defaultGrouped : .grouped))
+        super.init(style: Self.showDisclosureIndicator ? .defaultGrouped : .grouped)
     }
 
     required init?(coder: NSCoder) {
@@ -130,12 +129,6 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
             cell.accessoryType = Self.showDisclosureIndicator ? .disclosureIndicator : .none
             return cell
         }
-        if Self.useStylizedCells {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! StylizedResourceCell
-            cell.title = item.name
-            cell.imageURL = item.imageURL
-            return cell
-        }
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
         cell.accessoryType = Self.showDisclosureIndicator ? .disclosureIndicator : .none
         cell.title = item.name
@@ -161,9 +154,6 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
     }
 
     override func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        if Self.useStylizedCells {
-            return (tableView.bounds.width - 2 * StylizedResourceCell.Constants.horizontalMargin) / StylizedResourceCell.Constants.contentAspectRatio + 2 * StylizedResourceCell.Constants.verticalMargin
-        }
         return 44
     }
 }
@@ -173,12 +163,7 @@ private extension AsyncListViewController {
         if Self.useStandardUITableViewCell {
             tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Text")
         } else {
-            if Self.useStylizedCells {
-                tableView.register(StylizedResourceCell.self, forCellReuseIdentifier: "Text")
-                tableView.separatorStyle = .none
-            } else {
-                tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Text")
-            }
+            tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Text")
         }
 
         refreshButton.setTitle(CelestiaString("Refresh", comment: ""), for: .normal)

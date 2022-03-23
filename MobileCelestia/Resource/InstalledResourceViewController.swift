@@ -9,9 +9,17 @@
 // of the License, or (at your option) any later version.
 //
 
+import CelestiaCore
 import UIKit
 
-import CelestiaCore
+extension ResourceItem: AsyncListItem {
+    var imageURL: (URL, String)? {
+        if let image = self.image {
+            return (image, id)
+        }
+        return nil
+    }
+}
 
 class InstalledResourceViewController: AsyncListViewController<ResourceItem> {
     private var savedItems: [ResourceItem] = []

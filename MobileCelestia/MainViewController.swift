@@ -406,13 +406,28 @@ extension MainViewController: CelestiaControllerDelegate {
         case .event:
             presentEventFinder()
         case .addons:
-            presentPlugins()
+            presentInstalledAddons()
+        case .download:
+            let baseURL = "https://celestia.mobi/resources/categories"
+            var components = URLComponents(string: baseURL)!
+            components.queryItems = [
+                URLQueryItem(name: "lang", value: AppCore.language),
+            ]
+            let url = components.url!
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
         case .paperplane:
             presentGoTo()
         case .speedometer:
             presentSpeedControl()
         case .newsarchive:
-            showViewController(GuideViewController(type: "news", title: CelestiaString("News", comment: "")))
+            let baseURL = "https://celestia.mobi/resources/guides"
+            var components = URLComponents(string: baseURL)!
+            components.queryItems = [
+                URLQueryItem(name: "type", value: "news"),
+                URLQueryItem(name: "lang", value: AppCore.language),
+            ]
+            let url = components.url!
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
         #if targetEnvironment(macCatalyst)
         case .mirror:
             if UIApplication.shared.connectedScenes.contains(where: { $0.delegate is DisplaySceneDelegate }) {
@@ -581,13 +596,9 @@ extension MainViewController: CelestiaControllerDelegate {
         })
     }
 
-    private func presentPlugins() {
+    private func presentInstalledAddons() {
         let controller = ResourceViewController()
-        #if targetEnvironment(macCatalyst)
-        showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600))
-        #else
         showViewController(controller)
-        #endif
     }
 
     private func presentGoTo() {
@@ -995,6 +1006,8 @@ extension AppToolbarAction {
             return UIImage(systemName: "questionmark.circle")
         case .addons:
             return UIImage(systemName: "folder")
+        case .download:
+            return UIImage(systemName: "square.and.arrow.down")
         case .home:
             return UIImage(systemName: "house")
         case .event:
