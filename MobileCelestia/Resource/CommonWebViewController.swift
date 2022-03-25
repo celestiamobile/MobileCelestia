@@ -28,8 +28,29 @@ class CommonWebViewController: UIViewController {
         return webView
     }()
 
+    private lazy var activityIndicator: UIActivityIndicatorView = {
+        if #available(iOS 13, *) {
+            return UIActivityIndicatorView(style: .large)
+        } else {
+            return UIActivityIndicatorView(style: .whiteLarge)
+        }
+    }()
+
     override func loadView() {
-        view = webView
+        let containerView = UIView()
+        containerView.addSubview(webView)
+        containerView.addSubview(activityIndicator)
+        webView.translatesAutoresizingMaskIntoConstraints = false
+        activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            webView.topAnchor.constraint(equalTo: containerView.topAnchor),
+            webView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+            webView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            webView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            activityIndicator.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            activityIndicator.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
+        ])
+        view = containerView
     }
 
     init(url: URL, matchingQueryKeys: [String]) {
@@ -45,6 +66,7 @@ class CommonWebViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        activityIndicator.startAnimating()
         webView.load(URLRequest(url: url))
         webView.navigationDelegate = self
     }
@@ -80,6 +102,11 @@ extension CommonWebViewController: WKNavigationDelegate {
             decisionHandler(.cancel)
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
         }
+    }
+
+    func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
+        activityIndicator.stopAnimating()
+        activityIndicator.isHidden = true
     }
 }
 
