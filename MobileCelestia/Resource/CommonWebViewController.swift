@@ -15,6 +15,7 @@ import WebKit
 
 class CommonWebViewController: UIViewController {
     private let url: URL
+    private let matchingQueryKeys: [String]
 
     private lazy var webView: WKWebView = {
         let configuration = WKWebViewConfiguration()
@@ -31,8 +32,9 @@ class CommonWebViewController: UIViewController {
         view = webView
     }
 
-    init(url: URL) {
+    init(url: URL, matchingQueryKeys: [String]) {
         self.url = url
+        self.matchingQueryKeys = matchingQueryKeys
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -49,6 +51,20 @@ class CommonWebViewController: UIViewController {
 }
 
 extension CommonWebViewController: WKNavigationDelegate {
+    private func isURLAllowed(_ url: URL) -> Bool {
+        let comp1 = URLComponents(url: url, resolvingAgainstBaseURL: false)!
+        let comp2 = URLComponents(url: self.url, resolvingAgainstBaseURL: false)!
+        if comp1.host != comp2.host || comp1.path != comp2.path {
+            return false
+        }
+        for key in matchingQueryKeys {
+            if comp1.queryItems?.first(where: { $0.name == key })?.value != comp2.queryItems?.first(where: { $0.name == key })?.value {
+                return false
+            }
+        }
+        return true
+    }
+
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         if navigationAction.navigationType == .other {
             decisionHandler(.allow)
@@ -58,9 +74,7 @@ extension CommonWebViewController: WKNavigationDelegate {
             decisionHandler(.cancel)
             return
         }
-        // There should be no navigation inside the webview, for now
-        // we only allow opening a webpage with the same host/path
-        if url.host == self.url.host && url.path == self.url.path {
+        if isURLAllowed(url) {
             decisionHandler(.allow)
         } else {
             decisionHandler(.cancel)

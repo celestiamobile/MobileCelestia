@@ -214,7 +214,7 @@ extension MainViewController {
         if let guide = guideToOpen {
             // Need to wrap it in a NavVC without NavBar to make sure
             // the scrolling behavior is correct on macCatalyst
-            let nav = UINavigationController(rootViewController: CommonWebViewController(url: .fromGuide(guideItemID: guide, language: locale)))
+            let nav = UINavigationController(rootViewController: CommonWebViewController(url: .fromGuide(guideItemID: guide, language: locale), matchingQueryKeys: ["guide"]))
             nav.setNavigationBarHidden(true, animated: false)
             showViewController(nav, key: guide)
             cleanup()
@@ -241,7 +241,7 @@ extension MainViewController {
             guard let self = self else { return }
             if UserDefaults.app[.lastNewsID] == item.id { return }
             UserDefaults.app[.lastNewsID] = item.id
-            self.showViewController(CommonWebViewController(url: .fromGuide(guideItemID: item.id, language: locale)))
+            self.showViewController(CommonWebViewController(url: .fromGuide(guideItemID: item.id, language: locale), matchingQueryKeys: ["guide"]))
         }, failure: nil)
     }
 }
