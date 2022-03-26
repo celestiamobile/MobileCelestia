@@ -9,11 +9,10 @@
 // of the License, or (at your option) any later version.
 //
 
-import UIKit
-
 import CelestiaCore
-
+import LinkPresentation
 import UniformTypeIdentifiers
+import UIKit
 
 extension URL {
     static func fromGuide(guideItemID: String, language: String) -> URL {
@@ -770,65 +769,52 @@ extension MainViewController {
 
 extension UIViewController {
     func requestShareURL(_ url: String, placeholder: String) {
-        showTextInput(
-            CelestiaString("Share", comment: ""),
-            message: CelestiaString("Please enter a description of the content.", comment: ""),
-            text: placeholder) { [unowned self] description in
-            guard let title = description else { return }
-            self.submitURL(url, title: title)
-        }
-    }
-
-    func submitURL(_ url: String, title: String) {
-        let requestURL = apiPrefix + "/create"
-
-        struct URLCreationResponse: Decodable {
-            let publicURL: String
-        }
-
         let showShareFail: (String?) -> Void = { [unowned self] message in
             self.showError(CelestiaString("Cannot share URL", comment: ""), detail: message)
         }
-
-        guard let data = url.data(using: .utf8) else {
+        guard let url = URL(string: url) else {
             showShareFail(nil)
             return
         }
 
-        let alert = showLoading(CelestiaString("Generating sharing link…", comment: ""))
-        _ = RequestHandler.post(url: requestURL, parameters: [
-            "title": title,
-            "url": data.base64EncodedURLString(),
-            "version": Bundle.app.infoDictionary!["CFBundleVersion"] as! String,
-            "lang": AppCore.language,
-        ], success: { [unowned self] (result: URLCreationResponse) in
-            alert.dismiss(animated: true) {
-                guard let url = URL(string: result.publicURL) else {
-                    showShareFail(nil)
-                    return
-                }
-                self.showShareSheet(for: url)
+        class CelestiaURLObject: NSObject, UIActivityItemSource {
+            func activityViewControllerPlaceholderItem(_ activityViewController: UIActivityViewController) -> Any {
+                return url
             }
-        }, failure: { error in
-            alert.dismiss(animated: true) {
-                switch error {
-                case .serverError(let message):
-                    showShareFail(message)
-                default:
-                    showShareFail(nil)
-                }
+
+            func activityViewController(_ activityViewController: UIActivityViewController, itemForActivityType activityType: UIActivity.ActivityType?) -> Any? {
+                return url
             }
-        })
+
+            func activityViewControllerLinkMetadata(_ activityViewController: UIActivityViewController) -> LPLinkMetadata? {
+                let metadata = LPLinkMetadata()
+                metadata.url = url
+                metadata.title = title
+                metadata.originalURL = url
+                return metadata
+            }
+
+            let title: String
+            let url: URL
+
+            init(title: String, url: URL) {
+                self.title = title
+                self.url = url
+                super.init()
+            }
+        }
+
+        showShareSheet(for: CelestiaURLObject(title: placeholder, url: url))
     }
 
-    func showShareSheet(for url: URL, sourceView: UIView? = nil, sourceRect: CGRect? = nil) {
-        let activityController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+    func showShareSheet(for item: Any, sourceView: UIView? = nil, sourceRect: CGRect? = nil) {
+        let activityController = UIActivityViewController(activityItems: [item], applicationActivities: nil)
         configurePopover(for: activityController, sourceView: sourceView, sourceRect: sourceRect)
         presentAfterDismissCurrent(activityController, animated: true)
     }
 
-    func showShareSheet(for url: URL, barButtonItem: UIBarButtonItem) {
-        let activityController = UIActivityViewController(activityItems: [url], applicationActivities: nil)
+    func showShareSheet(for item: Any, barButtonItem: UIBarButtonItem) {
+        let activityController = UIActivityViewController(activityItems: [item], applicationActivities: nil)
         configurePopover(for: activityController, barButtonItem: barButtonItem)
         presentAfterDismissCurrent(activityController, animated: true)
     }
