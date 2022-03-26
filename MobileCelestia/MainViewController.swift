@@ -846,8 +846,8 @@ extension UIViewController {
     }
 }
 
+#if targetEnvironment(macCatalyst)
 extension MainViewController {
-    #if targetEnvironment(macCatalyst)
     private func saveFile(_ path: String) {
         let picker: UIDocumentPickerViewController
         if #available(iOS 14.0, *) {
@@ -859,14 +859,8 @@ extension MainViewController {
         picker.allowsMultipleSelection = false
         presentAfterDismissCurrent(picker, animated: true)
     }
-    #else
-    private func showShareSheet(for image: UIImage) {
-        let activityController = UIActivityViewController(activityItems: [image], applicationActivities: nil)
-        configurePopover(for: activityController)
-        presentAfterDismissCurrent(activityController, animated: true)
-    }
-    #endif
 }
+#endif
 
 #if targetEnvironment(macCatalyst)
 extension MainViewController: NSToolbarDelegate {
