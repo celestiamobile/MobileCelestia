@@ -130,7 +130,7 @@ struct SettingItem<T: Hashable>: Hashable {
 }
 
 struct SettingSection: Hashable {
-    let title: String
+    let title: String?
     let items: [SettingItem<AnyHashable>]
 }
 
@@ -362,10 +362,10 @@ let mainSetting = [
                 associatedItem: .init(
                     AssociatedCommonItem(title: CelestiaString("Constellations", comment: ""), items: [
                         SettingItem(
-                            name: CelestiaString("Show Constellations", comment: ""),
+                            name: CelestiaString("Show Diagrams", comment: ""),
                             type: .checkmark,
                             associatedItem: .init(
-                                SettingCheckmarkItem(name: CelestiaString("Show Constellations", comment: ""), key: "showDiagrams", representation: .checkmark)
+                                SettingCheckmarkItem(name: CelestiaString("Show Diagrams", comment: ""), key: "showDiagrams", representation: .checkmark)
                             )
                         ),
                         SettingItem(
@@ -571,7 +571,7 @@ let mainSetting = [
             )
         ]),
     SettingSection(
-        title: CelestiaString("Time", comment: ""),
+        title: CelestiaString("Time & Region", comment: ""),
         items: [
             SettingItem(
                 name: CelestiaString("Time Zone", comment: ""),
@@ -610,10 +610,55 @@ let mainSetting = [
                     )
                 )
             ),
-            SettingItem(name: CelestiaString("Current Time", comment: ""), type: .time, associatedItem: .init(0))
+            SettingItem(name: CelestiaString("Current Time", comment: ""), type: .time, associatedItem: .init(0)),
+            SettingItem(
+                name: CelestiaString("Measure Units", comment: ""),
+                type: .common,
+                associatedItem: .init(
+                    AssociatedCommonItem(
+                        title: CelestiaString("Measure Units", comment: ""),
+                        sections: [
+                            AssociatedSelectionItem(
+                                key: "measurementSystem",
+                                items: [
+                                    SettingSelectionItem(name: CelestiaString("Metric", comment: ""), index: 0),
+                                    SettingSelectionItem(name: CelestiaString("Imperial", comment: ""), index: 1),
+                                ]
+                            ).toSection(),
+                            AssociatedSelectionItem(
+                                key: "temperatureScale",
+                                items: [
+                                    SettingSelectionItem(name: CelestiaString("Kelvin", comment: ""), index: 0),
+                                    SettingSelectionItem(name: CelestiaString("Celsius", comment: ""), index: 1),
+                                    SettingSelectionItem(name: CelestiaString("Fahrenheit", comment: ""), index: 2),
+                                ]
+                            ).toSection(header: CelestiaString("Temperature Scale", comment: ""))
+                        ]
+                    )
+                )
+            ),
+            SettingItem(
+                name: CelestiaString("Info Display", comment: ""),
+                type: .common,
+                associatedItem: .init(
+                    AssociatedCommonItem(
+                        title: CelestiaString("Info Display", comment: ""),
+                        sections: [
+                            AssociatedSelectionItem(
+                                key: "hudDetail",
+                                items: [
+                                    SettingSelectionItem(name: CelestiaString("None", comment: ""), index: 0),
+                                    SettingSelectionItem(name: CelestiaString("Terse", comment: ""), index: 1),
+                                    SettingSelectionItem(name: CelestiaString("Verbose", comment: ""), index: 2),
+                                ]
+                            ).toSection()
+                        ]
+                    )
+                )
+            ),
         ]),
     SettingSection(
-        title: CelestiaString("Advanced", comment: ""),
+        title: CelestiaString("Renderer", comment: ""),
         items: [
             SettingItem(
                 name: CelestiaString("Texture Resolution", comment: ""),
@@ -654,25 +699,6 @@ let mainSetting = [
                 )
             ),
             SettingItem(
-                name: CelestiaString("Info Display", comment: ""),
-                type: .common,
-                associatedItem: .init(
-                    AssociatedCommonItem(
-                        title: CelestiaString("Info Display", comment: ""),
-                        sections: [
-                            AssociatedSelectionItem(
-                                key: "hudDetail",
-                                items: [
-                                    SettingSelectionItem(name: CelestiaString("None", comment: ""), index: 0),
-                                    SettingSelectionItem(name: CelestiaString("Terse", comment: ""), index: 1),
-                                    SettingSelectionItem(name: CelestiaString("Verbose", comment: ""), index: 2),
-                                ]
-                            ).toSection()
-                        ]
-                    )
-                )
-            ),
-            SettingItem(
                 name: CelestiaString("Render Parameters", comment: ""),
                 type: .common,
                 associatedItem: .init(
@@ -681,10 +707,10 @@ let mainSetting = [
                         sections: [
                             .init(header: nil, rows: [
                                 SettingItem(
-                                    name: CelestiaString("Ambient Light", comment: ""),
-                                    type: .slider,
+                                    name: CelestiaString("Smooth Lines", comment: ""),
+                                    type: .checkmark,
                                     associatedItem: .init(
-                                        AssociatedSliderItem(key: "ambientLightLevel", minValue: 0, maxValue: 1)
+                                        AssociatedCheckmarkItem(name: CelestiaString("Smooth Lines", comment: ""), key: "showSmoothLines", representation: .switch)
                                     )
                                 ),
                                 SettingItem(
@@ -696,6 +722,20 @@ let mainSetting = [
                                 ),
                             ], footer: nil),
                             .init(header: nil, rows: [
+                                SettingItem(
+                                    name: CelestiaString("Auto Mag", comment: ""),
+                                    type: .checkmark,
+                                    associatedItem: .init(
+                                        AssociatedCheckmarkItem(name: CelestiaString("Auto Mag", comment: ""), key: "showAutoMag", representation: .switch)
+                                    )
+                                ),
+                                SettingItem(
+                                    name: CelestiaString("Ambient Light", comment: ""),
+                                    type: .slider,
+                                    associatedItem: .init(
+                                        AssociatedSliderItem(key: "ambientLightLevel", minValue: 0, maxValue: 1)
+                                    )
+                                ),
                                 SettingItem(
                                     name: CelestiaString("Faintest Stars", comment: ""),
                                     type: .slider,
@@ -711,6 +751,18 @@ let mainSetting = [
                                     )
                                 ),
                             ], footer: nil),
+                        ]
+                    )
+                )
+            ),
+            SettingItem(name: CelestiaString("Frame Rate", comment: ""), type: .frameRate, associatedItem: .init(0)),
+            SettingItem(
+                name: CelestiaString("Advanced", comment: ""),
+                type: .common,
+                associatedItem: .init(
+                    AssociatedCommonItem(
+                        title: CelestiaString("Advanced", comment: ""),
+                        sections: [
                             .init(header: nil, rows: [
                                 SettingItem(
                                     name: CelestiaString("HiDPI", comment: ""),
@@ -731,39 +783,16 @@ let mainSetting = [
                     )
                 )
             ),
-            SettingItem(
-                name: CelestiaString("Measure Units", comment: ""),
-                type: .common,
-                associatedItem: .init(
-                    AssociatedCommonItem(
-                        title: CelestiaString("Measure Units", comment: ""),
-                        sections: [
-                            AssociatedSelectionItem(
-                                key: "measurementSystem",
-                                items: [
-                                    SettingSelectionItem(name: CelestiaString("Metric", comment: ""), index: 0),
-                                    SettingSelectionItem(name: CelestiaString("Imperial", comment: ""), index: 1),
-                                ]
-                            ).toSection(),
-                            AssociatedSelectionItem(
-                                key: "temperatureScale",
-                                items: [
-                                    SettingSelectionItem(name: CelestiaString("Kelvin", comment: ""), index: 0),
-                                    SettingSelectionItem(name: CelestiaString("Celsius", comment: ""), index: 1),
-                                    SettingSelectionItem(name: CelestiaString("Fahrenheit", comment: ""), index: 2),
-                                ]
-                            ).toSection(header: CelestiaString("Temperature Scale", comment: ""))
-                        ]
-                    )
-                )
-            ),
-            SettingItem(name: CelestiaString("Frame Rate", comment: ""), type: .frameRate, associatedItem: .init(0)),
+            SettingItem(name: CelestiaString("Render Info", comment: ""), type: .render, associatedItem: .init(0)),
+        ]),
+    SettingSection(
+        title: CelestiaString("Advanced", comment: ""),
+        items: [
             SettingItem(name: CelestiaString("Data Location", comment: ""), type: .dataLocation, associatedItem: .init(0)),
         ]),
     SettingSection(
-        title: CelestiaString("Others", comment: ""),
+        title: nil,
         items: [
-            SettingItem(name: CelestiaString("Render Info", comment: ""), type: .render, associatedItem: .init(0)),
             SettingItem(
                 name: CelestiaString("Debug", comment: ""),
                 type: .common,

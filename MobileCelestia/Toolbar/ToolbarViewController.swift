@@ -220,9 +220,9 @@ extension AppToolbarAction {
         case .event:
             return CelestiaString("Eclipse Finder", comment: "")
         case .addons:
-            return CelestiaString("Manage Installed Add-ons", comment: "")
+            return CelestiaString("Installed Add-ons", comment: "")
         case .download:
-            return CelestiaString("Download Add-ons", comment: "")
+            return CelestiaString("Get Add-ons", comment: "")
         case .paperplane:
             return CelestiaString("Go to Object", comment: "")
         case .speedometer:
