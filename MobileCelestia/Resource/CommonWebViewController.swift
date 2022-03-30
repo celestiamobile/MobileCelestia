@@ -16,6 +16,9 @@ import WebKit
 class CommonWebViewController: UIViewController {
     private let url: URL
     private let matchingQueryKeys: [String]
+    private let contextDirectory: URL?
+
+    var ackHandler: ((String) -> Void)?
 
     private lazy var webView: WKWebView = {
         let configuration = WKWebViewConfiguration()
@@ -53,9 +56,10 @@ class CommonWebViewController: UIViewController {
         view = containerView
     }
 
-    init(url: URL, matchingQueryKeys: [String]) {
+    init(url: URL, matchingQueryKeys: [String], contextDirectory: URL? = nil) {
         self.url = url
         self.matchingQueryKeys = matchingQueryKeys
+        self.contextDirectory = contextDirectory
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -111,16 +115,32 @@ extension CommonWebViewController: WKNavigationDelegate {
 }
 
 extension CommonWebViewController: CelestiaScriptHandlerDelegate {
-    func runScript(type: String, content: String) {
+    func runScript(type: String, content: String, name: String?, location: String?) {
         guard ["cel", "celx"].contains(type) else { return }
+
+        let scriptURL: URL
+        let scriptFileName = (name ?? UUID().uuidString) + "." + type
+        let tempURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(scriptFileName)
+        if let location = location {
+            guard ["temp", "context"].contains(location) else { return }
+            if location == "context" {
+                guard let parent = contextDirectory else {
+                    return
+                }
+                scriptURL = parent.appendingPathComponent(scriptFileName)
+            } else {
+                scriptURL = tempURL
+            }
+        } else {
+            scriptURL = tempURL
+        }
 
         DispatchQueue.global().async {
             guard let data = content.data(using: .utf8) else { return }
-            let tempURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("\(UUID().hashValue).\(type)")
             do {
-                try data.write(to: tempURL)
+                try data.write(to: scriptURL)
                 AppCore.shared.run { core in
-                    core.runScript(at: tempURL.path)
+                    core.runScript(at: scriptURL.path)
                 }
             } catch {}
         }
@@ -130,5 +150,9 @@ extension CommonWebViewController: CelestiaScriptHandlerDelegate {
         DispatchQueue.main.async {
             self.showShareSheet(for: url)
         }
+    }
+
+    func receivedACK(id: String) {
+        ackHandler?(id)
     }
 }

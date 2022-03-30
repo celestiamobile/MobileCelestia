@@ -18,10 +18,15 @@ extension URL {
     static func fromGuide(guideItemID: String, language: String) -> URL {
         let baseURL = "https://celestia.mobi/resources/guide"
         var components = URLComponents(string: baseURL)!
+        #if targetEnvironment(macCatalyst)
+        let platform = "catalyst"
+        #else
+        let platform = "ios"
+        #endif
         components.queryItems = [
             URLQueryItem(name: "guide", value: guideItemID),
             URLQueryItem(name: "lang", value: language),
-            URLQueryItem(name: "environment", value: "app"),
+            URLQueryItem(name: "platform", value: platform),
             URLQueryItem(name: "theme", value: "dark")
         ]
         return components.url!
@@ -30,10 +35,15 @@ extension URL {
     static func fromAddon(addonItemID: String, language: String) -> URL {
         let baseURL = "https://celestia.mobi/resources/item"
         var components = URLComponents(string: baseURL)!
+        #if targetEnvironment(macCatalyst)
+        let platform = "catalyst"
+        #else
+        let platform = "ios"
+        #endif
         components.queryItems = [
             URLQueryItem(name: "item", value: addonItemID),
             URLQueryItem(name: "lang", value: language),
-            URLQueryItem(name: "environment", value: "app"),
+            URLQueryItem(name: "platform", value: platform),
             URLQueryItem(name: "theme", value: "dark"),
             URLQueryItem(name: "titleVisibility", value: "visible"),
         ]
@@ -239,8 +249,15 @@ extension MainViewController {
         _ = RequestHandler.get(url: requestURL, parameters: ["lang": locale, "type": "news"], success: { [weak self] (item: GuideItem) in
             guard let self = self else { return }
             if UserDefaults.app[.lastNewsID] == item.id { return }
-            UserDefaults.app[.lastNewsID] = item.id
-            self.showViewController(CommonWebViewController(url: .fromGuide(guideItemID: item.id, language: locale), matchingQueryKeys: ["guide"]))
+            let vc = CommonWebViewController(url: .fromGuide(guideItemID: item.id, language: locale), matchingQueryKeys: ["guide"])
+            vc.ackHandler = { id in
+                if id == item.id {
+                    UserDefaults.app[.lastNewsID] = item.id
+                }
+            }
+            let nav = UINavigationController(rootViewController: vc)
+            nav.setNavigationBarHidden(true, animated: false)
+            self.showViewController(nav, key: item.id)
         }, failure: nil)
     }
 }

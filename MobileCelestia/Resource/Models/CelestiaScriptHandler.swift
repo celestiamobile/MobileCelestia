@@ -14,16 +14,23 @@ import WebKit
 struct MessagePayload: Decodable {
     let operation: String
     let content: String
+    let minScriptVersion: Int
 }
 
 struct RunScriptContext: Decodable {
     let scriptContent: String
     let scriptType: String
+    let scriptName: String?
+    let scriptLocation: String?
 }
 
 struct ShareURLContext: Decodable {
     let title: String
     let url: URL
+}
+
+struct SendACKContext: Decodable {
+    let id: String
 }
 
 protocol BaseJavascriptHandler {
@@ -51,7 +58,7 @@ class RunScriptHandler: JavascriptHandler<RunScriptContext> {
     override var operation: String { return "runScript" }
 
     override func execute(context: RunScriptContext, delegate: CelestiaScriptHandlerDelegate) {
-        delegate.runScript(type: context.scriptType, content: context.scriptContent)
+        delegate.runScript(type: context.scriptType, content: context.scriptContent, name: context.scriptName, location: context.scriptLocation)
     }
 }
 
@@ -63,17 +70,29 @@ class ShareURLHandler: JavascriptHandler<ShareURLContext> {
     }
 }
 
+class SendACKHandler: JavascriptHandler<SendACKContext> {
+    override var operation: String { return "sendACK" }
+
+    override func execute(context: SendACKContext, delegate: CelestiaScriptHandlerDelegate) {
+        delegate.receivedACK(id: context.id)
+    }
+}
+
 protocol CelestiaScriptHandlerDelegate: AnyObject {
-    func runScript(type: String, content: String)
+    func runScript(type: String, content: String, name: String?, location: String?)
     func shareURL(title: String, url: URL)
+    func receivedACK(id: String)
 }
 
 class CelestiaScriptHandler: NSObject, WKScriptMessageHandler {
     weak var delegate: CelestiaScriptHandlerDelegate?
 
+    private static let supportedScriptVersion = 2
+
     private static let handlers: [BaseJavascriptHandler] = [
         RunScriptHandler(),
         ShareURLHandler(),
+        SendACKHandler(),
     ]
 
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
@@ -81,6 +100,7 @@ class CelestiaScriptHandler: NSObject, WKScriptMessageHandler {
         guard let string = message.body as? String, let data = string.data(using: .utf8) else { return }
         do {
             let payload = try JSONDecoder().decode(MessagePayload.self, from: data)
+            if payload.minScriptVersion > Self.supportedScriptVersion { return }
             for handler in Self.handlers {
                 if handler.operation == payload.operation {
                     handler.executeWithContent(content: payload.content, delegate: strongDelegate)

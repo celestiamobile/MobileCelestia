@@ -56,9 +56,13 @@ final class ResourceManager {
     }
 
     func isInstalled(identifier: String) -> Bool {
-        guard let addonDirectory = Self.extraAddonDirectory else { return false }
-        let directory = addonDirectory.appendingPathComponent(identifier)
+        guard let directory = contextDirectory(forAddonWithIdentifier: identifier) else { return false }
         return FileManager.default.fileExists(atPath: directory.path)
+    }
+
+    func contextDirectory(forAddonWithIdentifier identifier: String) -> URL? {
+        guard let addonDirectory = Self.extraAddonDirectory else { return nil }
+        return addonDirectory.appendingPathComponent(identifier)
     }
 
     func installedResources() -> [ResourceItem] {
@@ -126,14 +130,13 @@ final class ResourceManager {
     }
 
     func unzip(identifier: String, zipFilePath: URL) throws -> URL {
-        guard let addonDirectory = Self.extraAddonDirectory else {
+        guard let destinationURL = contextDirectory(forAddonWithIdentifier: identifier) else {
             throw ResourceManagerError.addonDirectoryNotExists
         }
         let fm = FileManager.default
         // We need to first move to a .zip path
         let movedPath = URL(fileURLWithPath: NSTemporaryDirectory() + "/\(UUID().uuidString).zip")
         try fm.moveItem(at: zipFilePath, to: movedPath)
-        let destinationURL = addonDirectory.appendingPathComponent(identifier)
         if !fm.fileExists(atPath: destinationURL.path) {
             try fm.createDirectory(at: destinationURL, withIntermediateDirectories: true, attributes: nil)
         }
