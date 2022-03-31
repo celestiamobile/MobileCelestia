@@ -92,7 +92,7 @@ extension CommonWebViewController: WKNavigationDelegate {
     }
 
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
-        if navigationAction.navigationType == .other {
+        if navigationAction.targetFrame?.isMainFrame == false {
             decisionHandler(.allow)
             return
         }
