@@ -369,17 +369,17 @@ let mainSetting = [
                             )
                         ),
                         SettingItem(
-                            name: CelestiaString("Constellation Labels", comment: ""),
+                            name: CelestiaString("Show Labels", comment: ""),
                             type: .checkmark,
                             associatedItem: .init(
-                                SettingCheckmarkItem(name: CelestiaString("Constellation Labels", comment: ""), key: "showConstellationLabels", representation: .checkmark)
+                                SettingCheckmarkItem(name: CelestiaString("Show Labels", comment: ""), key: "showConstellationLabels", representation: .checkmark)
                             )
                         ),
                         SettingItem(
-                            name: CelestiaString("Constellations in Latin", comment: ""),
+                            name: CelestiaString("Show Labels in Latin", comment: ""),
                             type: .checkmark,
                             associatedItem: .init(
-                                SettingCheckmarkItem(name: CelestiaString("Constellations in Latin", comment: ""), key: "showLatinConstellationLabels", representation: .checkmark)
+                                SettingCheckmarkItem(name: CelestiaString("Show Labels in Latin", comment: ""), key: "showLatinConstellationLabels", representation: .checkmark)
                             )
                         ),
                         SettingItem(
