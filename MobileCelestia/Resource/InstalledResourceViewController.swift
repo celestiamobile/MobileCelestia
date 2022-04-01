@@ -22,32 +22,26 @@ extension ResourceItem: AsyncListItem {
 }
 
 class InstalledResourceViewController: AsyncListViewController<ResourceItem> {
-    private var savedItems: [ResourceItem] = []
+    override class var alwaysRefreshOnAppear: Bool { return true }
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
         title = CelestiaString("Installed", comment: "")
     }
 
     override func loadItems(pageStart: Int, pageSize: Int, success: @escaping ([ResourceItem]) -> Void, failure: @escaping (Error) -> Void) {
-        if !savedItems.isEmpty {
-            success(getItemsForRange(pageStart: pageStart, pageSize: pageSize))
-            return
-        }
         DispatchQueue.global().async {
             let items = ResourceManager.shared.installedResources()
-            DispatchQueue.main.async { [weak self] in
-                guard let self = self else { return }
-                self.savedItems = items
-                success(self.getItemsForRange(pageStart: pageStart, pageSize: pageSize))
+            DispatchQueue.main.async {
+                let returnItems: [ResourceItem]
+                if pageStart < 0 || pageStart >= items.count || pageSize <= 0 {
+                    returnItems = []
+                } else {
+                    returnItems = Array(items[pageStart..<min(pageStart + pageSize, items.count)])
+                }
+                success(returnItems)
             }
         }
-    }
-
-    private func getItemsForRange(pageStart: Int, pageSize: Int) -> [ResourceItem] {
-        if pageStart < 0 || pageStart >= savedItems.count || pageSize <= 0 {
-            return []
-        }
-        return Array(savedItems[pageStart..<min(pageStart + pageSize, savedItems.count)])
     }
 }

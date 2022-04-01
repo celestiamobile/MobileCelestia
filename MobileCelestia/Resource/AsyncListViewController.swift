@@ -19,6 +19,7 @@ protocol AsyncListItem {
 class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
     class var showDisclosureIndicator: Bool { return true }
     class var useStandardUITableViewCell: Bool { return false }
+    class var alwaysRefreshOnAppear: Bool { return false }
 
     private lazy var activityIndicator: UIActivityIndicatorView = {
         if #available(iOS 13, *) {
@@ -42,6 +43,8 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
     private var hasMoreToLoad = true
     private var isLoading = false
     private var selection: (T) -> Void
+    private var currentRequestID: UUID?
+    private var isFirstAppear: Bool = true
 
     init(selection: @escaping (T) -> Void) {
         self.selection = selection
@@ -56,7 +59,23 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
         super.viewDidLoad()
 
         setup()
-        callRefresh()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        if isFirstAppear {
+            isFirstAppear = false
+            callRefresh()
+        } else if Self.alwaysRefreshOnAppear {
+            // Cancel previous request if any...
+            currentRequestID = nil
+            isLoading = false
+            hasMoreToLoad = true
+            items = []
+            tableView.reloadData()
+            callRefresh()
+        }
     }
 
     func loadItems(pageStart: Int, pageSize: Int, success: @escaping ([T]) -> Void, failure: @escaping (Error) -> Void) {}
@@ -75,8 +94,11 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
         if freshLoad {
             startRefreshing()
         }
+        let requestID = UUID()
+        currentRequestID = requestID
         loadItems(pageStart: pageStart, pageSize: pageSize) { [weak self] newItems in
             guard let self = self else { return }
+            guard self.currentRequestID == requestID else { return }
             if freshLoad {
                 self.stopRefreshing(success: true)
             }
@@ -90,6 +112,7 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
             }
         } failure: { [weak self] error in
             guard let self = self else { return }
+            guard self.currentRequestID == requestID else { return }
             if freshLoad {
                 self.stopRefreshing(success: false)
             }
@@ -97,12 +120,12 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
         }
     }
 
-    func startRefreshing() {
+    private func startRefreshing() {
         tableView.backgroundView = activityIndicator
         activityIndicator.startAnimating()
     }
 
-    func stopRefreshing(success: Bool) {
+    private func stopRefreshing(success: Bool) {
         tableView.backgroundView = success ? nil : refreshButton
         activityIndicator.stopAnimating()
     }
