@@ -17,6 +17,7 @@ class CommonWebViewController: UIViewController {
     private let url: URL
     private let matchingQueryKeys: [String]
     private let contextDirectory: URL?
+    private let filterURL: Bool
 
     var ackHandler: ((String) -> Void)?
 
@@ -31,6 +32,16 @@ class CommonWebViewController: UIViewController {
         return webView
     }()
 
+    private lazy var toolbar = UIToolbar()
+    private lazy var goBackItem: UIBarButtonItem = {
+        let isRTL = UIView.userInterfaceLayoutDirection(for: view.semanticContentAttribute) == .rightToLeft
+        return UIBarButtonItem(image: UIImage(systemName: isRTL ? "chevron.right" : "chevron.left"), style: .plain, target: self, action: #selector(goBack))
+    }()
+    private lazy var goForwardItem: UIBarButtonItem = {
+        let isRTL = UIView.userInterfaceLayoutDirection(for: view.semanticContentAttribute) == .rightToLeft
+        return UIBarButtonItem(image: UIImage(systemName: isRTL ? "chevron.left" : "chevron.right"), style: .plain, target: self, action: #selector(goForward))
+    }()
+
     private lazy var activityIndicator: UIActivityIndicatorView = {
         if #available(iOS 13, *) {
             return UIActivityIndicatorView(style: .large)
@@ -43,6 +54,8 @@ class CommonWebViewController: UIViewController {
         let containerView = UIView()
         containerView.addSubview(webView)
         containerView.addSubview(activityIndicator)
+        containerView.addSubview(toolbar)
+        toolbar.translatesAutoresizingMaskIntoConstraints = false
         webView.translatesAutoresizingMaskIntoConstraints = false
         activityIndicator.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -52,6 +65,9 @@ class CommonWebViewController: UIViewController {
             webView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
             activityIndicator.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
             activityIndicator.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
+            toolbar.bottomAnchor.constraint(equalTo: containerView.layoutMarginsGuide.bottomAnchor),
+            toolbar.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            toolbar.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
         ])
         view = containerView
     }
@@ -60,6 +76,15 @@ class CommonWebViewController: UIViewController {
         self.url = url
         self.matchingQueryKeys = matchingQueryKeys
         self.contextDirectory = contextDirectory
+        self.filterURL = true
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    init(url: URL) {
+        self.url = url
+        self.matchingQueryKeys = []
+        self.contextDirectory = nil
+        self.filterURL = false
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -70,9 +95,41 @@ class CommonWebViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        toolbar.items = [
+            UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
+            goBackItem,
+            goForwardItem,
+            UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
+        ]
+        toolbar.isHidden = true
         activityIndicator.startAnimating()
         webView.load(URLRequest(url: url))
         webView.navigationDelegate = self
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        let toolbarHeight = toolbar.isHidden ? 0 : toolbar.frame.height
+        if webView.scrollView.contentInset.bottom != toolbarHeight {
+            webView.scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: toolbarHeight, right: 0)
+        }
+    }
+
+    private func updateNavigation() {
+        toolbar.isHidden = !webView.canGoBack && !webView.canGoForward
+        goBackItem.isEnabled = webView.canGoBack
+        goForwardItem.isEnabled = webView.canGoForward
+        let toolbarHeight = toolbar.isHidden ? 0 : toolbar.frame.height
+        webView.scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: toolbarHeight, right: 0)
+    }
+
+    @objc private func goBack() {
+        webView.goBack()
+    }
+
+    @objc private func goForward() {
+        webView.goForward()
     }
 }
 
@@ -92,6 +149,10 @@ extension CommonWebViewController: WKNavigationDelegate {
     }
 
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+        if !filterURL {
+            decisionHandler(.allow)
+            return
+        }
         if navigationAction.targetFrame?.isMainFrame == false {
             decisionHandler(.allow)
             return
@@ -108,9 +169,14 @@ extension CommonWebViewController: WKNavigationDelegate {
         }
     }
 
+    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        navigationItem.title = webView.title
+    }
+
     func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
         activityIndicator.stopAnimating()
         activityIndicator.isHidden = true
+        updateNavigation()
     }
 }
 
@@ -154,5 +220,13 @@ extension CommonWebViewController: CelestiaScriptHandlerDelegate {
 
     func receivedACK(id: String) {
         ackHandler?(id)
+    }
+
+    func openAddonNext(id: String) {
+        let requestURL = apiPrefix + "/resource/item"
+        _ = RequestHandler.get(url: requestURL, parameters: ["lang": AppCore.language, "item": id], success: { [weak self] (item: ResourceItem) in
+            guard let self = self else { return }
+            self.navigationController?.pushViewController(ResourceItemViewController(item: item), animated: true)
+        }, decoder: ResourceItem.networkResponseDecoder)
     }
 }

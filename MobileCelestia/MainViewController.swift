@@ -428,9 +428,12 @@ extension MainViewController: CelestiaControllerDelegate {
             var components = URLComponents(string: baseURL)!
             components.queryItems = [
                 URLQueryItem(name: "lang", value: AppCore.language),
+                URLQueryItem(name: "theme", value: "dark"),
+                URLQueryItem(name: "platform", value: "ios"),
             ]
             let url = components.url!
-            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            let nav = UINavigationController(rootViewController: CommonWebViewController(url: url))
+            showViewController(nav)
         case .paperplane:
             presentGoTo()
         case .speedometer:
