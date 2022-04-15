@@ -18,6 +18,7 @@ class CommonWebViewController: UIViewController {
     private let matchingQueryKeys: [String]
     private let contextDirectory: URL?
     private let filterURL: Bool
+    private var titleObservation: NSKeyValueObservation?
 
     var ackHandler: ((String) -> Void)?
 
@@ -88,6 +89,14 @@ class CommonWebViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
     }
 
+    deinit {
+        // Maybe no longer needed?
+        titleObservation?.invalidate()
+        titleObservation = nil
+        // Avoid leak https://stackoverflow.com/questions/26383031/
+        webView.configuration.userContentController.removeScriptMessageHandler(forName: "iOSCelestia")
+    }
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
@@ -105,6 +114,10 @@ class CommonWebViewController: UIViewController {
         activityIndicator.startAnimating()
         webView.load(URLRequest(url: url))
         webView.navigationDelegate = self
+
+        titleObservation = webView.observe(\.title, options: .new, changeHandler: { [weak self] webView, _ in
+            self?.navigationItem.title = webView.title
+        })
     }
 
     override func viewDidLayoutSubviews() {
@@ -167,10 +180,6 @@ extension CommonWebViewController: WKNavigationDelegate {
             decisionHandler(.cancel)
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
         }
-    }
-
-    func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
-        navigationItem.title = webView.title
     }
 
     func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
