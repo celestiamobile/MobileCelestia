@@ -36,6 +36,6 @@ private extension ResourceViewController {
     }
 
     private func viewItem(_ item: ResourceItem) {
-        navigation.pushViewController(ResourceItemViewController(item: item), animated: true)
+        navigation.pushViewController(ResourceItemViewController(item: item, needsRefetchItem: true), animated: true)
     }
 }

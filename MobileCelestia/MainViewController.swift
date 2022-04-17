@@ -236,7 +236,7 @@ extension MainViewController {
                 guard let self = self else { return }
                 // Need to wrap it in a NavVC without NavBar to make sure
                 // the scrolling behavior is correct on macCatalyst
-                let nav = UINavigationController(rootViewController: ResourceItemViewController(item: item))
+                let nav = UINavigationController(rootViewController: ResourceItemViewController(item: item, needsRefetchItem: false))
                 nav.setNavigationBarHidden(true, animated: false)
                 self.showViewController(nav, key: addon)
             }, decoder: ResourceItem.networkResponseDecoder)

@@ -631,7 +631,6 @@
 		EABF790E253895DD00F2460C /* Resource */ = {
 			isa = PBXGroup;
 			children = (
-				EABF79402538A4DF00F2460C /* Views */,
 				EABF792225389B1700F2460C /* Models */,
 				EABF7910253895FD00F2460C /* ResourceViewController.swift */,
 				EABF793B2538A1C100F2460C /* ResourceItemViewController.swift */,
@@ -651,13 +650,6 @@
 				EA17951F27B371D700D47397 /* GuideItem.swift */,
 			);
 			path = Models;
-			sourceTree = "<group>";
-		};
-		EABF79402538A4DF00F2460C /* Views */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Views;
 			sourceTree = "<group>";
 		};
 		EAC84355252C816500691943 /* CelestiaMacBridge */ = {

@@ -21,6 +21,7 @@ class ResourceItemViewController: UIViewController {
     }
 
     private var item: ResourceItem
+    private let needsRefetchItem: Bool
 
     private lazy var progressView: UIProgressView = {
         if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
@@ -53,8 +54,9 @@ class ResourceItemViewController: UIViewController {
 
     private var currentState: ResourceItemState = .none
 
-    init(item: ResourceItem) {
+    init(item: ResourceItem, needsRefetchItem: Bool) {
         self.item = item
+        self.needsRefetchItem = needsRefetchItem
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -80,7 +82,9 @@ class ResourceItemViewController: UIViewController {
 
         // Fetch the latest item, this is needed as user might come
         // here from Installed where the URL might be incorrect
-        refresh()
+        if needsRefetchItem {
+            refresh()
+        }
     }
 
     private func refresh() {

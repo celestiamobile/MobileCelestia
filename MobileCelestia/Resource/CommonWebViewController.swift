@@ -104,9 +104,12 @@ class CommonWebViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        let fixedSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
+        fixedSpace.width = 16
         toolbar.items = [
             UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
             goBackItem,
+            fixedSpace,
             goForwardItem,
             UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
         ]
@@ -235,7 +238,7 @@ extension CommonWebViewController: CelestiaScriptHandlerDelegate {
         let requestURL = apiPrefix + "/resource/item"
         _ = RequestHandler.get(url: requestURL, parameters: ["lang": AppCore.language, "item": id], success: { [weak self] (item: ResourceItem) in
             guard let self = self else { return }
-            self.navigationController?.pushViewController(ResourceItemViewController(item: item), animated: true)
+            self.navigationController?.pushViewController(ResourceItemViewController(item: item, needsRefetchItem: false), animated: true)
         }, decoder: ResourceItem.networkResponseDecoder)
     }
 }
