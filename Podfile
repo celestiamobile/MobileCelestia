@@ -18,6 +18,8 @@ post_install do |installer|
             config.build_settings['CODE_SIGNING_REQUIRED'] = "NO"
             config.build_settings['CODE_SIGNING_ALLOWED'] = "NO"
             config.build_settings['SUPPORTS_MACCATALYST'] = "YES"
+            config.build_settings['MACOSX_DEPLOYMENT_TARGET'] = "10.15"
+            config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = "13.1"
 
             if target.name == 'AsyncGL'
                 config.build_settings['OTHER_CFLAGS[sdk=macosx*]'] = ['$(inherited)', '-DUSE_EGL']
