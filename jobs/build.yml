@@ -42,7 +42,7 @@ jobs:
       cd Celestia
       git checkout origin/$(System.PullRequest.TargetBranch)
       cd ../CelestiaCore
-      git checkout origin/$(System.PullRequest.TargetBranch)
+      git checkout origin/macos-12
       git submodule update --init
     displayName: 'Checkout Branch (PR)'
     condition: eq( variables['Build.Reason'], 'PullRequest' )
