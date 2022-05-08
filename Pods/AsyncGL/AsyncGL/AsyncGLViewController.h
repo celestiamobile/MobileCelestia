@@ -26,7 +26,15 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, getter=isPaused) BOOL paused;
 @property (nonatomic, nullable) AsyncGLView *glView;
 
-- (instancetype)initWithMSAAEnabled:(BOOL)msaaEnabled;
+#if TARGET_OS_IOS
+- (instancetype)initWithMSAAEnabled:(BOOL)msaaEnabled initialFrameRate:(NSInteger)frameRate NS_DESIGNATED_INITIALIZER;
+#else
+- (instancetype)initWithMSAAEnabled:(BOOL)msaaEnabled NS_DESIGNATED_INITIALIZER;
+#endif
++ (instancetype)new NS_UNAVAILABLE;
+- (instancetype)init NS_UNAVAILABLE;
+- (instancetype)initWithNibName:(nullable NSString *)nibNameOrNil bundle:(nullable NSBundle *)nibBundleOrNil NS_UNAVAILABLE;
+- (nullable instancetype)initWithCoder:(NSCoder *)coder NS_UNAVAILABLE;
 
 - (void)prepareGL:(CGSize)size;
 - (void)drawGL:(CGSize)size;

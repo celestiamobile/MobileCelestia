@@ -5,7 +5,7 @@
 
 import Foundation
 
-#if os(Linux)
+#if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
 
@@ -46,12 +46,72 @@ public extension URLSession {
     }
 }
 
-fileprivate extension Data {
-    mutating func appendString(_ string: String) {
-        let data = string.data(using: String.Encoding.utf8, allowLossyConversion: false)
-        append(data!)
+#if compiler(>=5.5) && canImport(_Concurrency)
+@available(iOS 13.0, macOS 10.15, watchOS 6.0, tvOS 13.0, *)
+private extension URLSession {
+    func _dataCompat(for request: URLRequest) async throws -> (Data, URLResponse) {
+        if #available(iOS 15.0, macOS 12.0, watchOS 8.0, tvOS 15.0, *) {
+            return try await data(for: request, delegate: nil)
+        }
+        return try await withCheckedThrowingContinuation { continuation in
+            _ = dataTask(with: request) { data, response, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                    return
+                }
+                continuation.resume(returning: (data!, response!))
+            }
+        }
     }
 }
+
+@available(iOS 13.0, macOS 10.15, watchOS 6.0, tvOS 13.0, *)
+public extension URLSession {
+    func post(to url: String, parameters: [String: String]) async throws -> (Data, URLResponse) {
+        let url = URL(string: url)!
+        var request = URLRequest(url: url)
+        request.setPostParameters(parameters)
+        return try await _dataCompat(for: request)
+    }
+
+    func post<T: Encodable>(to url: String, json: T, encoder: JSONEncoder?) async throws -> (Data, URLResponse) {
+        let url = URL(string: url)!
+        var request = URLRequest(url: url)
+        request.setPostParametersJson(json, encoder: encoder)
+        return try await _dataCompat(for: request)
+    }
+
+    func upload(to url: String, parameters: [String: String], data: Data, key: String, filename: String) async throws -> (Data, URLResponse) {
+        let url = URL(string: url)!
+        var request = URLRequest(url: url)
+        request.setUploadParameters(parameters, data: data, key: key, filename: filename)
+        return try await _dataCompat(for: request)
+    }
+
+    func get(from url: String, parameters: [String: String]) async throws -> (Data, URLResponse) {
+        let suffix = parameters.urlQueryEncoded
+        let url = URL(string: (suffix.count > 0 ? "\(url)?\(suffix)" : url))
+        return try await _dataCompat(for: URLRequest(url: url!))
+    }
+}
+
+#if canImport(FoundationNetworking)
+// swift-corelibs-foundation still has not integrated concurrency support for Linux yet...
+extension URLSession {
+    func data(for request: URLRequest, delegate: URLSessionDelegate?) async throws -> (data: Data, response: URLResponse) {
+        return try await withCheckedThrowingContinuation { continuation in
+            dataTask(with: request, completionHandler: { data, response, error in
+                if let error = error {
+                    continuation.resume(throwing: error)
+                } else {
+                    continuation.resume(returning: (data!, response!))
+                }
+            }).resume()
+        }
+    }
+}
+#endif
+#endif
 
 fileprivate extension Dictionary where Key == String, Value == String {
     var urlQueryEncoded: String {
@@ -78,21 +138,27 @@ fileprivate extension URLRequest {
 
         /* Create upload body */
         var body = Data()
+
+        func appendString(_ string: String) {
+            let data = string.data(using: .utf8)
+            body.append(data!)
+        }
+
         /* Key/value pairs */
         let boundaryPrefix = "--\(boundary)\r\n"
         for (key, value) in parameters {
-            body.appendString(boundaryPrefix)
-            body.appendString("Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n")
-            body.appendString("\(value)\r\n")
+            appendString(boundaryPrefix)
+            appendString("Content-Disposition: form-data; name=\"\(key)\"\r\n\r\n")
+            appendString("\(value)\r\n")
         }
         /* File information */
-        body.appendString(boundaryPrefix)
-        body.appendString("Content-Disposition: form-data; name=\"\(key)\"; filename=\"\(filename)\"\r\n")
-        body.appendString("Content-Type: \(mimeType)\r\n\r\n")
+        appendString(boundaryPrefix)
+        appendString("Content-Disposition: form-data; name=\"\(key)\"; filename=\"\(filename)\"\r\n")
+        appendString("Content-Type: \(mimeType)\r\n\r\n")
         /* File data */
         body.append(data)
-        body.appendString("\r\n")
-        body.appendString("--".appending(boundary.appending("--")))
+        appendString("\r\n")
+        appendString("--".appending(boundary.appending("--")))
 
         httpMethod = "POST"
         httpBody = body

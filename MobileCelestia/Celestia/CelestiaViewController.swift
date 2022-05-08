@@ -37,7 +37,7 @@ protocol CelestiaControllerDelegate: AnyObject {
 class CelestiaViewController: UIViewController {
     weak var delegate: CelestiaControllerDelegate!
 
-    private lazy var displayController = CelestiaDisplayController(msaaEnabled: UserDefaults.app[.msaa] == true, frameRate: UserDefaults.app[.frameRate] ?? 60)
+    private lazy var displayController = CelestiaDisplayController(msaaEnabled: UserDefaults.app[.msaa] == true, initialFrameRate: UserDefaults.app[.frameRate] ?? 60)
     private var interactionController: CelestiaInteractionController?
 
     private lazy var auxiliaryWindows = [UIWindow]()

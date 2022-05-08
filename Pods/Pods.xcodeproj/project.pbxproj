@@ -20,113 +20,83 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		0C97B2682E2C5422622997BC394AC4C0 /* AsyncGLViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 3B4F744985CF4B547B3289E2B6AB20E3 /* AsyncGLViewController.m */; };
-		120C1AD5309F750DF0612DC0991B1197 /* angle_windowsstore.h in Headers */ = {isa = PBXBuildFile; fileRef = F688883DD260B342E327A10DA0F58DCB /* angle_windowsstore.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		154BEA14E1EF202D3449434BE4BF6963 /* gl3ext_explicit_context_autogen.inc in Headers */ = {isa = PBXBuildFile; fileRef = 40CB38828FFDCE88E82A0149C296EB72 /* gl3ext_explicit_context_autogen.inc */; settings = {ATTRIBUTES = (Project, ); }; };
-		1F846F049C12B7E51ABE566BD1E39B90 /* cl_gl.h in Headers */ = {isa = PBXBuildFile; fileRef = 888DE1821577930F04971C466E6CEA0C /* cl_gl.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		1FA7A9D11E3210ED8628D75E72C0A6E9 /* egl.h in Headers */ = {isa = PBXBuildFile; fileRef = F3C3120F65E4E7AA94ABF0C9F9C10B06 /* egl.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		217CDAB4DE2D5A5688AAE5C159EE4459 /* gl2platform.h in Headers */ = {isa = PBXBuildFile; fileRef = C6B3A5F875CFA3EDBA6597E65B18D61A /* gl2platform.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		02C73AACCBF49B85EA9ED890EE549B97 /* khrplatform.h in Headers */ = {isa = PBXBuildFile; fileRef = E235C2F41E9C2C41C679CB21E14BB8C4 /* khrplatform.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		0F69B8550B797BF2544D48B1B0675936 /* export.h in Headers */ = {isa = PBXBuildFile; fileRef = 4C3129A9F3DBD9EBD3CFE3E53051F933 /* export.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		2045F40645C914F4DEA862F1A887E30E /* AsyncRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CCA7D41F7566ED4EAFFE13F83C991FD /* AsyncRequestHandler.swift */; };
 		23064FDC26EE0A9A7875345F030F096C /* Pods-MobileCelestia-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = BA83A75494554567F09A63053609A654 /* Pods-MobileCelestia-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		28CD0501E348BE09C17E619EDE81E0F6 /* Data+Serialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0B4F7C1AC13C42C3093EF574B201C5D4 /* Data+Serialization.swift */; };
-		2D0ECD6CA38BED848C46C80F137DE95D /* cl_dx9_media_sharing.h in Headers */ = {isa = PBXBuildFile; fileRef = 89114C30268EA34D665CB7E2589A7F9B /* cl_dx9_media_sharing.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		2F8A36288596AF7B929C70D9ED803719 /* cl_icd.h in Headers */ = {isa = PBXBuildFile; fileRef = C7BA9BDB492152759F402F15744AB6AC /* cl_icd.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		3041EDA7FD5CCA1BD47C6D3007B5ECF4 /* cl_layer.h in Headers */ = {isa = PBXBuildFile; fileRef = E60E7DD140466011148ADA9A572C7167 /* cl_layer.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		33C9F1D0CF1F10CF6B66B0E5C704DCDC /* glext_explicit_context_autogen.inc in Headers */ = {isa = PBXBuildFile; fileRef = 4AE0D916D77E3CFA8EE714C22AE87D39 /* glext_explicit_context_autogen.inc */; settings = {ATTRIBUTES = (Project, ); }; };
-		3546CB40226C10463B50A7696F8E06D1 /* ShaderVars.h in Headers */ = {isa = PBXBuildFile; fileRef = 92B0D44C2671F350238692AC4F412EDC /* ShaderVars.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		3EE576D1430628FA594FFD7C2F3C18DA /* gl.h in Headers */ = {isa = PBXBuildFile; fileRef = EC4597D5821E71658880A2C405C282E9 /* gl.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		420C42DD151D1B012B27144BFBACEA40 /* AsyncGLViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 6B35DD4F37FA74599672209281EE6719 /* AsyncGLViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		445EBD20144D2C1E45417B49F8EC6741 /* AsyncGL-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 914B532CFD398E46C879CFD77578713D /* AsyncGL-dummy.m */; };
-		450246C0E3D6C4DBFA8E0F5CC196BD82 /* FrontendFeatures.h in Headers */ = {isa = PBXBuildFile; fileRef = 9F082379DAB2B6CD0065A42326B0074B /* FrontendFeatures.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		4696A03EB7441CA5B770B63BE3F3A78E /* gl3platform.h in Headers */ = {isa = PBXBuildFile; fileRef = EA1AC68CD9065C291803B8200E169910 /* gl3platform.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		4C2E15196C17D8C9CE373DD32CE8F059 /* MWRequest-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = EEA2072016DE0ACDE84C8771830472E4 /* MWRequest-dummy.m */; };
-		4C3684005983687BB30E00B50CAF920B /* glplatform.h in Headers */ = {isa = PBXBuildFile; fileRef = EC402089A0260F49AFD7CC828EEC7C7B /* glplatform.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		525D3832DD4EA83DB37FB707444B1484 /* export.h in Headers */ = {isa = PBXBuildFile; fileRef = A51EA53509BC842A6D665377BD2F1815 /* export.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		57ACDC8B66CBD5899E3DCD72A45FB8E6 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
-		592C05D1A7BEFEB9C44E0EFB4D62D02F /* cl_ext_intel.h in Headers */ = {isa = PBXBuildFile; fileRef = 09B5CF6FF957E53B33F820B7097708AC /* cl_ext_intel.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		5BD7DC047FBAF3B1DACD9BC4B11A6617 /* PlatformMethods.h in Headers */ = {isa = PBXBuildFile; fileRef = C8F6B464048CCB5EF1D751E0B287DE90 /* PlatformMethods.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		5D2F274746A973A9943911AB9E81AAF6 /* angle_gl.h in Headers */ = {isa = PBXBuildFile; fileRef = 7E3CB19D00184DE48F6425604D80B153 /* angle_gl.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		5F93C3693FE74BA8519813F7828765DD /* cl_va_api_media_sharing_intel.h in Headers */ = {isa = PBXBuildFile; fileRef = 22B875E7B99A95329F94F0085A5E57D3 /* cl_va_api_media_sharing_intel.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		60F6DC6C3B3E0BCD12CA976F9B722DAC /* glext.h in Headers */ = {isa = PBXBuildFile; fileRef = A01691383A0150CC38D3E41860FCE032 /* glext.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		67449F6AD8EEE9C52ACDC86029F09FF2 /* Archive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4AAF896C6903A9BB04CB6ECFA6F8F246 /* Archive.swift */; };
-		6A65D7353DEEE393CC812FF3B29BDF12 /* gl2ext.h in Headers */ = {isa = PBXBuildFile; fileRef = AB1F8F9DC360B241C62BD92E0D4F3C2D /* gl2ext.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		6A77294117C5C9C82B9EF472CCA1A4D8 /* gl2ext_angle.h in Headers */ = {isa = PBXBuildFile; fileRef = F99AC8819AFF7323E846E74BC38BF30C /* gl2ext_angle.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		77B2328662ED11AD8999D1509F71639D /* cl.h in Headers */ = {isa = PBXBuildFile; fileRef = 87B78FB722879E12B606CCC8685EA629 /* cl.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		7898B39AC05C2E6C36880BCBE86903F6 /* ZIPFoundation-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = AD7B11668BA08E671170FEF2575A6106 /* ZIPFoundation-dummy.m */; };
-		7983EE8C56EB9FE6AC4D2E3C78248751 /* gl32.h in Headers */ = {isa = PBXBuildFile; fileRef = 18DFBD277002A1AA504516F081A8CC0E /* gl32.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		7A6F2A1261243AD6FA699364E8091A0E /* cl_egl.h in Headers */ = {isa = PBXBuildFile; fileRef = 6603FABC96B6BEEA673D5736A4E1C3B6 /* cl_egl.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		7AFAAE444DA29168308DB6AA0CECAD34 /* eglext.h in Headers */ = {isa = PBXBuildFile; fileRef = 3A5B330833C3E8B73E457D71A76F4BEF /* eglext.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		7BE5B6FA2FDD81FA4DD057FE4D11CCDA /* FeaturesVk.h in Headers */ = {isa = PBXBuildFile; fileRef = AF9922C2FF1E471301FCB7FE8A6258C0 /* FeaturesVk.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		7FF243E3C5FFE0D8E635C793B160A68E /* cl_gl_ext.h in Headers */ = {isa = PBXBuildFile; fileRef = CEC5D3F5AFE517D2BEFF9FAAA235223E /* cl_gl_ext.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		81229F1FDAFB405547E360C25B261EB7 /* vulkan_fuchsia_ext.h in Headers */ = {isa = PBXBuildFile; fileRef = 0848055C6358BE6D6EA6584AD68F9E8D /* vulkan_fuchsia_ext.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		8373E7503BA611B3ECC70F46C0229117 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
-		8507771A4091D57B5F59C89BE96E87DF /* Feature.h in Headers */ = {isa = PBXBuildFile; fileRef = 9E0CFF66C7DB52897D12CA549853C67C /* Feature.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		8815D032A2E28611B1AC92C21C018A82 /* cl_dx9_media_sharing_intel.h in Headers */ = {isa = PBXBuildFile; fileRef = BFABB1AC56B548161507CABD56205F44 /* cl_dx9_media_sharing_intel.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		8B31D0A789E371005026B9361A01C892 /* cl_d3d10.h in Headers */ = {isa = PBXBuildFile; fileRef = 3E2C40F3334007C43A03EDFAD5128E64 /* cl_d3d10.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		8B4A54C14A8BC94557F99EA083CA6B8D /* Archive+Reading.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51E8366D5C9AD6BB01DC82720A1B87E0 /* Archive+Reading.swift */; };
-		8CCFB22E30A56AB89DC4DE26BD6AA103 /* AsyncGL-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = B716EA27F684EA56410890D65557713D /* AsyncGL-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		8CFE92B66E939D5FE870108166155BAD /* FeaturesMtl.h in Headers */ = {isa = PBXBuildFile; fileRef = 10D71091373840CC5F84505933B6C3C7 /* FeaturesMtl.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		8ECD9809992BA18F7DEF0264E459165B /* Platform.h in Headers */ = {isa = PBXBuildFile; fileRef = C2E60A1C569DDFDF3276B0455B9622C2 /* Platform.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		935AA7F314BFC7E3DAFD27B0CA440889 /* Archive+Writing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D19C1BC550F9800B5E756947C1A5FF0 /* Archive+Writing.swift */; };
-		967B30C4E623C1EE4B76DF995E72C836 /* cl_version.h in Headers */ = {isa = PBXBuildFile; fileRef = 1014B66CF8C8F764F773E26875C9DAE7 /* cl_version.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		97A63EE71A4888E677D3BAB6CDFDDAF4 /* egl.h in Headers */ = {isa = PBXBuildFile; fileRef = A29DFF3C48CDB8048CABB22E0EFF6393 /* egl.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		2493E421494910E41217C5FE1FC014D6 /* RequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0ABE334BE6C203F34BF3201877B1CB5 /* RequestHandler.swift */; };
+		28CD0501E348BE09C17E619EDE81E0F6 /* Data+Serialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4EB484D2390C38D91D795BF0D03F3E0 /* Data+Serialization.swift */; };
+		2A43DB2862280C9414463064035B5AC8 /* AsyncGLView.h in Headers */ = {isa = PBXBuildFile; fileRef = 893B8EAF74E9FD3AF9945F50E9507D06 /* AsyncGLView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2F8E03D5E0A8F45677C69C6D7C2F516B /* eglplatform.h in Headers */ = {isa = PBXBuildFile; fileRef = 60EB5B6C53F9E0E33A920BBC2C897A3C /* eglplatform.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		394EB40055C51C7636664A09E47DAC8F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
+		3A1F569E38F224DD099D87CF002A4082 /* gl2ext.h in Headers */ = {isa = PBXBuildFile; fileRef = F236FD9417E3A84FEBEF8C069CAF2332 /* gl2ext.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		3B4CE1FF8113E0522D74C20785FE0153 /* AsyncGL-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 945EE750B00F773480BB8DEAC2D1BDCB /* AsyncGL-dummy.m */; };
+		412B1C4B241661C22E99689E24B0653A /* AsyncGLViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 1863A5EB8B8F1DBCF5B5948378468CCE /* AsyncGLViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		5483B0FF31C316FEE5C18C1B05247C2C /* egl.h in Headers */ = {isa = PBXBuildFile; fileRef = 74DD3A9BDACD0D11A5CDE95D5496B886 /* egl.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		5B9A32816932ABC7254AEA497384BE5F /* glext_angle.h in Headers */ = {isa = PBXBuildFile; fileRef = 2D8422DA9EAE3FC889BDB94CDA390D43 /* glext_angle.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		61C5D1B6D9BA1AABD16310B354D27DC8 /* MWRequest-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = F40DDE485C44CA56499ADD76A06EFB37 /* MWRequest-dummy.m */; };
+		67449F6AD8EEE9C52ACDC86029F09FF2 /* Archive.swift in Sources */ = {isa = PBXBuildFile; fileRef = D6DCABD4A80E3A2EDDE6D5726BCF944A /* Archive.swift */; };
+		6748A63765DA9F8D6FDC445614D2DC1D /* gl3platform.h in Headers */ = {isa = PBXBuildFile; fileRef = EB0B36D10CD7C99424C331C0205866F6 /* gl3platform.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		67D5E2B86AF8613773C4CB800A7ECD85 /* glplatform.h in Headers */ = {isa = PBXBuildFile; fileRef = 7CC15677CD5F218BFE151A6949D30CB8 /* glplatform.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		7898B39AC05C2E6C36880BCBE86903F6 /* ZIPFoundation-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 4561328C5E86E942F21C50DD72FC5491 /* ZIPFoundation-dummy.m */; };
+		7D362D6FE20A856F59CA5036B25CFCE3 /* AsyncGL-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = E8E3227041EAA0B310824F6A4F62CC90 /* AsyncGL-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		88136B743F2F3E255523AA38B249F8C5 /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 313AC55F5F287A6314129F3F13BF87BD /* Request.swift */; };
+		88FCD7AA42AE3B6AD839F671AF054A30 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
+		8B4A54C14A8BC94557F99EA083CA6B8D /* Archive+Reading.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6DFB82995B6867E48A4B38E0367FA71 /* Archive+Reading.swift */; };
+		8DD96FB8B0CD268CB286939812908A57 /* gl2platform.h in Headers */ = {isa = PBXBuildFile; fileRef = 7700F1E27ED311E9A0D0090EFE53806D /* gl2platform.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		935AA7F314BFC7E3DAFD27B0CA440889 /* Archive+Writing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D66CF0E1CD7CE452B8ED6881628F9CD /* Archive+Writing.swift */; };
+		95C5208518A1F30FD89AB72568C1BD2E /* eglext_angle.h in Headers */ = {isa = PBXBuildFile; fileRef = A38D953C24F670057A9766B6706D1AE1 /* eglext_angle.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		98A088EA16EE9BA578202963D213D802 /* Pods-MobileCelestia-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D803B3F3EB5952FD5D37D04C0CA830 /* Pods-MobileCelestia-dummy.m */; };
-		9BC1C8BD248A8C3AA731151A04AAD19D /* gl3.h in Headers */ = {isa = PBXBuildFile; fileRef = 90E37E4BC871E3024085BA9B6B9F865D /* gl3.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		9EC36019F5A22E34CE14F8359FCBEBFC /* ShaderLang.h in Headers */ = {isa = PBXBuildFile; fileRef = FC2E2235A894BF79A4D4AB1CC9B29F94 /* ShaderLang.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		A13A4B6FACB03F2E29AF50FDB10B429E /* cl_half.h in Headers */ = {isa = PBXBuildFile; fileRef = 51C4EB67C2495AFE974C3EB9ADAB60F8 /* cl_half.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		A548FE4912631FCE1C66C0F34581118F /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0D3A6F9D77FC5E2B1BED59DC0EDF46 /* Request.swift */; };
-		A892B8558070136CA93C48D9E861A3E9 /* RequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FAE6B135F447364E32B62FD07AB5780 /* RequestHandler.swift */; };
-		A8CF66067B6391C2170B708F0EA8D255 /* FeaturesGL.h in Headers */ = {isa = PBXBuildFile; fileRef = 08CDEA41561B4F4419B72AB0C85D3CF4 /* FeaturesGL.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		A9F03087C6407BCD69B91F42F4413CB8 /* angle_cl.h in Headers */ = {isa = PBXBuildFile; fileRef = 7F011E050B6450BEEB8D48BF208C6CC8 /* angle_cl.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		9B0D7C416B05D95777819A24B54B816E /* gl2.h in Headers */ = {isa = PBXBuildFile; fileRef = D835BE2F8A1DEACD57F01C8613C68AA9 /* gl2.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		9D081C21FB17787DC41FB2FA54D7C905 /* AsyncGLView+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 2612BA7819275A8DA61CC96B836DF673 /* AsyncGLView+Private.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		A133B74C45728C3B050A0B072912E4CA /* gl32.h in Headers */ = {isa = PBXBuildFile; fileRef = D5F56B46A9BFF3283A11257869DA06E5 /* gl32.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		AD4CC3A1BA58C7930BBE03CDFE43A4A4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
-		B023327DE68DB5765C4A1C5A9BE41EDA /* cl_platform.h in Headers */ = {isa = PBXBuildFile; fileRef = F8FD2F072C58A7C37003CB322029DE0C /* cl_platform.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		B9EEA83C96CA4B18B45028CE9B9F8E4F /* FileManager+ZIP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E6D49C832FB7C678095D5076488C379 /* FileManager+ZIP.swift */; };
-		BA5CA98F7BC58B930EC0F7E4BF301F1F /* AsyncGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 0E0B2CA9C4AAC8D34EBA7D639763B0BB /* AsyncGLView.m */; };
-		BD2C554B54145784EFDD8CF0492B343F /* Archive+MemoryFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 79BFAB3B7BE57937A97CD127B1E39572 /* Archive+MemoryFile.swift */; };
-		C48756F7A0939D244002F21E9F06A450 /* Data+Compression.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DDE9BB02CD1F44311DC8C76098B7B4D /* Data+Compression.swift */; };
-		CB2D97F991B78DFDFFB711621222B98B /* wgl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5CCBCADCD7F63CDF198ADFCA0D2339D8 /* wgl.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		CB40346771C48F788D565FD38742F050 /* eglext_angle.h in Headers */ = {isa = PBXBuildFile; fileRef = 04FE07251F75FF3FDA8BC63CED5C398D /* eglext_angle.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		CBA77A1DB2AE3423D4A1F6A5F4393BCF /* FeaturesD3D.h in Headers */ = {isa = PBXBuildFile; fileRef = F2E7DB5A1B07B3C5813826299E7E359E /* FeaturesD3D.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		D1A71D65BA27A805CD5A104626A888FA /* Entry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FBCC956384F8C5BE3C8084A20D4644A /* Entry.swift */; };
-		D2F88B64C760F50ED526779762EC4CE2 /* gl31.h in Headers */ = {isa = PBXBuildFile; fileRef = FECD5A4D5009D8566CC5C1C005C0122B /* gl31.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		D387320DDFE58120FCDA27F75972FC90 /* AsyncGLView.h in Headers */ = {isa = PBXBuildFile; fileRef = 1BC0785E5625186AF25BE80CF0A4AACD /* AsyncGLView.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D3FCEDDE91BA1EECBC9FF727A455ED40 /* cl_ext.h in Headers */ = {isa = PBXBuildFile; fileRef = 259756E05047F19AA8B9BE7417E92D48 /* cl_ext.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		D6D2E918B7E07E8570594DF42C537FB4 /* ZIPFoundation-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 6B33B170E991D46A1C9CCA5E2F0A674F /* ZIPFoundation-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D8624F7EB012463CEAE3936B0920C30A /* gl31ext_explicit_context_autogen.inc in Headers */ = {isa = PBXBuildFile; fileRef = 65FBEA9C70F71B1376C6802ED3519A1F /* gl31ext_explicit_context_autogen.inc */; settings = {ATTRIBUTES = (Project, ); }; };
-		DBBCEAA65126433FEC6C3B9FFD37BE69 /* opencl.h in Headers */ = {isa = PBXBuildFile; fileRef = 723463029F7FA516D4C769C826BF6D2D /* opencl.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		E71A8F0A6BDAD7FB295845925CA2850E /* eglplatform.h in Headers */ = {isa = PBXBuildFile; fileRef = 5AABECAA1FE6BF863AB44C549894A4CE /* eglplatform.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		E813B920CE886647E3304A44A8DD6EDB /* AsyncGLView+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 6D500E559E29B278FC8CDADDBDF5387C /* AsyncGLView+Private.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		F1EAD355ACC360EDE758F6F6D8B7F8BA /* cl_d3d11.h in Headers */ = {isa = PBXBuildFile; fileRef = C2722459E34AD2D0CE615890D5DE5DC0 /* cl_d3d11.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		F2AD41CC846037431C581CC649F32546 /* MWRequest-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 69F293FD5F8ADEE414FC67DFEABD8E65 /* MWRequest-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		F4569F7915949036CBA70A42D166A697 /* gl2.h in Headers */ = {isa = PBXBuildFile; fileRef = 617136E29FBDA1F490A5CC8C5C406A78 /* gl2.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		F57C2AB52B6D7413449B3FE6DFDAEDEE /* glext_angle.h in Headers */ = {isa = PBXBuildFile; fileRef = D7D51F6B2216DE4E5E1012D13A7BC35A /* glext_angle.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		F7336ECC2C950DA7396268D493EB4862 /* gl2ext_explicit_context_autogen.inc in Headers */ = {isa = PBXBuildFile; fileRef = 3CB20D5ADA78DC453D0EA0B67A1A559C /* gl2ext_explicit_context_autogen.inc */; settings = {ATTRIBUTES = (Project, ); }; };
+		B2574C5C8661D6CD0F8F66098AF2AE9B /* AsyncGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 37F4370249C54B750102724342494D18 /* AsyncGLView.m */; };
+		B4AF6B61FFF6C0E81EDF70D79ED7B5F0 /* egl.h in Headers */ = {isa = PBXBuildFile; fileRef = B7161E728589D86CB46CD8184D59BA4A /* egl.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		B4E3E73C91FC71B145185659C69A74D1 /* gl.h in Headers */ = {isa = PBXBuildFile; fileRef = 5EA1B4DD9F4B0798E71C0AF2B1DA1A59 /* gl.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		B9EEA83C96CA4B18B45028CE9B9F8E4F /* FileManager+ZIP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 18CA1FAC9785A6375E5DF41E7EC93BAB /* FileManager+ZIP.swift */; };
+		BD2C554B54145784EFDD8CF0492B343F /* Archive+MemoryFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80C420ED7B3398126337BB5838B6B451 /* Archive+MemoryFile.swift */; };
+		C48756F7A0939D244002F21E9F06A450 /* Data+Compression.swift in Sources */ = {isa = PBXBuildFile; fileRef = 904E25B06C98931E6D729842490DA476 /* Data+Compression.swift */; };
+		C8B297B3F6353C80318A9257655772FE /* MWRequest-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 1240B88DE0E61E12D89B8A58A1BE7A03 /* MWRequest-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D1A71D65BA27A805CD5A104626A888FA /* Entry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 166981C9853DFF31B6D02C18BCFDEA48 /* Entry.swift */; };
+		D6D2E918B7E07E8570594DF42C537FB4 /* ZIPFoundation-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 7F442358906DE2448ABDF493FE97B22B /* ZIPFoundation-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		D7FFEA5ADB3975EFFA83D2262CB1158E /* gl31.h in Headers */ = {isa = PBXBuildFile; fileRef = C3187B5C26336E97975B5160DF3A5D90 /* gl31.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		D88127493CDF120883ABB84D54685CCE /* gl3.h in Headers */ = {isa = PBXBuildFile; fileRef = 06649BC699E315B4C4E6CF5951CB56BF /* gl3.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		E58FE53C6352846BB75F048EFEA2D5CB /* glext.h in Headers */ = {isa = PBXBuildFile; fileRef = D71BEAE032EE9CC8EB38931055801738 /* glext.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		F261AC1E095BB817B0C59C52AEFBEA09 /* gl31ext_explicit_context_autogen.inc in Headers */ = {isa = PBXBuildFile; fileRef = C5D4BCB8CA10477006ACF373C0BF09B9 /* gl31ext_explicit_context_autogen.inc */; settings = {ATTRIBUTES = (Project, ); }; };
+		F4A923693A5B80D4A7A2A4E88CEB6FEA /* AsyncGLViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6B37B2567B02EEDA89C17401322FE8C2 /* AsyncGLViewController.m */; };
+		F8A0DDCF718F06010C44F59621352F34 /* eglext.h in Headers */ = {isa = PBXBuildFile; fileRef = C4F6374A54EDBCF5DDB5F47BAFBDB7B6 /* eglext.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		F9F0C71DA12C72CF4054F90E86406A95 /* gl2ext_angle.h in Headers */ = {isa = PBXBuildFile; fileRef = 8AC887FFE34EE0E6F71315D1DCA4C4E3 /* gl2ext_angle.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		FC7F242B57A33C1F855F3BD13ADC7D05 /* angle_gl.h in Headers */ = {isa = PBXBuildFile; fileRef = CDFAE4BEE3141B05DC30DAE35AA71311 /* angle_gl.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		FCD0FBBC7CD3E40C803CB3306BC43E75 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
-		FDC3A4F7AF0C8B406BE166E6A8DB1D53 /* khrplatform.h in Headers */ = {isa = PBXBuildFile; fileRef = BB581CFB1DAF65FD87997BF1EF6F05C4 /* khrplatform.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		FD5138D2E626C49173D6FF5AEA78B2CE /* gl3ext_explicit_context_autogen.inc in Headers */ = {isa = PBXBuildFile; fileRef = 3FDD329FADA4E75F3BD39800923DDD06 /* gl3ext_explicit_context_autogen.inc */; settings = {ATTRIBUTES = (Project, ); }; };
+		FD830935887C15F93FAFABE5103BF592 /* gl2ext_explicit_context_autogen.inc in Headers */ = {isa = PBXBuildFile; fileRef = F36FA800826F44F2A664BCC0137FFFC1 /* gl2ext_explicit_context_autogen.inc */; settings = {ATTRIBUTES = (Project, ); }; };
+		FE7DAA8BDB5DA0A20ACA14C8F02EDD24 /* glext_explicit_context_autogen.inc in Headers */ = {isa = PBXBuildFile; fileRef = 650F2D735F743E3D6395D50FC6A543F3 /* glext_explicit_context_autogen.inc */; settings = {ATTRIBUTES = (Project, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		3C2813097762167905D75359A642243B /* PBXContainerItemProxy */ = {
+		21E148DA1F5C4F87F02EDABDA8DE9B29 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = B0461866C4B5B8EDBF49D135C70E49C4;
 			remoteInfo = AsyncGL;
 		};
-		7C26CA34E66AFF980C50F89323CED2DE /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = AA15C8469D67684160CC2A7098EB841C;
-			remoteInfo = ZIPFoundation;
-		};
-		D40D42D32EAEABAB7750EBAA7D9742D6 /* PBXContainerItemProxy */ = {
+		6C31C67DFFD1A81DB298070048A88E31 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = A3282A5B2437E609EEB85861D7ECE717;
 			remoteInfo = AppCenter;
 		};
-		FEAEBD5E27F88C2D29D925E223758EDD /* PBXContainerItemProxy */ = {
+		7597420CB10117D0FDAF220D2DA28023 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AA15C8469D67684160CC2A7098EB841C;
+			remoteInfo = ZIPFoundation;
+		};
+		7F3A9E39BE964C7820A92528FBE28494 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
 			proxyType = 1;
@@ -136,117 +106,87 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		04FE07251F75FF3FDA8BC63CED5C398D /* eglext_angle.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = eglext_angle.h; path = GL/EGL/eglext_angle.h; sourceTree = "<group>"; };
-		0848055C6358BE6D6EA6584AD68F9E8D /* vulkan_fuchsia_ext.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = vulkan_fuchsia_ext.h; path = GL/vulkan/vulkan_fuchsia_ext.h; sourceTree = "<group>"; };
-		08CDEA41561B4F4419B72AB0C85D3CF4 /* FeaturesGL.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = FeaturesGL.h; path = GL/platform/FeaturesGL.h; sourceTree = "<group>"; };
-		09B5CF6FF957E53B33F820B7097708AC /* cl_ext_intel.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = cl_ext_intel.h; path = GL/CL/cl_ext_intel.h; sourceTree = "<group>"; };
-		0B4F7C1AC13C42C3093EF574B201C5D4 /* Data+Serialization.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Data+Serialization.swift"; path = "Sources/ZIPFoundation/Data+Serialization.swift"; sourceTree = "<group>"; };
-		0E0B2CA9C4AAC8D34EBA7D639763B0BB /* AsyncGLView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = AsyncGLView.m; path = AsyncGL/AsyncGLView.m; sourceTree = "<group>"; };
-		0E6D49C832FB7C678095D5076488C379 /* FileManager+ZIP.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "FileManager+ZIP.swift"; path = "Sources/ZIPFoundation/FileManager+ZIP.swift"; sourceTree = "<group>"; };
-		1014B66CF8C8F764F773E26875C9DAE7 /* cl_version.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = cl_version.h; path = GL/CL/cl_version.h; sourceTree = "<group>"; };
-		10D71091373840CC5F84505933B6C3C7 /* FeaturesMtl.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = FeaturesMtl.h; path = GL/platform/FeaturesMtl.h; sourceTree = "<group>"; };
-		15425240D065CF011C46F742D5281BBA /* AsyncGL-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "AsyncGL-Info.plist"; sourceTree = "<group>"; };
-		18DFBD277002A1AA504516F081A8CC0E /* gl32.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = gl32.h; path = GL/GLES3/gl32.h; sourceTree = "<group>"; };
-		1BC0785E5625186AF25BE80CF0A4AACD /* AsyncGLView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AsyncGLView.h; path = AsyncGL/AsyncGLView.h; sourceTree = "<group>"; };
-		1C0D3A6F9D77FC5E2B1BED59DC0EDF46 /* Request.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Request.swift; path = Sources/MWRequest/Request.swift; sourceTree = "<group>"; };
-		1D19C1BC550F9800B5E756947C1A5FF0 /* Archive+Writing.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Archive+Writing.swift"; path = "Sources/ZIPFoundation/Archive+Writing.swift"; sourceTree = "<group>"; };
-		1FAE6B135F447364E32B62FD07AB5780 /* RequestHandler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RequestHandler.swift; path = Sources/MWRequest/RequestHandler.swift; sourceTree = "<group>"; };
-		2218A590FCE0B21FACC0BEA2D7017EAB /* AppCenterCrashes.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; name = AppCenterCrashes.xcframework; path = "AppCenter-SDK-Apple/AppCenterCrashes.xcframework"; sourceTree = "<group>"; };
-		22B875E7B99A95329F94F0085A5E57D3 /* cl_va_api_media_sharing_intel.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = cl_va_api_media_sharing_intel.h; path = GL/CL/cl_va_api_media_sharing_intel.h; sourceTree = "<group>"; };
-		24BE473969EAF169099DDC7929ABEF73 /* ZIPFoundation.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = ZIPFoundation.modulemap; sourceTree = "<group>"; };
-		259756E05047F19AA8B9BE7417E92D48 /* cl_ext.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = cl_ext.h; path = GL/CL/cl_ext.h; sourceTree = "<group>"; };
+		005CB6C9BC349E7E2047BFCE3259E670 /* AppCenter.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = AppCenter.debug.xcconfig; sourceTree = "<group>"; };
+		06649BC699E315B4C4E6CF5951CB56BF /* gl3.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = gl3.h; path = GL/GLES3/gl3.h; sourceTree = "<group>"; };
+		0CF3F71A0762765CE3C8F189E9965D80 /* MWRequest.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = MWRequest.release.xcconfig; sourceTree = "<group>"; };
+		1240B88DE0E61E12D89B8A58A1BE7A03 /* MWRequest-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "MWRequest-umbrella.h"; sourceTree = "<group>"; };
+		166981C9853DFF31B6D02C18BCFDEA48 /* Entry.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Entry.swift; path = Sources/ZIPFoundation/Entry.swift; sourceTree = "<group>"; };
+		1863A5EB8B8F1DBCF5B5948378468CCE /* AsyncGLViewController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AsyncGLViewController.h; path = AsyncGL/AsyncGLViewController.h; sourceTree = "<group>"; };
+		18CA1FAC9785A6375E5DF41E7EC93BAB /* FileManager+ZIP.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "FileManager+ZIP.swift"; path = "Sources/ZIPFoundation/FileManager+ZIP.swift"; sourceTree = "<group>"; };
+		2612BA7819275A8DA61CC96B836DF673 /* AsyncGLView+Private.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "AsyncGLView+Private.h"; path = "AsyncGL/AsyncGLView+Private.h"; sourceTree = "<group>"; };
 		27A211133D23340DAC3FDC42D1BC1D54 /* MWRequest */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = MWRequest; path = MWRequest.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		2C7C6E45F9352922F1C17323D1382B7F /* ZIPFoundation-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "ZIPFoundation-prefix.pch"; sourceTree = "<group>"; };
+		2D31C6B98480372B6690C3D40A6D0F99 /* AppCenter.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; name = AppCenter.xcframework; path = "AppCenter-SDK-Apple/AppCenter.xcframework"; sourceTree = "<group>"; };
+		2D8422DA9EAE3FC889BDB94CDA390D43 /* glext_angle.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = glext_angle.h; path = GL/GLES/glext_angle.h; sourceTree = "<group>"; };
+		2E868F30E38E1E937233F78D298EC7D2 /* ZIPFoundation-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "ZIPFoundation-Info.plist"; sourceTree = "<group>"; };
+		313AC55F5F287A6314129F3F13BF87BD /* Request.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Request.swift; path = Sources/MWRequest/Request.swift; sourceTree = "<group>"; };
 		31D803B3F3EB5952FD5D37D04C0CA830 /* Pods-MobileCelestia-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-MobileCelestia-dummy.m"; sourceTree = "<group>"; };
-		3A5B330833C3E8B73E457D71A76F4BEF /* eglext.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = eglext.h; path = GL/EGL/eglext.h; sourceTree = "<group>"; };
-		3AB1F10E0E3B210D1F0082A04860D48E /* MWRequest.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = MWRequest.release.xcconfig; sourceTree = "<group>"; };
-		3B4F744985CF4B547B3289E2B6AB20E3 /* AsyncGLViewController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = AsyncGLViewController.m; path = AsyncGL/AsyncGLViewController.m; sourceTree = "<group>"; };
-		3CB20D5ADA78DC453D0EA0B67A1A559C /* gl2ext_explicit_context_autogen.inc */ = {isa = PBXFileReference; includeInIndex = 1; name = gl2ext_explicit_context_autogen.inc; path = GL/GLES2/gl2ext_explicit_context_autogen.inc; sourceTree = "<group>"; };
-		3E2C40F3334007C43A03EDFAD5128E64 /* cl_d3d10.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = cl_d3d10.h; path = GL/CL/cl_d3d10.h; sourceTree = "<group>"; };
-		40CB38828FFDCE88E82A0149C296EB72 /* gl3ext_explicit_context_autogen.inc */ = {isa = PBXFileReference; includeInIndex = 1; name = gl3ext_explicit_context_autogen.inc; path = GL/GLES3/gl3ext_explicit_context_autogen.inc; sourceTree = "<group>"; };
+		3244AA536E7FC1542F908BEE5BB7CFEB /* MWRequest-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "MWRequest-Info.plist"; sourceTree = "<group>"; };
+		37F4370249C54B750102724342494D18 /* AsyncGLView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = AsyncGLView.m; path = AsyncGL/AsyncGLView.m; sourceTree = "<group>"; };
+		385DB908535028CC5FDE122B8F43A8C0 /* AsyncGL.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = AsyncGL.release.xcconfig; sourceTree = "<group>"; };
+		3D66CF0E1CD7CE452B8ED6881628F9CD /* Archive+Writing.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Archive+Writing.swift"; path = "Sources/ZIPFoundation/Archive+Writing.swift"; sourceTree = "<group>"; };
+		3FDD329FADA4E75F3BD39800923DDD06 /* gl3ext_explicit_context_autogen.inc */ = {isa = PBXFileReference; includeInIndex = 1; name = gl3ext_explicit_context_autogen.inc; path = GL/GLES3/gl3ext_explicit_context_autogen.inc; sourceTree = "<group>"; };
 		45480FF36CE140004EE47690BA10E33F /* Pods-MobileCelestia-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-MobileCelestia-Info.plist"; sourceTree = "<group>"; };
-		46991C280E06DC5AD4494601B90CE2D9 /* ZIPFoundation.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = ZIPFoundation.release.xcconfig; sourceTree = "<group>"; };
+		4561328C5E86E942F21C50DD72FC5491 /* ZIPFoundation-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "ZIPFoundation-dummy.m"; sourceTree = "<group>"; };
 		48A4A6EDC08C8AC933D0DCD507E9D173 /* ZIPFoundation */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = ZIPFoundation; path = ZIPFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		4AAF896C6903A9BB04CB6ECFA6F8F246 /* Archive.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Archive.swift; path = Sources/ZIPFoundation/Archive.swift; sourceTree = "<group>"; };
-		4AE0D916D77E3CFA8EE714C22AE87D39 /* glext_explicit_context_autogen.inc */ = {isa = PBXFileReference; includeInIndex = 1; name = glext_explicit_context_autogen.inc; path = GL/GLES/glext_explicit_context_autogen.inc; sourceTree = "<group>"; };
-		51C4EB67C2495AFE974C3EB9ADAB60F8 /* cl_half.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = cl_half.h; path = GL/CL/cl_half.h; sourceTree = "<group>"; };
-		51E8366D5C9AD6BB01DC82720A1B87E0 /* Archive+Reading.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Archive+Reading.swift"; path = "Sources/ZIPFoundation/Archive+Reading.swift"; sourceTree = "<group>"; };
-		58FD7C147C3EB855368FAF4BD8093117 /* MWRequest-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "MWRequest-Info.plist"; sourceTree = "<group>"; };
-		5AABECAA1FE6BF863AB44C549894A4CE /* eglplatform.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = eglplatform.h; path = GL/EGL/eglplatform.h; sourceTree = "<group>"; };
-		5CCBCADCD7F63CDF198ADFCA0D2339D8 /* wgl.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = wgl.h; path = GL/WGL/wgl.h; sourceTree = "<group>"; };
-		617136E29FBDA1F490A5CC8C5C406A78 /* gl2.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = gl2.h; path = GL/GLES2/gl2.h; sourceTree = "<group>"; };
+		4C3129A9F3DBD9EBD3CFE3E53051F933 /* export.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = export.h; path = GL/export.h; sourceTree = "<group>"; };
+		4CF420F42E3FD721DB62B1C2B300F294 /* AppCenterCrashes.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; name = AppCenterCrashes.xcframework; path = "AppCenter-SDK-Apple/AppCenterCrashes.xcframework"; sourceTree = "<group>"; };
+		56BBC5E11BF7E7ABEC0E6E6AD02405A4 /* AsyncGL.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = AsyncGL.debug.xcconfig; sourceTree = "<group>"; };
+		5DF29027AA80E0F03C7D84CCC7833CD2 /* AsyncGL.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = AsyncGL.modulemap; sourceTree = "<group>"; };
+		5EA1B4DD9F4B0798E71C0AF2B1DA1A59 /* gl.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = gl.h; path = GL/GLES/gl.h; sourceTree = "<group>"; };
+		60EB5B6C53F9E0E33A920BBC2C897A3C /* eglplatform.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = eglplatform.h; path = GL/EGL/eglplatform.h; sourceTree = "<group>"; };
 		618F0DAD7C619AA12E2F6054485270B0 /* Pods-MobileCelestia.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-MobileCelestia.release.xcconfig"; sourceTree = "<group>"; };
-		65A42B9DABBB0430E9C31FF137E29B11 /* AppCenter.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = AppCenter.debug.xcconfig; sourceTree = "<group>"; };
-		65FBEA9C70F71B1376C6802ED3519A1F /* gl31ext_explicit_context_autogen.inc */ = {isa = PBXFileReference; includeInIndex = 1; name = gl31ext_explicit_context_autogen.inc; path = GL/GLES3/gl31ext_explicit_context_autogen.inc; sourceTree = "<group>"; };
-		6603FABC96B6BEEA673D5736A4E1C3B6 /* cl_egl.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = cl_egl.h; path = GL/CL/cl_egl.h; sourceTree = "<group>"; };
-		69F293FD5F8ADEE414FC67DFEABD8E65 /* MWRequest-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "MWRequest-umbrella.h"; sourceTree = "<group>"; };
-		6B33B170E991D46A1C9CCA5E2F0A674F /* ZIPFoundation-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "ZIPFoundation-umbrella.h"; sourceTree = "<group>"; };
-		6B35DD4F37FA74599672209281EE6719 /* AsyncGLViewController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AsyncGLViewController.h; path = AsyncGL/AsyncGLViewController.h; sourceTree = "<group>"; };
-		6CDB9031C42AF5C3E593CB90237974FA /* AppCenter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = AppCenter.release.xcconfig; sourceTree = "<group>"; };
-		6D500E559E29B278FC8CDADDBDF5387C /* AsyncGLView+Private.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "AsyncGLView+Private.h"; path = "AsyncGL/AsyncGLView+Private.h"; sourceTree = "<group>"; };
-		723463029F7FA516D4C769C826BF6D2D /* opencl.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = opencl.h; path = GL/CL/opencl.h; sourceTree = "<group>"; };
+		650F2D735F743E3D6395D50FC6A543F3 /* glext_explicit_context_autogen.inc */ = {isa = PBXFileReference; includeInIndex = 1; name = glext_explicit_context_autogen.inc; path = GL/GLES/glext_explicit_context_autogen.inc; sourceTree = "<group>"; };
+		6B37B2567B02EEDA89C17401322FE8C2 /* AsyncGLViewController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = AsyncGLViewController.m; path = AsyncGL/AsyncGLViewController.m; sourceTree = "<group>"; };
 		73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		74DD3A9BDACD0D11A5CDE95D5496B886 /* egl.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = egl.h; path = GL/GLES/egl.h; sourceTree = "<group>"; };
+		7700F1E27ED311E9A0D0090EFE53806D /* gl2platform.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = gl2platform.h; path = GL/GLES2/gl2platform.h; sourceTree = "<group>"; };
+		7721B72C7EF93CF9D4602BC7BB2AB7CB /* AsyncGL-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "AsyncGL-Info.plist"; sourceTree = "<group>"; };
 		78020024F1A70DF61F2E78929295C055 /* AsyncGL */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = AsyncGL; path = AsyncGL.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		79BFAB3B7BE57937A97CD127B1E39572 /* Archive+MemoryFile.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Archive+MemoryFile.swift"; path = "Sources/ZIPFoundation/Archive+MemoryFile.swift"; sourceTree = "<group>"; };
-		7B62B260A082BB260922D8AB3FA98EEC /* MWRequest.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = MWRequest.modulemap; sourceTree = "<group>"; };
-		7CF7DCDC11C6C05E0F5AFDF5629703D5 /* AppCenterAnalytics.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; name = AppCenterAnalytics.xcframework; path = "AppCenter-SDK-Apple/AppCenterAnalytics.xcframework"; sourceTree = "<group>"; };
-		7E3CB19D00184DE48F6425604D80B153 /* angle_gl.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = angle_gl.h; path = GL/angle_gl.h; sourceTree = "<group>"; };
+		7CC15677CD5F218BFE151A6949D30CB8 /* glplatform.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = glplatform.h; path = GL/GLES/glplatform.h; sourceTree = "<group>"; };
+		7CCA7D41F7566ED4EAFFE13F83C991FD /* AsyncRequestHandler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AsyncRequestHandler.swift; path = Sources/MWRequest/AsyncRequestHandler.swift; sourceTree = "<group>"; };
 		7EBC22C67E549839CC27970A3E789765 /* Pods-MobileCelestia-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-MobileCelestia-acknowledgements.markdown"; sourceTree = "<group>"; };
-		7F011E050B6450BEEB8D48BF208C6CC8 /* angle_cl.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = angle_cl.h; path = GL/angle_cl.h; sourceTree = "<group>"; };
-		7FBCC956384F8C5BE3C8084A20D4644A /* Entry.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Entry.swift; path = Sources/ZIPFoundation/Entry.swift; sourceTree = "<group>"; };
-		87B78FB722879E12B606CCC8685EA629 /* cl.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = cl.h; path = GL/CL/cl.h; sourceTree = "<group>"; };
-		888DE1821577930F04971C466E6CEA0C /* cl_gl.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = cl_gl.h; path = GL/CL/cl_gl.h; sourceTree = "<group>"; };
-		88CF14227044FCA2F933E56CBB933F97 /* ZIPFoundation.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = ZIPFoundation.debug.xcconfig; sourceTree = "<group>"; };
-		89114C30268EA34D665CB7E2589A7F9B /* cl_dx9_media_sharing.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = cl_dx9_media_sharing.h; path = GL/CL/cl_dx9_media_sharing.h; sourceTree = "<group>"; };
-		8B1DCFC8D7AC9C1E44FD34212C08AEC6 /* ZIPFoundation-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "ZIPFoundation-Info.plist"; sourceTree = "<group>"; };
+		7F442358906DE2448ABDF493FE97B22B /* ZIPFoundation-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "ZIPFoundation-umbrella.h"; sourceTree = "<group>"; };
+		80C420ED7B3398126337BB5838B6B451 /* Archive+MemoryFile.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Archive+MemoryFile.swift"; path = "Sources/ZIPFoundation/Archive+MemoryFile.swift"; sourceTree = "<group>"; };
+		80E3868762C7B3958836297F4EFC095E /* ZIPFoundation-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "ZIPFoundation-prefix.pch"; sourceTree = "<group>"; };
+		893B8EAF74E9FD3AF9945F50E9507D06 /* AsyncGLView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AsyncGLView.h; path = AsyncGL/AsyncGLView.h; sourceTree = "<group>"; };
+		8AC887FFE34EE0E6F71315D1DCA4C4E3 /* gl2ext_angle.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = gl2ext_angle.h; path = GL/GLES2/gl2ext_angle.h; sourceTree = "<group>"; };
 		90370C223EA809BAC9C40007B4821792 /* Pods-MobileCelestia.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-MobileCelestia.debug.xcconfig"; sourceTree = "<group>"; };
-		90E37E4BC871E3024085BA9B6B9F865D /* gl3.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = gl3.h; path = GL/GLES3/gl3.h; sourceTree = "<group>"; };
-		914B532CFD398E46C879CFD77578713D /* AsyncGL-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "AsyncGL-dummy.m"; sourceTree = "<group>"; };
-		92B0D44C2671F350238692AC4F412EDC /* ShaderVars.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ShaderVars.h; path = GL/GLSLANG/ShaderVars.h; sourceTree = "<group>"; };
-		97A568CC00EA4C44479C333BBC5E7868 /* MWRequest-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "MWRequest-prefix.pch"; sourceTree = "<group>"; };
+		904E25B06C98931E6D729842490DA476 /* Data+Compression.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Data+Compression.swift"; path = "Sources/ZIPFoundation/Data+Compression.swift"; sourceTree = "<group>"; };
+		945EE750B00F773480BB8DEAC2D1BDCB /* AsyncGL-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "AsyncGL-dummy.m"; sourceTree = "<group>"; };
+		982E57E23E85A33F3B5D8E9F7EEEC8EE /* ZIPFoundation.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = ZIPFoundation.release.xcconfig; sourceTree = "<group>"; };
+		9C7A1EFE25DB63EDE54722A8FF7FCF79 /* AppCenter-xcframeworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "AppCenter-xcframeworks.sh"; sourceTree = "<group>"; };
 		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		9DDE9BB02CD1F44311DC8C76098B7B4D /* Data+Compression.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Data+Compression.swift"; path = "Sources/ZIPFoundation/Data+Compression.swift"; sourceTree = "<group>"; };
-		9E0CFF66C7DB52897D12CA549853C67C /* Feature.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = Feature.h; path = GL/platform/Feature.h; sourceTree = "<group>"; };
-		9F082379DAB2B6CD0065A42326B0074B /* FrontendFeatures.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = FrontendFeatures.h; path = GL/platform/FrontendFeatures.h; sourceTree = "<group>"; };
-		A01691383A0150CC38D3E41860FCE032 /* glext.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = glext.h; path = GL/GLES/glext.h; sourceTree = "<group>"; };
-		A29DFF3C48CDB8048CABB22E0EFF6393 /* egl.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = egl.h; path = GL/EGL/egl.h; sourceTree = "<group>"; };
-		A51EA53509BC842A6D665377BD2F1815 /* export.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = export.h; path = GL/export.h; sourceTree = "<group>"; };
-		A76AD4FD66ADEC0233A6CF100227915A /* MWRequest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = MWRequest.debug.xcconfig; sourceTree = "<group>"; };
-		AB1F8F9DC360B241C62BD92E0D4F3C2D /* gl2ext.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = gl2ext.h; path = GL/GLES2/gl2ext.h; sourceTree = "<group>"; };
-		AC07539482A545C57193B23A5B81137F /* AsyncGL.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = AsyncGL.debug.xcconfig; sourceTree = "<group>"; };
-		AD7B11668BA08E671170FEF2575A6106 /* ZIPFoundation-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "ZIPFoundation-dummy.m"; sourceTree = "<group>"; };
-		AF9922C2FF1E471301FCB7FE8A6258C0 /* FeaturesVk.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = FeaturesVk.h; path = GL/platform/FeaturesVk.h; sourceTree = "<group>"; };
-		AFF20CC14607929E2309B6715A29A6A6 /* AppCenter.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; name = AppCenter.xcframework; path = "AppCenter-SDK-Apple/AppCenter.xcframework"; sourceTree = "<group>"; };
-		B436252184E849FB5FC42C6F88C67ACD /* AsyncGL-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "AsyncGL-prefix.pch"; sourceTree = "<group>"; };
-		B716EA27F684EA56410890D65557713D /* AsyncGL-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "AsyncGL-umbrella.h"; sourceTree = "<group>"; };
+		A38D953C24F670057A9766B6706D1AE1 /* eglext_angle.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = eglext_angle.h; path = GL/EGL/eglext_angle.h; sourceTree = "<group>"; };
+		A3ECF32F5EE32EDD6A7B3D98E6EFA703 /* MWRequest-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "MWRequest-prefix.pch"; sourceTree = "<group>"; };
+		AC19B6513066FF74E6B386DB70E78EF7 /* ZIPFoundation.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = ZIPFoundation.modulemap; sourceTree = "<group>"; };
+		B4EB484D2390C38D91D795BF0D03F3E0 /* Data+Serialization.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Data+Serialization.swift"; path = "Sources/ZIPFoundation/Data+Serialization.swift"; sourceTree = "<group>"; };
+		B7161E728589D86CB46CD8184D59BA4A /* egl.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = egl.h; path = GL/EGL/egl.h; sourceTree = "<group>"; };
 		B9A086C9D0F6BE909B58CE0D78DA79E6 /* Pods-MobileCelestia.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-MobileCelestia.modulemap"; sourceTree = "<group>"; };
 		BA83A75494554567F09A63053609A654 /* Pods-MobileCelestia-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-MobileCelestia-umbrella.h"; sourceTree = "<group>"; };
-		BB581CFB1DAF65FD87997BF1EF6F05C4 /* khrplatform.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = khrplatform.h; path = GL/KHR/khrplatform.h; sourceTree = "<group>"; };
-		BFABB1AC56B548161507CABD56205F44 /* cl_dx9_media_sharing_intel.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = cl_dx9_media_sharing_intel.h; path = GL/CL/cl_dx9_media_sharing_intel.h; sourceTree = "<group>"; };
-		C2722459E34AD2D0CE615890D5DE5DC0 /* cl_d3d11.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = cl_d3d11.h; path = GL/CL/cl_d3d11.h; sourceTree = "<group>"; };
-		C2E60A1C569DDFDF3276B0455B9622C2 /* Platform.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = Platform.h; path = GL/platform/Platform.h; sourceTree = "<group>"; };
-		C6B3A5F875CFA3EDBA6597E65B18D61A /* gl2platform.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = gl2platform.h; path = GL/GLES2/gl2platform.h; sourceTree = "<group>"; };
-		C7BA9BDB492152759F402F15744AB6AC /* cl_icd.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = cl_icd.h; path = GL/CL/cl_icd.h; sourceTree = "<group>"; };
-		C8F6B464048CCB5EF1D751E0B287DE90 /* PlatformMethods.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = PlatformMethods.h; path = GL/platform/PlatformMethods.h; sourceTree = "<group>"; };
+		BB1793B127EE181939DAE1C65F8DDC3D /* AsyncGL-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "AsyncGL-prefix.pch"; sourceTree = "<group>"; };
+		BE63A92FA0A4CC631B4EAE4C775013D2 /* ZIPFoundation.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = ZIPFoundation.debug.xcconfig; sourceTree = "<group>"; };
+		C3187B5C26336E97975B5160DF3A5D90 /* gl31.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = gl31.h; path = GL/GLES3/gl31.h; sourceTree = "<group>"; };
+		C4F6374A54EDBCF5DDB5F47BAFBDB7B6 /* eglext.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = eglext.h; path = GL/EGL/eglext.h; sourceTree = "<group>"; };
+		C5D4BCB8CA10477006ACF373C0BF09B9 /* gl31ext_explicit_context_autogen.inc */ = {isa = PBXFileReference; includeInIndex = 1; name = gl31ext_explicit_context_autogen.inc; path = GL/GLES3/gl31ext_explicit_context_autogen.inc; sourceTree = "<group>"; };
+		C6DFB82995B6867E48A4B38E0367FA71 /* Archive+Reading.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Archive+Reading.swift"; path = "Sources/ZIPFoundation/Archive+Reading.swift"; sourceTree = "<group>"; };
+		CDFAE4BEE3141B05DC30DAE35AA71311 /* angle_gl.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = angle_gl.h; path = GL/angle_gl.h; sourceTree = "<group>"; };
 		CEB20A86ED59C1394409045116BE6C4C /* Pods-MobileCelestia-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-MobileCelestia-acknowledgements.plist"; sourceTree = "<group>"; };
-		CEC5D3F5AFE517D2BEFF9FAAA235223E /* cl_gl_ext.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = cl_gl_ext.h; path = GL/CL/cl_gl_ext.h; sourceTree = "<group>"; };
-		D7D51F6B2216DE4E5E1012D13A7BC35A /* glext_angle.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = glext_angle.h; path = GL/GLES/glext_angle.h; sourceTree = "<group>"; };
+		D0ABE334BE6C203F34BF3201877B1CB5 /* RequestHandler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RequestHandler.swift; path = Sources/MWRequest/RequestHandler.swift; sourceTree = "<group>"; };
+		D3A0D7C9C7C4B864896B4FCBF8802DC4 /* MWRequest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = MWRequest.debug.xcconfig; sourceTree = "<group>"; };
+		D5F56B46A9BFF3283A11257869DA06E5 /* gl32.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = gl32.h; path = GL/GLES3/gl32.h; sourceTree = "<group>"; };
+		D6DCABD4A80E3A2EDDE6D5726BCF944A /* Archive.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Archive.swift; path = Sources/ZIPFoundation/Archive.swift; sourceTree = "<group>"; };
+		D71BEAE032EE9CC8EB38931055801738 /* glext.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = glext.h; path = GL/GLES/glext.h; sourceTree = "<group>"; };
+		D835BE2F8A1DEACD57F01C8613C68AA9 /* gl2.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = gl2.h; path = GL/GLES2/gl2.h; sourceTree = "<group>"; };
 		D9A4B9EF8730C7123A86378223DBC3F6 /* Pods-MobileCelestia */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = "Pods-MobileCelestia"; path = Pods_MobileCelestia.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		E5C697B8674409E5266EDAFAABB7D9D9 /* AsyncGL.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = AsyncGL.release.xcconfig; sourceTree = "<group>"; };
-		E60E7DD140466011148ADA9A572C7167 /* cl_layer.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = cl_layer.h; path = GL/CL/cl_layer.h; sourceTree = "<group>"; };
-		EA1AC68CD9065C291803B8200E169910 /* gl3platform.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = gl3platform.h; path = GL/GLES3/gl3platform.h; sourceTree = "<group>"; };
-		EC402089A0260F49AFD7CC828EEC7C7B /* glplatform.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = glplatform.h; path = GL/GLES/glplatform.h; sourceTree = "<group>"; };
-		EC4597D5821E71658880A2C405C282E9 /* gl.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = gl.h; path = GL/GLES/gl.h; sourceTree = "<group>"; };
-		ECD5F39FEBA86FAF09EBF505CB79C9D2 /* AppCenter-xcframeworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "AppCenter-xcframeworks.sh"; sourceTree = "<group>"; };
-		EEA2072016DE0ACDE84C8771830472E4 /* MWRequest-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "MWRequest-dummy.m"; sourceTree = "<group>"; };
-		F2E7DB5A1B07B3C5813826299E7E359E /* FeaturesD3D.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = FeaturesD3D.h; path = GL/platform/FeaturesD3D.h; sourceTree = "<group>"; };
-		F3C3120F65E4E7AA94ABF0C9F9C10B06 /* egl.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = egl.h; path = GL/GLES/egl.h; sourceTree = "<group>"; };
-		F688883DD260B342E327A10DA0F58DCB /* angle_windowsstore.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = angle_windowsstore.h; path = GL/angle_windowsstore.h; sourceTree = "<group>"; };
-		F7759E421166EF9865FF4410C3C5C4D7 /* AsyncGL.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = AsyncGL.modulemap; sourceTree = "<group>"; };
-		F8FD2F072C58A7C37003CB322029DE0C /* cl_platform.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = cl_platform.h; path = GL/CL/cl_platform.h; sourceTree = "<group>"; };
-		F99AC8819AFF7323E846E74BC38BF30C /* gl2ext_angle.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = gl2ext_angle.h; path = GL/GLES2/gl2ext_angle.h; sourceTree = "<group>"; };
-		FC2E2235A894BF79A4D4AB1CC9B29F94 /* ShaderLang.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = ShaderLang.h; path = GL/GLSLANG/ShaderLang.h; sourceTree = "<group>"; };
-		FECD5A4D5009D8566CC5C1C005C0122B /* gl31.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = gl31.h; path = GL/GLES3/gl31.h; sourceTree = "<group>"; };
+		E235C2F41E9C2C41C679CB21E14BB8C4 /* khrplatform.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = khrplatform.h; path = GL/KHR/khrplatform.h; sourceTree = "<group>"; };
+		E8E3227041EAA0B310824F6A4F62CC90 /* AsyncGL-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "AsyncGL-umbrella.h"; sourceTree = "<group>"; };
+		E98E67FC5B5FA7EFCAFB427CEAC3CBAA /* AppCenter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = AppCenter.release.xcconfig; sourceTree = "<group>"; };
+		EA9F638CD516AEB62306058F1E504689 /* AppCenterAnalytics.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; name = AppCenterAnalytics.xcframework; path = "AppCenter-SDK-Apple/AppCenterAnalytics.xcframework"; sourceTree = "<group>"; };
+		EB0B36D10CD7C99424C331C0205866F6 /* gl3platform.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = gl3platform.h; path = GL/GLES3/gl3platform.h; sourceTree = "<group>"; };
+		F236FD9417E3A84FEBEF8C069CAF2332 /* gl2ext.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = gl2ext.h; path = GL/GLES2/gl2ext.h; sourceTree = "<group>"; };
+		F36FA800826F44F2A664BCC0137FFFC1 /* gl2ext_explicit_context_autogen.inc */ = {isa = PBXFileReference; includeInIndex = 1; name = gl2ext_explicit_context_autogen.inc; path = GL/GLES2/gl2ext_explicit_context_autogen.inc; sourceTree = "<group>"; };
+		F40DDE485C44CA56499ADD76A06EFB37 /* MWRequest-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "MWRequest-dummy.m"; sourceTree = "<group>"; };
+		FD96938E79AC65A7856C2DDEAF8A0E04 /* MWRequest.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = MWRequest.modulemap; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -258,6 +198,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		64E0C7B3008453AFA567D03EB03CE72E /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				394EB40055C51C7636664A09E47DAC8F /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		7CF84720D948277D0F1AF338E9C26962 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				88FCD7AA42AE3B6AD839F671AF054A30 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		865452E4BE537611A1FE2ED993470FAC /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -266,119 +222,73 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		93F71E545D06AFEB15B6ACFA0EB738EE /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				57ACDC8B66CBD5899E3DCD72A45FB8E6 /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		D0F75D1CDDE72B47B1007B68F221B3E7 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				8373E7503BA611B3ECC70F46C0229117 /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		056F0DE37E45A27E2B6A93A89E989A07 /* AsyncGL */ = {
+		0C4511AD75C82DC15F3D963FDF23627C /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
-				7F011E050B6450BEEB8D48BF208C6CC8 /* angle_cl.h */,
-				7E3CB19D00184DE48F6425604D80B153 /* angle_gl.h */,
-				F688883DD260B342E327A10DA0F58DCB /* angle_windowsstore.h */,
-				1BC0785E5625186AF25BE80CF0A4AACD /* AsyncGLView.h */,
-				0E0B2CA9C4AAC8D34EBA7D639763B0BB /* AsyncGLView.m */,
-				6D500E559E29B278FC8CDADDBDF5387C /* AsyncGLView+Private.h */,
-				6B35DD4F37FA74599672209281EE6719 /* AsyncGLViewController.h */,
-				3B4F744985CF4B547B3289E2B6AB20E3 /* AsyncGLViewController.m */,
-				87B78FB722879E12B606CCC8685EA629 /* cl.h */,
-				3E2C40F3334007C43A03EDFAD5128E64 /* cl_d3d10.h */,
-				C2722459E34AD2D0CE615890D5DE5DC0 /* cl_d3d11.h */,
-				89114C30268EA34D665CB7E2589A7F9B /* cl_dx9_media_sharing.h */,
-				BFABB1AC56B548161507CABD56205F44 /* cl_dx9_media_sharing_intel.h */,
-				6603FABC96B6BEEA673D5736A4E1C3B6 /* cl_egl.h */,
-				259756E05047F19AA8B9BE7417E92D48 /* cl_ext.h */,
-				09B5CF6FF957E53B33F820B7097708AC /* cl_ext_intel.h */,
-				888DE1821577930F04971C466E6CEA0C /* cl_gl.h */,
-				CEC5D3F5AFE517D2BEFF9FAAA235223E /* cl_gl_ext.h */,
-				51C4EB67C2495AFE974C3EB9ADAB60F8 /* cl_half.h */,
-				C7BA9BDB492152759F402F15744AB6AC /* cl_icd.h */,
-				E60E7DD140466011148ADA9A572C7167 /* cl_layer.h */,
-				F8FD2F072C58A7C37003CB322029DE0C /* cl_platform.h */,
-				22B875E7B99A95329F94F0085A5E57D3 /* cl_va_api_media_sharing_intel.h */,
-				1014B66CF8C8F764F773E26875C9DAE7 /* cl_version.h */,
-				A29DFF3C48CDB8048CABB22E0EFF6393 /* egl.h */,
-				F3C3120F65E4E7AA94ABF0C9F9C10B06 /* egl.h */,
-				3A5B330833C3E8B73E457D71A76F4BEF /* eglext.h */,
-				04FE07251F75FF3FDA8BC63CED5C398D /* eglext_angle.h */,
-				5AABECAA1FE6BF863AB44C549894A4CE /* eglplatform.h */,
-				A51EA53509BC842A6D665377BD2F1815 /* export.h */,
-				9E0CFF66C7DB52897D12CA549853C67C /* Feature.h */,
-				F2E7DB5A1B07B3C5813826299E7E359E /* FeaturesD3D.h */,
-				08CDEA41561B4F4419B72AB0C85D3CF4 /* FeaturesGL.h */,
-				10D71091373840CC5F84505933B6C3C7 /* FeaturesMtl.h */,
-				AF9922C2FF1E471301FCB7FE8A6258C0 /* FeaturesVk.h */,
-				9F082379DAB2B6CD0065A42326B0074B /* FrontendFeatures.h */,
-				EC4597D5821E71658880A2C405C282E9 /* gl.h */,
-				617136E29FBDA1F490A5CC8C5C406A78 /* gl2.h */,
-				AB1F8F9DC360B241C62BD92E0D4F3C2D /* gl2ext.h */,
-				F99AC8819AFF7323E846E74BC38BF30C /* gl2ext_angle.h */,
-				3CB20D5ADA78DC453D0EA0B67A1A559C /* gl2ext_explicit_context_autogen.inc */,
-				C6B3A5F875CFA3EDBA6597E65B18D61A /* gl2platform.h */,
-				90E37E4BC871E3024085BA9B6B9F865D /* gl3.h */,
-				FECD5A4D5009D8566CC5C1C005C0122B /* gl31.h */,
-				65FBEA9C70F71B1376C6802ED3519A1F /* gl31ext_explicit_context_autogen.inc */,
-				18DFBD277002A1AA504516F081A8CC0E /* gl32.h */,
-				40CB38828FFDCE88E82A0149C296EB72 /* gl3ext_explicit_context_autogen.inc */,
-				EA1AC68CD9065C291803B8200E169910 /* gl3platform.h */,
-				A01691383A0150CC38D3E41860FCE032 /* glext.h */,
-				D7D51F6B2216DE4E5E1012D13A7BC35A /* glext_angle.h */,
-				4AE0D916D77E3CFA8EE714C22AE87D39 /* glext_explicit_context_autogen.inc */,
-				EC402089A0260F49AFD7CC828EEC7C7B /* glplatform.h */,
-				BB581CFB1DAF65FD87997BF1EF6F05C4 /* khrplatform.h */,
-				723463029F7FA516D4C769C826BF6D2D /* opencl.h */,
-				C2E60A1C569DDFDF3276B0455B9622C2 /* Platform.h */,
-				C8F6B464048CCB5EF1D751E0B287DE90 /* PlatformMethods.h */,
-				FC2E2235A894BF79A4D4AB1CC9B29F94 /* ShaderLang.h */,
-				92B0D44C2671F350238692AC4F412EDC /* ShaderVars.h */,
-				0848055C6358BE6D6EA6584AD68F9E8D /* vulkan_fuchsia_ext.h */,
-				5CCBCADCD7F63CDF198ADFCA0D2339D8 /* wgl.h */,
-				B07BC8DD4653DC4AC3E63B6D0B547544 /* Support Files */,
+				AC19B6513066FF74E6B386DB70E78EF7 /* ZIPFoundation.modulemap */,
+				4561328C5E86E942F21C50DD72FC5491 /* ZIPFoundation-dummy.m */,
+				2E868F30E38E1E937233F78D298EC7D2 /* ZIPFoundation-Info.plist */,
+				80E3868762C7B3958836297F4EFC095E /* ZIPFoundation-prefix.pch */,
+				7F442358906DE2448ABDF493FE97B22B /* ZIPFoundation-umbrella.h */,
+				BE63A92FA0A4CC631B4EAE4C775013D2 /* ZIPFoundation.debug.xcconfig */,
+				982E57E23E85A33F3B5D8E9F7EEEC8EE /* ZIPFoundation.release.xcconfig */,
 			);
-			name = AsyncGL;
-			path = AsyncGL;
+			name = "Support Files";
+			path = "../Target Support Files/ZIPFoundation";
 			sourceTree = "<group>";
 		};
-		22F4B4C302D58CE2813696745D5D5D84 /* Frameworks */ = {
+		22909F1FBC91AC215BB5A1180242502C /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				AFF20CC14607929E2309B6715A29A6A6 /* AppCenter.xcframework */,
+				2F93EB559C8940DCC1F97E3DC0CFFF89 /* Frameworks */,
+			);
+			name = Core;
+			sourceTree = "<group>";
+		};
+		24A9E71D4A3727C3380D7BB63C4EF108 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				EA9F638CD516AEB62306058F1E504689 /* AppCenterAnalytics.xcframework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		2FB4888995AD1562166FD76A0CED6CB1 /* Pods */ = {
+		2F93EB559C8940DCC1F97E3DC0CFFF89 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				7AE67FCD2A960D565A70BAC360AB7B2E /* AppCenter */,
-				056F0DE37E45A27E2B6A93A89E989A07 /* AsyncGL */,
-				988B70824CB93C7BF558A556734320C9 /* MWRequest */,
-				73F4A75F5F22B1D6DEA07C2F90E62F75 /* ZIPFoundation */,
+				2D31C6B98480372B6690C3D40A6D0F99 /* AppCenter.xcframework */,
 			);
-			name = Pods;
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		353E63BE1F0BD4FCB4C1C99B6BC89F3F /* Crashes */ = {
+		449AD7985CC2791B664250DB6103AFFE /* MWRequest */ = {
 			isa = PBXGroup;
 			children = (
-				E6ECC3B90D337EE2085636DE62B5D5F3 /* Frameworks */,
+				7CCA7D41F7566ED4EAFFE13F83C991FD /* AsyncRequestHandler.swift */,
+				313AC55F5F287A6314129F3F13BF87BD /* Request.swift */,
+				D0ABE334BE6C203F34BF3201877B1CB5 /* RequestHandler.swift */,
+				4C09F91B4E33E56C332D9CD3D58A9E4C /* Support Files */,
 			);
-			name = Crashes;
+			name = MWRequest;
+			path = MWRequest;
+			sourceTree = "<group>";
+		};
+		4C09F91B4E33E56C332D9CD3D58A9E4C /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				FD96938E79AC65A7856C2DDEAF8A0E04 /* MWRequest.modulemap */,
+				F40DDE485C44CA56499ADD76A06EFB37 /* MWRequest-dummy.m */,
+				3244AA536E7FC1542F908BEE5BB7CFEB /* MWRequest-Info.plist */,
+				A3ECF32F5EE32EDD6A7B3D98E6EFA703 /* MWRequest-prefix.pch */,
+				1240B88DE0E61E12D89B8A58A1BE7A03 /* MWRequest-umbrella.h */,
+				D3A0D7C9C7C4B864896B4FCBF8802DC4 /* MWRequest.debug.xcconfig */,
+				0CF3F71A0762765CE3C8F189E9965D80 /* MWRequest.release.xcconfig */,
+			);
+			name = "Support Files";
+			path = "../Target Support Files/MWRequest";
 			sourceTree = "<group>";
 		};
 		578452D2E740E91742655AC8F1636D1F /* iOS */ = {
@@ -389,14 +299,6 @@
 			name = iOS;
 			sourceTree = "<group>";
 		};
-		593DB1C2F01608A2B00DD1053BDFD764 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				7CF7DCDC11C6C05E0F5AFDF5629703D5 /* AppCenterAnalytics.xcframework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 		5EC9AAE72FB561EB974C75CFFF555AD7 /* Targets Support Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -405,108 +307,77 @@
 			name = "Targets Support Files";
 			sourceTree = "<group>";
 		};
-		655E59D192A48E370973A75BB865A3EB /* Support Files */ = {
+		76A89C208426F5B5C981A6BA88720505 /* AsyncGL */ = {
 			isa = PBXGroup;
 			children = (
-				7B62B260A082BB260922D8AB3FA98EEC /* MWRequest.modulemap */,
-				EEA2072016DE0ACDE84C8771830472E4 /* MWRequest-dummy.m */,
-				58FD7C147C3EB855368FAF4BD8093117 /* MWRequest-Info.plist */,
-				97A568CC00EA4C44479C333BBC5E7868 /* MWRequest-prefix.pch */,
-				69F293FD5F8ADEE414FC67DFEABD8E65 /* MWRequest-umbrella.h */,
-				A76AD4FD66ADEC0233A6CF100227915A /* MWRequest.debug.xcconfig */,
-				3AB1F10E0E3B210D1F0082A04860D48E /* MWRequest.release.xcconfig */,
+				CDFAE4BEE3141B05DC30DAE35AA71311 /* angle_gl.h */,
+				893B8EAF74E9FD3AF9945F50E9507D06 /* AsyncGLView.h */,
+				37F4370249C54B750102724342494D18 /* AsyncGLView.m */,
+				2612BA7819275A8DA61CC96B836DF673 /* AsyncGLView+Private.h */,
+				1863A5EB8B8F1DBCF5B5948378468CCE /* AsyncGLViewController.h */,
+				6B37B2567B02EEDA89C17401322FE8C2 /* AsyncGLViewController.m */,
+				B7161E728589D86CB46CD8184D59BA4A /* egl.h */,
+				74DD3A9BDACD0D11A5CDE95D5496B886 /* egl.h */,
+				C4F6374A54EDBCF5DDB5F47BAFBDB7B6 /* eglext.h */,
+				A38D953C24F670057A9766B6706D1AE1 /* eglext_angle.h */,
+				60EB5B6C53F9E0E33A920BBC2C897A3C /* eglplatform.h */,
+				4C3129A9F3DBD9EBD3CFE3E53051F933 /* export.h */,
+				5EA1B4DD9F4B0798E71C0AF2B1DA1A59 /* gl.h */,
+				D835BE2F8A1DEACD57F01C8613C68AA9 /* gl2.h */,
+				F236FD9417E3A84FEBEF8C069CAF2332 /* gl2ext.h */,
+				8AC887FFE34EE0E6F71315D1DCA4C4E3 /* gl2ext_angle.h */,
+				F36FA800826F44F2A664BCC0137FFFC1 /* gl2ext_explicit_context_autogen.inc */,
+				7700F1E27ED311E9A0D0090EFE53806D /* gl2platform.h */,
+				06649BC699E315B4C4E6CF5951CB56BF /* gl3.h */,
+				C3187B5C26336E97975B5160DF3A5D90 /* gl31.h */,
+				C5D4BCB8CA10477006ACF373C0BF09B9 /* gl31ext_explicit_context_autogen.inc */,
+				D5F56B46A9BFF3283A11257869DA06E5 /* gl32.h */,
+				3FDD329FADA4E75F3BD39800923DDD06 /* gl3ext_explicit_context_autogen.inc */,
+				EB0B36D10CD7C99424C331C0205866F6 /* gl3platform.h */,
+				D71BEAE032EE9CC8EB38931055801738 /* glext.h */,
+				2D8422DA9EAE3FC889BDB94CDA390D43 /* glext_angle.h */,
+				650F2D735F743E3D6395D50FC6A543F3 /* glext_explicit_context_autogen.inc */,
+				7CC15677CD5F218BFE151A6949D30CB8 /* glplatform.h */,
+				E235C2F41E9C2C41C679CB21E14BB8C4 /* khrplatform.h */,
+				D1482571E9B83123372B9B52B9728AEE /* Support Files */,
 			);
-			name = "Support Files";
-			path = "../Target Support Files/MWRequest";
+			name = AsyncGL;
+			path = AsyncGL;
 			sourceTree = "<group>";
 		};
-		6AD99AF6ECF386C802120C5D7EC75FB8 /* Core */ = {
+		8662B40735213187D336FE73A2E0644B /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				22F4B4C302D58CE2813696745D5D5D84 /* Frameworks */,
+				EAF7FA695ED7CD3BB8E604190040971C /* AppCenter */,
+				76A89C208426F5B5C981A6BA88720505 /* AsyncGL */,
+				449AD7985CC2791B664250DB6103AFFE /* MWRequest */,
+				C2D50F0DDDF5D0E2C1ED0CD574B81B36 /* ZIPFoundation */,
 			);
-			name = Core;
+			name = Pods;
 			sourceTree = "<group>";
 		};
-		73F4A75F5F22B1D6DEA07C2F90E62F75 /* ZIPFoundation */ = {
+		884ECEC928D8F0918100D00FD7469414 /* Analytics */ = {
 			isa = PBXGroup;
 			children = (
-				4AAF896C6903A9BB04CB6ECFA6F8F246 /* Archive.swift */,
-				79BFAB3B7BE57937A97CD127B1E39572 /* Archive+MemoryFile.swift */,
-				51E8366D5C9AD6BB01DC82720A1B87E0 /* Archive+Reading.swift */,
-				1D19C1BC550F9800B5E756947C1A5FF0 /* Archive+Writing.swift */,
-				9DDE9BB02CD1F44311DC8C76098B7B4D /* Data+Compression.swift */,
-				0B4F7C1AC13C42C3093EF574B201C5D4 /* Data+Serialization.swift */,
-				7FBCC956384F8C5BE3C8084A20D4644A /* Entry.swift */,
-				0E6D49C832FB7C678095D5076488C379 /* FileManager+ZIP.swift */,
-				BF810421CE117DBEAC8B44D9E93CFE12 /* Support Files */,
+				24A9E71D4A3727C3380D7BB63C4EF108 /* Frameworks */,
 			);
-			name = ZIPFoundation;
-			path = ZIPFoundation;
+			name = Analytics;
 			sourceTree = "<group>";
 		};
-		7AE67FCD2A960D565A70BAC360AB7B2E /* AppCenter */ = {
+		89A127665213FBC36904A7A817BB2300 /* Crashes */ = {
 			isa = PBXGroup;
 			children = (
-				CCC3E697AB7B26563F9766548ECD43A5 /* Analytics */,
-				6AD99AF6ECF386C802120C5D7EC75FB8 /* Core */,
-				353E63BE1F0BD4FCB4C1C99B6BC89F3F /* Crashes */,
-				7DAB95903E2A17B89457E10076E03A0C /* Support Files */,
+				93E8536E3D39864D971C8DBC7AB99DBE /* Frameworks */,
 			);
-			name = AppCenter;
-			path = AppCenter;
+			name = Crashes;
 			sourceTree = "<group>";
 		};
-		7DAB95903E2A17B89457E10076E03A0C /* Support Files */ = {
+		93E8536E3D39864D971C8DBC7AB99DBE /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				ECD5F39FEBA86FAF09EBF505CB79C9D2 /* AppCenter-xcframeworks.sh */,
-				65A42B9DABBB0430E9C31FF137E29B11 /* AppCenter.debug.xcconfig */,
-				6CDB9031C42AF5C3E593CB90237974FA /* AppCenter.release.xcconfig */,
+				4CF420F42E3FD721DB62B1C2B300F294 /* AppCenterCrashes.xcframework */,
 			);
-			name = "Support Files";
-			path = "../Target Support Files/AppCenter";
-			sourceTree = "<group>";
-		};
-		988B70824CB93C7BF558A556734320C9 /* MWRequest */ = {
-			isa = PBXGroup;
-			children = (
-				1C0D3A6F9D77FC5E2B1BED59DC0EDF46 /* Request.swift */,
-				1FAE6B135F447364E32B62FD07AB5780 /* RequestHandler.swift */,
-				655E59D192A48E370973A75BB865A3EB /* Support Files */,
-			);
-			name = MWRequest;
-			path = MWRequest;
-			sourceTree = "<group>";
-		};
-		B07BC8DD4653DC4AC3E63B6D0B547544 /* Support Files */ = {
-			isa = PBXGroup;
-			children = (
-				F7759E421166EF9865FF4410C3C5C4D7 /* AsyncGL.modulemap */,
-				914B532CFD398E46C879CFD77578713D /* AsyncGL-dummy.m */,
-				15425240D065CF011C46F742D5281BBA /* AsyncGL-Info.plist */,
-				B436252184E849FB5FC42C6F88C67ACD /* AsyncGL-prefix.pch */,
-				B716EA27F684EA56410890D65557713D /* AsyncGL-umbrella.h */,
-				AC07539482A545C57193B23A5B81137F /* AsyncGL.debug.xcconfig */,
-				E5C697B8674409E5266EDAFAABB7D9D9 /* AsyncGL.release.xcconfig */,
-			);
-			name = "Support Files";
-			path = "../Target Support Files/AsyncGL";
-			sourceTree = "<group>";
-		};
-		BF810421CE117DBEAC8B44D9E93CFE12 /* Support Files */ = {
-			isa = PBXGroup;
-			children = (
-				24BE473969EAF169099DDC7929ABEF73 /* ZIPFoundation.modulemap */,
-				AD7B11668BA08E671170FEF2575A6106 /* ZIPFoundation-dummy.m */,
-				8B1DCFC8D7AC9C1E44FD34212C08AEC6 /* ZIPFoundation-Info.plist */,
-				2C7C6E45F9352922F1C17323D1382B7F /* ZIPFoundation-prefix.pch */,
-				6B33B170E991D46A1C9CCA5E2F0A674F /* ZIPFoundation-umbrella.h */,
-				88CF14227044FCA2F933E56CBB933F97 /* ZIPFoundation.debug.xcconfig */,
-				46991C280E06DC5AD4494601B90CE2D9 /* ZIPFoundation.release.xcconfig */,
-			);
-			name = "Support Files";
-			path = "../Target Support Files/ZIPFoundation";
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		C24999BBFE0C00AE12B07B9E485FC6F5 /* Pods-MobileCelestia */ = {
@@ -525,12 +396,21 @@
 			path = "Target Support Files/Pods-MobileCelestia";
 			sourceTree = "<group>";
 		};
-		CCC3E697AB7B26563F9766548ECD43A5 /* Analytics */ = {
+		C2D50F0DDDF5D0E2C1ED0CD574B81B36 /* ZIPFoundation */ = {
 			isa = PBXGroup;
 			children = (
-				593DB1C2F01608A2B00DD1053BDFD764 /* Frameworks */,
+				D6DCABD4A80E3A2EDDE6D5726BCF944A /* Archive.swift */,
+				80C420ED7B3398126337BB5838B6B451 /* Archive+MemoryFile.swift */,
+				C6DFB82995B6867E48A4B38E0367FA71 /* Archive+Reading.swift */,
+				3D66CF0E1CD7CE452B8ED6881628F9CD /* Archive+Writing.swift */,
+				904E25B06C98931E6D729842490DA476 /* Data+Compression.swift */,
+				B4EB484D2390C38D91D795BF0D03F3E0 /* Data+Serialization.swift */,
+				166981C9853DFF31B6D02C18BCFDEA48 /* Entry.swift */,
+				18CA1FAC9785A6375E5DF41E7EC93BAB /* FileManager+ZIP.swift */,
+				0C4511AD75C82DC15F3D963FDF23627C /* Support Files */,
 			);
-			name = Analytics;
+			name = ZIPFoundation;
+			path = ZIPFoundation;
 			sourceTree = "<group>";
 		};
 		CF1408CF629C7361332E53B88F7BD30C = {
@@ -538,10 +418,25 @@
 			children = (
 				9D940727FF8FB9C785EB98E56350EF41 /* Podfile */,
 				D210D550F4EA176C3123ED886F8F87F5 /* Frameworks */,
-				2FB4888995AD1562166FD76A0CED6CB1 /* Pods */,
+				8662B40735213187D336FE73A2E0644B /* Pods */,
 				DDF8F1427780F4C0F116881605E277A3 /* Products */,
 				5EC9AAE72FB561EB974C75CFFF555AD7 /* Targets Support Files */,
 			);
+			sourceTree = "<group>";
+		};
+		D1482571E9B83123372B9B52B9728AEE /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				5DF29027AA80E0F03C7D84CCC7833CD2 /* AsyncGL.modulemap */,
+				945EE750B00F773480BB8DEAC2D1BDCB /* AsyncGL-dummy.m */,
+				7721B72C7EF93CF9D4602BC7BB2AB7CB /* AsyncGL-Info.plist */,
+				BB1793B127EE181939DAE1C65F8DDC3D /* AsyncGL-prefix.pch */,
+				E8E3227041EAA0B310824F6A4F62CC90 /* AsyncGL-umbrella.h */,
+				56BBC5E11BF7E7ABEC0E6E6AD02405A4 /* AsyncGL.debug.xcconfig */,
+				385DB908535028CC5FDE122B8F43A8C0 /* AsyncGL.release.xcconfig */,
+			);
+			name = "Support Files";
+			path = "../Target Support Files/AsyncGL";
 			sourceTree = "<group>";
 		};
 		D210D550F4EA176C3123ED886F8F87F5 /* Frameworks */ = {
@@ -563,88 +458,64 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		E6ECC3B90D337EE2085636DE62B5D5F3 /* Frameworks */ = {
+		E6F470F9E2798307E3402AAAB6E76E6E /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
-				2218A590FCE0B21FACC0BEA2D7017EAB /* AppCenterCrashes.xcframework */,
+				9C7A1EFE25DB63EDE54722A8FF7FCF79 /* AppCenter-xcframeworks.sh */,
+				005CB6C9BC349E7E2047BFCE3259E670 /* AppCenter.debug.xcconfig */,
+				E98E67FC5B5FA7EFCAFB427CEAC3CBAA /* AppCenter.release.xcconfig */,
 			);
-			name = Frameworks;
+			name = "Support Files";
+			path = "../Target Support Files/AppCenter";
+			sourceTree = "<group>";
+		};
+		EAF7FA695ED7CD3BB8E604190040971C /* AppCenter */ = {
+			isa = PBXGroup;
+			children = (
+				884ECEC928D8F0918100D00FD7469414 /* Analytics */,
+				22909F1FBC91AC215BB5A1180242502C /* Core */,
+				89A127665213FBC36904A7A817BB2300 /* Crashes */,
+				E6F470F9E2798307E3402AAAB6E76E6E /* Support Files */,
+			);
+			name = AppCenter;
+			path = AppCenter;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		181C4DF7DD79308C4057307BA07D527A /* Headers */ = {
+		1B18E8AFB5D1F9A850B8F54636A895CB /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A9F03087C6407BCD69B91F42F4413CB8 /* angle_cl.h in Headers */,
-				5D2F274746A973A9943911AB9E81AAF6 /* angle_gl.h in Headers */,
-				120C1AD5309F750DF0612DC0991B1197 /* angle_windowsstore.h in Headers */,
-				8CCFB22E30A56AB89DC4DE26BD6AA103 /* AsyncGL-umbrella.h in Headers */,
-				D387320DDFE58120FCDA27F75972FC90 /* AsyncGLView.h in Headers */,
-				E813B920CE886647E3304A44A8DD6EDB /* AsyncGLView+Private.h in Headers */,
-				420C42DD151D1B012B27144BFBACEA40 /* AsyncGLViewController.h in Headers */,
-				77B2328662ED11AD8999D1509F71639D /* cl.h in Headers */,
-				8B31D0A789E371005026B9361A01C892 /* cl_d3d10.h in Headers */,
-				F1EAD355ACC360EDE758F6F6D8B7F8BA /* cl_d3d11.h in Headers */,
-				2D0ECD6CA38BED848C46C80F137DE95D /* cl_dx9_media_sharing.h in Headers */,
-				8815D032A2E28611B1AC92C21C018A82 /* cl_dx9_media_sharing_intel.h in Headers */,
-				7A6F2A1261243AD6FA699364E8091A0E /* cl_egl.h in Headers */,
-				D3FCEDDE91BA1EECBC9FF727A455ED40 /* cl_ext.h in Headers */,
-				592C05D1A7BEFEB9C44E0EFB4D62D02F /* cl_ext_intel.h in Headers */,
-				1F846F049C12B7E51ABE566BD1E39B90 /* cl_gl.h in Headers */,
-				7FF243E3C5FFE0D8E635C793B160A68E /* cl_gl_ext.h in Headers */,
-				A13A4B6FACB03F2E29AF50FDB10B429E /* cl_half.h in Headers */,
-				2F8A36288596AF7B929C70D9ED803719 /* cl_icd.h in Headers */,
-				3041EDA7FD5CCA1BD47C6D3007B5ECF4 /* cl_layer.h in Headers */,
-				B023327DE68DB5765C4A1C5A9BE41EDA /* cl_platform.h in Headers */,
-				5F93C3693FE74BA8519813F7828765DD /* cl_va_api_media_sharing_intel.h in Headers */,
-				967B30C4E623C1EE4B76DF995E72C836 /* cl_version.h in Headers */,
-				97A63EE71A4888E677D3BAB6CDFDDAF4 /* egl.h in Headers */,
-				1FA7A9D11E3210ED8628D75E72C0A6E9 /* egl.h in Headers */,
-				7AFAAE444DA29168308DB6AA0CECAD34 /* eglext.h in Headers */,
-				CB40346771C48F788D565FD38742F050 /* eglext_angle.h in Headers */,
-				E71A8F0A6BDAD7FB295845925CA2850E /* eglplatform.h in Headers */,
-				525D3832DD4EA83DB37FB707444B1484 /* export.h in Headers */,
-				8507771A4091D57B5F59C89BE96E87DF /* Feature.h in Headers */,
-				CBA77A1DB2AE3423D4A1F6A5F4393BCF /* FeaturesD3D.h in Headers */,
-				A8CF66067B6391C2170B708F0EA8D255 /* FeaturesGL.h in Headers */,
-				8CFE92B66E939D5FE870108166155BAD /* FeaturesMtl.h in Headers */,
-				7BE5B6FA2FDD81FA4DD057FE4D11CCDA /* FeaturesVk.h in Headers */,
-				450246C0E3D6C4DBFA8E0F5CC196BD82 /* FrontendFeatures.h in Headers */,
-				3EE576D1430628FA594FFD7C2F3C18DA /* gl.h in Headers */,
-				F4569F7915949036CBA70A42D166A697 /* gl2.h in Headers */,
-				6A65D7353DEEE393CC812FF3B29BDF12 /* gl2ext.h in Headers */,
-				6A77294117C5C9C82B9EF472CCA1A4D8 /* gl2ext_angle.h in Headers */,
-				F7336ECC2C950DA7396268D493EB4862 /* gl2ext_explicit_context_autogen.inc in Headers */,
-				217CDAB4DE2D5A5688AAE5C159EE4459 /* gl2platform.h in Headers */,
-				9BC1C8BD248A8C3AA731151A04AAD19D /* gl3.h in Headers */,
-				D2F88B64C760F50ED526779762EC4CE2 /* gl31.h in Headers */,
-				D8624F7EB012463CEAE3936B0920C30A /* gl31ext_explicit_context_autogen.inc in Headers */,
-				7983EE8C56EB9FE6AC4D2E3C78248751 /* gl32.h in Headers */,
-				154BEA14E1EF202D3449434BE4BF6963 /* gl3ext_explicit_context_autogen.inc in Headers */,
-				4696A03EB7441CA5B770B63BE3F3A78E /* gl3platform.h in Headers */,
-				60F6DC6C3B3E0BCD12CA976F9B722DAC /* glext.h in Headers */,
-				F57C2AB52B6D7413449B3FE6DFDAEDEE /* glext_angle.h in Headers */,
-				33C9F1D0CF1F10CF6B66B0E5C704DCDC /* glext_explicit_context_autogen.inc in Headers */,
-				4C3684005983687BB30E00B50CAF920B /* glplatform.h in Headers */,
-				FDC3A4F7AF0C8B406BE166E6A8DB1D53 /* khrplatform.h in Headers */,
-				DBBCEAA65126433FEC6C3B9FFD37BE69 /* opencl.h in Headers */,
-				8ECD9809992BA18F7DEF0264E459165B /* Platform.h in Headers */,
-				5BD7DC047FBAF3B1DACD9BC4B11A6617 /* PlatformMethods.h in Headers */,
-				9EC36019F5A22E34CE14F8359FCBEBFC /* ShaderLang.h in Headers */,
-				3546CB40226C10463B50A7696F8E06D1 /* ShaderVars.h in Headers */,
-				81229F1FDAFB405547E360C25B261EB7 /* vulkan_fuchsia_ext.h in Headers */,
-				CB2D97F991B78DFDFFB711621222B98B /* wgl.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		2E853034834584EE1157A5C72179E640 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				F2AD41CC846037431C581CC649F32546 /* MWRequest-umbrella.h in Headers */,
+				FC7F242B57A33C1F855F3BD13ADC7D05 /* angle_gl.h in Headers */,
+				7D362D6FE20A856F59CA5036B25CFCE3 /* AsyncGL-umbrella.h in Headers */,
+				2A43DB2862280C9414463064035B5AC8 /* AsyncGLView.h in Headers */,
+				9D081C21FB17787DC41FB2FA54D7C905 /* AsyncGLView+Private.h in Headers */,
+				412B1C4B241661C22E99689E24B0653A /* AsyncGLViewController.h in Headers */,
+				B4AF6B61FFF6C0E81EDF70D79ED7B5F0 /* egl.h in Headers */,
+				5483B0FF31C316FEE5C18C1B05247C2C /* egl.h in Headers */,
+				F8A0DDCF718F06010C44F59621352F34 /* eglext.h in Headers */,
+				95C5208518A1F30FD89AB72568C1BD2E /* eglext_angle.h in Headers */,
+				2F8E03D5E0A8F45677C69C6D7C2F516B /* eglplatform.h in Headers */,
+				0F69B8550B797BF2544D48B1B0675936 /* export.h in Headers */,
+				B4E3E73C91FC71B145185659C69A74D1 /* gl.h in Headers */,
+				9B0D7C416B05D95777819A24B54B816E /* gl2.h in Headers */,
+				3A1F569E38F224DD099D87CF002A4082 /* gl2ext.h in Headers */,
+				F9F0C71DA12C72CF4054F90E86406A95 /* gl2ext_angle.h in Headers */,
+				FD830935887C15F93FAFABE5103BF592 /* gl2ext_explicit_context_autogen.inc in Headers */,
+				8DD96FB8B0CD268CB286939812908A57 /* gl2platform.h in Headers */,
+				D88127493CDF120883ABB84D54685CCE /* gl3.h in Headers */,
+				D7FFEA5ADB3975EFFA83D2262CB1158E /* gl31.h in Headers */,
+				F261AC1E095BB817B0C59C52AEFBEA09 /* gl31ext_explicit_context_autogen.inc in Headers */,
+				A133B74C45728C3B050A0B072912E4CA /* gl32.h in Headers */,
+				FD5138D2E626C49173D6FF5AEA78B2CE /* gl3ext_explicit_context_autogen.inc in Headers */,
+				6748A63765DA9F8D6FDC445614D2DC1D /* gl3platform.h in Headers */,
+				E58FE53C6352846BB75F048EFEA2D5CB /* glext.h in Headers */,
+				5B9A32816932ABC7254AEA497384BE5F /* glext_angle.h in Headers */,
+				FE7DAA8BDB5DA0A20ACA14C8F02EDD24 /* glext_explicit_context_autogen.inc in Headers */,
+				67D5E2B86AF8613773C4CB800A7ECD85 /* glplatform.h in Headers */,
+				02C73AACCBF49B85EA9ED890EE549B97 /* khrplatform.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -664,6 +535,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		F3DA5A05357F7E3015E306A82F628677 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C8B297B3F6353C80318A9257655772FE /* MWRequest-umbrella.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
@@ -679,10 +558,10 @@
 			buildRules = (
 			);
 			dependencies = (
-				F2DDC7D1C0BF8C52D81424B9E4CE539E /* PBXTargetDependency */,
-				DC2346105F9D93D0A2100BBA7370FBD6 /* PBXTargetDependency */,
-				F42E71D26441C236BEB59AB45C28630F /* PBXTargetDependency */,
-				C62005BC39853ED88E01B0AEC5326F5B /* PBXTargetDependency */,
+				402A3CF7EABD0123FF8D95EE4B43BED9 /* PBXTargetDependency */,
+				39C7850514F87F5755D0FB44A6208449 /* PBXTargetDependency */,
+				B3A607FC3AF848F5F350CF52FA07A16E /* PBXTargetDependency */,
+				1E392A71F1183AD077903317CA0E1951 /* PBXTargetDependency */,
 			);
 			name = "Pods-MobileCelestia";
 			productName = Pods_MobileCelestia;
@@ -709,12 +588,12 @@
 		};
 		B0461866C4B5B8EDBF49D135C70E49C4 /* AsyncGL */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 1D77515542451470A9CD0E006736390C /* Build configuration list for PBXNativeTarget "AsyncGL" */;
+			buildConfigurationList = 0B5C0203F3DBEFEA8D945C05D618A9BA /* Build configuration list for PBXNativeTarget "AsyncGL" */;
 			buildPhases = (
-				181C4DF7DD79308C4057307BA07D527A /* Headers */,
-				9DBE45B600C8E333288B1763140483DB /* Sources */,
-				93F71E545D06AFEB15B6ACFA0EB738EE /* Frameworks */,
-				06B3902858204E55F05C8248AC5F510D /* Resources */,
+				1B18E8AFB5D1F9A850B8F54636A895CB /* Headers */,
+				FDC703CC57567A95177E681DD41B69C1 /* Sources */,
+				64E0C7B3008453AFA567D03EB03CE72E /* Frameworks */,
+				29FC51114D22F94CE3803E21F7A859E6 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -727,12 +606,12 @@
 		};
 		B45BC50C299B8144F2CCD63D4E7A880D /* MWRequest */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = F851ADBDBAF666EF106E592A7199DADA /* Build configuration list for PBXNativeTarget "MWRequest" */;
+			buildConfigurationList = A314795AE17C42596932872EC850AD7E /* Build configuration list for PBXNativeTarget "MWRequest" */;
 			buildPhases = (
-				2E853034834584EE1157A5C72179E640 /* Headers */,
-				E5CED8ACCE9104029566C823B1A9CB6C /* Sources */,
-				D0F75D1CDDE72B47B1007B68F221B3E7 /* Frameworks */,
-				3B560EFAB884EEDEE3A1C11C4CDC3638 /* Resources */,
+				F3DA5A05357F7E3015E306A82F628677 /* Headers */,
+				6BD6BD83C14FD3C44C289BE0BFC2958D /* Sources */,
+				7CF84720D948277D0F1AF338E9C26962 /* Frameworks */,
+				3ECA1F01C78E329947288BE1BF009C61 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -775,14 +654,14 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		06B3902858204E55F05C8248AC5F510D /* Resources */ = {
+		29FC51114D22F94CE3803E21F7A859E6 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		3B560EFAB884EEDEE3A1C11C4CDC3638 /* Resources */ = {
+		3ECA1F01C78E329947288BE1BF009C61 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -834,13 +713,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		9DBE45B600C8E333288B1763140483DB /* Sources */ = {
+		6BD6BD83C14FD3C44C289BE0BFC2958D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				445EBD20144D2C1E45417B49F8EC6741 /* AsyncGL-dummy.m in Sources */,
-				BA5CA98F7BC58B930EC0F7E4BF301F1F /* AsyncGLView.m in Sources */,
-				0C97B2682E2C5422622997BC394AC4C0 /* AsyncGLViewController.m in Sources */,
+				2045F40645C914F4DEA862F1A887E30E /* AsyncRequestHandler.swift in Sources */,
+				61C5D1B6D9BA1AABD16310B354D27DC8 /* MWRequest-dummy.m in Sources */,
+				88136B743F2F3E255523AA38B249F8C5 /* Request.swift in Sources */,
+				2493E421494910E41217C5FE1FC014D6 /* RequestHandler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -860,42 +740,42 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		E5CED8ACCE9104029566C823B1A9CB6C /* Sources */ = {
+		FDC703CC57567A95177E681DD41B69C1 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4C2E15196C17D8C9CE373DD32CE8F059 /* MWRequest-dummy.m in Sources */,
-				A548FE4912631FCE1C66C0F34581118F /* Request.swift in Sources */,
-				A892B8558070136CA93C48D9E861A3E9 /* RequestHandler.swift in Sources */,
+				3B4CE1FF8113E0522D74C20785FE0153 /* AsyncGL-dummy.m in Sources */,
+				B2574C5C8661D6CD0F8F66098AF2AE9B /* AsyncGLView.m in Sources */,
+				F4A923693A5B80D4A7A2A4E88CEB6FEA /* AsyncGLViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		C62005BC39853ED88E01B0AEC5326F5B /* PBXTargetDependency */ = {
+		1E392A71F1183AD077903317CA0E1951 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = ZIPFoundation;
 			target = AA15C8469D67684160CC2A7098EB841C /* ZIPFoundation */;
-			targetProxy = 7C26CA34E66AFF980C50F89323CED2DE /* PBXContainerItemProxy */;
+			targetProxy = 7597420CB10117D0FDAF220D2DA28023 /* PBXContainerItemProxy */;
 		};
-		DC2346105F9D93D0A2100BBA7370FBD6 /* PBXTargetDependency */ = {
+		39C7850514F87F5755D0FB44A6208449 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = AsyncGL;
 			target = B0461866C4B5B8EDBF49D135C70E49C4 /* AsyncGL */;
-			targetProxy = 3C2813097762167905D75359A642243B /* PBXContainerItemProxy */;
+			targetProxy = 21E148DA1F5C4F87F02EDABDA8DE9B29 /* PBXContainerItemProxy */;
 		};
-		F2DDC7D1C0BF8C52D81424B9E4CE539E /* PBXTargetDependency */ = {
+		402A3CF7EABD0123FF8D95EE4B43BED9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = AppCenter;
 			target = A3282A5B2437E609EEB85861D7ECE717 /* AppCenter */;
-			targetProxy = D40D42D32EAEABAB7750EBAA7D9742D6 /* PBXContainerItemProxy */;
+			targetProxy = 6C31C67DFFD1A81DB298070048A88E31 /* PBXContainerItemProxy */;
 		};
-		F42E71D26441C236BEB59AB45C28630F /* PBXTargetDependency */ = {
+		B3A607FC3AF848F5F350CF52FA07A16E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = MWRequest;
 			target = B45BC50C299B8144F2CCD63D4E7A880D /* MWRequest */;
-			targetProxy = FEAEBD5E27F88C2D29D925E223758EDD /* PBXContainerItemProxy */;
+			targetProxy = 7F3A9E39BE964C7820A92528FBE28494 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -962,90 +842,6 @@
 			};
 			name = Release;
 		};
-		3890EA7A6D669A5A62BAC8E1A9AC5CBD /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = AC07539482A545C57193B23A5B81137F /* AsyncGL.debug.xcconfig */;
-			buildSettings = {
-				CODE_SIGNING_ALLOWED = NO;
-				CODE_SIGNING_REQUIRED = NO;
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				EXPANDED_CODE_SIGN_IDENTITY = "";
-				GCC_PREFIX_HEADER = "Target Support Files/AsyncGL/AsyncGL-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/AsyncGL/AsyncGL-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MACH_O_TYPE = staticlib;
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MODULEMAP_FILE = "Target Support Files/AsyncGL/AsyncGL.modulemap";
-				"OTHER_CFLAGS[sdk=macosx*]" = (
-					"$(inherited)",
-					"-DUSE_EGL",
-				);
-				PRODUCT_MODULE_NAME = AsyncGL;
-				PRODUCT_NAME = AsyncGL;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SUPPORTS_MACCATALYST = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
-		48DD6870E8F02D0462B4562B024A00B1 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = A76AD4FD66ADEC0233A6CF100227915A /* MWRequest.debug.xcconfig */;
-			buildSettings = {
-				CODE_SIGNING_ALLOWED = NO;
-				CODE_SIGNING_REQUIRED = NO;
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				EXPANDED_CODE_SIGN_IDENTITY = "";
-				GCC_PREFIX_HEADER = "Target Support Files/MWRequest/MWRequest-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/MWRequest/MWRequest-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MACH_O_TYPE = staticlib;
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MODULEMAP_FILE = "Target Support Files/MWRequest/MWRequest.modulemap";
-				PRODUCT_MODULE_NAME = MWRequest;
-				PRODUCT_NAME = MWRequest;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SUPPORTS_MACCATALYST = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
 		610E2D27E762CA9041DC5168E4377985 /* Release */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 618F0DAD7C619AA12E2F6054485270B0 /* Pods-MobileCelestia.release.xcconfig */;
@@ -1091,7 +887,7 @@
 		};
 		6A967EE4610C6B244C6AEC0CB6D85575 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 46991C280E06DC5AD4494601B90CE2D9 /* ZIPFoundation.release.xcconfig */;
+			baseConfigurationReference = 982E57E23E85A33F3B5D8E9F7EEEC8EE /* ZIPFoundation.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGNING_ALLOWED = NO;
 				CODE_SIGNING_REQUIRED = NO;
@@ -1132,7 +928,7 @@
 		};
 		75015716975841C5EDFB269B50341487 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6CDB9031C42AF5C3E593CB90237974FA /* AppCenter.release.xcconfig */;
+			baseConfigurationReference = E98E67FC5B5FA7EFCAFB427CEAC3CBAA /* AppCenter.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -1149,51 +945,6 @@
 				SUPPORTS_MACCATALYST = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
-		84B54DC0B0574C82630BA9F0CEFBA8D8 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = E5C697B8674409E5266EDAFAABB7D9D9 /* AsyncGL.release.xcconfig */;
-			buildSettings = {
-				CODE_SIGNING_ALLOWED = NO;
-				CODE_SIGNING_REQUIRED = NO;
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				EXPANDED_CODE_SIGN_IDENTITY = "";
-				GCC_PREFIX_HEADER = "Target Support Files/AsyncGL/AsyncGL-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/AsyncGL/AsyncGL-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MACH_O_TYPE = staticlib;
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MODULEMAP_FILE = "Target Support Files/AsyncGL/AsyncGL.modulemap";
-				"OTHER_CFLAGS[sdk=macosx*]" = (
-					"$(inherited)",
-					"-DUSE_EGL",
-				);
-				PRODUCT_MODULE_NAME = AsyncGL;
-				PRODUCT_NAME = AsyncGL;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SUPPORTS_MACCATALYST = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
 			};
 			name = Release;
 		};
@@ -1263,6 +1014,50 @@
 			};
 			name = Debug;
 		};
+		B06F3A5703A13578A7EE7EAF850EA044 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 56BBC5E11BF7E7ABEC0E6E6AD02405A4 /* AsyncGL.debug.xcconfig */;
+			buildSettings = {
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				EXPANDED_CODE_SIGN_IDENTITY = "";
+				GCC_PREFIX_HEADER = "Target Support Files/AsyncGL/AsyncGL-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/AsyncGL/AsyncGL-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MODULEMAP_FILE = "Target Support Files/AsyncGL/AsyncGL.modulemap";
+				"OTHER_CFLAGS[sdk=macosx*]" = (
+					"$(inherited)",
+					"-DUSE_EGL",
+				);
+				PRODUCT_MODULE_NAME = AsyncGL;
+				PRODUCT_NAME = AsyncGL;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
 		B4CAA1CD6E8059DD6FB9C60AD566CFD9 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 90370C223EA809BAC9C40007B4821792 /* Pods-MobileCelestia.debug.xcconfig */;
@@ -1305,10 +1100,56 @@
 			};
 			name = Debug;
 		};
-		DCF0FF55B02C5080AF3D1BFA67FC071D /* Release */ = {
+		C49F722171A132EB30C75A14D44EFDF9 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 3AB1F10E0E3B210D1F0082A04860D48E /* MWRequest.release.xcconfig */;
+			baseConfigurationReference = 385DB908535028CC5FDE122B8F43A8C0 /* AsyncGL.release.xcconfig */;
 			buildSettings = {
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				EXPANDED_CODE_SIGN_IDENTITY = "";
+				GCC_PREFIX_HEADER = "Target Support Files/AsyncGL/AsyncGL-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/AsyncGL/AsyncGL-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MODULEMAP_FILE = "Target Support Files/AsyncGL/AsyncGL.modulemap";
+				"OTHER_CFLAGS[sdk=macosx*]" = (
+					"$(inherited)",
+					"-DUSE_EGL",
+				);
+				PRODUCT_MODULE_NAME = AsyncGL;
+				PRODUCT_NAME = AsyncGL;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		E3BF73FA97AF9A8E11C68B429F7FDB60 /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 0CF3F71A0762765CE3C8F189E9965D80 /* MWRequest.release.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGNING_ALLOWED = NO;
 				CODE_SIGNING_REQUIRED = NO;
 				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
@@ -1338,7 +1179,7 @@
 				SKIP_INSTALL = YES;
 				SUPPORTS_MACCATALYST = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 5.5;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1346,9 +1187,50 @@
 			};
 			name = Release;
 		};
+		ED9F95E8A6AAB959E8BC0171D0077A6F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = D3A0D7C9C7C4B864896B4FCBF8802DC4 /* MWRequest.debug.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				EXPANDED_CODE_SIGN_IDENTITY = "";
+				GCC_PREFIX_HEADER = "Target Support Files/MWRequest/MWRequest-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/MWRequest/MWRequest-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MODULEMAP_FILE = "Target Support Files/MWRequest/MWRequest.modulemap";
+				PRODUCT_MODULE_NAME = MWRequest;
+				PRODUCT_NAME = MWRequest;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.5;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
 		FD5436DFFA31B290DADF0F62398FCF14 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 88CF14227044FCA2F933E56CBB933F97 /* ZIPFoundation.debug.xcconfig */;
+			baseConfigurationReference = BE63A92FA0A4CC631B4EAE4C775013D2 /* ZIPFoundation.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGNING_ALLOWED = NO;
 				CODE_SIGNING_REQUIRED = NO;
@@ -1388,7 +1270,7 @@
 		};
 		FEC95B7CD72F3B3708DC09E7E2EB397F /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 65A42B9DABBB0430E9C31FF137E29B11 /* AppCenter.debug.xcconfig */;
+			baseConfigurationReference = 005CB6C9BC349E7E2047BFCE3259E670 /* AppCenter.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -1410,20 +1292,20 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		0B5C0203F3DBEFEA8D945C05D618A9BA /* Build configuration list for PBXNativeTarget "AsyncGL" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B06F3A5703A13578A7EE7EAF850EA044 /* Debug */,
+				C49F722171A132EB30C75A14D44EFDF9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		16FDCDE4F367DD0F6660B864C584D7E7 /* Build configuration list for PBXNativeTarget "ZIPFoundation" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				FD5436DFFA31B290DADF0F62398FCF14 /* Debug */,
 				6A967EE4610C6B244C6AEC0CB6D85575 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		1D77515542451470A9CD0E006736390C /* Build configuration list for PBXNativeTarget "AsyncGL" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				3890EA7A6D669A5A62BAC8E1A9AC5CBD /* Debug */,
-				84B54DC0B0574C82630BA9F0CEFBA8D8 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1446,20 +1328,20 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		A314795AE17C42596932872EC850AD7E /* Build configuration list for PBXNativeTarget "MWRequest" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				ED9F95E8A6AAB959E8BC0171D0077A6F /* Debug */,
+				E3BF73FA97AF9A8E11C68B429F7FDB60 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		B11C03F9FA2FB832B8E8DDB4212DCD56 /* Build configuration list for PBXNativeTarget "Pods-MobileCelestia" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B4CAA1CD6E8059DD6FB9C60AD566CFD9 /* Debug */,
 				610E2D27E762CA9041DC5168E4377985 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		F851ADBDBAF666EF106E592A7199DADA /* Build configuration list for PBXNativeTarget "MWRequest" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				48DD6870E8F02D0462B4562B024A00B1 /* Debug */,
-				DCF0FF55B02C5080AF3D1BFA67FC071D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

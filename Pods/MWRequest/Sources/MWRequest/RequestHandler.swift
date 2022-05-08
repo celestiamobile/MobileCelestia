@@ -5,15 +5,14 @@
 
 import Foundation
 
-#if os(Linux)
+#if canImport(FoundationNetworking)
 import FoundationNetworking
 #endif
 
 public enum RequestError: Error {
     case noResponse
-    case httpEror(errorString: String)
+    case httpError(statusCode: Int, errorString: String, responseBody: Data)
     case urlSessionError(error: Error)
-    case noData
     case decodingError(error: Error)
     case unknown
 }
@@ -21,13 +20,11 @@ public enum RequestError: Error {
 extension RequestError: LocalizedError {
     public var errorDescription: String? {
         switch self {
-        case .noData:
-            return NSLocalizedString("No data", comment: "")
         case .noResponse:
             return NSLocalizedString("No response", comment: "")
         case .decodingError(let error):
             return error.localizedDescription
-        case .httpEror(let errorString):
+        case .httpError(_, let errorString, _):
             return errorString
         case .urlSessionError(let error):
             return error.localizedDescription
@@ -88,11 +85,7 @@ public class BaseRequestHandler<Output> {
             return true
         }
         guard statusCode < 400 else {
-            callFailureHandler(.httpEror(errorString: HTTPURLResponse.localizedString(forStatusCode: statusCode)))
-            return true
-        }
-        guard data != nil else {
-            callFailureHandler(.noData)
+            callFailureHandler(.httpError(statusCode: statusCode, errorString: HTTPURLResponse.localizedString(forStatusCode: statusCode), responseBody: data ?? Data()))
             return true
         }
         return false
@@ -180,7 +173,7 @@ public class DataRequestHandler: BaseRequestHandler<Data> {
         guard !super.commonHandler(data: data, response: response, error: error) else {
             return true
         }
-        callSuccessHandler(data!)
+        callSuccessHandler(data ?? Data())
         return false
     }
 }
@@ -199,7 +192,7 @@ public class JSONRequestHandler<Output>: BaseRequestHandler<Output> where Output
             return true
         }
         do {
-            let output = try (Output.decoder ?? JSONDecoder()).decode(Output.self, from: data!)
+            let output = try (Output.decoder ?? JSONDecoder()).decode(Output.self, from: data ?? Data())
             callSuccessHandler(output)
             return false
         } catch let error {
