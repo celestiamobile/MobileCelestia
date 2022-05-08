@@ -22,16 +22,7 @@ class CommonWebViewController: UIViewController {
 
     var ackHandler: ((String) -> Void)?
 
-    private lazy var webView: WKWebView = {
-        let configuration = WKWebViewConfiguration()
-        let handler = CelestiaScriptHandler()
-        handler.delegate = self
-        configuration.userContentController.add(handler, name: "iOSCelestia")
-        let webView = WKWebView(frame: .zero, configuration: configuration)
-        webView.isOpaque = false
-        webView.backgroundColor = .black
-        return webView
-    }()
+    private let webView: WKWebView
 
     private lazy var toolbar = UIToolbar()
     private lazy var goBackItem: UIBarButtonItem = {
@@ -73,20 +64,19 @@ class CommonWebViewController: UIViewController {
         view = containerView
     }
 
-    init(url: URL, matchingQueryKeys: [String], contextDirectory: URL? = nil) {
+    init(url: URL, matchingQueryKeys: [String] = [], contextDirectory: URL? = nil, filterURL: Bool = true) {
         self.url = url
         self.matchingQueryKeys = matchingQueryKeys
         self.contextDirectory = contextDirectory
-        self.filterURL = true
+        self.filterURL = filterURL
+        let configuration = WKWebViewConfiguration()
+        let handler = CelestiaScriptHandler()
+        configuration.userContentController.add(handler, name: "iOSCelestia")
+        webView = WKWebView(frame: .zero, configuration: configuration)
+        webView.isOpaque = false
+        webView.backgroundColor = .black
         super.init(nibName: nil, bundle: nil)
-    }
-
-    init(url: URL) {
-        self.url = url
-        self.matchingQueryKeys = []
-        self.contextDirectory = nil
-        self.filterURL = false
-        super.init(nibName: nil, bundle: nil)
+        handler.delegate = self
     }
 
     deinit {

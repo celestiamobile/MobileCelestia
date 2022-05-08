@@ -432,7 +432,7 @@ extension MainViewController: CelestiaControllerDelegate {
                 URLQueryItem(name: "platform", value: "ios"),
             ]
             let url = components.url!
-            let nav = UINavigationController(rootViewController: CommonWebViewController(url: url))
+            let nav = UINavigationController(rootViewController: CommonWebViewController(url: url, filterURL: false))
             showViewController(nav)
         case .paperplane:
             presentGoTo()
