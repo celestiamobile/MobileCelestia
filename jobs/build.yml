@@ -13,8 +13,8 @@ jobs:
     XC_ARCHIVE_PARENT_PATH: ${{ '$(system.defaultworkingdirectory)/archive' }}
     XC_ARCHIVE_PATH: ${{ '$(system.defaultworkingdirectory)/archive/MobileCelestia.xcarchive' }}
     XC_EXPORT_PATH: ${{ '$(agent.buildDirectory)/output' }}
-    IOS_PROVISIONING_PROFILE_UUID: ${{ 'e840c955-a055-413b-bf1f-d0529b5f6ead' }}
-    MAC_APP_STORE_PROVISIONING_PROFILE_UUID: ${{ '23537496-ccc8-4b80-bd89-3bd602ef40e2' }}
+    IOS_PROVISIONING_PROFILE_UUID: ${{ 'e7ca62e1-10a8-4df5-a020-c858328c0ce0' }}
+    MAC_APP_STORE_PROVISIONING_PROFILE_UUID: ${{ '082a6a29-41ff-481b-9e5a-11c923454481' }}
     MAC_DEVELOPER_ID_PROVISIONING_PROFILE_UUID: ${{ '6700a055-c231-4a7f-86e8-2409fc00e06d' }}
     DISTRIBUTION_IDENTITY: 'Apple Distribution: Linfeng Li (22NR5428TD)'
     DEVELOPER_ID_IDENTITY: 'Developer ID Application: Linfeng Li (22NR5428TD)'
@@ -76,15 +76,9 @@ jobs:
     displayName: 'Install AppCenter-CLI'
 
   - task: DownloadSecureFile@1
-    name: macInstallerP12
-    inputs:
-      secureFile: 'MacInstaller20210729.p12'
-    displayName: 'Download Mac Installer Certificate'
-
-  - task: DownloadSecureFile@1
     name: distributionP12
     inputs:
-      secureFile: '20210508.p12'
+      secureFile: '20220509.p12'
     displayName: 'Download Distribution Certificate'
 
   - task: DownloadSecureFile@1
@@ -96,13 +90,13 @@ jobs:
   - task: DownloadSecureFile@1
     name: iosProvisioningProfile
     inputs:
-      secureFile: 'MC_iOS_AppStore_20211225.mobileprovision'
+      secureFile: 'MobileCelestia220509iOS.mobileprovision'
     displayName: 'Download iOS Provisioning Profile'
 
   - task: DownloadSecureFile@1
     name: macAppStoreProvisioningProfile
     inputs:
-      secureFile: 'MC_macOS_AppStore_20211225.provisionprofile'
+      secureFile: 'MobileCelestia220509macOS.provisionprofile'
     displayName: 'Download Mac (App Store) Provisioning Profile'
 
   - task: DownloadSecureFile@1
@@ -128,9 +122,8 @@ jobs:
       security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
       security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
       # import certificate to keychain
-      security import "$(macInstallerP12.secureFilePath)" -P "$(MAC_INSTALLER_P12_PASSWORD)" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
-      security import "$(distributionP12.secureFilePath)" -P "$(P12Password)" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
-      security import "$(developerIDP12.secureFilePath)" -P "$(P12Password)" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+      security import "$(distributionP12.secureFilePath)" -P "$(P12_PASSWORD)" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+      security import "$(developerIDP12.secureFilePath)" -P "$(P12_PASSWORD)" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
       security list-keychain -d user -s $KEYCHAIN_PATH
       # apply provisioning profile
       mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
