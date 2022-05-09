@@ -76,9 +76,15 @@ jobs:
     displayName: 'Install AppCenter-CLI'
 
   - task: DownloadSecureFile@1
+    name: macInstallerP12
+    inputs:
+      secureFile: '20220509_macOS.p12'
+    displayName: 'Download Mac Installer Certificate'
+
+  - task: DownloadSecureFile@1
     name: distributionP12
     inputs:
-      secureFile: '20220509.p12'
+      secureFile: '20220509_2.p12'
     displayName: 'Download Distribution Certificate'
 
   - task: DownloadSecureFile@1
@@ -122,6 +128,7 @@ jobs:
       security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
       security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
       # import certificate to keychain
+      security import "$(macInstallerP12.secureFilePath)" -P "$(P12_PASSWORD)" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
       security import "$(distributionP12.secureFilePath)" -P "$(P12_PASSWORD)" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
       security import "$(developerIDP12.secureFilePath)" -P "$(P12_PASSWORD)" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
       security list-keychain -d user -s $KEYCHAIN_PATH
@@ -190,7 +197,7 @@ jobs:
       zip -vr symbols.zip * -x "*.DS_Store"
       appcenter crashes upload-symbols --symbol symbols.zip --app CelestiaProject/Celestia --token $(IOS_APPCENTER_TOKEN) --disable-telemetry --debug
     displayName: 'Upload Symbols (iOS)'
-    condition: eq( variables['sdk'], 'iphoneos' )
+    condition: and( succeeded(), eq( variables['sdk'], 'iphoneos' ) )
 
   - script: |
       cd $XC_ARCHIVE_PATH/dSYMs
