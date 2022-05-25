@@ -207,6 +207,7 @@ jobs:
     condition: eq( variables['sdk'], 'macosx' )
 
   - script: |
-      xcrun altool --notarize-app --primary-bundle-id space.celestia.MobileCelestia --username $(AC_ACCOUNT_NAME) --password $(AC_ACCOUNT_PASSWORD) -f $(Build.ArtifactStagingDirectory)/App.zip
+      xcrun notarytool store-credentials "AC_PASSWORD" --apple-id $(AC_ACCOUNT_NAME) --team-id 22NR5428TD --password $(AC_ACCOUNT_PASSWORD)
+      xcrun notarytool submit "$(Build.ArtifactStagingDirectory)/App.zip" --keychain-profile "AC_PASSWORD" --wait
     displayName: "Notarize App"
     condition: and(eq( variables['sdk'], 'macosx' ), eq( variables['signing'], 'developerID' ))
