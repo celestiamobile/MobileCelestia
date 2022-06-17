@@ -47,7 +47,7 @@ class DisplaySceneDelegate: CommonSceneDelegate {
 
         let window = UIWindow(windowScene: windowScene)
         window.overrideUserInterfaceStyle = .dark
-        mainVC.celestiaController.moveToNewWindow(window)
+        mainVC.moveDisplay(to: window, screen: windowScene.screen)
 
         self.window = window
         window.makeKeyAndVisible()
@@ -63,7 +63,7 @@ class DisplaySceneDelegate: CommonSceneDelegate {
         let allWindowScenes = UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene })
         if let mainSceneDelegate = allWindowScenes.compactMap({ $0.delegate as? MainSceneDelegate }).first {
             if let mainWindow = mainSceneDelegate.window, let mainVC = mainWindow.rootViewController as? MainViewController {
-                mainVC.celestiaController.moveBack(from: win)
+                mainVC.moveDisplayBack(from: win)
             }
         }
     }

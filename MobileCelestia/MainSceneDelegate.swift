@@ -42,7 +42,7 @@ class MainSceneDelegate: CommonSceneDelegate {
         if let url = connectionOptions.urlContexts.first {
             launchURL = UniformedURL(url: url.url, securityScoped: url.url.isFileURL && url.options.openInPlace)
         }
-        let vc = MainViewController(initialURL: launchURL)
+        let vc = MainViewController(initialURL: launchURL, screen: windowScene.screen)
         window.rootViewController = vc
 
         self.window = window

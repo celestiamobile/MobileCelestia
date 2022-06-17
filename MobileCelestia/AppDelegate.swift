@@ -106,20 +106,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             Crashes.self
         ])
         #endif
-
-        if #available(iOS 13.0, *) { return true }
-
-        window = UIWindow()
-
-        var launchURL: UniformedURL?
-        if let url = launchOptions?[.url] as? URL {
-            launchURL = UniformedURL(url: url, securityScoped: url.isFileURL)
-        }
-        let vc = MainViewController(initialURL: launchURL)
-
-        window?.rootViewController = vc
-        window?.makeKeyAndVisible()
-
         return true
     }
 

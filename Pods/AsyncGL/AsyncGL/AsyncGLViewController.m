@@ -27,7 +27,7 @@
 #pragma mark - lifecycle
 
 #if TARGET_OS_IOS
-- (instancetype)initWithMSAAEnabled:(BOOL)msaaEnabled initialFrameRate:(NSInteger)frameRate
+- (instancetype)initWithMSAAEnabled:(BOOL)msaaEnabled screen:(UIScreen *)screen initialFrameRate:(NSInteger)frameRate
 #else
 - (instancetype)initWithMSAAEnabled:(BOOL)msaaEnabled
 #endif
@@ -40,7 +40,7 @@
         _pauseOnWillResignActive = YES;
         _resumeOnDidBecomeActive = YES;
         _internalPreferredFramesPerSecond = frameRate;
-        _internalScreen = [UIScreen mainScreen];
+        _internalScreen = screen;
 #else
         _pauseOnWillResignActive = NO;
         _resumeOnDidBecomeActive = NO;
