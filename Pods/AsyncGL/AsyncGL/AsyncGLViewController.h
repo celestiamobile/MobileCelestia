@@ -27,7 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, nullable) AsyncGLView *glView;
 
 #if TARGET_OS_IOS
-- (instancetype)initWithMSAAEnabled:(BOOL)msaaEnabled initialFrameRate:(NSInteger)frameRate NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithMSAAEnabled:(BOOL)msaaEnabled screen:(UIScreen *)screen initialFrameRate:(NSInteger)frameRate NS_DESIGNATED_INITIALIZER;
 #else
 - (instancetype)initWithMSAAEnabled:(BOOL)msaaEnabled NS_DESIGNATED_INITIALIZER;
 #endif

@@ -37,12 +37,26 @@ protocol CelestiaControllerDelegate: AnyObject {
 class CelestiaViewController: UIViewController {
     weak var delegate: CelestiaControllerDelegate!
 
-    private lazy var displayController = CelestiaDisplayController(msaaEnabled: UserDefaults.app[.msaa] == true, initialFrameRate: UserDefaults.app[.frameRate] ?? 60)
+    private let displayController: CelestiaDisplayController
     private var interactionController: CelestiaInteractionController?
 
     private lazy var auxiliaryWindows = [UIWindow]()
 
-    private var isMirroring = false
+    private(set) var appScreen: UIScreen
+    private(set) var displayScreen: UIScreen
+    private(set) var isMirroring: Bool
+
+    init(screen: UIScreen) {
+        appScreen = screen
+        displayScreen = screen
+        isMirroring = false
+        displayController = CelestiaDisplayController(msaaEnabled: UserDefaults.app[.msaa] == true, screen: screen, initialFrameRate: UserDefaults.app[.frameRate] ?? 60)
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
 
     override func loadView() {
         let container = UIView()
@@ -55,6 +69,8 @@ class CelestiaViewController: UIViewController {
 
         displayController.delegate = self
         install(displayController)
+
+        NotificationCenter.default.addObserver(self, selector: #selector(windowDidMoveToScreenNotification(_:)), name: NSNotification.Name("UIWindowDidMoveToScreenNotification"), object: nil)
     }
 
     override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
@@ -78,6 +94,24 @@ class CelestiaViewController: UIViewController {
             interactionController?.keyUp(with: key.input, modifiers: UInt(key.modifierFlags.rawValue))
         } else {
             super.pressesCancelled(presses, with: event)
+        }
+    }
+}
+
+extension CelestiaViewController {
+    @objc private func windowDidMoveToScreenNotification(_ notification: Notification) {
+        guard let window = notification.object as? UIWindow else { return }
+        guard let screen = notification.userInfo?["UIWindowNewScreenUserInfoKey"] as? UIScreen else { return }
+
+        if view.window == window {
+            if appScreen != screen {
+                appScreen = screen
+            }
+        }
+        if displayController.view.window == window {
+            if displayScreen != screen {
+                setDisplayScreen(screen)
+            }
         }
     }
 }
@@ -134,13 +168,13 @@ extension CelestiaViewController {
         displayController.setPreferredFramesPerSecond(newFrameRate)
     }
 
-    func moveToNewWindow(_ window: UIWindow) {
+    func move(to window: UIWindow, screen: UIScreen) {
         // Only move the display controller to the new screen
         displayController.remove()
         let dummyViewController = UIViewController()
         dummyViewController.view.backgroundColor = .black
         window.rootViewController = dummyViewController
-        displayController.setScreen(window.screen)
+        setDisplayScreen(screen)
         dummyViewController.install(displayController)
         interactionController?.startMirroring()
         isMirroring = true
@@ -151,7 +185,7 @@ extension CelestiaViewController {
         guard let rootViewController = window.rootViewController, rootViewController.children.contains(displayController) else { return }
         displayController.remove()
         window.rootViewController = nil
-        displayController.setScreen(.main)
+        setDisplayScreen(appScreen)
         install(displayController)
         view.sendSubviewToBack(displayController.view)
         isMirroring = false
@@ -159,32 +193,34 @@ extension CelestiaViewController {
     }
 
     #if !targetEnvironment(macCatalyst)
-    func moveToNewScreen(_ newScreen: UIScreen) -> Bool {
-        let newWindow = UIWindow(frame: newScreen.bounds)
-        if #available(iOS 13, *) {
-            // Find the window scene associated with the screen...
-            guard let windowScene = UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).first(where: { $0.screen == newScreen }) else {
-                return false
-            }
-            newWindow.windowScene = windowScene
-        } else {
-            newWindow.screen = newScreen
+    func move(to screen: UIScreen) -> Bool {
+        let newWindow = UIWindow(frame: screen.bounds)
+        // Find the window scene associated with the screen...
+        guard let windowScene = UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).first(where: { $0.screen == screen }) else {
+            return false
         }
+        newWindow.windowScene = windowScene
         auxiliaryWindows.append(newWindow)
-        moveToNewWindow(newWindow)
+        move(to: newWindow, screen: screen)
         newWindow.isHidden = false
         return true
     }
 
-    func moveBack(from screen: UIScreen) {
-        guard let windowIndex = auxiliaryWindows.firstIndex(where: { $0.screen == screen }) else {
+    func moveBack(from screen: UIScreen) -> Bool {
+        guard let windowIndex = auxiliaryWindows.firstIndex(where: { $0.windowScene?.screen == screen }) else {
             // No window with this screen is found
-            return
+            return false
         }
         let window = auxiliaryWindows.remove(at: windowIndex)
         moveBack(from: window)
+        return true
     }
     #endif
+
+    private func setDisplayScreen(_ screen: UIScreen) {
+        displayScreen = screen
+        displayController.setScreen(screen)
+    }
 }
 
 extension CelestiaViewController: RenderingTargetInformationProvider {

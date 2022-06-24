@@ -59,7 +59,7 @@ class MainViewController: UIViewController {
         case loaded
     }
 
-    lazy var celestiaController = CelestiaViewController()
+    let celestiaController: CelestiaViewController
     private lazy var loadingController = LoadingViewController()
 
     private var status: LoadingStatus = .notLoaded
@@ -75,14 +75,14 @@ class MainViewController: UIViewController {
 
     #if !targetEnvironment(macCatalyst)
     private var currentExternalScreenToSwitchTo: UIScreen?
-    private var currentDisplayingScreen: UIScreen = .main
     #endif
 
     private var scriptOrCelURL: UniformedURL?
     private var addonToOpen: String?
     private var guideToOpen: String?
 
-    init(initialURL: UniformedURL?) {
+    init(initialURL: UniformedURL?, screen: UIScreen) {
+        celestiaController = CelestiaViewController(screen: screen)
         super.init(nibName: nil, bundle: nil)
 
         if let url = initialURL {
@@ -292,11 +292,10 @@ extension MainViewController {
             guard choice, let self = self else { return }
             self.currentExternalScreenToSwitchTo = nil
 
-            guard self.celestiaController.moveToNewScreen(newScreen) else {
+            guard self.celestiaController.move(to: newScreen) else {
                 self.showError(CelestiaString("Failed to connect to the external screen.", comment: ""))
                 return
             }
-            self.currentDisplayingScreen = newScreen
         }
     }
 
@@ -311,10 +310,30 @@ extension MainViewController {
             return
         }
 
-        celestiaController.moveBack(from: screen)
-        currentDisplayingScreen = .main
+        guard celestiaController.isMirroring else {
+            // Not mirroring, ignore
+            return
+        }
+
+        guard screen == celestiaController.displayScreen else {
+            // Not the screen we expected
+            return
+        }
+
+        guard celestiaController.moveBack(from: screen) else {
+            // Unable to move back from the screen
+            return
+        }
     }
     #endif
+
+    func moveDisplayBack(from window: UIWindow) {
+        celestiaController.moveBack(from: window)
+    }
+
+    func moveDisplay(to window: UIWindow, screen: UIScreen) {
+        celestiaController.move(to: window, screen: screen)
+    }
 }
 
 extension MainViewController: UIDocumentPickerDelegate {
@@ -723,12 +742,8 @@ extension MainViewController: CelestiaControllerDelegate {
                 UserDefaults.app[.frameRate] = newFrameRate
                 self?.celestiaController.updateFrameRate(newFrameRate)
             }
-        }, screenProvider: { [weak self] in
-            #if targetEnvironment(macCatalyst)
-            return .main
-            #else
-            return self?.currentDisplayingScreen ?? .main
-            #endif
+        }, screenProvider: { [unowned self] in
+            return self.celestiaController.displayScreen
         })
         #if targetEnvironment(macCatalyst)
         showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600))
