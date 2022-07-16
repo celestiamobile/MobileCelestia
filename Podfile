@@ -7,7 +7,7 @@ target 'MobileCelestia' do
   pod 'AppCenter/Crashes', '~> 4.4.2'
   pod 'ZIPFoundation', '~> 0.9'
 
-  pod "MWRequest", :git => "https://github.com/levinli303/mwrequest.git", :tag => "0.2.9"
+  pod "MWRequest", :git => "https://github.com/levinli303/mwrequest.git", :tag => "0.3.4"
   pod "AsyncGL", :git => "https://github.com/levinli303/AsyncGL.git", :tag => "0.0.15"
 end
 

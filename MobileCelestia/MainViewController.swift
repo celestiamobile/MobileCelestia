@@ -458,10 +458,9 @@ extension MainViewController: CelestiaControllerDelegate {
         case .speedometer:
             presentSpeedControl()
         case .newsarchive:
-            let baseURL = "https://celestia.mobi/resources/guides"
+            let baseURL = "https://celestia.mobi/news"
             var components = URLComponents(string: baseURL)!
             components.queryItems = [
-                URLQueryItem(name: "type", value: "news"),
                 URLQueryItem(name: "lang", value: AppCore.language),
             ]
             let url = components.url!

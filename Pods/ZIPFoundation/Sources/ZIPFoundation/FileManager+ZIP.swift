@@ -2,7 +2,7 @@
 //  FileManager+ZIP.swift
 //  ZIPFoundation
 //
-//  Copyright © 2017-2020 Thomas Zoechling, https://www.peakstep.com and the ZIP Foundation project authors.
+//  Copyright © 2017-2021 Thomas Zoechling, https://www.peakstep.com and the ZIP Foundation project authors.
 //  Released under the MIT License.
 //
 //  See https://github.com/weichsel/ZIPFoundation/blob/master/LICENSE for license information.
@@ -13,7 +13,7 @@ import Foundation
 extension FileManager {
     typealias CentralDirectoryStructure = Entry.CentralDirectoryStructure
 
-    /// Zips the file or direcory contents at the specified source URL to the destination URL.
+    /// Zips the file or directory contents at the specified source URL to the destination URL.
     ///
     /// If the item at the source URL is a directory, the directory itself will be
     /// represented within the ZIP `Archive`. Calling this method with a directory URL
@@ -223,7 +223,7 @@ extension FileManager {
         return modDate
     }
 
-    class func fileSizeForItem(at url: URL) throws -> UInt32 {
+    class func fileSizeForItem(at url: URL) throws -> Int64 {
         let fileManager = FileManager()
         guard fileManager.itemExists(at: url) else {
             throw CocoaError(.fileReadNoSuchFile, userInfo: [NSFilePathErrorKey: url.path])
@@ -231,7 +231,11 @@ extension FileManager {
         let entryFileSystemRepresentation = fileManager.fileSystemRepresentation(withPath: url.path)
         var fileStat = stat()
         lstat(entryFileSystemRepresentation, &fileStat)
-        return UInt32(fileStat.st_size)
+        guard fileStat.st_size >= 0 else {
+            throw CocoaError(.fileReadTooLarge, userInfo: [NSFilePathErrorKey: url.path])
+        }
+        // `st_size` is a signed int value
+        return Int64(fileStat.st_size)
     }
 
     class func typeForItem(at url: URL) throws -> Entry.EntryType {
