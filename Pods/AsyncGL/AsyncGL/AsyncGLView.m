@@ -35,6 +35,7 @@ typedef enum EGLRenderingAPI : int
 #else
 #if TARGET_OSX_OR_CATALYST
 @import OpenGL.GL;
+@import OpenGL.GL3;
 #else
 @import OpenGLES.ES2;
 @import OpenGLES.ES3;
@@ -48,12 +49,14 @@ typedef enum EGLRenderingAPI : int
 @property (nonatomic) CGLPixelFormatObj pixelFormat;
 @property (nonatomic) GLuint renderTex;
 @property (nonatomic) GLuint renderProg;
-@property (nonatomic) GLuint renderVShader;
-@property (nonatomic) GLuint renderFShader;
 @property (nonatomic) GLint renderProgTexLocation;
+@property (nonatomic) GLuint renderProgVboId;
+#if defined(USE_GL3_CORE) || defined(USE_GL4_CORE)
+@property (nonatomic) GLuint renderProgVaoId;
+#else
 @property (nonatomic) GLint renderProgPositionLocation;
 @property (nonatomic) GLint renderProgTexPositionLocation;
-@property (nonatomic) GLuint renderProgVboId;
+#endif
 @property (nonatomic) GLsizei width;
 @property (nonatomic) GLsizei height;
 @property (atomic) NSThread *thread;
@@ -85,24 +88,29 @@ typedef enum EGLRenderingAPI : int
 
     glUseProgram(_renderProg);
 
-    glEnableVertexAttribArray(_renderProgTexPositionLocation);
-    glEnableVertexAttribArray(_renderProgPositionLocation);
-
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, _renderTex);
     glUniform1i(_renderProgTexLocation, 0);
 
+#if defined(USE_GL3_CORE) || defined(USE_GL4_CORE)
+    glBindVertexArray(_renderProgVaoId);
+#else
     glBindBuffer(GL_ARRAY_BUFFER, _renderProgVboId);
-    glVertexAttribPointer(_renderProgPositionLocation, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), NULL);
+    glVertexAttribPointer(_renderProgPositionLocation, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
     glVertexAttribPointer(_renderProgTexPositionLocation, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+    glEnableVertexAttribArray(_renderProgTexPositionLocation);
+    glEnableVertexAttribArray(_renderProgPositionLocation);
+#endif
 
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
+#if !defined(USE_GL3_CORE) && !defined(USE_GL4_CORE)
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glBindTexture(GL_TEXTURE_2D, 0);
-
     glDisableVertexAttribArray(_renderProgTexPositionLocation);
     glDisableVertexAttribArray(_renderProgPositionLocation);
+#endif
+
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     glFlush();
 }
@@ -119,19 +127,16 @@ typedef enum EGLRenderingAPI : int
         _renderProgVboId = 0;
     }
 
+#if defined(USE_GL3_CORE) || defined(USE_GL4_CORE)
+    if (_renderProgVaoId != 0) {
+        glDeleteVertexArrays(1, &_renderProgVaoId);
+        _renderProgVaoId = 0;
+    }
+#endif
+
     if (_renderProg != 0) {
         glDeleteProgram(_renderProg);
         _renderProg = 0;
-    }
-
-    if (_renderVShader != 0) {
-        glDeleteShader(_renderVShader);
-        _renderVShader = 0;
-    }
-
-    if (_renderFShader != 0) {
-        glDeleteShader(_renderFShader);
-        _renderFShader = 0;
     }
 }
 @end
@@ -164,6 +169,7 @@ typedef enum EGLRenderingAPI : int
 @property (nonatomic, strong) EAGLContext *mainContext;
 @property (nonatomic) GLuint renderbuffer;
 #else
+@property (nonatomic) CGLOpenGLProfile api;
 @property (nonatomic) CGLContextObj mainContext;
 @property (nonatomic) CGLContextObj renderContext;
 @property (nonatomic, strong) PassthroughGLLayer *glLayer;
@@ -333,17 +339,32 @@ typedef enum EGLRenderingAPI : int
     _msaaEnabled = NO;
     _isUpdatingSize = NO;
 #ifdef USE_EGL
+#ifdef USE_GLES3
+    _api = kEGLRenderingAPIOpenGLES3;
+#else
     _api = kEGLRenderingAPIOpenGLES2;
+#endif
     _display = EGL_NO_DISPLAY;
     _renderSurface = EGL_NO_SURFACE;
     _renderContext = EGL_NO_CONTEXT;
 #else
 #if !TARGET_OSX_OR_CATALYST
+#ifdef USE_GLES3
+    _api = kEAGLRenderingAPIOpenGLES3;
+#else
     _api = kEAGLRenderingAPIOpenGLES2;
+#endif
     _mainContext = nil;
     _renderContext = nil;
     _renderbuffer = 0;
 #else
+#ifdef USE_GL3_CORE
+    _api = kCGLOGLPVersion_GL3_Core;
+#elif defined(USE_GL4_CORE)
+    _api = kCGLOGLPVersion_GL4_Core;
+#else
+    _api = kCGLOGLPVersion_Legacy;
+#endif
     _mainContext = NULL;
     _renderContext = NULL;
 #endif
@@ -355,7 +376,7 @@ typedef enum EGLRenderingAPI : int
     _savedBufferSize = CGSizeZero;
 #endif
 
-    _renderQueue = dispatch_queue_create("AsyncGLRenderQueue", DISPATCH_QUEUE_SERIAL);
+    _renderQueue = dispatch_queue_create([[[NSUUID UUID] UUIDString] UTF8String], DISPATCH_QUEUE_SERIAL);
     dispatch_set_target_queue(_renderQueue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
 
 #if TARGET_OS_OSX
@@ -461,6 +482,7 @@ typedef enum EGLRenderingAPI : int
     });
 #else
     const CGLPixelFormatAttribute attr[] = {
+        kCGLPFAOpenGLProfile, (CGLPixelFormatAttribute)_api,
         kCGLPFADoubleBuffer, 0
     };
     CGLPixelFormatObj pixelFormat = NULL;
@@ -534,10 +556,12 @@ typedef enum EGLRenderingAPI : int
     [self createRenderBuffers:size];
 #else
     const CGLPixelFormatAttribute attr[] = {
+        kCGLPFAOpenGLProfile, (CGLPixelFormatAttribute)_api,
         kCGLPFADepthSize, 32,
         0
     };
     const CGLPixelFormatAttribute msaaAttr[] = {
+        kCGLPFAOpenGLProfile, (CGLPixelFormatAttribute)_api,
         kCGLPFADepthSize, 32,
         kCGLPFAMultisample,
         kCGLPFASampleBuffers, 1,
@@ -624,9 +648,36 @@ typedef enum EGLRenderingAPI : int
 
 - (BOOL)setupShaders
 {
-    const GLchar* vs = "\
-    #version 120\n\
-    attribute vec2 in_Position;\n\
+#ifdef USE_GL3_CORE
+#define SHADER_HEADER "#version 330 core\n"
+#elif defined(USE_GL4_CORE)
+#define SHADER_HEADER "#version 410 core\n"
+#else
+#define SHADER_HEADER "#version 120\n"
+#endif
+
+#if defined(USE_GL3_CORE) || defined(USE_GL4_CORE)
+    const GLchar* vs = SHADER_HEADER
+    "layout (location = 0) in vec2 in_Position;\n\
+    layout (location = 1) in vec2 in_TexCoord0;\n\
+    out vec2 texCoord;\n\
+    void main()\n\
+    {\n\
+        gl_Position = vec4(in_Position.xy, 0.0, 1.0);\n\
+        texCoord = in_TexCoord0.st;\n\
+    }";
+
+    const GLchar* fs = SHADER_HEADER
+    "in vec2 texCoord;\n\
+    out vec4 fragColor;\n\
+    uniform sampler2D tex;\n\
+    void main()\n\
+    {\n\
+        fragColor = texture(tex, texCoord);\n\
+    }";
+#else
+    const GLchar* vs = SHADER_HEADER
+    "attribute vec2 in_Position;\n\
     attribute vec2 in_TexCoord0;\n\
     varying vec2 texCoord;\n\
     void main()\n\
@@ -635,14 +686,15 @@ typedef enum EGLRenderingAPI : int
         texCoord = in_TexCoord0.st;\n\
     }";
 
-    const GLchar* fs = "\
-    #version 120\n\
-    varying vec2 texCoord;\n\
+    const GLchar* fs = SHADER_HEADER
+    "varying vec2 texCoord;\n\
     uniform sampler2D tex;\n\
     void main()\n\
     {\n\
         gl_FragColor = texture2D(tex, texCoord);\n\
     }";
+#endif
+#undef SHADER_HEADER
 
     GLuint renderVShader = [self compileShader:vs shaderType:GL_VERTEX_SHADER];
     if (renderVShader == 0) {
@@ -654,11 +706,10 @@ typedef enum EGLRenderingAPI : int
         return NO;
     }
     GLuint renderProg = [self linkProgramWithVertexShader:renderVShader fragmentShader:renderFShader];
-    if (renderProg == 0) {
-        glDeleteShader(renderVShader);
-        glDeleteShader(renderFShader);
+    glDeleteShader(renderVShader);
+    glDeleteShader(renderFShader);
+    if (renderProg == 0)
         return NO;
-    }
 
     GLint renderProgTexLocation = glGetUniformLocation(renderProg, "tex");
     GLint renderProgPositionLocation = glGetAttribLocation(renderProg, "in_Position");
@@ -677,19 +728,36 @@ typedef enum EGLRenderingAPI : int
 
     GLuint renderProgVboId;
 
+#if defined(USE_GL3_CORE) || defined(USE_GL4_CORE)
+    GLuint renderProgVaoId;
+    glGenVertexArrays(1, &renderProgVaoId);
+    glBindVertexArray(renderProgVaoId);
+#endif
     glGenBuffers(1, &renderProgVboId);
     glBindBuffer(GL_ARRAY_BUFFER, renderProgVboId);
     glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
 
-    _glLayer.renderVShader = renderVShader;
-    _glLayer.renderFShader = renderFShader;
+
+#if defined(USE_GL3_CORE) || defined(USE_GL4_CORE)
+    glVertexAttribPointer(renderProgPositionLocation, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+    glVertexAttribPointer(renderProgTexPositionLocation, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+    glEnableVertexAttribArray(renderProgTexPositionLocation);
+    glEnableVertexAttribArray(renderProgPositionLocation);
+#endif
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+#if defined(USE_GL3_CORE) || defined(USE_GL4_CORE)
+    glBindVertexArray(0);
+#endif
+
+#if defined(USE_GL3_CORE) || defined(USE_GL4_CORE)
+    _glLayer.renderProgVaoId = renderProgVaoId;
+#else
+    _glLayer.renderProgPositionLocation = renderProgPositionLocation;
+    _glLayer.renderProgTexPositionLocation = renderProgTexPositionLocation;
+#endif
     _glLayer.renderProg = renderProg;
     _glLayer.renderProgVboId = renderProgVboId;
-    _glLayer.renderProgPositionLocation = renderProgPositionLocation;
     _glLayer.renderProgTexLocation = renderProgTexLocation;
-    _glLayer.renderProgTexPositionLocation = renderProgTexPositionLocation;
-
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
     return YES;
 }
@@ -818,7 +886,14 @@ typedef enum EGLRenderingAPI : int
 - (void)setupGL:(CGSize)size
 {
     if ([_delegate respondsToSelector:@selector(_prepareGL:)])
-        [_delegate _prepareGL:size];
+    {
+        BOOL prepareSuccess = [_delegate _prepareGL:size];
+        if (!prepareSuccess)
+        {
+            [self clear];
+            return;
+        }
+    }
 
     dispatch_sync(dispatch_get_main_queue(), ^{
         [self setPaused:NO];

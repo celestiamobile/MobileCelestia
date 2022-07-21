@@ -118,7 +118,7 @@ class CelestiaDisplayController: AsyncGLViewController {
 }
 
 extension CelestiaDisplayController {
-    override func prepareGL(_ size: CGSize) {
+    override func prepareGL(_ size: CGSize) -> Bool {
         _ = AppCore.initGL()
         core = AppCore.shared
 
@@ -153,7 +153,7 @@ extension CelestiaDisplayController {
 
         if !success {
             delegate?.celestiaDisplayControllerLoadingFailed(self)
-            return
+            return false
         }
 
         AppCore.renderViewController = self
@@ -163,6 +163,7 @@ extension CelestiaDisplayController {
 
         isLoaded = true
         delegate?.celestiaDisplayControllerLoadingSucceeded(self)
+        return true
     }
 
     override func drawGL(_ size: CGSize) {

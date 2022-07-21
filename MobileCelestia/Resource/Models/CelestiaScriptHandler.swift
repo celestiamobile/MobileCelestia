@@ -37,6 +37,9 @@ struct OpenAddonNextContext: Decodable {
     let id: String
 }
 
+struct RunDemoContext: Decodable {
+}
+
 protocol BaseJavascriptHandler {
     var operation: String { get }
     func executeWithContent(content: String, delegate: CelestiaScriptHandlerDelegate)
@@ -90,23 +93,33 @@ class OpenAddonNextHandler: JavascriptHandler<OpenAddonNextContext> {
     }
 }
 
+class RunDemoHandler: JavascriptHandler<RunDemoContext> {
+    override var operation: String { return "runDemo" }
+
+    override func execute(context: RunDemoContext, delegate: CelestiaScriptHandlerDelegate) {
+        delegate.runDemo()
+    }
+}
+
 protocol CelestiaScriptHandlerDelegate: AnyObject {
     func runScript(type: String, content: String, name: String?, location: String?)
     func shareURL(title: String, url: URL)
     func receivedACK(id: String)
     func openAddonNext(id: String)
+    func runDemo()
 }
 
 class CelestiaScriptHandler: NSObject, WKScriptMessageHandler {
     weak var delegate: CelestiaScriptHandlerDelegate?
 
-    private static let supportedScriptVersion = 3
+    private static let supportedScriptVersion = 4
 
     private static let handlers: [BaseJavascriptHandler] = [
         RunScriptHandler(),
         ShareURLHandler(),
         SendACKHandler(),
         OpenAddonNextHandler(),
+        RunDemoHandler(),
     ]
 
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {

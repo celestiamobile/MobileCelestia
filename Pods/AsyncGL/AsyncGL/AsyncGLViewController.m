@@ -161,9 +161,10 @@ static CVReturn displayCallback(CVDisplayLinkRef displayLink,
 }
 
 #pragma mark - AsyncGLViewDelegate
-- (void)_prepareGL:(CGSize)size
+- (BOOL)_prepareGL:(CGSize)size
 {
-    [self prepareGL:size];
+    if (![self prepareGL:size])
+        return NO;
 
     dispatch_sync(dispatch_get_main_queue(), ^{
         self.displaySource = dispatch_source_create(DISPATCH_SOURCE_TYPE_DATA_ADD, 0, 0, self.glView.renderQueue);
@@ -184,6 +185,7 @@ static CVReturn displayCallback(CVDisplayLinkRef displayLink,
 #endif
     });
     [self setReady:YES];
+    return YES;
 }
 
 - (void)_drawGL:(CGSize)size
@@ -200,8 +202,9 @@ static CVReturn displayCallback(CVDisplayLinkRef displayLink,
 {
 }
 
-- (void)prepareGL:(CGSize)rect
+- (BOOL)prepareGL:(CGSize)rect
 {
+    return YES;
 }
 
 - (void)drawGL:(CGSize)rect

@@ -36,7 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithNibName:(nullable NSString *)nibNameOrNil bundle:(nullable NSBundle *)nibBundleOrNil NS_UNAVAILABLE;
 - (nullable instancetype)initWithCoder:(NSCoder *)coder NS_UNAVAILABLE;
 
-- (void)prepareGL:(CGSize)size;
+- (BOOL)prepareGL:(CGSize)size;
 - (void)drawGL:(CGSize)size;
 - (void)clearGL;
 - (void)makeRenderContextCurrent;

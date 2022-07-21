@@ -15,7 +15,7 @@ import UniformTypeIdentifiers
 import UIKit
 
 extension URL {
-    static func fromGuide(guideItemID: String, language: String) -> URL {
+    static func fromGuide(guideItemID: String, language: String, shareable: Bool? = nil) -> URL {
         let baseURL = "https://celestia.mobi/resources/guide"
         var components = URLComponents(string: baseURL)!
         #if targetEnvironment(macCatalyst)
@@ -23,12 +23,16 @@ extension URL {
         #else
         let platform = "ios"
         #endif
-        components.queryItems = [
+        var queryItems = [
             URLQueryItem(name: "guide", value: guideItemID),
             URLQueryItem(name: "lang", value: language),
             URLQueryItem(name: "platform", value: platform),
             URLQueryItem(name: "theme", value: "dark")
         ]
+        if let shareable = shareable {
+            queryItems.append(URLQueryItem(name: "share", value: shareable ? "true" : "false"))
+        }
+        components.queryItems = queryItems
         return components.url!
     }
 
@@ -617,7 +621,8 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     @objc private func presentHelp() {
-        showViewController(OnboardViewController() { [unowned self] (action) in
+        let url = URL.fromGuide(guideItemID: "823FB82E-F660-BE54-F3E4-681F5BFD365D", language: AppCore.language, shareable: false)
+        let vc = FallbackWebViewController(url: url, fallbackViewControllerCreator: OnboardViewController() { [unowned self] (action) in
             switch action {
             case .tutorial(let tutorial):
                 self.handleTutorialAction(tutorial)
@@ -625,6 +630,7 @@ extension MainViewController: CelestiaControllerDelegate {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
             }
         })
+        showViewController(vc)
     }
 
     private func presentEventFinder() {

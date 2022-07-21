@@ -13,12 +13,18 @@ import CelestiaCore
 import UIKit
 import WebKit
 
+protocol CommonWebViewControllerDelegate: AnyObject {
+    func webViewLoadFailed()
+}
+
 class CommonWebViewController: UIViewController {
     private let url: URL
     private let matchingQueryKeys: [String]
     private let contextDirectory: URL?
     private let filterURL: Bool
     private var titleObservation: NSKeyValueObservation?
+
+    weak var delegate: CommonWebViewControllerDelegate?
 
     var ackHandler: ((String) -> Void)?
 
@@ -180,6 +186,14 @@ extension CommonWebViewController: WKNavigationDelegate {
         activityIndicator.isHidden = true
         updateNavigation()
     }
+
+    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        delegate?.webViewLoadFailed()
+    }
+
+    func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+        delegate?.webViewLoadFailed()
+    }
 }
 
 extension CommonWebViewController: CelestiaScriptHandlerDelegate {
@@ -230,5 +244,9 @@ extension CommonWebViewController: CelestiaScriptHandlerDelegate {
             guard let self = self else { return }
             self.navigationController?.pushViewController(ResourceItemViewController(item: item, needsRefetchItem: false), animated: true)
         }, decoder: ResourceItem.networkResponseDecoder)
+    }
+
+    func runDemo() {
+        AppCore.shared.receiveAsync(.runDemo)
     }
 }
