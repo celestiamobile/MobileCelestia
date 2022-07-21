@@ -97,6 +97,19 @@ class ResourceItemViewController: UIViewController {
     }
 
     @objc private func goToButtonClicked() {
+        if item.type == "script" {
+            guard let mainScriptName = item.mainScriptName else { return }
+            var isDir: ObjCBool = false
+            guard let path = ResourceManager.shared.contextDirectory(forAddonWithIdentifier: item.id)?.appendingPathComponent(mainScriptName).path,
+                  FileManager.default.fileExists(atPath: path, isDirectory: &isDir),
+                  !isDir.boolValue else {
+                return
+            }
+            NotificationCenter.default.post(name: newURLOpenedNotificationName, object: nil, userInfo: [
+                newURLOpenedNotificationURLKey: UniformedURL(url: URL(fileURLWithPath: path), securityScoped: false),
+            ])
+            return
+        }
         guard let objectName = item.objectName else { return }
         let core = AppCore.shared
         let object = core.simulation.findObject(from: objectName)
@@ -206,6 +219,8 @@ private extension ResourceItemViewController {
             currentState = .downloading
         }
 
+        goToButton.setTitle(CelestiaString(item.type == "script" ? "Run" : "Go", comment: ""), for: .normal)
+
         switch currentState {
         case .none:
             progressView.isHidden = true
@@ -235,10 +250,25 @@ private extension ResourceItemViewController {
             }
         }
 
-        if currentState == .installed, let objectName = item.objectName, !AppCore.shared.simulation.findObject(from: objectName).isEmpty {
-            goToButton.isHidden = false
+        if item.type == "script" {
+            if currentState == .installed, let mainScriptName = item.mainScriptName {
+                var isDir: ObjCBool = false
+                if let path = dm.contextDirectory(forAddonWithIdentifier: item.id)?.appendingPathComponent(mainScriptName).path,
+                   FileManager.default.fileExists(atPath: path, isDirectory: &isDir),
+                   !isDir.boolValue {
+                    goToButton.isHidden = false
+                } else {
+                    goToButton.isHidden = true
+                }
+            } else {
+                goToButton.isHidden = true
+            }
         } else {
-            goToButton.isHidden = true
+            if currentState == .installed, let objectName = item.objectName, !AppCore.shared.simulation.findObject(from: objectName).isEmpty {
+                goToButton.isHidden = false
+            } else {
+                goToButton.isHidden = true
+            }
         }
     }
 }

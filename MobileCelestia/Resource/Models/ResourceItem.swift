@@ -14,12 +14,14 @@ import Foundation
 struct ResourceItem: Codable {
     let name: String
     let description: String
+    let type: String?
     let id: String
     let image: URL?
     let item: URL
     let authors: [String]?
     let publishTime: Date?
     let objectName: String?
+    let mainScriptName: String?
 
     static let networkResponseDecoder: JSONDecoder = {
         let decoder = JSONDecoder()

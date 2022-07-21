@@ -453,6 +453,7 @@ extension MainViewController: CelestiaControllerDelegate {
                 URLQueryItem(name: "lang", value: AppCore.language),
                 URLQueryItem(name: "theme", value: "dark"),
                 URLQueryItem(name: "platform", value: "ios"),
+                URLQueryItem(name: "api", value: "1"),
             ]
             let url = components.url!
             let nav = UINavigationController(rootViewController: CommonWebViewController(url: url, filterURL: false))
