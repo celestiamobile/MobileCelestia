@@ -3,8 +3,8 @@ platform :ios, '13.1'
 use_frameworks! :linkage => :static
 
 target 'MobileCelestia' do
-  pod 'AppCenter/Analytics', '~> 4.4.2'
-  pod 'AppCenter/Crashes', '~> 4.4.2'
+  pod 'AppCenter/Analytics', '~> 4.4.3'
+  pod 'AppCenter/Crashes', '~> 4.4.3'
   pod 'ZIPFoundation', '~> 0.9'
 
   pod "MWRequest", :git => "https://github.com/levinli303/mwrequest.git", :tag => "0.3.4"
