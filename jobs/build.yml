@@ -35,7 +35,7 @@ jobs:
       git checkout origin/$(Build.SourceBranchName)
       git submodule update --init thirdparty/miniaudio
       cd ../CelestiaCore
-      git checkout origin/gl-catalyst-default
+      git checkout origin/$(Build.SourceBranchName)
       git submodule update --init
     displayName: 'Checkout Branch'
     condition: ne( variables['Build.Reason'], 'PullRequest' )
@@ -45,7 +45,7 @@ jobs:
       git checkout origin/$(System.PullRequest.TargetBranch)
       git submodule update --init thirdparty/miniaudio
       cd ../CelestiaCore
-      git checkout origin/gl-catalyst-default
+      git checkout origin/$(System.PullRequest.TargetBranch)
       git submodule update --init
     displayName: 'Checkout Branch (PR)'
     condition: eq( variables['Build.Reason'], 'PullRequest' )
