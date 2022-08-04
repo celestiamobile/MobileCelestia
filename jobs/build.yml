@@ -7,6 +7,7 @@ jobs:
   variables:
     sdk: ${{ parameters.sdk }}
     signing: ${{ parameters.signing }}
+    backend: ${{ parameters.backend }}
     XC_VERSION: ${{ '13.4.1' }}
     XC_WORKSPACE: ${{ 'MobileCelestia/MobileCelestia.xcworkspace' }}
     XC_SCHEME: ${{ 'MobileCelestia' }}
@@ -34,7 +35,7 @@ jobs:
       git checkout origin/$(Build.SourceBranchName)
       git submodule update --init thirdparty/miniaudio
       cd ../CelestiaCore
-      git checkout origin/$(Build.SourceBranchName)
+      git checkout origin/gl-catalyst-default
       git submodule update --init
     displayName: 'Checkout Branch'
     condition: ne( variables['Build.Reason'], 'PullRequest' )
@@ -44,7 +45,7 @@ jobs:
       git checkout origin/$(System.PullRequest.TargetBranch)
       git submodule update --init thirdparty/miniaudio
       cd ../CelestiaCore
-      git checkout origin/$(System.PullRequest.TargetBranch)
+      git checkout origin/gl-catalyst-default
       git submodule update --init
     displayName: 'Checkout Branch (PR)'
     condition: eq( variables['Build.Reason'], 'PullRequest' )
@@ -53,7 +54,19 @@ jobs:
       cd Celestia
       git cherry-pick origin/angle
     displayName: 'Cherry-Pick ANGLE Commit'
-    condition: eq( variables['sdk'], 'macosx' )
+    condition: eq( variables['backend'], 'metalAngle' )
+
+  - script: |
+      cd CelestiaCore
+      git cherry-pick origin/angle-for-catalyst
+    displayName: 'Cherry-Pick ANGLE for Catalyst Commit (1)'
+    condition: and(eq( variables['sdk'], 'macosx' ), eq( variables['backend'], 'metalAngle' ))
+
+  - script: |
+      cd MobileCelestia
+      git cherry-pick origin/angle-for-catalyst
+    displayName: 'Cherry-Pick ANGLE for Catalyst Commit (2)'
+    condition: and(eq( variables['sdk'], 'macosx' ), eq( variables['backend'], 'metalAngle' ))
 
   - script: |
       sudo xcode-select -s /Applications/Xcode_$XC_VERSION.app
@@ -190,7 +203,7 @@ jobs:
   - task: PublishBuildArtifacts@1
     inputs:
       PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-      ArtifactName: '$(sdk)-$(signing)'
+      ArtifactName: '$(sdk)-$(signing)-$(backend)'
       publishLocation: 'Container'
     displayName: 'Publish Build Artifacts'
 
