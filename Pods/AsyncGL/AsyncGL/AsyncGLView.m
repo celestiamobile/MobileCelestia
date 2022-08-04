@@ -209,9 +209,7 @@ typedef enum EGLRenderingAPI : int
 #ifdef USE_EGL
     return [CAMetalLayer layer];
 #else
-    PassthroughGLLayer *layer = [[PassthroughGLLayer alloc] init];
-    layer.backgroundColor = [[NSColor blackColor] CGColor];
-    return layer;
+    return [PassthroughGLLayer layer];
 #endif
 }
 #endif
@@ -382,7 +380,14 @@ typedef enum EGLRenderingAPI : int
 #if TARGET_OS_OSX
     self.wantsLayer = YES;
 #endif
+
+    // Set layer properties
     self.layer.opaque = YES;
+#if TARGET_OS_IOS
+    self.layer.backgroundColor = [[UIColor blackColor] CGColor];
+#else
+    self.layer.backgroundColor = [[NSColor blackColor] CGColor];
+#endif
 
 #ifdef USE_EGL
     _metalLayer = (CAMetalLayer *)self.layer;
