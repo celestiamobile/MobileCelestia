@@ -62,7 +62,6 @@
 		97FF95A5240A340300E9F44F /* BaseResultHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FF95A4240A340300E9F44F /* BaseResultHandler.swift */; };
 		97FF95AA240A3F0900E9F44F /* Data.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FF95A9240A3F0900E9F44F /* Data.swift */; };
 		C3E2AA8FA42CCD40BE6ECA28 /* Pods_MobileCelestia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BB5B90AF9C3832FD04B47BF /* Pods_MobileCelestia.framework */; };
-		EA10553324935A4700E49C6D /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA10553224935A4700E49C6D /* Metal.framework */; platformFilter = maccatalyst; };
 		EA17951B27B1510500D47397 /* CelestiaScriptHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA17951A27B1510500D47397 /* CelestiaScriptHandler.swift */; };
 		EA17952027B371D700D47397 /* GuideItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA17951F27B371D700D47397 /* GuideItem.swift */; };
 		EA1823ED27C08D3D00E0F5E4 /* CelestiaHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = EA1823EC27C08D3D00E0F5E4 /* CelestiaHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -84,11 +83,11 @@
 		EA7209E027C64270004C1400 /* UILabel+DynamicType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA7209DF27C64270004C1400 /* UILabel+DynamicType.swift */; };
 		EA775EB42664B63F00479295 /* ActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA775EB32664B63F00479295 /* ActionButton.swift */; };
 		EA7BF37C27033AE40058F704 /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA7BF37B27033AE40058F704 /* GameController.framework */; };
+		EA85C8D5289BE459009ADB1C /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA85C8D3289BE459009ADB1C /* OpenGL.framework */; platformFilter = maccatalyst; };
+		EA85C8D6289BE45A009ADB1C /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA85C8D4289BE459009ADB1C /* OpenGLES.framework */; platformFilter = ios; };
 		EA86E38426FE20C000FF2278 /* SettingsFrameRateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA86E38326FE20C000FF2278 /* SettingsFrameRateViewController.swift */; };
 		EA934C90251D90C500DD284C /* MainSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA934C8F251D90C500DD284C /* MainSceneDelegate.swift */; };
 		EA934C9A251D92AD00DD284C /* PanelSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA934C99251D92A700DD284C /* PanelSceneDelegate.swift */; };
-		EA936F36265FA363007EED66 /* MetalANGLE.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA1BCA92265AA8E2001A0D89 /* MetalANGLE.xcframework */; platformFilter = maccatalyst; };
-		EA936F37265FA363007EED66 /* MetalANGLE.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EA1BCA92265AA8E2001A0D89 /* MetalANGLE.xcframework */; platformFilter = maccatalyst; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EA982BFF25496B6D00CDC642 /* BaseTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA982BFE25496B6D00CDC642 /* BaseTableViewController.swift */; };
 		EA9A426D288CD7FE00AF3BD6 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA9A426C288CD7FE00AF3BD6 /* AVFoundation.framework */; };
 		EA9A426F288CD80300AF3BD6 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA9A426E288CD80200AF3BD6 /* AudioToolbox.framework */; };
@@ -154,17 +153,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		EA936F38265FA363007EED66 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				EA936F37265FA363007EED66 /* MetalANGLE.xcframework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		EAC84367252C84B600691943 /* Embed PlugIns */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -240,7 +228,6 @@
 		97F1141D2408AE06003A06D7 /* DataLocationSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataLocationSelectionViewController.swift; sourceTree = "<group>"; };
 		97FF95A4240A340300E9F44F /* BaseResultHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseResultHandler.swift; sourceTree = "<group>"; };
 		97FF95A9240A3F0900E9F44F /* Data.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Data.swift; sourceTree = "<group>"; };
-		EA10553224935A4700E49C6D /* Metal.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Metal.framework; path = System/Library/Frameworks/Metal.framework; sourceTree = SDKROOT; };
 		EA113708262C72AA002E49DA /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EA113709262C72B2002E49DA /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EA17951A27B1510500D47397 /* CelestiaScriptHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaScriptHandler.swift; sourceTree = "<group>"; };
@@ -252,7 +239,6 @@
 		EA1BC6E224A0E92B00F3F51B /* EventFinderCoordinatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventFinderCoordinatorViewController.swift; sourceTree = "<group>"; };
 		EA1BC6E424A0E93D00F3F51B /* EventFinderInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventFinderInputViewController.swift; sourceTree = "<group>"; };
 		EA1BC6E624A0E94900F3F51B /* EventFinderResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventFinderResultViewController.swift; sourceTree = "<group>"; };
-		EA1BCA92265AA8E2001A0D89 /* MetalANGLE.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = MetalANGLE.xcframework; path = ../CelestiaCore/libs/dependency/xcframeworks/MetalANGLE.xcframework; sourceTree = "<group>"; };
 		EA1BE1562748E9DC0046074C /* DisplaySceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplaySceneDelegate.swift; sourceTree = "<group>"; };
 		EA1EF056249393BE0039F493 /* Celestia.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Celestia.entitlements; sourceTree = "<group>"; };
 		EA28CA4D24A25FE7004B011E /* BottomControlViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomControlViewController.swift; sourceTree = "<group>"; };
@@ -267,6 +253,8 @@
 		EA7209DF27C64270004C1400 /* UILabel+DynamicType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+DynamicType.swift"; sourceTree = "<group>"; };
 		EA775EB32664B63F00479295 /* ActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButton.swift; sourceTree = "<group>"; };
 		EA7BF37B27033AE40058F704 /* GameController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameController.framework; path = System/Library/Frameworks/GameController.framework; sourceTree = SDKROOT; };
+		EA85C8D3289BE459009ADB1C /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.3.sdk/System/Library/Frameworks/OpenGL.framework; sourceTree = DEVELOPER_DIR; };
+		EA85C8D4289BE459009ADB1C /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		EA86E38326FE20C000FF2278 /* SettingsFrameRateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsFrameRateViewController.swift; sourceTree = "<group>"; };
 		EA934C8F251D90C500DD284C /* MainSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSceneDelegate.swift; sourceTree = "<group>"; };
 		EA934C99251D92A700DD284C /* PanelSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelSceneDelegate.swift; sourceTree = "<group>"; };
@@ -306,12 +294,12 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EA10553324935A4700E49C6D /* Metal.framework in Frameworks */,
 				979D2FAD23FEB2B4005D2592 /* libbz2.tbd in Frameworks */,
 				EA9A426D288CD7FE00AF3BD6 /* AVFoundation.framework in Frameworks */,
+				EA85C8D6289BE45A009ADB1C /* OpenGLES.framework in Frameworks */,
 				EA9A426F288CD80300AF3BD6 /* AudioToolbox.framework in Frameworks */,
 				EA7BF37C27033AE40058F704 /* GameController.framework in Frameworks */,
-				EA936F36265FA363007EED66 /* MetalANGLE.xcframework in Frameworks */,
+				EA85C8D5289BE459009ADB1C /* OpenGL.framework in Frameworks */,
 				979D2FAF23FEB2BD005D2592 /* libz.tbd in Frameworks */,
 				979D2FAB23FEB2AA005D2592 /* libc++.tbd in Frameworks */,
 				EA1823F027C08D3D00E0F5E4 /* CelestiaHelper.framework in Frameworks */,
@@ -558,11 +546,11 @@
 		979D2FA523FEB1DD005D2592 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				EA85C8D3289BE459009ADB1C /* OpenGL.framework */,
+				EA85C8D4289BE459009ADB1C /* OpenGLES.framework */,
 				EA9A426E288CD80200AF3BD6 /* AudioToolbox.framework */,
 				EA9A426C288CD7FE00AF3BD6 /* AVFoundation.framework */,
 				EA7BF37B27033AE40058F704 /* GameController.framework */,
-				EA1BCA92265AA8E2001A0D89 /* MetalANGLE.xcframework */,
-				EA10553224935A4700E49C6D /* Metal.framework */,
 				979D2FAE23FEB2B9005D2592 /* libz.tbd */,
 				979D2FAC23FEB2AE005D2592 /* libbz2.tbd */,
 				979D2FAA23FEB2A5005D2592 /* libc++.tbd */,
@@ -710,7 +698,6 @@
 				973BBA5724052FFB00E3B061 /* Copy General Data */,
 				973BBA592405305100E3B061 /* Convert PO */,
 				EAC84367252C84B600691943 /* Embed PlugIns */,
-				EA936F38265FA363007EED66 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);

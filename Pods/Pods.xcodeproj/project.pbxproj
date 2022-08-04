@@ -1123,10 +1123,6 @@
 				MACH_O_TYPE = staticlib;
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MODULEMAP_FILE = "Target Support Files/AsyncGL/AsyncGL.modulemap";
-				"OTHER_CFLAGS[sdk=macosx*]" = (
-					"$(inherited)",
-					"-DUSE_EGL",
-				);
 				PRODUCT_MODULE_NAME = AsyncGL;
 				PRODUCT_NAME = AsyncGL;
 				SDKROOT = iphoneos;
@@ -1209,10 +1205,6 @@
 				MACH_O_TYPE = staticlib;
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MODULEMAP_FILE = "Target Support Files/AsyncGL/AsyncGL.modulemap";
-				"OTHER_CFLAGS[sdk=macosx*]" = (
-					"$(inherited)",
-					"-DUSE_EGL",
-				);
 				PRODUCT_MODULE_NAME = AsyncGL;
 				PRODUCT_NAME = AsyncGL;
 				SDKROOT = iphoneos;
