@@ -67,7 +67,7 @@ class CelestiaViewController: UIViewController {
         displayScreen = screen
         isMirroring = false
         #if targetEnvironment(macCatalyst)
-        let api = AsyncGLAPI.openGLLegacy
+        let api = AsyncGLAPI.openGLES2
         #else
         let api = AsyncGLAPI.openGLES2
         #endif
