@@ -19,7 +19,7 @@ resources:
 
 trigger:
   branches:
-    include: 
+    include:
     - releases/*
     - master
 
@@ -31,15 +31,27 @@ stages:
     parameters:
       sdk: iphoneos
       signing: appStore
+      backend: openGL
 
-- stage: Build_Catalyst_DeveloperID
-  displayName: 'Build Catalyst (Developer ID)'
+- stage: Build_Catalyst_DeveloperID_MetalANGLE
+  displayName: 'Build Catalyst (Developer ID, MetalANGLE)'
   dependsOn: []
   jobs:
   - template: jobs/build.yml
     parameters:
       sdk: macosx
       signing: developerID
+      backend: metalAngle
+
+- stage: Build_Catalyst_DeveloperID_OpenGL
+  displayName: 'Build Catalyst (Developer ID, OpenGL)'
+  dependsOn: []
+  jobs:
+  - template: jobs/build.yml
+    parameters:
+      sdk: macosx
+      signing: developerID
+      backend: openGL
 
 - stage: Build_Catalyst_App_Store
   displayName: 'Build Catalyst (App Store)'
@@ -49,3 +61,4 @@ stages:
     parameters:
       sdk: macosx
       signing: appStore
+      backend: openGL
