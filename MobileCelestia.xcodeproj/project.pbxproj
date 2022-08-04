@@ -1725,7 +1725,6 @@
 					"-ljpeg",
 					"-lfreetype",
 					"-lintl",
-					"-lGL",
 					"$(THIRD_PARTY_LIB_PATH)/libs/cspice.a",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.MobileCelestia;
@@ -1775,7 +1774,6 @@
 					"-ljpeg",
 					"-lfreetype",
 					"-lintl",
-					"-lGL",
 					"$(THIRD_PARTY_LIB_PATH)/libs/cspice.a",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.MobileCelestia;

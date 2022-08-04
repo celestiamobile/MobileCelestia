@@ -60,7 +60,7 @@ class CelestiaDisplayController: AsyncGLViewController {
 
     init(msaaEnabled: Bool, screen: UIScreen, initialFrameRate frameRate: Int, executor: AsyncGLExecutor, subscriptionManager: SubscriptionManager) {
 #if targetEnvironment(macCatalyst)
-        let api = AsyncGLAPI.openGLLegacy
+        let api = AsyncGLAPI.openGLES2
 #else
         let api = AsyncGLAPI.openGLES2
 #endif
