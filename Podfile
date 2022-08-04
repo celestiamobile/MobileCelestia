@@ -13,7 +13,7 @@ target 'MobileCelestia' do
   pod 'ZIPFoundation', zipfoundation_version
 
   pod "MWRequest", :git => "https://github.com/levinli303/mwrequest.git", :tag => mwrequest_version_tag
-  pod "AsyncGL/OpenGL", :git => "https://github.com/levinli303/AsyncGL.git", :tag => asyncgl_version_tag
+  pod "AsyncGL/ANGLE", :git => "https://github.com/levinli303/AsyncGL.git", :tag => asyncgl_version_tag
 end
 
 target 'CelestiaUI' do
