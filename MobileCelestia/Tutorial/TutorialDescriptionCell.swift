@@ -13,9 +13,12 @@ import UIKit
 
 class TutorialDescriptionCell: UITableViewCell {
     private lazy var label = UILabel(textStyle: .body)
-    private lazy var iv = UIImageView()
+    private lazy var iv = IconView(baseSize: CGSize(width: 44, height: 44)) { imageView in
+        imageView.tintColor = .darkLabel
+        imageView.contentMode = .scaleAspectFit
+    }
 
-    var img: UIImage? { didSet { iv.image = img?.withRenderingMode(.alwaysTemplate) } }
+    var img: UIImage? { didSet { iv.configuration.image = img?.withRenderingMode(.alwaysTemplate) } }
     var title: String? { didSet { label.text = title }  }
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -38,18 +41,12 @@ private extension TutorialDescriptionCell {
         let horizontalSpacing: CGFloat = 16
 
         iv.translatesAutoresizingMaskIntoConstraints = false
-        iv.tintColor = .darkLabel
         contentView.addSubview(iv)
         NSLayoutConstraint.activate([
-            iv.heightAnchor.constraint(equalToConstant: 44),
-            iv.widthAnchor.constraint(equalTo: iv.heightAnchor),
             iv.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: horizontalSpacing),
             iv.topAnchor.constraint(equalTo: contentView.topAnchor, constant: verticalSpacing),
             iv.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -verticalSpacing),
         ])
-
-        iv.setContentHuggingPriority(.required, for: .horizontal)
-        iv.setContentCompressionResistancePriority(.required, for: .horizontal)
 
         label.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(label)

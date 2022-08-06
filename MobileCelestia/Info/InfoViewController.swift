@@ -72,8 +72,6 @@ final class InfoViewController: UIViewController {
 
         setup()
 
-        NotificationCenter.default.addObserver(self, selector: #selector(handleContentSizeCategoryChanged), name: UIContentSizeCategory.didChangeNotification, object: nil)
-
         guard let urlString = info.webInfoURL, let url = URL(string: urlString), #available(iOS 13.0, *) else { return }
 
         let metaDataProvider = LPMetadataProvider()
@@ -95,8 +93,12 @@ final class InfoViewController: UIViewController {
         }
     }
 
-    @objc private func handleContentSizeCategoryChanged() {
-        collectionView.collectionViewLayout.invalidateLayout()
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        if traitCollection.preferredContentSizeCategory != previousTraitCollection?.preferredContentSizeCategory {
+            collectionView.collectionViewLayout.invalidateLayout()
+        }
     }
 }
 

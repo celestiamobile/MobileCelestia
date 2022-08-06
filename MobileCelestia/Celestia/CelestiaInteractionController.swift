@@ -104,18 +104,18 @@ class CelestiaInteractionController: UIViewController {
 
     #if targetEnvironment(macCatalyst)
     private lazy var activeControlView = CelestiaControlView(items: [
-        CelestiaControlButton.tap(image: #imageLiteral(resourceName: "control_info"), action: .info),
-        CelestiaControlButton.tap(image: #imageLiteral(resourceName: "control_action_menu"), action: .showMenu),
-        CelestiaControlButton.tap(image: #imageLiteral(resourceName: "control_hide"), action: .hide),
+        CelestiaControlButton.tap(image: UIImage(systemName: "info.circle"), action: .info),
+        CelestiaControlButton.tap(image: UIImage(systemName: "line.3.horizontal.circle") ?? UIImage(systemName: "line.horizontal.3.circle") ?? UIImage(named: "control_action_menu"), action: .showMenu),
+        CelestiaControlButton.tap(image: UIImage(systemName: "xmark.circle"), action: .hide),
     ])
     #else
     private lazy var activeControlView = CelestiaControlView(items: [
-        CelestiaControlButton.toggle(offImage: #imageLiteral(resourceName: "control_mode_object"), offAction: .switchToObject, onImage: #imageLiteral(resourceName: "control_mode_camera"), onAction: .switchToCamera),
-        CelestiaControlButton.pressAndHold(image: #imageLiteral(resourceName: "control_zoom_in"), action: .zoomIn),
-        CelestiaControlButton.pressAndHold(image: #imageLiteral(resourceName: "control_zoom_out"), action: .zoomOut),
-        CelestiaControlButton.tap(image: #imageLiteral(resourceName: "control_info"), action: .info),
-        CelestiaControlButton.tap(image: #imageLiteral(resourceName: "control_action_menu"), action: .showMenu),
-        CelestiaControlButton.tap(image: #imageLiteral(resourceName: "control_hide"), action: .hide),
+        CelestiaControlButton.toggle(offImage: UIImage(systemName: "cube"), offAction: .switchToObject, onImage: UIImage(systemName: "video"), onAction: .switchToCamera),
+        CelestiaControlButton.pressAndHold(image: UIImage(systemName: "plus.circle"), action: .zoomIn),
+        CelestiaControlButton.pressAndHold(image: UIImage(systemName: "minus.circle"), action: .zoomOut),
+        CelestiaControlButton.tap(image: UIImage(systemName: "info.circle"), action: .info),
+        CelestiaControlButton.tap(image: UIImage(systemName: "line.3.horizontal.circle") ?? UIImage(systemName: "line.horizontal.3.circle") ?? UIImage(named: "control_action_menu"), action: .showMenu),
+        CelestiaControlButton.tap(image: UIImage(systemName: "xmark.circle"), action: .hide),
     ])
     #endif
 

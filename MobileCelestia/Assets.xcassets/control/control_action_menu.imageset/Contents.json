@@ -1,23 +1,15 @@
 {
   "images" : [
     {
-      "filename" : "control_action_menu@1x.png",
-      "idiom" : "universal",
-      "scale" : "1x"
-    },
-    {
-      "filename" : "control_action_menu@2x.png",
-      "idiom" : "universal",
-      "scale" : "2x"
-    },
-    {
-      "filename" : "control_action_menu@3x.png",
-      "idiom" : "universal",
-      "scale" : "3x"
+      "filename" : "line.3.horizontal.circle.pdf",
+      "idiom" : "universal"
     }
   ],
   "info" : {
     "author" : "xcode",
     "version" : 1
+  },
+  "properties" : {
+    "preserves-vector-representation" : true
   }
 }

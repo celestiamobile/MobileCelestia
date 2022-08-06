@@ -21,15 +21,15 @@ enum BottomControlAction {
         case .toolbarAction(let action):
             return action.image
         case .groupedActions:
-            return #imageLiteral(resourceName: "common_other")
+            return UIImage(systemName: "ellipsis")
         case .close:
-            return #imageLiteral(resourceName: "bottom_control_hide")
+            return UIImage(systemName: "chevron.down")?.withConfiguration(UIImage.SymbolConfiguration(weight: .black))
         }
     }
 }
 
 class BottomControlViewController: UIViewController {
-    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: BottomActionLayout())
 
     private let actions: [BottomControlAction]
 
@@ -75,11 +75,11 @@ class BottomControlViewController: UIViewController {
 
     override var preferredContentSize: CGSize {
         get {
-            return CGSize(width: CGFloat(60 * actions.count) + 16 + 8, height: 60 + 8 + 4)
+            let scaling = view.textScaling
+            return CGSize(width: CGFloat(60 * actions.count) * scaling + 16 + 8, height: (60 * scaling + 8 + 4).rounded(.up))
         }
         set {}
     }
-
 }
 
 extension BottomControlViewController: UICollectionViewDataSource {
@@ -143,6 +143,8 @@ extension BottomControlViewController: UICollectionViewDataSource {
 
 private extension BottomControlViewController {
     func setup() {
+        view.maximumContentSizeCategory = .extraExtraExtraLarge
+
         let style: UIBlurEffect.Style
         if #available(iOS 13.0, *) {
             style = .regular
@@ -160,14 +162,8 @@ private extension BottomControlViewController {
             backgroundView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8)
         ])
 
-        let layout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
-        layout.scrollDirection = .horizontal
-
-        layout.itemSize = CGSize(width: 60, height: 60)
         backgroundView.layer.masksToBounds = true
         backgroundView.layer.cornerRadius = 8
-        layout.minimumLineSpacing = 0
-        layout.minimumInteritemSpacing = 0
 
         let contentView = backgroundView.contentView
         contentView.addSubview(collectionView)
@@ -229,3 +225,17 @@ extension BottomControlViewController: NSTouchBarDelegate {
     }
 }
 #endif
+
+class BottomActionLayout: UICollectionViewFlowLayout {
+    private let baseItemSize = CGSize(width: 60, height: 60)
+
+    override func prepare() {
+        let scaling = collectionView?.textScaling ?? 1
+        itemSize = baseItemSize.applying(CGAffineTransform(scaleX: scaling, y: scaling))
+        minimumLineSpacing = 0
+        minimumInteritemSpacing = 0
+        sectionInset = .zero
+        scrollDirection = .horizontal
+        super.prepare()
+    }
+}

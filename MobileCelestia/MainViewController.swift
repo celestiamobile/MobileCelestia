@@ -1006,42 +1006,7 @@ extension AppToolbarAction {
 
 extension AppToolbarAction {
     var toolBarImage: UIImage? {
-        switch self {
-        case .search:
-            return UIImage(systemName: "magnifyingglass")
-        case .share:
-            return UIImage(systemName: "square.and.arrow.up")
-        case .setting:
-            return UIImage(systemName: "gear")
-        case .browse:
-            return UIImage(systemName: "globe")
-        case .favorite:
-            return UIImage(systemName: "star.circle")
-        case .camera:
-            return UIImage(systemName: "video")
-        case .time:
-            return UIImage(systemName: "clock")
-        case .script:
-            return UIImage(systemName: "doc")
-        case .help:
-            return UIImage(systemName: "questionmark.circle")
-        case .addons:
-            return UIImage(systemName: "folder")
-        case .download:
-            return UIImage(systemName: "square.and.arrow.down")
-        case .home:
-            return UIImage(systemName: "house")
-        case .event:
-            return UIImage(systemName: "calendar")
-        case .paperplane:
-            return UIImage(systemName: "paperplane")
-        case .speedometer:
-            return UIImage(systemName: "speedometer")
-        case .mirror:
-            return UIImage(systemName: "pip")
-        case .newsarchive:
-            return UIImage(systemName: "newspaper")
-        }
+        return image
     }
 }
 #endif
@@ -1050,15 +1015,15 @@ extension CelestiaAction: ToolbarAction {
     var image: UIImage? {
         switch self {
         case .playpause:
-            return #imageLiteral(resourceName: "time_playpause")
+            return UIImage(systemName: "playpause.fill")
         case .faster:
-            return #imageLiteral(resourceName: "time_faster")
+            return UIImage(systemName: "forward.fill")
         case .slower:
-            return #imageLiteral(resourceName: "time_slower")
+            return UIImage(systemName: "backward.fill")
         case .reverse, .reverseSpeed:
-            return #imageLiteral(resourceName: "time_reverse")
+            return UIImage(systemName: "repeat")?.withConfiguration(UIImage.SymbolConfiguration(weight: .black))
         case .cancelScript, .stop:
-            return #imageLiteral(resourceName: "time_stop")
+            return UIImage(systemName: "stop.fill")
         default:
             return nil
         }
@@ -1069,9 +1034,9 @@ extension CelestiaContinuousAction: ToolbarAction {
     var image: UIImage? {
         switch self {
         case .travelFaster:
-            return #imageLiteral(resourceName: "time_faster")
+            return UIImage(systemName: "forward.fill")
         case .travelSlower:
-            return #imageLiteral(resourceName: "time_slower")
+            return UIImage(systemName: "backward.fill")
         default:
             return nil
         }
@@ -1100,20 +1065,7 @@ extension CelestiaContinuousAction: ToolbarAction {
 #if targetEnvironment(macCatalyst)
 extension CelestiaAction: ToolbarTouchBarAction {
     var touchBarImage: UIImage? {
-        switch self {
-        case .playpause:
-            return UIImage(systemName: "playpause.fill")
-        case .faster:
-            return UIImage(systemName: "forward.fill")
-        case .slower:
-            return UIImage(systemName: "backward.fill")
-        case .reverse, .reverseSpeed:
-            return UIImage(systemName: "repeat")
-        case .cancelScript, .stop:
-            return UIImage(systemName: "stop.fill")
-        default:
-            return nil
-        }
+        return image
     }
 
     var touchBarItemIdentifier: NSTouchBarItem.Identifier {

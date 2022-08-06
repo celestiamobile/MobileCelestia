@@ -18,13 +18,67 @@ protocol ToolbarCell: UICollectionViewCell {
     var touchUpHandler: ((UIButton, Bool) -> Void)? { get set }
 }
 
+class ToolbarImageButton: ImageButtonView<ToolbarImageButton.Configuration> {
+    struct Configuration: ImageProvider {
+        var image: UIImage?
+        var touchDownHandler: ((UIButton) -> Void)?
+        var touchUpHandler: ((UIButton, Bool) -> Void)?
+
+        func provideImage(selected: Bool) -> UIImage? {
+            return image
+        }
+    }
+
+    init(image: UIImage? = nil, touchDownHandler: ((UIButton) -> Void)?, touchUpHandler: ((UIButton, Bool) -> Void)?) {
+        super.init(buttonBuilder: {
+            let button = StandardButton(type: .system)
+            button.imageView?.contentMode = .scaleAspectFit
+            button.contentHorizontalAlignment = .fill
+            button.contentVerticalAlignment = .fill
+            button.tintColor = .darkLabel
+            return button
+        }(), boundingBoxSize: CGSize(width: 52, height: 52), configurationBuilder: Configuration(image: image, touchDownHandler: touchDownHandler, touchUpHandler: touchUpHandler))
+    }
+
+    override func configurationUpdated(_ configuration: Configuration, button: UIButton) {
+        super.configurationUpdated(configuration, button: button)
+        button.removeTarget(self, action: nil, for: .allEvents)
+        button.addTarget(self, action: #selector(touchDown(_:)), for: .touchDown)
+        button.addTarget(self, action: #selector(touchUpInside(_:)), for: .touchUpInside)
+        button.addTarget(self, action: #selector(touchUpOutside(_:)), for: .touchUpOutside)
+        button.addTarget(self, action: #selector(touchCancelled(_:)), for: .touchCancel)
+    }
+
+    @objc private func touchDown(_ sender: UIButton) {
+        configuration.configuration.touchDownHandler?(sender)
+    }
+
+    @objc private func touchUpInside(_ sender: UIButton) {
+        configuration.configuration.touchUpHandler?(sender, true)
+    }
+
+
+    @objc private func touchUpOutside(_ sender: UIButton) {
+        configuration.configuration.touchUpHandler?(sender, false)
+    }
+
+    @objc private func touchCancelled(_ sender: UIButton) {
+        configuration.configuration.touchUpHandler?(sender, false)
+    }
+}
+
 class ToolbarImageButtonCell: UICollectionViewCell, ToolbarCell {
     var itemTitle: String?
-    var itemImage: UIImage? { didSet { button.setImage(itemImage, for: .normal) } }
+    var itemImage: UIImage? { didSet { button.configuration.configuration.image = itemImage } }
     var touchDownHandler: ((UIButton) -> Void)?
     var touchUpHandler: ((UIButton, Bool) -> Void)?
 
-    private lazy var button = StandardButton(type: .system)
+    private lazy var button = ToolbarImageButton { [weak self] button in
+        self?.touchDownHandler?(button)
+    } touchUpHandler: { [weak self] button, inside in
+        self?.touchUpHandler?(button, inside)
+    }
+
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -39,16 +93,9 @@ class ToolbarImageButtonCell: UICollectionViewCell, ToolbarCell {
         contentView.addSubview(button)
         button.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            button.topAnchor.constraint(equalTo: contentView.topAnchor),
-            button.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            button.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            button.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            button.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            button.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
         ])
-        button.tintColor = .darkLabel
-        button.addTarget(self, action: #selector(touchDown(_:)), for: .touchDown)
-        button.addTarget(self, action: #selector(touchUpInside(_:)), for: .touchUpInside)
-        button.addTarget(self, action: #selector(touchUpOutside(_:)), for: .touchUpOutside)
-        button.addTarget(self, action: #selector(touchCancelled(_:)), for: .touchCancel)
     }
 
     @objc private func touchDown(_ sender: UIButton) {
@@ -104,11 +151,23 @@ class ToolbarImageTextButtonCell: UICollectionViewCell, ToolbarCell {
     }
 
     var itemTitle: String? { didSet { label.text = itemTitle } }
-    var itemImage: UIImage? { didSet { imageView.image = itemImage?.withRenderingMode(.alwaysTemplate) } }
+    var itemImage: UIImage? { didSet { imageView.configuration.image = itemImage?.withRenderingMode(.alwaysTemplate) } }
     var touchDownHandler: ((UIButton) -> Void)?
     var touchUpHandler: ((UIButton, Bool) -> Void)?
 
-    private lazy var imageView = UIImageView()
+    private lazy var imageView: IconView = {
+        let ratio: CGFloat
+        if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
+            ratio = 0.77
+        } else {
+            ratio = 1.0
+        }
+        let dimension = ratio * 24
+        return IconView(baseSize: CGSize(width: dimension, height: dimension)) { imageView in
+            imageView.contentMode = .scaleAspectFit
+            imageView.tintColor = .darkLabel
+        }
+    }()
     private lazy var label = UILabel(textStyle: .body)
 
     override init(frame: CGRect) {
@@ -136,31 +195,20 @@ class ToolbarImageTextButtonCell: UICollectionViewCell, ToolbarCell {
             bg.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
         ])
 
-        let ratio: CGFloat
-        if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
-            ratio = 0.77
-        } else {
-            ratio = 1.0
-        }
-
         bg.addSubview(imageView)
-        imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            imageView.heightAnchor.constraint(equalToConstant: 32 * ratio),
-            imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor),
             imageView.centerYAnchor.constraint(equalTo: bg.centerYAnchor),
             imageView.leadingAnchor.constraint(equalTo: bg.leadingAnchor, constant: 16),
             imageView.topAnchor.constraint(greaterThanOrEqualTo: bg.topAnchor, constant: 6),
         ])
-        imageView.tintColor = .darkLabel
 
         bg.addSubview(label)
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             label.centerYAnchor.constraint(equalTo: bg.centerYAnchor),
-            label.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: 8),
+            label.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: 12),
             label.trailingAnchor.constraint(equalTo: bg.trailingAnchor, constant: -16),
             label.topAnchor.constraint(greaterThanOrEqualTo: bg.topAnchor, constant: 12),
         ])

@@ -42,11 +42,11 @@ class TutorialViewController: BaseTableViewController {
 
     #if !targetEnvironment(macCatalyst)
     private lazy var tutorialDescriptionItems = [
-        TutorialDescriptionItem(image: #imageLiteral(resourceName: "tutorial_switch_mode"),
+        TutorialDescriptionItem(image: UIImage(named: "tutorial_switch_mode"),
                                 text: CelestiaString("Tap the mode button on the sidebar to switch between object mode and camera mode.", comment: "")),
-        TutorialDescriptionItem(image: #imageLiteral(resourceName: "tutorial_mode_object"),
+        TutorialDescriptionItem(image: UIImage(systemName: "cube") ?? UIImage(named: "tutorial_mode_object"),
                                 text: CelestiaString("In object mode, drag to rotate around an object.\n\nPinch to zoom in/out on an object.", comment: "")),
-        TutorialDescriptionItem(image: #imageLiteral(resourceName: "tutorial_mode_camera"),
+        TutorialDescriptionItem(image: UIImage(systemName: "video") ?? UIImage(named: "tutorial_mode_camera"),
                                 text: CelestiaString("In camera mode, drag to move field of view.\n\nPinch to zoom in/out field of view.", comment: "")),
     ]
     #else

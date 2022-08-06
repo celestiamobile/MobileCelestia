@@ -85,6 +85,10 @@
 		EA7BF37C27033AE40058F704 /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA7BF37B27033AE40058F704 /* GameController.framework */; };
 		EA85C8D5289BE459009ADB1C /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA85C8D3289BE459009ADB1C /* OpenGL.framework */; platformFilter = maccatalyst; };
 		EA85C8D6289BE45A009ADB1C /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA85C8D4289BE459009ADB1C /* OpenGLES.framework */; platformFilter = ios; };
+		EA85C913289E9A7D009ADB1C /* UIContentSizeCategory+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA85C912289E9A7D009ADB1C /* UIContentSizeCategory+Extension.swift */; };
+		EA85C915289E9AD2009ADB1C /* AutoSizingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA85C914289E9AD2009ADB1C /* AutoSizingView.swift */; };
+		EA85C917289EA1ED009ADB1C /* IconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA85C916289EA1ED009ADB1C /* IconView.swift */; };
+		EA85C91B289F5811009ADB1C /* ButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA85C91A289F5811009ADB1C /* ButtonView.swift */; };
 		EA86E38426FE20C000FF2278 /* SettingsFrameRateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA86E38326FE20C000FF2278 /* SettingsFrameRateViewController.swift */; };
 		EA934C90251D90C500DD284C /* MainSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA934C8F251D90C500DD284C /* MainSceneDelegate.swift */; };
 		EA934C9A251D92AD00DD284C /* PanelSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA934C99251D92A700DD284C /* PanelSceneDelegate.swift */; };
@@ -255,6 +259,10 @@
 		EA7BF37B27033AE40058F704 /* GameController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameController.framework; path = System/Library/Frameworks/GameController.framework; sourceTree = SDKROOT; };
 		EA85C8D3289BE459009ADB1C /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.3.sdk/System/Library/Frameworks/OpenGL.framework; sourceTree = DEVELOPER_DIR; };
 		EA85C8D4289BE459009ADB1C /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		EA85C912289E9A7D009ADB1C /* UIContentSizeCategory+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIContentSizeCategory+Extension.swift"; sourceTree = "<group>"; };
+		EA85C914289E9AD2009ADB1C /* AutoSizingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoSizingView.swift; sourceTree = "<group>"; };
+		EA85C916289EA1ED009ADB1C /* IconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconView.swift; sourceTree = "<group>"; };
+		EA85C91A289F5811009ADB1C /* ButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonView.swift; sourceTree = "<group>"; };
 		EA86E38326FE20C000FF2278 /* SettingsFrameRateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsFrameRateViewController.swift; sourceTree = "<group>"; };
 		EA934C8F251D90C500DD284C /* MainSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSceneDelegate.swift; sourceTree = "<group>"; };
 		EA934C99251D92A700DD284C /* PanelSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelSceneDelegate.swift; sourceTree = "<group>"; };
@@ -364,6 +372,7 @@
 				EAD94F66261EED7700A93C93 /* UITableView+Extensions.swift */,
 				EAB08FE32780550600BB82F0 /* Font.swift */,
 				EA7209DF27C64270004C1400 /* UILabel+DynamicType.swift */,
+				EA85C912289E9A7D009ADB1C /* UIContentSizeCategory+Extension.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -667,6 +676,9 @@
 				EAF4851F249B5C2500E5B817 /* StandardButton.swift */,
 				EA982BFE25496B6D00CDC642 /* BaseTableViewController.swift */,
 				EA775EB32664B63F00479295 /* ActionButton.swift */,
+				EA85C914289E9AD2009ADB1C /* AutoSizingView.swift */,
+				EA85C916289EA1ED009ADB1C /* IconView.swift */,
+				EA85C91A289F5811009ADB1C /* ButtonView.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -953,8 +965,10 @@
 			files = (
 				977394A02402A9AF00E38B82 /* PresentationManager.swift in Sources */,
 				97401C9E2414D3460015F8E8 /* Celestia+Extension.swift in Sources */,
+				EA85C915289E9AD2009ADB1C /* AutoSizingView.swift in Sources */,
 				EABF7911253895FD00F2460C /* ResourceViewController.swift in Sources */,
 				EAA6C4CB253B5CD200ED1D60 /* InstalledResourceViewController.swift in Sources */,
+				EA85C91B289F5811009ADB1C /* ButtonView.swift in Sources */,
 				EAF48520249B5C2500E5B817 /* StandardButton.swift in Sources */,
 				EA775EB42664B63F00479295 /* ActionButton.swift in Sources */,
 				972477D12404A19700729B45 /* BrowserContainerViewController.swift in Sources */,
@@ -969,6 +983,7 @@
 				977CDD30240BD78F00137127 /* TutorialActionCell.swift in Sources */,
 				EABDE3A92473DAA300E0A5FA /* SettingCommonViewController.swift in Sources */,
 				9773949C2402A8F700E38B82 /* ToolbarViewController.swift in Sources */,
+				EA85C917289EA1ED009ADB1C /* IconView.swift in Sources */,
 				979D2F8223FEB1A6005D2592 /* CelestiaViewController.swift in Sources */,
 				EA7209E027C64270004C1400 /* UILabel+DynamicType.swift in Sources */,
 				97401C9C2414D3460015F8E8 /* URL.swift in Sources */,
@@ -1013,6 +1028,7 @@
 				EA9FB23F27B7852A00E0DC1F /* CommonSceneDelegate.swift in Sources */,
 				EA374CDA263A8B770069589C /* GoToInputViewController.swift in Sources */,
 				EA934C9A251D92AD00DD284C /* PanelSceneDelegate.swift in Sources */,
+				EA85C913289E9A7D009ADB1C /* UIContentSizeCategory+Extension.swift in Sources */,
 				97EB41C62408F20700E6D441 /* CameraControlViewController.swift in Sources */,
 				97F1141E2408AE06003A06D7 /* DataLocationSelectionViewController.swift in Sources */,
 				97FF95A5240A340300E9F44F /* BaseResultHandler.swift in Sources */,
@@ -1171,7 +1187,7 @@
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
-				SHARED_BUILD_NUMBER = 220;
+				SHARED_BUILD_NUMBER = 221;
 				SHARED_BUILD_VERSION = 1.5.11;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1231,7 +1247,7 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
-				SHARED_BUILD_NUMBER = 220;
+				SHARED_BUILD_NUMBER = 221;
 				SHARED_BUILD_VERSION = 1.5.11;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";

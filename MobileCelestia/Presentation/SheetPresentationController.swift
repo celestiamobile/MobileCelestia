@@ -20,32 +20,70 @@ class SheetPresentationController: UIPresentationController {
         static let sheetMaxWidthRatio: CGFloat = 0.5
     }
 
+    class Grabber: UIView {
+        override init(frame: CGRect) {
+            super.init(frame: frame)
+            backgroundColor = .tertiaryLabel
+        }
+
+        required init?(coder: NSCoder) {
+            fatalError("init(coder:) has not been implemented")
+        }
+
+        override func layoutSubviews() {
+            super.layoutSubviews()
+            layer.cornerRadius = bounds.height / 2
+        }
+    }
+
+    class EdgeAutoSizingImageButton: StandardButton {
+        var edgeWidthRatio: CGFloat = 0
+        var edgeHeightRatio: CGFloat = 0
+
+        override func layoutSubviews() {
+            contentEdgeInsets = UIEdgeInsets(top: edgeHeightRatio * bounds.height / 2, left: edgeWidthRatio * bounds.width / 2, bottom: edgeHeightRatio * bounds.height / 2, right: edgeWidthRatio * bounds.width / 2)
+
+            super.layoutSubviews()
+        }
+    }
+
+    private lazy var closeButton: UIButton = {
+        let button = EdgeAutoSizingImageButton(type: .system)
+        button.edgeWidthRatio = 0.4444
+        button.edgeHeightRatio = 0.4444
+        button.tintColor = .secondaryLabel
+        button.contentHorizontalAlignment = .fill
+        button.contentVerticalAlignment = .fill
+        button.setImage(UIImage(systemName: "xmark")?.withConfiguration(UIImage.SymbolConfiguration(weight: .bold)), for: .normal)
+        button.addTarget(self, action: #selector(dismissPresentedViewController), for: .touchUpInside)
+        return button
+    }()
+
+    private var sheetHandleHeightConstraint: NSLayoutConstraint?
     private lazy var sheetHandle: UIView = {
         let handleView = UIView()
-        let grabber = UIView()
-        let closeButton = StandardButton(type: .system)
-        if #available(iOS 13.0, *) {
-            grabber.backgroundColor = .tertiaryLabel
-            closeButton.tintColor = .secondaryLabel
-        } else {
-            grabber.backgroundColor = .darkTertiaryLabel
-            closeButton.tintColor = .darkSecondaryLabel
-        }
-        closeButton.setImage(UIImage(named: "accessory_close"), for: .normal)
-        closeButton.addTarget(self, action: #selector(dismissPresentedViewController), for: .touchUpInside)
+        let grabber = AnyAutoSizingView(viewBuilder: Grabber(), baseSize: CGSize(width: 35, height: 6))
         handleView.addSubview(grabber)
-        handleView.addSubview(closeButton)
-        grabber.layer.cornerRadius = 3
+        let closeButtonContainer = UIView()
+        closeButtonContainer.translatesAutoresizingMaskIntoConstraints = false
+        handleView.addSubview(closeButtonContainer)
+        closeButtonContainer.addSubview(closeButton)
         closeButton.translatesAutoresizingMaskIntoConstraints = false
         grabber.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             grabber.centerXAnchor.constraint(equalTo: handleView.centerXAnchor),
             grabber.centerYAnchor.constraint(equalTo: handleView.centerYAnchor),
-            grabber.widthAnchor.constraint(equalToConstant: 35),
-            grabber.heightAnchor.constraint(equalToConstant: 6),
-            closeButton.leadingAnchor.constraint(equalTo: handleView.leadingAnchor),
-            closeButton.centerYAnchor.constraint(equalTo: handleView.centerYAnchor)
+            closeButtonContainer.heightAnchor.constraint(equalTo: handleView.heightAnchor),
+            closeButtonContainer.widthAnchor.constraint(equalTo: closeButtonContainer.heightAnchor),
+            closeButtonContainer.leadingAnchor.constraint(equalTo: handleView.leadingAnchor),
+            closeButtonContainer.centerYAnchor.constraint(equalTo: handleView.centerYAnchor),
+
+            closeButton.heightAnchor.constraint(equalTo: closeButtonContainer.heightAnchor),
+            closeButton.widthAnchor.constraint(equalTo: closeButtonContainer.widthAnchor),
+            closeButton.centerXAnchor.constraint(equalTo: closeButtonContainer.centerXAnchor),
+            closeButton.centerYAnchor.constraint(equalTo: closeButtonContainer.centerYAnchor),
         ])
+        handleView.maximumContentSizeCategory = .extraExtraExtraLarge
         return handleView
     }()
 
@@ -64,12 +102,18 @@ class SheetPresentationController: UIPresentationController {
             sheetHandle.leadingAnchor.constraint(equalTo: sheetContainer.leadingAnchor),
             sheetHandle.trailingAnchor.constraint(equalTo: sheetContainer.trailingAnchor),
             sheetHandle.topAnchor.constraint(equalTo: sheetContainer.topAnchor),
-            sheetHandle.heightAnchor.constraint(equalToConstant: Constants.sheetHandleHeight)
         ])
+        let sheetHandleHeightConstraint = sheetHandle.heightAnchor.constraint(equalToConstant: sheetHandleHeight)
+        sheetHandleHeightConstraint.isActive = true
+        self.sheetHandleHeightConstraint = sheetHandleHeightConstraint
         let gesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
         sheetHandle.addGestureRecognizer(gesture)
         return sheetContainer
     }()
+
+    private var sheetHandleHeight: CGFloat {
+        return Constants.sheetHandleHeight * sheetHandle.textScaling
+    }
 
     override func containerViewWillLayoutSubviews() {
         guard let presented = presentedView else { return }
@@ -77,13 +121,13 @@ class SheetPresentationController: UIPresentationController {
         let viewFrame = frameOfPresentedViewInContainerView
         presented.frame = viewFrame
 
-        sheetContainer.frame = CGRect(origin: CGPoint(x: viewFrame.minX, y: viewFrame.minY - Constants.sheetHandleHeight), size: CGSize(width: viewFrame.width, height: viewFrame.height + Constants.sheetHandleHeight))
+        sheetContainer.frame = CGRect(origin: CGPoint(x: viewFrame.minX, y: viewFrame.minY - sheetHandleHeight), size: CGSize(width: viewFrame.width, height: viewFrame.height + sheetHandleHeight))
     }
 
     override func size(forChildContentContainer container: UIContentContainer,
                        withParentContainerSize parentSize: CGSize) -> CGSize {
         var size: CGSize = .zero
-        let height = min(parentSize.height - containerView!.safeAreaInsets.top, parentSize.height * Constants.sheetMaxHeightRatio) - Constants.sheetHandleHeight
+        let height = min(parentSize.height - containerView!.safeAreaInsets.top, parentSize.height * Constants.sheetMaxHeightRatio) - sheetHandleHeight
         if traitCollection.horizontalSizeClass == .compact && traitCollection.verticalSizeClass == .regular {
             size = CGSize(width: parentSize.width, height: height)
         } else {
@@ -121,8 +165,8 @@ class SheetPresentationController: UIPresentationController {
 
         let viewFrame = frameOfPresentedViewInContainerView
 
-        let sheetContainerFrameFrom = CGRect(x: viewFrame.minX, y: containerView!.frame.height - Constants.sheetHandleHeight, width: viewFrame.width, height: viewFrame.height + Constants.sheetHandleHeight)
-        let sheetContainerFrameTo = CGRect(x: viewFrame.minX, y: containerView!.frame.height - Constants.sheetHandleHeight - viewFrame.height, width: viewFrame.width, height: viewFrame.height + Constants.sheetHandleHeight)
+        let sheetContainerFrameFrom = CGRect(x: viewFrame.minX, y: containerView!.frame.height - sheetHandleHeight, width: viewFrame.width, height: viewFrame.height + sheetHandleHeight)
+        let sheetContainerFrameTo = CGRect(x: viewFrame.minX, y: containerView!.frame.height - sheetHandleHeight - viewFrame.height, width: viewFrame.width, height: viewFrame.height + sheetHandleHeight)
 
         sheetContainer.frame = sheetContainerFrameFrom
 
@@ -136,9 +180,24 @@ class SheetPresentationController: UIPresentationController {
         })
     }
 
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        if traitCollection.preferredContentSizeCategory != previousTraitCollection?.preferredContentSizeCategory {
+            sheetHandleHeightConstraint?.constant = sheetHandleHeight
+
+            if containerView != nil, let presented = presentedView {
+                let viewFrame = frameOfPresentedViewInContainerView
+                presented.frame = viewFrame
+
+                sheetContainer.frame = CGRect(origin: CGPoint(x: viewFrame.minX, y: viewFrame.minY - sheetHandleHeight), size: CGSize(width: viewFrame.width, height: viewFrame.height + sheetHandleHeight))
+            }
+        }
+    }
+
     override func dismissalTransitionWillBegin() {
         let viewFrame = frameOfPresentedViewInContainerView
-        let sheetContainerFrameTo = CGRect(x: viewFrame.minX, y: containerView!.frame.height - Constants.sheetHandleHeight, width: viewFrame.width, height: viewFrame.height + Constants.sheetHandleHeight)
+        let sheetContainerFrameTo = CGRect(x: viewFrame.minX, y: containerView!.frame.height - sheetHandleHeight, width: viewFrame.width, height: viewFrame.height + sheetHandleHeight)
 
         guard let coordinator = presentedViewController.transitionCoordinator else {
             sheetContainer.frame = sheetContainerFrameTo
@@ -165,9 +224,9 @@ private extension SheetPresentationController {
                     containerView.safeAreaInsets.top,
                     y
                 ),
-                containerView.frame.height - Constants.sheetHandleHeight - containerView.safeAreaInsets.bottom
+                containerView.frame.height - sheetHandleHeight - containerView.safeAreaInsets.bottom
             )
-            presented.frame.origin = CGPoint(x: presented.frame.minX, y: y + Constants.sheetHandleHeight)
+            presented.frame.origin = CGPoint(x: presented.frame.minX, y: y + sheetHandleHeight)
             sheetContainer.frame.origin = CGPoint(x: sheetContainer.frame.minX, y: y)
             gesture.setTranslation(.zero, in: sheetHandle)
         default:

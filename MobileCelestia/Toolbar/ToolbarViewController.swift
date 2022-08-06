@@ -87,8 +87,6 @@ class ToolbarViewController: UIViewController {
         super.viewDidLoad()
 
         setup()
-
-        NotificationCenter.default.addObserver(self, selector: #selector(handleContentSizeCategoryChanged), name: UIContentSizeCategory.didChangeNotification, object: nil)
     }
 
     override var preferredContentSize: CGSize {
@@ -98,8 +96,12 @@ class ToolbarViewController: UIViewController {
         set {}
     }
 
-    @objc private func handleContentSizeCategoryChanged() {
-        collectionView.collectionViewLayout.invalidateLayout()
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        if traitCollection.preferredContentSizeCategory != previousTraitCollection?.preferredContentSizeCategory {
+            collectionView.collectionViewLayout.invalidateLayout()
+        }
     }
 }
 
@@ -187,11 +189,52 @@ private extension ToolbarViewController {
         collectionView.register(ToolbarSeparatorCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "Separator")
         collectionView.register(ToolbarImageTextButtonCell.self, forCellWithReuseIdentifier: "Cell")
         collectionView.dataSource = self
+
+        view.maximumContentSizeCategory = .extraExtraExtraLarge
     }
 }
 
 extension AppToolbarAction: ToolbarAction {
-    var image: UIImage? { return UIImage(named: "toolbar_\(rawValue)") }
+    var image: UIImage? {
+        switch self {
+        case .search:
+            return UIImage(systemName: "magnifyingglass")
+        case .share:
+            return UIImage(systemName: "square.and.arrow.up")
+        case .setting:
+            return UIImage(systemName: "gear")
+        case .browse:
+            return UIImage(systemName: "globe")
+        case .favorite:
+            return UIImage(systemName: "star.circle")
+        case .camera:
+            return UIImage(systemName: "video")
+        case .time:
+            return UIImage(systemName: "clock")
+        case .script:
+            return UIImage(systemName: "doc")
+        case .help:
+            return UIImage(systemName: "questionmark.circle")
+        case .addons:
+            return UIImage(systemName: "folder")
+        case .download:
+            return UIImage(systemName: "square.and.arrow.down")
+        case .home:
+            return UIImage(systemName: "house")
+        case .event:
+            return UIImage(systemName: "calendar")
+        case .paperplane:
+            return UIImage(systemName: "paperplane")
+        case .speedometer:
+            return UIImage(systemName: "speedometer")
+#if targetEnvironment(macCatalyst)
+        case .mirror:
+            return UIImage(systemName: "pip")
+#endif
+        case .newsarchive:
+            return UIImage(systemName: "newspaper") ?? UIImage(named: "toolbar_newsarchive")
+        }
+    }
 }
 
 extension AppToolbarAction {

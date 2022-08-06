@@ -26,45 +26,12 @@ class SettingTextCell: UITableViewCell {
     var titleColor: UIColor? { didSet { label.textColor = titleColor } }
     var detail: String? { didSet { detailLabel.text = detail } }
 
-    private var savedAccessoryType: UITableViewCell.AccessoryType = .none
-
-    override var accessoryType: UITableViewCell.AccessoryType {
-        get {
-            if #available(iOS 13, *) {
-                return super.accessoryType
-            }
-            return savedAccessoryType
-        }
-        set {
-            if #available(iOS 13, *) {
-                super.accessoryType = newValue
-                return
-            }
-            savedAccessoryType = newValue
-            switch newValue {
-            case .none:
-                accessoryView = nil
-            case .disclosureIndicator:
-                let view = UIImageView(image: #imageLiteral(resourceName: "accessory_full_disclosure").withRenderingMode(.alwaysTemplate))
-                view.tintColor = UIColor.darkTertiaryLabel
-                accessoryView = view
-            default:
-                accessoryView = nil
-                super.accessoryType = newValue
-            }
-        }
-    }
-
     override func prepareForReuse() {
         super.prepareForReuse()
 
         label.text = nil
         detailLabel.text = nil
         label.textColor = .darkLabel
-
-        super.accessoryType = .none
-        savedAccessoryType = .none
-        accessoryView = nil
     }
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
