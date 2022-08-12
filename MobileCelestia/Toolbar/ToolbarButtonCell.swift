@@ -31,7 +31,7 @@ class ToolbarImageButton: ImageButtonView<ToolbarImageButton.Configuration> {
 
     init(image: UIImage? = nil, touchDownHandler: ((UIButton) -> Void)?, touchUpHandler: ((UIButton, Bool) -> Void)?) {
         super.init(buttonBuilder: {
-            let button = StandardButton(type: .system)
+            let button = StandardButton()
             button.imageView?.contentMode = .scaleAspectFit
             button.contentHorizontalAlignment = .fill
             button.contentVerticalAlignment = .fill
