@@ -44,15 +44,16 @@ private extension TextViewController {
         textView.textColor = .darkLabel
         textView.adjustsFontForContentSizeCategory = true
         textView.font = UIFont.preferredFont(forTextStyle: .footnote)
+        textView.contentInset = UIEdgeInsets(top: GlobalConstants.pageMarginVertical, left: GlobalConstants.pageMarginHorizontal, bottom: GlobalConstants.pageMarginVertical, right: GlobalConstants.pageMarginHorizontal)
 
         textView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(textView)
 
         NSLayoutConstraint.activate([
-            textView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: GlobalConstants.pageMarginHorizontal),
-            textView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -GlobalConstants.pageMarginHorizontal),
-            textView.topAnchor.constraint(equalTo: view.topAnchor, constant: GlobalConstants.pageMarginVertical),
-            textView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -GlobalConstants.pageMarginVertical),
+            textView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            textView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            textView.topAnchor.constraint(equalTo: view.topAnchor),
+            textView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
 
         textView.text = text
