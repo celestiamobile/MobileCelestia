@@ -42,7 +42,7 @@ final class BodyDescriptionCell: UICollectionViewCell {
         contentView.addSubview(bodyLabel)
 
         NSLayoutConstraint.activate([
-            bodyLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
+            bodyLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: GlobalConstants.pageTextGapVertical),
             bodyLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             bodyLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             bodyLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)

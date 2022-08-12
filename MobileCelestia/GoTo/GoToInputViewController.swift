@@ -181,7 +181,7 @@ extension GoToInputViewController {
             objectNameHandler(self)
         } else if item is UnitItem {
             guard let cell = tableView.cellForRow(at: indexPath) else { return }
-            showSelection(nil, options: Self.availableUnits.map({ CelestiaString($0.name, comment: "") }), sourceView: cell, sourceRect: cell.bounds) { [weak self] index in
+            showSelection(nil, options: Self.availableUnits.map({ CelestiaString($0.name, comment: "") }), source: .view(view: cell, sourceRect: nil)) { [weak self] index in
                 guard let self = self else { return }
                 guard let newIndex = index else { return }
                 self.unit = Self.availableUnits[newIndex]

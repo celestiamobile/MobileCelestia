@@ -46,14 +46,14 @@ extension UIViewController {
 }
 
 extension UIViewController {
-    @discardableResult func showError(_ title: String, detail: String? = nil) -> UIAlertController {
+    @discardableResult func showError(_ title: String, detail: String? = nil, source: PopoverSource? = nil) -> UIAlertController {
         let alert = UIAlertController(title: title, message: detail, preferredStyle: .alert)
         alert.addAction(UIAlertAction(title: CelestiaString("OK", comment: ""), style: .default, handler: nil))
-        presentAlert(alert)
+        presentAlert(alert, source: source)
         return alert
     }
 
-    @discardableResult func showOption(_ title: String, message: String? = nil, completion: ((Bool) -> Void)? = nil) -> UIAlertController {
+    @discardableResult func showOption(_ title: String, message: String? = nil, source: PopoverSource? = nil, completion: ((Bool) -> Void)? = nil) -> UIAlertController {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         let confirmAction = UIAlertAction(title: CelestiaString("OK", comment: ""), style: .default, handler: { (_) in
             completion?(true)
@@ -63,11 +63,11 @@ extension UIViewController {
             completion?(false)
         }))
         alert.preferredAction = confirmAction
-        presentAlert(alert)
+        presentAlert(alert, source: source)
         return alert
     }
 
-    @discardableResult func showTextInput(_ title: String, message: String? = nil, text: String? = nil, placeholder: String? = nil, completion: ((String?) -> Void)? = nil) -> UIAlertController {
+    @discardableResult func showTextInput(_ title: String, message: String? = nil, text: String? = nil, placeholder: String? = nil, source: PopoverSource? = nil, completion: ((String?) -> Void)? = nil) -> UIAlertController {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         let confirmAction = UIAlertAction(title: CelestiaString("OK", comment: ""), style: .default, handler: { [unowned alert] (_) in
             completion?(alert.textFields?.first?.text)
@@ -82,11 +82,11 @@ extension UIViewController {
             completion?(nil)
         }))
         alert.preferredAction = confirmAction
-        presentAlert(alert)
+        presentAlert(alert, source: source)
         return alert
     }
 
-    @discardableResult func showDateInput(_ title: String, format: String, completion: ((Date?) -> Void)? = nil) -> UIAlertController {
+    @discardableResult func showDateInput(_ title: String, format: String, source: PopoverSource? = nil, completion: ((Date?) -> Void)? = nil) -> UIAlertController {
         let alert = UIAlertController(title: title, message: nil, preferredStyle: .alert)
         let formatter = DateFormatter()
         formatter.dateFormat = format
@@ -101,18 +101,18 @@ extension UIViewController {
         alert.addAction(confirmAction)
         alert.addAction(UIAlertAction(title: CelestiaString("Cancel", comment: ""), style: .cancel, handler: nil))
         alert.preferredAction = confirmAction
-        presentAlert(alert)
+        presentAlert(alert, source: source)
         return alert
     }
 
-    @discardableResult func showLoading(_ title: String, cancelHandelr: (() -> Void)? = nil) -> UIAlertController {
+    @discardableResult func showLoading(_ title: String, source: PopoverSource? = nil, cancelHandelr: (() -> Void)? = nil) -> UIAlertController {
         let alert = UIAlertController(title: title, message: nil, preferredStyle: .alert)
         if let cancel = cancelHandelr {
             alert.addAction(UIAlertAction(title: CelestiaString("Cancel", comment: ""), style: .cancel) { _ in
                 cancel()
             })
         }
-        presentAlert(alert)
+        presentAlert(alert, source: source)
         return alert
     }
 
@@ -130,25 +130,33 @@ extension UIViewController {
         return alert
     }
 
-    @discardableResult func showSelection(_ title: String?, options: [String], sourceView: UIView?, sourceRect: CGRect?, permittedArrowDirections: UIPopoverArrowDirection = .any, completion: ((Int?) -> Void)?) -> UIAlertController {
-        let alert = commonSelectionActionSheet(title, options: options, permittedArrowDirections: permittedArrowDirections, completion: completion)
-        alert.popoverPresentationController?.sourceView = sourceView
-        alert.popoverPresentationController?.sourceRect = sourceRect ?? sourceView?.bounds ?? .zero
-        present(alert, animated: true, completion: nil)
+    enum PopoverSource {
+        case barButtonItem(barButtonItem: UIBarButtonItem)
+        case view(view: UIView, sourceRect: CGRect?)
+    }
+
+    @discardableResult func showSelection(_ title: String?, options: [String], source: PopoverSource?, completion: ((Int?) -> Void)?) -> UIAlertController {
+        let alert = commonSelectionActionSheet(title, options: options, completion: completion)
+        presentAlert(alert, source: source)
         return alert
     }
 
-    @discardableResult func showSelection(_ title: String?, options: [String], barButtonItem: UIBarButtonItem, permittedArrowDirections: UIPopoverArrowDirection = .any, completion: ((Int?) -> Void)?) -> UIAlertController {
-        let alert = commonSelectionActionSheet(title, options: options, permittedArrowDirections: permittedArrowDirections, completion: completion)
-        alert.popoverPresentationController?.barButtonItem = barButtonItem
-        present(alert, animated: true, completion: nil)
-        return alert
-    }
-
-    private func presentAlert(_ alert: UIAlertController) {
-        alert.popoverPresentationController?.sourceView = view
-        alert.popoverPresentationController?.sourceRect = CGRect(x: view.frame.midX, y: view.frame.midY, width: 0, height: 0)
-        alert.popoverPresentationController?.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
+    private func presentAlert(_ alert: UIAlertController, source: PopoverSource?, completion: (() -> Void)? = nil) {
+        switch source {
+        case .barButtonItem(let barButtonItem):
+            alert.popoverPresentationController?.barButtonItem = barButtonItem
+            alert.popoverPresentationController?.permittedArrowDirections = .any
+        case .view(let view, let sourceRect):
+            alert.popoverPresentationController?.sourceView = view
+            alert.popoverPresentationController?.sourceRect = sourceRect ?? view.bounds
+            alert.popoverPresentationController?.permittedArrowDirections = .any
+        case .none:
+            if alert.preferredStyle == .actionSheet {
+                alert.popoverPresentationController?.sourceView = view
+                alert.popoverPresentationController?.sourceRect = CGRect(x: view.bounds.midX, y: view.bounds.midY, width: 0, height: 0)
+                alert.popoverPresentationController?.permittedArrowDirections = []
+            }
+        }
         present(alert, animated: true, completion: nil)
     }
 }

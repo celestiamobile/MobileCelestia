@@ -12,6 +12,10 @@
 import UIKit
 
 class Toast {
+    private enum Constants {
+        static let toastCornerRadius: CGFloat = 8
+    }
+
     private class View: UIView {
         lazy var label = UILabel(textStyle: .footnote)
 
@@ -50,16 +54,14 @@ class Toast {
             view.contentView.addSubview(label)
 
             NSLayoutConstraint.activate([
-                view.contentView.leadingAnchor.constraint(equalTo: label.leadingAnchor, constant: -16),
-                view.contentView.trailingAnchor.constraint(equalTo: label.trailingAnchor, constant: 16),
-                view.contentView.topAnchor.constraint(equalTo: label.topAnchor, constant: -8),
-                view.contentView.bottomAnchor.constraint(equalTo: label.bottomAnchor, constant: 8),
+                view.contentView.leadingAnchor.constraint(equalTo: label.leadingAnchor, constant: -GlobalConstants.pageMarginHorizontal),
+                view.contentView.trailingAnchor.constraint(equalTo: label.trailingAnchor, constant: GlobalConstants.pageMarginHorizontal),
+                view.contentView.topAnchor.constraint(equalTo: label.topAnchor, constant: -GlobalConstants.pageMarginVertical),
+                view.contentView.bottomAnchor.constraint(equalTo: label.bottomAnchor, constant: GlobalConstants.pageMarginVertical),
             ])
 
-            layer.cornerRadius = 8
-            if #available(iOS 13.0, *) {
-                layer.cornerCurve = .continuous
-            }
+            layer.cornerRadius = Constants.toastCornerRadius
+            layer.cornerCurve = .continuous
             clipsToBounds = true
         }
     }
@@ -77,7 +79,7 @@ class Toast {
             window.addSubview(sharedToast)
 
             NSLayoutConstraint.activate([
-                NSLayoutConstraint(item: sharedToast, attribute: .leading, relatedBy: .greaterThanOrEqual, toItem: window, attribute: .leading, multiplier: 1, constant: 16),
+                NSLayoutConstraint(item: sharedToast, attribute: .leading, relatedBy: .greaterThanOrEqual, toItem: window, attribute: .leading, multiplier: 1, constant: GlobalConstants.pageMarginHorizontal),
                 NSLayoutConstraint(item: sharedToast, attribute: .centerX, relatedBy: .equal, toItem: window, attribute: .centerX, multiplier: 1, constant: 0),
                 NSLayoutConstraint(item: sharedToast, attribute: .centerY, relatedBy: .equal, toItem: window, attribute: .centerY, multiplier: 1.5, constant: 0)
             ])

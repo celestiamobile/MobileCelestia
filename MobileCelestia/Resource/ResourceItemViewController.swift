@@ -35,7 +35,7 @@ class ResourceItemViewController: UIViewController {
         if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
             let stackView = UIStackView(arrangedSubviews: [progressView, statusButton])
             stackView.axis = .horizontal
-            stackView.spacing = 6
+            stackView.spacing = GlobalConstants.pageGapHorizontal
             stackView.alignment = .center
             return stackView
         } else {
@@ -197,14 +197,14 @@ private extension ResourceItemViewController {
         goToButton.setTitle(CelestiaString("Go", comment: ""), for: .normal)
 
         buttonStack.axis = .vertical
-        buttonStack.spacing = 8
+        buttonStack.spacing = GlobalConstants.pageTextGapVertical
         buttonStack.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(buttonStack)
         NSLayoutConstraint.activate([
-            buttonStack.topAnchor.constraint(equalTo: itemInfoController.view.bottomAnchor, constant: 12),
-            buttonStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -12),
-            buttonStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            buttonStack.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
+            buttonStack.topAnchor.constraint(equalTo: itemInfoController.view.bottomAnchor, constant: GlobalConstants.pageGapVertical),
+            buttonStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -GlobalConstants.pageMarginVertical),
+            buttonStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: GlobalConstants.pageMarginHorizontal),
+            buttonStack.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -GlobalConstants.pageMarginHorizontal)
         ])
         goToButton.addTarget(self, action: #selector(goToButtonClicked), for: .touchUpInside)
         statusButton.addTarget(self, action: #selector(statusButtonClicked), for: .touchUpInside)

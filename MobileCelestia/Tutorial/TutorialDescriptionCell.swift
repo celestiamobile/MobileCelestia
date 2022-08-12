@@ -12,8 +12,13 @@
 import UIKit
 
 class TutorialDescriptionCell: UITableViewCell {
+    private enum Constants {
+        static let iconDimension: CGFloat = 44
+        static let gapHorizontal: CGFloat = 16
+    }
+
     private lazy var label = UILabel(textStyle: .body)
-    private lazy var iv = IconView(baseSize: CGSize(width: 44, height: 44)) { imageView in
+    private lazy var iv = IconView(baseSize: CGSize(width: Constants.iconDimension, height: Constants.iconDimension)) { imageView in
         imageView.tintColor = .darkLabel
         imageView.contentMode = .scaleAspectFit
     }
@@ -37,15 +42,12 @@ private extension TutorialDescriptionCell {
         selectionStyle = .none
         backgroundColor = .clear
 
-        let verticalSpacing: CGFloat = 12
-        let horizontalSpacing: CGFloat = 16
-
         iv.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(iv)
         NSLayoutConstraint.activate([
-            iv.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: horizontalSpacing),
-            iv.topAnchor.constraint(equalTo: contentView.topAnchor, constant: verticalSpacing),
-            iv.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -verticalSpacing),
+            iv.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: GlobalConstants.listItemMarginHorizontal),
+            iv.topAnchor.constraint(equalTo: contentView.topAnchor, constant: GlobalConstants.listItemMarginVertical),
+            iv.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -GlobalConstants.listItemMarginVertical),
         ])
 
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -54,18 +56,18 @@ private extension TutorialDescriptionCell {
         label.numberOfLines = 0
 
         NSLayoutConstraint.activate([
-            label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -horizontalSpacing),
-            label.leadingAnchor.constraint(equalTo: iv.trailingAnchor, constant: horizontalSpacing),
-            label.topAnchor.constraint(equalTo: contentView.topAnchor, constant: verticalSpacing),
+            label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -GlobalConstants.listItemMarginHorizontal),
+            label.leadingAnchor.constraint(equalTo: iv.trailingAnchor, constant: Constants.gapHorizontal),
+            label.topAnchor.constraint(equalTo: contentView.topAnchor, constant: GlobalConstants.listItemMarginVertical),
             {
                 let cons =
-                label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -verticalSpacing)
+                label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -GlobalConstants.listItemMarginVertical)
                 cons.priority = .defaultHigh
                 return cons
             }()
         ])
 
-        let textBottomConstraint = label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -verticalSpacing)
+        let textBottomConstraint = label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -GlobalConstants.listItemMarginVertical)
         textBottomConstraint.priority = .defaultLow
         NSLayoutConstraint.activate([textBottomConstraint])
     }

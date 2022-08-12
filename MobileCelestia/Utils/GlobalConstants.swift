@@ -1,0 +1,59 @@
+//
+// GlobalConstants.swift
+//
+// Copyright © 2022 Celestia Development Team. All rights reserved.
+//
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either version 2
+// of the License, or (at your option) any later version.
+//
+
+import CoreGraphics
+import UIKit
+
+enum GlobalConstants {
+    static let listItemMarginHorizontal: CGFloat = 16
+    static let listItemMarginVertical: CGFloat = 12
+    static let listItemGapHorizontal: CGFloat = 8
+    static let listItemGapVertical: CGFloat = 8
+
+    static let pageMarginHorizontal: CGFloat = 16
+    static let pageMarginVertical: CGFloat = 12
+    static let pageGapVertical: CGFloat = 12
+    static let pageGapHorizontal: CGFloat = 8
+    static let pageTextGapHorizontal: CGFloat = 12
+    static let pageTextGapVertical: CGFloat = 8
+
+    static let listTextGapVertical: CGFloat = 4
+
+    static let listItemAccessoryMinMarginVertical: CGFloat = 6
+
+    static let listItemSeparatorHeight: CGFloat = 0.5
+    static let listItemSeparatorInsetLeading: CGFloat = 16
+
+    static let bottomControlViewItemDimension: CGFloat = 52
+    static let bottomControlViewMarginHorizontal: CGFloat = 4
+    static let bottomControlViewMarginVertical: CGFloat = 2
+    static let bottomControlViewDimension: CGFloat = 60
+    static let bottomControlContainerCornerRadius: CGFloat = 8
+
+    static let baseCellHeight: CGFloat = 44
+
+    static func preferredUIElementScaling(for traitCollection: UITraitCollection) -> CGFloat {
+        #if targetEnvironment(macCatalyst)
+        if #available(iOS 14.0, *) {
+            // Mac idiom, needs scaling
+            if traitCollection.userInterfaceIdiom == .mac {
+                return 0.77
+            }
+            // iPad idiom no need for scaling
+            return 1
+        }
+        // macCatalyst 13, only iPad idiom is available
+        return 1
+        #else
+        return 1
+        #endif
+    }
+}

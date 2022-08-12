@@ -12,6 +12,9 @@
 import UIKit
 
 class LoadingViewController: UIViewController {
+    private enum Constants {
+        static let loadingGapVertical: CGFloat = 24
+    }
 
     private var statusLabel = UILabel(textStyle: .body)
 
@@ -56,7 +59,7 @@ private extension LoadingViewController {
         statusLabel.translatesAutoresizingMaskIntoConstraints = false
         statusLabel.textColor = .darkLabel
         NSLayoutConstraint.activate([
-            statusLabel.topAnchor.constraint(equalTo: iconImageView.bottomAnchor, constant: 24),
+            statusLabel.topAnchor.constraint(equalTo: iconImageView.bottomAnchor, constant: Constants.loadingGapVertical),
             statusLabel.centerXAnchor.constraint(equalTo: container.centerXAnchor),
             statusLabel.bottomAnchor.constraint(equalTo: container.bottomAnchor),
         ])

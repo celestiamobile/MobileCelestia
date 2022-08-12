@@ -105,6 +105,12 @@ class ControlButton: ImageButtonView<ControlButton.Configuration> {
 }
 
 final class CelestiaControlView: UIView {
+    private enum Constants {
+        static let controlViewMargin: CGFloat = 8
+        static let controlViewSpacing: CGFloat = 6
+        static let cornerRadius: CGFloat = 8
+    }
+
     private let buttonProperties: [CelestiaControlButton]
 
     weak var delegate: CelestiaControlViewDelegate?
@@ -118,7 +124,8 @@ final class CelestiaControlView: UIView {
 
         backgroundColor = .clear
         clipsToBounds = true
-        layer.cornerRadius = 8
+        layer.cornerCurve = .continuous
+        layer.cornerRadius = Constants.cornerRadius
 
         let buttons = items.map { item in
             return ControlButton(button: item) { [weak self] action in
@@ -155,14 +162,14 @@ final class CelestiaControlView: UIView {
         let stackView = UIStackView(arrangedSubviews: buttons)
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
-        stackView.spacing = 6
+        stackView.spacing = Constants.controlViewSpacing
 
         addSubview(stackView)
         NSLayoutConstraint.activate([
-            stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 8),
-            stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -8),
-            stackView.topAnchor.constraint(equalTo: topAnchor, constant: 8),
-            stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -8)
+            stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.controlViewMargin),
+            stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Constants.controlViewMargin),
+            stackView.topAnchor.constraint(equalTo: topAnchor, constant: Constants.controlViewMargin),
+            stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Constants.controlViewMargin)
         ])
     }
 

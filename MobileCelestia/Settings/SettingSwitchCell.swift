@@ -46,18 +46,18 @@ private extension SettingSwitchCell {
         label.numberOfLines = 0
 
         NSLayoutConstraint.activate([
-            label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: GlobalConstants.listItemMarginHorizontal),
             label.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            label.topAnchor.constraint(greaterThanOrEqualTo: contentView.topAnchor, constant: 12),
+            label.topAnchor.constraint(greaterThanOrEqualTo: contentView.topAnchor, constant: GlobalConstants.listItemMarginVertical),
         ])
 
         `switch`.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(`switch`)
         NSLayoutConstraint.activate([
-            `switch`.leadingAnchor.constraint(equalTo: label.trailingAnchor, constant: 8),
-            `switch`.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            `switch`.leadingAnchor.constraint(equalTo: label.trailingAnchor, constant: GlobalConstants.listItemGapHorizontal),
+            `switch`.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -GlobalConstants.listItemMarginHorizontal),
             `switch`.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            `switch`.topAnchor.constraint(greaterThanOrEqualTo: contentView.topAnchor, constant: 6),
+            `switch`.topAnchor.constraint(greaterThanOrEqualTo: contentView.topAnchor, constant: GlobalConstants.listItemAccessoryMinMarginVertical),
         ])
         `switch`.addTarget(self, action: #selector(handleToggle(_:)), for: .valueChanged)
     }

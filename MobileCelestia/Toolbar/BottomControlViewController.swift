@@ -76,7 +76,10 @@ class BottomControlViewController: UIViewController {
     override var preferredContentSize: CGSize {
         get {
             let scaling = view.textScaling
-            return CGSize(width: CGFloat(60 * actions.count) * scaling + 16 + 8, height: (60 * scaling + 8 + 4).rounded(.up))
+            return CGSize(
+                width: GlobalConstants.bottomControlViewDimension * CGFloat(actions.count) * scaling + GlobalConstants.bottomControlViewMarginHorizontal * 2 + GlobalConstants.pageMarginHorizontal,
+                height: (GlobalConstants.bottomControlViewDimension * scaling + GlobalConstants.bottomControlViewMarginVertical * 2 + GlobalConstants.pageMarginVertical).rounded(.up)
+            )
         }
         set {}
     }
@@ -112,7 +115,7 @@ extension BottomControlViewController: UICollectionViewDataSource {
         case .groupedActions(let actions):
             cell.touchUpHandler = { [unowned self] button, inside in
                 guard inside else { return }
-                self.showSelection(nil, options: actions.map { $0.title ?? "" }, sourceView: button, sourceRect: button.bounds) { [unowned self] selectedIndex in
+                self.showSelection(nil, options: actions.map { $0.title ?? "" }, source: .view(view: button, sourceRect: nil)) { [unowned self] selectedIndex in
                     if let index = selectedIndex {
                         if self.finishOnSelection {
                             self.dismiss(animated: true, completion: nil)
@@ -133,12 +136,6 @@ extension BottomControlViewController: UICollectionViewDataSource {
         }
         return cell
     }
-
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        let sup = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Separator", for: indexPath) as! ToolbarSeparatorCell
-        sup.isHidden = indexPath.section == actions.count - 1
-        return sup
-    }
 }
 
 private extension BottomControlViewController {
@@ -158,20 +155,21 @@ private extension BottomControlViewController {
         NSLayoutConstraint.activate([
             backgroundView.trailingAnchor.constraint(equalTo: view!.trailingAnchor),
             backgroundView.topAnchor.constraint(equalTo: view!.topAnchor),
-            backgroundView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            backgroundView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -8)
+            backgroundView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: GlobalConstants.pageMarginHorizontal),
+            backgroundView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -GlobalConstants.pageMarginVertical)
         ])
 
         backgroundView.layer.masksToBounds = true
-        backgroundView.layer.cornerRadius = 8
+        backgroundView.layer.cornerRadius = GlobalConstants.bottomControlContainerCornerRadius
+        backgroundView.layer.cornerCurve = .continuous
 
         let contentView = backgroundView.contentView
         contentView.addSubview(collectionView)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
-            collectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 4),
-            collectionView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 2),
+            collectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            collectionView.topAnchor.constraint(equalTo: contentView.topAnchor),
             collectionView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             collectionView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
         ])
@@ -227,14 +225,19 @@ extension BottomControlViewController: NSTouchBarDelegate {
 #endif
 
 class BottomActionLayout: UICollectionViewFlowLayout {
-    private let baseItemSize = CGSize(width: 60, height: 60)
+    private let baseItemSize = CGSize(width: GlobalConstants.bottomControlViewDimension, height: GlobalConstants.bottomControlViewDimension)
 
     override func prepare() {
         let scaling = collectionView?.textScaling ?? 1
         itemSize = baseItemSize.applying(CGAffineTransform(scaleX: scaling, y: scaling))
         minimumLineSpacing = 0
         minimumInteritemSpacing = 0
-        sectionInset = .zero
+        sectionInset = UIEdgeInsets(
+            top: GlobalConstants.bottomControlViewMarginVertical,
+            left: GlobalConstants.bottomControlViewMarginHorizontal,
+            bottom: GlobalConstants.bottomControlViewMarginVertical,
+            right: GlobalConstants.bottomControlViewMarginHorizontal
+        )
         scrollDirection = .horizontal
         super.prepare()
     }

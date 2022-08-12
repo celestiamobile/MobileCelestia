@@ -52,9 +52,9 @@ private extension OnboardViewController {
         view.addSubview(welcomeView)
 
         NSLayoutConstraint.activate([
-            welcomeView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 24),
-            welcomeView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -24),
-            welcomeView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
+            welcomeView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: GlobalConstants.pageMarginHorizontal),
+            welcomeView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -GlobalConstants.pageMarginHorizontal),
+            welcomeView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: GlobalConstants.pageMarginVertical),
         ])
 
         let tutorialController = TutorialViewController(actionHandler: { [unowned self] (action) in
@@ -72,7 +72,7 @@ private extension OnboardViewController {
         NSLayoutConstraint.activate([
             tutorialController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tutorialController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tutorialController.view.topAnchor.constraint(equalTo: welcomeView.bottomAnchor, constant: 16),
+            tutorialController.view.topAnchor.constraint(equalTo: welcomeView.bottomAnchor, constant: GlobalConstants.pageGapVertical),
             tutorialController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
 

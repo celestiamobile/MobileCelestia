@@ -49,10 +49,10 @@ private extension TextViewController {
         view.addSubview(textView)
 
         NSLayoutConstraint.activate([
-            textView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            textView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
-            textView.topAnchor.constraint(equalTo: view.topAnchor, constant: 8),
-            textView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -8),
+            textView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: GlobalConstants.pageMarginHorizontal),
+            textView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -GlobalConstants.pageMarginHorizontal),
+            textView.topAnchor.constraint(equalTo: view.topAnchor, constant: GlobalConstants.pageMarginVertical),
+            textView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -GlobalConstants.pageMarginVertical),
         ])
 
         textView.text = text

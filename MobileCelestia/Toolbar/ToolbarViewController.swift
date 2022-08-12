@@ -59,6 +59,11 @@ enum AppToolbarAction: String {
 }
 
 class ToolbarViewController: UIViewController {
+    private enum Constants {
+        static let width: CGFloat = 220
+        static let separatorContainerHeight: CGFloat = 6
+    }
+
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
 
     private let actions: [[ToolbarAction]]
@@ -91,7 +96,7 @@ class ToolbarViewController: UIViewController {
 
     override var preferredContentSize: CGSize {
         get {
-            return CGSize(width: 220, height: 0)
+            return CGSize(width: Constants.width, height: 0)
         }
         set {}
     }
@@ -161,9 +166,9 @@ private extension ToolbarViewController {
         let layout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
         layout.scrollDirection = .vertical
 
-        layout.itemSize = CGSize(width: 220, height: 44)
-        layout.estimatedItemSize = layout.itemSize
-        layout.footerReferenceSize = CGSize(width: 200, height: 6)
+        layout.itemSize = UICollectionViewFlowLayout.automaticSize
+        layout.estimatedItemSize = CGSize(width: Constants.width, height: GlobalConstants.baseCellHeight)
+        layout.footerReferenceSize = CGSize(width: Constants.width, height: Constants.separatorContainerHeight)
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
 

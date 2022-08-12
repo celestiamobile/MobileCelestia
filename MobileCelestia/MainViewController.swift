@@ -482,17 +482,7 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     private func presentShare() {
-        let centerView = UIView()
-        centerView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(centerView)
-        NSLayoutConstraint.activate([
-            centerView.widthAnchor.constraint(equalToConstant: 1),
-            centerView.heightAnchor.constraint(equalToConstant: 1),
-            centerView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            centerView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-        ])
-        showSelection(nil, options: [CelestiaString("Image", comment: ""), CelestiaString("URL", comment: "")], sourceView: centerView, sourceRect: CGRect(x: 0, y: 0, width: 1, height: 1)) { [weak self] index in
-            centerView.removeFromSuperview()
+        showSelection(nil, options: [CelestiaString("Image", comment: ""), CelestiaString("URL", comment: "")], source: nil) { [weak self] index in
             guard let self = self, let index = index else { return }
             if index == 0 {
                 self.shareImage()
@@ -623,14 +613,14 @@ extension MainViewController: CelestiaControllerDelegate {
 
     @objc private func presentHelp() {
         let url = URL.fromGuide(guideItemID: "823FB82E-F660-BE54-F3E4-681F5BFD365D", language: AppCore.language, shareable: false)
-        let vc = FallbackWebViewController(url: url, fallbackViewControllerCreator: OnboardViewController() { [unowned self] (action) in
+        let vc = OnboardViewController() { [unowned self] (action) in
             switch action {
             case .tutorial(let tutorial):
                 self.handleTutorialAction(tutorial)
             case .url(let url):
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
             }
-        })
+        }
         showViewController(vc)
     }
 
@@ -705,7 +695,7 @@ extension MainViewController: CelestiaControllerDelegate {
 
     private func showMarkMenu(with selection: Selection, with sender: UIView) {
         let options = (0...MarkerRepresentation.crosshair.rawValue).map{ MarkerRepresentation(rawValue: $0)?.localizedTitle ?? "" } + [CelestiaString("Unmark", comment: "")]
-        front?.showSelection(CelestiaString("Mark", comment: ""), options: options, sourceView: sender, sourceRect: sender.bounds) { [weak self] index in
+        front?.showSelection(CelestiaString("Mark", comment: ""), options: options, source: .view(view: sender, sourceRect: nil)) { [weak self] index in
             guard let self = self, let index = index else { return }
             if let marker = MarkerRepresentation(rawValue: UInt(index)) {
                 self.core.markAsync(selection, markerType: marker)
@@ -717,7 +707,7 @@ extension MainViewController: CelestiaControllerDelegate {
 
     private func showAlternateSurfaces(of selection: Selection, with sender: UIView) {
         guard let alternativeSurfaces = selection.body?.alternateSurfaceNames, alternativeSurfaces.count > 0 else { return }
-        front?.showSelection(CelestiaString("Alternate Surfaces", comment: ""), options: [CelestiaString("Default", comment: "")] + alternativeSurfaces, sourceView: sender, sourceRect: sender.bounds) { [weak self] index in
+        front?.showSelection(CelestiaString("Alternate Surfaces", comment: ""), options: [CelestiaString("Default", comment: "")] + alternativeSurfaces, source: .view(view: sender, sourceRect: nil)) { [weak self] index in
             guard let self = self, let index = index else { return }
 
             if index == 0 {

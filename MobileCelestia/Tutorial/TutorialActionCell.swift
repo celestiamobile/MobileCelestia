@@ -12,6 +12,11 @@
 import UIKit
 
 class TutorialActionCell: UITableViewCell {
+    private enum Constants {
+        static let iconDimension: CGFloat = 44
+        static let gapHorizontal: CGFloat = 16
+    }
+
     var title: String? { didSet { button.setTitle(title, for: .normal) } }
     var actionHandler: (() -> Void)?
 
@@ -37,10 +42,10 @@ private extension TutorialActionCell {
         button.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
-            button.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 8),
-            button.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -8),
-            button.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-            button.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            button.topAnchor.constraint(equalTo: contentView.topAnchor, constant: GlobalConstants.listTextGapVertical),
+            button.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -GlobalConstants.listTextGapVertical),
+            button.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: GlobalConstants.listItemMarginHorizontal),
+            button.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -GlobalConstants.listItemMarginHorizontal),
         ])
 
         button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)

@@ -146,7 +146,6 @@ class BrowserSidebarController: BaseTableViewController {
         snapshot.appendSections([.single])
         snapshot.appendItems(browserRoots, toSection: .single)
         tableView.dataSource = dataSource
-        tableView.estimatedRowHeight = 44
         tableView.rowHeight = UITableView.automaticDimension
         dataSource.apply(snapshot, animatingDifferences: false, completion: nil)
     }

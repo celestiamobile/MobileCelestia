@@ -64,11 +64,11 @@ private extension DestinationDetailViewController {
         contentContainer.translatesAutoresizingMaskIntoConstraints = false
         scrollView.addSubview(contentContainer)
         NSLayoutConstraint.activate([
-            contentContainer.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 12),
-            contentContainer.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -12),
-            contentContainer.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: 16),
-            contentContainer.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor, constant: -16),
-            contentContainer.widthAnchor.constraint(equalTo: scrollView.frameLayoutGuide.widthAnchor, constant:  -32)
+            contentContainer.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: GlobalConstants.pageMarginVertical),
+            contentContainer.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -GlobalConstants.pageGapVertical),
+            contentContainer.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: GlobalConstants.pageMarginHorizontal),
+            contentContainer.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor, constant: -GlobalConstants.pageMarginHorizontal),
+            scrollView.contentLayoutGuide.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
         ])
 
         contentContainer.backgroundColor = .clear
@@ -76,7 +76,7 @@ private extension DestinationDetailViewController {
         contentStack.translatesAutoresizingMaskIntoConstraints = false
         contentContainer.addSubview(contentStack)
         contentStack.axis = .vertical
-        contentStack.spacing = 8
+        contentStack.spacing = GlobalConstants.pageGapVertical
 
         NSLayoutConstraint.activate([
             contentStack.topAnchor.constraint(equalTo: contentContainer.topAnchor),
@@ -97,10 +97,10 @@ private extension DestinationDetailViewController {
         view.addSubview(goToButton)
 
         NSLayoutConstraint.activate([
-            goToButton.topAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: 8),
-            goToButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -12),
-            goToButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
-            goToButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            goToButton.topAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            goToButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -GlobalConstants.pageMarginVertical),
+            goToButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: GlobalConstants.pageMarginHorizontal),
+            goToButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -GlobalConstants.pageMarginHorizontal),
         ])
         goToButton.addTarget(self, action: #selector(goToButtonClicked), for: .touchUpInside)
 

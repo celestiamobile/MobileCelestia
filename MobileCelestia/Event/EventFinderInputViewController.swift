@@ -140,7 +140,7 @@ extension EventFinderInputViewController {
             if let cell = tableView.cellForRow(at: indexPath) {
                 showSelection(CelestiaString("Please choose an object.", comment: ""),
                               options: selectableObjects.map { LocalizedString($0, "celestia-data") } + [CelestiaString("Other", comment: "")],
-                              sourceView: cell, sourceRect: cell.bounds) { [weak self] index in
+                              source: .view(view: cell, sourceRect: nil)) { [weak self] index in
                     guard let self = self, let index = index else { return }
                     if index >= self.selectableObjects.count {
                         // User choose other, show text input for the object name

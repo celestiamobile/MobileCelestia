@@ -87,7 +87,7 @@ class CelestiaInteractionController: UIViewController {
     }
 
     struct Constants {
-        static let controlViewTrailingMargin: CGFloat = 8
+        static let controlViewMarginTrailing: CGFloat = 8
         static let controlViewHideAnimationDuration: TimeInterval = 0.2
         static let controlViewShowAnimationDuration: TimeInterval = 0.2
     }
@@ -178,7 +178,7 @@ class CelestiaInteractionController: UIViewController {
 
         NSLayoutConstraint.activate([
             activeControlView.centerYAnchor.constraint(equalTo: container.centerYAnchor),
-            activeControlView.trailingAnchor.constraint(equalTo: container.safeAreaLayoutGuide.trailingAnchor, constant: -Constants.controlViewTrailingMargin),
+            activeControlView.trailingAnchor.constraint(equalTo: container.safeAreaLayoutGuide.trailingAnchor, constant: -Constants.controlViewMarginTrailing),
         ])
 
         currentControlView = activeControlView

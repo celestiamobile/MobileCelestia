@@ -37,7 +37,7 @@ class ToolbarImageButton: ImageButtonView<ToolbarImageButton.Configuration> {
             button.contentVerticalAlignment = .fill
             button.tintColor = .darkLabel
             return button
-        }(), boundingBoxSize: CGSize(width: 52, height: 52), configurationBuilder: Configuration(image: image, touchDownHandler: touchDownHandler, touchUpHandler: touchUpHandler))
+        }(), boundingBoxSize: CGSize(width: GlobalConstants.bottomControlViewItemDimension, height: GlobalConstants.bottomControlViewItemDimension), configurationBuilder: Configuration(image: image, touchDownHandler: touchDownHandler, touchUpHandler: touchUpHandler))
     }
 
     override func configurationUpdated(_ configuration: Configuration, button: UIButton) {
@@ -117,6 +117,12 @@ class ToolbarImageButtonCell: UICollectionViewCell, ToolbarCell {
 }
 
 class ToolbarImageTextButtonCell: UICollectionViewCell, ToolbarCell {
+    private enum Constants {
+        static let iconDimension: CGFloat = 24
+        static let highlightAnimationDuration: TimeInterval = 0.1
+        static let unhighlightAnimationDuration: TimeInterval = 0.05
+    }
+
     private class SelectionView: UIControl {
         override init(frame: CGRect) {
             super.init(frame: frame)
@@ -129,7 +135,7 @@ class ToolbarImageTextButtonCell: UICollectionViewCell, ToolbarCell {
         }
 
         override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
-            UIView.animate(withDuration: 0.10) {
+            UIView.animate(withDuration: Constants.highlightAnimationDuration) {
                 var color = UIColor.darkSelection
                 if #available(iOS 13.0, *) {
                     color = color.resolvedColor(with: self.traitCollection)
@@ -140,7 +146,7 @@ class ToolbarImageTextButtonCell: UICollectionViewCell, ToolbarCell {
         }
 
         override func endTracking(_ touch: UITouch?, with event: UIEvent?) {
-            UIView.animate(withDuration: 0.05) {
+            UIView.animate(withDuration: Constants.unhighlightAnimationDuration) {
                 self.layer.backgroundColor = UIColor.clear.cgColor
             }
         }
@@ -156,13 +162,7 @@ class ToolbarImageTextButtonCell: UICollectionViewCell, ToolbarCell {
     var touchUpHandler: ((UIButton, Bool) -> Void)?
 
     private lazy var imageView: IconView = {
-        let ratio: CGFloat
-        if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
-            ratio = 0.77
-        } else {
-            ratio = 1.0
-        }
-        let dimension = ratio * 24
+        let dimension = GlobalConstants.preferredUIElementScaling(for: traitCollection) * Constants.iconDimension
         return IconView(baseSize: CGSize(width: dimension, height: dimension)) { imageView in
             imageView.contentMode = .scaleAspectFit
             imageView.tintColor = .darkLabel
@@ -199,8 +199,8 @@ class ToolbarImageTextButtonCell: UICollectionViewCell, ToolbarCell {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             imageView.centerYAnchor.constraint(equalTo: bg.centerYAnchor),
-            imageView.leadingAnchor.constraint(equalTo: bg.leadingAnchor, constant: 16),
-            imageView.topAnchor.constraint(greaterThanOrEqualTo: bg.topAnchor, constant: 6),
+            imageView.leadingAnchor.constraint(equalTo: bg.leadingAnchor, constant: GlobalConstants.listItemMarginHorizontal),
+            imageView.topAnchor.constraint(greaterThanOrEqualTo: bg.topAnchor, constant: GlobalConstants.listItemAccessoryMinMarginVertical),
         ])
 
         bg.addSubview(label)
@@ -208,9 +208,9 @@ class ToolbarImageTextButtonCell: UICollectionViewCell, ToolbarCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             label.centerYAnchor.constraint(equalTo: bg.centerYAnchor),
-            label.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: 12),
-            label.trailingAnchor.constraint(equalTo: bg.trailingAnchor, constant: -16),
-            label.topAnchor.constraint(greaterThanOrEqualTo: bg.topAnchor, constant: 12),
+            label.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: GlobalConstants.listItemMarginVertical),
+            label.trailingAnchor.constraint(equalTo: bg.trailingAnchor, constant: -GlobalConstants.listItemMarginHorizontal),
+            label.topAnchor.constraint(greaterThanOrEqualTo: bg.topAnchor, constant: GlobalConstants.listItemMarginVertical),
         ])
         label.textColor = .darkLabel
     }
@@ -244,6 +244,10 @@ class ToolbarImageTextButtonCell: UICollectionViewCell, ToolbarCell {
 }
 
 class ToolbarSeparatorCell: UICollectionViewCell {
+    private enum Constants {
+        static let separatorInsetLeading: CGFloat = 32
+    }
+
     let sep = UIView()
 
     override init(frame: CGRect) {
@@ -260,9 +264,9 @@ class ToolbarSeparatorCell: UICollectionViewCell {
         sep.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(sep)
         NSLayoutConstraint.activate([
-            sep.heightAnchor.constraint(equalToConstant: 0.5),
+            sep.heightAnchor.constraint(equalToConstant: GlobalConstants.listItemSeparatorHeight),
             sep.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            sep.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 32),
+            sep.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Constants.separatorInsetLeading),
             sep.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
         ])
     }

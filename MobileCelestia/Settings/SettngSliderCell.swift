@@ -64,10 +64,10 @@ private extension SettingSliderCell {
         label.numberOfLines = 0
 
         NSLayoutConstraint.activate([
-            label.leadingAnchor.constraint(equalTo: topContainer.leadingAnchor, constant: 16),
-            label.trailingAnchor.constraint(equalTo: topContainer.trailingAnchor, constant: -16),
+            label.leadingAnchor.constraint(equalTo: topContainer.leadingAnchor, constant: GlobalConstants.listItemMarginHorizontal),
+            label.trailingAnchor.constraint(equalTo: topContainer.trailingAnchor, constant: -GlobalConstants.listItemMarginHorizontal),
             label.centerYAnchor.constraint(equalTo: topContainer.centerYAnchor),
-            label.topAnchor.constraint(equalTo: topContainer.topAnchor, constant: 12),
+            label.topAnchor.constraint(equalTo: topContainer.topAnchor, constant: GlobalConstants.listItemMarginVertical),
         ])
 
         slider.minimumValue = 0
@@ -75,10 +75,10 @@ private extension SettingSliderCell {
         slider.translatesAutoresizingMaskIntoConstraints = false
         bottomContainer.addSubview(slider)
         NSLayoutConstraint.activate([
-            slider.leadingAnchor.constraint(equalTo: bottomContainer.leadingAnchor, constant: 16),
-            slider.trailingAnchor.constraint(equalTo: bottomContainer.trailingAnchor, constant: -16),
+            slider.leadingAnchor.constraint(equalTo: bottomContainer.leadingAnchor, constant: GlobalConstants.listItemMarginHorizontal),
+            slider.trailingAnchor.constraint(equalTo: bottomContainer.trailingAnchor, constant: -GlobalConstants.listItemMarginHorizontal),
             slider.topAnchor.constraint(equalTo: bottomContainer.topAnchor),
-            slider.bottomAnchor.constraint(equalTo: bottomContainer.bottomAnchor, constant: -12),
+            slider.bottomAnchor.constraint(equalTo: bottomContainer.bottomAnchor, constant: -GlobalConstants.listItemMarginVertical),
         ])
         slider.addTarget(self, action: #selector(handleSlideEnd(_:)), for: .touchUpInside)
         slider.addTarget(self, action: #selector(handleSlideEnd(_:)), for: .touchUpOutside)

@@ -13,9 +13,12 @@ import UIKit
 
 class SheetPresentationController: UIPresentationController {
     private enum Constants {
-        static let sheetHandleHeight: CGFloat = 30
+        static let sheetHandleBaseHeight: CGFloat = 6
+        static let sheetHandleBaseWidth: CGFloat = 35
+        static let sheetHandleContainerCornerRadius: CGFloat = 6
+        static let sheetHandleContainerBaseHeight: CGFloat = 30
+        static let sheetCloseButtonPaddingRatio: CGFloat = 0.4444
         static let sheetMaxHeightRatio: CGFloat = 0.9
-        static let sheetPaddingHorizontal: CGFloat = 16
         static let sheetMinWidthRatio: CGFloat = 0.3
         static let sheetMaxWidthRatio: CGFloat = 0.5
     }
@@ -23,6 +26,7 @@ class SheetPresentationController: UIPresentationController {
     class Grabber: UIView {
         override init(frame: CGRect) {
             super.init(frame: frame)
+            layer.cornerCurve = .continuous
             backgroundColor = .tertiaryLabel
         }
 
@@ -49,8 +53,8 @@ class SheetPresentationController: UIPresentationController {
 
     private lazy var closeButton: UIButton = {
         let button = EdgeAutoSizingImageButton(type: .system)
-        button.edgeWidthRatio = 0.4444
-        button.edgeHeightRatio = 0.4444
+        button.edgeWidthRatio = Constants.sheetCloseButtonPaddingRatio
+        button.edgeHeightRatio = Constants.sheetCloseButtonPaddingRatio
         button.tintColor = .secondaryLabel
         button.contentHorizontalAlignment = .fill
         button.contentVerticalAlignment = .fill
@@ -59,10 +63,10 @@ class SheetPresentationController: UIPresentationController {
         return button
     }()
 
-    private var sheetHandleHeightConstraint: NSLayoutConstraint?
+    private var sheetHandleContainerHeightConstraint: NSLayoutConstraint?
     private lazy var sheetHandle: UIView = {
         let handleView = UIView()
-        let grabber = AnyAutoSizingView(viewBuilder: Grabber(), baseSize: CGSize(width: 35, height: 6))
+        let grabber = AnyAutoSizingView(viewBuilder: Grabber(), baseSize: CGSize(width: Constants.sheetHandleBaseWidth, height: Constants.sheetHandleBaseHeight))
         handleView.addSubview(grabber)
         let closeButtonContainer = UIView()
         closeButtonContainer.translatesAutoresizingMaskIntoConstraints = false
@@ -95,7 +99,7 @@ class SheetPresentationController: UIPresentationController {
             sheetContainer.backgroundColor = .darkSecondaryBackground
         }
         sheetContainer.addSubview(sheetHandle)
-        sheetContainer.layer.cornerRadius = 6
+        sheetContainer.layer.cornerRadius = Constants.sheetHandleContainerCornerRadius
         sheetContainer.clipsToBounds = true
         sheetHandle.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -103,16 +107,16 @@ class SheetPresentationController: UIPresentationController {
             sheetHandle.trailingAnchor.constraint(equalTo: sheetContainer.trailingAnchor),
             sheetHandle.topAnchor.constraint(equalTo: sheetContainer.topAnchor),
         ])
-        let sheetHandleHeightConstraint = sheetHandle.heightAnchor.constraint(equalToConstant: sheetHandleHeight)
-        sheetHandleHeightConstraint.isActive = true
-        self.sheetHandleHeightConstraint = sheetHandleHeightConstraint
+        let sheetHandleContainerHeightConstraint = sheetHandle.heightAnchor.constraint(equalToConstant: sheetHandleContainerHeight)
+        sheetHandleContainerHeightConstraint.isActive = true
+        self.sheetHandleContainerHeightConstraint = sheetHandleContainerHeightConstraint
         let gesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
         sheetHandle.addGestureRecognizer(gesture)
         return sheetContainer
     }()
 
-    private var sheetHandleHeight: CGFloat {
-        return Constants.sheetHandleHeight * sheetHandle.textScaling
+    private var sheetHandleContainerHeight: CGFloat {
+        return Constants.sheetHandleContainerBaseHeight * sheetHandle.textScaling
     }
 
     override func containerViewWillLayoutSubviews() {
@@ -121,18 +125,18 @@ class SheetPresentationController: UIPresentationController {
         let viewFrame = frameOfPresentedViewInContainerView
         presented.frame = viewFrame
 
-        sheetContainer.frame = CGRect(origin: CGPoint(x: viewFrame.minX, y: viewFrame.minY - sheetHandleHeight), size: CGSize(width: viewFrame.width, height: viewFrame.height + sheetHandleHeight))
+        sheetContainer.frame = CGRect(origin: CGPoint(x: viewFrame.minX, y: viewFrame.minY - sheetHandleContainerHeight), size: CGSize(width: viewFrame.width, height: viewFrame.height + sheetHandleContainerHeight))
     }
 
     override func size(forChildContentContainer container: UIContentContainer,
                        withParentContainerSize parentSize: CGSize) -> CGSize {
         var size: CGSize = .zero
-        let height = min(parentSize.height - containerView!.safeAreaInsets.top, parentSize.height * Constants.sheetMaxHeightRatio) - sheetHandleHeight
+        let height = min(parentSize.height - containerView!.safeAreaInsets.top, parentSize.height * Constants.sheetMaxHeightRatio) - sheetHandleContainerHeight
         if traitCollection.horizontalSizeClass == .compact && traitCollection.verticalSizeClass == .regular {
             size = CGSize(width: parentSize.width, height: height)
         } else {
             let containerWidth = parentSize.width
-            var widthUpperBound = containerWidth - containerView!.safeAreaInsets.left - containerView!.safeAreaInsets.right - 2 * Constants.sheetPaddingHorizontal
+            var widthUpperBound = containerWidth - containerView!.safeAreaInsets.left - containerView!.safeAreaInsets.right - 2 * GlobalConstants.pageMarginHorizontal
             widthUpperBound = min(widthUpperBound, containerWidth * Constants.sheetMaxWidthRatio)
             let widthLowerBound = min(widthUpperBound, containerWidth * Constants.sheetMinWidthRatio)
             let width = max(widthLowerBound, min(widthUpperBound, presentedViewController.preferredContentSize.width))
@@ -149,9 +153,9 @@ class SheetPresentationController: UIPresentationController {
             frame.origin = CGPoint(x: 0, y: containerView!.frame.height - frame.height)
         } else {
             if traitCollection.layoutDirection == .rightToLeft {
-                frame.origin = CGPoint(x: containerView!.frame.width - containerView!.safeAreaInsets.right - frame.width - Constants.sheetPaddingHorizontal, y: containerView!.frame.height - frame.height)
+                frame.origin = CGPoint(x: containerView!.frame.width - containerView!.safeAreaInsets.right - frame.width - GlobalConstants.pageMarginHorizontal, y: containerView!.frame.height - frame.height)
             } else {
-                frame.origin = CGPoint(x: containerView!.safeAreaInsets.left + Constants.sheetPaddingHorizontal, y: containerView!.frame.height - frame.height)
+                frame.origin = CGPoint(x: containerView!.safeAreaInsets.left + GlobalConstants.pageMarginHorizontal, y: containerView!.frame.height - frame.height)
             }
         }
         return frame
@@ -165,8 +169,8 @@ class SheetPresentationController: UIPresentationController {
 
         let viewFrame = frameOfPresentedViewInContainerView
 
-        let sheetContainerFrameFrom = CGRect(x: viewFrame.minX, y: containerView!.frame.height - sheetHandleHeight, width: viewFrame.width, height: viewFrame.height + sheetHandleHeight)
-        let sheetContainerFrameTo = CGRect(x: viewFrame.minX, y: containerView!.frame.height - sheetHandleHeight - viewFrame.height, width: viewFrame.width, height: viewFrame.height + sheetHandleHeight)
+        let sheetContainerFrameFrom = CGRect(x: viewFrame.minX, y: containerView!.frame.height - sheetHandleContainerHeight, width: viewFrame.width, height: viewFrame.height + sheetHandleContainerHeight)
+        let sheetContainerFrameTo = CGRect(x: viewFrame.minX, y: containerView!.frame.height - sheetHandleContainerHeight - viewFrame.height, width: viewFrame.width, height: viewFrame.height + sheetHandleContainerHeight)
 
         sheetContainer.frame = sheetContainerFrameFrom
 
@@ -184,20 +188,20 @@ class SheetPresentationController: UIPresentationController {
         super.traitCollectionDidChange(previousTraitCollection)
 
         if traitCollection.preferredContentSizeCategory != previousTraitCollection?.preferredContentSizeCategory {
-            sheetHandleHeightConstraint?.constant = sheetHandleHeight
+            sheetHandleContainerHeightConstraint?.constant = sheetHandleContainerHeight
 
             if containerView != nil, let presented = presentedView {
                 let viewFrame = frameOfPresentedViewInContainerView
                 presented.frame = viewFrame
 
-                sheetContainer.frame = CGRect(origin: CGPoint(x: viewFrame.minX, y: viewFrame.minY - sheetHandleHeight), size: CGSize(width: viewFrame.width, height: viewFrame.height + sheetHandleHeight))
+                sheetContainer.frame = CGRect(origin: CGPoint(x: viewFrame.minX, y: viewFrame.minY - sheetHandleContainerHeight), size: CGSize(width: viewFrame.width, height: viewFrame.height + sheetHandleContainerHeight))
             }
         }
     }
 
     override func dismissalTransitionWillBegin() {
         let viewFrame = frameOfPresentedViewInContainerView
-        let sheetContainerFrameTo = CGRect(x: viewFrame.minX, y: containerView!.frame.height - sheetHandleHeight, width: viewFrame.width, height: viewFrame.height + sheetHandleHeight)
+        let sheetContainerFrameTo = CGRect(x: viewFrame.minX, y: containerView!.frame.height - sheetHandleContainerHeight, width: viewFrame.width, height: viewFrame.height + sheetHandleContainerHeight)
 
         guard let coordinator = presentedViewController.transitionCoordinator else {
             sheetContainer.frame = sheetContainerFrameTo
@@ -224,9 +228,9 @@ private extension SheetPresentationController {
                     containerView.safeAreaInsets.top,
                     y
                 ),
-                containerView.frame.height - sheetHandleHeight - containerView.safeAreaInsets.bottom
+                containerView.frame.height - sheetHandleContainerHeight - containerView.safeAreaInsets.bottom
             )
-            presented.frame.origin = CGPoint(x: presented.frame.minX, y: y + sheetHandleHeight)
+            presented.frame.origin = CGPoint(x: presented.frame.minX, y: y + sheetHandleContainerHeight)
             sheetContainer.frame.origin = CGPoint(x: sheetContainer.frame.minX, y: y)
             gesture.setTranslation(.zero, in: sheetHandle)
         default:
