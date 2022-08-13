@@ -45,9 +45,9 @@ private extension TutorialDescriptionCell {
         iv.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(iv)
         NSLayoutConstraint.activate([
-            iv.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: GlobalConstants.listItemMarginHorizontal),
-            iv.topAnchor.constraint(equalTo: contentView.topAnchor, constant: GlobalConstants.listItemMarginVertical),
-            iv.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -GlobalConstants.listItemMarginVertical),
+            iv.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: GlobalConstants.listItemMediumMarginHorizontal),
+            iv.topAnchor.constraint(equalTo: contentView.topAnchor, constant: GlobalConstants.listItemMediumMarginVertical),
+            iv.bottomAnchor.constraint(lessThanOrEqualTo: contentView.bottomAnchor, constant: -GlobalConstants.listItemMediumMarginVertical),
         ])
 
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -56,18 +56,18 @@ private extension TutorialDescriptionCell {
         label.numberOfLines = 0
 
         NSLayoutConstraint.activate([
-            label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -GlobalConstants.listItemMarginHorizontal),
+            label.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -GlobalConstants.listItemMediumMarginHorizontal),
             label.leadingAnchor.constraint(equalTo: iv.trailingAnchor, constant: Constants.gapHorizontal),
-            label.topAnchor.constraint(equalTo: contentView.topAnchor, constant: GlobalConstants.listItemMarginVertical),
+            label.topAnchor.constraint(equalTo: contentView.topAnchor, constant: GlobalConstants.listItemMediumMarginVertical),
             {
                 let cons =
-                label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -GlobalConstants.listItemMarginVertical)
+                label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -GlobalConstants.listItemMediumMarginVertical)
                 cons.priority = .defaultHigh
                 return cons
             }()
         ])
 
-        let textBottomConstraint = label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -GlobalConstants.listItemMarginVertical)
+        let textBottomConstraint = label.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -GlobalConstants.listItemMediumMarginVertical)
         textBottomConstraint.priority = .defaultLow
         NSLayoutConstraint.activate([textBottomConstraint])
     }

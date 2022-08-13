@@ -202,9 +202,9 @@ private extension ResourceItemViewController {
         view.addSubview(buttonStack)
         NSLayoutConstraint.activate([
             buttonStack.topAnchor.constraint(equalTo: itemInfoController.view.bottomAnchor, constant: GlobalConstants.pageMediumGapVertical),
-            buttonStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -GlobalConstants.pageMarginVertical),
-            buttonStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: GlobalConstants.pageMarginHorizontal),
-            buttonStack.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -GlobalConstants.pageMarginHorizontal)
+            buttonStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -GlobalConstants.pageMediumMarginVertical),
+            buttonStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: GlobalConstants.pageMediumMarginHorizontal),
+            buttonStack.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -GlobalConstants.pageMediumMarginHorizontal)
         ])
         goToButton.addTarget(self, action: #selector(goToButtonClicked), for: .touchUpInside)
         statusButton.addTarget(self, action: #selector(statusButtonClicked), for: .touchUpInside)

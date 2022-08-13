@@ -55,16 +55,16 @@ private extension SettingStepperCell {
         stepper.wraps = true
 
         NSLayoutConstraint.activate([
-            label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: GlobalConstants.listItemMarginHorizontal),
+            label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: GlobalConstants.listItemMediumMarginHorizontal),
             label.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            label.topAnchor.constraint(greaterThanOrEqualTo: contentView.topAnchor, constant: GlobalConstants.listItemMarginVertical),
+            label.topAnchor.constraint(greaterThanOrEqualTo: contentView.topAnchor, constant: GlobalConstants.listItemMediumMarginVertical),
         ])
 
         stepper.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(stepper)
         NSLayoutConstraint.activate([
             stepper.leadingAnchor.constraint(equalTo: label.trailingAnchor, constant: GlobalConstants.listItemGapHorizontal),
-            stepper.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -GlobalConstants.listItemMarginHorizontal),
+            stepper.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -GlobalConstants.listItemMediumMarginHorizontal),
             stepper.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             stepper.topAnchor.constraint(greaterThanOrEqualTo: contentView.topAnchor, constant: GlobalConstants.listItemAccessoryMinMarginVertical),
         ])

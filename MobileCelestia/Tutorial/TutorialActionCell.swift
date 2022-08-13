@@ -44,8 +44,8 @@ private extension TutorialActionCell {
         NSLayoutConstraint.activate([
             button.topAnchor.constraint(equalTo: contentView.topAnchor, constant: GlobalConstants.listTextGapVertical),
             button.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -GlobalConstants.listTextGapVertical),
-            button.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: GlobalConstants.listItemMarginHorizontal),
-            button.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -GlobalConstants.listItemMarginHorizontal),
+            button.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: GlobalConstants.listItemMediumMarginHorizontal),
+            button.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -GlobalConstants.listItemMediumMarginHorizontal),
         ])
 
         button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)

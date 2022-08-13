@@ -77,8 +77,8 @@ class BottomControlViewController: UIViewController {
         get {
             let scaling = view.textScaling
             return CGSize(
-                width: GlobalConstants.bottomControlViewDimension * CGFloat(actions.count) * scaling + GlobalConstants.bottomControlViewMarginHorizontal * 2 + GlobalConstants.pageMarginHorizontal,
-                height: (GlobalConstants.bottomControlViewDimension * scaling + GlobalConstants.bottomControlViewMarginVertical * 2 + GlobalConstants.pageMarginVertical).rounded(.up)
+                width: GlobalConstants.bottomControlViewDimension * CGFloat(actions.count) * scaling + GlobalConstants.bottomControlViewMarginHorizontal * 2 + GlobalConstants.pageMediumMarginHorizontal,
+                height: (GlobalConstants.bottomControlViewDimension * scaling + GlobalConstants.bottomControlViewMarginVertical * 2 + GlobalConstants.pageMediumMarginVertical).rounded(.up)
             )
         }
         set {}
@@ -155,8 +155,8 @@ private extension BottomControlViewController {
         NSLayoutConstraint.activate([
             backgroundView.trailingAnchor.constraint(equalTo: view!.trailingAnchor),
             backgroundView.topAnchor.constraint(equalTo: view!.topAnchor),
-            backgroundView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: GlobalConstants.pageMarginHorizontal),
-            backgroundView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -GlobalConstants.pageMarginVertical)
+            backgroundView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: GlobalConstants.pageMediumMarginHorizontal),
+            backgroundView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -GlobalConstants.pageMediumMarginVertical)
         ])
 
         backgroundView.layer.masksToBounds = true

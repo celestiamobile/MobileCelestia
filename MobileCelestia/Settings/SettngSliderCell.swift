@@ -64,10 +64,10 @@ private extension SettingSliderCell {
         label.numberOfLines = 0
 
         NSLayoutConstraint.activate([
-            label.leadingAnchor.constraint(equalTo: topContainer.leadingAnchor, constant: GlobalConstants.listItemMarginHorizontal),
-            label.trailingAnchor.constraint(equalTo: topContainer.trailingAnchor, constant: -GlobalConstants.listItemMarginHorizontal),
+            label.leadingAnchor.constraint(equalTo: topContainer.leadingAnchor, constant: GlobalConstants.listItemMediumMarginHorizontal),
+            label.trailingAnchor.constraint(equalTo: topContainer.trailingAnchor, constant: -GlobalConstants.listItemMediumMarginHorizontal),
             label.centerYAnchor.constraint(equalTo: topContainer.centerYAnchor),
-            label.topAnchor.constraint(equalTo: topContainer.topAnchor, constant: GlobalConstants.listItemMarginVertical),
+            label.topAnchor.constraint(equalTo: topContainer.topAnchor, constant: GlobalConstants.listItemMediumMarginVertical),
         ])
 
         slider.minimumValue = 0
@@ -75,10 +75,10 @@ private extension SettingSliderCell {
         slider.translatesAutoresizingMaskIntoConstraints = false
         bottomContainer.addSubview(slider)
         NSLayoutConstraint.activate([
-            slider.leadingAnchor.constraint(equalTo: bottomContainer.leadingAnchor, constant: GlobalConstants.listItemMarginHorizontal),
-            slider.trailingAnchor.constraint(equalTo: bottomContainer.trailingAnchor, constant: -GlobalConstants.listItemMarginHorizontal),
+            slider.leadingAnchor.constraint(equalTo: bottomContainer.leadingAnchor, constant: GlobalConstants.listItemMediumMarginHorizontal),
+            slider.trailingAnchor.constraint(equalTo: bottomContainer.trailingAnchor, constant: -GlobalConstants.listItemMediumMarginHorizontal),
             slider.topAnchor.constraint(equalTo: bottomContainer.topAnchor),
-            slider.bottomAnchor.constraint(equalTo: bottomContainer.bottomAnchor, constant: -GlobalConstants.listItemMarginVertical),
+            slider.bottomAnchor.constraint(equalTo: bottomContainer.bottomAnchor, constant: -GlobalConstants.listItemMediumMarginVertical),
         ])
         slider.addTarget(self, action: #selector(handleSlideEnd(_:)), for: .touchUpInside)
         slider.addTarget(self, action: #selector(handleSlideEnd(_:)), for: .touchUpOutside)

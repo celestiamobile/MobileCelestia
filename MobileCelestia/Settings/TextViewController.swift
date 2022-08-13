@@ -44,7 +44,7 @@ private extension TextViewController {
         textView.textColor = .darkLabel
         textView.adjustsFontForContentSizeCategory = true
         textView.font = UIFont.preferredFont(forTextStyle: .footnote)
-        textView.contentInset = UIEdgeInsets(top: GlobalConstants.pageMarginVertical, left: GlobalConstants.pageMarginHorizontal, bottom: GlobalConstants.pageMarginVertical, right: GlobalConstants.pageMarginHorizontal)
+        textView.contentInset = UIEdgeInsets(top: GlobalConstants.pageMediumMarginVertical, left: GlobalConstants.pageMediumMarginHorizontal, bottom: GlobalConstants.pageMediumMarginVertical, right: GlobalConstants.pageMediumMarginHorizontal)
 
         textView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(textView)

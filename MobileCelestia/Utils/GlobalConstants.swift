@@ -13,15 +13,15 @@ import CoreGraphics
 import UIKit
 
 enum GlobalConstants {
-    static let listItemMarginHorizontal: CGFloat = 16
-    static let listItemMarginVertical: CGFloat = 12
+    static let listItemMediumMarginHorizontal: CGFloat = 16
+    static let listItemMediumMarginVertical: CGFloat = 12
     static let listItemSmallMarginHorizontal: CGFloat = 12
     static let listItemSmallMarginVertical: CGFloat = 8
     static let listItemGapHorizontal: CGFloat = 8
     static let listItemGapVertical: CGFloat = 8
 
-    static let pageMarginHorizontal: CGFloat = 16
-    static let pageMarginVertical: CGFloat = 12
+    static let pageMediumMarginHorizontal: CGFloat = 16
+    static let pageMediumMarginVertical: CGFloat = 12
     static let pageSmallMarginHorizontal: CGFloat = 12
     static let pageSmallMarginVertical: CGFloat = 8
     static let pageLargeGapHorizontal: CGFloat = 16

@@ -17,7 +17,7 @@ fileprivate enum Constants {
 
 extension InfoViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = collectionView.bounds.width - 2 * GlobalConstants.pageMarginHorizontal
+        let width = collectionView.bounds.width - 2 * GlobalConstants.pageMediumMarginHorizontal
         let height = collectionView.bounds.height
         if indexPath.section == 0 { return CGSize(width: width.rounded(.towardZero), height: height) }
         return CGSize(width: ((width - Constants.buttonSpacing) / 2).rounded(.towardZero), height: 1)
@@ -38,10 +38,10 @@ extension InfoViewController: UICollectionViewDelegateFlowLayout {
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        let horizontal = GlobalConstants.pageMarginHorizontal
+        let horizontal = GlobalConstants.pageMediumMarginHorizontal
         if section == 0 {
-            return UIEdgeInsets(top: GlobalConstants.pageMarginVertical, left: horizontal, bottom: GlobalConstants.pageMediumGapVertical, right: horizontal)
+            return UIEdgeInsets(top: GlobalConstants.pageMediumMarginVertical, left: horizontal, bottom: GlobalConstants.pageMediumGapVertical, right: horizontal)
         }
-        return UIEdgeInsets(top: 0, left: horizontal, bottom: GlobalConstants.pageMarginVertical, right: horizontal)
+        return UIEdgeInsets(top: 0, left: horizontal, bottom: GlobalConstants.pageMediumMarginVertical, right: horizontal)
     }
 }

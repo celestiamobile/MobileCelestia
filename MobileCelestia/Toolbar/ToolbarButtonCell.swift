@@ -199,7 +199,7 @@ class ToolbarImageTextButtonCell: UICollectionViewCell, ToolbarCell {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             imageView.centerYAnchor.constraint(equalTo: bg.centerYAnchor),
-            imageView.leadingAnchor.constraint(equalTo: bg.leadingAnchor, constant: GlobalConstants.listItemMarginHorizontal),
+            imageView.leadingAnchor.constraint(equalTo: bg.leadingAnchor, constant: GlobalConstants.listItemMediumMarginHorizontal),
             imageView.topAnchor.constraint(greaterThanOrEqualTo: bg.topAnchor, constant: GlobalConstants.listItemAccessoryMinMarginVertical),
         ])
 
@@ -208,9 +208,9 @@ class ToolbarImageTextButtonCell: UICollectionViewCell, ToolbarCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             label.centerYAnchor.constraint(equalTo: bg.centerYAnchor),
-            label.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: GlobalConstants.listItemMarginVertical),
-            label.trailingAnchor.constraint(equalTo: bg.trailingAnchor, constant: -GlobalConstants.listItemMarginHorizontal),
-            label.topAnchor.constraint(greaterThanOrEqualTo: bg.topAnchor, constant: GlobalConstants.listItemMarginVertical),
+            label.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: GlobalConstants.listItemMediumMarginVertical),
+            label.trailingAnchor.constraint(equalTo: bg.trailingAnchor, constant: -GlobalConstants.listItemMediumMarginHorizontal),
+            label.topAnchor.constraint(greaterThanOrEqualTo: bg.topAnchor, constant: GlobalConstants.listItemMediumMarginVertical),
         ])
         label.textColor = .darkLabel
     }

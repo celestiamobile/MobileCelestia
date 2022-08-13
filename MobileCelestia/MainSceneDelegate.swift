@@ -88,7 +88,7 @@ class MainSceneDelegate: CommonSceneDelegate {
             NSLayoutConstraint.activate([
                 label.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
                 label.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
-                label.leadingAnchor.constraint(greaterThanOrEqualTo: containerView.leadingAnchor, constant: GlobalConstants.pageMarginHorizontal),
+                label.leadingAnchor.constraint(greaterThanOrEqualTo: containerView.leadingAnchor, constant: GlobalConstants.pageMediumMarginHorizontal),
             ])
             view = containerView
         }

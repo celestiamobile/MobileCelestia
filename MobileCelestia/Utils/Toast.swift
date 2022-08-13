@@ -54,10 +54,10 @@ class Toast {
             view.contentView.addSubview(label)
 
             NSLayoutConstraint.activate([
-                view.contentView.leadingAnchor.constraint(equalTo: label.leadingAnchor, constant: -GlobalConstants.pageMarginHorizontal),
-                view.contentView.trailingAnchor.constraint(equalTo: label.trailingAnchor, constant: GlobalConstants.pageMarginHorizontal),
-                view.contentView.topAnchor.constraint(equalTo: label.topAnchor, constant: -GlobalConstants.pageMarginVertical),
-                view.contentView.bottomAnchor.constraint(equalTo: label.bottomAnchor, constant: GlobalConstants.pageMarginVertical),
+                view.contentView.leadingAnchor.constraint(equalTo: label.leadingAnchor, constant: -GlobalConstants.pageMediumMarginHorizontal),
+                view.contentView.trailingAnchor.constraint(equalTo: label.trailingAnchor, constant: GlobalConstants.pageMediumMarginHorizontal),
+                view.contentView.topAnchor.constraint(equalTo: label.topAnchor, constant: -GlobalConstants.pageMediumMarginVertical),
+                view.contentView.bottomAnchor.constraint(equalTo: label.bottomAnchor, constant: GlobalConstants.pageMediumMarginVertical),
             ])
 
             layer.cornerRadius = Constants.toastCornerRadius
@@ -79,7 +79,7 @@ class Toast {
             window.addSubview(sharedToast)
 
             NSLayoutConstraint.activate([
-                NSLayoutConstraint(item: sharedToast, attribute: .leading, relatedBy: .greaterThanOrEqual, toItem: window, attribute: .leading, multiplier: 1, constant: GlobalConstants.pageMarginHorizontal),
+                NSLayoutConstraint(item: sharedToast, attribute: .leading, relatedBy: .greaterThanOrEqual, toItem: window, attribute: .leading, multiplier: 1, constant: GlobalConstants.pageMediumMarginHorizontal),
                 NSLayoutConstraint(item: sharedToast, attribute: .centerX, relatedBy: .equal, toItem: window, attribute: .centerX, multiplier: 1, constant: 0),
                 NSLayoutConstraint(item: sharedToast, attribute: .centerY, relatedBy: .equal, toItem: window, attribute: .centerY, multiplier: 1.5, constant: 0)
             ])
