@@ -16,21 +16,21 @@ extension InfoViewController: UICollectionViewDelegateFlowLayout {
         let width = collectionView.bounds.width - 2 * GlobalConstants.pageMarginHorizontal
         let height = collectionView.bounds.height
         if indexPath.section == 0 { return CGSize(width: width.rounded(.towardZero), height: height) }
-        return CGSize(width: ((width - GlobalConstants.pageTextGapHorizontal) / 2).rounded(.towardZero), height: 1)
+        return CGSize(width: ((width - GlobalConstants.pageButtonGapHorizontal) / 2).rounded(.towardZero), height: 1)
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         if section == 0 {
             return GlobalConstants.pageGapVertical
         }
-        return GlobalConstants.pageTextGapVertical
+        return GlobalConstants.pageButtonGapVertical
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         if section == 0 {
             return GlobalConstants.pageGapHorizontal
         }
-        return GlobalConstants.pageTextGapHorizontal
+        return GlobalConstants.pageButtonGapHorizontal
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {

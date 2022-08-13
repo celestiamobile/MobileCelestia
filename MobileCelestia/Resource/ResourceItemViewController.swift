@@ -35,7 +35,7 @@ class ResourceItemViewController: UIViewController {
         if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
             let stackView = UIStackView(arrangedSubviews: [progressView, statusButton])
             stackView.axis = .horizontal
-            stackView.spacing = GlobalConstants.pageGapHorizontal
+            stackView.spacing = GlobalConstants.pageButtonGapHorizontal
             stackView.alignment = .center
             return stackView
         } else {
@@ -197,7 +197,7 @@ private extension ResourceItemViewController {
         goToButton.setTitle(CelestiaString("Go", comment: ""), for: .normal)
 
         buttonStack.axis = .vertical
-        buttonStack.spacing = GlobalConstants.pageTextGapVertical
+        buttonStack.spacing = GlobalConstants.pageButtonGapVertical
         buttonStack.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(buttonStack)
         NSLayoutConstraint.activate([
