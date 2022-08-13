@@ -65,7 +65,7 @@ private extension DestinationDetailViewController {
         scrollView.addSubview(contentContainer)
         NSLayoutConstraint.activate([
             contentContainer.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: GlobalConstants.pageMarginVertical),
-            contentContainer.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -GlobalConstants.pageGapVertical),
+            contentContainer.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -GlobalConstants.pageMediumGapVertical),
             contentContainer.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: GlobalConstants.pageMarginHorizontal),
             contentContainer.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor, constant: -GlobalConstants.pageMarginHorizontal),
             scrollView.contentLayoutGuide.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
@@ -76,7 +76,7 @@ private extension DestinationDetailViewController {
         contentStack.translatesAutoresizingMaskIntoConstraints = false
         contentContainer.addSubview(contentStack)
         contentStack.axis = .vertical
-        contentStack.spacing = GlobalConstants.pageGapVertical
+        contentStack.spacing = GlobalConstants.pageMediumGapVertical
 
         NSLayoutConstraint.activate([
             contentStack.topAnchor.constraint(equalTo: contentContainer.topAnchor),

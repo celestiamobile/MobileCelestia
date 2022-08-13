@@ -72,7 +72,7 @@ private extension OnboardViewController {
         NSLayoutConstraint.activate([
             tutorialController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             tutorialController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tutorialController.view.topAnchor.constraint(equalTo: welcomeView.bottomAnchor, constant: GlobalConstants.pageGapVertical),
+            tutorialController.view.topAnchor.constraint(equalTo: welcomeView.bottomAnchor, constant: GlobalConstants.pageMediumGapVertical),
             tutorialController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
         ])
 

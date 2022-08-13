@@ -15,17 +15,21 @@ import UIKit
 enum GlobalConstants {
     static let listItemMarginHorizontal: CGFloat = 16
     static let listItemMarginVertical: CGFloat = 12
+    static let listItemSmallMarginHorizontal: CGFloat = 12
+    static let listItemSmallMarginVertical: CGFloat = 8
     static let listItemGapHorizontal: CGFloat = 8
     static let listItemGapVertical: CGFloat = 8
 
     static let pageMarginHorizontal: CGFloat = 16
     static let pageMarginVertical: CGFloat = 12
-    static let pageGapVertical: CGFloat = 12
-    static let pageGapHorizontal: CGFloat = 12
-    static let pageButtonGapHorizontal: CGFloat = 12
-    static let pageButtonGapVertical: CGFloat = 8
-    static let pageTextGapHorizontal: CGFloat = 6
-    static let pageTextGapVertical: CGFloat = 4
+    static let pageSmallMarginHorizontal: CGFloat = 12
+    static let pageSmallMarginVertical: CGFloat = 8
+    static let pageLargeGapHorizontal: CGFloat = 16
+    static let pageLargeGapVertical: CGFloat = 12
+    static let pageMediumGapHorizontal: CGFloat = 12
+    static let pageMediumGapVertical: CGFloat = 8
+    static let pageSmallGapHorizontal: CGFloat = 6
+    static let pageSmallGapVertical: CGFloat = 4
 
     static let listTextGapVertical: CGFloat = 4
 
