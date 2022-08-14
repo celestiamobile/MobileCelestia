@@ -195,7 +195,9 @@ private extension ToolbarViewController {
         collectionView.register(ToolbarImageTextButtonCell.self, forCellWithReuseIdentifier: "Cell")
         collectionView.dataSource = self
 
-        view.maximumContentSizeCategory = .extraExtraExtraLarge
+        if #available(iOS 15, *) {
+            view.maximumContentSizeCategory = .extraExtraExtraLarge
+        }
     }
 }
 

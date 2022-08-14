@@ -142,21 +142,33 @@ extension UIViewController {
     }
 
     private func presentAlert(_ alert: UIAlertController, source: PopoverSource?, completion: (() -> Void)? = nil) {
+        present(alert, source: source, completion: completion)
+    }
+
+    func present(_ viewController: UIViewController, source: PopoverSource?, completion: (() -> Void)? = nil) {
         switch source {
         case .barButtonItem(let barButtonItem):
-            alert.popoverPresentationController?.barButtonItem = barButtonItem
-            alert.popoverPresentationController?.permittedArrowDirections = .any
+            viewController.popoverPresentationController?.barButtonItem = barButtonItem
+            viewController.popoverPresentationController?.permittedArrowDirections = .any
         case .view(let view, let sourceRect):
-            alert.popoverPresentationController?.sourceView = view
-            alert.popoverPresentationController?.sourceRect = sourceRect ?? view.bounds
-            alert.popoverPresentationController?.permittedArrowDirections = .any
+            viewController.popoverPresentationController?.sourceView = view
+            viewController.popoverPresentationController?.sourceRect = sourceRect ?? view.bounds
+            viewController.popoverPresentationController?.permittedArrowDirections = .any
         case .none:
-            if alert.preferredStyle == .actionSheet {
-                alert.popoverPresentationController?.sourceView = view
-                alert.popoverPresentationController?.sourceRect = CGRect(x: view.bounds.midX, y: view.bounds.midY, width: 0, height: 0)
-                alert.popoverPresentationController?.permittedArrowDirections = []
+            let sourceRectRequired: Bool
+            if let alert = viewController as? UIAlertController, alert.preferredStyle == .actionSheet {
+                sourceRectRequired = true
+            } else if viewController is UIActivityViewController {
+                sourceRectRequired = true
+            } else {
+                sourceRectRequired = false
+            }
+            if sourceRectRequired {
+                viewController.popoverPresentationController?.sourceView = view
+                viewController.popoverPresentationController?.sourceRect = CGRect(x: view.bounds.midX, y: view.bounds.midY, width: 0, height: 0)
+                viewController.popoverPresentationController?.permittedArrowDirections = []
             }
         }
-        present(alert, animated: true, completion: nil)
+        present(viewController, animated: true, completion: completion)
     }
 }

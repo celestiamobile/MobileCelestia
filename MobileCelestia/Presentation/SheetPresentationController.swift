@@ -87,7 +87,9 @@ class SheetPresentationController: UIPresentationController {
             closeButton.centerXAnchor.constraint(equalTo: closeButtonContainer.centerXAnchor),
             closeButton.centerYAnchor.constraint(equalTo: closeButtonContainer.centerYAnchor),
         ])
-        handleView.maximumContentSizeCategory = .extraExtraExtraLarge
+        if #available(iOS 15, *) {
+            handleView.maximumContentSizeCategory = .extraExtraExtraLarge
+        }
         return handleView
     }()
 

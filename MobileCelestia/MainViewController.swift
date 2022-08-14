@@ -838,41 +838,27 @@ extension UIViewController {
         showShareSheet(for: CelestiaURLObject(title: placeholder, url: url))
     }
 
-    func showShareSheet(for item: Any, sourceView: UIView? = nil, sourceRect: CGRect? = nil) {
+    func showShareSheet(for item: Any) {
         let activityController = UIActivityViewController(activityItems: [item], applicationActivities: nil)
-        configurePopover(for: activityController, sourceView: sourceView, sourceRect: sourceRect)
-        presentAfterDismissCurrent(activityController, animated: true)
+        callAfterDismissCurrent(animated: true) { [weak self] in
+            guard let self = self else { return }
+            self.present(activityController, source: nil)
+        }
     }
 
-    func showShareSheet(for item: Any, barButtonItem: UIBarButtonItem) {
-        let activityController = UIActivityViewController(activityItems: [item], applicationActivities: nil)
-        configurePopover(for: activityController, barButtonItem: barButtonItem)
-        presentAfterDismissCurrent(activityController, animated: true)
-    }
-
-    func configurePopover(for viewController: UIViewController, barButtonItem: UIBarButtonItem) {
-        viewController.modalPresentationStyle = .popover
-        viewController.popoverPresentationController?.barButtonItem = barButtonItem
-        viewController.preferredContentSize = CGSize(width: 400, height: 500)
-    }
-
-    func configurePopover(for viewController: UIViewController, sourceView: UIView? = nil, sourceRect: CGRect? = nil) {
-        viewController.modalPresentationStyle = .popover
-        let popoverSource: UIView = sourceView ?? view
-        let popoverRect = sourceRect ?? CGRect(x: popoverSource.frame.midX, y: popoverSource.frame.midY, width: 0, height: 0)
-        viewController.popoverPresentationController?.sourceView = popoverSource
-        viewController.popoverPresentationController?.sourceRect = popoverRect
-        viewController.popoverPresentationController?.permittedArrowDirections = UIPopoverArrowDirection(rawValue: 0)
-        viewController.preferredContentSize = CGSize(width: 400, height: 500)
+    func callAfterDismissCurrent(animated: Bool, block: @escaping () -> Void) {
+        if presentedViewController == nil || presentedViewController?.isBeingDismissed == true {
+            block()
+        } else {
+            dismiss(animated: animated) {
+                block()
+            }
+        }
     }
 
     func presentAfterDismissCurrent(_ viewController: UIViewController, animated: Bool) {
-        if presentedViewController == nil || presentedViewController?.isBeingDismissed == true {
-            present(viewController, animated: animated)
-        } else {
-            dismiss(animated: animated) { [weak self] in
-                self?.present(viewController, animated: animated)
-            }
+        callAfterDismissCurrent(animated: animated) { [weak self] in
+            self?.present(viewController, animated: animated)
         }
     }
 }

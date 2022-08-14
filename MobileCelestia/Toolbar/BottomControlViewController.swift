@@ -140,7 +140,9 @@ extension BottomControlViewController: UICollectionViewDataSource {
 
 private extension BottomControlViewController {
     func setup() {
-        view.maximumContentSizeCategory = .extraExtraExtraLarge
+        if #available(iOS 15, *) {
+            view.maximumContentSizeCategory = .extraExtraExtraLarge
+        }
 
         let style: UIBlurEffect.Style
         if #available(iOS 13.0, *) {

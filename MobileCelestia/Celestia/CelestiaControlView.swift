@@ -120,7 +120,9 @@ final class CelestiaControlView: UIView {
 
         super.init(frame: .zero)
 
-        maximumContentSizeCategory = .extraExtraExtraLarge
+        if #available(iOS 15, *) {
+            maximumContentSizeCategory = .extraExtraExtraLarge
+        }
 
         backgroundColor = .clear
         clipsToBounds = true
