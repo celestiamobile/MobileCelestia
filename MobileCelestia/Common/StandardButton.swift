@@ -50,6 +50,6 @@ extension StandardButton: UIPointerInteractionDelegate {
     }
 
     func pointerInteraction(_ interaction: UIPointerInteraction, styleFor region: UIPointerRegion) -> UIPointerStyle? {
-        return UIPointerStyle(effect: .hover(.init(view: self)))
+        return UIPointerStyle(effect: .highlight(UITargetedPreview(view: self)))
     }
 }

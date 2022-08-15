@@ -11,6 +11,38 @@
 
 import UIKit
 
+class Grabber: UIView {
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        layer.cornerCurve = .continuous
+        backgroundColor = .tertiaryLabel
+
+        if #available(iOS 13.4, *) {
+            addInteraction(UIPointerInteraction(delegate: self))
+        }
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        layer.cornerRadius = bounds.height / 2
+    }
+}
+
+@available(iOS 13.4, *)
+extension Grabber: UIPointerInteractionDelegate {
+    func pointerInteraction(_ interaction: UIPointerInteraction, regionFor request: UIPointerRegionRequest, defaultRegion: UIPointerRegion) -> UIPointerRegion? {
+        return defaultRegion
+    }
+
+    func pointerInteraction(_ interaction: UIPointerInteraction, styleFor region: UIPointerRegion) -> UIPointerStyle? {
+        return UIPointerStyle(effect: .highlight(UITargetedPreview(view: self)))
+    }
+}
+
 class SheetPresentationController: UIPresentationController {
     private enum Constants {
         static let sheetHandleBaseHeight: CGFloat = 6
@@ -21,23 +53,6 @@ class SheetPresentationController: UIPresentationController {
         static let sheetMaxHeightRatio: CGFloat = 0.9
         static let sheetMinWidthRatio: CGFloat = 0.3
         static let sheetMaxWidthRatio: CGFloat = 0.5
-    }
-
-    class Grabber: UIView {
-        override init(frame: CGRect) {
-            super.init(frame: frame)
-            layer.cornerCurve = .continuous
-            backgroundColor = .tertiaryLabel
-        }
-
-        required init?(coder: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
-        }
-
-        override func layoutSubviews() {
-            super.layoutSubviews()
-            layer.cornerRadius = bounds.height / 2
-        }
     }
 
     class EdgeAutoSizingImageButton: StandardButton {

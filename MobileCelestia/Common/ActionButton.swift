@@ -87,7 +87,11 @@ class ActionButtonHelper {
             var configuration = UIButton.Configuration.filled()
             configuration.baseBackgroundColor = .buttonBackground
             configuration.baseForegroundColor = .buttonForeground
-            return UIButton(configuration: configuration)
+            let button = UIButton(configuration: configuration)
+            button.pointerStyleProvider = { button, _, _ in
+                return UIPointerStyle(effect: .highlight(UITargetedPreview(view: button)))
+            }
+            return button
         }
         #endif
         return ActionButton(type: .system)
