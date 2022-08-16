@@ -278,8 +278,18 @@ extension MainViewController {
 
     @objc private func requestPaste() {
         let pasteboard = UIPasteboard.general
-        if pasteboard.hasURLs, let url = pasteboard.url {
-            core.run { $0.go(to: url.absoluteString) }
+        var celURL: String?
+        if pasteboard.hasURLs {
+            if let url = pasteboard.url, url.scheme == "cel" {
+                celURL = url.absoluteString
+            }
+        } else if pasteboard.hasStrings {
+            if let string = pasteboard.string, string.starts(with: "cel:") {
+                celURL = string
+            }
+        }
+        if let url = celURL {
+            core.run { $0.go(to: url) }
         }
     }
 }
