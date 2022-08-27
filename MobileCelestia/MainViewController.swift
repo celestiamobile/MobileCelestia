@@ -623,14 +623,14 @@ extension MainViewController: CelestiaControllerDelegate {
 
     @objc private func presentHelp() {
         let url = URL.fromGuide(guideItemID: "823FB82E-F660-BE54-F3E4-681F5BFD365D", language: AppCore.language, shareable: false)
-        let vc = OnboardViewController() { [unowned self] (action) in
+        let vc = FallbackWebViewController(url: url, fallbackViewControllerCreator: OnboardViewController() { [unowned self] (action) in
             switch action {
             case .tutorial(let tutorial):
                 self.handleTutorialAction(tutorial)
             case .url(let url):
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
             }
-        }
+        })
         showViewController(vc)
     }
 
