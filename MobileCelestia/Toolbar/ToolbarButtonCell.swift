@@ -24,6 +24,10 @@ class ToolbarImageButton: ImageButtonView<ToolbarImageButton.Configuration> {
         var touchDownHandler: ((UIButton) -> Void)?
         var touchUpHandler: ((UIButton, Bool) -> Void)?
 
+        var shouldScaleOnMacCatalyst: Bool {
+            return true
+        }
+
         func provideImage(selected: Bool) -> UIImage? {
             return image
         }

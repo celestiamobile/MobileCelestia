@@ -275,5 +275,22 @@ class MacBridge {
     static func disableTabbingForAllWindows() {
         clazz.perform(NSSelectorFromString("disableTabbingForAllWindows"))
     }
+
+    static func showTextInputSheetForWindow(_ window: NSObject, title: String, message: String? = nil, text: String? = nil, placeholder: String? = nil, okButtonTitle: String, cancelButtonTitle: String, completion: @escaping (String?) -> Void) {
+        typealias ShowTextInputMethod = @convention(c)
+        (NSObject.Type, Selector, NSObject, NSString, NSString?, NSString?, NSString?, NSString, NSString, @escaping (NSString?) -> Void) -> Void
+        let selector = NSSelectorFromString("showTextInputSheetForWindow:title:message:text:placeholder:okButtonTitle:cancelButtonTitle:completionHandler:")
+        let methodIMP = clazz.method(for: selector)
+        let method = unsafeBitCast(methodIMP, to: ShowTextInputMethod.self)
+        method(clazz, selector, window, title as NSString, message as NSString?, text as NSString?, placeholder as NSString?, okButtonTitle as NSString, cancelButtonTitle as NSString, { result in
+            completion(result as String?)
+        })
+    }
+}
+
+extension UIWindow {
+    var nsWindow: NSObject? {
+        return MacBridge.nsWindowForUIWindow(self)
+    }
 }
 #endif

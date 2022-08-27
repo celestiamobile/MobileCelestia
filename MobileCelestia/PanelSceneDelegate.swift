@@ -72,10 +72,4 @@ class PanelSceneDelegate: CommonSceneDelegate {
         UIApplication.shared.requestSceneSessionActivation(nil, userActivity: activity, options: nil) { _ in }
     }
 }
-
-fileprivate extension UIWindow {
-    var nsWindow: NSObject? {
-        return MacBridge.nsWindowForUIWindow(self)
-    }
-}
 #endif

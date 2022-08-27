@@ -82,4 +82,28 @@
     [NSWindow setAllowsAutomaticWindowTabbing:NO];
 }
 
++ (void)showTextInputSheetForWindow:(NSWindow *)window title:(NSString *)title message:(nullable NSString *)message text:(nullable NSString *)text placeholder:(nullable NSString *)placeholder okButtonTitle:(NSString *)okButtonTitle cancelButtonTitle:(NSString *)cancelButtonTitle completionHandler:(void (^)(NSString * _Nullable))completionHandler {
+    const CGFloat alertTextInputWidth = 228;
+    const CGFloat alertTextInputDefaultHeight = 21;
+    NSAlert *alert = [[NSAlert alloc] init];
+    alert.messageText = title;
+    alert.informativeText = message == nil ? @"" : message;
+    [alert addButtonWithTitle:okButtonTitle];
+    [alert addButtonWithTitle:cancelButtonTitle];
+    NSTextField *textField = [NSTextField new];
+    CGFloat height = [textField fittingSize].height < 1 ? alertTextInputDefaultHeight : [textField fittingSize].height;
+    [textField setFrame:NSMakeRect(0, 0, alertTextInputWidth, height)];
+    [textField setStringValue:text == nil ? @"" : text];
+    [textField setPlaceholderString:placeholder];
+    alert.accessoryView = textField;
+    [alert layout];
+    [alert beginSheetModalForWindow:window completionHandler:^(NSModalResponse returnCode) {
+        if (returnCode == NSAlertFirstButtonReturn) {
+            completionHandler(textField.stringValue);
+        } else {
+            completionHandler(nil);
+        }
+    }];
+}
+
 @end

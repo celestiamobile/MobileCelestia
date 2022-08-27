@@ -13,6 +13,7 @@ import UIKit
 
 protocol ImageProvider {
     func provideImage(selected: Bool) -> UIImage?
+    var shouldScaleOnMacCatalyst: Bool { get }
 }
 
 struct ImageButtonViewConfiguration<T: ImageProvider>: AutoSizingViewConfiguration {
@@ -20,7 +21,8 @@ struct ImageButtonViewConfiguration<T: ImageProvider>: AutoSizingViewConfigurati
         guard let size = configuration.provideImage(selected: (view as? UIButton)?.isSelected == true)?.size, size.width > 0, size.height > 0 else {
             return boundingBoxSize
         }
-        let ratio = min(boundingBoxSize.width / size.width, boundingBoxSize.height / size.height)
+        let scaling = configuration.shouldScaleOnMacCatalyst ? GlobalConstants.preferredUIElementScaling(for: view.traitCollection) : 1
+        let ratio = min(boundingBoxSize.width / size.width, boundingBoxSize.height / size.height) * scaling
         return CGSize(width: ratio * size.width, height: ratio * size.height)
     }
     var boundingBoxSize: CGSize

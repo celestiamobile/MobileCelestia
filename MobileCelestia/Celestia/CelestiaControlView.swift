@@ -43,6 +43,8 @@ class ControlButton: ImageButtonView<ControlButton.Configuration> {
         var pressEnd: ((CelestiaControlAction) -> Void)?
         var toggle: ((CelestiaControlAction) -> Void)?
 
+        var shouldScaleOnMacCatalyst: Bool { return false }
+
         func provideImage(selected: Bool) -> UIImage? {
             switch button {
             case .pressAndHold(let image, _):

@@ -75,7 +75,7 @@ class BottomControlViewController: UIViewController {
 
     override var preferredContentSize: CGSize {
         get {
-            let scaling = view.textScaling
+            let scaling = view.textScaling * GlobalConstants.preferredUIElementScaling(for: view.traitCollection)
             return CGSize(
                 width: GlobalConstants.bottomControlViewDimension * CGFloat(actions.count) * scaling + GlobalConstants.bottomControlViewMarginHorizontal * 2 + GlobalConstants.pageMediumMarginHorizontal,
                 height: (GlobalConstants.bottomControlViewDimension * scaling + GlobalConstants.bottomControlViewMarginVertical * 2 + GlobalConstants.pageMediumMarginVertical).rounded(.up)
@@ -230,7 +230,9 @@ class BottomActionLayout: UICollectionViewFlowLayout {
     private let baseItemSize = CGSize(width: GlobalConstants.bottomControlViewDimension, height: GlobalConstants.bottomControlViewDimension)
 
     override func prepare() {
-        let scaling = collectionView?.textScaling ?? 1
+        defer { super.prepare() }
+        guard let collectionView = self.collectionView else { return }
+        let scaling = GlobalConstants.preferredUIElementScaling(for: collectionView.traitCollection) * collectionView.textScaling
         itemSize = baseItemSize.applying(CGAffineTransform(scaleX: scaling, y: scaling))
         minimumLineSpacing = 0
         minimumInteritemSpacing = 0

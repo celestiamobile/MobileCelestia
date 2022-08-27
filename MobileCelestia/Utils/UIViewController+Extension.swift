@@ -67,10 +67,18 @@ extension UIViewController {
         return alert
     }
 
-    @discardableResult func showTextInput(_ title: String, message: String? = nil, text: String? = nil, placeholder: String? = nil, source: PopoverSource? = nil, completion: ((String?) -> Void)? = nil) -> UIAlertController {
+    func showTextInput(_ title: String, message: String? = nil, text: String? = nil, placeholder: String? = nil, source: PopoverSource? = nil, completion: ((String?) -> Void)? = nil) {
+        #if targetEnvironment(macCatalyst)
+        if let window = view.window?.nsWindow {
+            MacBridge.showTextInputSheetForWindow(window, title: title, message: message, text: text, placeholder: placeholder, okButtonTitle: CelestiaString("OK", comment: ""), cancelButtonTitle: CelestiaString("Cancel", comment: "")) { result in
+                completion?(result)
+            }
+            return
+        }
+        #endif
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         let confirmAction = UIAlertAction(title: CelestiaString("OK", comment: ""), style: .default, handler: { [unowned alert] (_) in
-            completion?(alert.textFields?.first?.text)
+            completion?(alert.textFields?.first?.text ?? "")
         })
         alert.addTextField { (textField) in
             textField.text = text
@@ -83,26 +91,18 @@ extension UIViewController {
         }))
         alert.preferredAction = confirmAction
         presentAlert(alert, source: source)
-        return alert
     }
 
-    @discardableResult func showDateInput(_ title: String, format: String, source: PopoverSource? = nil, completion: ((Date?) -> Void)? = nil) -> UIAlertController {
-        let alert = UIAlertController(title: title, message: nil, preferredStyle: .alert)
+    func showDateInput(_ title: String, format: String, source: PopoverSource? = nil, completion: ((Date?) -> Void)? = nil) {
         let formatter = DateFormatter()
         formatter.dateFormat = format
-        let confirmAction = UIAlertAction(title: CelestiaString("OK", comment: ""), style: .default, handler: { [unowned alert] _ in
-            guard let text = alert.textFields?.first?.text else { return }
-            completion?(formatter.date(from: text))
-        })
-        alert.addTextField { textField in
-            textField.keyboardAppearance = .dark
-            textField.placeholder = formatter.string(from: Date())
+        showTextInput(title, message: nil, text: nil, placeholder: formatter.string(from: Date()), source: source) { result in
+            guard let result = result else {
+                // cancelled, do not call completion
+                return
+            }
+            completion?(formatter.date(from: result))
         }
-        alert.addAction(confirmAction)
-        alert.addAction(UIAlertAction(title: CelestiaString("Cancel", comment: ""), style: .cancel, handler: nil))
-        alert.preferredAction = confirmAction
-        presentAlert(alert, source: source)
-        return alert
     }
 
     @discardableResult func showLoading(_ title: String, source: PopoverSource? = nil, cancelHandelr: (() -> Void)? = nil) -> UIAlertController {
@@ -117,7 +117,12 @@ extension UIViewController {
     }
 
     private func commonSelectionActionSheet(_ title: String?, options: [String], permittedArrowDirections: UIPopoverArrowDirection = .any, completion: ((Int?) -> Void)?) -> UIAlertController {
-        let alert = UIAlertController(title: title, message: nil, preferredStyle: .actionSheet)
+        #if targetEnvironment(macCatalyst)
+        let alertStyle = UIAlertController.Style.alert
+        #else
+        let alertStyle = UIAlertController.Style.actionSheet
+        #endif
+        let alert = UIAlertController(title: title, message: nil, preferredStyle: alertStyle)
         for (index, option) in options.enumerated() {
             alert.addAction(UIAlertAction(title: option, style: .default) { _ in
                 completion?(index)

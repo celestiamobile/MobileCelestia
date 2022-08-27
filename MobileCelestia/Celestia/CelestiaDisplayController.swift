@@ -93,7 +93,7 @@ class CelestiaDisplayController: AsyncGLViewController {
     @objc private func windowWillStartLiveResizing(_ notification: Notification) {
         guard let window = view.window else { return }
 
-        if notification.object as? NSObject == MacBridge.nsWindowForUIWindow(window) {
+        if notification.object as? NSObject == window.nsWindow {
             isPaused = true
         }
     }
@@ -101,7 +101,7 @@ class CelestiaDisplayController: AsyncGLViewController {
     @objc private func windowDidEndLiveResizing(_ notification: Notification) {
         guard let window = view.window else { return }
 
-        if notification.object as? NSObject == MacBridge.nsWindowForUIWindow(window) {
+        if notification.object as? NSObject == window.nsWindow {
             isPaused = false
         }
     }

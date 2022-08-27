@@ -188,7 +188,7 @@ extension GoToInputViewController {
                 self.reload()
             }
         } else if let valueItem = item as? DoubleValueItem {
-            showTextInput("", text: item.detail) { [weak self] string in
+            showTextInput(item.title, text: item.detail) { [weak self] string in
                 guard let self = self else { return }
                 guard let newString = string, let value = Double(newString) else { return }
                 switch valueItem.type {
@@ -198,7 +198,7 @@ extension GoToInputViewController {
                 self.reload()
             }
         } else if let valueItem = item as? FloatValueItem {
-            showTextInput("", text: item.detail) { [weak self] string in
+            showTextInput(item.title, text: item.detail) { [weak self] string in
                 guard let self = self else { return }
                 guard let newString = string, let value = Float(newString) else { return }
                 switch valueItem.type {
