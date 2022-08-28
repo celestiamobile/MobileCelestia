@@ -27,15 +27,10 @@ class EventFinderInputViewController: BaseTableViewController {
         let title = CelestiaString("Object", comment: "")
     }
 
-    struct ProceedItem: EventFinderInputItem {
-        let title = CelestiaString("Find", comment: "")
-    }
-
     private let allSections: [[EventFinderInputItem]] = [
                 [DateItem(title: CelestiaString("Start Time", comment: ""), isStartTime: true),
                 DateItem(title: CelestiaString("End Time", comment: ""), isStartTime: false)],
                 [ObjectItem()],
-                [ProceedItem()]
     ]
 
     private let selectableObjects = [LocalizedString("Earth", "celestia-data"), LocalizedString("Jupiter", "celestia-data")]
@@ -76,6 +71,29 @@ private extension EventFinderInputViewController {
     func setup() {
         title = CelestiaString("Eclipse Finder", comment: "")
         tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Text")
+
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: CelestiaString("Find", comment: ""), style: .plain, target: self, action: #selector(find))
+    }
+
+    @objc private func find() {
+        guard let body = core.simulation.findObject(from: objectName).body else {
+            self.showError(CelestiaString("Object not found", comment: ""))
+            return
+        }
+        let finder = EcipseFinder(body: body)
+        let alert = showLoading(CelestiaString("Calculating…", comment: "")) {
+            finder.abort()
+        }
+        DispatchQueue.global().async { [weak self] in
+            guard let self = self else { return }
+            let results = finder.search(kind: [.lunar, .solar], from: self.startTime, to: self.endTime)
+
+            DispatchQueue.main.async {
+                alert.dismiss(animated: true) {
+                    self.resultHandler(results)
+                }
+            }
+        }
     }
 }
 
@@ -93,18 +111,9 @@ extension EventFinderInputViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
         cell.title = item.title
 
-        if item is ProceedItem {
-            #if targetEnvironment(macCatalyst)
-            cell.titleColor = cell.tintColor
-            #else
-            cell.titleColor = UIColor.themeLabel
-            #endif
-            cell.detail = nil
-        } else if item is ObjectItem {
-            cell.titleColor = UIColor.darkLabel
+        if item is ObjectItem {
             cell.detail = objectName
         } else if let it = item as? DateItem {
-            cell.titleColor = UIColor.darkLabel
             cell.detail = displayDateFormatter.string(from: it.isStartTime ? startTime : endTime)
         }
 
@@ -153,25 +162,6 @@ extension EventFinderInputViewController {
                     }
                     self.objectName = self.selectableObjects[index]
                     tableView.reloadData()
-                }
-            }
-        } else if item is ProceedItem {
-            guard let body = core.simulation.findObject(from: objectName).body else {
-                self.showError(CelestiaString("Object not found", comment: ""))
-                return
-            }
-            let finder = EcipseFinder(body: body)
-            let alert = showLoading(CelestiaString("Calculating…", comment: "")) {
-                finder.abort()
-            }
-            DispatchQueue.global().async { [weak self] in
-                guard let self = self else { return }
-                let results = finder.search(kind: [.lunar, .solar], from: self.startTime, to: self.endTime)
-
-                DispatchQueue.main.async {
-                    alert.dismiss(animated: true) {
-                        self.resultHandler(results)
-                    }
                 }
             }
         }

@@ -67,7 +67,7 @@ extension UIViewController {
         return alert
     }
 
-    func showTextInput(_ title: String, message: String? = nil, text: String? = nil, placeholder: String? = nil, source: PopoverSource? = nil, completion: ((String?) -> Void)? = nil) {
+    func showTextInput(_ title: String, message: String? = nil, text: String? = nil, placeholder: String? = nil, keyboardType: UIKeyboardType = .default, source: PopoverSource? = nil, completion: ((String?) -> Void)? = nil) {
         #if targetEnvironment(macCatalyst)
         if let window = view.window?.nsWindow {
             MacBridge.showTextInputSheetForWindow(window, title: title, message: message, text: text, placeholder: placeholder, okButtonTitle: CelestiaString("OK", comment: ""), cancelButtonTitle: CelestiaString("Cancel", comment: "")) { result in
@@ -84,6 +84,7 @@ extension UIViewController {
             textField.text = text
             textField.placeholder = placeholder
             textField.keyboardAppearance = .dark
+            textField.keyboardType = keyboardType
         }
         alert.addAction(confirmAction)
         alert.addAction(UIAlertAction(title: CelestiaString("Cancel", comment: ""), style: .cancel, handler: { (_) in

@@ -39,6 +39,7 @@ class SearchResultViewController: BaseTableViewController {
 
 private extension SearchResultViewController {
     func setUp() {
+        tableView.keyboardDismissMode = .interactive
         tableView.register(inSidebar ? UITableViewCell.self : SettingTextCell.self, forCellReuseIdentifier: "Text")
     }
 }

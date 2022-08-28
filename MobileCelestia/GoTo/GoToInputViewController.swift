@@ -17,6 +17,10 @@ protocol GoToInputItem {
     var detail: String { get }
 }
 
+extension DistanceUnit: CaseIterable {
+    public static var allCases: [DistanceUnit] = [.radii, .KM, .AU]
+}
+
 private extension DistanceUnit {
     var name: String {
         switch self {
@@ -33,18 +37,6 @@ private extension DistanceUnit {
 }
 
 class GoToInputViewController: BaseTableViewController {
-    struct FloatValueItem: GoToInputItem {
-        enum ValueType {
-            case longitude
-            case latitude
-        }
-        let title: String
-        let value: Float
-        let type: ValueType
-
-        var detail: String { return String(format: "%.2f", value) }
-    }
-
     struct DoubleValueItem: GoToInputItem {
         enum ValueType {
             case distance
@@ -56,6 +48,17 @@ class GoToInputViewController: BaseTableViewController {
         var detail: String { return String(format: "%.2f", value) }
     }
 
+    struct LonLatItem: GoToInputItem {
+        var title: String { return "" }
+        var detail: String { return "" }
+    }
+
+    @available(iOS 15.0, *)
+    struct DistanceItem: GoToInputItem {
+        var title: String { return "" }
+        var detail: String { return "" }
+    }
+
     struct UnitItem: GoToInputItem {
         var title: String { "" }
 
@@ -64,18 +67,17 @@ class GoToInputViewController: BaseTableViewController {
         let unit: DistanceUnit
     }
 
-    struct ProcceedItem: GoToInputItem {
-        var title: String { CelestiaString("Go", comment: "") }
-
-        var detail: String { "" }
-    }
-
     struct ObjectNameItem: GoToInputItem {
         var title: String { CelestiaString("Object", comment: "") }
 
         var detail: String { name }
 
         let name: String
+    }
+
+    struct Section {
+        let title: String?
+        let items: [GoToInputItem]
     }
 
     private let locationHandler: ((GoToLocation) -> Void)
@@ -90,9 +92,7 @@ class GoToInputViewController: BaseTableViewController {
 
     private let core = AppCore.shared
 
-    private static let availableUnits: [DistanceUnit] = [.radii, .KM, .AU]
-
-    private var allSections: [[GoToInputItem]] = []
+    private var allSections: [Section] = []
 
     init(objectNameHandler: @escaping (GoToInputViewController) -> Void, locationHandler: @escaping ((GoToLocation) -> Void)) {
         self.objectNameHandler = objectNameHandler
@@ -120,23 +120,43 @@ private extension GoToInputViewController {
     func setUp() {
         navigationItem.backButtonTitle = ""
         title = CelestiaString("Go to Object", comment: "")
+        tableView.keyboardDismissMode = .interactive
         tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Text")
+        tableView.register(LongitudeLatitudeInputCell.self, forCellReuseIdentifier: "LonLat")
+        if #available(iOS 15.0, *) {
+            tableView.register(DistanceInputCell.self, forCellReuseIdentifier: "Distance")
+        }
+
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: CelestiaString("Go", comment: ""), style: .plain, target: self, action: #selector(go))
 
         reload()
     }
 
+    @objc private func go() {
+        let selection = core.simulation.findObject(from: objectName)
+        guard !selection.isEmpty else {
+            showError(CelestiaString("Object not found", comment: ""))
+            return
+        }
+        locationHandler(GoToLocation(selection: selection, longitude: longitude, latitude: latitude, distance: distance, unit: unit))
+    }
+
     private func reload() {
-        allSections = [
-            [ObjectNameItem(name: objectName)],
-            [
-                FloatValueItem(title: CelestiaString("Longitude", comment: ""), value: longitude, type: .longitude),
-                FloatValueItem(title: CelestiaString("Latitude", comment: ""), value: latitude, type: .latitude)
-            ],
-            [
+        let distanceSection: Section
+        if #available(iOS 15.0, *) {
+            distanceSection = Section(title: CelestiaString("Distance", comment: ""), items: [DistanceItem()])
+        } else {
+            distanceSection = Section(title: nil, items: [
                 DoubleValueItem(title: CelestiaString("Distance", comment: ""), value: distance, type: .distance),
                 UnitItem(unit: unit)
-            ],
-            [ProcceedItem()]
+            ])
+        }
+        allSections = [
+            Section(title: nil, items: [ObjectNameItem(name: objectName)]),
+            Section(title: CelestiaString("Coordinates", comment: ""), items: [
+                LonLatItem(),
+            ]),
+            distanceSection,
         ]
         tableView.reloadData()
     }
@@ -148,25 +168,39 @@ extension GoToInputViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return allSections[section].count
+        return allSections[section].items.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let item = allSections[indexPath.section][indexPath.row]
+        let item = allSections[indexPath.section].items[indexPath.row]
+        if item is LonLatItem {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "LonLat", for: indexPath) as! LongitudeLatitudeInputCell
+            cell.model = LongitudeLatitudeInputCell.Model(longitude: longitude, latitude: latitude)
+            cell.coordinatesChanged = { [weak self] longitude, latitude in
+                guard let self = self else { return }
+                self.longitude = longitude
+                self.latitude = latitude
+            }
+            return cell
+        }
+        if #available(iOS 15.0, *), item is DistanceItem {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Distance", for: indexPath) as! DistanceInputCell
+            cell.model = DistanceInputCell.Model(
+                units: DistanceUnit.allCases.map({ CelestiaString($0.name, comment: "") }),
+                selectedUnitIndex: DistanceUnit.allCases.firstIndex(of: unit)!,
+                distance: distance
+            )
+            cell.unitChanged = { [weak self] unitIndex in
+                self?.unit = DistanceUnit.allCases[unitIndex]
+            }
+            cell.distanceChanged = { [weak self] distance in
+                self?.distance = distance
+            }
+            return cell
+        }
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
         cell.title = item.title
         cell.detail = item.detail
-
-        if item is ProcceedItem {
-            #if targetEnvironment(macCatalyst)
-            cell.titleColor = cell.tintColor
-            #else
-            cell.titleColor = UIColor.themeLabel
-            #endif
-        } else {
-            cell.titleColor = UIColor.darkLabel
-        }
-
         return cell
     }
 
@@ -174,21 +208,25 @@ extension GoToInputViewController {
         return UITableView.automaticDimension
     }
 
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return allSections[section].title
+    }
+
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        let item = allSections[indexPath.section][indexPath.row]
+        let item = allSections[indexPath.section].items[indexPath.row]
         if item is ObjectNameItem {
             objectNameHandler(self)
         } else if item is UnitItem {
             guard let cell = tableView.cellForRow(at: indexPath) else { return }
-            showSelection(nil, options: Self.availableUnits.map({ CelestiaString($0.name, comment: "") }), source: .view(view: cell, sourceRect: nil)) { [weak self] index in
+            showSelection(nil, options: DistanceUnit.allCases.map({ CelestiaString($0.name, comment: "") }), source: .view(view: cell, sourceRect: nil)) { [weak self] index in
                 guard let self = self else { return }
                 guard let newIndex = index else { return }
-                self.unit = Self.availableUnits[newIndex]
+                self.unit = DistanceUnit.allCases[newIndex]
                 self.reload()
             }
         } else if let valueItem = item as? DoubleValueItem {
-            showTextInput(item.title, text: item.detail) { [weak self] string in
+            showTextInput(item.title, text: item.detail, keyboardType: .decimalPad) { [weak self] string in
                 guard let self = self else { return }
                 guard let newString = string, let value = Double(newString) else { return }
                 switch valueItem.type {
@@ -197,25 +235,6 @@ extension GoToInputViewController {
                 }
                 self.reload()
             }
-        } else if let valueItem = item as? FloatValueItem {
-            showTextInput(item.title, text: item.detail) { [weak self] string in
-                guard let self = self else { return }
-                guard let newString = string, let value = Float(newString) else { return }
-                switch valueItem.type {
-                case .longitude:
-                    self.longitude = value
-                case .latitude:
-                    self.latitude = value
-                }
-                self.reload()
-            }
-        } else if item is ProcceedItem {
-            let selection = core.simulation.findObject(from: objectName)
-            guard !selection.isEmpty else {
-                showError(CelestiaString("Object not found", comment: ""))
-                return
-            }
-            locationHandler(GoToLocation(selection: selection, longitude: longitude, latitude: latitude, distance: distance, unit: unit))
         }
     }
 }

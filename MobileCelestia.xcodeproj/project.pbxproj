@@ -110,6 +110,8 @@
 		EAC2F4D02647F2920039DF2F /* SearchResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC2F4CF2647F2920039DF2F /* SearchResultViewController.swift */; };
 		EAC8435F252C818700691943 /* CELMacBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = EAC8435E252C818700691943 /* CELMacBridge.m */; };
 		EAC84364252C84B600691943 /* CelestiaMacBridge.bundle in Embed PlugIns */ = {isa = PBXBuildFile; fileRef = EAC84354252C816500691943 /* CelestiaMacBridge.bundle */; platformFilter = maccatalyst; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		EACAB98728BB2B3E00192C75 /* LongitudeLatitudeInputCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACAB98628BB2B3E00192C75 /* LongitudeLatitudeInputCell.swift */; };
+		EACAB98928BB314300192C75 /* DistanceInputCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACAB98828BB314300192C75 /* DistanceInputCell.swift */; };
 		EAD94F67261EED7700A93C93 /* UITableView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD94F66261EED7700A93C93 /* UITableView+Extensions.swift */; };
 		EADE7FBB252B517600D4174F /* CelestiaDisplayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE7FBA252B517600D4174F /* CelestiaDisplayController.swift */; };
 		EADE7FC0252B54A400D4174F /* CelestiaInteractionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE7FBF252B54A400D4174F /* CelestiaInteractionController.swift */; };
@@ -288,6 +290,8 @@
 		EAC84356252C816500691943 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EAC8435D252C818700691943 /* CELMacBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CELMacBridge.h; sourceTree = "<group>"; };
 		EAC8435E252C818700691943 /* CELMacBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CELMacBridge.m; sourceTree = "<group>"; };
+		EACAB98628BB2B3E00192C75 /* LongitudeLatitudeInputCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongitudeLatitudeInputCell.swift; sourceTree = "<group>"; };
+		EACAB98828BB314300192C75 /* DistanceInputCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DistanceInputCell.swift; sourceTree = "<group>"; };
 		EAD94F66261EED7700A93C93 /* UITableView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Extensions.swift"; sourceTree = "<group>"; };
 		EAD962992782BA2B00CDF86E /* Info-macos.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-macos.plist"; sourceTree = "<group>"; };
 		EADE7FBA252B517600D4174F /* CelestiaDisplayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaDisplayController.swift; sourceTree = "<group>"; };
@@ -634,6 +638,8 @@
 			children = (
 				EA374CD1263A8B320069589C /* GoToContainerViewController.swift */,
 				EA374CD9263A8B770069589C /* GoToInputViewController.swift */,
+				EACAB98628BB2B3E00192C75 /* LongitudeLatitudeInputCell.swift */,
+				EACAB98828BB314300192C75 /* DistanceInputCell.swift */,
 			);
 			path = GoTo;
 			sourceTree = "<group>";
@@ -983,6 +989,7 @@
 				EAFF95F428885A64009C2FFD /* FallbackWebViewController.swift in Sources */,
 				977394B32403F74800E38B82 /* SettingTextCell.swift in Sources */,
 				97401C9D2414D3460015F8E8 /* UserDefaults.swift in Sources */,
+				EACAB98928BB314300192C75 /* DistanceInputCell.swift in Sources */,
 				977CDD30240BD78F00137127 /* TutorialActionCell.swift in Sources */,
 				EABDE3A92473DAA300E0A5FA /* SettingCommonViewController.swift in Sources */,
 				9773949C2402A8F700E38B82 /* ToolbarViewController.swift in Sources */,
@@ -1028,6 +1035,7 @@
 				EABF791E2538986400F2460C /* AsyncListViewController.swift in Sources */,
 				EAE6AC0F27A438E400F953DF /* CommonWebViewController.swift in Sources */,
 				97FF95AA240A3F0900E9F44F /* Data.swift in Sources */,
+				EACAB98728BB2B3E00192C75 /* LongitudeLatitudeInputCell.swift in Sources */,
 				974F86DF2403BD3C00356795 /* BodyActionCell.swift in Sources */,
 				EA9FB23F27B7852A00E0DC1F /* CommonSceneDelegate.swift in Sources */,
 				EA374CDA263A8B770069589C /* GoToInputViewController.swift in Sources */,
