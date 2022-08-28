@@ -684,7 +684,7 @@ extension MainViewController: CelestiaControllerDelegate {
 
     private func createSelectionInfoViewController(with selection: Selection, isEmbeddedInNavigation: Bool) -> InfoViewController {
         let controller = InfoViewController(info: selection, isEmbeddedInNavigationController: isEmbeddedInNavigation)
-        controller.selectionHandler = { [unowned self] (action, sender) in
+        controller.selectionHandler = { [unowned self] (viewController, action, sender) in
             switch action {
             case .select:
                 self.core.run { $0.simulation.selection = selection }
@@ -695,17 +695,51 @@ extension MainViewController: CelestiaControllerDelegate {
             case .subsystem:
                 self.showSubsystem(with: selection)
             case .alternateSurfaces:
-                self.showAlternateSurfaces(of: selection, with: sender)
+                self.showAlternateSurfaces(of: selection, with: sender, viewController: viewController)
             case .mark:
-                self.showMarkMenu(with: selection, with: sender)
+                self.showMarkMenu(with: selection, with: sender, viewController: viewController)
             }
+        }
+        controller.menuProvider = { [unowned self] action in
+            let children: [UIAction]
+            switch action {
+            case .mark:
+                let options = (0...MarkerRepresentation.crosshair.rawValue).map{ MarkerRepresentation(rawValue: $0)?.localizedTitle ?? "" } + [CelestiaString("Unmark", comment: "")]
+                children = options.enumerated().map { index, option in
+                    return UIAction(title: option) { _ in
+                        if let marker = MarkerRepresentation(rawValue: UInt(index)) {
+                            self.core.markAsync(selection, markerType: marker)
+                        } else {
+                            self.core.run { $0.simulation.universe.unmark(selection) }
+                        }
+                    }
+                }
+            case .alternateSurfaces:
+                let alternativeSurfaces = selection.body?.alternateSurfaceNames ?? []
+                if alternativeSurfaces.isEmpty {
+                    children = []
+                } else {
+                    children = ([CelestiaString("Default", comment: "")] + alternativeSurfaces).enumerated().map { index, option in
+                        return UIAction(title: option) { _ in
+                            if index == 0 {
+                                self.core.run { $0.simulation.activeObserver.displayedSurface = "" }
+                                return
+                            }
+                            self.core.run { $0.simulation.activeObserver.displayedSurface = alternativeSurfaces[index - 1] }
+                        }
+                    }
+                }
+            default:
+                children = []
+            }
+            return children.isEmpty ? nil : UIMenu(children: children)
         }
         return controller
     }
 
-    private func showMarkMenu(with selection: Selection, with sender: UIView) {
+    private func showMarkMenu(with selection: Selection, with sender: UIView, viewController: UIViewController) {
         let options = (0...MarkerRepresentation.crosshair.rawValue).map{ MarkerRepresentation(rawValue: $0)?.localizedTitle ?? "" } + [CelestiaString("Unmark", comment: "")]
-        front?.showSelection(CelestiaString("Mark", comment: ""), options: options, source: .view(view: sender, sourceRect: nil)) { [weak self] index in
+        viewController.showSelection(CelestiaString("Mark", comment: ""), options: options, source: .view(view: sender, sourceRect: nil)) { [weak self] index in
             guard let self = self, let index = index else { return }
             if let marker = MarkerRepresentation(rawValue: UInt(index)) {
                 self.core.markAsync(selection, markerType: marker)
@@ -715,9 +749,9 @@ extension MainViewController: CelestiaControllerDelegate {
         }
     }
 
-    private func showAlternateSurfaces(of selection: Selection, with sender: UIView) {
+    private func showAlternateSurfaces(of selection: Selection, with sender: UIView, viewController: UIViewController) {
         guard let alternativeSurfaces = selection.body?.alternateSurfaceNames, alternativeSurfaces.count > 0 else { return }
-        front?.showSelection(CelestiaString("Alternate Surfaces", comment: ""), options: [CelestiaString("Default", comment: "")] + alternativeSurfaces, source: .view(view: sender, sourceRect: nil)) { [weak self] index in
+        viewController.showSelection(CelestiaString("Alternate Surfaces", comment: ""), options: [CelestiaString("Default", comment: "")] + alternativeSurfaces, source: .view(view: sender, sourceRect: nil)) { [weak self] index in
             guard let self = self, let index = index else { return }
 
             if index == 0 {

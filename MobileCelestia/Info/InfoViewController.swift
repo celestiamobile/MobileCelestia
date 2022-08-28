@@ -36,7 +36,8 @@ final class InfoViewController: UIViewController {
     private let info: Selection
     private let isEmbeddedInNavigationController: Bool
 
-    var selectionHandler: ((ObjectAction, UIView) -> Void)?
+    var selectionHandler: ((UIViewController, ObjectAction, UIView) -> Void)?
+    var menuProvider: ((ObjectAction) -> UIMenu?)?
 
     private var actions: [ObjectAction]
 
@@ -162,8 +163,9 @@ extension InfoViewController: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Action", for: indexPath) as! BodyActionCell
         let action = actions[indexPath.item]
         cell.title = action.description
+        cell.menu = menuProvider?(action)
         cell.actionHandler = { [unowned self] view in
-            self.selectionHandler?(action, view)
+            self.selectionHandler?(self, action, view)
         }
         return cell
     }

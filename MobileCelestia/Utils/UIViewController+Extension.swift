@@ -119,7 +119,12 @@ extension UIViewController {
 
     private func commonSelectionActionSheet(_ title: String?, options: [String], permittedArrowDirections: UIPopoverArrowDirection = .any, completion: ((Int?) -> Void)?) -> UIAlertController {
         #if targetEnvironment(macCatalyst)
-        let alertStyle = UIAlertController.Style.alert
+        let alertStyle: UIAlertController.Style
+        if options.count > 3 {
+            alertStyle = .actionSheet
+        } else {
+            alertStyle = .alert
+        }
         #else
         let alertStyle = UIAlertController.Style.actionSheet
         #endif

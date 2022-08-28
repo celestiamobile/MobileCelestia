@@ -13,6 +13,19 @@ import UIKit
 
 final class BodyActionCell: UICollectionViewCell {
     var title: String? { didSet { button.setTitle(title, for: .normal) } }
+    var menu: UIMenu? {
+        didSet {
+            if #available(iOS 14.0, *) {
+                if let menu = menu {
+                    button.menu = menu
+                    button.showsMenuAsPrimaryAction = true
+                } else {
+                    button.menu = nil
+                    button.showsMenuAsPrimaryAction = false
+                }
+            }
+        }
+    }
     var actionHandler: ((BodyActionCell) -> Void)?
 
     private lazy var button = ActionButtonHelper.newButton()
