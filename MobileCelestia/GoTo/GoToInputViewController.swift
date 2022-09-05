@@ -43,9 +43,10 @@ class GoToInputViewController: BaseTableViewController {
         }
         let title: String
         let value: Double
+        let formatter: NumberFormatter
         let type: ValueType
 
-        var detail: String { return String(format: "%.2f", value) }
+        var detail: String { return formatter.string(from: NSNumber(value: value)) ?? "" }
     }
 
     struct LonLatItem: GoToInputItem {
@@ -93,6 +94,13 @@ class GoToInputViewController: BaseTableViewController {
     private let core = AppCore.shared
 
     private var allSections: [Section] = []
+
+    private lazy var numberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.locale = Locale.current
+        formatter.maximumFractionDigits = 2
+        return formatter
+    }()
 
     init(objectNameHandler: @escaping (GoToInputViewController) -> Void, locationHandler: @escaping ((GoToLocation) -> Void)) {
         self.objectNameHandler = objectNameHandler
@@ -147,7 +155,7 @@ private extension GoToInputViewController {
             distanceSection = Section(title: CelestiaString("Distance", comment: ""), items: [DistanceItem()])
         } else {
             distanceSection = Section(title: nil, items: [
-                DoubleValueItem(title: CelestiaString("Distance", comment: ""), value: distance, type: .distance),
+                DoubleValueItem(title: CelestiaString("Distance", comment: ""), value: distance, formatter: numberFormatter, type: .distance),
                 UnitItem(unit: unit)
             ])
         }
@@ -228,7 +236,7 @@ extension GoToInputViewController {
         } else if let valueItem = item as? DoubleValueItem {
             showTextInput(item.title, text: item.detail, keyboardType: .decimalPad) { [weak self] string in
                 guard let self = self else { return }
-                guard let newString = string, let value = Double(newString) else { return }
+                guard let newString = string, let value = self.numberFormatter.number(from: newString)?.doubleValue ?? Double(newString) else { return }
                 switch valueItem.type {
                 case .distance:
                     self.distance = value

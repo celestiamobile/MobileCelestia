@@ -34,6 +34,13 @@ class LongitudeLatitudeInputCell: UITableViewCell {
         }
     }
 
+    private lazy var numberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.locale = Locale.current
+        formatter.maximumFractionDigits = 2
+        return formatter
+    }()
+
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
@@ -45,8 +52,8 @@ class LongitudeLatitudeInputCell: UITableViewCell {
     }
 
     private func update() {
-        longitudeTextField.text = String(format: "%.2f", model.longitude)
-        latitudeTextField.text = String(format: "%.2f", model.latitude)
+        longitudeTextField.text = numberFormatter.string(from: NSNumber(value: model.longitude))
+        latitudeTextField.text = numberFormatter.string(from: NSNumber(value: model.latitude))
     }
 
     private func setUp() {
@@ -92,7 +99,7 @@ class LongitudeLatitudeInputCell: UITableViewCell {
     }
 
     @objc private func longitudeTextChanged() {
-        if let text = longitudeTextField.text, let value = Float(text) {
+        if let text = longitudeTextField.text, let value = numberFormatter.number(from: text)?.floatValue ?? Float(text) {
             ignoreModelUpdates = true
             model.longitude = value
             ignoreModelUpdates = false
@@ -101,7 +108,7 @@ class LongitudeLatitudeInputCell: UITableViewCell {
     }
 
     @objc private func latitudeTextChanged() {
-        if let text = latitudeTextField.text, let value = Float(text) {
+        if let text = latitudeTextField.text, let value = numberFormatter.number(from: text)?.floatValue ?? Float(text) {
             ignoreModelUpdates = true
             model.latitude = value
             ignoreModelUpdates = false

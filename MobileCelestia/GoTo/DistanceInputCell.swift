@@ -26,6 +26,13 @@ class DistanceInputCell: UITableViewCell {
     var unitChanged: ((Int) -> Void)?
     var distanceChanged: ((Double) -> Void)?
 
+    private lazy var numberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.locale = Locale.current
+        formatter.maximumFractionDigits = 2
+        return formatter
+    }()
+
     var model = Model(units: [], selectedUnitIndex: -1, distance: 0) {
         didSet {
             guard !ignoreModelUpdates else { return }
@@ -54,7 +61,7 @@ class DistanceInputCell: UITableViewCell {
             }
         }
         unitButton.menu = UIMenu(children: items)
-        distanceTextField.text = String(format: "%.2f", model.distance)
+        distanceTextField.text = numberFormatter.string(from: NSNumber(value: model.distance))
     }
 
     private func setUp() {
@@ -92,7 +99,7 @@ class DistanceInputCell: UITableViewCell {
     }
 
     @objc private func distanceTextChanged() {
-        if let text = distanceTextField.text, let value = Double(text) {
+        if let text = distanceTextField.text, let value = numberFormatter.number(from: text)?.doubleValue ?? Double(text) {
             ignoreModelUpdates = true
             model.distance = value
             ignoreModelUpdates = false
