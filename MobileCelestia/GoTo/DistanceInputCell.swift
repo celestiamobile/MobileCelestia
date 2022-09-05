@@ -26,7 +26,7 @@ class DistanceInputCell: UITableViewCell {
     var unitChanged: ((Int) -> Void)?
     var distanceChanged: ((Double) -> Void)?
 
-    private lazy var numberFormatter = {
+    private lazy var numberFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.locale = Locale.current
         formatter.maximumFractionDigits = 2

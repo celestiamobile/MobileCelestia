@@ -34,7 +34,7 @@ class LongitudeLatitudeInputCell: UITableViewCell {
         }
     }
 
-    private lazy var numberFormatter = {
+    private lazy var numberFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.locale = Locale.current
         formatter.maximumFractionDigits = 2
