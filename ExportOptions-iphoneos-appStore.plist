@@ -21,8 +21,6 @@
 	<true/>
 	<key>teamID</key>
 	<string>22NR5428TD</string>
-	<key>uploadBitcode</key>
-	<true/>
 	<key>uploadSymbols</key>
 	<true/>
 </dict>
