@@ -20,13 +20,17 @@ class PanelSceneDelegate: CommonSceneDelegate {
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = scene as? UIWindowScene else { return }
         guard let userInfo = connectionOptions.userActivities.first?.userInfo else { return }
-        guard let id = userInfo[Self.idKey] as? UUID, let width = userInfo[Self.widthKey] as? CGFloat, let height = userInfo[Self.heightKey] as? CGFloat else { return }
+        guard let id = userInfo[Self.idKey] as? UUID, let width = userInfo[Self.widthKey] as? CGFloat, let height = userInfo[Self.heightKey] as? CGFloat, let titleVisible = userInfo[Self.titleVisibleKey] as? Bool else { return }
         guard let sessionKey = userInfo[Self.sessionKey] as? String else { return }
         guard let viewController = Self.viewControllersToPresent.removeValue(forKey: id) else { return }
         let size = CGSize(width: width, height: height)
         Self.weakSessionTable.setObject(session, forKey: sessionKey as NSString)
 
-        windowScene.titlebar?.titleVisibility = .hidden
+        if #available(macCatalyst 16.0, *) {
+            windowScene.titlebar?.titleVisibility = titleVisible ? .visible : .hidden
+        } else {
+            windowScene.titlebar?.titleVisibility = .hidden
+        }
         windowScene.sizeRestrictions?.minimumSize = size
         windowScene.sizeRestrictions?.maximumSize = size
         let window = UIWindow(windowScene: windowScene)
@@ -56,18 +60,19 @@ class PanelSceneDelegate: CommonSceneDelegate {
     private static var idKey = "id"
     private static var widthKey = "width"
     private static var heightKey = "height"
+    private static var titleVisibleKey = "title_visible"
     private static var sessionKey = "session"
     private static var viewControllersToPresent: [UUID : UIViewController] = [:]
     private static var weakSessionTable = NSMapTable<NSString, UISceneSession>(keyOptions: .strongMemory, valueOptions: .weakMemory)
 
-    static func present(_ viewController: UIViewController, key: String? = nil, preferredSize: CGSize) {
+    static func present(_ viewController: UIViewController, key: String?, preferredSize: CGSize, titleVisible: Bool) {
         let sessionTableKey = key ?? String(describing: type(of: viewController))
         if let existingSession = weakSessionTable.object(forKey: sessionTableKey as NSString) {
             UIApplication.shared.requestSceneSessionDestruction(existingSession, options: nil) { _ in }
         }
         let activity = NSUserActivity(activityType: Self.activityType)
         let id = UUID()
-        activity.userInfo = [idKey: id, widthKey: preferredSize.width, heightKey: preferredSize.height, sessionKey: sessionTableKey]
+        activity.userInfo = [idKey: id, widthKey: preferredSize.width, heightKey: preferredSize.height, sessionKey: sessionTableKey, titleVisibleKey: titleVisible]
         viewControllersToPresent[id] = viewController
         UIApplication.shared.requestSceneSessionActivation(nil, userActivity: activity, options: nil) { _ in }
     }

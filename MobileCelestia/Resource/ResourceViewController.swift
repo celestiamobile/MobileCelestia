@@ -11,31 +11,23 @@
 
 import UIKit
 
-class ResourceViewController: UIViewController {
-    private var navigation: UINavigationController!
-
-    override func loadView() {
-        view = UIView()
-        view.backgroundColor = .darkBackground
+class ResourceViewController: UINavigationController {
+    init() {
+        super.init(rootViewController: UIViewController())
+        setViewControllers([
+            InstalledResourceViewController { [weak self] item in
+                self?.viewItem(item)
+            }
+        ], animated: false)
     }
 
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        setup()
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 }
 
 private extension ResourceViewController {
-    func setup() {
-        let vc = InstalledResourceViewController { [weak self] item in
-            self?.viewItem(item)
-        }
-        navigation = UINavigationController(rootViewController: vc)
-        install(navigation)
-    }
-
     private func viewItem(_ item: ResourceItem) {
-        navigation.pushViewController(ResourceItemViewController(item: item, needsRefetchItem: true), animated: true)
+        pushViewController(ResourceItemViewController(item: item, needsRefetchItem: true), animated: true)
     }
 }

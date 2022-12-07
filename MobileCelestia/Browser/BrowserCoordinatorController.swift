@@ -13,10 +13,7 @@ import UIKit
 
 import CelestiaCore
 
-class BrowserCoordinatorController: UIViewController {
-
-    private var navigation: UINavigationController!
-
+class BrowserCoordinatorController: UINavigationController {
     private let item: BrowserItem
 
     private let selection: (Selection) -> UIViewController
@@ -24,53 +21,31 @@ class BrowserCoordinatorController: UIViewController {
     init(item: BrowserItem, image: UIImage, selection: @escaping (Selection) -> UIViewController) {
         self.item = item
         self.selection = selection
-        super.init(nibName: nil, bundle: nil)
+        super.init(rootViewController: UIViewController())
 
         tabBarItem = UITabBarItem(title: item.alternativeName ?? item.name, image: image, selectedImage: nil)
+
+        setViewControllers([create(for: item)], animated: false)
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
-    override func loadView() {
-        view = UIView()
-        view.backgroundColor = .darkBackground
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        setup()
-    }
-
 }
 
 private extension BrowserCoordinatorController {
-    func setup() {
-        navigation = UINavigationController(rootViewController: create(for: item))
-
-        install(navigation)
-
-        if #available(iOS 13.0, *) {
-        } else {
-            navigation.navigationBar.barStyle = .black
-            navigation.navigationBar.barTintColor = .darkBackground
-            navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
-        }
-    }
-
     func create(for item: BrowserItem) -> BrowserCommonViewController {
-        return BrowserCommonViewController(item: item, selection: { [unowned self] (sel, finish) in
+        return BrowserCommonViewController(item: item, selection: { [weak self] (sel, finish) in
+            guard let self else { return }
             if !finish {
-                self.navigation.pushViewController(self.create(for: sel), animated: true)
+                self.pushViewController(self.create(for: sel), animated: true)
                 return
             }
             guard let transformed = Selection(item: sel) else {
                 self.showError(CelestiaString("Object not found", comment: ""))
                 return
             }
-            self.navigation.pushViewController(self.selection(transformed), animated: true)
+            self.pushViewController(self.selection(transformed), animated: true)
         })
     }
 }

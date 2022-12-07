@@ -19,9 +19,10 @@ enum SettingAction {
 class SettingsCoordinatorController: UIViewController {
     #if targetEnvironment(macCatalyst)
     private lazy var controller = UISplitViewController()
+    #else
+    private var navigation: UINavigationController!
     #endif
     private var main: SettingsMainViewController!
-    private var navigation: UINavigationController!
 
     private let actionHandler: ((SettingAction) -> Void)
     private let screenProvider: (() -> UIScreen)

@@ -551,7 +551,7 @@ extension MainViewController: CelestiaControllerDelegate {
             viewController.requestShareURL(node.url, placeholder: node.name)
         })
         #if targetEnvironment(macCatalyst)
-        showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600))
+        showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600), titleVisible: false)
         #else
         showViewController(controller)
         #endif
@@ -786,7 +786,7 @@ extension MainViewController: CelestiaControllerDelegate {
             return self.celestiaController.displayScreen
         })
         #if targetEnvironment(macCatalyst)
-        showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600))
+        showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600), titleVisible: false)
         #else
         showViewController(controller)
         #endif
@@ -797,7 +797,7 @@ extension MainViewController: CelestiaControllerDelegate {
             return self.createSelectionInfoViewController(with: info, isEmbeddedInNavigation: true)
         }
         #if targetEnvironment(macCatalyst)
-        showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600))
+        showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600), titleVisible: false)
         #else
         showViewController(controller)
         #endif
@@ -808,7 +808,7 @@ extension MainViewController: CelestiaControllerDelegate {
             return self.createSelectionInfoViewController(with: info, isEmbeddedInNavigation: true)
         })
         #if targetEnvironment(macCatalyst)
-        showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600))
+        showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600), titleVisible: false)
         #else
         showViewController(controller)
         #endif
@@ -817,9 +817,10 @@ extension MainViewController: CelestiaControllerDelegate {
     private func showViewController(_ viewController: UIViewController,
                                     key: String? = nil,
                                     iOSPreferredSize: CGSize = CGSize(width: 320, height: 320),
-                                    macOSPreferredSize: CGSize = CGSize(width: 400, height: 500)) {
+                                    macOSPreferredSize: CGSize = CGSize(width: 400, height: 500),
+                                    titleVisible: Bool = true) {
         #if targetEnvironment(macCatalyst)
-        PanelSceneDelegate.present(viewController, key: key, preferredSize: macOSPreferredSize)
+        PanelSceneDelegate.present(viewController, key: key, preferredSize: macOSPreferredSize, titleVisible: titleVisible)
         #else
         viewController.preferredContentSize = iOSPreferredSize
         viewController.modalPresentationStyle = .custom
