@@ -22,6 +22,7 @@ class BrowserCommonViewController: BaseTableViewController {
         self.item = item
         self.selection = selection
         super.init(style: .defaultGrouped)
+        title = item.alternativeName ?? item.name
     }
 
     required init?(coder: NSCoder) {
@@ -38,7 +39,6 @@ class BrowserCommonViewController: BaseTableViewController {
 private extension BrowserCommonViewController {
     func setup() {
         tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Text")
-        title = item.alternativeName ?? item.name
     }
 }
 

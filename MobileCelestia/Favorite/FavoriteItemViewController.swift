@@ -314,14 +314,18 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: BaseTableViewContr
     }
 
     // MARK: Modification
-    @objc private func requestEdit() {
+    @objc private func requestEdit(_ sender: UIBarButtonItem) {
         tableView.setEditing(true, animated: true)
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(finishEditing))
+        sender.style = .done
+        sender.title = CelestiaString("Done", comment: "")
+        sender.action = #selector(finishEditing(_:))
     }
 
-    @objc private func finishEditing() {
+    @objc private func finishEditing(_ sender: UIBarButtonItem) {
         tableView.setEditing(false, animated: true)
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(requestEdit))
+        sender.style = .plain
+        sender.title = CelestiaString("Edit", comment: "")
+        sender.action = #selector(requestEdit(_:))
     }
 
     private func requestAddObject() {
@@ -363,7 +367,7 @@ private extension FavoriteItemViewController {
         title = itemList.title
 
         if itemList.canBeModified {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(requestEdit))
+            navigationItem.rightBarButtonItem = UIBarButtonItem(title: CelestiaString("Edit", comment: ""), style: .plain, target: self, action: #selector(requestEdit(_:)))
         }
     }
 }

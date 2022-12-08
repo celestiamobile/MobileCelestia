@@ -12,8 +12,14 @@
 import UIKit
 
 final class BodyDescriptionCell: UICollectionViewCell {
-    private var titleLabel = UILabel(textStyle: .title2, weight: .semibold)
-    private var bodyLabel = UILabel(textStyle: .body)
+    private lazy var titleLabel = UILabel(textStyle: .title2, weight: .semibold)
+    private lazy var bodyLabel = UILabel(textStyle: .body)
+    private lazy var stackView: UIStackView = {
+        let stackView = UIStackView(arrangedSubviews: [titleLabel, bodyLabel])
+        stackView.axis = .vertical
+        stackView.spacing = GlobalConstants.pageMediumGapVertical
+        return stackView
+    }()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -26,27 +32,18 @@ final class BodyDescriptionCell: UICollectionViewCell {
     }
 
     private func setup() {
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(titleLabel)
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(stackView)
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
-            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
+            stackView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
         ])
 
         titleLabel.textColor = .darkLabel
         titleLabel.numberOfLines = 0
         titleLabel.lineBreakMode = .byCharWrapping
-
-        bodyLabel.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(bodyLabel)
-
-        NSLayoutConstraint.activate([
-            bodyLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: GlobalConstants.pageMediumGapVertical),
-            bodyLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            bodyLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            bodyLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
-        ])
 
         bodyLabel.textColor = .darkSecondaryLabel
         bodyLabel.numberOfLines = 0
@@ -65,8 +62,9 @@ final class BodyDescriptionCell: UICollectionViewCell {
 }
 
 extension BodyDescriptionCell {
-    func update(with info: BodyInfo) {
+    func update(with info: BodyInfo, showTitle: Bool) {
         titleLabel.text = info.name
         bodyLabel.text = info.overview
+        titleLabel.isHidden = !showTitle
     }
 }

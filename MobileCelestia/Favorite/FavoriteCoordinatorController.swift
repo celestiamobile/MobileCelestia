@@ -18,12 +18,7 @@ enum FavoriteRoot {
     case destinations
 }
 
-class FavoriteCoordinatorController: UIViewController {
-    #if targetEnvironment(macCatalyst)
-    private lazy var controller = UISplitViewController()
-    #endif
-    private var navigation: UINavigationController!
-
+class FavoriteCoordinatorController: UINavigationController {
     private lazy var main = FavoriteViewController(currentSelection: root == .destinations ? .destination : nil, selected: { [unowned self] (item) in
         switch item {
         case .bookmark:
@@ -50,22 +45,13 @@ class FavoriteCoordinatorController: UIViewController {
         self.root = root
         self.selected = selected
         self.share = share
-        super.init(nibName: nil, bundle: nil)
+        super.init(rootViewController: UIViewController())
+        let vc = root == .destinations ? generateVC(AnyFavoriteItemList(title: CelestiaString("Destinations", comment: ""), items: AppCore.shared.destinations)) : main
+        setViewControllers([vc], animated: false)
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    override func loadView() {
-        view = UIView()
-        view.backgroundColor = .darkBackground
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        setup()
     }
 
     override func viewDidDisappear(_ animated: Bool) {
@@ -76,58 +62,12 @@ class FavoriteCoordinatorController: UIViewController {
 }
 
 private extension FavoriteCoordinatorController {
-    func setup() {
-        let anotherVc = root == .destinations ? generateVC(AnyFavoriteItemList(title: CelestiaString("Destinations", comment: ""), items: AppCore.shared.destinations)) : nil
-        #if targetEnvironment(macCatalyst)
-        controller.primaryBackgroundStyle = .sidebar
-        controller.preferredDisplayMode = .oneBesideSecondary
-        controller.preferredPrimaryColumnWidthFraction = 0.3
-        let contentVc: UIViewController
-        if let another = anotherVc {
-            navigation = UINavigationController(rootViewController: another)
-            if #available(iOS 13.0, *) {
-            } else {
-                navigation.navigationBar.barStyle = .black
-                navigation.navigationBar.barTintColor = .darkBackground
-                navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
-            }
-            contentVc = navigation
-        } else {
-            let emptyVc = UIViewController()
-            emptyVc.view.backgroundColor = .darkBackground
-            contentVc = emptyVc
-        }
-        controller.viewControllers = [main, contentVc]
-        install(controller)
-        #else
-        navigation = UINavigationController(rootViewController: anotherVc ?? main)
-        install(navigation)
-        if #available(iOS 13.0, *) {
-        } else {
-            navigation.navigationBar.barStyle = .black
-            navigation.navigationBar.barTintColor = .darkBackground
-            navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
-        }
-        #endif
-    }
-
     func replace<T: FavoriteItemList>(_ itemList: T) {
-        #if targetEnvironment(macCatalyst)
-        navigation = UINavigationController(rootViewController: generateVC(itemList))
-        if #available(iOS 13.0, *) {
-        } else {
-            navigation.navigationBar.barStyle = .black
-            navigation.navigationBar.barTintColor = .darkBackground
-            navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
-        }
-        controller.viewControllers = [controller.viewControllers[0], navigation]
-        #else
         show(itemList)
-        #endif
     }
 
     func show<T: FavoriteItemList>(_ itemList: T) {
-        navigation.pushViewController(generateVC(itemList), animated: true)
+        pushViewController(generateVC(itemList), animated: true)
     }
 
     func generateVC<T: FavoriteItemList>(_ itemList: T) -> UIViewController {
@@ -137,7 +77,7 @@ private extension FavoriteCoordinatorController {
                     let vc = DestinationDetailViewController(destination: destination) {
                         self.selected(destination)
                     }
-                    self.navigation.pushViewController(vc, animated: true)
+                    self.pushViewController(vc, animated: true)
                 } else {
                     self.selected(item.associatedObject!)
                 }

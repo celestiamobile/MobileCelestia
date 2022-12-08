@@ -550,11 +550,7 @@ extension MainViewController: CelestiaControllerDelegate {
             guard let node = object as? BookmarkNode, node.isLeaf else { return }
             viewController.requestShareURL(node.url, placeholder: node.name)
         })
-        #if targetEnvironment(macCatalyst)
-        showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600), titleVisible: false)
-        #else
         showViewController(controller)
-        #endif
     }
 
     private func presentScriptToolbar() {
@@ -679,11 +675,22 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     private func showSelectionInfo(with selection: Selection) {
-        showViewController(createSelectionInfoViewController(with: selection, isEmbeddedInNavigation: false))
+        #if targetEnvironment(macCatalyst)
+        let viewController: UIViewController
+        if #available(macCatalyst 16.0, *) {
+            let infoVC = createSelectionInfoViewController(with: selection, isEmbeddedInNavigation: false, showTitleAsViewControllerTitle: true)
+            viewController = UINavigationController(rootViewController: infoVC)
+        } else {
+            viewController = createSelectionInfoViewController(with: selection, isEmbeddedInNavigation: false, showTitleAsViewControllerTitle: false)
+        }
+        #else
+        let viewController = createSelectionInfoViewController(with: selection, isEmbeddedInNavigation: false, showTitleAsViewControllerTitle: false)
+        #endif
+        showViewController(viewController)
     }
 
-    private func createSelectionInfoViewController(with selection: Selection, isEmbeddedInNavigation: Bool) -> InfoViewController {
-        let controller = InfoViewController(info: selection, isEmbeddedInNavigationController: isEmbeddedInNavigation)
+    private func createSelectionInfoViewController(with selection: Selection, isEmbeddedInNavigation: Bool, showTitleAsViewControllerTitle: Bool) -> InfoViewController {
+        let controller = InfoViewController(info: selection, isEmbeddedInNavigationController: isEmbeddedInNavigation, showTitleAsViewControllerTitle: showTitleAsViewControllerTitle)
         controller.selectionHandler = { [unowned self] (viewController, action, sender) in
             switch action {
             case .select:
@@ -768,9 +775,19 @@ extension MainViewController: CelestiaControllerDelegate {
 
     private func showSubsystem(with selection: Selection) {
         guard let entry = selection.object else { return }
+        #if targetEnvironment(macCatalyst)
+        let showTitleAsViewControllerTitle: Bool
+        if #available(macCatalyst 16.0, *) {
+            showTitleAsViewControllerTitle = true
+        } else {
+            showTitleAsViewControllerTitle = false
+        }
+        #else
+        let showTitleAsViewControllerTitle = false
+        #endif
         let browserItem = BrowserItem(name: core.simulation.universe.name(for: selection), alternativeName: nil, catEntry: entry, provider: core.simulation.universe)
         let controller = SubsystemBrowserCoordinatorViewController(item: browserItem) { [unowned self] (selection) -> UIViewController in
-            return self.createSelectionInfoViewController(with: selection, isEmbeddedInNavigation: true)
+            return self.createSelectionInfoViewController(with: selection, isEmbeddedInNavigation: true, showTitleAsViewControllerTitle: showTitleAsViewControllerTitle)
         }
         showViewController(controller)
     }
@@ -794,7 +811,7 @@ extension MainViewController: CelestiaControllerDelegate {
 
     private func showSearch() {
         let controller = SearchCoordinatorController { [unowned self] (info) in
-            return self.createSelectionInfoViewController(with: info, isEmbeddedInNavigation: true)
+            return self.createSelectionInfoViewController(with: info, isEmbeddedInNavigation: true, showTitleAsViewControllerTitle: false)
         }
         #if targetEnvironment(macCatalyst)
         showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600), titleVisible: false)
@@ -804,8 +821,18 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     private func showBrowser() {
+        #if targetEnvironment(macCatalyst)
+        let showTitleAsViewControllerTitle: Bool
+        if #available(macCatalyst 16.0, *) {
+            showTitleAsViewControllerTitle = true
+        } else {
+            showTitleAsViewControllerTitle = false
+        }
+        #else
+        let showTitleAsViewControllerTitle = false
+        #endif
         let controller = BrowserContainerViewController(selected: { [unowned self] (info) in
-            return self.createSelectionInfoViewController(with: info, isEmbeddedInNavigation: true)
+            return self.createSelectionInfoViewController(with: info, isEmbeddedInNavigation: true, showTitleAsViewControllerTitle: showTitleAsViewControllerTitle)
         })
         #if targetEnvironment(macCatalyst)
         showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600), titleVisible: false)

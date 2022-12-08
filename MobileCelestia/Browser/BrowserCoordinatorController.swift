@@ -18,6 +18,8 @@ class BrowserCoordinatorController: UINavigationController {
 
     private let selection: (Selection) -> UIViewController
 
+    var viewControllerPushed: ((UINavigationController, UIViewController) -> Void)?
+
     init(item: BrowserItem, image: UIImage, selection: @escaping (Selection) -> UIViewController) {
         self.item = item
         self.selection = selection
@@ -38,14 +40,18 @@ private extension BrowserCoordinatorController {
         return BrowserCommonViewController(item: item, selection: { [weak self] (sel, finish) in
             guard let self else { return }
             if !finish {
-                self.pushViewController(self.create(for: sel), animated: true)
+                let vc = self.create(for: sel)
+                self.pushViewController(vc, animated: true)
+                self.viewControllerPushed?(self, vc)
                 return
             }
             guard let transformed = Selection(item: sel) else {
                 self.showError(CelestiaString("Object not found", comment: ""))
                 return
             }
-            self.pushViewController(self.selection(transformed), animated: true)
+            let vc = self.selection(transformed)
+            self.pushViewController(vc, animated: true)
+            self.viewControllerPushed?(self, vc)
         })
     }
 }
