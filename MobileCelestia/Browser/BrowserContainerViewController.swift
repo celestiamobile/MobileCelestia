@@ -87,22 +87,24 @@ private extension BrowserContainerViewController {
             let newVc = BrowserCoordinatorController(item: item, image: UIImage(), selection: handler)
             self.controller.viewControllers = [self.controller.viewControllers[0], newVc]
 
-            if #available(macCatalyst 16.0, *) {
-                // Catalyst seems not to have proper Toolbar support
-                // for UISplitViewController, create and use our
-                // own NSToolbar
-                newVc.isNavigationBarHidden = true
-                newVc.viewControllerPushed = { [weak self] navigationController, viewController in
-                    guard let self else { return }
-                    self.updateToolbarByTopViewController(navigationController: navigationController, viewController: viewController)
-                }
-                let scene = self.view.window?.windowScene
-                let toolbar = NSToolbar()
-                toolbar.delegate = self
-                scene?.titlebar?.toolbar = toolbar
-                self.currentToolbar = toolbar
-                self.updateToolbarByTopViewController(navigationController: newVc, viewController: newVc.viewControllers[0])
-            }
+            // Toolbar logic is broken, crashing when removing/adding item,
+            // disable the logic here
+//            if #available(macCatalyst 16.0, *) {
+//                // Catalyst seems not to have proper Toolbar support
+//                // for UISplitViewController, create and use our
+//                // own NSToolbar
+//                newVc.isNavigationBarHidden = true
+//                newVc.viewControllerPushed = { [weak self] navigationController, viewController in
+//                    guard let self else { return }
+//                    self.updateToolbarByTopViewController(navigationController: navigationController, viewController: viewController)
+//                }
+//                let scene = self.view.window?.windowScene
+//                let toolbar = NSToolbar()
+//                toolbar.delegate = self
+//                scene?.titlebar?.toolbar = toolbar
+//                self.currentToolbar = toolbar
+//                self.updateToolbarByTopViewController(navigationController: newVc, viewController: newVc.viewControllers[0])
+//            }
         }
         let emptyVc = UIViewController()
         emptyVc.view.backgroundColor = .darkBackground

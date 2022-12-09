@@ -823,11 +823,13 @@ extension MainViewController: CelestiaControllerDelegate {
     private func showBrowser() {
         #if targetEnvironment(macCatalyst)
         let showTitleAsViewControllerTitle: Bool
-        if #available(macCatalyst 16.0, *) {
-            showTitleAsViewControllerTitle = true
-        } else {
+        // Toolbar logic is broken, crashing when removing/adding item,
+        // disable the logic here
+//        if #available(macCatalyst 16.0, *) {
+//            showTitleAsViewControllerTitle = true
+//        } else {
             showTitleAsViewControllerTitle = false
-        }
+//        }
         #else
         let showTitleAsViewControllerTitle = false
         #endif
