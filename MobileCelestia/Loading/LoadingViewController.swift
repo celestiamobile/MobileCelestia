@@ -33,7 +33,7 @@ class LoadingViewController: UIViewController {
 
 extension LoadingViewController {
     func update(with status: String) {
-        statusLabel.text = String(format: CelestiaString("Loading: %s", comment: "").toLocalizationTemplate, status)
+        statusLabel.text = String.localizedStringWithFormat(CelestiaString("Loading: %s", comment: "").toLocalizationTemplate, status)
     }
 }
 

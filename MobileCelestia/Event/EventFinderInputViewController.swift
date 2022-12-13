@@ -129,7 +129,7 @@ extension EventFinderInputViewController {
         let item = allSections[indexPath.section][indexPath.row]
         if let it = item as? DateItem {
             let preferredFormat = DateFormatter.dateFormat(fromTemplate: "yyyyMMddHHmmss", options: 0, locale: Locale.current) ?? "yyyy/MM/dd HH:mm:ss"
-            showDateInput(String(format: CelestiaString("Please enter the time in \"%s\" format.", comment: "").toLocalizationTemplate, preferredFormat), format: preferredFormat) { [weak self] (result) in
+            showDateInput(String.localizedStringWithFormat(CelestiaString("Please enter the time in \"%s\" format.", comment: "").toLocalizationTemplate, preferredFormat), format: preferredFormat) { [weak self] (result) in
                 guard let self = self else { return }
 
                 guard let date = result else {
