@@ -102,22 +102,6 @@ class CommonWebViewController: UIViewController {
 
         let fixedSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
         fixedSpace.width = 16
-        #if targetEnvironment(macCatalyst)
-        if #available(macCatalyst 16.0, *) {
-            navigationItem.style = .browser
-            navigationItem.leadingItemGroups = [
-                UIBarButtonItemGroup(barButtonItems: [goBackItem, goForwardItem], representativeItem: nil)
-            ]
-        } else {
-            toolbar.items = [
-                UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
-                goBackItem,
-                fixedSpace,
-                goForwardItem,
-                UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
-            ]
-        }
-        #else
         toolbar.items = [
             UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
             goBackItem,
@@ -125,7 +109,6 @@ class CommonWebViewController: UIViewController {
             goForwardItem,
             UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
         ]
-        #endif
         toolbar.isHidden = true
         activityIndicator.startAnimating()
         webView.load(URLRequest(url: url))
