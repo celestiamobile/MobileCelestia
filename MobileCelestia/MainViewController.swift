@@ -229,7 +229,7 @@ extension MainViewController {
             // the scrolling behavior is correct on macCatalyst
             let nav = UINavigationController(rootViewController: CommonWebViewController(url: .fromGuide(guideItemID: guide, language: locale), matchingQueryKeys: ["guide"]))
             nav.setNavigationBarHidden(true, animated: false)
-            showViewController(nav, key: guide)
+            showViewController(nav, key: guide, titleVisible: false)
             cleanup()
             return
         }
@@ -242,7 +242,7 @@ extension MainViewController {
                 // the scrolling behavior is correct on macCatalyst
                 let nav = UINavigationController(rootViewController: ResourceItemViewController(item: item, needsRefetchItem: false))
                 nav.setNavigationBarHidden(true, animated: false)
-                self.showViewController(nav, key: addon)
+                self.showViewController(nav, key: addon, titleVisible: false)
             }, decoder: ResourceItem.networkResponseDecoder)
             cleanup()
             return
@@ -261,7 +261,7 @@ extension MainViewController {
             }
             let nav = UINavigationController(rootViewController: vc)
             nav.setNavigationBarHidden(true, animated: false)
-            self.showViewController(nav, key: item.id)
+            self.showViewController(nav, key: item.id, titleVisible: false)
         }, failure: nil)
     }
 }
@@ -627,7 +627,9 @@ extension MainViewController: CelestiaControllerDelegate {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
             }
         })
-        showViewController(vc)
+        let nav = UINavigationController(rootViewController: vc)
+        nav.setNavigationBarHidden(true, animated: false)
+        showViewController(nav, titleVisible: false)
     }
 
     private func presentEventFinder() {
