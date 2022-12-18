@@ -676,7 +676,7 @@ extension MainViewController: CelestiaControllerDelegate {
 
     private func showSelectionInfo(with selection: Selection) {
         let viewController = createSelectionInfoViewController(with: selection, isEmbeddedInNavigation: false)
-        showViewController(viewController)
+        showViewController(viewController, titleVisible: false)
     }
 
     private func createSelectionInfoViewController(with selection: Selection, isEmbeddedInNavigation: Bool) -> InfoViewController {
