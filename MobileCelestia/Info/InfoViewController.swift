@@ -35,7 +35,6 @@ final class InfoViewController: UIViewController {
 
     private let info: Selection
     private let isEmbeddedInNavigationController: Bool
-    private let showTitleAsViewControllerTitle: Bool
     private let bodyInfo: BodyInfo
 
     var selectionHandler: ((UIViewController, ObjectAction, UIView) -> Void)?
@@ -45,10 +44,9 @@ final class InfoViewController: UIViewController {
 
     private var linkMetaData: AnyObject?
 
-    init(info: Selection, isEmbeddedInNavigationController: Bool, showTitleAsViewControllerTitle: Bool) {
+    init(info: Selection, isEmbeddedInNavigationController: Bool) {
         self.info = info
         self.isEmbeddedInNavigationController = isEmbeddedInNavigationController
-        self.showTitleAsViewControllerTitle = showTitleAsViewControllerTitle
         var actions = ObjectAction.allCases
         if let urlString = info.webInfoURL, let url = URL(string: urlString) {
             actions.append(.web(url: url))
@@ -62,7 +60,7 @@ final class InfoViewController: UIViewController {
         self.bodyInfo = BodyInfo(selection: info)
         super.init(nibName: nil, bundle: nil)
 
-        if showTitleAsViewControllerTitle {
+        if isEmbeddedInNavigationController {
             title = bodyInfo.name
         }
     }
@@ -158,7 +156,7 @@ extension InfoViewController: UICollectionViewDataSource {
         if indexPath.section == 0 {
             if indexPath.item == 0 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Description", for: indexPath) as! BodyDescriptionCell
-                cell.update(with: bodyInfo, showTitle: !showTitleAsViewControllerTitle)
+                cell.update(with: bodyInfo, showTitle: !isEmbeddedInNavigationController)
                 return cell
             }
             if #available(iOS 13.0, *), let metaData = linkMetaData as? LPLinkMetadata {

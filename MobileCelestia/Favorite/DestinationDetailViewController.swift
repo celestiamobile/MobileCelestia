@@ -20,11 +20,9 @@ class DestinationDetailViewController: UIViewController {
     private lazy var scrollView = UIScrollView(frame: .zero)
     private lazy var goToButton = ActionButtonHelper.newButton()
 
-    private lazy var titleLabel = UILabel(textStyle: .title2, weight: .semibold)
     private lazy var descriptionLabel = UILabel(textStyle: .body)
 
     private lazy var contentStack = UIStackView(arrangedSubviews: [
-        titleLabel,
         descriptionLabel,
     ])
 
@@ -52,6 +50,8 @@ class DestinationDetailViewController: UIViewController {
 
 private extension DestinationDetailViewController {
     func setup() {
+        title = destination.name
+
         view.addSubview(scrollView)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -85,10 +85,6 @@ private extension DestinationDetailViewController {
             contentStack.trailingAnchor.constraint(equalTo: contentContainer.trailingAnchor),
         ])
 
-        titleLabel.textColor = .darkLabel
-        titleLabel.numberOfLines = 0
-        titleLabel.lineBreakMode = .byCharWrapping
-
         descriptionLabel.textColor = .darkSecondaryLabel
         descriptionLabel.numberOfLines = 0
         descriptionLabel.lineBreakMode = .byCharWrapping
@@ -104,7 +100,6 @@ private extension DestinationDetailViewController {
         ])
         goToButton.addTarget(self, action: #selector(goToButtonClicked), for: .touchUpInside)
 
-        titleLabel.text = destination.name
         descriptionLabel.text = destination.content
         goToButton.setTitle(CelestiaString("Go", comment: ""), for: .normal)
     }

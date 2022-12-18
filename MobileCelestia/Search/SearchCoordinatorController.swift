@@ -22,9 +22,9 @@ class SearchCoordinatorController: UIViewController {
     private var navigation: UINavigationController!
     #endif
 
-    private let selection: (Selection) -> UIViewController
+    private let selection: (Selection, Bool) -> UIViewController
 
-    init(selected: @escaping (Selection) -> UIViewController) {
+    init(selected: @escaping (Selection, Bool) -> UIViewController) {
         self.selection = selected
         super.init(nibName: nil, bundle: nil)
     }
@@ -61,9 +61,9 @@ private extension SearchCoordinatorController {
             }
 
             #if targetEnvironment(macCatalyst)
-            self.split.viewControllers = [self.split.viewControllers[0], self.selection(object)]
+            self.split.viewControllers = [self.split.viewControllers[0], self.selection(object, false)]
             #else
-            self.navigation.pushViewController(self.selection(object), animated: true)
+            self.navigation.pushViewController(self.selection(object, true), animated: true)
             #endif
         }
 
