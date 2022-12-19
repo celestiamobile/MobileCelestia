@@ -15,7 +15,6 @@ import CelestiaCore
 
 enum FavoriteRoot {
     case main
-    case destinations
 }
 
 #if targetEnvironment(macCatalyst)
@@ -33,7 +32,7 @@ class FavoriteCoordinatorController: UIViewController {
     #endif
     private var navigation: UINavigationController!
 
-    private lazy var main = FavoriteViewController(currentSelection: root == .destinations ? .destination : nil, selected: { [unowned self] (item) in
+    private lazy var main = FavoriteViewController(currentSelection: nil, selected: { [unowned self] (item) in
         switch item {
         case .bookmark:
             self.replace(self.bookmarkRoot)
@@ -86,32 +85,18 @@ class FavoriteCoordinatorController: UIViewController {
 
 private extension FavoriteCoordinatorController {
     func setup() {
-        let anotherVc = root == .destinations ? generateVC(AnyFavoriteItemList(title: CelestiaString("Destinations", comment: ""), items: AppCore.shared.destinations)) : nil
         #if targetEnvironment(macCatalyst)
         controller.primaryBackgroundStyle = .sidebar
         controller.preferredDisplayMode = .oneBesideSecondary
         controller.preferredPrimaryColumnWidthFraction = 0.3
         let contentVc: UIViewController
-        if let another = anotherVc {
-            if #available(macCatalyst 16.0, *) {
-                navigation = FavoriteNavigationController(rootViewController: another)
-            } else {
-                navigation = UINavigationController(rootViewController: another)
-            }
-            contentVc = navigation
-        } else {
-            let emptyVc = UIViewController()
-            emptyVc.view.backgroundColor = .darkBackground
-            contentVc = emptyVc
-        }
+        let emptyVc = UIViewController()
+        emptyVc.view.backgroundColor = .darkBackground
+        contentVc = emptyVc
         controller.viewControllers = [main, contentVc]
         install(controller)
-        if #available(macCatalyst 16.0, *), root != .main {
-            let scene = view.window?.windowScene
-            scene?.titlebar?.titleVisibility = .visible
-        }
         #else
-        navigation = UINavigationController(rootViewController: anotherVc ?? main)
+        navigation = UINavigationController(rootViewController: main)
         install(navigation)
         #endif
     }

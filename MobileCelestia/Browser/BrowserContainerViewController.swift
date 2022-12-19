@@ -77,11 +77,22 @@ private extension BrowserContainerViewController {
         }
 
         #if targetEnvironment(macCatalyst)
-        let browserRoots = [solBrowserRoot, starBrowserRoot, dsoBrowserRoot].compactMap { $0 }
+        let rawBrowserRoots: [(item: BrowserItem?, image: UIImage)] = [
+            (solBrowserRoot, #imageLiteral(resourceName: "browser_tab_sso")),
+            (starBrowserRoot, #imageLiteral(resourceName: "browser_tab_star")),
+            (dsoBrowserRoot, #imageLiteral(resourceName: "browser_tab_dso"))
+        ]
+        let browserRoot = rawBrowserRoots.compactMap { item in
+            if let browserItem = item.item {
+                return (browserItem, item.image)
+            } else {
+                return nil
+            }
+        }
         controller.primaryBackgroundStyle = .sidebar
         controller.preferredDisplayMode = .oneBesideSecondary
         controller.preferredPrimaryColumnWidthFraction = 0.3
-        let sidebarController = BrowserSidebarController(browserRoots: browserRoots) { [weak self] item in
+        let sidebarController = BrowserSidebarController(browserRoots: browserRoot) { [weak self] item in
             guard let self else { return }
             let newVc = BrowserCoordinatorController(item: item, image: UIImage(), selection: handler)
             self.controller.viewControllers = [self.controller.viewControllers[0], newVc]
@@ -122,21 +133,27 @@ class BrowserSidebarController: BaseTableViewController {
         case single
     }
 
-    private lazy var dataSource: UITableViewDiffableDataSource<Section, BrowserItem> = {
+    private struct Item: Hashable {
+        let item: BrowserItem
+        let image: UIImage
+    }
+
+    private lazy var dataSource: UITableViewDiffableDataSource<Section, Item> = {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
-        let dataSource = UITableViewDiffableDataSource<Section, BrowserItem>(tableView: tableView) { (view, indexPath, item) -> UITableViewCell? in
+        let dataSource = UITableViewDiffableDataSource<Section, Item>(tableView: tableView) { (view, indexPath, item) -> UITableViewCell? in
             let cell = view.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-            cell.textLabel?.text = item.alternativeName ?? item.name
+            cell.textLabel?.text = item.item.alternativeName ?? item.item.name
+            cell.imageView?.image = item.image
             return cell
         }
         return dataSource
     }()
 
-    private let browserRoots: [BrowserItem]
+    private let browserRoots: [Item]
     private let handler: (BrowserItem) -> Void
 
-    init(browserRoots: [BrowserItem], handler: @escaping (BrowserItem) -> Void) {
-        self.browserRoots = browserRoots
+    init(browserRoots: [(item: BrowserItem, image: UIImage)], handler: @escaping (BrowserItem) -> Void) {
+        self.browserRoots = browserRoots.map { Item(item: $0.item, image: $0.image) }
         self.handler = handler
         super.init(style: .grouped)
     }
@@ -148,7 +165,7 @@ class BrowserSidebarController: BaseTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        var snapshot = NSDiffableDataSourceSnapshot<Section, BrowserItem>()
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
         snapshot.appendSections([.single])
         snapshot.appendItems(browserRoots, toSection: .single)
         tableView.dataSource = dataSource
@@ -157,7 +174,7 @@ class BrowserSidebarController: BaseTableViewController {
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        handler(browserRoots[indexPath.row])
+        handler(browserRoots[indexPath.row].item)
     }
 }
 #endif

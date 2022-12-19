@@ -95,6 +95,7 @@ protocol FavoriteItem {
     var itemList: ItemList? { get }
     var canBeRenamed: Bool { get }
     var canBeShared: Bool { get }
+    var hasFullPageRepresentation: Bool { get }
 
     func rename(to name: String)
 }
@@ -118,6 +119,7 @@ extension BookmarkNode: FavoriteItem {
 
     var canBeRenamed: Bool { return true }
     var canBeShared: Bool { return isLeaf }
+    var hasFullPageRepresentation: Bool { return false }
 
     func rename(to name: String) {
         self.name = name
@@ -142,6 +144,7 @@ extension Script: FavoriteItem {
 
     var canBeRenamed: Bool { return false }
     var canBeShared: Bool { return false }
+    var hasFullPageRepresentation: Bool { return false }
 
     func rename(to name: String) {
         fatalError()
@@ -170,6 +173,7 @@ extension Destination: FavoriteItem {
 
     var canBeRenamed: Bool { return false }
     var canBeShared: Bool { return false }
+    var hasFullPageRepresentation: Bool { return true }
 
     func rename(to name: String) {
         fatalError()
@@ -219,7 +223,7 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: BaseTableViewContr
         } else {
             let item = itemList[indexPath.row]
             cell.title = item.title
-            cell.accessoryType = item.isLeaf ? .none : .disclosureIndicator
+            cell.accessoryType = item.isLeaf ? (item.hasFullPageRepresentation ? .disclosureIndicator : .none) : .disclosureIndicator
         }
         return cell
     }

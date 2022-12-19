@@ -840,8 +840,6 @@ extension MainViewController {
         switch action {
         case .runDemo:
             core.receiveAsync(.runDemo)
-        case .showDestinations:
-            presentFavorite(.destinations)
         }
     }
 }
