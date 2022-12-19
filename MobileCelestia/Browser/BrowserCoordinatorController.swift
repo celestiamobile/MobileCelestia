@@ -55,12 +55,3 @@ private extension BrowserCoordinatorController {
         })
     }
 }
-
-#if targetEnvironment(macCatalyst)
-@available(macCatalyst 16.0, *)
-extension BrowserCoordinatorController: UINavigationBarDelegate {
-    func navigationBarNSToolbarSection(_ navigationBar: UINavigationBar) -> UINavigationBar.NSToolbarSection {
-        return .content
-    }
-}
-#endif

@@ -811,7 +811,7 @@ extension MainViewController: CelestiaControllerDelegate {
             return self.createSelectionInfoViewController(with: info, isEmbeddedInNavigation: true)
         })
         #if targetEnvironment(macCatalyst)
-        showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600), titleVisible: false)
+        showViewController(controller, macOSPreferredSize: CGSize(width: 500, height: 600), titleVisible: false)
         #else
         showViewController(controller)
         #endif

@@ -15,14 +15,31 @@ import CelestiaCore
 
 class BrowserContainerViewController: UIViewController {
     #if targetEnvironment(macCatalyst)
-    private lazy var controller = UISplitViewController()
+    private var currentController: BrowserCoordinatorController?
+    private var isToolbarConfigured = false
+    private var selectedRootIndex: Int?
     #else
     private lazy var controller = UITabBarController()
     #endif
+    private var isDataLoaded = false
 
     private let selected: (Selection) -> UIViewController
 
     private let activityIndicator = UIActivityIndicatorView(style: .large)
+
+    private lazy var rootItems: [(item: BrowserItem, image: UIImage)] = {
+        return [
+            (solBrowserRoot, #imageLiteral(resourceName: "browser_tab_sso")),
+            (starBrowserRoot, #imageLiteral(resourceName: "browser_tab_star")),
+            (dsoBrowserRoot, #imageLiteral(resourceName: "browser_tab_dso"))
+        ].compactMap { (item, image) in
+            if let item {
+                return (item, image)
+            } else {
+                return nil
+            }
+        }
+    }()
 
     init(selected: @escaping (Selection) -> UIViewController) {
         self.selected = selected
@@ -57,6 +74,95 @@ class BrowserContainerViewController: UIViewController {
     }
 }
 
+#if targetEnvironment(macCatalyst)
+extension NSToolbarItem.Identifier {
+    static let back = NSToolbarItem.Identifier("space.celestia.MobileCelestia.back")
+    static let root = NSToolbarItem.Identifier("space.celestia.MobileCelestia.root")
+}
+
+extension BrowserContainerViewController: NSToolbarDelegate {
+    func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
+        return [.back, .root]
+    }
+
+    func toolbarAllowedItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
+        return [.back, .root]
+    }
+
+    func toolbar(_ toolbar: NSToolbar, itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier, willBeInsertedIntoToolbar flag: Bool) -> NSToolbarItem? {
+        switch itemIdentifier {
+        case .back:
+            let image: UIImage?
+            if #available(macCatalyst 14.0, *) {
+                image = UIImage(systemName: "chevron.backward", withConfiguration: UIImage.SymbolConfiguration(scale: .medium))
+            } else {
+                let isRTL = UIView.userInterfaceLayoutDirection(for: view.semanticContentAttribute) == .rightToLeft
+                image = UIImage(systemName: isRTL ? "chevron.right" : "chevron.left", withConfiguration: UIImage.SymbolConfiguration(scale: .medium))
+            }
+            let barButtonItem = UIBarButtonItem(image: UIImage(systemName: "chevron.backward", withConfiguration: UIImage.SymbolConfiguration(scale: .medium)), style: .plain, target: self, action: #selector(back(_:)))
+            let toolbarItem = NSToolbarItem(itemIdentifier: itemIdentifier, barButtonItem: barButtonItem)
+            if #available(macCatalyst 14.0, *) {
+                toolbarItem.isNavigational = true
+            }
+            return toolbarItem
+        case .root:
+            let itemGroup = NSToolbarItemGroup(itemIdentifier: itemIdentifier, titles: rootItems.map { $0.item.alternativeName ?? $0.item.name }, selectionMode: .selectOne, labels: nil, target: self, action: #selector(rootItemSelected(_:)))
+            if selectedRootIndex == nil, rootItems.count > 0 {
+                itemGroup.selectedIndex = 0
+                rootItemSelected(itemGroup)
+            }
+            return itemGroup
+        default:
+            return nil
+        }
+    }
+}
+
+extension BrowserContainerViewController {
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        setUpToolbarIfNeeded()
+    }
+
+    private func setUpToolbarIfNeeded() {
+        guard !isToolbarConfigured, isDataLoaded else { return }
+        guard let scene = view.window?.windowScene, let titlebar = scene.titlebar else { return }
+
+        if #available(macCatalyst 14.0, *) {
+            titlebar.toolbarStyle = .unifiedCompact
+        }
+
+        let toolbar = NSToolbar()
+        toolbar.delegate = self
+        if #available(macCatalyst 16.0, *) {
+            toolbar.centeredItemIdentifiers = [.root]
+        } else {
+            toolbar.centeredItemIdentifier = .root
+        }
+        titlebar.toolbar = toolbar
+        isToolbarConfigured = true
+    }
+
+    @objc private func back(_ sender: UIBarButtonItem) {
+        currentController?.popViewController(animated: true)
+    }
+
+    @objc private func rootItemSelected(_ sender: NSToolbarItemGroup) {
+        let handler = { [unowned self] (selection: Selection) -> UIViewController in
+            return self.selected(selection)
+        }
+        currentController?.remove()
+        let selectedItem = rootItems[sender.selectedIndex]
+        let vc = BrowserCoordinatorController(item: selectedItem.item, image: selectedItem.image, selection: handler)
+        vc.setNavigationBarHidden(true, animated: false)
+        currentController = vc
+        selectedRootIndex = sender.selectedIndex
+        install(vc)
+    }
+}
+#endif
+
 private extension BrowserContainerViewController {
     func setUp() {
         activityIndicator.translatesAutoresizingMaskIntoConstraints = false
@@ -70,111 +176,18 @@ private extension BrowserContainerViewController {
 
     private func rootItemsLoaded() {
         activityIndicator.isHidden = true
-
-        install(controller)
+        isDataLoaded = true
+        #if targetEnvironment(macCatalyst)
+        setUpToolbarIfNeeded()
+        #else
         let handler = { [unowned self] (selection: Selection) -> UIViewController in
             return self.selected(selection)
         }
-
-        #if targetEnvironment(macCatalyst)
-        let rawBrowserRoots: [(item: BrowserItem?, image: UIImage)] = [
-            (solBrowserRoot, #imageLiteral(resourceName: "browser_tab_sso")),
-            (starBrowserRoot, #imageLiteral(resourceName: "browser_tab_star")),
-            (dsoBrowserRoot, #imageLiteral(resourceName: "browser_tab_dso"))
-        ]
-        let browserRoot = rawBrowserRoots.compactMap { item in
-            if let browserItem = item.item {
-                return (browserItem, item.image)
-            } else {
-                return nil
-            }
-        }
-        controller.primaryBackgroundStyle = .sidebar
-        controller.preferredDisplayMode = .oneBesideSecondary
-        controller.preferredPrimaryColumnWidthFraction = 0.3
-        let sidebarController = BrowserSidebarController(browserRoots: browserRoot) { [weak self] item in
-            guard let self else { return }
-            let newVc = BrowserCoordinatorController(item: item, image: UIImage(), selection: handler)
-            self.controller.viewControllers = [self.controller.viewControllers[0], newVc]
-
-            if #available(macCatalyst 16.0, *) {
-                let scene = self.view.window?.windowScene
-                scene?.titlebar?.titleVisibility = .visible
-            }
-        }
-        let emptyVc = UIViewController()
-        emptyVc.view.backgroundColor = .darkBackground
-        controller.viewControllers = [sidebarController, emptyVc]
-        #else
-        var allControllers = [BrowserCoordinatorController]()
-        if let solRoot = solBrowserRoot {
-            allControllers.append(BrowserCoordinatorController(item: solRoot, image: #imageLiteral(resourceName: "browser_tab_sso"), selection: handler))
-        }
-        if let starRoot = starBrowserRoot {
-            allControllers.append(BrowserCoordinatorController(item: starRoot, image: #imageLiteral(resourceName: "browser_tab_star"), selection: handler))
-        }
-        if let dsoRoot = dsoBrowserRoot {
-            allControllers.append(BrowserCoordinatorController(item: dsoRoot, image: #imageLiteral(resourceName: "browser_tab_dso"), selection: handler))
+        install(controller)
+        var allControllers = rootItems.map { (item, image) in
+            return BrowserCoordinatorController(item: item, image: image, selection: handler)
         }
         controller.setViewControllers(allControllers, animated: false)
-
-        if #available(iOS 13.0, *) {
-        } else {
-            controller.tabBar.barStyle = .black
-            controller.tabBar.barTintColor = .darkBackground
-        }
         #endif
     }
 }
-
-#if targetEnvironment(macCatalyst)
-class BrowserSidebarController: BaseTableViewController {
-    enum Section {
-        case single
-    }
-
-    private struct Item: Hashable {
-        let item: BrowserItem
-        let image: UIImage
-    }
-
-    private lazy var dataSource: UITableViewDiffableDataSource<Section, Item> = {
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
-        let dataSource = UITableViewDiffableDataSource<Section, Item>(tableView: tableView) { (view, indexPath, item) -> UITableViewCell? in
-            let cell = view.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-            cell.textLabel?.text = item.item.alternativeName ?? item.item.name
-            cell.imageView?.image = item.image
-            return cell
-        }
-        return dataSource
-    }()
-
-    private let browserRoots: [Item]
-    private let handler: (BrowserItem) -> Void
-
-    init(browserRoots: [(item: BrowserItem, image: UIImage)], handler: @escaping (BrowserItem) -> Void) {
-        self.browserRoots = browserRoots.map { Item(item: $0.item, image: $0.image) }
-        self.handler = handler
-        super.init(style: .grouped)
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
-        snapshot.appendSections([.single])
-        snapshot.appendItems(browserRoots, toSection: .single)
-        tableView.dataSource = dataSource
-        tableView.rowHeight = UITableView.automaticDimension
-        dataSource.apply(snapshot, animatingDifferences: false, completion: nil)
-    }
-
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        handler(browserRoots[indexPath.row].item)
-    }
-}
-#endif
