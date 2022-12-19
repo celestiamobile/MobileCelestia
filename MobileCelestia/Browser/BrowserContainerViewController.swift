@@ -99,7 +99,7 @@ extension BrowserContainerViewController: NSToolbarDelegate {
                 let isRTL = UIView.userInterfaceLayoutDirection(for: view.semanticContentAttribute) == .rightToLeft
                 image = UIImage(systemName: isRTL ? "chevron.right" : "chevron.left", withConfiguration: UIImage.SymbolConfiguration(scale: .medium))
             }
-            let barButtonItem = UIBarButtonItem(image: UIImage(systemName: "chevron.backward", withConfiguration: UIImage.SymbolConfiguration(scale: .medium)), style: .plain, target: self, action: #selector(back(_:)))
+            let barButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(back(_:)))
             let toolbarItem = NSToolbarItem(itemIdentifier: itemIdentifier, barButtonItem: barButtonItem)
             if #available(macCatalyst 14.0, *) {
                 toolbarItem.isNavigational = true
