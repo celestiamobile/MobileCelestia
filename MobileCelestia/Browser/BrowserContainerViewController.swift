@@ -16,7 +16,6 @@ import CelestiaCore
 class BrowserContainerViewController: UIViewController {
     #if targetEnvironment(macCatalyst)
     private lazy var controller = UISplitViewController()
-    private var currentToolbar: NSToolbar?
     #else
     private lazy var controller = UITabBarController()
     #endif
@@ -87,24 +86,10 @@ private extension BrowserContainerViewController {
             let newVc = BrowserCoordinatorController(item: item, image: UIImage(), selection: handler)
             self.controller.viewControllers = [self.controller.viewControllers[0], newVc]
 
-            // Toolbar logic is broken, crashing when removing/adding item,
-            // disable the logic here
-//            if #available(macCatalyst 16.0, *) {
-//                // Catalyst seems not to have proper Toolbar support
-//                // for UISplitViewController, create and use our
-//                // own NSToolbar
-//                newVc.isNavigationBarHidden = true
-//                newVc.viewControllerPushed = { [weak self] navigationController, viewController in
-//                    guard let self else { return }
-//                    self.updateToolbarByTopViewController(navigationController: navigationController, viewController: viewController)
-//                }
-//                let scene = self.view.window?.windowScene
-//                let toolbar = NSToolbar()
-//                toolbar.delegate = self
-//                scene?.titlebar?.toolbar = toolbar
-//                self.currentToolbar = toolbar
-//                self.updateToolbarByTopViewController(navigationController: newVc, viewController: newVc.viewControllers[0])
-//            }
+            if #available(macCatalyst 16.0, *) {
+                let scene = self.view.window?.windowScene
+                scene?.titlebar?.titleVisibility = .visible
+            }
         }
         let emptyVc = UIViewController()
         emptyVc.view.backgroundColor = .darkBackground
@@ -175,64 +160,4 @@ class BrowserSidebarController: BaseTableViewController {
         handler(browserRoots[indexPath.row])
     }
 }
-
-extension NSToolbarItem.Identifier {
-    static let back = NSToolbarItem.Identifier("backButton")
-}
-
-@available(macCatalyst 16.0, *)
-extension BrowserContainerViewController: NSToolbarDelegate {
-    func toolbarAllowedItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
-        return [.back]
-    }
-
-    func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
-        return []
-    }
-
-    func toolbar(_ toolbar: NSToolbar, itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier, willBeInsertedIntoToolbar flag: Bool) -> NSToolbarItem? {
-        switch itemIdentifier {
-        case .back:
-            let barButtonItem = UIBarButtonItem(image: UIImage(systemName: "chevron.backward", withConfiguration: UIImage.SymbolConfiguration(scale: .large)), style: .plain, target: self, action: #selector(goBack))
-            let toolbarItem = NSToolbarItem(itemIdentifier: itemIdentifier, barButtonItem: barButtonItem)
-            toolbarItem.isNavigational = true
-            return toolbarItem
-        default:
-            return nil
-        }
-    }
-
-    @objc private func goBack() {
-        guard controller.viewControllers.count > 1 else { return }
-        guard let navigationController = controller.viewControllers[1] as? UINavigationController else { return }
-        guard navigationController.viewControllers.count > 1 else { return }
-        let viewController = navigationController.viewControllers[navigationController.viewControllers.count - 2]
-        navigationController.popViewController(animated: true)
-        updateToolbarByTopViewController(navigationController: navigationController, viewController: viewController)
-    }
-
-    private func updateToolbarByTopViewController(navigationController: UINavigationController, viewController: UIViewController) {
-        if let currentToolbar {
-            if navigationController.viewControllers.first == viewController {
-                if let index = currentToolbar.items.firstIndex(where: { $0.itemIdentifier == .back }) {
-                    currentToolbar.removeItem(at: index)
-                }
-            } else {
-                if !currentToolbar.items.contains(where: { $0.itemIdentifier == .back }) {
-                    currentToolbar.insertItem(withItemIdentifier: .back, at: 0)
-                }
-            }
-        }
-
-        if let scene = view.window?.windowScene {
-            scene.title = viewController.title
-            if viewController.title == nil || viewController.title == "" {
-                scene.titlebar?.titleVisibility = .hidden
-            } else {
-                scene.titlebar?.titleVisibility = .visible
-            }
-        }
-    }
-}
 #endif
-

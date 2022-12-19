@@ -550,7 +550,11 @@ extension MainViewController: CelestiaControllerDelegate {
             guard let node = object as? BookmarkNode, node.isLeaf else { return }
             viewController.requestShareURL(node.url, placeholder: node.name)
         })
+#if targetEnvironment(macCatalyst)
+        showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600), titleVisible: false)
+#else
         showViewController(controller)
+#endif
     }
 
     private func presentScriptToolbar() {

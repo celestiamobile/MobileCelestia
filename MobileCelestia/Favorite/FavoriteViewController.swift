@@ -39,7 +39,11 @@ class FavoriteViewController: BaseTableViewController {
     init(currentSelection: FavoriteItemType?, selected: @escaping (FavoriteItemType) -> Void) {
         self.currentSelection = currentSelection
         self.selected = selected
+        #if targetEnvironment(macCatalyst)
+        super.init(style: .grouped)
+        #else
         super.init(style: .defaultGrouped)
+        #endif
     }
 
     required init?(coder: NSCoder) {
@@ -64,7 +68,11 @@ class FavoriteViewController: BaseTableViewController {
 
 private extension FavoriteViewController {
     func setup() {
+        #if targetEnvironment(macCatalyst)
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Text")
+        #else
         tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Text")
+        #endif
         title = CelestiaString("Favorites", comment: "")
     }
 }
@@ -76,8 +84,19 @@ extension FavoriteViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let type = FavoriteItemType(rawValue: indexPath.row)
+        #if targetEnvironment(macCatalyst)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath)
+        if #available(iOS 14.0, *) {
+            var configuration = UIListContentConfiguration.sidebarCell()
+            configuration.text = type?.description
+            cell.contentConfiguration = configuration
+        } else {
+            cell.textLabel?.text = type?.description
+        }
+        #else
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
         cell.title = type?.description
+        #endif
         return cell
     }
 
