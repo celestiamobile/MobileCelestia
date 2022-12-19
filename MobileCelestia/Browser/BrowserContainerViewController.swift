@@ -99,7 +99,7 @@ extension BrowserContainerViewController: NSToolbarDelegate {
                 let isRTL = UIView.userInterfaceLayoutDirection(for: view.semanticContentAttribute) == .rightToLeft
                 image = UIImage(systemName: isRTL ? "chevron.right" : "chevron.left", withConfiguration: UIImage.SymbolConfiguration(scale: .medium))
             }
-            let barButtonItem = UIBarButtonItem(image: image, style: .plain, target: nil, action: #selector(back(_:)))
+            let barButtonItem = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(back(_:)))
             let toolbarItem = NSToolbarItem(itemIdentifier: itemIdentifier, barButtonItem: barButtonItem)
             if #available(macCatalyst 14.0, *) {
                 toolbarItem.isNavigational = true
@@ -159,16 +159,6 @@ extension BrowserContainerViewController {
         currentController = vc
         selectedRootIndex = sender.selectedIndex
         install(vc)
-    }
-
-    override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
-        if action == #selector(back(_:)) {
-            if let currentController {
-                return currentController.viewControllers.count > 1
-            }
-            return false
-        }
-        return super.canPerformAction(action, withSender: sender)
     }
 }
 #endif
