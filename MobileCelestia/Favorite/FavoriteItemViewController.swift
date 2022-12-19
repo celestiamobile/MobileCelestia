@@ -205,40 +205,24 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: BaseTableViewContr
         setup()
     }
 
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        if itemList.canBeModified { return 2 }
-        return 1
-    }
-
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 1 { return 1 }
         return itemList.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
-        if indexPath.section == 1 {
-            cell.title = CelestiaString("Add new…", comment: "")
-            cell.accessoryType = .disclosureIndicator
-        } else {
-            let item = itemList[indexPath.row]
-            cell.title = item.title
-            cell.accessoryType = item.isLeaf ? (item.hasFullPageRepresentation ? .disclosureIndicator : .none) : .disclosureIndicator
-        }
+        let item = itemList[indexPath.row]
+        cell.title = item.title
+        cell.accessoryType = item.isLeaf ? (item.hasFullPageRepresentation ? .disclosureIndicator : .none) : .disclosureIndicator
         return cell
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if indexPath.section == 1 {
+        let item = itemList[indexPath.row]
+        if item.isLeaf {
             tableView.deselectRow(at: indexPath, animated: true)
-            requestAddObject()
-        } else {
-            let item = itemList[indexPath.row]
-            if item.isLeaf {
-                tableView.deselectRow(at: indexPath, animated: true)
-            }
-            selection(item)
         }
+        selection(item)
     }
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -246,8 +230,6 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: BaseTableViewContr
     }
 
     override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        if indexPath.section == 1 { return nil }
-
         var actions = [UIContextualAction]()
         if itemList.canBeModified {
             actions.append(
@@ -269,23 +251,20 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: BaseTableViewContr
     }
 
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        return itemList.canBeModified && indexPath.section == 0
+        return itemList.canBeModified
     }
 
     override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        return itemList.canBeModified && indexPath.section == 0
+        return itemList.canBeModified
     }
 
     override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         defer { tableView.reloadData() }
-        guard destinationIndexPath.section == 0 else { return }
         itemList.move(from: sourceIndexPath.row, to: destinationIndexPath.row)
     }
 
     @available(iOS 13.0, *)
     override func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
-        if indexPath.section == 1 { return nil }
-
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { [weak self] (_) -> UIMenu? in
             guard let self = self else { return nil }
 
@@ -332,7 +311,7 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: BaseTableViewContr
         sender.action = #selector(requestEdit(_:))
     }
 
-    private func requestAddObject() {
+    @objc private func requestAdd(_ sender: UIBarButtonItem) {
         guard let item = add?() else {
             showError(CelestiaString("Cannot add object", comment: ""))
             return
@@ -371,7 +350,13 @@ private extension FavoriteItemViewController {
         title = itemList.title
 
         if itemList.canBeModified {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(title: CelestiaString("Edit", comment: ""), style: .plain, target: self, action: #selector(requestEdit(_:)))
+            // For some reason, on Ventura, resetting bar button item on navigation bar
+            // does not refresh the toolbar, so not using system item for Edit FB11861302
+            // instead change the status in the action selector
+            navigationItem.rightBarButtonItems = [
+                UIBarButtonItem(title: CelestiaString("Edit", comment: ""), style: .plain, target: self, action: #selector(requestEdit(_:))),
+                UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(requestAdd(_:))),
+            ]
         }
     }
 }
