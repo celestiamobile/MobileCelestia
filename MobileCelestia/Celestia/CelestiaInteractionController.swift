@@ -260,7 +260,7 @@ extension CelestiaInteractionController: CelestiaControlViewDelegate {
         }
     }
 
-    private func hideControlView() {
+    func hideControlView() {
         guard currentHideAnimator == nil else { return }
         currentShowAnimator?.stopAnimation(true)
         currentShowAnimator?.finishAnimation(at: .current)

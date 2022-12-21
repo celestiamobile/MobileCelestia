@@ -281,6 +281,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         MacBridge.disableRestorationForNSWindow(nsWindow)
         if scene.delegate is PanelSceneDelegate {
+            MacBridge.repositionNSWindow(nsWindow)
             if #available(iOS 16, *) {
             } else {
                 MacBridge.disableFullScreenForNSWindow(nsWindow)
@@ -727,6 +728,10 @@ class MacBridge {
 
     static func disableFullScreenForNSWindow(_ nsWindow: NSObject) {
         clazz.perform(NSSelectorFromString("disableFullScreenForNSWindow:"), with: nsWindow)
+    }
+
+    static func repositionNSWindow(_ nsWindow: NSObject) {
+        clazz.perform(NSSelectorFromString("repositionNSWindow:"), with: nsWindow)
     }
 
     static func disableTabbingForAllWindows() {
