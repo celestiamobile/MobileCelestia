@@ -53,6 +53,7 @@ class PanelSceneDelegate: CommonSceneDelegate {
         if window.responds(to: NSSelectorFromString("setRestorable:")) {
             window.setValue(false, forKey: "restorable")
         }
+        MacBridge.repositionNSWindow(window)
         MacBridge.disableFullScreenForNSWindow(window)
     }
 
