@@ -305,6 +305,10 @@ class MacBridge {
         clazz.perform(NSSelectorFromString("disableFullScreenForNSWindow:"), with: nsWindow)
     }
 
+    static func repositionNSWindow(_ nsWindow: NSObject) {
+        clazz.perform(NSSelectorFromString("repositionNSWindow:"), with: nsWindow)
+    }
+
     static func disableTabbingForAllWindows() {
         clazz.perform(NSSelectorFromString("disableTabbingForAllWindows"))
     }

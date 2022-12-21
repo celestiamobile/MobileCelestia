@@ -71,6 +71,7 @@ extension URL {
             URLQueryItem(name: "platform", value: platform),
             URLQueryItem(name: "theme", value: "dark"),
             URLQueryItem(name: "titleVisibility", value: "collapsed"),
+            URLQueryItem(name: "additionalContentVisibility", value: "collapsed"),
         ]
         return components.url!
     }
@@ -477,6 +478,7 @@ extension MainViewController: CelestiaControllerDelegate {
 
     func celestiaController(_ celestiaController: CelestiaViewController, requestShowInfoWithSelection selection: Selection) {
         guard !selection.isEmpty else { return }
+        celestiaController.interactionController?.hideControlView()
         showSelectionInfo(with: selection)
     }
 

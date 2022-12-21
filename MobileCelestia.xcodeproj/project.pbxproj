@@ -74,6 +74,7 @@
 		EA26E5E92A319D7F00B03DDE /* libGLESv2.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EA26E5E52A319D7F00B03DDE /* libGLESv2.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EA28CA4E24A25FE7004B011E /* BottomControlViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA28CA4D24A25FE7004B011E /* BottomControlViewController.swift */; };
 		EA28CA5324A2F399004B011E /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = EA28CA5124A2F399004B011E /* Fonts */; };
+		EA32D43D2953215000ABD63C /* AppStoreScreenshotTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA32D43C2953215000ABD63C /* AppStoreScreenshotTests.swift */; };
 		EA374CD2263A8B320069589C /* GoToContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA374CD1263A8B320069589C /* GoToContainerViewController.swift */; };
 		EA374CDA263A8B770069589C /* GoToInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA374CD9263A8B770069589C /* GoToInputViewController.swift */; };
 		EA445D15265CF6CD00E5D46A /* LinkPreviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA445D14265CF6CD00E5D46A /* LinkPreviewCell.swift */; };
@@ -153,6 +154,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = EA1823E927C08D3D00E0F5E4;
 			remoteInfo = CelestiaHelper;
+		};
+		EA32D4402953215000ABD63C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 979D2F7223FEB1A6005D2592 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 979D2F7923FEB1A6005D2592;
+			remoteInfo = MobileCelestia;
 		};
 		EAC84365252C84B600691943 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -271,6 +279,8 @@
 		EA26E5E52A319D7F00B03DDE /* libGLESv2.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libGLESv2.xcframework; path = ../CelestiaCore/libs/dependency/xcframeworks/libGLESv2.xcframework; sourceTree = "<group>"; };
 		EA28CA4D24A25FE7004B011E /* BottomControlViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomControlViewController.swift; sourceTree = "<group>"; };
 		EA28CA5124A2F399004B011E /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Fonts; path = ../../../CelestiaCore/Fonts; sourceTree = "<group>"; };
+		EA32D43A2953215000ABD63C /* CelestiaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CelestiaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		EA32D43C2953215000ABD63C /* AppStoreScreenshotTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppStoreScreenshotTests.swift; sourceTree = "<group>"; };
 		EA374CD1263A8B320069589C /* GoToContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoToContainerViewController.swift; sourceTree = "<group>"; };
 		EA374CD9263A8B770069589C /* GoToInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoToInputViewController.swift; sourceTree = "<group>"; };
 		EA3EC553277C8EAD00936D4F /* Celestia-macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Celestia-macOS.entitlements"; sourceTree = "<group>"; };
@@ -363,6 +373,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		EA1823E727C08D3D00E0F5E4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EA32D4372953215000ABD63C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -505,6 +522,7 @@
 				979D2F9323FEB1A8005D2592 /* MobileCelestiaTests */,
 				EAC84355252C816500691943 /* CelestiaMacBridge */,
 				EA1823EB27C08D3D00E0F5E4 /* CelestiaHelper */,
+				EA32D43B2953215000ABD63C /* CelestiaUITests */,
 				979D2F7B23FEB1A6005D2592 /* Products */,
 				979D2FA523FEB1DD005D2592 /* Frameworks */,
 				D065056EEA0615965A87D9B4 /* Pods */,
@@ -518,6 +536,7 @@
 				979D2F9023FEB1A8005D2592 /* MobileCelestiaTests.xctest */,
 				EAC84354252C816500691943 /* CelestiaMacBridge.bundle */,
 				EA1823EA27C08D3D00E0F5E4 /* CelestiaHelper.framework */,
+				EA32D43A2953215000ABD63C /* CelestiaUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -648,6 +667,14 @@
 				EA1BC6E624A0E94900F3F51B /* EventFinderResultViewController.swift */,
 			);
 			path = Event;
+			sourceTree = "<group>";
+		};
+		EA32D43B2953215000ABD63C /* CelestiaUITests */ = {
+			isa = PBXGroup;
+			children = (
+				EA32D43C2953215000ABD63C /* AppStoreScreenshotTests.swift */,
+			);
+			path = CelestiaUITests;
 			sourceTree = "<group>";
 		};
 		EA374CCF263A8B1E0069589C /* GoTo */ = {
@@ -826,6 +853,24 @@
 			productReference = EA1823EA27C08D3D00E0F5E4 /* CelestiaHelper.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		EA32D4392953215000ABD63C /* CelestiaUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EA32D4442953215000ABD63C /* Build configuration list for PBXNativeTarget "CelestiaUITests" */;
+			buildPhases = (
+				EA32D4362953215000ABD63C /* Sources */,
+				EA32D4372953215000ABD63C /* Frameworks */,
+				EA32D4382953215000ABD63C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				EA32D4412953215000ABD63C /* PBXTargetDependency */,
+			);
+			name = CelestiaUITests;
+			productName = CelestiaUITests;
+			productReference = EA32D43A2953215000ABD63C /* CelestiaUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		EAC84353252C816500691943 /* CelestiaMacBridge */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = EAC8435A252C816500691943 /* Build configuration list for PBXNativeTarget "CelestiaMacBridge" */;
@@ -849,7 +894,7 @@
 		979D2F7223FEB1A6005D2592 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastSwiftUpdateCheck = 1130;
+				LastSwiftUpdateCheck = 1410;
 				LastUpgradeCheck = 1240;
 				ORGANIZATIONNAME = "Celestia Development Team";
 				TargetAttributes = {
@@ -863,6 +908,10 @@
 					};
 					EA1823E927C08D3D00E0F5E4 = {
 						CreatedOnToolsVersion = 13.2.1;
+					};
+					EA32D4392953215000ABD63C = {
+						CreatedOnToolsVersion = 14.1;
+						TestTargetID = 979D2F7923FEB1A6005D2592;
 					};
 					EAC84353252C816500691943 = {
 						CreatedOnToolsVersion = 12.2;
@@ -896,6 +945,7 @@
 				979D2F8F23FEB1A8005D2592 /* MobileCelestiaTests */,
 				EAC84353252C816500691943 /* CelestiaMacBridge */,
 				EA1823E927C08D3D00E0F5E4 /* CelestiaHelper */,
+				EA32D4392953215000ABD63C /* CelestiaUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -931,6 +981,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		EA1823E827C08D3D00E0F5E4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EA32D4382953215000ABD63C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1147,6 +1204,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		EA32D4362953215000ABD63C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				EA32D43D2953215000ABD63C /* AppStoreScreenshotTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		EAC84350252C816500691943 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1168,6 +1233,11 @@
 			platformFilter = maccatalyst;
 			target = EA1823E927C08D3D00E0F5E4 /* CelestiaHelper */;
 			targetProxy = EA1823EE27C08D3D00E0F5E4 /* PBXContainerItemProxy */;
+		};
+		EA32D4412953215000ABD63C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 979D2F7923FEB1A6005D2592 /* MobileCelestia */;
+			targetProxy = EA32D4402953215000ABD63C /* PBXContainerItemProxy */;
 		};
 		EAC84366252C84B600691943 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1484,6 +1554,48 @@
 			};
 			name = Release;
 		};
+		EA32D4422953215000ABD63C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 22NR5428TD;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.astroweather.CelestiaUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = MobileCelestia;
+			};
+			name = Debug;
+		};
+		EA32D4432953215000ABD63C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 22NR5428TD;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.1;
+				MARKETING_VERSION = 1.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = cn.astroweather.CelestiaUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = MobileCelestia;
+			};
+			name = Release;
+		};
 		EAC84357252C816500691943 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1561,6 +1673,15 @@
 			buildConfigurations = (
 				EA1823F227C08D3D00E0F5E4 /* Debug */,
 				EA1823F327C08D3D00E0F5E4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EA32D4442953215000ABD63C /* Build configuration list for PBXNativeTarget "CelestiaUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EA32D4422953215000ABD63C /* Debug */,
+				EA32D4432953215000ABD63C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
