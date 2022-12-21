@@ -45,7 +45,7 @@ class CelestiaViewController: UIViewController {
     weak var delegate: CelestiaControllerDelegate!
 
     private let displayController: CelestiaDisplayController
-    private var interactionController: CelestiaInteractionController?
+    var interactionController: CelestiaInteractionController?
 
     private lazy var auxiliaryWindows = [UIScreen: UIWindow]()
 

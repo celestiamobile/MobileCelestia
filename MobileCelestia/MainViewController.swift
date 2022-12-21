@@ -221,6 +221,19 @@ extension MainViewController {
                 guard let id = components.queryItems?.first(where: { $0.name == "guide" })?.value else { return }
                 guideToOpen = id
             }
+        } else if url.url.scheme == "celestia" {
+            guard let components = URLComponents(url: url.url, resolvingAgainstBaseURL: false) else { return }
+            if components.host == "getinfo" {
+                view.window?.makeKeyAndVisible()
+                Task {
+                    if #available(iOS 16.0, *) {
+                        try await Task.sleep(for: .seconds(3))
+                    }
+                    let selection = await executor.get({ $0.simulation.selection })
+                    guard !selection.isEmpty else { return }
+                    showSelectionInfo(with: selection)
+                }
+            }
         }
     }
 
@@ -620,6 +633,9 @@ extension MainViewController: CelestiaControllerDelegate {
 
     func celestiaController(_ celestiaController: CelestiaViewController, requestShowInfoWithSelection selection: Selection) {
         guard !selection.isEmpty else { return }
+        #if !targetEnvironment(macCatalyst)
+        celestiaController.interactionController?.hideControlView()
+        #endif
         showSelectionInfo(with: selection)
     }
 

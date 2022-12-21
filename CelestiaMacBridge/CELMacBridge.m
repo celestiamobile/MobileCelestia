@@ -76,6 +76,12 @@
     [button setEnabled:NO];
 }
 
++ (void)repositionNSWindow:(NSWindow *)window {
+    NSRect currentFrame = [window frame];
+    NSRect screenFrame = [[window screen] visibleFrame];
+    [window setFrameOrigin:NSMakePoint(100, (screenFrame.size.height - currentFrame.size.height) / 2 + screenFrame.origin.x)];
+}
+
 + (void)disableTabbingForAllWindows {
     [NSWindow setAllowsAutomaticWindowTabbing:NO];
 }

@@ -48,6 +48,13 @@
 			remoteGlobalIDString = EA1823E927C08D3D00E0F5E4;
 			remoteInfo = CelestiaHelper;
 		};
+		EA4B1AA32E4327DC002C6394 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 979D2F7223FEB1A6005D2592 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 979D2F7923FEB1A6005D2592;
+			remoteInfo = MobileCelestia;
+		};
 		EA4E2D7E2A56B46B0046D62E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 979D2F7223FEB1A6005D2592 /* Project object */;
@@ -122,6 +129,7 @@
 		979D2FAE23FEB2B9005D2592 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		EA1823EA27C08D3D00E0F5E4 /* CelestiaHelper.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CelestiaHelper.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA3AF20F2D8132FC0029ACA4 /* libiconv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk/usr/lib/libiconv.tbd; sourceTree = DEVELOPER_DIR; };
+		EA4B1A9D2E4327DC002C6394 /* CelestiaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CelestiaUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA4E2D752A56B4570046D62E /* CelestiaFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CelestiaFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA50E75E2A505627005E7D7A /* CelestiaUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CelestiaUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA7BF37B27033AE40058F704 /* GameController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameController.framework; path = System/Library/Frameworks/GameController.framework; sourceTree = SDKROOT; };
@@ -186,6 +194,7 @@
 		EA3AC23E2D811B790029ACA4 /* Shared */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Shared; sourceTree = "<group>"; };
 		EA3AD4692D812D750029ACA4 /* CelestiaUI */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (EA3AD4CF2D812D760029ACA4 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = CelestiaUI; sourceTree = "<group>"; };
 		EA3ADEF62D812FE40029ACA4 /* Resources */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (Fonts, ); path = Resources; sourceTree = "<group>"; };
+		EA4B1A9E2E4327DC002C6394 /* CelestiaUITests */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = CelestiaUITests; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -218,6 +227,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		EA1823E727C08D3D00E0F5E4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EA4B1A9A2E4327DC002C6394 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -262,6 +278,7 @@
 				EA3AD4692D812D750029ACA4 /* CelestiaUI */,
 				EA3AC23E2D811B790029ACA4 /* Shared */,
 				EA3ADEF62D812FE40029ACA4 /* Resources */,
+				EA4B1A9E2E4327DC002C6394 /* CelestiaUITests */,
 				979D2F7B23FEB1A6005D2592 /* Products */,
 				979D2FA523FEB1DD005D2592 /* Frameworks */,
 			);
@@ -276,6 +293,7 @@
 				EA1823EA27C08D3D00E0F5E4 /* CelestiaHelper.framework */,
 				EA50E75E2A505627005E7D7A /* CelestiaUI.framework */,
 				EA4E2D752A56B4570046D62E /* CelestiaFoundation.framework */,
+				EA4B1A9D2E4327DC002C6394 /* CelestiaUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -405,6 +423,29 @@
 			productReference = EA1823EA27C08D3D00E0F5E4 /* CelestiaHelper.framework */;
 			productType = "com.apple.product-type.framework";
 		};
+		EA4B1A9C2E4327DC002C6394 /* CelestiaUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EA4B1AA52E4327DC002C6394 /* Build configuration list for PBXNativeTarget "CelestiaUITests" */;
+			buildPhases = (
+				EA4B1A992E4327DC002C6394 /* Sources */,
+				EA4B1A9A2E4327DC002C6394 /* Frameworks */,
+				EA4B1A9B2E4327DC002C6394 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				EA4B1AA42E4327DC002C6394 /* PBXTargetDependency */,
+			);
+			fileSystemSynchronizedGroups = (
+				EA4B1A9E2E4327DC002C6394 /* CelestiaUITests */,
+			);
+			name = CelestiaUITests;
+			packageProductDependencies = (
+			);
+			productName = CelestiaUITests;
+			productReference = EA4B1A9D2E4327DC002C6394 /* CelestiaUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		EA4E2D742A56B4570046D62E /* CelestiaFoundation */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = EA4E2D7B2A56B4570046D62E /* Build configuration list for PBXNativeTarget "CelestiaFoundation" */;
@@ -473,7 +514,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastSwiftUpdateCheck = 1130;
+				LastSwiftUpdateCheck = 1640;
 				LastUpgradeCheck = 1600;
 				ORGANIZATIONNAME = "Celestia Development Team";
 				TargetAttributes = {
@@ -487,6 +528,10 @@
 					};
 					EA1823E927C08D3D00E0F5E4 = {
 						CreatedOnToolsVersion = 13.2.1;
+					};
+					EA4B1A9C2E4327DC002C6394 = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = 979D2F7923FEB1A6005D2592;
 					};
 					EA4E2D742A56B4570046D62E = {
 						CreatedOnToolsVersion = 14.3.1;
@@ -534,6 +579,7 @@
 				EA1823E927C08D3D00E0F5E4 /* CelestiaHelper */,
 				EA50E75D2A505627005E7D7A /* CelestiaUI */,
 				EA4E2D742A56B4570046D62E /* CelestiaFoundation */,
+				EA4B1A9C2E4327DC002C6394 /* CelestiaUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -571,6 +617,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		EA1823E827C08D3D00E0F5E4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		EA4B1A9B2E4327DC002C6394 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -682,6 +735,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		EA4B1A992E4327DC002C6394 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		EA4E2D712A56B4570046D62E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -716,6 +776,11 @@
 			platformFilter = maccatalyst;
 			target = EA1823E927C08D3D00E0F5E4 /* CelestiaHelper */;
 			targetProxy = EA1823EE27C08D3D00E0F5E4 /* PBXContainerItemProxy */;
+		};
+		EA4B1AA42E4327DC002C6394 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 979D2F7923FEB1A6005D2592 /* MobileCelestia */;
+			targetProxy = EA4B1AA32E4327DC002C6394 /* PBXContainerItemProxy */;
 		};
 		EA4E2D7F2A56B46B0046D62E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1032,6 +1097,36 @@
 			};
 			name = Release;
 		};
+		EA4B1AA62E4327DC002C6394 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(SHARED_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = 22NR5428TD;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = "$(SHARED_BUILD_VERSION)";
+				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.CelestiaUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = MobileCelestia;
+			};
+			name = Debug;
+		};
+		EA4B1AA72E4327DC002C6394 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(SHARED_BUILD_NUMBER)";
+				DEVELOPMENT_TEAM = 22NR5428TD;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = "$(SHARED_BUILD_VERSION)";
+				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.CelestiaUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = MobileCelestia;
+			};
+			name = Release;
+		};
 		EA4E2D792A56B4570046D62E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1225,6 +1320,15 @@
 			buildConfigurations = (
 				EA1823F227C08D3D00E0F5E4 /* Debug */,
 				EA1823F327C08D3D00E0F5E4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		EA4B1AA52E4327DC002C6394 /* Build configuration list for PBXNativeTarget "CelestiaUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EA4B1AA62E4327DC002C6394 /* Debug */,
+				EA4B1AA72E4327DC002C6394 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
