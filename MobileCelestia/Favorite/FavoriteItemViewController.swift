@@ -187,6 +187,8 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: BaseTableViewContr
     private let add: (() -> ItemList.Item?)?
     private let share: (ItemList.Item, FavoriteItemViewController<ItemList>) -> Void
 
+    private lazy var addBarButtonItem =                 UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(requestAdd(_:)))
+
     init(item: ItemList, selection: @escaping (ItemList.Item) -> Void, add: (() -> ItemList.Item?)?, share: @escaping (ItemList.Item, FavoriteItemViewController<ItemList>) -> Void) {
         self.itemList = item
         self.selection = selection
@@ -263,8 +265,8 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: BaseTableViewContr
         itemList.move(from: sourceIndexPath.row, to: destinationIndexPath.row)
     }
 
-    @available(iOS 13.0, *)
     override func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        guard !tableView.isEditing else { return nil }
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { [weak self] (_) -> UIMenu? in
             guard let self = self else { return nil }
 
@@ -299,6 +301,11 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: BaseTableViewContr
     // MARK: Modification
     @objc private func requestEdit(_ sender: UIBarButtonItem) {
         tableView.setEditing(true, animated: true)
+        if #available(iOS 16.0, *) {
+            addBarButtonItem.isHidden = true
+        } else {
+            addBarButtonItem.isEnabled = false
+        }
         sender.style = .done
         sender.title = CelestiaString("Done", comment: "")
         sender.action = #selector(finishEditing(_:))
@@ -306,6 +313,11 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: BaseTableViewContr
 
     @objc private func finishEditing(_ sender: UIBarButtonItem) {
         tableView.setEditing(false, animated: true)
+        if #available(iOS 16.0, *) {
+            addBarButtonItem.isHidden = false
+        } else {
+            addBarButtonItem.isEnabled = true
+        }
         sender.style = .plain
         sender.title = CelestiaString("Edit", comment: "")
         sender.action = #selector(requestEdit(_:))
@@ -355,7 +367,7 @@ private extension FavoriteItemViewController {
             // instead change the status in the action selector
             navigationItem.rightBarButtonItems = [
                 UIBarButtonItem(title: CelestiaString("Edit", comment: ""), style: .plain, target: self, action: #selector(requestEdit(_:))),
-                UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(requestAdd(_:))),
+                addBarButtonItem,
             ]
         }
     }
