@@ -49,7 +49,17 @@ extension URL {
             URLQueryItem(name: "lang", value: language),
             URLQueryItem(name: "platform", value: platform),
             URLQueryItem(name: "theme", value: "dark"),
-            URLQueryItem(name: "titleVisibility", value: "visible"),
+            URLQueryItem(name: "titleVisibility", value: "collapsed"),
+        ]
+        return components.url!
+    }
+
+    static func fromAddonForSharing(addonItemID: String, language: String) -> URL {
+        let baseURL = "https://celestia.mobi/resources/item"
+        var components = URLComponents(string: baseURL)!
+        components.queryItems = [
+            URLQueryItem(name: "item", value: addonItemID),
+            URLQueryItem(name: "lang", value: language),
         ]
         return components.url!
     }
@@ -238,11 +248,8 @@ extension MainViewController {
             let requestURL = apiPrefix + "/resource/item"
             _ = RequestHandler.get(url: requestURL, parameters: ["lang": locale, "item": addon], success: { [weak self] (item: ResourceItem) in
                 guard let self = self else { return }
-                // Need to wrap it in a NavVC without NavBar to make sure
-                // the scrolling behavior is correct on macCatalyst
                 let nav = UINavigationController(rootViewController: ResourceItemViewController(item: item, needsRefetchItem: false))
-                nav.setNavigationBarHidden(true, animated: false)
-                self.showViewController(nav, key: addon, titleVisible: false)
+                self.showViewController(nav, key: addon)
             }, decoder: ResourceItem.networkResponseDecoder)
             cleanup()
             return
@@ -884,11 +891,11 @@ extension UIViewController {
         showShareSheet(for: CelestiaURLObject(title: placeholder, url: url))
     }
 
-    func showShareSheet(for item: Any) {
+    func showShareSheet(for item: Any, source: PopoverSource? = nil) {
         let activityController = UIActivityViewController(activityItems: [item], applicationActivities: nil)
         callAfterDismissCurrent(animated: true) { [weak self] in
             guard let self = self else { return }
-            self.present(activityController, source: nil)
+            self.present(activityController, source: source)
         }
     }
 

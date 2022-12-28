@@ -58,6 +58,7 @@ class ResourceItemViewController: UIViewController {
         self.item = item
         self.needsRefetchItem = needsRefetchItem
         super.init(nibName: nil, bundle: nil)
+        title = item.name
     }
 
     required init?(coder: NSCoder) {
@@ -74,6 +75,8 @@ class ResourceItemViewController: UIViewController {
         super.viewDidLoad()
 
         updateUI()
+
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(shareAddon(_:)))
 
         NotificationCenter.default.addObserver(self, selector: #selector(downloadProgress(_:)), name: ResourceManager.downloadProgress, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(resourceFetchError(_:)), name: ResourceManager.resourceError, object: nil)
@@ -92,6 +95,7 @@ class ResourceItemViewController: UIViewController {
         _ = RequestHandler.get(url: requestURL, parameters: ["lang": AppCore.language, "item": item.id], success: { [weak self] (item: ResourceItem) in
             guard let self = self else { return }
             self.item = item
+            self.title = item.name
             self.updateUI()
         }, decoder: ResourceItem.networkResponseDecoder)
     }
@@ -153,6 +157,10 @@ class ResourceItemViewController: UIViewController {
         dm.download(item: item)
         currentState = .downloading
         updateUI()
+    }
+
+    @objc private func shareAddon(_ sender: UIBarButtonItem) {
+        showShareSheet(for: URL.fromAddonForSharing(addonItemID: item.id, language: AppCore.language), source: .barButtonItem(barButtonItem: sender))
     }
 }
 
