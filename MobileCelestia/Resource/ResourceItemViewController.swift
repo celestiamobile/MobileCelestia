@@ -10,6 +10,8 @@
 //
 
 import CelestiaCore
+import CoreSpotlight
+import MobileCoreServices
 import MWRequest
 import UIKit
 
@@ -54,9 +56,29 @@ class ResourceItemViewController: UIViewController {
 
     private var currentState: ResourceItemState = .none
 
+    private var associatedUserActivity: NSUserActivity
+
     init(item: ResourceItem, needsRefetchItem: Bool) {
         self.item = item
         self.needsRefetchItem = needsRefetchItem
+        let userActivity = NSUserActivity(activityType: "space.celestia.celestia.addon-user-activity")
+        userActivity.webpageURL = URL.fromAddonForSharing(addonItemID: item.id, language: AppCore.language)
+        userActivity.title = item.name
+        userActivity.isEligibleForHandoff = true
+        userActivity.isEligibleForSearch = true
+        userActivity.isEligibleForPrediction = true
+        userActivity.isEligibleForPublicIndexing = true
+        let contentAttributeSet: CSSearchableItemAttributeSet
+        if #available(iOS 14.0, *) {
+            contentAttributeSet = CSSearchableItemAttributeSet(contentType: .url)
+        } else {
+            contentAttributeSet = CSSearchableItemAttributeSet(itemContentType: kUTTypeURL as String)
+        }
+        contentAttributeSet.contentCreationDate = item.publishTime
+        contentAttributeSet.contentDescription = item.description
+        userActivity.contentAttributeSet = contentAttributeSet
+        userActivity.keywords = [item.name]
+        self.associatedUserActivity = userActivity
         super.init(nibName: nil, bundle: nil)
         title = item.name
     }
@@ -90,12 +112,28 @@ class ResourceItemViewController: UIViewController {
         }
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        associatedUserActivity.becomeCurrent()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        associatedUserActivity.resignCurrent()
+    }
+
     private func refresh() {
         let requestURL = apiPrefix + "/resource/item"
         _ = RequestHandler.get(url: requestURL, parameters: ["lang": AppCore.language, "item": item.id], success: { [weak self] (item: ResourceItem) in
             guard let self = self else { return }
             self.item = item
             self.title = item.name
+            self.associatedUserActivity.title = item.name
+            self.associatedUserActivity.keywords = [item.name]
+            self.associatedUserActivity.contentAttributeSet?.contentCreationDate = item.publishTime
+            self.associatedUserActivity.contentAttributeSet?.contentDescription = item.description
             self.updateUI()
         }, decoder: ResourceItem.networkResponseDecoder)
     }
