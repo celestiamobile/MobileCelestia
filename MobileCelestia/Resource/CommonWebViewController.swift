@@ -30,14 +30,9 @@ class CommonWebViewController: UIViewController {
 
     private let webView: WKWebView
 
-    private lazy var toolbar = UIToolbar()
     private lazy var goBackItem: UIBarButtonItem = {
         let isRTL = UIView.userInterfaceLayoutDirection(for: view.semanticContentAttribute) == .rightToLeft
         return UIBarButtonItem(image: UIImage(systemName: isRTL ? "chevron.right" : "chevron.left"), style: .plain, target: self, action: #selector(goBack))
-    }()
-    private lazy var goForwardItem: UIBarButtonItem = {
-        let isRTL = UIView.userInterfaceLayoutDirection(for: view.semanticContentAttribute) == .rightToLeft
-        return UIBarButtonItem(image: UIImage(systemName: isRTL ? "chevron.left" : "chevron.right"), style: .plain, target: self, action: #selector(goForward))
     }()
 
     private lazy var activityIndicator: UIActivityIndicatorView = {
@@ -52,8 +47,6 @@ class CommonWebViewController: UIViewController {
         let containerView = UIView()
         containerView.addSubview(webView)
         containerView.addSubview(activityIndicator)
-        containerView.addSubview(toolbar)
-        toolbar.translatesAutoresizingMaskIntoConstraints = false
         webView.translatesAutoresizingMaskIntoConstraints = false
         activityIndicator.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -63,9 +56,6 @@ class CommonWebViewController: UIViewController {
             webView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
             activityIndicator.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
             activityIndicator.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
-            toolbar.bottomAnchor.constraint(equalTo: containerView.layoutMarginsGuide.bottomAnchor),
-            toolbar.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-            toolbar.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
         ])
         view = containerView
     }
@@ -100,48 +90,37 @@ class CommonWebViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        let fixedSpace = UIBarButtonItem(barButtonSystemItem: .fixedSpace, target: nil, action: nil)
-        fixedSpace.width = 16
-        toolbar.items = [
-            UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
-            goBackItem,
-            fixedSpace,
-            goForwardItem,
-            UIBarButtonItem(barButtonSystemItem: .flexibleSpace, target: nil, action: nil),
-        ]
-        toolbar.isHidden = true
         activityIndicator.startAnimating()
         webView.load(URLRequest(url: url))
         webView.navigationDelegate = self
+
+#if targetEnvironment(macCatalyst)
+        if #available(macCatalyst 16.0, *) {
+            goBackItem.isNavigational = true
+        }
+#endif
+        navigationItem.leftBarButtonItem = goBackItem
+        updateNavigation()
 
         titleObservation = webView.observe(\.title, options: .new, changeHandler: { [weak self] webView, _ in
             self?.navigationItem.title = webView.title
         })
     }
 
-    override func viewDidLayoutSubviews() {
-        super.viewDidLayoutSubviews()
-
-        let toolbarHeight = toolbar.isHidden ? 0 : toolbar.frame.height
-        if webView.scrollView.contentInset.bottom != toolbarHeight {
-            webView.scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: toolbarHeight, right: 0)
-        }
-    }
-
     private func updateNavigation() {
-        toolbar.isHidden = !webView.canGoBack && !webView.canGoForward
         goBackItem.isEnabled = webView.canGoBack
-        goForwardItem.isEnabled = webView.canGoForward
-        let toolbarHeight = toolbar.isHidden ? 0 : toolbar.frame.height
-        webView.scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: toolbarHeight, right: 0)
+        if #available(iOS 16.0, *) {
+#if !targetEnvironment(macCatalyst)
+            // Hiding items might cause issue on Catalyst, so do not hide on Catalyst
+            goBackItem.isHidden = !goBackItem.isEnabled
+#endif
+        } else {
+            navigationItem.leftBarButtonItem = goBackItem.isEnabled ? goBackItem : nil
+        }
     }
 
     @objc private func goBack() {
         webView.goBack()
-    }
-
-    @objc private func goForward() {
-        webView.goForward()
     }
 }
 

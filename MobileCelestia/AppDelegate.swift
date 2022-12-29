@@ -51,6 +51,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         if #available(macCatalyst 15.0, *) {
             if #available(macCatalyst 16.0, *) {
+                let selector = NSSelectorFromString("_nstoolbarItemRepresentationForInsertingInToolbar:")
+                if UIBarButtonItemGroup.instancesRespond(to: selector),
+                   let method = class_getInstanceMethod(UIBarButtonItemGroup.self, selector) {
+                    let imp = method_getImplementation(method)
+                    class_replaceMethod(UIBarButtonItemGroup.self, selector, imp_implementationWithBlock({ (self: UIBarButtonItemGroup, toolbar: NSToolbar) -> NSToolbarItem? in
+                        let oldIMP = unsafeBitCast(imp, to: (@convention(c) (UIBarButtonItemGroup, Selector, NSToolbar) -> NSToolbarItem?).self)
+                        let toolbarItem = oldIMP(self, selector, toolbar)
+                        if self.isNavigational || self.barButtonItems.allSatisfy({ $0.isNavigational }) {
+                            toolbarItem?.isNavigational = true
+                        }
+                        return toolbarItem
+                    } as @convention(block) (UIBarButtonItemGroup, NSToolbar) -> NSToolbarItem?), method_getTypeEncoding(method))
+                }
             } else {
                 /// On macOS Catalyst 15.x-[UIFocusSytem _topEnvironment] throws a failed assertion `Expected a UIWindowScene but found (null).`
                 /// when a window is closed with a list item focused. Swizzle to avoid the exception by catching it in Objective-C. FB9915023
@@ -294,6 +307,34 @@ class MacBridge {
 extension UIWindow {
     var nsWindow: NSObject? {
         return MacBridge.nsWindowForUIWindow(self)
+    }
+}
+
+@available(macCatalyst 16.0, *)
+extension UIBarButtonItemGroup {
+    static var isNavigationalKey = "UIBarButtonItemGroup_isNavigational"
+
+    var isNavigational: Bool {
+        get {
+            objc_getAssociatedObject(self, &Self.isNavigationalKey) as? Bool ?? false
+        }
+        set {
+            objc_setAssociatedObject(self, &Self.isNavigationalKey, newValue, .OBJC_ASSOCIATION_ASSIGN)
+        }
+    }
+}
+
+@available(macCatalyst 16.0, *)
+extension UIBarButtonItem {
+    static var isNavigationalKey = "UIBarButtonItem_isNavigational"
+
+    var isNavigational: Bool {
+        get {
+            objc_getAssociatedObject(self, &Self.isNavigationalKey) as? Bool ?? false
+        }
+        set {
+            objc_setAssociatedObject(self, &Self.isNavigationalKey, newValue, .OBJC_ASSOCIATION_ASSIGN)
+        }
     }
 }
 #endif
