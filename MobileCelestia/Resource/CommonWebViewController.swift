@@ -94,11 +94,6 @@ class CommonWebViewController: UIViewController {
         webView.load(URLRequest(url: url))
         webView.navigationDelegate = self
 
-#if targetEnvironment(macCatalyst)
-        if #available(macCatalyst 16.0, *) {
-            goBackItem.isNavigational = true
-        }
-#endif
         navigationItem.leftBarButtonItem = goBackItem
         updateNavigation()
 

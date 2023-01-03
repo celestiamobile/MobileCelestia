@@ -464,6 +464,15 @@ extension MainViewController: CelestiaControllerDelegate {
         case .addons:
             presentInstalledAddons()
         case .download:
+#if targetEnvironment(macCatalyst)
+            let baseURL = "https://celestia.mobi/resources/categories"
+            var components = URLComponents(string: baseURL)!
+            components.queryItems = [
+                URLQueryItem(name: "lang", value: AppCore.language),
+            ]
+            let url = components.url!
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+#else
             let baseURL = "https://celestia.mobi/resources/categories"
             var components = URLComponents(string: baseURL)!
             components.queryItems = [
@@ -475,6 +484,7 @@ extension MainViewController: CelestiaControllerDelegate {
             let url = components.url!
             let nav = UINavigationController(rootViewController: CommonWebViewController(url: url, filterURL: false))
             showViewController(nav)
+#endif
         case .paperplane:
             presentGoTo()
         case .speedometer:
@@ -487,14 +497,14 @@ extension MainViewController: CelestiaControllerDelegate {
             ]
             let url = components.url!
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
-        #if targetEnvironment(macCatalyst)
+#if targetEnvironment(macCatalyst)
         case .mirror:
             if UIApplication.shared.connectedScenes.contains(where: { $0.delegate is DisplaySceneDelegate }) {
                 return
             }
             let activity = NSUserActivity(activityType: DisplaySceneDelegate.activityType)
             UIApplication.shared.requestSceneSessionActivation(nil, userActivity: activity, options: nil) { _ in }
-        #endif
+#endif
         }
     }
 
