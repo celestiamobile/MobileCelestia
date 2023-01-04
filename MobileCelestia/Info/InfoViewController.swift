@@ -21,6 +21,7 @@ enum ObjectAction {
     case subsystem
     case alternateSurfaces
     case mark
+    case timeline
 }
 
 private extension ObjectAction {
@@ -56,6 +57,11 @@ final class InfoViewController: UIViewController {
         }
         actions.append(.subsystem)
         actions.append(.mark)
+        if let timeline = info.body?.timeline, timeline.phaseCount > 0 {
+            if timeline.phase(at: 0).startTime != nil, timeline.phase(at: timeline.phaseCount - 1).endTime != nil {
+                actions.append(.timeline)
+            }
+        }
         self.actions = actions
         self.bodyInfo = BodyInfo(selection: info)
         super.init(nibName: nil, bundle: nil)
@@ -251,6 +257,8 @@ private extension ObjectAction {
             return CelestiaString("Alternate Surfaces", comment: "")
         case .mark:
             return CelestiaString("Mark", comment: "")
+        case .timeline:
+            return CelestiaString("Timeline", comment: "")
         }
     }
 }

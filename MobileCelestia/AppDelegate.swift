@@ -96,6 +96,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UISegmentedControl.appearance().tintColor = .themeLabel
         UIProgressView.appearance().trackTintColor = .progressBackground
         UIProgressView.appearance().progressTintColor = .progressForeground
+        TimelineSlider.appearance().tintColor = .themeLabel
         #endif
 
         #if !DEBUG

@@ -99,6 +99,8 @@
 		EAA16A9828A6654600DBCE4F /* GlobalConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAA16A9728A6654600DBCE4F /* GlobalConstants.swift */; };
 		EAA5A7A1259DBFE6001AFA82 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = EAA5A7A3259DBFE6001AFA82 /* InfoPlist.strings */; };
 		EAA6C4CB253B5CD200ED1D60 /* InstalledResourceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAA6C4CA253B5CD200ED1D60 /* InstalledResourceViewController.swift */; };
+		EAB04003296583BC00F6878E /* TimelineControlViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAB04002296583BC00F6878E /* TimelineControlViewController.swift */; };
+		EAB04005296586BC00F6878E /* TimelineSlider.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAB04004296586BC00F6878E /* TimelineSlider.swift */; };
 		EAB08FE42780550600BB82F0 /* Font.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAB08FE32780550600BB82F0 /* Font.swift */; };
 		EABDE367247170F000E0A5FA /* SettngSliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABDE366247170F000E0A5FA /* SettngSliderCell.swift */; };
 		EABDE3A92473DAA300E0A5FA /* SettingCommonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABDE3A82473DAA300E0A5FA /* SettingCommonViewController.swift */; };
@@ -277,6 +279,8 @@
 		EAA5A7A2259DBFE6001AFA82 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EAA5A7A7259DC062001AFA82 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EAA6C4CA253B5CD200ED1D60 /* InstalledResourceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstalledResourceViewController.swift; sourceTree = "<group>"; };
+		EAB04002296583BC00F6878E /* TimelineControlViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineControlViewController.swift; sourceTree = "<group>"; };
+		EAB04004296586BC00F6878E /* TimelineSlider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineSlider.swift; sourceTree = "<group>"; };
 		EAB08FE32780550600BB82F0 /* Font.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Font.swift; sourceTree = "<group>"; };
 		EABDE366247170F000E0A5FA /* SettngSliderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettngSliderCell.swift; sourceTree = "<group>"; };
 		EABDE3A82473DAA300E0A5FA /* SettingCommonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingCommonViewController.swift; sourceTree = "<group>"; };
@@ -425,6 +429,7 @@
 				9773949B2402A8F700E38B82 /* ToolbarViewController.swift */,
 				974F86A9240362BA00356795 /* ToolbarButtonCell.swift */,
 				EA28CA4D24A25FE7004B011E /* BottomControlViewController.swift */,
+				EAB04002296583BC00F6878E /* TimelineControlViewController.swift */,
 			);
 			path = Toolbar;
 			sourceTree = "<group>";
@@ -688,6 +693,7 @@
 				EA85C914289E9AD2009ADB1C /* AutoSizingView.swift */,
 				EA85C916289EA1ED009ADB1C /* IconView.swift */,
 				EA85C91A289F5811009ADB1C /* ButtonView.swift */,
+				EAB04004296586BC00F6878E /* TimelineSlider.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -997,6 +1003,7 @@
 				979D2F8223FEB1A6005D2592 /* CelestiaViewController.swift in Sources */,
 				EA7209E027C64270004C1400 /* UILabel+DynamicType.swift in Sources */,
 				97401C9C2414D3460015F8E8 /* URL.swift in Sources */,
+				EAB04005296586BC00F6878E /* TimelineSlider.swift in Sources */,
 				977394AE2403F08800E38B82 /* SettingsMainViewController.swift in Sources */,
 				973BBA452405216700E3B061 /* AboutViewController.swift in Sources */,
 				EA934C90251D90C500DD284C /* MainSceneDelegate.swift in Sources */,
@@ -1043,6 +1050,7 @@
 				EA85C913289E9A7D009ADB1C /* UIContentSizeCategory+Extension.swift in Sources */,
 				97EB41C62408F20700E6D441 /* CameraControlViewController.swift in Sources */,
 				97F1141E2408AE06003A06D7 /* DataLocationSelectionViewController.swift in Sources */,
+				EAB04003296583BC00F6878E /* TimelineControlViewController.swift in Sources */,
 				97FF95A5240A340300E9F44F /* BaseResultHandler.swift in Sources */,
 				EA5D32E7266F9518005D5931 /* SheetPresentationController.swift in Sources */,
 				977394BF24041A9A00E38B82 /* SearchCoordinatorController.swift in Sources */,

@@ -124,7 +124,7 @@ class SlideInPresentationController: UIPresentationController {
 
 private extension SlideInPresentationController {
     func setupDimmingViewIfNeeded() {
-        if dimmingView != nil || direction == .bottomLeft || direction == .bottomRight {
+        if dimmingView != nil || direction == .bottomLeft || direction == .bottomRight || direction == .bottom {
             return
         }
         setupDimmingView()

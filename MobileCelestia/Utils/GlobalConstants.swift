@@ -46,6 +46,10 @@ enum GlobalConstants {
 
     static let baseCellHeight: CGFloat = 44
 
+    static let timeSliderViewDefaultTickLength: CGFloat = 2
+    static let timeSliderViewBaseHeight: CGFloat = 40
+    static let timeSliderViewMarginHorizontal: CGFloat = 8
+
     static func preferredUIElementScaling(for traitCollection: UITraitCollection) -> CGFloat {
         #if targetEnvironment(macCatalyst)
         if #available(iOS 14.0, *) {

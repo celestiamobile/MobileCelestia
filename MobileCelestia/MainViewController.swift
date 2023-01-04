@@ -82,6 +82,7 @@ class MainViewController: UIViewController {
     private lazy var toolbarSlideInManager = PresentationManager(direction: UIView.userInterfaceLayoutDirection(for: self.view.semanticContentAttribute) == .rightToLeft ? .left : .right)
     private lazy var endSlideInManager = PresentationManager(direction: UIView.userInterfaceLayoutDirection(for: self.view.semanticContentAttribute) == .rightToLeft ? .left : .right, useSheetIfPossible: true)
     private lazy var bottomSlideInManager = PresentationManager(direction: UIView.userInterfaceLayoutDirection(for: self.view.semanticContentAttribute) == .rightToLeft ? .bottomRight : .bottomLeft)
+    private lazy var bottomFullSlideInManager = PresentationManager(direction: .bottom)
 
     private lazy var core = AppCore.shared
 
@@ -718,6 +719,13 @@ extension MainViewController: CelestiaControllerDelegate {
                 self.showAlternateSurfaces(of: selection, with: sender, viewController: viewController)
             case .mark:
                 self.showMarkMenu(with: selection, with: sender, viewController: viewController)
+            case .timeline:
+                core.run { core in
+                    guard let timeline = selection.body?.timeline else { return }
+                    DispatchQueue.main.async {
+                        self.showTimeline(timeline)
+                    }
+                }
             }
         }
         controller.menuProvider = { [unowned self] action in
@@ -767,6 +775,21 @@ extension MainViewController: CelestiaControllerDelegate {
                 self.core.run { $0.simulation.universe.unmark(selection) }
             }
         }
+    }
+
+    private func showTimeline(_ timeline: Timeline) {
+        guard let startTime = timeline.phase(at: 0).startTime, let endTime = timeline.phase(at: timeline.phaseCount - 1).endTime else { return }
+        var timePoints = [Date]()
+        var nextIndex = 1
+        while nextIndex < timeline.phaseCount {
+            guard let nextStartTime = timeline.phase(at: nextIndex).startTime else { return }
+            timePoints.append(nextStartTime)
+            nextIndex += 1
+        }
+        let controller = TimelineControlViewController(startTime: startTime, endTime: endTime, timePoints: timePoints)
+        controller.modalPresentationStyle = .custom
+        controller.transitioningDelegate = bottomFullSlideInManager
+        presentAfterDismissCurrent(controller, animated: true)
     }
 
     private func showAlternateSurfaces(of selection: Selection, with sender: UIView, viewController: UIViewController) {
