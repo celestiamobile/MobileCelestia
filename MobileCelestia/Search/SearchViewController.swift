@@ -39,6 +39,8 @@ class SearchViewController: UIViewController {
 
     private var shouldActivate = true
 
+    @Injected(\.appCore) private var core
+
     init(resultsInSidebar: Bool, selected: @escaping (String) -> Void) {
         self.resultsInSidebar = resultsInSidebar
         self.selected = selected
@@ -161,7 +163,7 @@ extension SearchViewController: UISearchResultsUpdating {
 
 extension SearchViewController {
     private func search(with text: String) -> [SearchResultSection] {
-        let simulation = AppCore.shared.simulation
+        let simulation = core.simulation
         return [SearchResultSection(title: nil, results: simulation.completion(for: text).map { SearchResult(name: $0) })]
     }
 }

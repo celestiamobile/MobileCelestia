@@ -73,7 +73,7 @@ class MainViewController: UIViewController {
         case loaded
     }
 
-    let celestiaController: CelestiaViewController
+    private(set) var celestiaController: CelestiaViewController!
     private lazy var loadingController = LoadingViewController()
 
     private var status: LoadingStatus = .notLoaded
@@ -83,7 +83,8 @@ class MainViewController: UIViewController {
     private lazy var endSlideInManager = PresentationManager(direction: UIView.userInterfaceLayoutDirection(for: self.view.semanticContentAttribute) == .rightToLeft ? .left : .right, useSheetIfPossible: true)
     private lazy var bottomSlideInManager = PresentationManager(direction: UIView.userInterfaceLayoutDirection(for: self.view.semanticContentAttribute) == .rightToLeft ? .bottomRight : .bottomLeft)
 
-    private lazy var core = AppCore.shared
+    @Injected(\.appCore) private var core
+    @Injected(\.executor) private var executor
 
     private var viewControllerStack: [UIViewController] = []
 
@@ -96,8 +97,8 @@ class MainViewController: UIViewController {
     private var guideToOpen: String?
 
     init(initialURL: UniformedURL?, screen: UIScreen) {
-        celestiaController = CelestiaViewController(screen: screen)
         super.init(nibName: nil, bundle: nil)
+        celestiaController = CelestiaViewController(screen: screen, executor: executor)
 
         if let url = initialURL {
             receivedURL(url)
@@ -275,7 +276,7 @@ extension MainViewController {
 
 extension MainViewController {
     @objc private func requestCopy() {
-        core.run { core in
+        executor.run { core in
             let url = core.currentURL
             DispatchQueue.main.async {
                 UIPasteboard.general.url = URL(string: url)
@@ -296,7 +297,7 @@ extension MainViewController {
             }
         }
         if let url = celURL {
-            core.run { $0.go(to: url) }
+            executor.run { $0.go(to: url) }
         }
     }
 }
@@ -458,7 +459,7 @@ extension MainViewController: CelestiaControllerDelegate {
         case .help:
             presentHelp()
         case .home:
-            core.receiveAsync(.home)
+            executor.receiveAsync(.home)
         case .event:
             presentEventFinder()
         case .addons:
@@ -520,21 +521,19 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     private func shareImage() {
-        core.run { [weak self] core in
-            AppCore.makeRenderContextCurrent()
+        executor.run { core in
+            self.executor.makeRenderContextCurrent()
             core.draw()
             let path = (NSTemporaryDirectory() as NSString).appendingPathComponent("CelestiaScreenshot.png")
             if core.screenshot(to: path, type: .PNG) {
                 #if targetEnvironment(macCatalyst)
                 DispatchQueue.main.async {
-                    guard let self = self else { return }
                     self.saveFile(path)
                 }
                 #else
                 if let data = try? Data(contentsOf: URL(fileURLWithPath: path)), let image = UIImage(data: data) {
                     try? FileManager.default.removeItem(atPath: path)
                     DispatchQueue.main.async {
-                        guard let self = self else { return }
                         self.showShareSheet(for: image)
                     }
                 }
@@ -544,7 +543,7 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     private func shareURL() {
-        core.run { [weak self] core in
+        executor.run { [weak self] core in
             let selection = core.simulation.selection
             let name = core.simulation.universe.name(for: selection)
             let url = core.currentURL
@@ -561,7 +560,7 @@ extension MainViewController: CelestiaControllerDelegate {
             if let url = object as? URL {
                 self.celestiaController.openURL(UniformedURL(url: url, securityScoped: false))
             } else if let destination = object as? Destination {
-                self.core.run { $0.simulation.goToDestination(destination) }
+                self.executor.run { $0.simulation.goToDestination(destination) }
             }
         }, share: { object, viewController in
             guard let node = object as? BookmarkNode, node.isLeaf else { return }
@@ -601,17 +600,17 @@ extension MainViewController: CelestiaControllerDelegate {
         controller.touchUpHandler = { [unowned self] action, inside in
             if let ac = action as? CelestiaAction {
                 if inside {
-                    self.core.receiveAsync(ac)
+                    self.executor.receiveAsync(ac)
                 }
             } else if let ac = action as? CelestiaContinuousAction {
-                self.core.run { core in
+                self.executor.run { core in
                     core.keyUp(ac.rawValue)
                 }
             }
         }
         controller.touchDownHandler = { [unowned self] action in
             if let ac = action as? CelestiaContinuousAction {
-                self.core.run { core in
+                self.executor.run { core in
                     core.keyDown(ac.rawValue)
                 }
             }
@@ -655,7 +654,7 @@ extension MainViewController: CelestiaControllerDelegate {
 
     private func presentEventFinder() {
         showViewController(EventFinderCoordinatorViewController { [unowned self] eclipse in
-            self.core.run { $0.simulation.goToEclipse(eclipse) }
+            self.executor.run { $0.simulation.goToEclipse(eclipse) }
         })
     }
 
@@ -666,7 +665,7 @@ extension MainViewController: CelestiaControllerDelegate {
 
     private func presentGoTo() {
         showViewController(GoToContainerViewController() { [weak self] location in
-            self?.core.run { $0.simulation.go(to: location) }
+            self?.executor.run { $0.simulation.go(to: location) }
         })
     }
 
@@ -703,13 +702,13 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     private func createSelectionInfoViewController(with selection: Selection, isEmbeddedInNavigation: Bool) -> InfoViewController {
-        let controller = InfoViewController(info: selection, isEmbeddedInNavigationController: isEmbeddedInNavigation)
+        let controller = InfoViewController(info: selection, core: core, isEmbeddedInNavigationController: isEmbeddedInNavigation)
         controller.selectionHandler = { [unowned self] (viewController, action, sender) in
             switch action {
             case .select:
-                self.core.run { $0.simulation.selection = selection }
+                self.executor.run { $0.simulation.selection = selection }
             case .wrapped(let cac):
-                self.core.selectAndReceiveAsync(selection, action: cac)
+                self.executor.selectAndReceiveAsync(selection, action: cac)
             case .web(let url):
                 self.showWeb(url)
             case .subsystem:
@@ -728,9 +727,9 @@ extension MainViewController: CelestiaControllerDelegate {
                 children = options.enumerated().map { index, option in
                     return UIAction(title: option) { _ in
                         if let marker = MarkerRepresentation(rawValue: UInt(index)) {
-                            self.core.markAsync(selection, markerType: marker)
+                            self.executor.markAsync(selection, markerType: marker)
                         } else {
-                            self.core.run { $0.simulation.universe.unmark(selection) }
+                            self.executor.run { $0.simulation.universe.unmark(selection) }
                         }
                     }
                 }
@@ -742,10 +741,10 @@ extension MainViewController: CelestiaControllerDelegate {
                     children = ([CelestiaString("Default", comment: "")] + alternativeSurfaces).enumerated().map { index, option in
                         return UIAction(title: option) { _ in
                             if index == 0 {
-                                self.core.run { $0.simulation.activeObserver.displayedSurface = "" }
+                                self.executor.run { $0.simulation.activeObserver.displayedSurface = "" }
                                 return
                             }
-                            self.core.run { $0.simulation.activeObserver.displayedSurface = alternativeSurfaces[index - 1] }
+                            self.executor.run { $0.simulation.activeObserver.displayedSurface = alternativeSurfaces[index - 1] }
                         }
                     }
                 }
@@ -762,9 +761,9 @@ extension MainViewController: CelestiaControllerDelegate {
         viewController.showSelection(CelestiaString("Mark", comment: ""), options: options, source: .view(view: sender, sourceRect: nil)) { [weak self] index in
             guard let self = self, let index = index else { return }
             if let marker = MarkerRepresentation(rawValue: UInt(index)) {
-                self.core.markAsync(selection, markerType: marker)
+                self.executor.markAsync(selection, markerType: marker)
             } else {
-                self.core.run { $0.simulation.universe.unmark(selection) }
+                self.executor.run { $0.simulation.universe.unmark(selection) }
             }
         }
     }
@@ -775,10 +774,10 @@ extension MainViewController: CelestiaControllerDelegate {
             guard let self = self, let index = index else { return }
 
             if index == 0 {
-                self.core.run { $0.simulation.activeObserver.displayedSurface = "" }
+                self.executor.run { $0.simulation.activeObserver.displayedSurface = "" }
                 return
             }
-            self.core.run { $0.simulation.activeObserver.displayedSurface = alternativeSurfaces[index - 1] }
+            self.executor.run { $0.simulation.activeObserver.displayedSurface = alternativeSurfaces[index - 1] }
         }
     }
 
@@ -856,7 +855,7 @@ extension MainViewController {
         dismiss(animated: true, completion: nil)
         switch action {
         case .runDemo:
-            core.receiveAsync(.runDemo)
+            executor.receiveAsync(.runDemo)
         }
     }
 }
@@ -1003,9 +1002,9 @@ extension MainViewController: NSToolbarDelegate {
 
     @objc private func undoOrRedo(_ sender: NSToolbarItemGroup) {
         if sender.selectedIndex == 0 {
-            core.run { $0.back() }
+            executor.run { $0.back() }
         } else {
-            core.run { $0.forward() }
+            executor.run { $0.forward() }
         }
     }
 }

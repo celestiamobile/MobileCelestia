@@ -20,6 +20,8 @@ class BrowserContainerViewController: UIViewController {
     private lazy var controller = UITabBarController()
     #endif
 
+    @Injected(\.executor) private var executor
+
     private let selected: (Selection) -> UIViewController
 
     private let activityIndicator = UIActivityIndicatorView(style: .large)
@@ -43,11 +45,10 @@ class BrowserContainerViewController: UIViewController {
 
         setUp()
 
-        let core = AppCore.shared
         activityIndicator.startAnimating()
-        core.run { [weak self] core in
-            createStaticBrowserItems()
-            createDynamicBrowserItems()
+        executor.run { [weak self] core in
+            core.createStaticBrowserItems()
+            core.createDynamicBrowserItems()
             DispatchQueue.main.async {
                 guard let self = self else { return }
                 self.activityIndicator.stopAnimating()

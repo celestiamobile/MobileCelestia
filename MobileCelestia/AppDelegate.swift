@@ -41,6 +41,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
+    @Injected(\.appCore) private var core
+
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 
         setlocale(LC_ALL, "")
@@ -184,7 +186,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     override func validate(_ command: UICommand) {
         super.validate(command)
         let actionName = NSStringFromSelector(command.action)
-        if !AppCore.shared.isInitialized {
+        if !core.isInitialized {
             if command.action == #selector(showPreferences) || command.action == #selector(openScriptFile) || actionName == "copy:" || actionName == "paste:" || command.action == #selector(showHelp(_:)) {
                 command.attributes = .disabled
             }

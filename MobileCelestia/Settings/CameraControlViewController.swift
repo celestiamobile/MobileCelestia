@@ -28,6 +28,8 @@ class CameraControlViewController: BaseTableViewController {
 
     private var lastKey: Int?
 
+    @Injected(\.executor) private var executor
+
     init() {
         super.init(style: .defaultGrouped)
     }
@@ -94,27 +96,25 @@ extension CameraControlViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        let core = AppCore.shared
-        core.run { $0.simulation.reverseObserverOrientation() }
+        executor.run { $0.simulation.reverseObserverOrientation() }
     }
 }
 
 private extension CameraControlViewController {
     func handleItemChange(index: Int, plus: Bool) {
-        let core = AppCore.shared
         let key = plus ? controlItems[index].plusKey : controlItems[index].minusKey
         if let prev = lastKey {
             if key == prev { return }
-            core.run { $0.keyUp(prev) }
+            executor.run { $0.keyUp(prev) }
         }
 
-        core.run { $0.keyDown(key) }
+        executor.run { $0.keyDown(key) }
         lastKey = key
     }
 
     func handleStop() {
         if let key = lastKey {
-            AppCore.shared.keyUp(key)
+            executor.run { $0.keyUp(key) }
             lastKey = nil
         }
     }

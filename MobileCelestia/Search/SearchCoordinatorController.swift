@@ -22,6 +22,8 @@ class SearchCoordinatorController: UIViewController {
     private var navigation: UINavigationController!
     #endif
 
+    @Injected(\.appCore) private var core
+
     private let selection: (Selection, Bool) -> UIViewController
 
     init(selected: @escaping (Selection, Bool) -> UIViewController) {
@@ -53,7 +55,7 @@ private extension SearchCoordinatorController {
         let resultsInSidebar = false
         #endif
         main = SearchViewController(resultsInSidebar: resultsInSidebar) { [unowned self] name in
-            let sim = AppCore.shared.simulation
+            let sim = self.core.simulation
             let object = sim.findObject(from: name)
             guard !object.isEmpty else {
                 self.showError(CelestiaString("Object not found", comment: ""))

@@ -49,7 +49,7 @@ typealias AssociatedActionItem = SettingActionItem
 typealias AssociatedPreferenceSwitchItem = SettingPreferenceSwitchItem
 typealias AssociatedCheckmarkItem = SettingCheckmarkItem
 typealias AssociatedKeyedSelectionItem = SettingKeyedSelectionItem
-typealias AssociatedCustomItem = BlockHolder<AppCore>
+typealias AssociatedCustomItem = BlockHolder<CelestiaExecutor>
 
 class BlockHolder<T>: NSObject {
     let block: (T) -> Void
@@ -538,8 +538,8 @@ let mainSetting = [
                                     name: CelestiaString("Unmark All", comment: ""),
                                     type: .custom,
                                     associatedItem: .init(
-                                        AssociatedCustomItem(){ core in
-                                            core.run { $0.simulation.universe.unmarkAll() }
+                                        AssociatedCustomItem() { executor in
+                                            executor.run { $0.simulation.universe.unmarkAll() }
                                         }
                                     )
                                 )

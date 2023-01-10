@@ -47,8 +47,10 @@ class ResourceItemViewController: UIViewController {
     private lazy var goToButton = ActionButtonHelper.newButton()
     private lazy var buttonStack = UIStackView(arrangedSubviews: [goToButton, statusButtonContainer])
 
+    @Injected(\.resourceManager) private var resourceManager
+
     private lazy var itemInfoController: CommonWebViewController = {
-        return CommonWebViewController(url: .fromAddon(addonItemID: item.id, language: AppCore.language), matchingQueryKeys: ["item"], contextDirectory: ResourceManager.shared.contextDirectory(forAddonWithIdentifier: item.id))
+        return CommonWebViewController(url: .fromAddon(addonItemID: item.id, language: AppCore.language), matchingQueryKeys: ["item"], contextDirectory: resourceManager.contextDirectory(forAddonWithIdentifier: item.id))
     }()
 
     private var scrollViewTopToViewTopConstrant: NSLayoutConstraint?
@@ -57,6 +59,9 @@ class ResourceItemViewController: UIViewController {
     private var currentState: ResourceItemState = .none
 
     private var associatedUserActivity: NSUserActivity
+
+    @Injected(\.appCore) private var core
+    @Injected(\.executor) private var executor
 
     init(item: ResourceItem, needsRefetchItem: Bool) {
         self.item = item
@@ -142,7 +147,7 @@ class ResourceItemViewController: UIViewController {
         if item.type == "script" {
             guard let mainScriptName = item.mainScriptName else { return }
             var isDir: ObjCBool = false
-            guard let path = ResourceManager.shared.contextDirectory(forAddonWithIdentifier: item.id)?.appendingPathComponent(mainScriptName).path,
+            guard let path = resourceManager.contextDirectory(forAddonWithIdentifier: item.id)?.appendingPathComponent(mainScriptName).path,
                   FileManager.default.fileExists(atPath: path, isDirectory: &isDir),
                   !isDir.boolValue else {
                 return
@@ -153,24 +158,21 @@ class ResourceItemViewController: UIViewController {
             return
         }
         guard let objectName = item.objectName else { return }
-        let core = AppCore.shared
         let object = core.simulation.findObject(from: objectName)
         if object.isEmpty {
             showError(CelestiaString("Object not found", comment: ""))
             return
         }
-        core.selectAndReceiveAsync(object, action: .goTo)
+        executor.selectAndReceiveAsync(object, action: .goTo)
     }
 
     @objc private func statusButtonClicked() {
-        let dm = ResourceManager.shared
-
-        if dm.isInstalled(identifier: item.id) {
+        if resourceManager.isInstalled(identifier: item.id) {
             // Already installed, offer option for uninstalling
             showOption(CelestiaString("Do you want to uninstall this add-on?", comment: "")) { [weak self] confirm in
                 guard confirm, let self = self else { return }
                 do {
-                    try dm.uninstall(identifier: self.item.id)
+                    try self.resourceManager.uninstall(identifier: self.item.id)
                     self.currentState = .none
                 } catch {
                     self.showError(CelestiaString("Unable to uninstall add-on.", comment: ""))
@@ -181,10 +183,10 @@ class ResourceItemViewController: UIViewController {
         }
 
         // Cancel if already downloading
-        if dm.isDownloading(identifier: item.id) {
+        if resourceManager.isDownloading(identifier: item.id) {
             showOption(CelestiaString("Do you want to cancel this task?", comment: "")) { [weak self] confirm in
-                guard confirm, let self = self, dm.isDownloading(identifier: self.item.id) else { return }
-                dm.cancel(identifier: self.item.id)
+                guard confirm, let self = self, self.resourceManager.isDownloading(identifier: self.item.id) else { return }
+                self.resourceManager.cancel(identifier: self.item.id)
                 self.currentState = .none
                 self.updateUI()
             }
@@ -192,7 +194,7 @@ class ResourceItemViewController: UIViewController {
         }
 
         // Download
-        dm.download(item: item)
+        resourceManager.download(item: item)
         currentState = .downloading
         updateUI()
     }
@@ -257,11 +259,10 @@ private extension ResourceItemViewController {
     }
 
     private func updateUI() {
-        let dm = ResourceManager.shared
-        if dm.isInstalled(identifier: item.id) {
+        if resourceManager.isInstalled(identifier: item.id) {
             currentState = .installed
         }
-        if dm.isDownloading(identifier: item.id) {
+        if resourceManager.isDownloading(identifier: item.id) {
             currentState = .downloading
         }
 
@@ -299,7 +300,7 @@ private extension ResourceItemViewController {
         if item.type == "script" {
             if currentState == .installed, let mainScriptName = item.mainScriptName {
                 var isDir: ObjCBool = false
-                if let path = dm.contextDirectory(forAddonWithIdentifier: item.id)?.appendingPathComponent(mainScriptName).path,
+                if let path = resourceManager.contextDirectory(forAddonWithIdentifier: item.id)?.appendingPathComponent(mainScriptName).path,
                    FileManager.default.fileExists(atPath: path, isDirectory: &isDir),
                    !isDir.boolValue {
                     goToButton.isHidden = false
@@ -310,7 +311,7 @@ private extension ResourceItemViewController {
                 goToButton.isHidden = true
             }
         } else {
-            if currentState == .installed, let objectName = item.objectName, !AppCore.shared.simulation.findObject(from: objectName).isEmpty {
+            if currentState == .installed, let objectName = item.objectName, !core.simulation.findObject(from: objectName).isEmpty {
                 goToButton.isHidden = false
             } else {
                 goToButton.isHidden = true

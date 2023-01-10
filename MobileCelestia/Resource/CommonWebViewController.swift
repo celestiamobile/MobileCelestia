@@ -24,6 +24,8 @@ class CommonWebViewController: UIViewController {
     private let filterURL: Bool
     private var titleObservation: NSKeyValueObservation?
 
+    @Injected(\.executor) private var executor
+
     weak var delegate: CommonWebViewControllerDelegate?
 
     var ackHandler: ((String) -> Void)?
@@ -195,7 +197,7 @@ extension CommonWebViewController: CelestiaScriptHandlerDelegate {
             guard let data = content.data(using: .utf8) else { return }
             do {
                 try data.write(to: scriptURL)
-                AppCore.shared.run { core in
+                self.executor.run { core in
                     core.runScript(at: scriptURL.path)
                 }
             } catch {}
@@ -221,6 +223,6 @@ extension CommonWebViewController: CelestiaScriptHandlerDelegate {
     }
 
     func runDemo() {
-        AppCore.shared.receiveAsync(.runDemo)
+        executor.receiveAsync(.runDemo)
     }
 }

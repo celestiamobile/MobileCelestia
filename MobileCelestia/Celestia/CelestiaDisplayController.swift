@@ -22,7 +22,8 @@ protocol CelestiaDisplayControllerDelegate: AnyObject {
 }
 
 class CelestiaDisplayController: AsyncGLViewController {
-    private var core: AppCore!
+    @Injected(\.appCore) private var core
+    @Injected(\.executor) private var executor
 
     // MARK: rendering
     private var currentSize: CGSize = .zero
@@ -72,7 +73,7 @@ class CelestiaDisplayController: AsyncGLViewController {
         guard isLoaded else { return }
 
         let insets = view.safeAreaInsets.scale(by: view.contentScaleFactor)
-        core.run { core in
+        executor.run { core in
             core.setSafeAreaInsets(insets)
         }
     }
@@ -83,7 +84,7 @@ class CelestiaDisplayController: AsyncGLViewController {
         guard isLoaded else { return }
 
         if previousTraitCollection?.displayScale != traitCollection.displayScale {
-            core.run { [weak self] _ in
+            executor.run { [weak self] _ in
                 self?.updateContentScale()
             }
         }
@@ -120,7 +121,6 @@ class CelestiaDisplayController: AsyncGLViewController {
 extension CelestiaDisplayController {
     override func prepareGL(_ size: CGSize) -> Bool {
         _ = AppCore.initGL()
-        core = AppCore.shared
 
         var success = false
         var shouldRetry = true
@@ -155,8 +155,6 @@ extension CelestiaDisplayController {
             delegate?.celestiaDisplayControllerLoadingFailed(self)
             return false
         }
-
-        AppCore.renderViewController = self
 
         updateContentScale()
         start()
@@ -214,7 +212,7 @@ extension CelestiaDisplayController {
         core.setPickTolerance(10 * viewScale / applicationScalingFactor)
         #endif
 
-        AppCore.makeRenderContextCurrent()
+        executor.makeRenderContextCurrent()
 
         let (font, boldFont) = getInstalledFontFor(locale: AppCore.language)
         core.clearFonts()
@@ -278,85 +276,5 @@ extension CelestiaDisplayController {
 private extension UIEdgeInsets {
     func scale(by factor: CGFloat) -> UIEdgeInsets {
         return UIEdgeInsets(top: top * factor, left: left * factor, bottom: bottom * factor, right: right * factor)
-    }
-}
-
-extension AppCore {
-    fileprivate static var renderQueue: DispatchQueue? {
-        return renderViewController?.glView?.renderQueue
-    }
-
-    fileprivate static weak var renderViewController: AsyncGLViewController?
-
-    func run(_ task: @escaping (AppCore) -> Void) {
-        guard let queue = Self.renderQueue else { return }
-        queue.async { [weak self] in
-            guard let self = self else { return }
-            task(self)
-        }
-    }
-
-    static func makeRenderContextCurrent() {
-        Self.renderViewController?.makeRenderContextCurrent()
-    }
-
-    func get<T>(_ task: (AppCore) -> T) -> T {
-        guard let queue = Self.renderQueue else { fatalError() }
-        var item: T?
-        queue.sync { [weak self] in
-            guard let self = self else { return }
-            item = task(self)
-        }
-        guard let returnItem = item else { fatalError() }
-        return returnItem
-    }
-
-    func receive(_ action: CelestiaAction) {
-        if textEnterMode != .normal {
-            textEnterMode = .normal
-        }
-        charEnter(action.rawValue)
-    }
-
-    func receiveAsync(_ action: CelestiaAction, completion: (() -> Void)? = nil) {
-        run {
-            $0.receive(action)
-            completion?()
-        }
-    }
-
-    func selectAndReceiveAsync(_ selection: Selection, action: CelestiaAction) {
-        run {
-            $0.simulation.selection = selection
-            $0.receive(action)
-        }
-    }
-
-    func charEnterAsync(_ char: Int8) {
-        run {
-            $0.charEnter(char)
-        }
-    }
-
-    func getSelectionAsync(_ completion: @escaping (Selection, AppCore) -> Void) {
-        run { core in
-            completion(core.simulation.selection, core)
-        }
-    }
-
-    func markAsync(_ selection: Selection, markerType: MarkerRepresentation) {
-        run { core in
-            core.simulation.universe.mark(selection, with: markerType)
-            core.showMarkers = true
-        }
-    }
-
-    func setValueAsync(_ value: Any?, forKey key: String, completionOnMainQueue: (() -> Void)? = nil) {
-        run { core in
-            core.setValue(value, forKey: key)
-            DispatchQueue.main.async {
-                completionOnMainQueue?()
-            }
-        }
     }
 }

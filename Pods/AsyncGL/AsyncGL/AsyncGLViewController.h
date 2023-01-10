@@ -5,6 +5,8 @@
 
 #import <TargetConditionals.h>
 
+@class AsyncGLExecutor;
+
 #if TARGET_OS_IOS
 @import UIKit;
 #else
@@ -27,9 +29,9 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, nullable) AsyncGLView *glView;
 
 #if TARGET_OS_IOS
-- (instancetype)initWithMSAAEnabled:(BOOL)msaaEnabled screen:(UIScreen *)screen initialFrameRate:(NSInteger)frameRate NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithMSAAEnabled:(BOOL)msaaEnabled screen:(UIScreen *)screen initialFrameRate:(NSInteger)frameRate executor:(AsyncGLExecutor *)executor NS_DESIGNATED_INITIALIZER;
 #else
-- (instancetype)initWithMSAAEnabled:(BOOL)msaaEnabled NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithMSAAEnabled:(BOOL)msaaEnabled executor:(AsyncGLExecutor *)executor NS_DESIGNATED_INITIALIZER;
 #endif
 + (instancetype)new NS_UNAVAILABLE;
 - (instancetype)init NS_UNAVAILABLE;
@@ -39,7 +41,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)prepareGL:(CGSize)size;
 - (void)drawGL:(CGSize)size;
 - (void)clearGL;
-- (void)makeRenderContextCurrent;
 
 #if TARGET_OS_IOS
 - (void)setPreferredFramesPerSecond:(NSInteger)preferredFramesPerSecond API_AVAILABLE(ios(10.0), tvos(10.0));

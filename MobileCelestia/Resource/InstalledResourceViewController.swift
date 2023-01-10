@@ -22,6 +22,8 @@ extension ResourceItem: AsyncListItem {
 }
 
 class InstalledResourceViewController: AsyncListViewController<ResourceItem> {
+    @Injected(\.resourceManager) private var resourceManager
+
     override class var alwaysRefreshOnAppear: Bool { return true }
 
     override func viewDidLoad() {
@@ -32,7 +34,7 @@ class InstalledResourceViewController: AsyncListViewController<ResourceItem> {
 
     override func loadItems(pageStart: Int, pageSize: Int, success: @escaping ([ResourceItem]) -> Void, failure: @escaping (Error) -> Void) {
         DispatchQueue.global().async {
-            let items = ResourceManager.shared.installedResources()
+            let items = self.resourceManager.installedResources()
             DispatchQueue.main.async {
                 let returnItems: [ResourceItem]
                 if pageStart < 0 || pageStart >= items.count || pageSize <= 0 {

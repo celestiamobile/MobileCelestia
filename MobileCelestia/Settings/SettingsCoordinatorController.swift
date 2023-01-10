@@ -24,6 +24,9 @@ class SettingsCoordinatorController: UIViewController {
     #endif
     private var main: SettingsMainViewController!
 
+    @Injected(\.appCore) private var core
+    @Injected(\.executor) private var executor
+
     private let actionHandler: ((SettingAction) -> Void)
     private let screenProvider: (() -> UIScreen)
 
@@ -51,7 +54,7 @@ class SettingsCoordinatorController: UIViewController {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
 
-        AppCore.shared.storeUserDefaults()
+        core.storeUserDefaults()
     }
 }
 
@@ -75,8 +78,8 @@ private extension SettingsCoordinatorController {
             case .time:
                 viewController = TimeSettingViewController()
             case .render:
-                let renderInfo = AppCore.shared.get { core -> String in
-                    AppCore.makeRenderContextCurrent()
+                let renderInfo = self.executor.get { core -> String in
+                    self.executor.makeRenderContextCurrent()
                     return core.renderInfo
                 }
                 viewController = TextViewController(title: item.name, text: renderInfo)

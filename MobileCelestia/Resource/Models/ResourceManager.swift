@@ -39,7 +39,6 @@ final class ResourceManager {
     static let downloadProgressKey = "ResourceDownloadManagerDownloadProgressKey"
     static let resourceErrorKey = "ResourceDownloadManagerResourceErrorKey"
 
-    static let shared = ResourceManager()
     private var tasks: [String: URLSessionTask] = [:]
 
     private var observations: [String: NSKeyValueObservation] = [:]
@@ -142,5 +141,16 @@ final class ResourceManager {
         }
         try fm.unzipItem(at: movedPath, to: destinationURL)
         return destinationURL
+    }
+}
+
+private struct ResourceManagerKey: InjectionKey {
+    static var currentValue: ResourceManager = ResourceManager()
+}
+
+extension InjectedValues {
+    var resourceManager: ResourceManager {
+        get { Self[ResourceManagerKey.self] }
+        set { Self[ResourceManagerKey.self] = newValue }
     }
 }

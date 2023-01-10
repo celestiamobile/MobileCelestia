@@ -16,7 +16,8 @@ import CelestiaCore
 class SettingCommonViewController: BaseTableViewController {
     private let item: SettingCommonItem
 
-    private lazy var core = AppCore.shared
+    @Injected(\.appCore) private var core
+    @Injected(\.executor) private var executor
 
     init(item: SettingCommonItem) {
         self.item = item
@@ -73,7 +74,7 @@ extension SettingCommonViewController {
                 cell.valueChangeBlock = { [weak self] (value) in
                     guard let self = self else { return }
                     let transformed = value * (maxValue - minValue) + minValue
-                    self.core.setValueAsync(transformed, forKey: key) { [weak self] in
+                    self.executor.setValueAsync(transformed, forKey: key) { [weak self] in
                         self?.tableView.reloadData()
                     }
                 }
@@ -106,7 +107,7 @@ extension SettingCommonViewController {
                     cell.enabled = enabled
                     cell.toggleBlock = { [weak self] newValue in
                         guard let self = self else { return }
-                        self.core.setValueAsync(newValue, forKey: item.key)
+                        self.executor.setValueAsync(newValue, forKey: item.key)
                     }
                     return cell
                 } else {
@@ -152,22 +153,22 @@ extension SettingCommonViewController {
         switch row.type {
         case .action:
             guard let item = row.associatedItem.base as? AssociatedActionItem else { break }
-            AppCore.shared.charEnter(item.action)
+            core.charEnter(item.action)
         case .checkmark:
             guard let item = row.associatedItem.base as? AssociatedCheckmarkItem, item.representation == .checkmark else { break }
             guard let cell = tableView.cellForRow(at: indexPath) else { break }
             let checked = cell.accessoryType == .checkmark
-            self.core.setValueAsync(!checked, forKey: item.key) { [weak self] in
+            self.executor.setValueAsync(!checked, forKey: item.key) { [weak self] in
                 self?.tableView.reloadData()
             }
         case .keyedSelection:
             guard let item = row.associatedItem.base as? AssociatedKeyedSelectionItem else { break }
-            self.core.setValueAsync(item.index, forKey: item.key) { [weak self] in
+            self.executor.setValueAsync(item.index, forKey: item.key) { [weak self] in
                 self?.tableView.reloadData()
             }
         case .custom:
             guard let item = row.associatedItem.base as? AssociatedCustomItem else { break }
-            item.block(core)
+            item.block(executor)
         default:
             break
         }

@@ -121,8 +121,6 @@ class CelestiaInteractionController: UIViewController {
 
     private var currentControlView: CelestiaControlView?
 
-    private var pendingSelection: Selection?
-
     // MARK: gesture
     private var currentPanPoint: CGPoint?
     #if targetEnvironment(macCatalyst)
@@ -130,7 +128,8 @@ class CelestiaInteractionController: UIViewController {
     #endif
     private var currentPinchDistance: CGFloat?
 
-    private lazy var core = AppCore.shared
+    @Injected(\.appCore) private var core
+    @Injected(\.executor) private var executor
 
     weak var delegate: CelestiaInteractionControllerDelegate?
     weak var targetProvider: RenderingTargetInformationProvider?
@@ -220,14 +219,14 @@ extension CelestiaInteractionController: CelestiaControlViewDelegate {
         } else if action == .show {
             self.showControlView()
         } else if action == .showMenu {
-            core.getSelectionAsync { [weak self] sel, _ in
+            executor.getSelectionAsync { [weak self] sel, _ in
                 guard let self = self else { return }
                 DispatchQueue.main.async {
                     self.delegate?.celestiaInteractionController(self, requestShowActionMenuWithSelection: sel)
                 }
             }
         } else if action == .info {
-            core.getSelectionAsync { [weak self] sel, _ in
+            executor.getSelectionAsync { [weak self] sel, _ in
                 guard let self = self else { return }
                 DispatchQueue.main.async {
                     self.delegate?.celestiaInteractionController(self, requestShowInfoWithSelection: sel)
@@ -406,12 +405,12 @@ extension CelestiaInteractionController {
             NSCursor.hide()
             #endif
             currentPanPoint = location
-            core.run { $0.mouseButtonDown(at: location, modifiers: UInt(modifiers.rawValue), with: button) }
+            executor.run { $0.mouseButtonDown(at: location, modifiers: UInt(modifiers.rawValue), with: button) }
         case .changed:
             let current = currentPanPoint!
             let offset = CGPoint(x: location.x - current.x, y: location.y - current.y)
             currentPanPoint = location
-            core.run { $0.mouseMove(by: offset, modifiers: UInt(modifiers.rawValue), with: button) }
+            executor.run { $0.mouseMove(by: offset, modifiers: UInt(modifiers.rawValue), with: button) }
         case .ended, .cancelled, .failed:
             fallthrough
         @unknown default:
@@ -422,7 +421,7 @@ extension CelestiaInteractionController {
             }
             NSCursor.unhide()
             #endif
-            core.run { $0.mouseButtonUp(at: location, modifiers: UInt(modifiers.rawValue), with: button) }
+            executor.run { $0.mouseButtonUp(at: location, modifiers: UInt(modifiers.rawValue), with: button) }
             currentPanPoint = nil
         }
     }
@@ -446,7 +445,7 @@ extension CelestiaInteractionController {
             let length = hypot(abs(point1.x - point2.x), abs(point1.y - point2.y))
             let center = CGPoint(x: (point1.x + point2.x) / 2, y: (point1.y + point2.y) / 2)
             currentPinchDistance = length
-            core.run { $0.mouseButtonDown(at: center, modifiers: 0, with: .left) }
+            executor.run { $0.mouseButtonDown(at: center, modifiers: 0, with: .left) }
         case .changed:
             if gesture.numberOfTouches < 2 {
                 // cancel the gesture recognizer
@@ -476,7 +475,7 @@ extension CelestiaInteractionController {
         switch tap.state {
         case .ended:
             let location = tap.location(with: renderingTargetGeometry)
-            core.run { core in
+            executor.run { core in
                 core.mouseButtonDown(at: location, modifiers: 0, with: .left)
                 core.mouseButtonUp(at: location, modifiers: 0, with: .left)
             }
@@ -487,9 +486,9 @@ extension CelestiaInteractionController {
 
     private func zoom(deltaY: CGFloat, modifiers: UInt = 0, scrolling: Bool = false) {
         if scrolling || interactionMode == .object {
-            core.run { $0.mouseWheel(by: deltaY, modifiers: modifiers) }
+            executor.run { $0.mouseWheel(by: deltaY, modifiers: modifiers) }
         } else {
-            core.run { $0.mouseMove(by: CGPoint(x: 0, y: deltaY), modifiers: UInt(UIKeyModifierFlags.shift.rawValue), with: .left) }
+            executor.run { $0.mouseMove(by: CGPoint(x: 0, y: deltaY), modifiers: UInt(UIKeyModifierFlags.shift.rawValue), with: .left) }
         }
     }
 }
@@ -514,16 +513,26 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
         let location = interaction.location(with: renderingTargetGeometry)
 
+        class ContextMenuHandler: NSObject, AppCoreContextMenuHandler, @unchecked Sendable {
+            func celestiaAppCoreCursorDidRequestContextMenu(at location: CGPoint, with selection: Selection) {
+                pendingSelection = selection
+            }
+
+            var pendingSelection: Selection?
+        }
+
+        let handler = ContextMenuHandler()
         let semaphore = DispatchSemaphore(value: 0)
-        core.run { core in
+        executor.run { core in
+            core.contextMenuHandler = handler
             core.mouseButtonDown(at: location, modifiers: 0, with: .right)
             core.mouseButtonUp(at: location, modifiers: 0, with: .right)
+            core.contextMenuHandler = nil
             semaphore.signal()
         }
         semaphore.wait()
 
-        guard let selection = pendingSelection else { return nil }
-        pendingSelection = nil
+        guard let selection = handler.pendingSelection else { return nil }
 
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { [weak self] _ -> UIMenu? in
             guard let self = self else { return nil }
@@ -533,27 +542,27 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
 
             actions.append(UIMenu(title: "", options: .displayInline, children: CelestiaAction.allCases.map { action in
                 return UIAction(title: action.description) { (_) in
-                    self.core.selectAndReceiveAsync(selection, action: action)
+                    self.executor.selectAndReceiveAsync(selection, action: action)
                 }
             }))
 
             if let entry = selection.object {
                 let browserItem = BrowserItem(name: self.core.simulation.universe.name(for: selection), catEntry: entry, provider: self.core.simulation.universe)
                 actions.append(UIMenu(title: "", options: .displayInline, children: browserItem.children.compactMap { $0.createMenuItems(additionalItemName: CelestiaString("Go", comment: "")) { (selection) in
-                    self.core.selectAndReceiveAsync(selection, action: .goTo)
+                    self.executor.selectAndReceiveAsync(selection, action: .goTo)
                 }
                 }))
             }
 
             if let alternativeSurfaces = selection.body?.alternateSurfaceNames, alternativeSurfaces.count > 0 {
-                let displaySurface = self.core.get { $0.simulation.activeObserver.displayedSurface }
+                let displaySurface = self.executor.get { $0.simulation.activeObserver.displayedSurface }
                 let defaultSurfaceItem = UIAction(title: CelestiaString("Default", comment: "")) { _ in
-                    self.core.run { $0.simulation.activeObserver.displayedSurface = "" }
+                    self.executor.run { $0.simulation.activeObserver.displayedSurface = "" }
                 }
                 defaultSurfaceItem.state = displaySurface == "" ? .on : .off
                 let otherSurfaces = alternativeSurfaces.map { name -> UIAction in
                     let action = UIAction(title: name) { _ in
-                        self.core.run { $0.simulation.activeObserver.displayedSurface = name }
+                        self.executor.run { $0.simulation.activeObserver.displayedSurface = name }
                     }
                     action.state = displaySurface == name ? .on : .off
                     return action
@@ -567,9 +576,9 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
                 return UIAction(title: name) { [weak self] _ in
                     guard let self = self else { return }
                     if let marker = MarkerRepresentation(rawValue: UInt(index)) {
-                        self.core.markAsync(selection, markerType: marker)
+                        self.executor.markAsync(selection, markerType: marker)
                     } else {
-                        self.core.run { $0.simulation.universe.unmark(selection) }
+                        self.executor.run { $0.simulation.universe.unmark(selection) }
                     }
                 }
             }
@@ -655,10 +664,6 @@ extension CelestiaInteractionController: AppCoreDelegate {
 
     func celestiaAppCoreCursorShapeChanged(_ shape: CursorShape) {}
 
-    func celestiaAppCoreCursorDidRequestContextMenu(at location: CGPoint, with selection: Selection) {
-        pendingSelection = selection
-    }
-
     func celestiaAppCoreWatchedFlagDidChange(_ changedFlag: WatcherFlag) {}
 }
 
@@ -690,18 +695,18 @@ extension CelestiaInteractionController {
     }
 
     func keyDown(with input: String?, modifiers: UInt) {
-        core.run { $0.keyDown(with: input, modifiers: modifiers) }
+        executor.run { $0.keyDown(with: input, modifiers: modifiers) }
     }
 
     func keyUp(with input: String?, modifiers: UInt) {
-        core.run { $0.keyUp(with: input, modifiers: modifiers) }
+        executor.run { $0.keyUp(with: input, modifiers: modifiers) }
     }
 
     func openURL(_ url: UniformedURL) {
         if url.url.isFileURL {
-            core.run { $0.runScript(at: url.url.path) }
+            executor.run { $0.runScript(at: url.url.path) }
         } else {
-            core.run { $0.go(to: url.url.absoluteString) }
+            executor.run { $0.go(to: url.url.absoluteString) }
         }
     }
 }
@@ -746,39 +751,39 @@ private extension CelestiaInteractionController {
 
         buttonA?.valueChangedHandler = { [weak self] _, _, pressed in
             guard let self = self else { return }
-            self.core.run { core in
+            self.executor.run { core in
                 pressed ? core.joystickButtonDown(.button1) : core.joystickButtonUp(.button1)
             }
         }
         buttonX?.valueChangedHandler = { [weak self] _, _, pressed in
             guard let self = self else { return }
-            self.core.run { core in
+            self.executor.run { core in
                 pressed ? core.joystickButtonDown(.button2) : core.joystickButtonUp(.button2)
             }
         }
         leftThumbstick?.valueChangedHandler = { [weak self] _, xValue, yValue in
             guard let self = self else { return }
-            self.core.run { core in
+            self.executor.run { core in
                 core.joystickAxis(.X, amount: xValue)
                 core.joystickAxis(.Y, amount: yValue)
             }
         }
         rightThumbstick?.valueChangedHandler = { [weak self] _, xValue, yValue in
             guard let self = self else { return }
-            self.core.run { core in
+            self.executor.run { core in
                 core.joystickAxis(.X, amount: xValue)
                 core.joystickAxis(.Y, amount: yValue)
             }
         }
         leftTrigger?.valueChangedHandler = { [weak self] _, _, pressed in
             guard let self = self else { return }
-            self.core.run { core in
+            self.executor.run { core in
                 pressed ? core.joystickButtonDown(.button7) : core.joystickButtonUp(.button7)
             }
         }
         rightTrigger?.valueChangedHandler = { [weak self] _, _, pressed in
             guard let self = self else { return }
-            self.core.run { core in
+            self.executor.run { core in
                 pressed ? core.joystickButtonDown(.button8) : core.joystickButtonUp(.button8)
             }
         }

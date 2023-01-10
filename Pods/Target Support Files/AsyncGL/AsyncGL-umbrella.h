@@ -10,6 +10,7 @@
 #endif
 #endif
 
+#import "AsyncGLExecutor.h"
 #import "AsyncGLView.h"
 #import "AsyncGLViewController.h"
 

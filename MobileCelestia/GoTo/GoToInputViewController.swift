@@ -91,7 +91,7 @@ class GoToInputViewController: BaseTableViewController {
     private var distance: Double = 8
     private var unit: DistanceUnit = .radii
 
-    private let core = AppCore.shared
+    @Injected(\.appCore) private var core
 
     private var allSections: [Section] = []
 

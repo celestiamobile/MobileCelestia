@@ -82,6 +82,9 @@
 		EA5E185D2477C78E00F5374B /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5E185B2477C78E00F5374B /* Toast.swift */; };
 		EA7209E027C64270004C1400 /* UILabel+DynamicType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA7209DF27C64270004C1400 /* UILabel+DynamicType.swift */; };
 		EA775EB42664B63F00479295 /* ActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA775EB32664B63F00479295 /* ActionButton.swift */; };
+		EA787309296DE50D0099AB11 /* Injecton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA787308296DE50D0099AB11 /* Injecton.swift */; };
+		EA78730B296DE5CE0099AB11 /* AppCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA78730A296DE5CE0099AB11 /* AppCore.swift */; };
+		EA78730F296DEA6B0099AB11 /* CelestiaExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA78730E296DEA6B0099AB11 /* CelestiaExecutor.swift */; };
 		EA7BF37C27033AE40058F704 /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA7BF37B27033AE40058F704 /* GameController.framework */; };
 		EA85C8D5289BE459009ADB1C /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA85C8D3289BE459009ADB1C /* OpenGL.framework */; platformFilter = maccatalyst; };
 		EA85C8D6289BE45A009ADB1C /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA85C8D4289BE459009ADB1C /* OpenGLES.framework */; platformFilter = ios; };
@@ -259,6 +262,9 @@
 		EA5E185B2477C78E00F5374B /* Toast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
 		EA7209DF27C64270004C1400 /* UILabel+DynamicType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+DynamicType.swift"; sourceTree = "<group>"; };
 		EA775EB32664B63F00479295 /* ActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButton.swift; sourceTree = "<group>"; };
+		EA787308296DE50D0099AB11 /* Injecton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Injecton.swift; sourceTree = "<group>"; };
+		EA78730A296DE5CE0099AB11 /* AppCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCore.swift; sourceTree = "<group>"; };
+		EA78730E296DEA6B0099AB11 /* CelestiaExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaExecutor.swift; sourceTree = "<group>"; };
 		EA7BF37B27033AE40058F704 /* GameController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameController.framework; path = System/Library/Frameworks/GameController.framework; sourceTree = SDKROOT; };
 		EA85C8D3289BE459009ADB1C /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.3.sdk/System/Library/Frameworks/OpenGL.framework; sourceTree = DEVELOPER_DIR; };
 		EA85C8D4289BE459009ADB1C /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
@@ -582,6 +588,8 @@
 				EADE7FBA252B517600D4174F /* CelestiaDisplayController.swift */,
 				EADE7FBF252B54A400D4174F /* CelestiaInteractionController.swift */,
 				97C3A9F12445FACF00EB365A /* CelestiaControlView.swift */,
+				EA78730A296DE5CE0099AB11 /* AppCore.swift */,
+				EA78730E296DEA6B0099AB11 /* CelestiaExecutor.swift */,
 			);
 			path = Celestia;
 			sourceTree = "<group>";
@@ -688,6 +696,7 @@
 				EA85C914289E9AD2009ADB1C /* AutoSizingView.swift */,
 				EA85C916289EA1ED009ADB1C /* IconView.swift */,
 				EA85C91A289F5811009ADB1C /* ButtonView.swift */,
+				EA787308296DE50D0099AB11 /* Injecton.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -1050,8 +1059,10 @@
 				978406DC240294D000876FD1 /* LoadingViewController.swift in Sources */,
 				EAF48515249B2C4700E5B817 /* SubsystemBrowserCoordinatorViewController.swift in Sources */,
 				EA1BC6E324A0E92B00F3F51B /* EventFinderCoordinatorViewController.swift in Sources */,
+				EA78730F296DEA6B0099AB11 /* CelestiaExecutor.swift in Sources */,
 				978406DA2402906C00876FD1 /* UIViewController+Extension.swift in Sources */,
 				9773949E2402A96B00E38B82 /* SlideInPresentationController.swift in Sources */,
+				EA787309296DE50D0099AB11 /* Injecton.swift in Sources */,
 				EA1BC6E724A0E94900F3F51B /* EventFinderResultViewController.swift in Sources */,
 				EA17951B27B1510500D47397 /* CelestiaScriptHandler.swift in Sources */,
 				973BBA6624054E9900E3B061 /* TextViewController.swift in Sources */,
@@ -1061,6 +1072,7 @@
 				EA5E185D2477C78E00F5374B /* Toast.swift in Sources */,
 				977394A32403E68800E38B82 /* Color.swift in Sources */,
 				EAC2F4D02647F2920039DF2F /* SearchResultViewController.swift in Sources */,
+				EA78730B296DE5CE0099AB11 /* AppCore.swift in Sources */,
 				EABDE367247170F000E0A5FA /* SettngSliderCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

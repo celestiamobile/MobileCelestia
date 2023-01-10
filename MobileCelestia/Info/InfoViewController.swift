@@ -44,7 +44,7 @@ final class InfoViewController: UIViewController {
 
     private var linkMetaData: AnyObject?
 
-    init(info: Selection, isEmbeddedInNavigationController: Bool) {
+    init(info: Selection, core: AppCore, isEmbeddedInNavigationController: Bool) {
         self.info = info
         self.isEmbeddedInNavigationController = isEmbeddedInNavigationController
         var actions = ObjectAction.allCases
@@ -57,7 +57,7 @@ final class InfoViewController: UIViewController {
         actions.append(.subsystem)
         actions.append(.mark)
         self.actions = actions
-        self.bodyInfo = BodyInfo(selection: info)
+        self.bodyInfo = BodyInfo(selection: info, core: core)
         super.init(nibName: nil, bundle: nil)
 
         if isEmbeddedInNavigationController {

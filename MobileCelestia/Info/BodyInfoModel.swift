@@ -29,14 +29,13 @@ extension BodyInfo {
 
 extension AppCore {
     var selection: BodyInfo {
-        get { return BodyInfo(selection: simulation.selection) }
+        get { return BodyInfo(selection: simulation.selection, core: self) }
         set { simulation.selection = newValue.selection }
     }
 }
 
 extension BodyInfo {
-    init(selection: Selection) {
-        let core = AppCore.shared
+    init(selection: Selection, core: AppCore) {
         self.init(name: core.simulation.universe.name(for: selection),
                   overview: core.overviewForSelection(selection), selection: selection)
     }

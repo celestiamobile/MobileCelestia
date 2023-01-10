@@ -40,7 +40,7 @@ class EventFinderInputViewController: BaseTableViewController {
     private lazy var endTime = Date()
     private var objectName = LocalizedString("Earth", "celestia-data")
 
-    private let core = AppCore.shared
+    @Injected(\.appCore) private var core
 
     private lazy var displayDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -80,7 +80,7 @@ private extension EventFinderInputViewController {
             self.showError(CelestiaString("Object not found", comment: ""))
             return
         }
-        let finder = EcipseFinder(body: body)
+        let finder = EclipseFinder(body: body)
         let alert = showLoading(CelestiaString("Calculating…", comment: "")) {
             finder.abort()
         }

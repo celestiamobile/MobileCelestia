@@ -32,6 +32,8 @@ class FavoriteCoordinatorController: UIViewController {
     #endif
     private var navigation: UINavigationController!
 
+    @Injected(\.appCore) private var core
+
     private lazy var main = FavoriteViewController(currentSelection: nil, selected: { [unowned self] (item) in
         switch item {
         case .bookmark:
@@ -39,7 +41,7 @@ class FavoriteCoordinatorController: UIViewController {
         case .script:
             self.replace(AnyFavoriteItemList(title: CelestiaString("Scripts", comment: ""), items: readScripts()))
         case .destination:
-            self.replace(AnyFavoriteItemList(title: CelestiaString("Destinations", comment: ""), items: AppCore.shared.destinations))
+            self.replace(AnyFavoriteItemList(title: CelestiaString("Destinations", comment: ""), items: core.destinations))
         }
     })
 
@@ -138,11 +140,11 @@ private extension FavoriteCoordinatorController {
             } else {
                 self.showError(CelestiaString("Object not found", comment: ""))
             }
-        }, add: {
-            guard itemList is BookmarkNode else {
+        }, add: { [weak self] in
+            guard itemList is BookmarkNode, let self else {
                 fatalError()
             }
-            return AppCore.shared.currentBookmark as? T.Item
+            return self.core.currentBookmark as? T.Item
         }, share: { [weak self] object, viewController in
             self?.share(object, viewController)
         })

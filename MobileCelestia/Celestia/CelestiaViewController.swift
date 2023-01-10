@@ -46,11 +46,11 @@ class CelestiaViewController: UIViewController {
     private(set) var displayScreen: UIScreen
     private(set) var isMirroring: Bool
 
-    init(screen: UIScreen) {
+    init(screen: UIScreen, executor: CelestiaExecutor) {
         appScreen = screen
         displayScreen = screen
         isMirroring = false
-        displayController = CelestiaDisplayController(msaaEnabled: UserDefaults.app[.msaa] == true, screen: screen, initialFrameRate: UserDefaults.app[.frameRate] ?? 60)
+        displayController = CelestiaDisplayController(msaaEnabled: UserDefaults.app[.msaa] == true, screen: screen, initialFrameRate: UserDefaults.app[.frameRate] ?? 60, executor: executor)
         super.init(nibName: nil, bundle: nil)
     }
 
