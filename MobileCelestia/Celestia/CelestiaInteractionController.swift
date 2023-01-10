@@ -600,6 +600,7 @@ extension UIContextMenuInteraction {
 
 @available(iOS 13.0, *)
 extension BrowserItem {
+    @MainActor
     func createMenuItems(additionalItemName: String, with callback: @escaping (Selection) -> Void) -> UIMenu? {
         var items = [UIMenuElement]()
 

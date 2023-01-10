@@ -80,6 +80,7 @@ class ActionButton: StandardButton {
     }
 }
 
+@MainActor
 class ActionButtonHelper {
     static func newButton() -> UIButton {
         #if !targetEnvironment(macCatalyst)

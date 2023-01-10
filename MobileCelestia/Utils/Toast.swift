@@ -11,6 +11,7 @@
 
 import UIKit
 
+@MainActor
 class Toast {
     private enum Constants {
         static let toastCornerRadius: CGFloat = 8
