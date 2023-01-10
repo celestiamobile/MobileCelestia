@@ -11,6 +11,7 @@
 
 import UIKit
 
+@MainActor
 protocol AutoSizingViewConfiguration {
     func baseSizeForView(_ view: UIView) -> CGSize
 }

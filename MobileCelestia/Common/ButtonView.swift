@@ -16,7 +16,6 @@ protocol ImageProvider {
     var shouldScaleOnMacCatalyst: Bool { get }
 }
 
-@MainActor
 struct ImageButtonViewConfiguration<T: ImageProvider>: AutoSizingViewConfiguration {
     func baseSizeForView(_ view: UIView) -> CGSize {
         guard let size = configuration.provideImage(selected: (view as? UIButton)?.isSelected == true)?.size, size.width > 0, size.height > 0 else {
