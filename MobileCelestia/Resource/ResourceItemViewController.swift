@@ -22,6 +22,7 @@ class ResourceItemViewController: UIViewController {
         case installed
     }
 
+    private let itemID: String
     private var item: ResourceItem
     private let needsRefetchItem: Bool
 
@@ -50,7 +51,7 @@ class ResourceItemViewController: UIViewController {
     @Injected(\.resourceManager) private var resourceManager
 
     private lazy var itemInfoController: CommonWebViewController = {
-        return CommonWebViewController(url: .fromAddon(addonItemID: item.id, language: AppCore.language), matchingQueryKeys: ["item"], contextDirectory: resourceManager.contextDirectory(forAddonWithIdentifier: item.id))
+        return CommonWebViewController(url: .fromAddon(addonItemID: itemID, language: AppCore.language), matchingQueryKeys: ["item"], contextDirectory: resourceManager.contextDirectory(forAddonWithIdentifier: itemID))
     }()
 
     private var scrollViewTopToViewTopConstrant: NSLayoutConstraint?
@@ -64,10 +65,11 @@ class ResourceItemViewController: UIViewController {
     @Injected(\.executor) private var executor
 
     init(item: ResourceItem, needsRefetchItem: Bool) {
+        self.itemID = item.id
         self.item = item
         self.needsRefetchItem = needsRefetchItem
         let userActivity = NSUserActivity(activityType: "space.celestia.celestia.addon-user-activity")
-        userActivity.webpageURL = URL.fromAddonForSharing(addonItemID: item.id, language: AppCore.language)
+        userActivity.webpageURL = URL.fromAddonForSharing(addonItemID: itemID, language: AppCore.language)
         userActivity.title = item.name
         userActivity.isEligibleForHandoff = true
         userActivity.isEligibleForSearch = true
@@ -131,23 +133,25 @@ class ResourceItemViewController: UIViewController {
 
     private func refresh() {
         let requestURL = apiPrefix + "/resource/item"
-        _ = RequestHandler.get(url: requestURL, parameters: ["lang": AppCore.language, "item": item.id], success: { [weak self] (item: ResourceItem) in
-            guard let self = self else { return }
-            self.item = item
-            self.title = item.name
-            self.associatedUserActivity.title = item.name
-            self.associatedUserActivity.keywords = [item.name]
-            self.associatedUserActivity.contentAttributeSet?.contentCreationDate = item.publishTime
-            self.associatedUserActivity.contentAttributeSet?.contentDescription = item.description
-            self.updateUI()
-        }, decoder: ResourceItem.networkResponseDecoder)
+        Task {
+            do {
+                let item: ResourceItem = try await RequestHandler.getDecoded(url: requestURL, parameters: ["lang": AppCore.language, "item": itemID], decoder: ResourceItem.networkResponseDecoder)
+                self.item = item
+                self.title = item.name
+                self.associatedUserActivity.title = item.name
+                self.associatedUserActivity.keywords = [item.name]
+                self.associatedUserActivity.contentAttributeSet?.contentCreationDate = item.publishTime
+                self.associatedUserActivity.contentAttributeSet?.contentDescription = item.description
+                self.updateUI()
+            } catch {}
+        }
     }
 
     @objc private func goToButtonClicked() {
         if item.type == "script" {
             guard let mainScriptName = item.mainScriptName else { return }
             var isDir: ObjCBool = false
-            guard let path = resourceManager.contextDirectory(forAddonWithIdentifier: item.id)?.appendingPathComponent(mainScriptName).path,
+            guard let path = resourceManager.contextDirectory(forAddonWithIdentifier: itemID)?.appendingPathComponent(mainScriptName).path,
                   FileManager.default.fileExists(atPath: path, isDirectory: &isDir),
                   !isDir.boolValue else {
                 return
@@ -163,16 +167,18 @@ class ResourceItemViewController: UIViewController {
             showError(CelestiaString("Object not found", comment: ""))
             return
         }
-        executor.selectAndReceiveAsync(object, action: .goTo)
+        Task {
+            await executor.selectAndReceive(object, action: .goTo)
+        }
     }
 
     @objc private func statusButtonClicked() {
-        if resourceManager.isInstalled(identifier: item.id) {
+        if resourceManager.isInstalled(identifier: itemID) {
             // Already installed, offer option for uninstalling
             showOption(CelestiaString("Do you want to uninstall this add-on?", comment: "")) { [weak self] confirm in
                 guard confirm, let self = self else { return }
                 do {
-                    try self.resourceManager.uninstall(identifier: self.item.id)
+                    try self.resourceManager.uninstall(identifier: self.itemID)
                     self.currentState = .none
                 } catch {
                     self.showError(CelestiaString("Unable to uninstall add-on.", comment: ""))
@@ -183,10 +189,10 @@ class ResourceItemViewController: UIViewController {
         }
 
         // Cancel if already downloading
-        if resourceManager.isDownloading(identifier: item.id) {
+        if resourceManager.isDownloading(identifier: itemID) {
             showOption(CelestiaString("Do you want to cancel this task?", comment: "")) { [weak self] confirm in
-                guard confirm, let self = self, self.resourceManager.isDownloading(identifier: self.item.id) else { return }
-                self.resourceManager.cancel(identifier: self.item.id)
+                guard confirm, let self = self, self.resourceManager.isDownloading(identifier: self.itemID) else { return }
+                self.resourceManager.cancel(identifier: self.itemID)
                 self.currentState = .none
                 self.updateUI()
             }
@@ -200,7 +206,7 @@ class ResourceItemViewController: UIViewController {
     }
 
     @objc private func shareAddon(_ sender: UIBarButtonItem) {
-        showShareSheet(for: URL.fromAddonForSharing(addonItemID: item.id, language: AppCore.language), source: .barButtonItem(barButtonItem: sender))
+        showShareSheet(for: URL.fromAddonForSharing(addonItemID: itemID, language: AppCore.language), source: .barButtonItem(barButtonItem: sender))
     }
 }
 
@@ -259,10 +265,10 @@ private extension ResourceItemViewController {
     }
 
     private func updateUI() {
-        if resourceManager.isInstalled(identifier: item.id) {
+        if resourceManager.isInstalled(identifier: itemID) {
             currentState = .installed
         }
-        if resourceManager.isDownloading(identifier: item.id) {
+        if resourceManager.isDownloading(identifier: itemID) {
             currentState = .downloading
         }
 
@@ -300,7 +306,7 @@ private extension ResourceItemViewController {
         if item.type == "script" {
             if currentState == .installed, let mainScriptName = item.mainScriptName {
                 var isDir: ObjCBool = false
-                if let path = resourceManager.contextDirectory(forAddonWithIdentifier: item.id)?.appendingPathComponent(mainScriptName).path,
+                if let path = resourceManager.contextDirectory(forAddonWithIdentifier: itemID)?.appendingPathComponent(mainScriptName).path,
                    FileManager.default.fileExists(atPath: path, isDirectory: &isDir),
                    !isDir.boolValue {
                     goToButton.isHidden = false
@@ -321,8 +327,8 @@ private extension ResourceItemViewController {
 }
 
 private extension ResourceItemViewController {
-    @objc private func downloadProgress(_ notification: Notification) {
-        guard let identifier = notification.userInfo?[ResourceManager.downloadIdentifierKey] as? String, identifier == item.id else {
+    @objc nonisolated private func downloadProgress(_ notification: Notification) {
+        guard let identifier = notification.userInfo?[ResourceManager.downloadIdentifierKey] as? String, identifier == itemID else {
             return
         }
 
@@ -330,43 +336,43 @@ private extension ResourceItemViewController {
             return
         }
 
-        DispatchQueue.main.async { [weak self] in
-            self?.progressView.progress = Float(progress)
-            self?.updateUI()
+        Task.detached { @MainActor in
+            self.progressView.progress = Float(progress)
+            self.updateUI()
         }
     }
 
-    @objc private func downloadSuccess(_ notification: Notification) {
-        guard let identifier = notification.userInfo?[ResourceManager.downloadIdentifierKey] as? String, identifier == item.id else {
+    @objc nonisolated private func downloadSuccess(_ notification: Notification) {
+        guard let identifier = notification.userInfo?[ResourceManager.downloadIdentifierKey] as? String, identifier == itemID else {
             return
         }
 
-        DispatchQueue.main.async { [weak self] in
-            self?.updateUI()
+        Task.detached { @MainActor in
+            self.updateUI()
         }
     }
 
-    @objc private func resourceFetchError(_ notification: Notification) {
-        guard let identifier = notification.userInfo?[ResourceManager.downloadIdentifierKey] as? String, identifier == item.id else {
+    @objc nonisolated private func resourceFetchError(_ notification: Notification) {
+        guard let identifier = notification.userInfo?[ResourceManager.downloadIdentifierKey] as? String, identifier == itemID else {
             return
         }
         guard let error = notification.userInfo?[ResourceManager.resourceErrorKey] as? Error else {
             return
         }
-        currentState = .none
-        DispatchQueue.main.async { [weak self] in
-            self?.updateUI()
-            self?.showError(error.localizedDescription)
+        Task.detached { @MainActor in
+            self.currentState = .none
+            self.updateUI()
+            self.showError(error.localizedDescription)
         }
     }
 
-    @objc private func unzipSuccess(_ notification: Notification) {
-        guard let identifier = notification.userInfo?[ResourceManager.downloadIdentifierKey] as? String, identifier == item.id else {
+    @objc nonisolated private func unzipSuccess(_ notification: Notification) {
+        guard let identifier = notification.userInfo?[ResourceManager.downloadIdentifierKey] as? String, identifier == itemID else {
             return
         }
-        currentState = .installed
-        DispatchQueue.main.async { [weak self] in
-            self?.updateUI()
+        Task.detached { @MainActor in
+            self.currentState = .installed
+            self.updateUI()
         }
     }
 }

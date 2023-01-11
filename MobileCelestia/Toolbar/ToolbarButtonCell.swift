@@ -11,6 +11,7 @@
 
 import UIKit
 
+@MainActor
 protocol ToolbarCell: UICollectionViewCell {
     var itemTitle: String? { get set }
     var itemImage: UIImage? { get set }

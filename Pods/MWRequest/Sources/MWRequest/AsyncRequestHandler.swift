@@ -30,10 +30,11 @@ open class AsyncBaseRequestHandler<Output> {
 
     public class func get(url: String,
                           parameters: [String: String] = [:],
+                          headers: [String: String]? = nil,
                           session: URLSession = .shared) async throws -> Output {
         var dataResponseTuple: (data: Data, response: URLResponse)!
         do {
-            dataResponseTuple = try await session.get(from: url, parameters: parameters)
+            dataResponseTuple = try await session.get(from: url, parameters: parameters, headers: headers)
         }
         catch {
             throw RequestError.urlSessionError(error: error)
@@ -43,10 +44,11 @@ open class AsyncBaseRequestHandler<Output> {
 
     public class func post(url: String,
                            parameters: [String: String] = [:],
+                           headers: [String: String]? = nil,
                            session: URLSession = .shared) async throws -> Output {
         var dataResponseTuple: (data: Data, response: URLResponse)!
         do {
-            dataResponseTuple = try await session.post(to: url, parameters: parameters)
+            dataResponseTuple = try await session.post(to: url, parameters: parameters, headers: headers)
         }
         catch {
             throw RequestError.urlSessionError(error: error)
@@ -57,10 +59,11 @@ open class AsyncBaseRequestHandler<Output> {
     public class func post<T: Encodable>(url: String,
                                          json: T,
                                          encoder: JSONEncoder? = nil,
+                                         headers: [String: String]? = nil,
                                          session: URLSession = .shared) async throws -> Output {
         var dataResponseTuple: (data: Data, response: URLResponse)!
         do {
-            dataResponseTuple = try await session.post(to: url, json: json, encoder: encoder)
+            dataResponseTuple = try await session.post(to: url, json: json, encoder: encoder, headers: headers)
         }
         catch {
             throw RequestError.urlSessionError(error: error)
@@ -71,10 +74,11 @@ open class AsyncBaseRequestHandler<Output> {
     public class func upload(url: String,
                              data: Data, key: String = "file", filename: String,
                              parameters: [String: String] = [:],
+                             headers: [String: String]? = nil,
                              session: URLSession = .shared) async throws -> Output {
         var dataResponseTuple: (data: Data, response: URLResponse)!
         do {
-            dataResponseTuple = try await session.upload(to: url, parameters: parameters, data: data, key: key, filename: filename)
+            dataResponseTuple = try await session.upload(to: url, parameters: parameters, data: data, key: key, filename: filename, headers: headers)
         }
         catch {
             throw RequestError.urlSessionError(error: error)

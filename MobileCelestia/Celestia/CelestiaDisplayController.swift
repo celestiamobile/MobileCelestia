@@ -24,6 +24,7 @@ protocol CelestiaDisplayControllerDelegate: AnyObject {
 class CelestiaDisplayController: AsyncGLViewController {
     @Injected(\.appCore) private var core
     @Injected(\.executor) private var executor
+    @Injected(\.userDefaults) private var userDefaults
 
     // MARK: rendering
     private var currentSize: CGSize = .zero
@@ -84,8 +85,8 @@ class CelestiaDisplayController: AsyncGLViewController {
         guard isLoaded else { return }
 
         if previousTraitCollection?.displayScale != traitCollection.displayScale {
-            executor.run { [weak self] _ in
-                self?.updateContentScale()
+            executor.run { _ in
+                self.updateContentScale()
             }
         }
     }
@@ -126,15 +127,15 @@ extension CelestiaDisplayController {
         var shouldRetry = true
 
         while !success && shouldRetry {
-            self.dataDirectoryURL = currentDataDirectory()
-            self.configFileURL = currentConfigFile()
+            self.dataDirectoryURL = userDefaults.currentDataDirectory()
+            self.configFileURL = userDefaults.currentConfigFile()
 
             FileManager.default.changeCurrentDirectoryPath(self.dataDirectoryURL.url.path)
             DispatchQueue.main.sync {
                 AppCore.setLocaleDirectory(self.dataDirectoryURL.url.path + "/locale")
             }
 
-            guard self.core.startSimulation(configFileName: self.configFileURL.url.path, extraDirectories: [extraDirectory].compactMap{$0?.path}, progress: { (st) in
+            guard self.core.startSimulation(configFileName: self.configFileURL.url.path, extraDirectories: [UserDefaults.extraDirectory].compactMap{$0?.path}, progress: { (st) in
                 delegate?.celestiaDisplayController(self, loadingStatusUpdated: st)
             }) else {
                 shouldRetry = delegate?.celestiaDisplayControllerLoadingFailedShouldRetry(self) ?? false
@@ -188,7 +189,7 @@ extension CelestiaDisplayController {
         var applicationScalingFactor: CGFloat = 1.0
 
         DispatchQueue.main.sync {
-            viewScale = UserDefaults.app[.fullDPI] != false ? self.traitCollection.displayScale : 1
+            viewScale = userDefaults[.fullDPI] != false ? self.traitCollection.displayScale : 1
             self.view.contentScaleFactor = viewScale
 
             #if targetEnvironment(macCatalyst)

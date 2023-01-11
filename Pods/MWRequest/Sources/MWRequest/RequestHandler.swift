@@ -37,7 +37,7 @@ extension RequestError: LocalizedError {
     }
 }
 
-public class BaseRequestHandler<Output> {
+public class BaseRequestHandler<Output>: @unchecked Sendable {
     public typealias SuccessHandler = (Output) -> Void
     public typealias FailureHandler = (RequestError) -> Void
     private let successHandler: SuccessHandler?
@@ -113,11 +113,12 @@ public class BaseRequestHandler<Output> {
 
     public class func get(url: String,
                           parameters: [String: String] = [:],
+                          headers: [String: String]? = nil,
                           success: SuccessHandler? = nil,
                           failure: FailureHandler? = nil,
                           session: URLSession = .shared) -> Self {
         let handler = self.init(success: success, failure: failure)
-        let task = session.get(from: url, parameters: parameters) { (data, response, error) in
+        let task = session.get(from: url, parameters: parameters, headers: headers) { (data, response, error) in
             _ = handler.commonHandler(data: data, response: response, error: error)
         }
         handler.dataTask = task
@@ -126,11 +127,12 @@ public class BaseRequestHandler<Output> {
 
     public class func post(url: String,
                            parameters: [String: String] = [:],
+                           headers: [String: String]? = nil,
                            success: SuccessHandler? = nil,
                            failure: FailureHandler? = nil,
                            session: URLSession = .shared) -> Self {
         let handler = self.init(success: success, failure: failure)
-        let task = session.post(to: url, parameters: parameters) { (data, response, error) in
+        let task = session.post(to: url, parameters: parameters, headers: headers) { (data, response, error) in
             _ = handler.commonHandler(data: data, response: response, error: error)
         }
         handler.dataTask = task
@@ -140,11 +142,12 @@ public class BaseRequestHandler<Output> {
     public class func post<T: Encodable>(url: String,
                                          json: T,
                                          encoder: JSONEncoder? = nil,
+                                         headers: [String: String]? = nil,
                                          success: SuccessHandler? = nil,
                                          failure: FailureHandler? = nil,
                                          session: URLSession = .shared) -> Self {
         let handler = self.init(success: success, failure: failure)
-        let task = session.post(to: url, json: json, encoder: encoder) { (data, response, error) in
+        let task = session.post(to: url, json: json, encoder: encoder, headers: headers) { (data, response, error) in
             _ = handler.commonHandler(data: data, response: response, error: error)
         }
         handler.dataTask = task
@@ -154,11 +157,12 @@ public class BaseRequestHandler<Output> {
     public class func upload(url: String,
                              data: Data, key: String = "file", filename: String,
                              parameters: [String: String] = [:],
+                             headers: [String: String]? = nil,
                              success: SuccessHandler? = nil,
                              failure: FailureHandler? = nil,
                              session: URLSession = .shared) -> Self {
         let handler = self.init(success: success, failure: failure)
-        let task = session.upload(to: url, parameters: parameters, data: data, key: key, filename: filename) { (data, response, error) in
+        let task = session.upload(to: url, parameters: parameters, data: data, key: key, filename: filename, headers: headers) { (data, response, error) in
             _ = handler.commonHandler(data: data, response: response, error: error)
         }
         handler.dataTask = task

@@ -1,5 +1,5 @@
 //
-// AppCore.swift
+// Selection.swift
 //
 // Copyright © 2023 Celestia Development Team. All rights reserved.
 //
@@ -12,13 +12,14 @@
 import CelestiaCore
 import Foundation
 
-private struct AppCoreKey: InjectionKey {
-    static var currentValue: AppCore = AppCore()
-}
+extension Selection: @unchecked Sendable {}
 
-extension InjectedValues {
-    var appCore: AppCore {
-        get { Self[AppCoreKey.self] }
-        set { Self[AppCoreKey.self] = newValue }
+extension Selection {
+    convenience init?(item: BrowserItem) {
+        if let object = item.entry {
+            self.init(object: object)
+        } else {
+            return nil
+        }
     }
 }

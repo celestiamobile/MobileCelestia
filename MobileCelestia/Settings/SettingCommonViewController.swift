@@ -18,6 +18,7 @@ class SettingCommonViewController: BaseTableViewController {
 
     @Injected(\.appCore) private var core
     @Injected(\.executor) private var executor
+    @Injected(\.userDefaults) private var userDefaults
 
     init(item: SettingCommonItem) {
         self.item = item
@@ -74,8 +75,9 @@ extension SettingCommonViewController {
                 cell.valueChangeBlock = { [weak self] (value) in
                     guard let self = self else { return }
                     let transformed = value * (maxValue - minValue) + minValue
-                    self.executor.setValueAsync(transformed, forKey: key) { [weak self] in
-                        self?.tableView.reloadData()
+                    Task {
+                        await self.executor.setValue(transformed, forKey: key)
+                        self.tableView.reloadData()
                     }
                 }
                 return cell
@@ -106,8 +108,10 @@ extension SettingCommonViewController {
                     cell.title = row.name
                     cell.enabled = enabled
                     cell.toggleBlock = { [weak self] newValue in
-                        guard let self = self else { return }
-                        self.executor.setValueAsync(newValue, forKey: item.key)
+                        guard let self else { return }
+                        Task {
+                            await self.executor.setValue(newValue, forKey: item.key)
+                        }
                     }
                     return cell
                 } else {
@@ -132,10 +136,11 @@ extension SettingCommonViewController {
         case .prefSwitch:
             if let item = row.associatedItem.base as? AssociatedPreferenceSwitchItem {
                 let cell = tableView.dequeueReusableCell(withIdentifier: "Switch", for: indexPath) as! SettingSwitchCell
-                cell.enabled = UserDefaults.app[item.key] ?? item.defaultOn
+                cell.enabled = userDefaults[item.key] ?? item.defaultOn
                 cell.title = row.name
-                cell.toggleBlock = { (enabled) in
-                    UserDefaults.app[item.key] = enabled
+                cell.toggleBlock = { [weak self] enabled in
+                    guard let self else { return }
+                    self.userDefaults[item.key] = enabled
                 }
                 return cell
             } else {
@@ -158,13 +163,15 @@ extension SettingCommonViewController {
             guard let item = row.associatedItem.base as? AssociatedCheckmarkItem, item.representation == .checkmark else { break }
             guard let cell = tableView.cellForRow(at: indexPath) else { break }
             let checked = cell.accessoryType == .checkmark
-            self.executor.setValueAsync(!checked, forKey: item.key) { [weak self] in
-                self?.tableView.reloadData()
+            Task {
+                await executor.setValue(!checked, forKey: item.key)
+                self.tableView.reloadData()
             }
         case .keyedSelection:
             guard let item = row.associatedItem.base as? AssociatedKeyedSelectionItem else { break }
-            self.executor.setValueAsync(item.index, forKey: item.key) { [weak self] in
-                self?.tableView.reloadData()
+            Task {
+                await executor.setValue(item.index, forKey: item.key)
+                self.tableView.reloadData()
             }
         case .custom:
             guard let item = row.associatedItem.base as? AssociatedCustomItem else { break }

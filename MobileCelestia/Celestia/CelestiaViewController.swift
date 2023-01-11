@@ -24,6 +24,7 @@ struct RenderingTargetGeometry {
 
 typealias CelestiaLoadingResult = Result<Void, CelestiaLoadingError>
 
+@MainActor
 protocol CelestiaControllerDelegate: AnyObject {
     func celestiaController(_ celestiaController: CelestiaViewController, loadingStatusUpdated status: String)
     func celestiaControllerLoadingFailedShouldRetry(_ celestiaController: CelestiaViewController) -> Bool
@@ -46,11 +47,11 @@ class CelestiaViewController: UIViewController {
     private(set) var displayScreen: UIScreen
     private(set) var isMirroring: Bool
 
-    init(screen: UIScreen, executor: CelestiaExecutor) {
+    init(screen: UIScreen, executor: CelestiaExecutor, userDefaults: UserDefaults) {
         appScreen = screen
         displayScreen = screen
         isMirroring = false
-        displayController = CelestiaDisplayController(msaaEnabled: UserDefaults.app[.msaa] == true, screen: screen, initialFrameRate: UserDefaults.app[.frameRate] ?? 60, executor: executor)
+        displayController = CelestiaDisplayController(msaaEnabled: userDefaults[.msaa] == true, screen: screen, initialFrameRate: userDefaults[.frameRate] ?? 60, executor: executor)
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -131,9 +132,8 @@ extension CelestiaViewController: CelestiaInteractionControllerDelegate {
 }
 
 extension CelestiaViewController: CelestiaDisplayControllerDelegate {
-    func celestiaDisplayControllerLoadingSucceeded(_ celestiaDisplayController: CelestiaDisplayController) {
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
+    nonisolated func celestiaDisplayControllerLoadingSucceeded(_ celestiaDisplayController: CelestiaDisplayController) {
+        Task.detached { @MainActor in
             let interactionController = CelestiaInteractionController()
             interactionController.delegate = self
             interactionController.targetProvider = self
@@ -142,20 +142,26 @@ extension CelestiaViewController: CelestiaDisplayControllerDelegate {
             if self.isMirroring {
                 interactionController.startMirroring()
             }
+            self.delegate?.celestiaControllerLoadingSucceeded(self)
         }
-        delegate?.celestiaControllerLoadingSucceeded(self)
     }
 
-    func celestiaDisplayControllerLoadingFailedShouldRetry(_ celestiaDisplayController: CelestiaDisplayController) -> Bool {
-        return delegate?.celestiaControllerLoadingFailedShouldRetry(self) ?? false
+    nonisolated func celestiaDisplayControllerLoadingFailedShouldRetry(_ celestiaDisplayController: CelestiaDisplayController) -> Bool {
+        return DispatchQueue.main.sync {
+            return delegate.celestiaControllerLoadingFailedShouldRetry(self)
+        }
     }
 
-    func celestiaDisplayControllerLoadingFailed(_ celestiaDisplayController: CelestiaDisplayController) {
-        delegate?.celestiaControllerLoadingFailed(self)
+    nonisolated func celestiaDisplayControllerLoadingFailed(_ celestiaDisplayController: CelestiaDisplayController) {
+        Task.detached { @MainActor in
+            self.delegate?.celestiaControllerLoadingFailed(self)
+        }
     }
 
-    func celestiaDisplayController(_ celestiaDisplayController: CelestiaDisplayController, loadingStatusUpdated status: String) {
-        delegate.celestiaController(self, loadingStatusUpdated: status)
+    nonisolated func celestiaDisplayController(_ celestiaDisplayController: CelestiaDisplayController, loadingStatusUpdated status: String) {
+        Task.detached { @MainActor in
+            self.delegate.celestiaController(self, loadingStatusUpdated: status)
+        }
     }
 }
 

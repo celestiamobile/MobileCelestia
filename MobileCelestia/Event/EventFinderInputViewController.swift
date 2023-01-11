@@ -84,14 +84,11 @@ private extension EventFinderInputViewController {
         let alert = showLoading(CelestiaString("Calculating…", comment: "")) {
             finder.abort()
         }
-        DispatchQueue.global().async { [weak self] in
-            guard let self = self else { return }
-            let results = finder.search(kind: [.lunar, .solar], from: self.startTime, to: self.endTime)
 
-            DispatchQueue.main.async {
-                alert.dismiss(animated: true) {
-                    self.resultHandler(results)
-                }
+        Task {
+            let results = await finder.search(kind: [.lunar, .solar], from: self.startTime, to: self.endTime)
+            alert.dismiss(animated: true) {
+                self.resultHandler(results)
             }
         }
     }
@@ -163,6 +160,19 @@ extension EventFinderInputViewController {
                     self.objectName = self.selectableObjects[index]
                     tableView.reloadData()
                 }
+            }
+        }
+    }
+}
+
+extension EclipseFinder: @unchecked Sendable {}
+extension Eclipse: @unchecked Sendable {}
+
+extension EclipseFinder {
+    func search(kind: EclipseKind, from: Date, to: Date) async -> [Eclipse] {
+        return await withCheckedContinuation { continuation in
+            DispatchQueue.global().async {
+                continuation.resume(returning: self.search(kind: kind, from: from, to: to))
             }
         }
     }

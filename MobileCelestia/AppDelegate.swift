@@ -248,7 +248,7 @@ extension AppDelegate {
 
 #if targetEnvironment(macCatalyst)
 class MacBridge {
-    private static var clazz = NSClassFromString("CELMacBridge") as! NSObject.Type // Should only be used after calling initialize
+    private static let clazz = NSClassFromString("CELMacBridge") as! NSObject.Type // Should only be used after calling initialize
 
     static func initialize() {
         guard let appBundleUrl = Bundle.app.builtInPlugInsURL else { return }

@@ -28,6 +28,7 @@ enum CelestiaControlButton {
     case tap(image: UIImage?, action: CelestiaControlAction)
 }
 
+@MainActor
 protocol CelestiaControlViewDelegate: AnyObject {
     func celestiaControlView(_ celestiaControlView: CelestiaControlView, pressDidStartWith action: CelestiaControlAction)
     func celestiaControlView(_ celestiaControlView: CelestiaControlView, pressDidEndWith action: CelestiaControlAction)

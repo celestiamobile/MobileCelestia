@@ -80,8 +80,9 @@ class SearchViewController: UIViewController {
         super.viewDidAppear(animated)
 
         if shouldActivate {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
-                _ = self?.searchController.searchBar.becomeFirstResponder()
+            Task {
+                try await Task.sleep(seconds: 0.1)
+                self.searchController.searchBar.becomeFirstResponder()
             }
         }
     }
@@ -153,7 +154,7 @@ extension SearchViewController: UISearchResultsUpdating {
         searchQueue.addOperation { [weak self] in
             guard let self = self else { return }
             let results = self.search(with: text)
-            DispatchQueue.main.async {
+            Task.detached { @MainActor in
                 guard text == self.searchController.searchBar.text else { return }
                 self.resultController.update(results)
             }

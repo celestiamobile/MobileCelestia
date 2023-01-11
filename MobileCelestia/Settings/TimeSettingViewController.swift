@@ -76,18 +76,17 @@ extension TimeSettingViewController {
                     return
                 }
 
-                self.executor.run { core in
-                    core.simulation.time = date
-                    DispatchQueue.main.async { [weak self] in
-                        self?.tableView.reloadData()
+                Task {
+                    await self.executor.run { core in
+                        core.simulation.time = date
                     }
+                    self.tableView.reloadData()
                 }
             }
         } else {
-            executor.receiveAsync(.currentTime) {
-                DispatchQueue.main.async { [weak self] in
-                    self?.tableView.reloadData()
-                }
+            Task {
+                await executor.receive(.currentTime)
+                self.tableView.reloadData()
             }
         }
     }

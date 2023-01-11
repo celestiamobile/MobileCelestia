@@ -11,7 +11,8 @@
 
 import Foundation
 
-public protocol InjectionKey {
+@MainActor
+public protocol InjectionKey: Sendable {
 
     /// The associated type representing the type of the dependency injection key's value.
     associatedtype Value
@@ -21,6 +22,7 @@ public protocol InjectionKey {
 }
 
 /// Provides access to injected dependencies.
+@MainActor
 struct InjectedValues {
 
     /// This is only used as an accessor to the computed properties within extensions of `InjectedValues`.
@@ -39,6 +41,7 @@ struct InjectedValues {
     }
 }
 
+@MainActor
 @propertyWrapper
 struct Injected<T> {
     private let keyPath: WritableKeyPath<InjectedValues, T>

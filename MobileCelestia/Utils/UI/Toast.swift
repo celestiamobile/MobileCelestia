@@ -87,9 +87,11 @@ class Toast {
         }
 
         sharedTimer?.invalidate()
-        sharedTimer = Timer.scheduledTimer(withTimeInterval: duration, repeats: false) { (timer) in
-            sharedToast.removeFromSuperview()
-            sharedTimer = nil
+        sharedTimer = Timer.scheduledTimer(withTimeInterval: duration, repeats: false) { timer in
+            Task.detached { @MainActor in
+                sharedToast.removeFromSuperview()
+                sharedTimer = nil
+            }
         }
     }
 }

@@ -11,7 +11,7 @@
 
 import UIKit
 
-protocol AsyncListItem {
+protocol AsyncListItem: Sendable {
     var name: String { get }
     var imageURL: (URL, String)? { get }
 }
@@ -78,13 +78,17 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
         }
     }
 
-    func loadItems(pageStart: Int, pageSize: Int, success: @escaping ([T]) -> Void, failure: @escaping (Error) -> Void) {}
-
-    @objc private func callRefresh() {
-        loadNewItems()
+    func loadItems(pageStart: Int, pageSize: Int) async throws -> [T] {
+        fatalError()
     }
 
-    private func loadNewItems() {
+    @objc private func callRefresh() {
+        Task {
+            await loadNewItems()
+        }
+    }
+
+    private func loadNewItems() async {
         guard hasMoreToLoad, !isLoading else { return }
 
         isLoading = true
@@ -96,8 +100,8 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
         }
         let requestID = UUID()
         currentRequestID = requestID
-        loadItems(pageStart: pageStart, pageSize: pageSize) { [weak self] newItems in
-            guard let self = self else { return }
+        do {
+            let newItems = try await loadItems(pageStart: pageStart, pageSize: pageSize)
             guard self.currentRequestID == requestID else { return }
             if freshLoad {
                 self.stopRefreshing(success: true)
@@ -110,8 +114,7 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
             } else {
                 self.tableView.insertRows(at: (pageStart..<(pageStart + newItems.count)).map{ IndexPath(row: $0, section: 0) }, with: .automatic)
             }
-        } failure: { [weak self] error in
-            guard let self = self else { return }
+        } catch {
             guard self.currentRequestID == requestID else { return }
             if freshLoad {
                 self.stopRefreshing(success: false)
@@ -168,7 +171,9 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
 
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         if indexPath.section == 0 && indexPath.row == items.count - 1 {
-            loadNewItems()
+            Task {
+                await loadNewItems()
+            }
         }
     }
 

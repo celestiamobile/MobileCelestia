@@ -85,6 +85,7 @@ class MainViewController: UIViewController {
 
     @Injected(\.appCore) private var core
     @Injected(\.executor) private var executor
+    @Injected(\.userDefaults) private var userDefaults
 
     private var viewControllerStack: [UIViewController] = []
 
@@ -98,7 +99,7 @@ class MainViewController: UIViewController {
 
     init(initialURL: UniformedURL?, screen: UIScreen) {
         super.init(nibName: nil, bundle: nil)
-        celestiaController = CelestiaViewController(screen: screen, executor: executor)
+        celestiaController = CelestiaViewController(screen: screen, executor: executor, userDefaults: userDefaults)
 
         if let url = initialURL {
             receivedURL(url)
@@ -210,9 +211,9 @@ extension MainViewController {
             scriptOrCelURL = nil
         }
 
-        let onboardMessageDisplayed: Bool? = UserDefaults.app[.onboardMessageDisplayed]
+        let onboardMessageDisplayed: Bool? = userDefaults[.onboardMessageDisplayed]
         if onboardMessageDisplayed == nil {
-            UserDefaults.app[.onboardMessageDisplayed] = true
+            userDefaults[.onboardMessageDisplayed] = true
             presentHelp()
             cleanup()
             return
@@ -247,40 +248,42 @@ extension MainViewController {
 
         if let addon = addonToOpen {
             let requestURL = apiPrefix + "/resource/item"
-            _ = RequestHandler.get(url: requestURL, parameters: ["lang": locale, "item": addon], success: { [weak self] (item: ResourceItem) in
-                guard let self = self else { return }
-                let nav = UINavigationController(rootViewController: ResourceItemViewController(item: item, needsRefetchItem: false))
-                self.showViewController(nav, key: addon)
-            }, decoder: ResourceItem.networkResponseDecoder)
+            Task {
+                do {
+                    let item: ResourceItem = try await RequestHandler.getDecoded(url: requestURL, parameters: ["lang": locale, "item": addon], decoder: ResourceItem.networkResponseDecoder)
+                    let nav = UINavigationController(rootViewController: ResourceItemViewController(item: item, needsRefetchItem: false))
+                    self.showViewController(nav, key: addon)
+                } catch {}
+            }
             cleanup()
             return
         }
 
         // Check news
         let requestURL = apiPrefix + "/resource/latest"
-        _ = RequestHandler.get(url: requestURL, parameters: ["lang": locale, "type": "news"], success: { [weak self] (item: GuideItem) in
-            guard let self = self else { return }
-            if UserDefaults.app[.lastNewsID] == item.id { return }
-            let vc = CommonWebViewController(url: .fromGuide(guideItemID: item.id, language: locale), matchingQueryKeys: ["guide"])
-            vc.ackHandler = { id in
-                if id == item.id {
-                    UserDefaults.app[.lastNewsID] = item.id
+        Task {
+            do {
+                let item: GuideItem = try await RequestHandler.getDecoded(url: requestURL, parameters: ["lang": locale, "type": "news"])
+                if userDefaults[.lastNewsID] == item.id { return }
+                let vc = CommonWebViewController(url: .fromGuide(guideItemID: item.id, language: locale), matchingQueryKeys: ["guide"])
+                vc.ackHandler = { [weak self] id in
+                    if let self, id == item.id {
+                        self.userDefaults[.lastNewsID] = item.id
+                    }
                 }
-            }
-            let nav = UINavigationController(rootViewController: vc)
-            nav.setNavigationBarHidden(true, animated: false)
-            self.showViewController(nav, key: item.id, titleVisible: false)
-        }, failure: nil)
+                let nav = UINavigationController(rootViewController: vc)
+                nav.setNavigationBarHidden(true, animated: false)
+                self.showViewController(nav, key: item.id, titleVisible: false)
+            } catch {}
+        }
     }
 }
 
 extension MainViewController {
     @objc private func requestCopy() {
-        executor.run { core in
-            let url = core.currentURL
-            DispatchQueue.main.async {
-                UIPasteboard.general.url = URL(string: url)
-            }
+        Task {
+            let url = await executor.get { $0.currentURL }
+            UIPasteboard.general.url = URL(string: url)
         }
     }
 
@@ -369,52 +372,42 @@ extension MainViewController: UIDocumentPickerDelegate {
 
 extension MainViewController: CelestiaControllerDelegate {
     func celestiaController(_ celestiaController: CelestiaViewController, loadingStatusUpdated status: String) {
-        DispatchQueue.main.async { [weak self] in
-            self?.loadingController.update(with: status)
-        }
+        loadingController.update(with: status)
     }
 
     func celestiaControllerLoadingFailedShouldRetry(_ celestiaController: CelestiaViewController) -> Bool {
         if retried { return false }
-        DispatchQueue.main.async { [weak self] in
-            self?.showError(CelestiaString("Error loading data, fallback to original configuration.", comment: ""))
-        }
+        showError(CelestiaString("Error loading data, fallback to original configuration.", comment: ""))
         retried = true
-        saveConfigFile(nil)
-        saveDataDirectory(nil)
+        userDefaults.saveConfigFile(nil)
+        userDefaults.saveDataDirectory(nil)
         return true
     }
 
     func celestiaControllerLoadingFailed(_ celestiaController: CelestiaViewController) {
         print("loading failed")
 
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            self.status = .loadingFailed
-            self.loadingController.remove()
-            let failure = LoadingFailureViewController()
-            self.install(failure)
-        }
+        self.status = .loadingFailed
+        self.loadingController.remove()
+        let failure = LoadingFailureViewController()
+        self.install(failure)
     }
 
     func celestiaControllerLoadingSucceeded(_ celestiaController: CelestiaViewController) {
         print("loading success")
 
-        DispatchQueue.main.async { [weak self] in
-            guard let self = self else { return }
-            self.status = .loaded
-            self.loadingController.remove()
-            #if targetEnvironment(macCatalyst)
-            self.setupToolbar()
-            self.setupTouchBar()
-            #endif
-            if #available(iOS 13.0, *) {
-                UIMenuSystem.main.setNeedsRebuild()
-            }
-            UIApplication.shared.isIdleTimerDisabled = true
-
-            self.openURLOrScriptOrGreeting()
+        self.status = .loaded
+        self.loadingController.remove()
+        #if targetEnvironment(macCatalyst)
+        self.setupToolbar()
+        self.setupTouchBar()
+        #endif
+        if #available(iOS 13.0, *) {
+            UIMenuSystem.main.setNeedsRebuild()
         }
+        UIApplication.shared.isIdleTimerDisabled = true
+
+        self.openURLOrScriptOrGreeting()
     }
 
     func celestiaController(_ celestiaController: CelestiaViewController, requestShowActionMenuWithSelection selection: Selection) {
@@ -459,7 +452,9 @@ extension MainViewController: CelestiaControllerDelegate {
         case .help:
             presentHelp()
         case .home:
-            executor.receiveAsync(.home)
+            Task {
+                await executor.receive(.home)
+            }
         case .event:
             presentEventFinder()
         case .addons:
@@ -521,21 +516,22 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     private func shareImage() {
-        executor.run { core in
-            self.executor.makeRenderContextCurrent()
-            core.draw()
-            let path = (NSTemporaryDirectory() as NSString).appendingPathComponent("CelestiaScreenshot.png")
-            if core.screenshot(to: path, type: .PNG) {
+        let path = (NSTemporaryDirectory() as NSString).appendingPathComponent("CelestiaScreenshot.png")
+        let executor = self.executor
+        Task {
+            let success = await executor.get { core in
+                executor.makeRenderContextCurrent()
+                core.draw()
+                return core.screenshot(to: path, type: .PNG)
+            }
+
+            if success {
                 #if targetEnvironment(macCatalyst)
-                DispatchQueue.main.async {
-                    self.saveFile(path)
-                }
+                self.saveFile(path)
                 #else
                 if let data = try? Data(contentsOf: URL(fileURLWithPath: path)), let image = UIImage(data: data) {
                     try? FileManager.default.removeItem(atPath: path)
-                    DispatchQueue.main.async {
-                        self.showShareSheet(for: image)
-                    }
+                    self.showShareSheet(for: image)
                 }
                 #endif
             }
@@ -543,15 +539,15 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     private func shareURL() {
-        executor.run { [weak self] core in
-            let selection = core.simulation.selection
-            let name = core.simulation.universe.name(for: selection)
-            let url = core.currentURL
-
-            DispatchQueue.main.async {
-                guard let self = self else { return }
-                self.requestShareURL(url, placeholder: name)
+        Task {
+            let (url, name) = await executor.get { core in
+                let selection = core.simulation.selection
+                let name = core.simulation.universe.name(for: selection)
+                let url = core.currentURL
+                return (url, name)
             }
+
+            self.requestShareURL(url, placeholder: name)
         }
     }
 
@@ -600,7 +596,9 @@ extension MainViewController: CelestiaControllerDelegate {
         controller.touchUpHandler = { [unowned self] action, inside in
             if let ac = action as? CelestiaAction {
                 if inside {
-                    self.executor.receiveAsync(ac)
+                    Task {
+                        await self.executor.receive(ac)
+                    }
                 }
             } else if let ac = action as? CelestiaContinuousAction {
                 self.executor.run { core in
@@ -708,7 +706,9 @@ extension MainViewController: CelestiaControllerDelegate {
             case .select:
                 self.executor.run { $0.simulation.selection = selection }
             case .wrapped(let cac):
-                self.executor.selectAndReceiveAsync(selection, action: cac)
+                Task {
+                    await self.executor.selectAndReceive(selection, action: cac)
+                }
             case .web(let url):
                 self.showWeb(url)
             case .subsystem:
@@ -727,7 +727,9 @@ extension MainViewController: CelestiaControllerDelegate {
                 children = options.enumerated().map { index, option in
                     return UIAction(title: option) { _ in
                         if let marker = MarkerRepresentation(rawValue: UInt(index)) {
-                            self.executor.markAsync(selection, markerType: marker)
+                            Task {
+                                await self.executor.mark(selection, markerType: marker)
+                            }
                         } else {
                             self.executor.run { $0.simulation.universe.unmark(selection) }
                         }
@@ -761,7 +763,9 @@ extension MainViewController: CelestiaControllerDelegate {
         viewController.showSelection(CelestiaString("Mark", comment: ""), options: options, source: .view(view: sender, sourceRect: nil)) { [weak self] index in
             guard let self = self, let index = index else { return }
             if let marker = MarkerRepresentation(rawValue: UInt(index)) {
-                self.executor.markAsync(selection, markerType: marker)
+                Task {
+                    await self.executor.mark(selection, markerType: marker)
+                }
             } else {
                 self.executor.run { $0.simulation.universe.unmark(selection) }
             }
@@ -795,11 +799,13 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     @objc private func showSettings() {
-        let controller = SettingsCoordinatorController(actionHandler: { [weak self] settingsAction in
+        let controller = SettingsCoordinatorController(actionHandler: { [weak self]
+            settingsAction in
+            guard let self else { return }
             switch settingsAction {
             case .refreshFrameRate(let newFrameRate):
-                UserDefaults.app[.frameRate] = newFrameRate
-                self?.celestiaController.updateFrameRate(newFrameRate)
+                self.userDefaults[.frameRate] = newFrameRate
+                self.celestiaController.updateFrameRate(newFrameRate)
             }
         }, screenProvider: { [unowned self] in
             return self.celestiaController.displayScreen
@@ -855,7 +861,9 @@ extension MainViewController {
         dismiss(animated: true, completion: nil)
         switch action {
         case .runDemo:
-            executor.receiveAsync(.runDemo)
+            Task {
+                await executor.receive(.runDemo)
+            }
         }
     }
 }

@@ -25,8 +25,8 @@ extension ResourceManagerError: LocalizedError {
     }
 }
 
-final class ResourceManager {
-    static let extraAddonDirectory: URL? = extraDirectory?.appendingPathComponent("extras")
+final class ResourceManager: @unchecked Sendable {
+    static let extraAddonDirectory: URL? = UserDefaults.extraDirectory?.appendingPathComponent("extras")
 
     // Notification names
     static let downloadProgress = Notification.Name("ResourceDownloadManagerDownloadProgress")

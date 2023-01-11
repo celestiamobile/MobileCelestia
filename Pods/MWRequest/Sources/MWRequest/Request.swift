@@ -29,11 +29,14 @@ private extension URL {
 }
 
 public extension URLSession {
-    func post(to url: String, parameters: [String: String], completionHandler: @escaping (Data?, URLResponse?, Error?) -> Swift.Void) -> URLSessionDataTask? {
+    func post(to url: String, parameters: [String: String], headers: [String: String]?, completionHandler: @Sendable @escaping (Data?, URLResponse?, Error?) -> Swift.Void) -> URLSessionDataTask? {
         do {
             let newURL = try URL.from(url: url)
             var request = URLRequest(url: newURL)
             try request.setPostParameters(parameters)
+            for (key, value) in headers ?? [:] {
+                request.setValue(value, forHTTPHeaderField: key)
+            }
             let task = dataTask(with: request, completionHandler: completionHandler)
             task.resume()
             return task
@@ -43,11 +46,14 @@ public extension URLSession {
         }
     }
 
-    func post<T: Encodable>(to url: String, json: T, encoder: JSONEncoder?, completionHandler: @escaping (Data?, URLResponse?, Error?) -> Swift.Void) -> URLSessionDataTask? {
+    func post<T: Encodable>(to url: String, json: T, encoder: JSONEncoder?, headers: [String: String]?, completionHandler: @Sendable @escaping (Data?, URLResponse?, Error?) -> Swift.Void) -> URLSessionDataTask? {
         do {
             let newURL = try URL.from(url: url)
             var request = URLRequest(url: newURL)
             try request.setPostParametersJson(json, encoder: encoder)
+            for (key, value) in headers ?? [:] {
+                request.setValue(value, forHTTPHeaderField: key)
+            }
             let task = dataTask(with: request, completionHandler: completionHandler)
             task.resume()
             return task
@@ -57,11 +63,14 @@ public extension URLSession {
         }
     }
 
-    func upload(to url: String, parameters: [String: String], data: Data, key: String, filename: String,  completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask? {
+    func upload(to url: String, parameters: [String: String], data: Data, key: String, filename: String, headers: [String: String]?, completionHandler: @Sendable @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask? {
         do {
             let newURL = try URL.from(url: url)
             var request = URLRequest(url: newURL)
             try request.setUploadParameters(parameters, data: data, key: key, filename: filename)
+            for (key, value) in headers ?? [:] {
+                request.setValue(value, forHTTPHeaderField: key)
+            }
             let task = dataTask(with: request, completionHandler: completionHandler)
             task.resume()
             return task
@@ -71,10 +80,14 @@ public extension URLSession {
         }
     }
 
-    func get(from url: String, parameters: [String: String], completionHandler: @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask? {
+    func get(from url: String, parameters: [String: String], headers: [String: String]?, completionHandler: @Sendable @escaping (Data?, URLResponse?, Error?) -> Void) -> URLSessionDataTask? {
         do {
             let newURL = try URL.from(url: url, parameters: parameters)
-            let task = dataTask(with: newURL, completionHandler: completionHandler)
+            var request = URLRequest(url: newURL)
+            for (key, value) in headers ?? [:] {
+                request.setValue(value, forHTTPHeaderField: key)
+            }
+            let task = dataTask(with: request, completionHandler: completionHandler)
             task.resume()
             return task
         } catch {
@@ -105,30 +118,43 @@ private extension URLSession {
 
 @available(iOS 13.0, macOS 10.15, watchOS 6.0, tvOS 13.0, *)
 public extension URLSession {
-    func post(to url: String, parameters: [String: String]) async throws -> (Data, URLResponse) {
+    func post(to url: String, parameters: [String: String], headers: [String: String]?) async throws -> (Data, URLResponse) {
         let newURL = try URL.from(url: url)
         var request = URLRequest(url: newURL)
         try request.setPostParameters(parameters)
+        for (key, value) in headers ?? [:] {
+            request.setValue(value, forHTTPHeaderField: key)
+        }
         return try await _dataCompat(for: request)
     }
 
-    func post<T: Encodable>(to url: String, json: T, encoder: JSONEncoder?) async throws -> (Data, URLResponse) {
+    func post<T: Encodable>(to url: String, json: T, encoder: JSONEncoder?, headers: [String: String]?) async throws -> (Data, URLResponse) {
         let newURL = try URL.from(url: url)
         var request = URLRequest(url: newURL)
         try request.setPostParametersJson(json, encoder: encoder)
+        for (key, value) in headers ?? [:] {
+            request.setValue(value, forHTTPHeaderField: key)
+        }
         return try await _dataCompat(for: request)
     }
 
-    func upload(to url: String, parameters: [String: String], data: Data, key: String, filename: String) async throws -> (Data, URLResponse) {
+    func upload(to url: String, parameters: [String: String], data: Data, key: String, filename: String, headers: [String: String]?) async throws -> (Data, URLResponse) {
         let newURL = try URL.from(url: url)
         var request = URLRequest(url: newURL)
         try request.setUploadParameters(parameters, data: data, key: key, filename: filename)
+        for (key, value) in headers ?? [:] {
+            request.setValue(value, forHTTPHeaderField: key)
+        }
         return try await _dataCompat(for: request)
     }
 
-    func get(from url: String, parameters: [String: String]) async throws -> (Data, URLResponse) {
+    func get(from url: String, parameters: [String: String], headers: [String: String]?) async throws -> (Data, URLResponse) {
         let newURL = try URL.from(url: url, parameters: parameters)
-        return try await _dataCompat(for: URLRequest(url: newURL))
+        var request = URLRequest(url: newURL)
+        for (key, value) in headers ?? [:] {
+            request.setValue(value, forHTTPHeaderField: key)
+        }
+        return try await _dataCompat(for: request)
     }
 }
 

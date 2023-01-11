@@ -13,6 +13,7 @@ import CelestiaCore
 import UIKit
 import WebKit
 
+@MainActor
 protocol CommonWebViewControllerDelegate: AnyObject {
     func webViewLoadFailed()
 }
@@ -100,7 +101,10 @@ class CommonWebViewController: UIViewController {
         updateNavigation()
 
         titleObservation = webView.observe(\.title, options: .new, changeHandler: { [weak self] webView, _ in
-            self?.navigationItem.title = webView.title
+            guard let self else { return }
+            Task.detached { @MainActor in
+                self.navigationItem.title = webView.title
+            }
         })
     }
 
@@ -122,7 +126,7 @@ class CommonWebViewController: UIViewController {
 }
 
 extension CommonWebViewController: WKNavigationDelegate {
-    private func isURLAllowed(_ url: URL) -> Bool {
+    nonisolated private func isURLAllowed(_ url: URL) -> Bool {
         let comp1 = URLComponents(url: url, resolvingAgainstBaseURL: false)!
         let comp2 = URLComponents(url: self.url, resolvingAgainstBaseURL: false)!
         if comp1.host != comp2.host || comp1.path != comp2.path {
@@ -136,7 +140,7 @@ extension CommonWebViewController: WKNavigationDelegate {
         return true
     }
 
-    func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+    nonisolated func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         if !filterURL {
             decisionHandler(.allow)
             return
@@ -153,22 +157,30 @@ extension CommonWebViewController: WKNavigationDelegate {
             decisionHandler(.allow)
         } else {
             decisionHandler(.cancel)
-            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            Task.detached { @MainActor in
+                UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            }
         }
     }
 
-    func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
-        activityIndicator.stopAnimating()
-        activityIndicator.isHidden = true
-        updateNavigation()
+    nonisolated func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
+        Task.detached { @MainActor in
+            self.activityIndicator.stopAnimating()
+            self.activityIndicator.isHidden = true
+            self.updateNavigation()
+        }
     }
 
-    func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-        delegate?.webViewLoadFailed()
+    nonisolated func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        Task.detached { @MainActor in
+            self.delegate?.webViewLoadFailed()
+        }
     }
 
-    func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-        delegate?.webViewLoadFailed()
+    nonisolated func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+        Task.detached { @MainActor in
+            self.delegate?.webViewLoadFailed()
+        }
     }
 }
 
@@ -193,11 +205,11 @@ extension CommonWebViewController: CelestiaScriptHandlerDelegate {
             scriptURL = tempURL
         }
 
-        DispatchQueue.global().async {
+        Task {
             guard let data = content.data(using: .utf8) else { return }
             do {
-                try data.write(to: scriptURL)
-                self.executor.run { core in
+                try await data.write(to: scriptURL)
+                await self.executor.run { core in
                     core.runScript(at: scriptURL.path)
                 }
             } catch {}
@@ -205,9 +217,7 @@ extension CommonWebViewController: CelestiaScriptHandlerDelegate {
     }
 
     func shareURL(title: String, url: URL) {
-        DispatchQueue.main.async {
-            self.showShareSheet(for: url)
-        }
+        showShareSheet(for: url)
     }
 
     func receivedACK(id: String) {
@@ -216,13 +226,32 @@ extension CommonWebViewController: CelestiaScriptHandlerDelegate {
 
     func openAddonNext(id: String) {
         let requestURL = apiPrefix + "/resource/item"
-        _ = RequestHandler.get(url: requestURL, parameters: ["lang": AppCore.language, "item": id], success: { [weak self] (item: ResourceItem) in
-            guard let self = self else { return }
-            self.navigationController?.pushViewController(ResourceItemViewController(item: item, needsRefetchItem: false), animated: true)
-        }, decoder: ResourceItem.networkResponseDecoder)
+        Task {
+            do {
+                let item: ResourceItem = try await RequestHandler.getDecoded(url: requestURL, parameters: ["lang": AppCore.language, "item": id], decoder: ResourceItem.networkResponseDecoder)
+                self.navigationController?.pushViewController(ResourceItemViewController(item: item, needsRefetchItem: false), animated: true)
+            } catch {}
+        }
     }
 
     func runDemo() {
-        executor.receiveAsync(.runDemo)
+        Task {
+            await executor.receive(.runDemo)
+        }
+    }
+}
+
+extension Data {
+    func write(to url: URL, options: Data.WritingOptions = []) async throws {
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            DispatchQueue.global().async {
+                do {
+                    try self.write(to: url, options: options)
+                    continuation.resume(returning: ())
+                } catch {
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
     }
 }

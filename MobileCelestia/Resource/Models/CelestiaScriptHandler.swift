@@ -45,9 +45,10 @@ protocol BaseJavascriptHandler {
     func executeWithContent(content: String, delegate: CelestiaScriptHandlerDelegate)
 }
 
-class JavascriptHandler<T: Decodable>: BaseJavascriptHandler {
+class JavascriptHandler<T: Decodable & Sendable>: BaseJavascriptHandler, @unchecked Sendable {
     var operation: String { fatalError() }
 
+    @MainActor
     func execute(context: T, delegate: CelestiaScriptHandlerDelegate) {
         fatalError()
     }
@@ -56,7 +57,9 @@ class JavascriptHandler<T: Decodable>: BaseJavascriptHandler {
         guard let data = content.data(using: .utf8) else { return }
         do {
             let context = try JSONDecoder().decode(T.self, from: data)
-            execute(context: context, delegate: delegate)
+            Task.detached { @MainActor in
+                self.execute(context: context, delegate: delegate)
+            }
         } catch {}
     }
 }
@@ -101,7 +104,8 @@ class RunDemoHandler: JavascriptHandler<RunDemoContext> {
     }
 }
 
-protocol CelestiaScriptHandlerDelegate: AnyObject {
+@MainActor
+protocol CelestiaScriptHandlerDelegate: AnyObject, Sendable {
     func runScript(type: String, content: String, name: String?, location: String?)
     func shareURL(title: String, url: URL)
     func receivedACK(id: String)

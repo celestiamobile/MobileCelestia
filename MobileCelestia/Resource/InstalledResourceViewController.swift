@@ -12,7 +12,7 @@
 import CelestiaCore
 import UIKit
 
-extension ResourceItem: AsyncListItem {
+extension ResourceItem: AsyncListItem, @unchecked Sendable {
     var imageURL: (URL, String)? {
         if let image = self.image {
             return (image, id)
@@ -32,17 +32,16 @@ class InstalledResourceViewController: AsyncListViewController<ResourceItem> {
         title = CelestiaString("Installed", comment: "")
     }
 
-    override func loadItems(pageStart: Int, pageSize: Int, success: @escaping ([ResourceItem]) -> Void, failure: @escaping (Error) -> Void) {
-        DispatchQueue.global().async {
-            let items = self.resourceManager.installedResources()
-            DispatchQueue.main.async {
-                let returnItems: [ResourceItem]
-                if pageStart < 0 || pageStart >= items.count || pageSize <= 0 {
-                    returnItems = []
+    override func loadItems(pageStart: Int, pageSize: Int) async throws -> [ResourceItem] {
+        let resourceManager = self.resourceManager
+        return await withCheckedContinuation { continuation in
+            DispatchQueue.global().async {
+                let items = resourceManager.installedResources()
+                if pageStart >= items.count {
+                    continuation.resume(returning: [])
                 } else {
-                    returnItems = Array(items[pageStart..<min(pageStart + pageSize, items.count)])
+                    continuation.resume(returning: Array(items[pageStart..<min(items.count, pageStart + pageSize)]))
                 }
-                success(returnItems)
             }
         }
     }

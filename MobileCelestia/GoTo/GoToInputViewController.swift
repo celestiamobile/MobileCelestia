@@ -18,7 +18,7 @@ protocol GoToInputItem {
 }
 
 extension DistanceUnit: CaseIterable {
-    public static var allCases: [DistanceUnit] = [.radii, .KM, .AU]
+    public static let allCases: [DistanceUnit] = [.radii, .KM, .AU]
 }
 
 private extension DistanceUnit {

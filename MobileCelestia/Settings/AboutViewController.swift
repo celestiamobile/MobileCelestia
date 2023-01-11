@@ -39,7 +39,7 @@ class AboutViewController: BaseTableViewController {
 
         totalItems.append([versionItem])
 
-        let authorsPath = defaultDataDirectory.appendingPathComponent("AUTHORS").path
+        let authorsPath = UserDefaults.defaultDataDirectory.appendingPathComponent("AUTHORS").path
         if let text = try? String(contentsOfFile: authorsPath) {
             totalItems.append([
                 TextItem.short(title: CelestiaString("Authors", comment: ""), detail: ""),
@@ -47,7 +47,7 @@ class AboutViewController: BaseTableViewController {
             ])
         }
 
-        let translatorsPath = defaultDataDirectory.appendingPathComponent("TRANSLATORS").path
+        let translatorsPath = UserDefaults.defaultDataDirectory.appendingPathComponent("TRANSLATORS").path
         if let text = try? String(contentsOfFile: translatorsPath) {
             totalItems.append([
                 TextItem.short(title: CelestiaString("Translators", comment: ""), detail: ""),

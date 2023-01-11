@@ -15,6 +15,7 @@ import MobileCoreServices
 import UniformTypeIdentifiers
 
 class DataLocationSelectionViewController: BaseTableViewController {
+    @Injected(\.userDefaults) private var userDefaults
     private var items: [[TextItem]] = []
 
     private enum Location: Int {
@@ -49,9 +50,9 @@ class DataLocationSelectionViewController: BaseTableViewController {
 
         totalItems.append([
             TextItem.short(title: CelestiaString("Data Directory", comment: ""),
-                           detail: currentDataDirectory().url == defaultDataDirectory ? CelestiaString("Default", comment: "") : CelestiaString("Custom", comment: "")),
+                           detail: userDefaults.currentDataDirectory().url == UserDefaults.defaultDataDirectory ? CelestiaString("Default", comment: "") : CelestiaString("Custom", comment: "")),
             TextItem.short(title: CelestiaString("Config File", comment: ""),
-                           detail: currentConfigFile().url == defaultConfigFile ? CelestiaString("Default", comment: "") : CelestiaString("Custom", comment: "")),
+                           detail: userDefaults.currentConfigFile().url == UserDefaults.defaultConfigFile ? CelestiaString("Default", comment: "") : CelestiaString("Custom", comment: "")),
         ])
 
         totalItems.append([
@@ -101,8 +102,8 @@ extension DataLocationSelectionViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.section == 1 {
-            saveDataDirectory(nil)
-            saveConfigFile(nil)
+            userDefaults.saveDataDirectory(nil)
+            userDefaults.saveConfigFile(nil)
 
             loadContents()
         } else {
@@ -147,9 +148,9 @@ extension DataLocationSelectionViewController: UIDocumentPickerDelegate {
             let bookmark = try url.bookmarkData(options: .init(rawValue: 0), includingResourceValuesForKeys: nil, relativeTo: nil)
             #endif
             if currentPicker == .dataDirectory {
-                saveDataDirectory(bookmark)
+                userDefaults.saveDataDirectory(bookmark)
             } else if currentPicker == .configFile {
-                saveConfigFile(bookmark)
+                userDefaults.saveConfigFile(bookmark)
             }
         } catch let error {
             showError(error.localizedDescription)

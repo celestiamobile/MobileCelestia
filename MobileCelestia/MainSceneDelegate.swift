@@ -50,7 +50,8 @@ class MainSceneDelegate: CommonSceneDelegate {
 
         if let userActivity = connectionOptions.userActivities.first {
             // Delay this so the view gets loaded before user activity gets handled
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            Task {
+                try await Task.sleep(seconds: 0.5)
                 AppDelegate.handleUserActivity(userActivity)
             }
         }

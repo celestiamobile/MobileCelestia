@@ -29,63 +29,39 @@ enum WrappedError: Error {
     case requestError(error: RequestError)
     case serverError(message: String?)
     case decodingError(error: Error)
+    case unknown
 }
 
-typealias RequestHandler = JSONRequestHandler<BaseResult>
+typealias RequestHandler = AsyncJSONRequestHandler<BaseResult>
 
 extension RequestHandler {
-    class func post<T: Decodable>(url: String,
-                                  parameters: [String: String] = [:],
-                                  success: ((T) -> Void)? = nil,
-                                  failure: ((WrappedError) -> Void)? = nil,
-                                  decoder: JSONDecoder = JSONDecoder(),
-                                  session: URLSession = .shared) -> Self {
-        return post(url: url, parameters: parameters, success: { (output) in
+    class func getDecoded<T: Decodable>(url: String,
+                                        parameters: [String: String] = [:],
+                                        decoder: JSONDecoder = JSONDecoder(),
+                                        session: URLSession = .shared) async throws -> T {
+        do {
+            let output = try await get(url: url, parameters: parameters, session: session)
             guard output.status == 0 else {
-                DispatchQueue.main.async { failure?(.serverError(message: output.info.reason)) }
-                return
+                throw WrappedError.serverError(message: output.info.reason)
             }
             guard let dataString = output.info.detail else {
-                DispatchQueue.main.async { failure?(.missingBody) }
-                return
+                throw WrappedError.missingBody
             }
             let data = Data(dataString.utf8)
             do {
                 let result = try decoder.decode(T.self, from: data)
-                DispatchQueue.main.async { success?(result) }
+                return result
             } catch {
-                DispatchQueue.main.async { failure?(.decodingError(error: error)) }
+                throw WrappedError.decodingError(error: error)
             }
-        }, failure: { error in
-            DispatchQueue.main.async { failure?(.requestError(error: error)) }
-        }, session: session)
-    }
-
-    class func get<T: Decodable>(url: String,
-                                 parameters: [String: String] = [:],
-                                 success: ((T) -> Void)? = nil,
-                                 failure: ((WrappedError) -> Void)? = nil,
-                                 decoder: JSONDecoder = JSONDecoder(),
-                                 queue: DispatchQueue = .main,
-                                 session: URLSession = .shared) -> Self {
-        return get(url: url, parameters: parameters, success: { (output) in
-            guard output.status == 0 else {
-                DispatchQueue.main.async { failure?(.serverError(message: output.info.reason)) }
-                return
+        } catch {
+            if let e = error as? RequestError {
+                throw WrappedError.requestError(error: e)
+            } else if let e = error as? WrappedError {
+                throw e
+            } else {
+                throw WrappedError.unknown
             }
-            guard let dataString = output.info.detail else {
-                DispatchQueue.main.async { failure?(.missingBody) }
-                return
-            }
-            let data = Data(dataString.utf8)
-            do {
-                let result = try decoder.decode(T.self, from: data)
-                DispatchQueue.main.async { success?(result) }
-            } catch {
-                DispatchQueue.main.async { failure?(.decodingError(error: error)) }
-            }
-        }, failure: { error in
-            DispatchQueue.main.async { failure?(.requestError(error: error)) }
-        }, session: session)
+        }
     }
 }

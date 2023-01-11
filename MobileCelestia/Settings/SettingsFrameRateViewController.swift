@@ -22,6 +22,7 @@ class SettingsFrameRateViewController: BaseTableViewController {
     }
 
     private var items: [FrameRateItem] = []
+    @Injected(\.userDefaults) private var userDefaults
 
     private let frameRateUpdateHandler: (Int) -> Void
     private let screen: UIScreen
@@ -77,7 +78,7 @@ extension SettingsFrameRateViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let selectedFrameRate: Int = UserDefaults.app[.frameRate] ?? 60
+        let selectedFrameRate: Int = userDefaults[.frameRate] ?? 60
         let item = items[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
         cell.title = String.localizedStringWithFormat(CelestiaString(item.isMaximum ? "Maximum (%d FPS)" : "%d FPS", comment: ""), item.frameRate)

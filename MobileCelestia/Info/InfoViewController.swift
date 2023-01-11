@@ -84,7 +84,7 @@ final class InfoViewController: UIViewController {
         let metaDataProvider = LPMetadataProvider()
         metaDataProvider.startFetchingMetadata(for: url) { [weak self] metaData, error in
             guard let data = metaData, error == nil else { return }
-            DispatchQueue.main.async {
+            Task.detached { @MainActor in
                 guard let self = self else { return }
                 self.linkMetaData = data
                 self.actions.removeAll(where: {

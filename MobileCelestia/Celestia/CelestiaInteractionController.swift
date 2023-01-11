@@ -52,12 +52,14 @@ extension CelestiaAction {
     }
 }
 
+@MainActor
 protocol CelestiaInteractionControllerDelegate: AnyObject {
     func celestiaInteractionController(_ celestiaInteractionController: CelestiaInteractionController, requestShowActionMenuWithSelection selection: Selection)
     func celestiaInteractionController(_ celestiaInteractionController: CelestiaInteractionController, requestShowInfoWithSelection selection: Selection)
     func celestiaInteractionController(_ celestiaInteractionController: CelestiaInteractionController, requestWebInfo webURL: URL)
 }
 
+@MainActor
 protocol RenderingTargetInformationProvider: AnyObject {
     var targetGeometry: RenderingTargetGeometry { get }
     var targetContents: Any? { get }
@@ -219,18 +221,14 @@ extension CelestiaInteractionController: CelestiaControlViewDelegate {
         } else if action == .show {
             self.showControlView()
         } else if action == .showMenu {
-            executor.getSelectionAsync { [weak self] sel, _ in
-                guard let self = self else { return }
-                DispatchQueue.main.async {
-                    self.delegate?.celestiaInteractionController(self, requestShowActionMenuWithSelection: sel)
-                }
+            Task {
+                let selection = await executor.selection
+                self.delegate?.celestiaInteractionController(self, requestShowActionMenuWithSelection: selection)
             }
         } else if action == .info {
-            executor.getSelectionAsync { [weak self] sel, _ in
-                guard let self = self else { return }
-                DispatchQueue.main.async {
-                    self.delegate?.celestiaInteractionController(self, requestShowInfoWithSelection: sel)
-                }
+            Task {
+                let selection = await executor.selection
+                self.delegate?.celestiaInteractionController(self, requestShowInfoWithSelection: selection)
             }
         }
     }
@@ -522,17 +520,15 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
         }
 
         let handler = ContextMenuHandler()
-        let semaphore = DispatchSemaphore(value: 0)
-        executor.run { core in
+        let selection = executor.get { core in
             core.contextMenuHandler = handler
             core.mouseButtonDown(at: location, modifiers: 0, with: .right)
             core.mouseButtonUp(at: location, modifiers: 0, with: .right)
             core.contextMenuHandler = nil
-            semaphore.signal()
+            return handler.pendingSelection
         }
-        semaphore.wait()
 
-        guard let selection = handler.pendingSelection else { return nil }
+        guard let selection else { return nil }
 
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { [weak self] _ -> UIMenu? in
             guard let self = self else { return nil }
@@ -541,15 +537,19 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
             var actions: [UIMenuElement] = [titleAction]
 
             actions.append(UIMenu(title: "", options: .displayInline, children: CelestiaAction.allCases.map { action in
-                return UIAction(title: action.description) { (_) in
-                    self.executor.selectAndReceiveAsync(selection, action: action)
+                return UIAction(title: action.description) { _ in
+                    Task {
+                        await self.executor.selectAndReceive(selection, action: action)
+                    }
                 }
             }))
 
             if let entry = selection.object {
                 let browserItem = BrowserItem(name: self.core.simulation.universe.name(for: selection), catEntry: entry, provider: self.core.simulation.universe)
-                actions.append(UIMenu(title: "", options: .displayInline, children: browserItem.children.compactMap { $0.createMenuItems(additionalItemName: CelestiaString("Go", comment: "")) { (selection) in
-                    self.executor.selectAndReceiveAsync(selection, action: .goTo)
+                actions.append(UIMenu(title: "", options: .displayInline, children: browserItem.children.compactMap { $0.createMenuItems(additionalItemName: CelestiaString("Go", comment: "")) { selection in
+                    Task {
+                        await self.executor.selectAndReceive(selection, action: .goTo)
+                    }
                 }
                 }))
             }
@@ -576,7 +576,9 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
                 return UIAction(title: name) { [weak self] _ in
                     guard let self = self else { return }
                     if let marker = MarkerRepresentation(rawValue: UInt(index)) {
-                        self.executor.markAsync(selection, markerType: marker)
+                        Task {
+                            await self.executor.mark(selection, markerType: marker)
+                        }
                     } else {
                         self.executor.run { $0.simulation.universe.unmark(selection) }
                     }
@@ -660,11 +662,9 @@ extension UIPanGestureRecognizer {
 }
 
 extension CelestiaInteractionController: AppCoreDelegate {
-    func celestiaAppCoreFatalErrorHappened(_ error: String) {}
-
-    func celestiaAppCoreCursorShapeChanged(_ shape: CursorShape) {}
-
-    func celestiaAppCoreWatchedFlagDidChange(_ changedFlag: WatcherFlag) {}
+    nonisolated func celestiaAppCoreFatalErrorHappened(_ error: String) {}
+    nonisolated func celestiaAppCoreCursorShapeChanged(_ shape: CursorShape) {}
+    nonisolated func celestiaAppCoreWatchedFlagDidChange(_ changedFlag: WatcherFlag) {}
 }
 
 extension CelestiaInteractionController {

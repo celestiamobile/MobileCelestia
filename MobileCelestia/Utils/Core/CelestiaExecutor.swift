@@ -13,21 +13,22 @@ import AsyncGL
 import CelestiaCore
 import Foundation
 
-extension AppCore {
-    func receive(_ action: CelestiaAction) {
-        if textEnterMode != .normal {
-            textEnterMode = .normal
-        }
-        charEnter(action.rawValue)
-    }
-}
-
-final class CelestiaExecutor: AsyncGLExecutor {
+final class CelestiaExecutor: AsyncGLExecutor, @unchecked Sendable {
     @Injected(\.appCore) private var core
 
     func run(_ task: @escaping (AppCore) -> Void) {
         runTaskAsynchronously {
             task(self.core)
+        }
+    }
+
+    func run(_ task: @escaping @Sendable (AppCore) -> Void) async {
+        let core = self.core
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            self.runTaskAsynchronously {
+                task(core)
+                continuation.resume(returning: ())
+            }
         }
     }
 
@@ -40,45 +41,50 @@ final class CelestiaExecutor: AsyncGLExecutor {
         return returnItem
     }
 
-    func receiveAsync(_ action: CelestiaAction, completion: (() -> Void)? = nil) {
-        run {
-            $0.receive(action)
-            completion?()
+    func get<T>(_ task: @escaping @Sendable (AppCore) -> T) async -> T {
+        let core = self.core
+        return await withCheckedContinuation { continuation in
+            self.runTaskAsynchronously {
+                continuation.resume(returning: task(core))
+            }
         }
     }
 
-    func selectAndReceiveAsync(_ selection: Selection, action: CelestiaAction) {
-        run {
+    func receive(_ action: CelestiaAction) async {
+        await run {
+            $0.receive(action)
+        }
+    }
+
+    func selectAndReceive(_ selection: Selection, action: CelestiaAction) async {
+        await run {
             $0.simulation.selection = selection
             $0.receive(action)
         }
     }
 
-    func charEnterAsync(_ char: Int8) {
-        run {
+    func charEnter(_ char: Int8) async {
+        await run {
             $0.charEnter(char)
         }
     }
 
-    func getSelectionAsync(_ completion: @escaping (Selection, AppCore) -> Void) {
-        run { core in
-            completion(core.simulation.selection, core)
+    var selection: Selection {
+        get async {
+            return await get { $0.simulation.selection }
         }
     }
 
-    func markAsync(_ selection: Selection, markerType: MarkerRepresentation) {
-        run { core in
+    func mark(_ selection: Selection, markerType: MarkerRepresentation) async {
+        await run { core in
             core.simulation.universe.mark(selection, with: markerType)
             core.showMarkers = true
         }
     }
 
-    func setValueAsync(_ value: Any?, forKey key: String, completionOnMainQueue: (() -> Void)? = nil) {
-        run { core in
+    func setValue(_ value: Sendable?, forKey key: String) async {
+        await run { core in
             core.setValue(value, forKey: key)
-            DispatchQueue.main.async {
-                completionOnMainQueue?()
-            }
         }
     }
 }
