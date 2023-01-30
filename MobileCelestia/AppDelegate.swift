@@ -215,7 +215,17 @@ extension AppDelegate {
 
         let identifierPrefix = Bundle.app.bundleIdentifier! + "."
 
-        let preferencesCommand = UIKeyCommand(title: CelestiaString("Preferences…", comment: ""), action: #selector(showPreferences), input: ",", modifierFlags: .command)
+        #if targetEnvironment(macCatalyst)
+        let settingsTitle: String
+        if #available(macCatalyst 16.0, *) {
+            settingsTitle = CelestiaString("Settings…", comment: "")
+        } else {
+            settingsTitle = CelestiaString("Preferences…", comment: "")
+        }
+        #else
+        let settingsTitle = CelestiaString("Settings…", comment: "")
+        #endif
+        let preferencesCommand = UIKeyCommand(title: settingsTitle, action: #selector(showPreferences), input: ",", modifierFlags: .command)
         builder.insertSibling(UIMenu(identifier: UIMenu.Identifier(identifierPrefix + "preferences"), options: .displayInline, children: [
             preferencesCommand
         ]), afterMenu: .about)
