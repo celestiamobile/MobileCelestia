@@ -35,7 +35,6 @@ enum GlobalConstants {
 
     static let listItemAccessoryMinMarginVertical: CGFloat = 6
 
-    static let listItemSeparatorHeight: CGFloat = 0.5
     static let listItemSeparatorInsetLeading: CGFloat = 16
 
     static let bottomControlViewItemDimension: CGFloat = 52

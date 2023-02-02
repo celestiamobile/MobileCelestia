@@ -269,7 +269,7 @@ class ToolbarSeparatorCell: UICollectionViewCell {
         sep.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(sep)
         NSLayoutConstraint.activate([
-            sep.heightAnchor.constraint(equalToConstant: GlobalConstants.listItemSeparatorHeight),
+            sep.heightAnchor.constraint(equalToConstant: 1 / sep.traitCollection.displayScale),
             sep.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             sep.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Constants.separatorInsetLeading),
             sep.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
