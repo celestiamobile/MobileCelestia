@@ -299,28 +299,16 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: BaseTableViewContr
     }
 
     // MARK: Modification
-    @objc private func requestEdit(_ sender: UIBarButtonItem) {
-        tableView.setEditing(true, animated: true)
-        if #available(iOS 16.0, *) {
-            addBarButtonItem.isHidden = true
-        } else {
-            addBarButtonItem.isEnabled = false
-        }
-        sender.style = .done
-        sender.title = CelestiaString("Done", comment: "")
-        sender.action = #selector(finishEditing(_:))
-    }
+    override func setEditing(_ editing: Bool, animated: Bool) {
+        guard isEditing != editing else { return }
+        super.setEditing(editing, animated: animated)
 
-    @objc private func finishEditing(_ sender: UIBarButtonItem) {
-        tableView.setEditing(false, animated: true)
+        tableView.setEditing(editing, animated: true)
         if #available(iOS 16.0, *) {
-            addBarButtonItem.isHidden = false
+            addBarButtonItem.isHidden = editing
         } else {
-            addBarButtonItem.isEnabled = true
+            addBarButtonItem.isEnabled = !editing
         }
-        sender.style = .plain
-        sender.title = CelestiaString("Edit", comment: "")
-        sender.action = #selector(requestEdit(_:))
     }
 
     @objc private func requestAdd(_ sender: UIBarButtonItem) {
@@ -362,11 +350,8 @@ private extension FavoriteItemViewController {
         title = itemList.title
 
         if itemList.canBeModified {
-            // For some reason, on Ventura, resetting bar button item on navigation bar
-            // does not refresh the toolbar, so not using system item for Edit FB11861302
-            // instead change the status in the action selector
             navigationItem.rightBarButtonItems = [
-                UIBarButtonItem(title: CelestiaString("Edit", comment: ""), style: .plain, target: self, action: #selector(requestEdit(_:))),
+                editButtonItem,
                 addBarButtonItem,
             ]
         }
