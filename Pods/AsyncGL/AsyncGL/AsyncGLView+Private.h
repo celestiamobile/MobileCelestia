@@ -3,6 +3,7 @@
 //  Licensed under the MIT License.
 //
 
+#import "AsyncGLAPI.h"
 #import "AsyncGLView.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -17,8 +18,10 @@ NS_ASSUME_NONNULL_BEGIN
 @interface AsyncGLView ()
 
 @property (nonatomic) BOOL msaaEnabled;
+@property (nonatomic) AsyncGLAPI api;
 @property (nonatomic, weak) id<AsyncGLViewDelegate> delegate;
 
+- (void)commonSetup;
 - (void)render;
 - (void)clear;
 - (void)flush;

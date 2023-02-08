@@ -51,14 +51,12 @@ typedef enum EGLRenderingAPI : int
 @property (nonatomic) GLuint renderProg;
 @property (nonatomic) GLint renderProgTexLocation;
 @property (nonatomic) GLuint renderProgVboId;
-#if defined(USE_GL3_CORE) || defined(USE_GL4_CORE)
 @property (nonatomic) GLuint renderProgVaoId;
-#else
 @property (nonatomic) GLint renderProgPositionLocation;
 @property (nonatomic) GLint renderProgTexPositionLocation;
-#endif
 @property (nonatomic) GLsizei width;
 @property (nonatomic) GLsizei height;
+@property (nonatomic) CGLOpenGLProfile api;
 @property (atomic) NSThread *thread;
 @end
 
@@ -92,23 +90,23 @@ typedef enum EGLRenderingAPI : int
     glBindTexture(GL_TEXTURE_2D, _renderTex);
     glUniform1i(_renderProgTexLocation, 0);
 
-#if defined(USE_GL3_CORE) || defined(USE_GL4_CORE)
-    glBindVertexArray(_renderProgVaoId);
-#else
-    glBindBuffer(GL_ARRAY_BUFFER, _renderProgVboId);
-    glVertexAttribPointer(_renderProgPositionLocation, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
-    glVertexAttribPointer(_renderProgTexPositionLocation, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
-    glEnableVertexAttribArray(_renderProgTexPositionLocation);
-    glEnableVertexAttribArray(_renderProgPositionLocation);
-#endif
+    if (_api == kCGLOGLPVersion_GL3_Core || _api == kCGLOGLPVersion_GL4_Core) {
+        glBindVertexArray(_renderProgVaoId);
+    } else {
+        glBindBuffer(GL_ARRAY_BUFFER, _renderProgVboId);
+        glVertexAttribPointer(_renderProgPositionLocation, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+        glVertexAttribPointer(_renderProgTexPositionLocation, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+        glEnableVertexAttribArray(_renderProgTexPositionLocation);
+        glEnableVertexAttribArray(_renderProgPositionLocation);
+    }
 
     glDrawArrays(GL_TRIANGLES, 0, 6);
 
-#if !defined(USE_GL3_CORE) && !defined(USE_GL4_CORE)
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    glDisableVertexAttribArray(_renderProgTexPositionLocation);
-    glDisableVertexAttribArray(_renderProgPositionLocation);
-#endif
+    if (_api != kCGLOGLPVersion_GL3_Core && _api != kCGLOGLPVersion_GL4_Core) {
+        glBindBuffer(GL_ARRAY_BUFFER, 0);
+        glDisableVertexAttribArray(_renderProgTexPositionLocation);
+        glDisableVertexAttribArray(_renderProgPositionLocation);
+    }
 
     glBindTexture(GL_TEXTURE_2D, 0);
 
@@ -127,12 +125,12 @@ typedef enum EGLRenderingAPI : int
         _renderProgVboId = 0;
     }
 
-#if defined(USE_GL3_CORE) || defined(USE_GL4_CORE)
-    if (_renderProgVaoId != 0) {
-        glDeleteVertexArrays(1, &_renderProgVaoId);
-        _renderProgVaoId = 0;
+    if (_api == kCGLOGLPVersion_GL3_Core || _api == kCGLOGLPVersion_GL4_Core) {
+        if (_renderProgVaoId != 0) {
+            glDeleteVertexArrays(1, &_renderProgVaoId);
+            _renderProgVaoId = 0;
+        }
     }
-#endif
 
     if (_renderProg != 0) {
         glDeleteProgram(_renderProg);
@@ -151,7 +149,7 @@ typedef enum EGLRenderingAPI : int
 @property (nonatomic) BOOL contextsCreated;
 #ifdef USE_EGL
 @property (nonatomic) CAMetalLayer *metalLayer;
-@property (nonatomic) EGLRenderingAPI api;
+@property (nonatomic) EGLRenderingAPI internalAPI;
 @property (nonatomic) EGLDisplay display;
 @property (nonatomic) EGLSurface renderSurface;
 @property (nonatomic) EGLConfig renderConfig;
@@ -164,12 +162,12 @@ typedef enum EGLRenderingAPI : int
 @property (nonatomic) GLuint sampleRenderbuffer;
 @property (nonatomic) CGSize savedBufferSize;
 #if !TARGET_OSX_OR_CATALYST
-@property (nonatomic) EAGLRenderingAPI api;
+@property (nonatomic) EAGLRenderingAPI internalAPI;
 @property (nonatomic, strong) EAGLContext *renderContext;
 @property (nonatomic, strong) EAGLContext *mainContext;
 @property (nonatomic) GLuint renderbuffer;
 #else
-@property (nonatomic) CGLOpenGLProfile api;
+@property (nonatomic) CGLOpenGLProfile internalAPI;
 @property (nonatomic) CGLContextObj mainContext;
 @property (nonatomic) CGLContextObj renderContext;
 @property (nonatomic, strong) PassthroughGLLayer *glLayer;
@@ -224,18 +222,12 @@ typedef enum EGLRenderingAPI : int
 - (instancetype)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
-    if (self) {
-        [self commonSetup];
-    }
     return self;
 }
 
 - (instancetype)initWithCoder:(NSCoder *)coder
 {
     self = [super initWithCoder:coder];
-    if (self) {
-        [self commonSetup];
-    }
     return self;
 }
 
@@ -337,32 +329,29 @@ typedef enum EGLRenderingAPI : int
     _msaaEnabled = NO;
     _isUpdatingSize = NO;
 #ifdef USE_EGL
-#ifdef USE_GLES3
-    _api = kEGLRenderingAPIOpenGLES3;
-#else
-    _api = kEGLRenderingAPIOpenGLES2;
-#endif
+    _internalAPI = _api == AsyncGLAPIOpenGLES3 ? kEGLRenderingAPIOpenGLES3 : kEGLRenderingAPIOpenGLES2;
     _display = EGL_NO_DISPLAY;
     _renderSurface = EGL_NO_SURFACE;
     _renderContext = EGL_NO_CONTEXT;
 #else
 #if !TARGET_OSX_OR_CATALYST
-#ifdef USE_GLES3
-    _api = kEAGLRenderingAPIOpenGLES3;
-#else
-    _api = kEAGLRenderingAPIOpenGLES2;
-#endif
+    _internalAPI = _api == AsyncGLAPIOpenGLES3 ? kEAGLRenderingAPIOpenGLES3 : kEAGLRenderingAPIOpenGLES2;
     _mainContext = nil;
     _renderContext = nil;
     _renderbuffer = 0;
 #else
-#ifdef USE_GL3_CORE
-    _api = kCGLOGLPVersion_GL3_Core;
-#elif defined(USE_GL4_CORE)
-    _api = kCGLOGLPVersion_GL4_Core;
-#else
-    _api = kCGLOGLPVersion_Legacy;
-#endif
+    switch (_api)
+    {
+    case AsyncGLAPIOpenGLCore32:
+        _internalAPI = kCGLOGLPVersion_GL3_Core;
+        break;
+    case AsyncGLAPIOpenGLCore41:
+        _internalAPI = kCGLOGLPVersion_GL4_Core;
+        break;
+    case AsyncGLAPIOpenGLLegacy:
+    default:
+        _internalAPI = kCGLOGLPVersion_Legacy;
+    }
     _mainContext = NULL;
     _renderContext = NULL;
 #endif
@@ -395,6 +384,7 @@ typedef enum EGLRenderingAPI : int
 #if TARGET_OSX_OR_CATALYST
     _glLayer = (PassthroughGLLayer *)self.layer;
     _glLayer.asynchronous = YES;
+    _glLayer.api = _internalAPI;
 #endif
 #endif
 }
@@ -478,7 +468,7 @@ typedef enum EGLRenderingAPI : int
     });
 #else
 #if !TARGET_OSX_OR_CATALYST
-    _mainContext = [[EAGLContext alloc] initWithAPI:_api];
+    _mainContext = [[EAGLContext alloc] initWithAPI:_internalAPI];
     if (_mainContext == nil) {
         return;
     }
@@ -487,7 +477,7 @@ typedef enum EGLRenderingAPI : int
     });
 #else
     const CGLPixelFormatAttribute attr[] = {
-        kCGLPFAOpenGLProfile, (CGLPixelFormatAttribute)_api,
+        kCGLPFAOpenGLProfile, (CGLPixelFormatAttribute)_internalAPI,
         kCGLPFADoubleBuffer, 0
     };
     CGLPixelFormatObj pixelFormat = NULL;
@@ -526,7 +516,7 @@ typedef enum EGLRenderingAPI : int
 
     eglSwapInterval(_display, 0);
 
-    _renderContext = [self createEGLContextWithDisplay:_display api:_api sharedContext:EGL_NO_CONTEXT config:&_renderConfig depthSize:24 msaa:&_msaaEnabled];
+    _renderContext = [self createEGLContextWithDisplay:_display api:_internalAPI sharedContext:EGL_NO_CONTEXT config:&_renderConfig depthSize:24 msaa:&_msaaEnabled];
 
     if (_renderContext == EGL_NO_CONTEXT) {
         return;
@@ -561,12 +551,12 @@ typedef enum EGLRenderingAPI : int
     [self createRenderBuffers:size];
 #else
     const CGLPixelFormatAttribute attr[] = {
-        kCGLPFAOpenGLProfile, (CGLPixelFormatAttribute)_api,
+        kCGLPFAOpenGLProfile, (CGLPixelFormatAttribute)_internalAPI,
         kCGLPFADepthSize, 32,
         0
     };
     const CGLPixelFormatAttribute msaaAttr[] = {
-        kCGLPFAOpenGLProfile, (CGLPixelFormatAttribute)_api,
+        kCGLPFAOpenGLProfile, (CGLPixelFormatAttribute)_internalAPI,
         kCGLPFADepthSize, 32,
         kCGLPFAMultisample,
         kCGLPFASampleBuffers, 1,
@@ -653,53 +643,63 @@ typedef enum EGLRenderingAPI : int
 
 - (BOOL)setupShaders
 {
-#ifdef USE_GL3_CORE
-#define SHADER_HEADER "#version 330 core\n"
-#elif defined(USE_GL4_CORE)
-#define SHADER_HEADER "#version 410 core\n"
-#else
-#define SHADER_HEADER "#version 120\n"
-#endif
+    const GLchar* vs = "#version 120\n\
+                        attribute vec2 in_Position;\n\
+                        attribute vec2 in_TexCoord0;\n\
+                        varying vec2 texCoord;\n\
+                        void main()\n\
+                        {\n\
+                            gl_Position = vec4(in_Position.xy, 0.0, 1.0);\n\
+                            texCoord = in_TexCoord0.st;\n\
+                        }";
 
-#if defined(USE_GL3_CORE) || defined(USE_GL4_CORE)
-    const GLchar* vs = SHADER_HEADER
-    "layout (location = 0) in vec2 in_Position;\n\
-    layout (location = 1) in vec2 in_TexCoord0;\n\
-    out vec2 texCoord;\n\
-    void main()\n\
-    {\n\
-        gl_Position = vec4(in_Position.xy, 0.0, 1.0);\n\
-        texCoord = in_TexCoord0.st;\n\
-    }";
-
-    const GLchar* fs = SHADER_HEADER
-    "in vec2 texCoord;\n\
-    out vec4 fragColor;\n\
-    uniform sampler2D tex;\n\
-    void main()\n\
-    {\n\
-        fragColor = texture(tex, texCoord);\n\
-    }";
-#else
-    const GLchar* vs = SHADER_HEADER
-    "attribute vec2 in_Position;\n\
-    attribute vec2 in_TexCoord0;\n\
-    varying vec2 texCoord;\n\
-    void main()\n\
-    {\n\
-        gl_Position = vec4(in_Position.xy, 0.0, 1.0);\n\
-        texCoord = in_TexCoord0.st;\n\
-    }";
-
-    const GLchar* fs = SHADER_HEADER
-    "varying vec2 texCoord;\n\
-    uniform sampler2D tex;\n\
-    void main()\n\
-    {\n\
-        gl_FragColor = texture2D(tex, texCoord);\n\
-    }";
-#endif
-#undef SHADER_HEADER
+    const GLchar* fs = "#version 120\n\
+                        varying vec2 texCoord;\n\
+                        uniform sampler2D tex;\n\
+                        void main()\n\
+                        {\n\
+                            gl_FragColor = texture2D(tex, texCoord);\n\
+        }                ";
+    if (_internalAPI == kCGLOGLPVersion_GL3_Core)
+    {
+        vs = "#version 330 core\n\
+              layout (location = 0) in vec2 in_Position;\n\
+              layout (location = 1) in vec2 in_TexCoord0;\n\
+              out vec2 texCoord;\n\
+              void main()\n\
+              {\n\
+                  gl_Position = vec4(in_Position.xy, 0.0, 1.0);\n\
+                  texCoord = in_TexCoord0.st;\n\
+              }";
+        fs = "#version 330 core\n\
+              in vec2 texCoord;\n\
+              out vec4 fragColor;\n\
+              uniform sampler2D tex;\n\
+              void main()\n\
+              {\n\
+                  fragColor = texture(tex, texCoord);\n\
+              }";
+    }
+    else if (_internalAPI == kCGLOGLPVersion_GL4_Core)
+    {
+        vs = "#version 410 core\n\
+              layout (location = 0) in vec2 in_Position;\n\
+              layout (location = 1) in vec2 in_TexCoord0;\n\
+              out vec2 texCoord;\n\
+              void main()\n\
+              {\n\
+                  gl_Position = vec4(in_Position.xy, 0.0, 1.0);\n\
+                  texCoord = in_TexCoord0.st;\n\
+              }";
+        fs = "#version 410 core\n\
+              in vec2 texCoord;\n\
+              out vec4 fragColor;\n\
+              uniform sampler2D tex;\n\
+              void main()\n\
+              {\n\
+                  fragColor = texture(tex, texCoord);\n\
+              }";
+    }
 
     GLuint renderVShader = [self compileShader:vs shaderType:GL_VERTEX_SHADER];
     if (renderVShader == 0) {
@@ -731,35 +731,32 @@ typedef enum EGLRenderingAPI : int
          1.0f,  1.0f,  1.0f, 1.0f
     };
 
-    GLuint renderProgVboId;
-
-#if defined(USE_GL3_CORE) || defined(USE_GL4_CORE)
-    GLuint renderProgVaoId;
-    glGenVertexArrays(1, &renderProgVaoId);
-    glBindVertexArray(renderProgVaoId);
-#endif
+    GLuint renderProgVboId = 0;
+    GLuint renderProgVaoId = 0;
+    if (_api == kCGLOGLPVersion_GL3_Core || _api == kCGLOGLPVersion_GL4_Core) {
+        glGenVertexArrays(1, &renderProgVaoId);
+        glBindVertexArray(renderProgVaoId);
+    }
     glGenBuffers(1, &renderProgVboId);
     glBindBuffer(GL_ARRAY_BUFFER, renderProgVboId);
     glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
 
 
-#if defined(USE_GL3_CORE) || defined(USE_GL4_CORE)
-    glVertexAttribPointer(renderProgPositionLocation, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
-    glVertexAttribPointer(renderProgTexPositionLocation, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
-    glEnableVertexAttribArray(renderProgTexPositionLocation);
-    glEnableVertexAttribArray(renderProgPositionLocation);
-#endif
+    if (_api == kCGLOGLPVersion_GL3_Core || _api == kCGLOGLPVersion_GL4_Core) {
+        glVertexAttribPointer(renderProgPositionLocation, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+        glVertexAttribPointer(renderProgTexPositionLocation, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+        glEnableVertexAttribArray(renderProgTexPositionLocation);
+        glEnableVertexAttribArray(renderProgPositionLocation);
+    }
     glBindBuffer(GL_ARRAY_BUFFER, 0);
-#if defined(USE_GL3_CORE) || defined(USE_GL4_CORE)
-    glBindVertexArray(0);
-#endif
+    if (_api == kCGLOGLPVersion_GL3_Core || _api == kCGLOGLPVersion_GL4_Core) {
+        glBindVertexArray(0);
+        _glLayer.renderProgVaoId = renderProgVaoId;
+    } else {
+        _glLayer.renderProgPositionLocation = renderProgPositionLocation;
+        _glLayer.renderProgTexPositionLocation = renderProgTexPositionLocation;
+    }
 
-#if defined(USE_GL3_CORE) || defined(USE_GL4_CORE)
-    _glLayer.renderProgVaoId = renderProgVaoId;
-#else
-    _glLayer.renderProgPositionLocation = renderProgPositionLocation;
-    _glLayer.renderProgTexPositionLocation = renderProgTexPositionLocation;
-#endif
     _glLayer.renderProg = renderProg;
     _glLayer.renderProgVboId = renderProgVboId;
     _glLayer.renderProgTexLocation = renderProgTexLocation;
@@ -933,7 +930,7 @@ typedef enum EGLRenderingAPI : int
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _framebuffer);
 
 #if !TARGET_OSX_OR_CATALYST
-        if (_api == kEAGLRenderingAPIOpenGLES2) {
+        if (_internalAPI == kEAGLRenderingAPIOpenGLES2) {
             glDiscardFramebufferEXT(GL_READ_FRAMEBUFFER, 1, (GLenum[]){GL_DEPTH_ATTACHMENT});
             glResolveMultisampleFramebufferAPPLE();
             glDiscardFramebufferEXT(GL_READ_FRAMEBUFFER, 1, (GLenum[]){GL_COLOR_ATTACHMENT0});

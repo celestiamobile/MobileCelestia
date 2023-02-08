@@ -9,6 +9,7 @@
 // of the License, or (at your option) any later version.
 //
 
+import AsyncGL
 import UIKit
 import CelestiaCore
 
@@ -51,7 +52,12 @@ class CelestiaViewController: UIViewController {
         appScreen = screen
         displayScreen = screen
         isMirroring = false
-        displayController = CelestiaDisplayController(msaaEnabled: userDefaults[.msaa] == true, screen: screen, initialFrameRate: userDefaults[.frameRate] ?? 60, executor: executor)
+        #if targetEnvironment(macCatalyst)
+        let api = AsyncGLAPI.openGLLegacy
+        #else
+        let api = AsyncGLAPI.openGLES2
+        #endif
+        displayController = CelestiaDisplayController(msaaEnabled: userDefaults[.msaa] == true, screen: screen, initialFrameRate: userDefaults[.frameRate] ?? 60, api: api, executor: executor)
         super.init(nibName: nil, bundle: nil)
     }
 

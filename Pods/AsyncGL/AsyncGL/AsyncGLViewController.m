@@ -22,7 +22,7 @@
 @property (nonatomic) BOOL msaaEnabled;
 @property (nonatomic) BOOL viewIsVisible;
 @property (atomic, getter=isReady) BOOL ready;
-
+@property (nonatomic) AsyncGLAPI api;
 @end
 
 @implementation AsyncGLViewController
@@ -30,9 +30,9 @@
 #pragma mark - lifecycle
 
 #if TARGET_OS_IOS
-- (instancetype)initWithMSAAEnabled:(BOOL)msaaEnabled screen:(UIScreen *)screen initialFrameRate:(NSInteger)frameRate executor:(AsyncGLExecutor *)executor
+- (instancetype)initWithMSAAEnabled:(BOOL)msaaEnabled screen:(UIScreen *)screen initialFrameRate:(NSInteger)frameRate api:(AsyncGLAPI)api executor:(AsyncGLExecutor *)executor
 #else
-- (instancetype)initWithMSAAEnabled:(BOOL)msaaEnabled executor:(AsyncGLExecutor *)executor
+- (instancetype)initWithMSAAEnabled:(BOOL)msaaEnabled api:(AsyncGLAPI)api executor:(AsyncGLExecutor *)executor
 #endif
 {
     self = [super initWithNibName:nil bundle:nil];
@@ -53,6 +53,7 @@
         _ready = NO;
         _internalExecutor = executor;
         _internalExecutor.viewController = self;
+        _api = api;
         [self _configureNotifications];
     }
     return self;
@@ -61,7 +62,9 @@
 - (void)loadView
 {
     _glView = [AsyncGLView new];
+    _glView.api = _api;
     _glView.msaaEnabled = _msaaEnabled;
+    [_glView commonSetup];
     _glView.delegate = self;
     self.view = _glView;
     _internalExecutor.queue = _glView.renderQueue;

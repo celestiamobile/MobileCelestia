@@ -8,7 +8,7 @@ target 'MobileCelestia' do
   pod 'ZIPFoundation', '~> 0.9.16'
 
   pod "MWRequest", :git => "https://github.com/levinli303/mwrequest.git", :tag => "0.3.6"
-  pod "AsyncGL", :git => "https://github.com/levinli303/AsyncGL.git", :tag => "0.0.19"
+  pod "AsyncGL", :git => "https://github.com/levinli303/AsyncGL.git", :tag => "0.0.21"
 end
 
 post_install do |installer|
