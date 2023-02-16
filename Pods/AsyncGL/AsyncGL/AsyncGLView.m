@@ -391,6 +391,37 @@ typedef enum EGLRenderingAPI : int
 
 #pragma mark - context creation
 #ifdef USE_EGL
+// Helper function to choose an opaque EGL config
+static BOOL ChooseOpaqueConfig(EGLDisplay dpy, const EGLint* attrib_list, EGLConfig* config)
+{
+    EGLint configCount = 0;
+    // Get config count
+    if (!eglChooseConfig(dpy, attrib_list, NULL, 0, &configCount) || configCount == 0)
+        return NO;
+    EGLConfig* configs = (EGLConfig *)malloc(sizeof(EGLConfig) * configCount);
+    // Get all the configs
+    EGLint newConfigCount = 0;
+    if (!eglChooseConfig(dpy, attrib_list, configs, configCount, &newConfigCount) || newConfigCount == 0) {
+        free(configs);
+        return NO;
+    }
+
+    // Find the first config that has an alpha size of 0
+    for (int i = 0; i < newConfigCount; i++) {
+        EGLint alphaSize = -1;
+        if (eglGetConfigAttrib(dpy, configs[i], EGL_ALPHA_SIZE, &alphaSize) && alphaSize == 0) {
+            *config = configs[i];
+            free(configs);
+            return YES;
+        }
+    }
+
+    // If no config with alpha size of 0 was found, just return the first config
+    *config = configs[0];
+    free(configs);
+    return YES;
+}
+
 - (EGLContext)createEGLContextWithDisplay:(EGLDisplay)display api:(EGLRenderingAPI)api sharedContext:(EGLContext)sharedContext config:(EGLConfig*)config depthSize:(EGLint)depthSize msaa:(BOOL*)msaa
 {
     EGLint multisampleAttribs[] = {
@@ -410,19 +441,18 @@ typedef enum EGLRenderingAPI : int
             EGL_NONE
     };
 
-    EGLint numConfigs;
     if (*msaa) {
         // Try to enable multisample but fallback if not available
-        if (!eglChooseConfig(display, multisampleAttribs, config, 1, &numConfigs)) {
+        if (!ChooseOpaqueConfig(display, multisampleAttribs, config)) {
             *msaa = NO;
             NSLog(@"eglChooseConfig() returned error %d", eglGetError());
-            if (!eglChooseConfig(display, attribs, config, 1, &numConfigs)) {
+            if (!ChooseOpaqueConfig(display, attribs, config)) {
                 NSLog(@"eglChooseConfig() returned error %d", eglGetError());
                 return EGL_NO_CONTEXT;
             }
         }
     } else {
-        if (!eglChooseConfig(display, attribs, config, 1, &numConfigs)) {
+        if (!ChooseOpaqueConfig(display, attribs, config)) {
             NSLog(@"eglChooseConfig() returned error %d", eglGetError());
             return EGL_NO_CONTEXT;
         }
@@ -981,7 +1011,7 @@ typedef enum EGLRenderingAPI : int
         _framebuffer = 0;
     }
 
-#if TARGET_OS_OSX
+#if TARGET_OSX_OR_CATALYST
     [_glLayer clear];
 #endif
 #endif

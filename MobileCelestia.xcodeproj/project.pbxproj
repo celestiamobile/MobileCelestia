@@ -57,7 +57,7 @@
 		97EB41C92408F26200E6D441 /* SettingStepperCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EB41C82408F26200E6D441 /* SettingStepperCell.swift */; };
 		97F1141E2408AE06003A06D7 /* DataLocationSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F1141D2408AE06003A06D7 /* DataLocationSelectionViewController.swift */; };
 		97FF95A5240A340300E9F44F /* BaseResultHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FF95A4240A340300E9F44F /* BaseResultHandler.swift */; };
-		C3E2AA8FA42CCD40BE6ECA28 /* Pods_MobileCelestia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4BB5B90AF9C3832FD04B47BF /* Pods_MobileCelestia.framework */; };
+		E4DE7582A867FE2819AE74CA /* Pods_MobileCelestia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0F0F23D040E5CC02543391F6 /* Pods_MobileCelestia.framework */; };
 		EA17951B27B1510500D47397 /* CelestiaScriptHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA17951A27B1510500D47397 /* CelestiaScriptHandler.swift */; };
 		EA17952027B371D700D47397 /* GuideItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA17951F27B371D700D47397 /* GuideItem.swift */; };
 		EA1823ED27C08D3D00E0F5E4 /* CelestiaHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = EA1823EC27C08D3D00E0F5E4 /* CelestiaHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -178,9 +178,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		4BB5B90AF9C3832FD04B47BF /* Pods_MobileCelestia.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MobileCelestia.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		672BC2EFB053F58AB6405384 /* Pods-MobileCelestia.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileCelestia.debug.xcconfig"; path = "Target Support Files/Pods-MobileCelestia/Pods-MobileCelestia.debug.xcconfig"; sourceTree = "<group>"; };
-		8C2CF5A2ED6F57EAB50BFE7F /* Pods-MobileCelestia.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileCelestia.release.xcconfig"; path = "Target Support Files/Pods-MobileCelestia/Pods-MobileCelestia.release.xcconfig"; sourceTree = "<group>"; };
+		0F0F23D040E5CC02543391F6 /* Pods_MobileCelestia.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MobileCelestia.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		8FF25F9E1936D45DAA8E5E71 /* Pods-MobileCelestia.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileCelestia.release.xcconfig"; path = "Target Support Files/Pods-MobileCelestia/Pods-MobileCelestia.release.xcconfig"; sourceTree = "<group>"; };
 		97143F1623FFAEFD00F35D87 /* defaults.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = defaults.plist; sourceTree = "<group>"; };
 		972477D02404A19700729B45 /* BrowserContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserContainerViewController.swift; sourceTree = "<group>"; };
 		972477D42404A63800729B45 /* BrowserCommonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserCommonViewController.swift; sourceTree = "<group>"; };
@@ -309,6 +308,7 @@
 		EAF48514249B2C4700E5B817 /* SubsystemBrowserCoordinatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubsystemBrowserCoordinatorViewController.swift; sourceTree = "<group>"; };
 		EAF4851F249B5C2500E5B817 /* StandardButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandardButton.swift; sourceTree = "<group>"; };
 		EAFF95F328885A64009C2FFD /* FallbackWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FallbackWebViewController.swift; sourceTree = "<group>"; };
+		F13A7ED4884D818187F940F7 /* Pods-MobileCelestia.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileCelestia.debug.xcconfig"; path = "Target Support Files/Pods-MobileCelestia/Pods-MobileCelestia.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -326,7 +326,7 @@
 				979D2FAB23FEB2AA005D2592 /* libc++.tbd in Frameworks */,
 				EA1823F027C08D3D00E0F5E4 /* CelestiaHelper.framework in Frameworks */,
 				979D2FA623FEB1DD005D2592 /* CelestiaCore.framework in Frameworks */,
-				C3E2AA8FA42CCD40BE6ECA28 /* Pods_MobileCelestia.framework in Frameworks */,
+				E4DE7582A867FE2819AE74CA /* Pods_MobileCelestia.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -559,7 +559,7 @@
 				979D2FAE23FEB2B9005D2592 /* libz.tbd */,
 				979D2FAC23FEB2AE005D2592 /* libbz2.tbd */,
 				979D2FAA23FEB2A5005D2592 /* libc++.tbd */,
-				4BB5B90AF9C3832FD04B47BF /* Pods_MobileCelestia.framework */,
+				0F0F23D040E5CC02543391F6 /* Pods_MobileCelestia.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -596,8 +596,8 @@
 		D065056EEA0615965A87D9B4 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				672BC2EFB053F58AB6405384 /* Pods-MobileCelestia.debug.xcconfig */,
-				8C2CF5A2ED6F57EAB50BFE7F /* Pods-MobileCelestia.release.xcconfig */,
+				F13A7ED4884D818187F940F7 /* Pods-MobileCelestia.debug.xcconfig */,
+				8FF25F9E1936D45DAA8E5E71 /* Pods-MobileCelestia.release.xcconfig */,
 			);
 			path = Pods;
 			sourceTree = "<group>";
@@ -730,7 +730,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 979D2F9923FEB1A8005D2592 /* Build configuration list for PBXNativeTarget "MobileCelestia" */;
 			buildPhases = (
-				F412BCB514349FAAD8AEB3A1 /* [CP] Check Pods Manifest.lock */,
+				F82ACC9A55D5A94B02CDCE5A /* [CP] Check Pods Manifest.lock */,
 				EA9FB24027B7B0E800E0DC1F /* Copy Localized Files */,
 				979D2F7623FEB1A6005D2592 /* Sources */,
 				979D2F7723FEB1A6005D2592 /* Frameworks */,
@@ -962,7 +962,7 @@
 			shellPath = /bin/sh;
 			shellScript = "SH_FILE=$SRCROOT/copy_localized_files.sh\n\nchmod +x $SH_FILE\n\n$SH_FILE\n";
 		};
-		F412BCB514349FAAD8AEB3A1 /* [CP] Check Pods Manifest.lock */ = {
+		F82ACC9A55D5A94B02CDCE5A /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -1287,7 +1287,7 @@
 		};
 		979D2F9A23FEB1A8005D2592 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 672BC2EFB053F58AB6405384 /* Pods-MobileCelestia.debug.xcconfig */;
+			baseConfigurationReference = F13A7ED4884D818187F940F7 /* Pods-MobileCelestia.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -1313,7 +1313,7 @@
 		};
 		979D2F9B23FEB1A8005D2592 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 8C2CF5A2ED6F57EAB50BFE7F /* Pods-MobileCelestia.release.xcconfig */;
+			baseConfigurationReference = 8FF25F9E1936D45DAA8E5E71 /* Pods-MobileCelestia.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
