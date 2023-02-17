@@ -156,9 +156,11 @@ class ResourceItemViewController: UIViewController {
                   !isDir.boolValue else {
                 return
             }
-            NotificationCenter.default.post(name: newURLOpenedNotificationName, object: nil, userInfo: [
-                newURLOpenedNotificationURLKey: UniformedURL(url: URL(fileURLWithPath: path), securityScoped: false),
-            ])
+            Task {
+                await executor.run { appCore in
+                    appCore.runScript(at: path)
+                }
+            }
             return
         }
         guard let objectName = item.objectName else { return }
