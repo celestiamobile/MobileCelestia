@@ -170,6 +170,8 @@
 		<integer>0</integer>
 		<key>temperatureScale</key>
 		<integer>0</integer>
+		<key>scriptSystemAccessPolicy</key>
+		<integer>0</integer>
 	</dict>
 </dict>
 </plist>

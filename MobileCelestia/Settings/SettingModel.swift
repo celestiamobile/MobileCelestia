@@ -791,6 +791,25 @@ let mainSetting = [
         title: CelestiaString("Advanced", comment: ""),
         items: [
             SettingItem(name: CelestiaString("Data Location", comment: ""), type: .dataLocation, associatedItem: .init(0)),
+            SettingItem(
+                name: CelestiaString("Security", comment: ""),
+                type: .common,
+                associatedItem: .init(
+                    AssociatedCommonItem(
+                        title: CelestiaString("Security", comment: ""),
+                        sections: [
+                            AssociatedSelectionItem(
+                                key: "scriptSystemAccessPolicy",
+                                items: [
+                                    SettingSelectionItem(name: CelestiaString("Ask", comment: ""), index: 0),
+                                    SettingSelectionItem(name: CelestiaString("Allow", comment: ""), index: 1),
+                                    SettingSelectionItem(name: CelestiaString("Deny", comment: ""), index: 2),
+                                ]
+                            ).toSection(header: CelestiaString("Script System Access Policy", comment: ""), footer: CelestiaString("This policy decides whether Lua scripts have access to the files on the system or not.", comment: ""))
+                        ]
+                    )
+                )
+            )
         ]),
     SettingSection(
         title: nil,
