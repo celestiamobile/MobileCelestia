@@ -957,7 +957,10 @@ extension MainViewController: NSToolbarDelegate {
 
     func toolbar(_ toolbar: NSToolbar, itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier, willBeInsertedIntoToolbar flag: Bool) -> NSToolbarItem? {
         if itemIdentifier == undoOrRedoGroupItemIdentifier {
-            let toolbarItemGroup = NSToolbarItemGroup(itemIdentifier: itemIdentifier, images: [UIImage(systemName: "chevron.left")!, UIImage(systemName: "chevron.right")!], selectionMode: .momentary, labels: [CelestiaString("Backward", comment: ""), CelestiaString("Forward", comment: "")], target: self, action: #selector(undoOrRedo(_:)))
+            let isRTL = UIView.userInterfaceLayoutDirection(for: view.semanticContentAttribute) == .rightToLeft
+            let forwardImage = UIImage(systemName: isRTL ? "chevron.left" : "chevron.right")
+            let backwardImage = UIImage(systemName: isRTL ? "chevron.right" : "chevron.left")
+            let toolbarItemGroup = NSToolbarItemGroup(itemIdentifier: itemIdentifier, images: [backwardImage!, forwardImage!], selectionMode: .momentary, labels: [CelestiaString("Backward", comment: ""), CelestiaString("Forward", comment: "")], target: self, action: #selector(undoOrRedo(_:)))
             return toolbarItemGroup
         }
 
