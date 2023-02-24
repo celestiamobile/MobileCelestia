@@ -186,7 +186,7 @@ extension AppCore {
     }
 
     private func overviewForBody(_ body: Body) -> String {
-        var str = ""
+        var lines = [String]()
 
         let radius = body.radius
         let radiusString: String
@@ -207,9 +207,9 @@ extension AppCore {
         }
 
         if body.isEllipsoid {
-            str += String.localizedStringWithFormat(CelestiaString("Equatorial radius: %s", comment: "").toLocalizationTemplate, radiusString)
+            lines.append(String.localizedStringWithFormat(CelestiaString("Equatorial radius: %s", comment: "").toLocalizationTemplate, radiusString))
         } else {
-            str += String.localizedStringWithFormat(CelestiaString("Size: %s", comment: "").toLocalizationTemplate, radiusString)
+            lines.append(String.localizedStringWithFormat(CelestiaString("Size: %s", comment: "").toLocalizationTemplate, radiusString))
         }
 
         let orbit = body.orbit(at: simulation.time)
@@ -241,28 +241,43 @@ extension AppCore {
             } else {
                 unitTemplate = CelestiaString("%.2f days", comment: "")
             }
-            str += "\n"
-            str += String.localizedStringWithFormat(CelestiaString("Sidereal rotation period: %s", comment: "").toLocalizationTemplate, String.localizedStringWithFormat(CelestiaString(unitTemplate, comment: ""), rotPeriod))
+            lines.append(String.localizedStringWithFormat(CelestiaString("Sidereal rotation period: %s", comment: "").toLocalizationTemplate, String.localizedStringWithFormat(CelestiaString(unitTemplate, comment: ""), rotPeriod)))
             if dayLength != 0 {
-                str += "\n"
-                str += String.localizedStringWithFormat(CelestiaString("Length of day: %s", comment: "").toLocalizationTemplate, String.localizedStringWithFormat(CelestiaString(unitTemplate, comment: ""), dayLength))
+                lines.append(String.localizedStringWithFormat(CelestiaString("Length of day: %s", comment: "").toLocalizationTemplate, String.localizedStringWithFormat(CelestiaString(unitTemplate, comment: ""), dayLength)))
             }
         }
 
         if body.hasRings {
-            str += "\n"
-            str += CelestiaString("Has rings", comment: "")
+            lines.append(CelestiaString("Has rings", comment: ""))
         }
         if body.hasAtmosphere {
-            str += "\n"
-            str += CelestiaString("Has atmosphere", comment: "")
+            lines.append(CelestiaString("Has atmosphere", comment: ""))
         }
 
-        return str
+        let timeline = body.timeline
+        if timeline.phaseCount > 0 {
+            let startTime = timeline.phase(at: 0).startTime
+            let endTime = timeline.phase(at: timeline.phaseCount - 1).endTime
+
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateStyle = .short
+            dateFormatter.timeStyle = .short
+
+            if let startTime {
+                lines.append(String.localizedStringWithFormat(CelestiaString("Start time: %s", comment: "").toLocalizationTemplate, dateFormatter.string(from: startTime)))
+            }
+            if let endTime {
+                lines.append(String.localizedStringWithFormat(CelestiaString("End time: %s", comment: "").toLocalizationTemplate, dateFormatter.string(from: endTime)))
+            }
+        }
+
+        return lines.joined(separator: "\n")
     }
 
     private func overviewForStar(_ star: Star) -> String {
-        var str = ""
+        var lines = [String]()
+
+        lines.append(String.localizedStringWithFormat(CelestiaString("Spectral type: %s", comment: "").toLocalizationTemplate, star.spectralType))
 
         let time = simulation.time
 
@@ -271,41 +286,42 @@ extension AppCore {
         let sph = AstroUtils.rect(toSpherical: eqPos)
 
         let hms = DMS(decimal: sph.dx)
-        str += String.localizedStringWithFormat(CelestiaString("RA: %dh %dm %.2fs", comment: ""), hms.hours, abs(hms.minutes), abs(hms.seconds))
+        lines.append(String.localizedStringWithFormat(CelestiaString("RA: %dh %dm %.2fs", comment: ""), hms.hours, abs(hms.minutes), abs(hms.seconds)))
 
-        str += "\n"
         let dms = DMS(decimal: sph.dy)
-        str += String.localizedStringWithFormat(CelestiaString("DEC: %d° %d′ %.2f″", comment: ""), dms.degrees, abs(dms.minutes), abs(dms.seconds))
+        lines.append(String.localizedStringWithFormat(CelestiaString("DEC: %d° %d′ %.2f″", comment: ""), dms.degrees, abs(dms.minutes), abs(dms.seconds)))
 
-        return str
+        return lines.joined(separator: "\n")
     }
 
     private func overviewForDSO(_ dso: DSO) -> String {
-        var str = ""
+        var lines = [String]()
+
+        let description = dso.dsoDescription
+        if !description.isEmpty {
+            lines.append(dso.dsoDescription)
+        }
 
         let celPos = dso.position
         let eqPos = AstroUtils.ecliptic(toEquatorial: AstroUtils.cel(toJ2000Ecliptic: celPos))
         var sph = AstroUtils.rect(toSpherical: eqPos)
 
         let hms = DMS(decimal: sph.dx)
-        str += String.localizedStringWithFormat(CelestiaString("RA: %dh %dm %.2fs", comment: ""), hms.hours, abs(hms.minutes), abs(hms.seconds))
+        lines.append(String.localizedStringWithFormat(CelestiaString("RA: %dh %dm %.2fs", comment: ""), hms.hours, abs(hms.minutes), abs(hms.seconds)))
 
-        str += "\n"
         var dms = DMS(decimal: sph.dy)
-        str += String.localizedStringWithFormat(CelestiaString("Dec: %d° %d′ %.2f″", comment: ""), dms.degrees, abs(dms.minutes), abs(dms.seconds))
+        lines.append(String.localizedStringWithFormat(CelestiaString("Dec: %d° %d′ %.2f″", comment: ""), dms.degrees, abs(dms.minutes), abs(dms.seconds)))
 
         let galPos = AstroUtils.equatorial(toGalactic: eqPos)
         sph = AstroUtils.rect(toSpherical: galPos)
 
-        str += "\n"
         dms = DMS(decimal: sph.dx)
-        str += String.localizedStringWithFormat(CelestiaString("L: %d° %d′ %.2f″", comment: ""), dms.degrees, abs(dms.minutes), abs(dms.seconds))
+        lines.append(String.localizedStringWithFormat(CelestiaString("L: %d° %d′ %.2f″", comment: ""), dms.degrees, abs(dms.minutes), abs(dms.seconds)))
 
-        str += "\n"
         dms = DMS(decimal: sph.dy)
-        str += String.localizedStringWithFormat(CelestiaString("B: %d° %d′ %.2f″", comment: ""), dms.degrees, abs(dms.minutes), abs(dms.seconds))
+        lines.append(String.localizedStringWithFormat(CelestiaString("B: %d° %d′ %.2f″", comment: ""), dms.degrees, abs(dms.minutes), abs(dms.seconds)))
 
-        return str
+        return lines.joined(separator: "\n")
     }
 }
 
