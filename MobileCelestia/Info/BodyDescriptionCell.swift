@@ -12,8 +12,8 @@
 import UIKit
 
 final class BodyDescriptionCell: UICollectionViewCell {
-    private lazy var titleLabel = UILabel(textStyle: .title2, weight: .semibold)
-    private lazy var bodyLabel = UILabel(textStyle: .body)
+    private lazy var titleLabel = UITextView()
+    private lazy var bodyLabel = UITextView()
     private lazy var stackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [titleLabel, bodyLabel])
         stackView.axis = .vertical
@@ -41,13 +41,25 @@ final class BodyDescriptionCell: UICollectionViewCell {
             stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
         ])
 
+        titleLabel.backgroundColor = .clear
+        titleLabel.textContainer.maximumNumberOfLines = 0
+        titleLabel.textContainerInset = UIEdgeInsets(top: 0, left: -titleLabel.textContainer.lineFragmentPadding, bottom: 0, right: -titleLabel.textContainer.lineFragmentPadding)
+        titleLabel.isScrollEnabled = false
+        titleLabel.isEditable = false
+        titleLabel.font = UIFont.preferredFont(forTextStyle: .title2, weight: .semibold)
+        titleLabel.adjustsFontForContentSizeCategory = true
+        titleLabel.textContainer.lineBreakMode = .byWordWrapping
         titleLabel.textColor = .darkLabel
-        titleLabel.numberOfLines = 0
-        titleLabel.lineBreakMode = .byCharWrapping
 
+        bodyLabel.backgroundColor = .clear
+        bodyLabel.textContainer.maximumNumberOfLines = 0
+        bodyLabel.textContainerInset = UIEdgeInsets(top: 0, left: -bodyLabel.textContainer.lineFragmentPadding, bottom: 0, right: -bodyLabel.textContainer.lineFragmentPadding)
+        bodyLabel.isScrollEnabled = false
+        bodyLabel.isEditable = false
+        bodyLabel.font = UIFont.preferredFont(forTextStyle: .body)
+        bodyLabel.adjustsFontForContentSizeCategory = true
+        bodyLabel.textContainer.lineBreakMode = .byWordWrapping
         bodyLabel.textColor = .darkSecondaryLabel
-        bodyLabel.numberOfLines = 0
-        bodyLabel.lineBreakMode = .byCharWrapping
     }
 
     override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
