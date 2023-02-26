@@ -77,6 +77,8 @@ class SearchViewController: BaseTableViewController {
 
 private extension SearchViewController {
     func setUp() {
+        title = CelestiaString("Search", comment: "")
+
         let appearance = UINavigationBarAppearance()
         appearance.configureWithDefaultBackground()
         navigationItem.standardAppearance = appearance
@@ -94,7 +96,6 @@ private extension SearchViewController {
 
         // Configure search bar
         let searchBar = searchController.searchBar
-        searchBar.searchBarStyle = .minimal
         if resultsInSidebar {
             navigationItem.titleView = searchBar
         } else {
@@ -104,8 +105,6 @@ private extension SearchViewController {
         searchBar.sizeToFit()
 
         definesPresentationContext = true
-        searchController.hidesNavigationBarDuringPresentation = false
-        searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchResultsUpdater = self
         searchBar.keyboardAppearance = .dark
         searchBar.delegate = self
