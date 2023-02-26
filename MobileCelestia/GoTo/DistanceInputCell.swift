@@ -67,8 +67,13 @@ class DistanceInputCell: UITableViewCell {
     private func setUp() {
         selectionStyle = .none
 
+        unitButton.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
+        unitButton.titleLabel?.adjustsFontForContentSizeCategory = true
         unitButton.showsMenuAsPrimaryAction = true
         unitButton.changesSelectionAsPrimaryAction = true
+
+        distanceTextField.font = UIFont.preferredFont(forTextStyle: .body)
+        distanceTextField.adjustsFontForContentSizeCategory = true
 
         distanceTextField.translatesAutoresizingMaskIntoConstraints = false
         unitButton.translatesAutoresizingMaskIntoConstraints = false

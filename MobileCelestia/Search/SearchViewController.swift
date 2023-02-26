@@ -65,7 +65,7 @@ class SearchViewController: BaseTableViewController {
     }
 
     override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+        super.viewWillDisappear(animated)
 
         shouldActivate = searchController.searchBar.isFirstResponder
     }

@@ -67,7 +67,7 @@ class LongitudeLatitudeInputCell: UITableViewCell {
         labelStackView.translatesAutoresizingMaskIntoConstraints = false
         labelStackView.axis = .horizontal
         labelStackView.distribution = .fillEqually
-        labelStackView.alignment = .bottom
+        labelStackView.alignment = .top
         labelStackView.spacing = GlobalConstants.listItemGapHorizontal
         contentView.addSubview(labelStackView)
 
@@ -91,6 +91,10 @@ class LongitudeLatitudeInputCell: UITableViewCell {
             stackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -GlobalConstants.listItemMediumMarginVertical),
         ])
 
+        longitudeTextField.font = UIFont.preferredFont(forTextStyle: .body)
+        latitudeTextField.font = UIFont.preferredFont(forTextStyle: .body)
+        longitudeTextField.adjustsFontForContentSizeCategory = true
+        latitudeTextField.adjustsFontForContentSizeCategory = true
         longitudeTextField.keyboardType = .decimalPad
         latitudeTextField.keyboardType = .decimalPad
 
