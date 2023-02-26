@@ -146,7 +146,20 @@ class CelestiaInteractionController: UIViewController {
         return targetProvider?.targetContents
     }
 
-    private lazy var targetInteractionView = UIView()
+    @available(iOS 15, *)
+    final class FocusableView: UIView {
+        override var canBecomeFocused: Bool { return true }
+        override var canBecomeFirstResponder: Bool { return true }
+    }
+
+    private lazy var targetInteractionView: UIView = {
+        if #available(iOS 15, *) {
+            let view = FocusableView()
+            view.focusEffect = nil
+            return view
+        }
+        return UIView()
+    }()
     private lazy var auxillaryContextMenuPreviewView = UIView()
     private var mirroringDisplayLink: CADisplayLink?
     private var isMirroring = false
