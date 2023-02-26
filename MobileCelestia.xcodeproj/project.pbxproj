@@ -111,7 +111,6 @@
 		EABF792C25389B3100F2460C /* ResourceItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF792B25389B3100F2460C /* ResourceItem.swift */; };
 		EABF793C2538A1C100F2460C /* ResourceItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF793B2538A1C100F2460C /* ResourceItemViewController.swift */; };
 		EABF794A2538A86500F2460C /* ResourceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF79492538A86500F2460C /* ResourceManager.swift */; };
-		EAC2F4D02647F2920039DF2F /* SearchResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC2F4CF2647F2920039DF2F /* SearchResultViewController.swift */; };
 		EAC8435F252C818700691943 /* CELMacBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = EAC8435E252C818700691943 /* CELMacBridge.m */; };
 		EAC84364252C84B600691943 /* CelestiaMacBridge.bundle in Embed PlugIns */ = {isa = PBXBuildFile; fileRef = EAC84354252C816500691943 /* CelestiaMacBridge.bundle */; platformFilter = maccatalyst; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EACAB98728BB2B3E00192C75 /* LongitudeLatitudeInputCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACAB98628BB2B3E00192C75 /* LongitudeLatitudeInputCell.swift */; };
@@ -292,7 +291,6 @@
 		EABF792B25389B3100F2460C /* ResourceItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceItem.swift; sourceTree = "<group>"; };
 		EABF793B2538A1C100F2460C /* ResourceItemViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceItemViewController.swift; sourceTree = "<group>"; };
 		EABF79492538A86500F2460C /* ResourceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceManager.swift; sourceTree = "<group>"; };
-		EAC2F4CF2647F2920039DF2F /* SearchResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultViewController.swift; sourceTree = "<group>"; };
 		EAC84354252C816500691943 /* CelestiaMacBridge.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CelestiaMacBridge.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		EAC84356252C816500691943 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EAC8435D252C818700691943 /* CELMacBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CELMacBridge.h; sourceTree = "<group>"; };
@@ -446,7 +444,6 @@
 			children = (
 				977394BC2404189000E38B82 /* SearchViewController.swift */,
 				977394BE24041A9A00E38B82 /* SearchCoordinatorController.swift */,
-				EAC2F4CF2647F2920039DF2F /* SearchResultViewController.swift */,
 			);
 			path = Search;
 			sourceTree = "<group>";
@@ -1082,7 +1079,6 @@
 				EA78733A296EB5F40099AB11 /* Selection.swift in Sources */,
 				EA5E185D2477C78E00F5374B /* Toast.swift in Sources */,
 				977394A32403E68800E38B82 /* Color.swift in Sources */,
-				EAC2F4D02647F2920039DF2F /* SearchResultViewController.swift in Sources */,
 				EA78730B296DE5CE0099AB11 /* AppCore.swift in Sources */,
 				EABDE367247170F000E0A5FA /* SettngSliderCell.swift in Sources */,
 			);
@@ -1219,8 +1215,8 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
-				SHARED_BUILD_NUMBER = 278;
-				SHARED_BUILD_VERSION = 1.5.17;
+				SHARED_BUILD_NUMBER = 279;
+				SHARED_BUILD_VERSION = 1.5.18;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2,6";
@@ -1276,8 +1272,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				SDKROOT = iphoneos;
-				SHARED_BUILD_NUMBER = 278;
-				SHARED_BUILD_VERSION = 1.5.17;
+				SHARED_BUILD_NUMBER = 279;
+				SHARED_BUILD_VERSION = 1.5.18;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				TARGETED_DEVICE_FAMILY = "1,2,6";

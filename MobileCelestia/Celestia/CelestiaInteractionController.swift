@@ -617,7 +617,8 @@ extension BrowserItem {
 
         if let ent = entry {
             items.append(UIAction(title: CelestiaString(additionalItemName, comment: ""), handler: { (_) in
-                guard let selection = Selection(object: ent) else { return }
+                let selection = Selection(object: ent)
+                guard selection.isEmpty else { return }
                 callback(selection)
             }))
         }
