@@ -141,7 +141,7 @@ extension PresentationManager: UIViewControllerTransitioningDelegate {
         if useSheetIfPossible {
             let pc = SheetPresentationController(presentedViewController: presented, presenting: presenting)
             if #available(iOS 13.0, *) {
-                pc.overrideTraitCollection = UITraitCollection(userInterfaceLevel: .base)
+                pc.overrideTraitCollection = UITraitCollection(traitsFrom: [UITraitCollection(userInterfaceLevel: .base), UITraitCollection(horizontalSizeClass: .compact)])
             }
             pc.delegate = self
             return pc

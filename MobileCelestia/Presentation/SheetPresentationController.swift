@@ -149,7 +149,7 @@ class SheetPresentationController: UIPresentationController {
                        withParentContainerSize parentSize: CGSize) -> CGSize {
         var size: CGSize = .zero
         let height = min(parentSize.height - containerView!.safeAreaInsets.top, parentSize.height * Constants.sheetMaxHeightRatio) - sheetHandleContainerHeight
-        if traitCollection.horizontalSizeClass == .compact && traitCollection.verticalSizeClass == .regular {
+        if presentingViewController.traitCollection.horizontalSizeClass == .compact && presentingViewController.traitCollection.verticalSizeClass == .regular {
             size = CGSize(width: parentSize.width, height: height)
         } else {
             let containerWidth = parentSize.width
@@ -166,10 +166,10 @@ class SheetPresentationController: UIPresentationController {
         var frame: CGRect = .zero
         frame.size = size(forChildContentContainer: presentedViewController,
                           withParentContainerSize: containerView!.bounds.size)
-        if traitCollection.horizontalSizeClass == .compact && traitCollection.verticalSizeClass == .regular {
+        if presentingViewController.traitCollection.horizontalSizeClass == .compact && presentingViewController.traitCollection.verticalSizeClass == .regular {
             frame.origin = CGPoint(x: 0, y: containerView!.frame.height - frame.height)
         } else {
-            if traitCollection.layoutDirection == .rightToLeft {
+            if presentingViewController.traitCollection.layoutDirection == .rightToLeft {
                 frame.origin = CGPoint(x: containerView!.frame.width - containerView!.safeAreaInsets.right - frame.width - GlobalConstants.pageMediumMarginHorizontal, y: containerView!.frame.height - frame.height)
             } else {
                 frame.origin = CGPoint(x: containerView!.safeAreaInsets.left + GlobalConstants.pageMediumMarginHorizontal, y: containerView!.frame.height - frame.height)
