@@ -22,7 +22,7 @@ class SlideInPresentationController: UIPresentationController {
         super.init(presentedViewController: presentedViewController, presenting: presentingViewController)
 
         if #available(iOS 13.0, *) {
-            overrideTraitCollection = UITraitCollection(userInterfaceLevel: .base)
+            overrideTraitCollection = UITraitCollection(traitsFrom: [UITraitCollection(userInterfaceLevel: .base), UITraitCollection(horizontalSizeClass: .compact)])
         }
 
         setupDimmingViewIfNeeded()
