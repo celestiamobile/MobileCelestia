@@ -126,7 +126,6 @@ class GoToInputViewController: BaseTableViewController {
 
 private extension GoToInputViewController {
     func setUp() {
-        navigationItem.backButtonTitle = ""
         title = CelestiaString("Go to Object", comment: "")
         tableView.keyboardDismissMode = .interactive
         tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Text")
