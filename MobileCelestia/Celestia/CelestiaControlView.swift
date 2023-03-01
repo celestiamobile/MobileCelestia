@@ -59,6 +59,8 @@ class ControlButton: ImageButtonView<ControlButton.Configuration> {
         }
     }
 
+    private var areActionsSetUp = false
+
     init(button: CelestiaControlButton, tap: ((CelestiaControlAction) -> Void)?, pressStart: ((CelestiaControlAction) -> Void)?, pressEnd: ((CelestiaControlAction) -> Void)?, toggle: ((CelestiaControlAction) -> Void)?) {
         super.init(buttonBuilder: {
             let uiButton = StandardButton()
@@ -80,19 +82,27 @@ class ControlButton: ImageButtonView<ControlButton.Configuration> {
 
     override func configurationUpdated(_ configuration: Configuration, button: UIButton) {
         super.configurationUpdated(configuration, button: button)
-        button.removeTarget(self, action: nil, for: .allEvents)
+        if !areActionsSetUp {
+            switch configuration.button {
+            case .pressAndHold:
+                button.addTarget(self, action: #selector(pressDidStart(_:)), for: .touchDown)
+                button.addTarget(self, action: #selector(pressDidEnd(_:)), for: .touchUpInside)
+                button.addTarget(self, action: #selector(pressDidEnd(_:)), for: .touchUpOutside)
+                button.addTarget(self, action: #selector(pressDidEnd(_:)), for: .touchCancel)
+            case .tap:
+                button.addTarget(self, action: #selector(didTap(_:)), for: .touchUpInside)
+            case .toggle:
+                button.addTarget(self, action: #selector(didToggle(_:)), for: .touchUpInside)
+            }
+            areActionsSetUp = true
+        }
         switch configuration.button {
-        case .pressAndHold:
-            button.addTarget(self, action: #selector(pressDidStart(_:)), for: .touchDown)
-            button.addTarget(self, action: #selector(pressDidEnd(_:)), for: .touchUpInside)
-            button.addTarget(self, action: #selector(pressDidEnd(_:)), for: .touchUpOutside)
-            button.addTarget(self, action: #selector(pressDidEnd(_:)), for: .touchCancel)
-        case .tap:
-            button.addTarget(self, action: #selector(didTap(_:)), for: .touchUpInside)
         case .toggle(_, let offImage, _, let offAccessibilityValue, let onImage, _, let onAccessibilityValue):
             button.setImage(configuration.on ? onImage : offImage, for: .normal)
             button.accessibilityValue = configuration.on ? offAccessibilityValue : onAccessibilityValue
             button.addTarget(self, action: #selector(didToggle(_:)), for: .touchUpInside)
+        default:
+            break
         }
     }
 
