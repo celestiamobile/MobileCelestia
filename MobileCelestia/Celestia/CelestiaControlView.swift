@@ -23,9 +23,9 @@ enum CelestiaControlAction {
 }
 
 enum CelestiaControlButton {
-    case toggle(offImage: UIImage?, offAction: CelestiaControlAction, onImage: UIImage?, onAction: CelestiaControlAction)
-    case pressAndHold(image: UIImage?, action: CelestiaControlAction)
-    case tap(image: UIImage?, action: CelestiaControlAction)
+    case toggle(accessibilityLabel: String, offImage: UIImage?, offAction: CelestiaControlAction, offAccessibilityValue: String, onImage: UIImage?, onAction: CelestiaControlAction, onAccessibilityValue: String)
+    case pressAndHold(image: UIImage?, action: CelestiaControlAction, accessibilityLabel: String)
+    case tap(image: UIImage?, action: CelestiaControlAction, accessibilityLabel: String)
 }
 
 @MainActor
@@ -43,29 +43,38 @@ class ControlButton: ImageButtonView<ControlButton.Configuration> {
         var pressStart: ((CelestiaControlAction) -> Void)?
         var pressEnd: ((CelestiaControlAction) -> Void)?
         var toggle: ((CelestiaControlAction) -> Void)?
+        var on: Bool = false
 
         var shouldScaleOnMacCatalyst: Bool { return false }
 
-        func provideImage(selected: Bool) -> UIImage? {
+        func provideImage() -> UIImage? {
             switch button {
-            case .pressAndHold(let image, _):
+            case .pressAndHold(let image, _, _):
                 return image?.withRenderingMode(.alwaysTemplate)
-            case .tap(let image, _):
+            case .tap(let image, _, _):
                 return image?.withRenderingMode(.alwaysTemplate)
-            case .toggle(let offImage, _, let onImage, _):
-                return (selected ? onImage : offImage)?.withRenderingMode(.alwaysTemplate)
+            case .toggle(_, let offImage, _, _, _, _, _):
+                return offImage?.withRenderingMode(.alwaysTemplate)
             }
         }
     }
 
     init(button: CelestiaControlButton, tap: ((CelestiaControlAction) -> Void)?, pressStart: ((CelestiaControlAction) -> Void)?, pressEnd: ((CelestiaControlAction) -> Void)?, toggle: ((CelestiaControlAction) -> Void)?) {
         super.init(buttonBuilder: {
-            let button = StandardButton()
-            button.imageView?.contentMode = .scaleAspectFit
-            button.contentHorizontalAlignment = .fill
-            button.contentVerticalAlignment = .fill
-            button.tintColor = .darkSecondaryLabel
-            return button
+            let uiButton = StandardButton()
+            uiButton.imageView?.contentMode = .scaleAspectFit
+            uiButton.contentHorizontalAlignment = .fill
+            uiButton.contentVerticalAlignment = .fill
+            uiButton.tintColor = .darkSecondaryLabel
+            switch button {
+            case .pressAndHold(_, _, let accessibilityLabel):
+                uiButton.accessibilityLabel = accessibilityLabel
+            case .tap(_, _, let accessibilityLabel):
+                uiButton.accessibilityLabel = accessibilityLabel
+            case .toggle(let accessibilityLabel, _, _, _, _, _, _):
+                uiButton.accessibilityLabel = accessibilityLabel
+            }
+            return uiButton
         }(), boundingBoxSize: CGSize(width: 40, height: 40), configurationBuilder: Configuration(button: button, tap: tap, pressStart: pressStart, pressEnd: pressEnd, toggle: toggle))
     }
 
@@ -80,30 +89,32 @@ class ControlButton: ImageButtonView<ControlButton.Configuration> {
             button.addTarget(self, action: #selector(pressDidEnd(_:)), for: .touchCancel)
         case .tap:
             button.addTarget(self, action: #selector(didTap(_:)), for: .touchUpInside)
-        case .toggle:
+        case .toggle(_, let offImage, _, let offAccessibilityValue, let onImage, _, let onAccessibilityValue):
+            button.setImage(configuration.on ? onImage : offImage, for: .normal)
+            button.accessibilityValue = configuration.on ? offAccessibilityValue : onAccessibilityValue
             button.addTarget(self, action: #selector(didToggle(_:)), for: .touchUpInside)
         }
     }
 
     @objc private func didTap(_ sender: UIButton) {
-        guard case CelestiaControlButton.tap(_, let action) = configuration.configuration.button else { return }
+        guard case CelestiaControlButton.tap(_, let action, _) = configuration.configuration.button else { return }
         configuration.configuration.tap?(action)
     }
 
     @objc private func pressDidStart(_ sender: UIButton) {
-        guard case CelestiaControlButton.pressAndHold(_, let action) = configuration.configuration.button else { return }
+        guard case CelestiaControlButton.pressAndHold(_, let action, _) = configuration.configuration.button else { return }
         configuration.configuration.pressStart?(action)
     }
 
     @objc private func pressDidEnd(_ sender: UIButton) {
-        guard case CelestiaControlButton.pressAndHold(_, let action) = configuration.configuration.button else { return }
+        guard case CelestiaControlButton.pressAndHold(_, let action, _) = configuration.configuration.button else { return }
         configuration.configuration.pressEnd?(action)
     }
 
     @objc private func didToggle(_ sender: UIButton) {
-        guard case CelestiaControlButton.toggle(_, let offAction, _, let onAction) = configuration.configuration.button else { return }
-        sender.isSelected = !sender.isSelected
-        configuration.configuration.toggle?(sender.isSelected ? onAction : offAction)
+        guard case CelestiaControlButton.toggle(_, _, let offAction, _, _, let onAction, _) = configuration.configuration.button else { return }
+        configuration.configuration.on = !configuration.configuration.on
+        configuration.configuration.toggle?(configuration.configuration.on ? onAction : offAction)
     }
 }
 

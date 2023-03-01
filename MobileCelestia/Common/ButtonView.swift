@@ -12,13 +12,13 @@
 import UIKit
 
 protocol ImageProvider {
-    func provideImage(selected: Bool) -> UIImage?
+    func provideImage() -> UIImage?
     var shouldScaleOnMacCatalyst: Bool { get }
 }
 
 struct ImageButtonViewConfiguration<T: ImageProvider>: AutoSizingViewConfiguration {
     func baseSizeForView(_ view: UIView) -> CGSize {
-        guard let size = configuration.provideImage(selected: (view as? UIButton)?.isSelected == true)?.size, size.width > 0, size.height > 0 else {
+        guard let size = configuration.provideImage()?.size, size.width > 0, size.height > 0 else {
             return boundingBoxSize
         }
         let scaling = configuration.shouldScaleOnMacCatalyst ? GlobalConstants.preferredUIElementScaling(for: view.traitCollection) : 1
@@ -35,8 +35,7 @@ class ImageButtonView<Configuration: ImageProvider>: AutoSizingView<UIButton, Im
     }
 
     override func apply(_ configuration: ImageButtonViewConfiguration<Configuration>, view: UIButton) {
-        view.setImage(configuration.configuration.provideImage(selected: false), for: .normal)
-        view.setImage(configuration.configuration.provideImage(selected: true), for: .selected)
+        view.setImage(configuration.configuration.provideImage(), for: .normal)
         configurationUpdated(configuration.configuration, button: view)
         super.apply(configuration, view: view)
     }

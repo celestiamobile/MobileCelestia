@@ -106,18 +106,18 @@ class CelestiaInteractionController: UIViewController {
 
     #if targetEnvironment(macCatalyst)
     private lazy var activeControlView = CelestiaControlView(items: [
-        CelestiaControlButton.tap(image: UIImage(systemName: "info.circle"), action: .info),
-        CelestiaControlButton.tap(image: UIImage(systemName: "line.3.horizontal.circle") ?? UIImage(systemName: "line.horizontal.3.circle") ?? UIImage(named: "control_action_menu"), action: .showMenu),
-        CelestiaControlButton.tap(image: UIImage(systemName: "xmark.circle"), action: .hide),
+        CelestiaControlButton.tap(image: UIImage(systemName: "info.circle"), action: .info, accessibilityLabel: CelestiaString("Get Info", comment: "")),
+        CelestiaControlButton.tap(image: UIImage(systemName: "line.3.horizontal.circle") ?? UIImage(systemName: "line.horizontal.3.circle") ?? UIImage(named: "control_action_menu"), action: .showMenu, accessibilityLabel: CelestiaString("Menu", comment: "")),
+        CelestiaControlButton.tap(image: UIImage(systemName: "xmark.circle"), action: .hide, accessibilityLabel: CelestiaString("Hide", comment: "")),
     ])
     #else
     private lazy var activeControlView = CelestiaControlView(items: [
-        CelestiaControlButton.toggle(offImage: UIImage(systemName: "cube"), offAction: .switchToObject, onImage: UIImage(systemName: "video"), onAction: .switchToCamera),
-        CelestiaControlButton.pressAndHold(image: UIImage(systemName: "plus.circle"), action: .zoomIn),
-        CelestiaControlButton.pressAndHold(image: UIImage(systemName: "minus.circle"), action: .zoomOut),
-        CelestiaControlButton.tap(image: UIImage(systemName: "info.circle"), action: .info),
-        CelestiaControlButton.tap(image: UIImage(systemName: "line.3.horizontal.circle") ?? UIImage(systemName: "line.horizontal.3.circle") ?? UIImage(named: "control_action_menu"), action: .showMenu),
-        CelestiaControlButton.tap(image: UIImage(systemName: "xmark.circle"), action: .hide),
+        CelestiaControlButton.toggle(accessibilityLabel:  CelestiaString("Toggle Interaction Mode", comment: ""), offImage: UIImage(systemName: "cube"), offAction: .switchToObject, offAccessibilityValue: CelestiaString("Camera Mode", comment: ""), onImage: UIImage(systemName: "video"), onAction: .switchToCamera, onAccessibilityValue: CelestiaString("Object Mode", comment: "")),
+        CelestiaControlButton.pressAndHold(image: UIImage(systemName: "plus.circle"), action: .zoomIn, accessibilityLabel: CelestiaString("Zoom In", comment: "")),
+        CelestiaControlButton.pressAndHold(image: UIImage(systemName: "minus.circle"), action: .zoomOut, accessibilityLabel: CelestiaString("Zoom Out", comment: "")),
+        CelestiaControlButton.tap(image: UIImage(systemName: "info.circle"), action: .info, accessibilityLabel: CelestiaString("Get Info", comment: "")),
+        CelestiaControlButton.tap(image: UIImage(systemName: "line.3.horizontal.circle") ?? UIImage(systemName: "line.horizontal.3.circle") ?? UIImage(named: "control_action_menu"), action: .showMenu, accessibilityLabel: CelestiaString("Menu", comment: "")),
+        CelestiaControlButton.tap(image: UIImage(systemName: "xmark.circle"), action: .hide, accessibilityLabel: CelestiaString("Hide", comment: "")),
     ])
     #endif
 
