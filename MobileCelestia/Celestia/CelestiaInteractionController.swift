@@ -57,6 +57,7 @@ protocol CelestiaInteractionControllerDelegate: AnyObject {
     func celestiaInteractionController(_ celestiaInteractionController: CelestiaInteractionController, requestShowActionMenuWithSelection selection: Selection)
     func celestiaInteractionController(_ celestiaInteractionController: CelestiaInteractionController, requestShowInfoWithSelection selection: Selection)
     func celestiaInteractionController(_ celestiaInteractionController: CelestiaInteractionController, requestWebInfo webURL: URL)
+    func celestiaInteractionControllerCanAcceptKeyEvents(_ celestiaInteractionController: CelestiaInteractionController) -> Bool
 }
 
 @MainActor
@@ -709,10 +710,18 @@ extension CelestiaInteractionController {
     }
 
     func keyDown(with input: String?, modifiers: UInt) {
+        guard delegate?.celestiaInteractionControllerCanAcceptKeyEvents(self) == true else {
+            return
+        }
+
         executor.run { $0.keyDown(with: input, modifiers: modifiers) }
     }
 
     func keyUp(with input: String?, modifiers: UInt) {
+        guard delegate?.celestiaInteractionControllerCanAcceptKeyEvents(self) == true else {
+            return
+        }
+
         executor.run { $0.keyUp(with: input, modifiers: modifiers) }
     }
 
@@ -763,43 +772,42 @@ private extension CelestiaInteractionController {
             buttonX = microGamepad.buttonX
         }
 
-        buttonA?.valueChangedHandler = { [weak self] _, _, pressed in
+        let buttonStateChangedHandler = { [weak self] (button: JoystickButton, pressed: Bool) in
             guard let self = self else { return }
+            guard self.delegate?.celestiaInteractionControllerCanAcceptKeyEvents(self) == true else {
+                return
+            }
             self.executor.run { core in
-                pressed ? core.joystickButtonDown(.button1) : core.joystickButtonUp(.button1)
+                pressed ? core.joystickButtonDown(button) : core.joystickButtonUp(button)
             }
         }
-        buttonX?.valueChangedHandler = { [weak self] _, _, pressed in
+        let thumbstickChangedHandler = { [weak self] (xValue: Float, yValue: Float) in
             guard let self = self else { return }
-            self.executor.run { core in
-                pressed ? core.joystickButtonDown(.button2) : core.joystickButtonUp(.button2)
+            guard self.delegate?.celestiaInteractionControllerCanAcceptKeyEvents(self) == true else {
+                return
             }
-        }
-        leftThumbstick?.valueChangedHandler = { [weak self] _, xValue, yValue in
-            guard let self = self else { return }
             self.executor.run { core in
                 core.joystickAxis(.X, amount: xValue)
                 core.joystickAxis(.Y, amount: yValue)
             }
         }
-        rightThumbstick?.valueChangedHandler = { [weak self] _, xValue, yValue in
-            guard let self = self else { return }
-            self.executor.run { core in
-                core.joystickAxis(.X, amount: xValue)
-                core.joystickAxis(.Y, amount: yValue)
-            }
+        buttonA?.valueChangedHandler = { _, _, pressed in
+            buttonStateChangedHandler(.button1, pressed)
         }
-        leftTrigger?.valueChangedHandler = { [weak self] _, _, pressed in
-            guard let self = self else { return }
-            self.executor.run { core in
-                pressed ? core.joystickButtonDown(.button7) : core.joystickButtonUp(.button7)
-            }
+        buttonX?.valueChangedHandler = { _, _, pressed in
+            buttonStateChangedHandler(.button2, pressed)
         }
-        rightTrigger?.valueChangedHandler = { [weak self] _, _, pressed in
-            guard let self = self else { return }
-            self.executor.run { core in
-                pressed ? core.joystickButtonDown(.button8) : core.joystickButtonUp(.button8)
-            }
+        leftThumbstick?.valueChangedHandler = { _, xValue, yValue in
+            thumbstickChangedHandler(xValue, yValue)
+        }
+        rightThumbstick?.valueChangedHandler = { _, xValue, yValue in
+            thumbstickChangedHandler(xValue, yValue)
+        }
+        leftTrigger?.valueChangedHandler = { _, _, pressed in
+            buttonStateChangedHandler(.button7, pressed)
+        }
+        rightTrigger?.valueChangedHandler = { _, _, pressed in
+            buttonStateChangedHandler(.button8, pressed)
         }
 
         connectedGameController = controller

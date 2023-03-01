@@ -460,6 +460,10 @@ extension MainViewController: CelestiaControllerDelegate {
         showWeb(webURL)
     }
 
+    func celestiaControllerCanAcceptKeyEvents(_ celestiaController: CelestiaViewController) -> Bool {
+        return presentedViewController == nil
+    }
+
     private func toolbarActionSelected(_ action: AppToolbarAction) {
         switch action {
         case .setting:
