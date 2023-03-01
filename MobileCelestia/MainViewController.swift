@@ -97,6 +97,9 @@ class MainViewController: UIViewController {
     private var addonToOpen: String?
     private var guideToOpen: String?
 
+    private var bottomToolbar: BottomControlViewController?
+    private var bottomToolbarSizeConstraints = [NSLayoutConstraint]()
+
     init(initialURL: UniformedURL?, screen: UIScreen) {
         super.init(nibName: nil, bundle: nil)
         celestiaController = CelestiaViewController(screen: screen, executor: executor, userDefaults: userDefaults)
@@ -144,6 +147,32 @@ class MainViewController: UIViewController {
 
     override var prefersStatusBarHidden: Bool {
         return true
+    }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        if traitCollection.preferredContentSizeCategory != previousTraitCollection?.preferredContentSizeCategory {
+            view.setNeedsUpdateConstraints()
+            view.updateConstraintsIfNeeded()
+        }
+    }
+
+    override func updateViewConstraints() {
+        if let bottomToolbar {
+            let size = bottomToolbar.preferredContentSize
+            if bottomToolbarSizeConstraints.isEmpty {
+                bottomToolbarSizeConstraints = [
+                    bottomToolbar.view.widthAnchor.constraint(equalToConstant: size.width),
+                    bottomToolbar.view.heightAnchor.constraint(equalToConstant: size.height),
+                ]
+                NSLayoutConstraint.activate(bottomToolbarSizeConstraints)
+            } else {
+                bottomToolbarSizeConstraints[0].constant = size.width
+                bottomToolbarSizeConstraints[1].constant = size.height
+            }
+        }
+        super.updateViewConstraints()
     }
 }
 
@@ -570,7 +599,9 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     private func presentScriptToolbar() {
-        presentActionToolbar(for: [CelestiaAction.playpause, .cancelScript].map { .toolbarAction($0) })
+        Task {
+            await presentActionToolbar(for: [CelestiaAction.playpause, .cancelScript].map { .toolbarAction($0) })
+        }
     }
 
     private func presentTimeToolbar() {
@@ -588,12 +619,35 @@ extension MainViewController: CelestiaControllerDelegate {
                 CelestiaAction.faster
             ]
         }
-        presentActionToolbar(for: (layoutDirectionDependentActions + [CelestiaAction.reverse]).map { .toolbarAction($0) })
+        Task {
+            await presentActionToolbar(for: (layoutDirectionDependentActions + [CelestiaAction.reverse]).map { .toolbarAction($0) })
+        }
     }
 
-    private func presentActionToolbar(for actions: [BottomControlAction]) {
-        let controller = BottomControlViewController(actions: actions, finishOnSelection: false)
-        controller.touchUpHandler = { [unowned self] action, inside in
+    private func hideBottomToolbar() async {
+        guard let bottomToolbar else { return }
+        await withCheckedContinuation { continuation in
+            let animator = UIViewPropertyAnimator(duration: GlobalConstants.transitionDuration, curve: .linear) {
+                bottomToolbar.view.alpha = 0
+            }
+            animator.isUserInteractionEnabled = false
+            animator.addCompletion { [unowned self] _ in
+                bottomToolbar.remove()
+                self.bottomToolbar = nil
+                self.bottomToolbarSizeConstraints = []
+                continuation.resume()
+            }
+            animator.startAnimation()
+        }
+    }
+
+    private func presentActionToolbar(for actions: [BottomControlAction]) async {
+        let newController = BottomControlViewController(actions: actions) { [unowned self] in
+            Task {
+                await self.hideBottomToolbar()
+            }
+        }
+        newController.touchUpHandler = { [unowned self] action, inside in
             if let ac = action as? CelestiaAction {
                 if inside {
                     Task {
@@ -606,7 +660,7 @@ extension MainViewController: CelestiaControllerDelegate {
                 }
             }
         }
-        controller.touchDownHandler = { [unowned self] action in
+        newController.touchDownHandler = { [unowned self] action in
             if let ac = action as? CelestiaContinuousAction {
                 self.executor.run { core in
                     core.keyDown(ac.rawValue)
@@ -614,13 +668,39 @@ extension MainViewController: CelestiaControllerDelegate {
             }
         }
         #if targetEnvironment(macCatalyst)
-        controller.touchBarActionConversionBlock = { (identifier) in
+        newController.touchBarActionConversionBlock = { (identifier) in
             return CelestiaAction(identifier)
         }
         #endif
-        controller.modalPresentationStyle = .custom
-        controller.transitioningDelegate = bottomSlideInManager
-        presentAfterDismissCurrent(controller, animated: true)
+
+        await hideBottomToolbar()
+
+        addChild(newController)
+        newController.view.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(newController.view)
+        // fixed constraints
+        NSLayoutConstraint.activate([
+            newController.view.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            newController.view.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            newController.view.widthAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.widthAnchor, multiplier: 0.8)
+        ])
+        // other constraints are updated in `updateViewConstraints`
+        newController.didMove(toParent: self)
+        bottomToolbar = newController
+        view.setNeedsUpdateConstraints()
+        view.updateConstraintsIfNeeded()
+
+        newController.view.alpha = 0
+        await withCheckedContinuation { (continuation: CheckedContinuation<(), Never>) in
+            let animator = UIViewPropertyAnimator(duration: GlobalConstants.transitionDuration, curve: .linear) {
+                newController.view.alpha = 1.0
+            }
+            animator.isUserInteractionEnabled = false
+            animator.addCompletion { _ in
+                continuation.resume()
+            }
+            animator.startAnimation()
+        }
     }
 
     private func presentCameraControl() {
@@ -680,18 +760,21 @@ extension MainViewController: CelestiaControllerDelegate {
                 CelestiaContinuousAction.travelFaster,
             ]
         }
-        presentActionToolbar(for: layoutDirectionDependentActions.map { .toolbarAction($0) } + [
-            .toolbarAction(CelestiaAction.stop),
-            .toolbarAction(CelestiaAction.reverseSpeed),
-            .groupedActions(accessibilityLabel: CelestiaString("Speed Presets", comment: ""), actions: [
-                CelestiaContinuousAction.f2,
-                CelestiaContinuousAction.f3,
-                CelestiaContinuousAction.f4,
-                CelestiaContinuousAction.f5,
-                CelestiaContinuousAction.f6,
-                CelestiaContinuousAction.f7,
+
+        Task {
+            await presentActionToolbar(for: layoutDirectionDependentActions.map { .toolbarAction($0) } + [
+                .toolbarAction(CelestiaAction.stop),
+                .toolbarAction(CelestiaAction.reverseSpeed),
+                .groupedActions(accessibilityLabel: CelestiaString("Speed Presets", comment: ""), actions: [
+                    CelestiaContinuousAction.f2,
+                    CelestiaContinuousAction.f3,
+                    CelestiaContinuousAction.f4,
+                    CelestiaContinuousAction.f5,
+                    CelestiaContinuousAction.f6,
+                    CelestiaContinuousAction.f7,
+                ])
             ])
-        ])
+        }
     }
 
     private func showSelectionInfo(with selection: Selection) {

@@ -49,14 +49,13 @@ class BottomControlViewController: UIViewController {
     var touchBarActionConversionBlock: ((NSTouchBarItem.Identifier) -> ToolbarTouchBarAction?)?
     #endif
 
-    private let finishOnSelection: Bool
-
     private var selectedAction: ToolbarAction?
+    private var hideAction: (() -> Void)?
 
     var touchUpHandler: ((ToolbarAction, Bool) -> Void)?
     var touchDownHandler: ((ToolbarAction) -> Void)?
 
-    init(actions: [BottomControlAction], finishOnSelection: Bool = true) {
+    init(actions: [BottomControlAction], hideAction: (() -> Void)?) {
         self.actions = actions + [.close]
         #if targetEnvironment(macCatalyst)
         self.touchBarActions = actions.compactMap { action in
@@ -66,7 +65,7 @@ class BottomControlViewController: UIViewController {
             return nil
         }
         #endif
-        self.finishOnSelection = finishOnSelection
+        self.hideAction = hideAction
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -119,9 +118,6 @@ extension BottomControlViewController: UICollectionViewDataSource {
                 self.touchDownHandler?(action)
             }
             cell.touchUpHandler = { [unowned self] _, inside in
-                if inside, self.finishOnSelection {
-                    self.dismiss(animated: true, completion: nil)
-                }
                 self.touchUpHandler?(action, inside)
             }
         case .groupedActions(_, let actions):
@@ -129,9 +125,6 @@ extension BottomControlViewController: UICollectionViewDataSource {
                 guard inside else { return }
                 self.showSelection(nil, options: actions.map { $0.title ?? "" }, source: .view(view: button, sourceRect: nil)) { [unowned self] selectedIndex in
                     if let index = selectedIndex {
-                        if self.finishOnSelection {
-                            self.dismiss(animated: true, completion: nil)
-                        }
                         let item = actions[index]
                         self.touchDownHandler?(item)
                         self.touchUpHandler?(item, true)
@@ -142,7 +135,8 @@ extension BottomControlViewController: UICollectionViewDataSource {
         case .close:
             cell.touchUpHandler = { [unowned self] _, inside in
                 guard inside else { return }
-                self.dismiss(animated: true, completion: nil)
+                self.hideAction?()
+                self.hideAction = nil
             }
             cell.touchDownHandler = nil
         }
@@ -169,8 +163,8 @@ private extension BottomControlViewController {
         NSLayoutConstraint.activate([
             backgroundView.trailingAnchor.constraint(equalTo: view!.trailingAnchor),
             backgroundView.topAnchor.constraint(equalTo: view!.topAnchor),
-            backgroundView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: GlobalConstants.pageMediumMarginHorizontal),
-            backgroundView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -GlobalConstants.pageMediumMarginVertical)
+            backgroundView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: GlobalConstants.pageMediumMarginHorizontal),
+            backgroundView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -GlobalConstants.pageMediumMarginVertical)
         ])
 
         backgroundView.layer.masksToBounds = true
@@ -226,14 +220,12 @@ extension BottomControlViewController: NSTouchBarDelegate {
 
     @objc private func touchBarButtonItemClicked(_ sender: NSTouchBarItem) {
         guard let action = touchBarActionConversionBlock?(sender.identifier) else { return }
-        if finishOnSelection {
-            dismiss(animated: true, completion: nil)
-        }
         touchUpHandler?(action, true)
     }
 
     @objc private func requestClose() {
-        dismiss(animated: true, completion: nil)
+        hideAction?()
+        hideAction = nil
     }
 }
 #endif
