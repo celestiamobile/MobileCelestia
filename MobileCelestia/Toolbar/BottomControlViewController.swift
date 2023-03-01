@@ -13,7 +13,7 @@ import UIKit
 
 enum BottomControlAction {
     case toolbarAction(_ toolbarAction: ToolbarAction)
-    case groupedActions(_ actions: [ToolbarAction])
+    case groupedActions(accessibilityLabel: String, actions: [ToolbarAction])
     case close
 
     var image: UIImage? {
@@ -24,6 +24,17 @@ enum BottomControlAction {
             return UIImage(systemName: "ellipsis")
         case .close:
             return UIImage(systemName: "chevron.down")?.withConfiguration(UIImage.SymbolConfiguration(weight: .black))
+        }
+    }
+
+    var accessibilityLabel: String? {
+        switch self {
+        case .toolbarAction(let action):
+            return action.title
+        case .groupedActions(let accessibilityLabel, _):
+            return accessibilityLabel
+        case .close:
+            return CelestiaString("Close", comment: "")
         }
     }
 }
@@ -100,6 +111,7 @@ extension BottomControlViewController: UICollectionViewDataSource {
         cell.backgroundColor = .clear
         let action = actions[indexPath.item]
         cell.itemImage = action.image
+        cell.itemAccessibilityLabel = action.accessibilityLabel
 
         switch action {
         case .toolbarAction(let action):
@@ -112,7 +124,7 @@ extension BottomControlViewController: UICollectionViewDataSource {
                 }
                 self.touchUpHandler?(action, inside)
             }
-        case .groupedActions(let actions):
+        case .groupedActions(_, let actions):
             cell.touchUpHandler = { [unowned self] button, inside in
                 guard inside else { return }
                 self.showSelection(nil, options: actions.map { $0.title ?? "" }, source: .view(view: button, sourceRect: nil)) { [unowned self] selectedIndex in

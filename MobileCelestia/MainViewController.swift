@@ -683,7 +683,7 @@ extension MainViewController: CelestiaControllerDelegate {
         presentActionToolbar(for: layoutDirectionDependentActions.map { .toolbarAction($0) } + [
             .toolbarAction(CelestiaAction.stop),
             .toolbarAction(CelestiaAction.reverseSpeed),
-            .groupedActions([
+            .groupedActions(accessibilityLabel: CelestiaString("Speed Presets", comment: ""), actions: [
                 CelestiaContinuousAction.f2,
                 CelestiaContinuousAction.f3,
                 CelestiaContinuousAction.f4,
@@ -1073,6 +1073,23 @@ extension CelestiaAction: ToolbarAction {
             return UIImage(systemName: "repeat")?.withConfiguration(UIImage.SymbolConfiguration(weight: .black))
         case .cancelScript, .stop:
             return UIImage(systemName: "stop.fill")
+        default:
+            return nil
+        }
+    }
+
+    var title: String? {
+        switch self {
+        case .playpause:
+            return CelestiaString("Resume or Pause", comment: "")
+        case .faster:
+            return CelestiaString("Faster", comment: "")
+        case .slower:
+            return CelestiaString("Slower", comment: "")
+        case .reverse, .reverseSpeed:
+            return CelestiaString("Reverse", comment: "")
+        case .cancelScript, .stop:
+            return CelestiaString("Stop", comment: "")
         default:
             return nil
         }

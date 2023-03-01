@@ -15,6 +15,7 @@ import UIKit
 protocol ToolbarCell: UICollectionViewCell {
     var itemTitle: String? { get set }
     var itemImage: UIImage? { get set }
+    var itemAccessibilityLabel: String? { get set }
     var touchDownHandler: ((UIButton) -> Void)? { get set }
     var touchUpHandler: ((UIButton, Bool) -> Void)? { get set }
 }
@@ -22,6 +23,7 @@ protocol ToolbarCell: UICollectionViewCell {
 class ToolbarImageButton: ImageButtonView<ToolbarImageButton.Configuration> {
     struct Configuration: ImageProvider {
         var image: UIImage?
+        var accessibilityLabel: String?
         var touchDownHandler: ((UIButton) -> Void)?
         var touchUpHandler: ((UIButton, Bool) -> Void)?
 
@@ -29,12 +31,12 @@ class ToolbarImageButton: ImageButtonView<ToolbarImageButton.Configuration> {
             return true
         }
 
-        func provideImage(selected: Bool) -> UIImage? {
+        func provideImage() -> UIImage? {
             return image
         }
     }
 
-    init(image: UIImage? = nil, touchDownHandler: ((UIButton) -> Void)?, touchUpHandler: ((UIButton, Bool) -> Void)?) {
+    init(image: UIImage? = nil, accessibilityLabel: String? = nil, touchDownHandler: ((UIButton) -> Void)?, touchUpHandler: ((UIButton, Bool) -> Void)?) {
         super.init(buttonBuilder: {
             let button = StandardButton()
             button.imageView?.contentMode = .scaleAspectFit
@@ -42,7 +44,7 @@ class ToolbarImageButton: ImageButtonView<ToolbarImageButton.Configuration> {
             button.contentVerticalAlignment = .fill
             button.tintColor = .darkLabel
             return button
-        }(), boundingBoxSize: CGSize(width: GlobalConstants.bottomControlViewItemDimension, height: GlobalConstants.bottomControlViewItemDimension), configurationBuilder: Configuration(image: image, touchDownHandler: touchDownHandler, touchUpHandler: touchUpHandler))
+        }(), boundingBoxSize: CGSize(width: GlobalConstants.bottomControlViewItemDimension, height: GlobalConstants.bottomControlViewItemDimension), configurationBuilder: Configuration(image: image, accessibilityLabel: accessibilityLabel, touchDownHandler: touchDownHandler, touchUpHandler: touchUpHandler))
     }
 
     override func configurationUpdated(_ configuration: Configuration, button: UIButton) {
@@ -52,6 +54,7 @@ class ToolbarImageButton: ImageButtonView<ToolbarImageButton.Configuration> {
         button.addTarget(self, action: #selector(touchUpInside(_:)), for: .touchUpInside)
         button.addTarget(self, action: #selector(touchUpOutside(_:)), for: .touchUpOutside)
         button.addTarget(self, action: #selector(touchCancelled(_:)), for: .touchCancel)
+        button.accessibilityLabel = configuration.accessibilityLabel
     }
 
     @objc private func touchDown(_ sender: UIButton) {
@@ -75,6 +78,7 @@ class ToolbarImageButton: ImageButtonView<ToolbarImageButton.Configuration> {
 class ToolbarImageButtonCell: UICollectionViewCell, ToolbarCell {
     var itemTitle: String?
     var itemImage: UIImage? { didSet { button.configuration.configuration.image = itemImage } }
+    var itemAccessibilityLabel: String? { didSet { button.configuration.configuration.accessibilityLabel = itemAccessibilityLabel } }
     var touchDownHandler: ((UIButton) -> Void)?
     var touchUpHandler: ((UIButton, Bool) -> Void)?
 
@@ -165,6 +169,7 @@ class ToolbarImageTextButtonCell: UICollectionViewCell, ToolbarCell {
     var itemImage: UIImage? { didSet { imageView.configuration.image = itemImage?.withRenderingMode(.alwaysTemplate) } }
     var touchDownHandler: ((UIButton) -> Void)?
     var touchUpHandler: ((UIButton, Bool) -> Void)?
+    var itemAccessibilityLabel: String?
 
     private lazy var imageView: IconView = {
         let dimension = GlobalConstants.preferredUIElementScaling(for: traitCollection) * Constants.iconDimension
