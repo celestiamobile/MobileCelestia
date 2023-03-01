@@ -36,6 +36,8 @@ class ToolbarImageButton: ImageButtonView<ToolbarImageButton.Configuration> {
         }
     }
 
+    private var areActionsSetUp = false
+
     init(image: UIImage? = nil, accessibilityLabel: String? = nil, touchDownHandler: ((UIButton) -> Void)?, touchUpHandler: ((UIButton, Bool) -> Void)?) {
         super.init(buttonBuilder: {
             let button = StandardButton()
@@ -49,11 +51,13 @@ class ToolbarImageButton: ImageButtonView<ToolbarImageButton.Configuration> {
 
     override func configurationUpdated(_ configuration: Configuration, button: UIButton) {
         super.configurationUpdated(configuration, button: button)
-        button.removeTarget(self, action: nil, for: .allEvents)
-        button.addTarget(self, action: #selector(touchDown(_:)), for: .touchDown)
-        button.addTarget(self, action: #selector(touchUpInside(_:)), for: .touchUpInside)
-        button.addTarget(self, action: #selector(touchUpOutside(_:)), for: .touchUpOutside)
-        button.addTarget(self, action: #selector(touchCancelled(_:)), for: .touchCancel)
+        if !areActionsSetUp {
+            button.addTarget(self, action: #selector(touchDown(_:)), for: .touchDown)
+            button.addTarget(self, action: #selector(touchUpInside(_:)), for: .touchUpInside)
+            button.addTarget(self, action: #selector(touchUpOutside(_:)), for: .touchUpOutside)
+            button.addTarget(self, action: #selector(touchCancelled(_:)), for: .touchCancel)
+            areActionsSetUp = true
+        }
         button.accessibilityLabel = configuration.accessibilityLabel
     }
 
