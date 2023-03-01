@@ -45,6 +45,8 @@ enum GlobalConstants {
 
     static let baseCellHeight: CGFloat = 44
 
+    static let transitionDuration: TimeInterval = 0.2
+
     static func preferredUIElementScaling(for traitCollection: UITraitCollection) -> CGFloat {
         #if targetEnvironment(macCatalyst)
         if #available(iOS 14.0, *) {
