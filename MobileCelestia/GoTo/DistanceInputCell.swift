@@ -22,7 +22,7 @@ class DistanceInputCell: UITableViewCell {
     private var ignoreModelUpdates = false
 
     private lazy var distanceTextField = UITextField()
-    private lazy var unitButton = UIButton(primaryAction: nil)
+    private lazy var unitButton = UIButton(configuration: UIButton.Configuration.plain())
     var unitChanged: ((Int) -> Void)?
     var distanceChanged: ((Double) -> Void)?
 
