@@ -11,6 +11,7 @@
 
 import CelestiaCore
 import LinkPresentation
+import SwiftUI
 import UniformTypeIdentifiers
 import UIKit
 
@@ -708,13 +709,11 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     private func presentCameraControl() {
-        let vc = CameraControlViewController()
-        let controller = UINavigationController(rootViewController: vc)
-        if #available(iOS 13.0, *) {
+        let controller: UIViewController
+        if #available(iOS 16.0, *) {
+            controller = UIHostingController(rootView: CameraControlNavigationView(executor: executor))
         } else {
-            controller.navigationBar.barStyle = .black
-            controller.navigationBar.barTintColor = .darkBackground
-            controller.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
+            controller = UINavigationController(rootViewController: CameraControlViewController())
         }
         showViewController(controller)
     }
@@ -746,9 +745,17 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     private func presentGoTo() {
-        showViewController(GoToContainerViewController() { [weak self] location in
-            self?.executor.run { $0.simulation.go(to: location) }
-        })
+        if #available(iOS 16.0, *) {
+            showViewController(UIHostingController(rootView: GoToObjectView(executor: executor, core: core) { [weak self] location in
+                guard let self else { return }
+                self.executor.run { $0.simulation.go(to: location) }
+            }))
+        } else {
+            showViewController(GoToContainerViewController() { [weak self] location in
+                guard let self else { return }
+                self.executor.run { $0.simulation.go(to: location) }
+            })
+        }
     }
 
     private func presentSpeedControl() {
@@ -905,11 +912,19 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     private func showSearch() {
-        let controller = SearchCoordinatorController { [unowned self] info, isEmbeddedInNavigation in
-            return self.createSelectionInfoViewController(with: info, isEmbeddedInNavigation: isEmbeddedInNavigation)
+        let controller: UIViewController
+        let titleVisible: Bool
+        if #available(iOS 16, *) {
+            controller = UIHostingController(rootView: MainSearchView(executor: executor, core: core))
+            titleVisible = true
+        } else {
+            controller = SearchCoordinatorController { [unowned self] info, isEmbeddedInNavigation in
+                return self.createSelectionInfoViewController(with: info, isEmbeddedInNavigation: isEmbeddedInNavigation)
+            }
+            titleVisible = false
         }
         #if targetEnvironment(macCatalyst)
-        showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600), titleVisible: false)
+        showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600), titleVisible: titleVisible)
         #else
         showViewController(controller)
         #endif

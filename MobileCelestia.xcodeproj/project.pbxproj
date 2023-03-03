@@ -73,9 +73,14 @@
 		EA374CD2263A8B320069589C /* GoToContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA374CD1263A8B320069589C /* GoToContainerViewController.swift */; };
 		EA374CDA263A8B770069589C /* GoToInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA374CD9263A8B770069589C /* GoToInputViewController.swift */; };
 		EA445D15265CF6CD00E5D46A /* LinkPreviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA445D14265CF6CD00E5D46A /* LinkPreviewCell.swift */; };
+		EA46A24429B1976A003B2B16 /* ObjectSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA46A24329B1976A003B2B16 /* ObjectSearchView.swift */; };
+		EA46A24629B1C3D3003B2B16 /* GoToObjectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA46A24529B1C3D3003B2B16 /* GoToObjectView.swift */; };
+		EA46A24829B1C406003B2B16 /* MainSearchView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA46A24729B1C406003B2B16 /* MainSearchView.swift */; };
+		EA46A24A29B1C43D003B2B16 /* InfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA46A24929B1C43D003B2B16 /* InfoView.swift */; };
 		EA544E5F2566BC50003F351D /* DestinationDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA544E5E2566BC50003F351D /* DestinationDetailViewController.swift */; };
 		EA5D32E7266F9518005D5931 /* SheetPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5D32E6266F9518005D5931 /* SheetPresentationController.swift */; };
 		EA5E185D2477C78E00F5374B /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5E185B2477C78E00F5374B /* Toast.swift */; };
+		EA6671B729B1DC1D00A7846E /* CameraControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6671B629B1DC1D00A7846E /* CameraControlView.swift */; };
 		EA7209E027C64270004C1400 /* UILabel+DynamicType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA7209DF27C64270004C1400 /* UILabel+DynamicType.swift */; };
 		EA775EB42664B63F00479295 /* ActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA775EB32664B63F00479295 /* ActionButton.swift */; };
 		EA787309296DE50D0099AB11 /* Injecton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA787308296DE50D0099AB11 /* Injecton.swift */; };
@@ -252,9 +257,14 @@
 		EA374CD9263A8B770069589C /* GoToInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoToInputViewController.swift; sourceTree = "<group>"; };
 		EA3EC553277C8EAD00936D4F /* Celestia-macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Celestia-macOS.entitlements"; sourceTree = "<group>"; };
 		EA445D14265CF6CD00E5D46A /* LinkPreviewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkPreviewCell.swift; sourceTree = "<group>"; };
+		EA46A24329B1976A003B2B16 /* ObjectSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ObjectSearchView.swift; sourceTree = "<group>"; };
+		EA46A24529B1C3D3003B2B16 /* GoToObjectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoToObjectView.swift; sourceTree = "<group>"; };
+		EA46A24729B1C406003B2B16 /* MainSearchView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSearchView.swift; sourceTree = "<group>"; };
+		EA46A24929B1C43D003B2B16 /* InfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoView.swift; sourceTree = "<group>"; };
 		EA544E5E2566BC50003F351D /* DestinationDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DestinationDetailViewController.swift; sourceTree = "<group>"; };
 		EA5D32E6266F9518005D5931 /* SheetPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SheetPresentationController.swift; sourceTree = "<group>"; };
 		EA5E185B2477C78E00F5374B /* Toast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
+		EA6671B629B1DC1D00A7846E /* CameraControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraControlView.swift; sourceTree = "<group>"; };
 		EA7209DF27C64270004C1400 /* UILabel+DynamicType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+DynamicType.swift"; sourceTree = "<group>"; };
 		EA775EB32664B63F00479295 /* ActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButton.swift; sourceTree = "<group>"; };
 		EA787308296DE50D0099AB11 /* Injecton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Injecton.swift; sourceTree = "<group>"; };
@@ -403,6 +413,7 @@
 				974F86DE2403BD3B00356795 /* InfoViewController.swift */,
 				974F86E32403C30E00356795 /* BodyInfoModel.swift */,
 				EA445D14265CF6CD00E5D46A /* LinkPreviewCell.swift */,
+				EA46A24929B1C43D003B2B16 /* InfoView.swift */,
 			);
 			path = Info;
 			sourceTree = "<group>";
@@ -435,6 +446,7 @@
 				97EB41C82408F26200E6D441 /* SettingStepperCell.swift */,
 				EABDE366247170F000E0A5FA /* SettngSliderCell.swift */,
 				EABDE3A82473DAA300E0A5FA /* SettingCommonViewController.swift */,
+				EA6671B629B1DC1D00A7846E /* CameraControlView.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -444,6 +456,8 @@
 			children = (
 				977394BC2404189000E38B82 /* SearchViewController.swift */,
 				977394BE24041A9A00E38B82 /* SearchCoordinatorController.swift */,
+				EA46A24329B1976A003B2B16 /* ObjectSearchView.swift */,
+				EA46A24729B1C406003B2B16 /* MainSearchView.swift */,
 			);
 			path = Search;
 			sourceTree = "<group>";
@@ -626,6 +640,7 @@
 				EA374CD9263A8B770069589C /* GoToInputViewController.swift */,
 				EACAB98628BB2B3E00192C75 /* LongitudeLatitudeInputCell.swift */,
 				EACAB98828BB314300192C75 /* DistanceInputCell.swift */,
+				EA46A24529B1C3D3003B2B16 /* GoToObjectView.swift */,
 			);
 			path = GoTo;
 			sourceTree = "<group>";
@@ -1017,6 +1032,7 @@
 				EADE7FBB252B517600D4174F /* CelestiaDisplayController.swift in Sources */,
 				973BBA642405481200E3B061 /* TimeSettingViewController.swift in Sources */,
 				EA787344296EBBAC0099AB11 /* Task.swift in Sources */,
+				EA46A24629B1C3D3003B2B16 /* GoToObjectView.swift in Sources */,
 				EABF794A2538A86500F2460C /* ResourceManager.swift in Sources */,
 				EA544E5F2566BC50003F351D /* DestinationDetailViewController.swift in Sources */,
 				973BBA61240538DB00E3B061 /* MultiLineTextCell.swift in Sources */,
@@ -1054,7 +1070,9 @@
 				EACAB98728BB2B3E00192C75 /* LongitudeLatitudeInputCell.swift in Sources */,
 				974F86DF2403BD3C00356795 /* BodyActionCell.swift in Sources */,
 				EA9FB23F27B7852A00E0DC1F /* CommonSceneDelegate.swift in Sources */,
+				EA46A24429B1976A003B2B16 /* ObjectSearchView.swift in Sources */,
 				EA374CDA263A8B770069589C /* GoToInputViewController.swift in Sources */,
+				EA46A24829B1C406003B2B16 /* MainSearchView.swift in Sources */,
 				EA934C9A251D92AD00DD284C /* PanelSceneDelegate.swift in Sources */,
 				EA85C913289E9A7D009ADB1C /* UIContentSizeCategory+Extension.swift in Sources */,
 				97EB41C62408F20700E6D441 /* CameraControlViewController.swift in Sources */,
@@ -1062,6 +1080,7 @@
 				97FF95A5240A340300E9F44F /* BaseResultHandler.swift in Sources */,
 				EA5D32E7266F9518005D5931 /* SheetPresentationController.swift in Sources */,
 				977394BF24041A9A00E38B82 /* SearchCoordinatorController.swift in Sources */,
+				EA6671B729B1DC1D00A7846E /* CameraControlView.swift in Sources */,
 				EADE7FC0252B54A400D4174F /* CelestiaInteractionController.swift in Sources */,
 				978406DC240294D000876FD1 /* LoadingViewController.swift in Sources */,
 				EAF48515249B2C4700E5B817 /* SubsystemBrowserCoordinatorViewController.swift in Sources */,
@@ -1073,6 +1092,7 @@
 				EA1BC6E724A0E94900F3F51B /* EventFinderResultViewController.swift in Sources */,
 				EA17951B27B1510500D47397 /* CelestiaScriptHandler.swift in Sources */,
 				973BBA6624054E9900E3B061 /* TextViewController.swift in Sources */,
+				EA46A24A29B1C43D003B2B16 /* InfoView.swift in Sources */,
 				EA445D15265CF6CD00E5D46A /* LinkPreviewCell.swift in Sources */,
 				EA86E38426FE20C000FF2278 /* SettingsFrameRateViewController.swift in Sources */,
 				979D2F7E23FEB1A6005D2592 /* AppDelegate.swift in Sources */,

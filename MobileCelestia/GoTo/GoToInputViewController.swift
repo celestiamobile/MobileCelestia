@@ -21,7 +21,7 @@ extension DistanceUnit: CaseIterable {
     public static let allCases: [DistanceUnit] = [.radii, .KM, .AU]
 }
 
-private extension DistanceUnit {
+extension DistanceUnit {
     var name: String {
         switch self {
         case .AU:

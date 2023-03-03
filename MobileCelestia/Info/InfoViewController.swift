@@ -33,9 +33,10 @@ final class InfoViewController: UIViewController {
     private lazy var layout = InfoCollectionLayout()
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: self.layout)
 
-    private let info: Selection
+    private let core: AppCore
+    private var info: Selection
     private let isEmbeddedInNavigationController: Bool
-    private let bodyInfo: BodyInfo
+    private var bodyInfo: BodyInfo
 
     var selectionHandler: ((UIViewController, ObjectAction, UIView) -> Void)?
     var menuProvider: ((ObjectAction) -> UIMenu?)?
@@ -45,8 +46,12 @@ final class InfoViewController: UIViewController {
     private var linkMetaData: AnyObject?
 
     init(info: Selection, core: AppCore, isEmbeddedInNavigationController: Bool) {
-        self.info = info
+        // Immutable fields
         self.isEmbeddedInNavigationController = isEmbeddedInNavigationController
+        self.core = core
+
+        // Mutable fields
+        self.info = info
         var actions = ObjectAction.allCases
         if let urlString = info.webInfoURL, let url = URL(string: urlString) {
             actions.append(.web(url: url))
@@ -58,6 +63,7 @@ final class InfoViewController: UIViewController {
         actions.append(.mark)
         self.actions = actions
         self.bodyInfo = BodyInfo(selection: info, core: core)
+
         super.init(nibName: nil, bundle: nil)
 
         if isEmbeddedInNavigationController {
@@ -79,13 +85,21 @@ final class InfoViewController: UIViewController {
 
         setup()
 
-        guard let urlString = info.webInfoURL, let url = URL(string: urlString), #available(iOS 13.0, *) else { return }
+        reload()
+    }
+
+    private func reload() {
+        let currentSelection = info
+        guard let urlString = info.webInfoURL, let url = URL(string: urlString) else { return }
 
         let metaDataProvider = LPMetadataProvider()
         metaDataProvider.startFetchingMetadata(for: url) { [weak self] metaData, error in
             guard let data = metaData, error == nil else { return }
             Task.detached { @MainActor in
-                guard let self = self else { return }
+                guard let self else { return }
+                // Check if info has changed
+                guard self.info == currentSelection else { return }
+
                 self.linkMetaData = data
                 self.actions.removeAll(where: {
                     switch $0 {
@@ -98,6 +112,32 @@ final class InfoViewController: UIViewController {
                 self.collectionView.reloadData()
             }
         }
+    }
+
+    func reload(info: Selection) {
+        if self.info == info { return }
+
+        self.info = info
+        var actions = ObjectAction.allCases
+        if let urlString = info.webInfoURL, let url = URL(string: urlString) {
+            actions.append(.web(url: url))
+        }
+        if let surfaces = info.body?.alternateSurfaceNames, surfaces.count > 0 {
+            actions.append(.alternateSurfaces)
+        }
+        actions.append(.subsystem)
+        actions.append(.mark)
+        self.linkMetaData = nil
+        self.actions = actions
+        self.bodyInfo = BodyInfo(selection: info, core: core)
+
+        if isEmbeddedInNavigationController {
+            title = bodyInfo.name
+        }
+
+        collectionView.reloadData()
+
+        reload()
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {

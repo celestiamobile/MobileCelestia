@@ -99,7 +99,7 @@ class ControlButton: ImageButtonView<ControlButton.Configuration> {
         switch configuration.button {
         case .toggle(_, let offImage, _, let offAccessibilityValue, let onImage, _, let onAccessibilityValue):
             button.setImage(configuration.on ? onImage : offImage, for: .normal)
-            button.accessibilityValue = configuration.on ? offAccessibilityValue : onAccessibilityValue
+//            button.accessibilityValue = configuration.on ? offAccessibilityValue : onAccessibilityValue
             button.addTarget(self, action: #selector(didToggle(_:)), for: .touchUpInside)
         default:
             break
