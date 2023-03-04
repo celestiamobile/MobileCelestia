@@ -21,9 +21,7 @@ class SlideInPresentationController: UIPresentationController {
         self.direction = direction
         super.init(presentedViewController: presentedViewController, presenting: presentingViewController)
 
-        if #available(iOS 13.0, *) {
-            overrideTraitCollection = UITraitCollection(traitsFrom: [UITraitCollection(userInterfaceLevel: .base), UITraitCollection(horizontalSizeClass: .compact)])
-        }
+        overrideTraitCollection = UITraitCollection(traitsFrom: [UITraitCollection(userInterfaceLevel: .base), UITraitCollection(horizontalSizeClass: .compact)])
 
         setupDimmingViewIfNeeded()
     }
@@ -85,12 +83,8 @@ class SlideInPresentationController: UIPresentationController {
     }
 
     override func presentationTransitionWillBegin() {
-        guard let dimmingView = dimmingView else {
-            if let container = containerView, container.responds(to: NSSelectorFromString("setIgnoreDirectTouchEvents:")) {
-                container.setValue(true, forKey: "ignoreDirectTouchEvents")
-            }
-            return
-        }
+        guard let dimmingView = dimmingView else { return }
+
         containerView?.insertSubview(dimmingView, at: 0)
 
         NSLayoutConstraint.activate(
@@ -124,9 +118,6 @@ class SlideInPresentationController: UIPresentationController {
 
 private extension SlideInPresentationController {
     func setupDimmingViewIfNeeded() {
-        if dimmingView != nil || direction == .bottomLeft || direction == .bottomRight {
-            return
-        }
         setupDimmingView()
     }
 
