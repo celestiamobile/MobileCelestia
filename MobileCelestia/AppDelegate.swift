@@ -101,6 +101,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UIView.appearance(whenContainedInInstancesOf: [UIAlertController.self]).tintColor = .themeLabel
         #endif
 
+        // Swizzle accessibilityPerformEscape to support zorro gesture return
+        let escapeSelector = #selector(UIViewController.accessibilityPerformEscape)
+        if let escapeMethod = class_getInstanceMethod(UIViewController.self, escapeSelector) {
+            let imp = method_getImplementation(escapeMethod)
+            class_replaceMethod(UIViewController.self, escapeSelector, imp_implementationWithBlock({ (self: UIViewController) -> Bool in
+                let oldIMP = unsafeBitCast(imp, to: (@convention(c) (UIViewController, Selector) -> Bool).self)
+                var handled = oldIMP(self, escapeSelector)
+                if !handled {
+                    if self.parent == nil && (self.presentationController is SlideInPresentationController || self.presentationController is SheetPresentationController) {
+                        self.presentingViewController?.dismiss(animated: true)
+                        handled = true
+                    }
+                }
+                return handled
+            } as @convention(block) (UIViewController) -> Bool), method_getTypeEncoding(escapeMethod))
+        }
+
         #if !DEBUG
         #if targetEnvironment(macCatalyst)
         let appCenterID = "APPCENTER-APP-CATALYST"
