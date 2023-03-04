@@ -54,7 +54,7 @@ extension CelestiaAction {
 
 @MainActor
 protocol CelestiaInteractionControllerDelegate: AnyObject {
-    func celestiaInteractionController(_ celestiaInteractionController: CelestiaInteractionController, requestShowActionMenuWithSelection selection: Selection)
+    func celestiaInteractionControllerRequestShowActionMenu(_ celestiaInteractionController: CelestiaInteractionController)
     func celestiaInteractionController(_ celestiaInteractionController: CelestiaInteractionController, requestShowInfoWithSelection selection: Selection)
     func celestiaInteractionController(_ celestiaInteractionController: CelestiaInteractionController, requestWebInfo webURL: URL)
     func celestiaInteractionControllerCanAcceptKeyEvents(_ celestiaInteractionController: CelestiaInteractionController) -> Bool
@@ -133,6 +133,7 @@ class CelestiaInteractionController: UIViewController {
 
     @Injected(\.appCore) private var core
     @Injected(\.executor) private var executor
+    @Injected(\.userDefaults) private var userDefaults
 
     weak var delegate: CelestiaInteractionControllerDelegate?
     weak var targetProvider: RenderingTargetInformationProvider?
@@ -235,10 +236,7 @@ extension CelestiaInteractionController: CelestiaControlViewDelegate {
         } else if action == .show {
             self.showControlView()
         } else if action == .showMenu {
-            Task {
-                let selection = await executor.selection
-                self.delegate?.celestiaInteractionController(self, requestShowActionMenuWithSelection: selection)
-            }
+            self.delegate?.celestiaInteractionControllerRequestShowActionMenu(self)
         } else if action == .info {
             Task {
                 let selection = await executor.selection
@@ -754,31 +752,100 @@ private extension CelestiaInteractionController {
 
     private func gameControllerChanged(_ controller: GCController) {
         var buttonA: GCDeviceButtonInput?
+        var buttonB: GCDeviceButtonInput?
         var buttonX: GCDeviceButtonInput?
+        var buttonY: GCDeviceButtonInput?
         var leftThumbstick: GCControllerDirectionPad?
         var rightThumbstick: GCControllerDirectionPad?
         var leftTrigger: GCDeviceButtonInput?
         var rightTrigger: GCDeviceButtonInput?
+        var leftBumper: GCDeviceButtonInput?
+        var rightBumper: GCDeviceButtonInput?
+        var dpadUp: GCDeviceButtonInput?
+        var dpadDown: GCDeviceButtonInput?
+        var dpadLeft: GCDeviceButtonInput?
+        var dpadRight: GCDeviceButtonInput?
+        var buttonMenu: GCDeviceButtonInput?
 
         if let extendedGamepad = controller.extendedGamepad {
             buttonA = extendedGamepad.buttonA
+            buttonB = extendedGamepad.buttonB
             buttonX = extendedGamepad.buttonX
+            buttonY = extendedGamepad.buttonY
             leftThumbstick = extendedGamepad.leftThumbstick
             rightThumbstick = extendedGamepad.rightThumbstick
             leftTrigger = extendedGamepad.leftTrigger
             rightTrigger = extendedGamepad.rightTrigger
+            leftBumper = extendedGamepad.leftShoulder
+            rightBumper = extendedGamepad.rightShoulder
+            dpadUp = extendedGamepad.dpad.up
+            dpadDown = extendedGamepad.dpad.down
+            dpadLeft = extendedGamepad.dpad.left
+            dpadRight = extendedGamepad.dpad.right
+            buttonMenu = extendedGamepad.buttonMenu
         } else if let microGamepad = controller.microGamepad {
             buttonA = microGamepad.buttonA
             buttonX = microGamepad.buttonX
+            dpadUp = microGamepad.dpad.up
+            dpadDown = microGamepad.dpad.down
+            dpadLeft = microGamepad.dpad.left
+            dpadRight = microGamepad.dpad.right
+            buttonMenu = microGamepad.buttonMenu
         }
 
-        let buttonStateChangedHandler = { [weak self] (button: JoystickButton, pressed: Bool) in
+        let buttonStateChangedHandler = { [weak self] (key: UserDefaultsKey, defaultValue: GameControllerAction, pressed: Bool) in
             guard let self = self else { return }
             guard self.delegate?.celestiaInteractionControllerCanAcceptKeyEvents(self) == true else {
                 return
             }
-            self.executor.run { core in
-                pressed ? core.joystickButtonDown(button) : core.joystickButtonUp(button)
+            let value: Int = self.userDefaults[key] ?? defaultValue.rawValue
+            guard let action = GameControllerAction(rawValue: value) else { return }
+
+            switch action {
+            case .noop:
+                break
+            case .moveFaster:
+                self.executor.run { pressed ? $0.joystickButtonDown(.button2) : $0.joystickButtonUp(.button2) }
+            case .moveSlower:
+                self.executor.run { pressed ? $0.joystickButtonDown(.button1) : $0.joystickButtonUp(.button1) }
+            case .stopSpeed:
+                if !pressed {
+                    self.executor.run { $0.charEnter(115) }
+                }
+            case .reverseSpeed:
+                if !pressed {
+                    self.executor.run { $0.charEnter(113) }
+                }
+            case .reverseOrientation:
+                if !pressed {
+                    self.executor.run { $0.simulation.reverseObserverOrientation() }
+                }
+            case .tapCenter:
+                self.executor.run { core in
+                    let size = core.size
+                    let center = CGPoint(x: size.width / 2, y: size.height / 2)
+                    pressed ? core.mouseButtonDown(at: center, modifiers: 0, with: .left) : core.mouseButtonUp(at: center, modifiers: 0, with: .left)
+                }
+            case .goTo:
+                if !pressed {
+                    self.executor.run { $0.charEnter(103) }
+                }
+            case .esc:
+                if !pressed {
+                    self.executor.run { $0.charEnter(27) }
+                }
+            case .pitchUp:
+                self.executor.run { pressed ? $0.keyDown(26) : $0.keyUp(26) }
+            case .pitchDown:
+                self.executor.run { pressed ? $0.keyDown(32) : $0.keyUp(32) }
+            case .yawLeft:
+                self.executor.run { pressed ? $0.keyDown(28) : $0.keyUp(28) }
+            case .yawRight:
+                self.executor.run { pressed ? $0.keyDown(30) : $0.keyUp(30) }
+            case .rollLeft:
+                self.executor.run { pressed ? $0.keyDown(31) : $0.keyUp(31) }
+            case .rollRight:
+                self.executor.run { pressed ? $0.keyDown(33) : $0.keyUp(33) }
             }
         }
         let thumbstickChangedHandler = { [weak self] (xValue: Float, yValue: Float) in
@@ -786,16 +853,21 @@ private extension CelestiaInteractionController {
             guard self.delegate?.celestiaInteractionControllerCanAcceptKeyEvents(self) == true else {
                 return
             }
+            let shouldInvertX = self.userDefaults[.gameControllerInvertX] == true
+            let shouldInvertY = self.userDefaults[.gameControllerInvertY] == true
             self.executor.run { core in
-                core.joystickAxis(.X, amount: xValue)
-                core.joystickAxis(.Y, amount: yValue)
+                core.joystickAxis(.X, amount: shouldInvertX ? -xValue : xValue)
+                core.joystickAxis(.Y, amount: shouldInvertY ? -yValue : yValue)
             }
         }
-        buttonA?.valueChangedHandler = { _, _, pressed in
-            buttonStateChangedHandler(.button1, pressed)
-        }
-        buttonX?.valueChangedHandler = { _, _, pressed in
-            buttonStateChangedHandler(.button2, pressed)
+        buttonMenu?.valueChangedHandler = { [weak self] _, _, pressed in
+            guard let self = self else { return }
+            guard self.delegate?.celestiaInteractionControllerCanAcceptKeyEvents(self) == true else {
+                return
+            }
+            if !pressed {
+                self.delegate?.celestiaInteractionControllerRequestShowActionMenu(self)
+            }
         }
         leftThumbstick?.valueChangedHandler = { _, xValue, yValue in
             thumbstickChangedHandler(xValue, yValue)
@@ -803,11 +875,41 @@ private extension CelestiaInteractionController {
         rightThumbstick?.valueChangedHandler = { _, xValue, yValue in
             thumbstickChangedHandler(xValue, yValue)
         }
+        buttonA?.valueChangedHandler = { _, _, pressed in
+            buttonStateChangedHandler(.gameControllerRemapA, .moveSlower, pressed)
+        }
+        buttonB?.valueChangedHandler = { _, _, pressed in
+            buttonStateChangedHandler(.gameControllerRemapB, .noop, pressed)
+        }
+        buttonX?.valueChangedHandler = { _, _, pressed in
+            buttonStateChangedHandler(.gameControllerRemapX, .moveFaster, pressed)
+        }
+        buttonY?.valueChangedHandler = { _, _, pressed in
+            buttonStateChangedHandler(.gameControllerRemapY, .noop, pressed)
+        }
         leftTrigger?.valueChangedHandler = { _, _, pressed in
-            buttonStateChangedHandler(.button7, pressed)
+            buttonStateChangedHandler(.gameControllerRemapLT, .rollLeft, pressed)
         }
         rightTrigger?.valueChangedHandler = { _, _, pressed in
-            buttonStateChangedHandler(.button8, pressed)
+            buttonStateChangedHandler(.gameControllerRemapRT, .rollRight, pressed)
+        }
+        leftBumper?.valueChangedHandler = { _, _, pressed in
+            buttonStateChangedHandler(.gameControllerRemapLB, .noop, pressed)
+        }
+        rightBumper?.valueChangedHandler = { _, _, pressed in
+            buttonStateChangedHandler(.gameControllerRemapRB, .noop, pressed)
+        }
+        dpadLeft?.valueChangedHandler = { _, _, pressed in
+            buttonStateChangedHandler(.gameControllerRemapDpadLeft, .rollLeft, pressed)
+        }
+        dpadRight?.valueChangedHandler = { _, _, pressed in
+            buttonStateChangedHandler(.gameControllerRemapDpadRight, .rollRight, pressed)
+        }
+        dpadUp?.valueChangedHandler = { _, _, pressed in
+            buttonStateChangedHandler(.gameControllerRemapDpadUp, .pitchUp, pressed)
+        }
+        dpadDown?.valueChangedHandler = { _, _, pressed in
+            buttonStateChangedHandler(.gameControllerRemapDpadDown, .pitchDown, pressed)
         }
 
         connectedGameController = controller

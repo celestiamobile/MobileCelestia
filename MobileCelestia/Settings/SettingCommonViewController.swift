@@ -43,6 +43,10 @@ private extension SettingCommonViewController {
         tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Checkmark")
         tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Custom")
         tableView.register(SettingSwitchCell.self, forCellReuseIdentifier: "Switch")
+        tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Selection")
+        if #available(iOS 15, *) {
+            tableView.register(SettingSelectionCell.self, forCellReuseIdentifier: "Selection15")
+        }
         title = item.title
     }
 }
@@ -146,6 +150,27 @@ extension SettingCommonViewController {
             } else {
                 logWrongAssociatedItemType(row.associatedItem)
             }
+        case .prefSelection:
+            if let item = row.associatedItem.base as? AssociatedPreferenceSelectionItem {
+                let currentValue: Int = self.userDefaults[item.key] ?? item.defaultOption
+                if #available(iOS 15, *) {
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "Selection15", for: indexPath) as! SettingSelectionCell
+                    cell.title = row.name
+                    cell.selectionData = SettingSelectionCell.SelectionData(options: item.options.map { $0.name }, selectedIndex: item.options.firstIndex(where: { $0.value == currentValue }) ?? -1)
+                    cell.selectionChange = { [weak self] index in
+                        guard let self else { return }
+                        self.userDefaults[item.key] = item.options[index].value
+                    }
+                    return cell
+                }
+                let cell = tableView.dequeueReusableCell(withIdentifier: "Selection", for: indexPath) as! SettingTextCell
+                cell.title = row.name
+                cell.detail = item.options.first(where: { $0.value == currentValue })?.name ?? ""
+                cell.accessoryType = .disclosureIndicator
+                return cell
+            } else {
+                logWrongAssociatedItemType(row.associatedItem)
+            }
         default:
             fatalError("SettingCommonViewController cannot handle this type of item")
         }
@@ -176,6 +201,18 @@ extension SettingCommonViewController {
         case .custom:
             guard let item = row.associatedItem.base as? AssociatedCustomItem else { break }
             item.block(executor)
+        case .prefSelection:
+            if #available(iOS 15, *) {
+                break
+            }
+            guard let item = row.associatedItem.base as? AssociatedPreferenceSelectionItem else { break }
+            let currentValue: Int = userDefaults[item.key] ?? item.defaultOption
+            let vc = SettingSelectionViewController(title: row.name, options: item.options.map { $0.name }, selectedIndex: item.options.firstIndex(where: { $0.value == currentValue })) { [weak self] newIndex in
+                guard let self else { return }
+                self.userDefaults[item.key] = item.options[newIndex].value
+                self.tableView.reloadData()
+            }
+            navigationController?.pushViewController(vc, animated: true)
         default:
             break
         }

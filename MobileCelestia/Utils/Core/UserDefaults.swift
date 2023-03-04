@@ -22,6 +22,20 @@ enum UserDefaultsKey: String {
     case onboardMessageDisplayed
     case lastNewsID
     #endif
+    case gameControllerRemapA
+    case gameControllerRemapB
+    case gameControllerRemapX
+    case gameControllerRemapY
+    case gameControllerRemapLT
+    case gameControllerRemapRT
+    case gameControllerRemapLB
+    case gameControllerRemapRB
+    case gameControllerRemapDpadLeft
+    case gameControllerRemapDpadRight
+    case gameControllerRemapDpadUp
+    case gameControllerRemapDpadDown
+    case gameControllerInvertX
+    case gameControllerInvertY
 }
 
 extension UserDefaults {

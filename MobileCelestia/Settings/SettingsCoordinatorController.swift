@@ -89,11 +89,22 @@ private extension SettingsCoordinatorController {
                 viewController = SettingsFrameRateViewController(screen: self.screenProvider(), frameRateUpdateHandler: { [weak self] newFrameRate in
                     self?.actionHandler(.refreshFrameRate(newFrameRate: newFrameRate))
                 })
-            case .slider, .prefSwitch, .checkmark, .action, .custom, .keyedSelection:
+            case .slider, .prefSwitch, .checkmark, .action, .custom, .keyedSelection, .prefSelection:
                 fatalError("Use .common for slider/action setting item.")
             }
             #if targetEnvironment(macCatalyst)
-            self.controller.viewControllers = [self.controller.viewControllers[0], viewController]
+            let navigationController: UINavigationController
+            if #available(iOS 16, *) {
+                navigationController = SettingsNavigationController(rootViewController: viewController)
+            } else {
+                navigationController = UINavigationController(rootViewController: viewController)
+            }
+            self.controller.viewControllers = [self.controller.viewControllers[0], navigationController]
+            if #available(iOS 16.0, *) {
+                if let windowScene = self.controller.view.window?.windowScene {
+                    windowScene.titlebar?.titleVisibility = .visible
+                }
+            }
             #else
             self.navigation.pushViewController(viewController, animated: true)
             #endif
@@ -118,3 +129,12 @@ private extension SettingsCoordinatorController {
         #endif
     }
 }
+
+#if targetEnvironment(macCatalyst)
+@available(macCatalyst 16.0, *)
+class SettingsNavigationController: UINavigationController, UINavigationBarDelegate {
+    func navigationBarNSToolbarSection(_ navigationBar: UINavigationBar) -> UINavigationBar.NSToolbarSection {
+        return .content
+    }
+}
+#endif

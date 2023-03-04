@@ -36,6 +36,27 @@ extension URL {
         return components.url!
     }
 
+    static func fromGuideShort(path: String, language: String, shareable: Bool? = nil) -> URL {
+        let baseURL = "https://celestia.mobi"
+        var components = URLComponents(string: baseURL)!
+        components.path = path
+        #if targetEnvironment(macCatalyst)
+        let platform = "catalyst"
+        #else
+        let platform = "ios"
+        #endif
+        var queryItems = [
+            URLQueryItem(name: "lang", value: language),
+            URLQueryItem(name: "platform", value: platform),
+            URLQueryItem(name: "theme", value: "dark")
+        ]
+        if let shareable = shareable {
+            queryItems.append(URLQueryItem(name: "share", value: shareable ? "true" : "false"))
+        }
+        components.queryItems = queryItems
+        return components.url!
+    }
+
     static func fromAddon(addonItemID: String, language: String) -> URL {
         let baseURL = "https://celestia.mobi/resources/item"
         var components = URLComponents(string: baseURL)!
@@ -439,7 +460,7 @@ extension MainViewController: CelestiaControllerDelegate {
         self.openURLOrScriptOrGreeting()
     }
 
-    func celestiaController(_ celestiaController: CelestiaViewController, requestShowActionMenuWithSelection selection: Selection) {
+    func celestiaControllerRequestShowActionMenu(_ celestiaController: CelestiaViewController) {
         let actions: [[AppToolbarAction]] = AppToolbarAction.persistentAction
         let controller = ToolbarViewController(actions: actions)
         controller.selectionHandler = { [unowned self] (action) in
@@ -461,6 +482,17 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     func celestiaControllerCanAcceptKeyEvents(_ celestiaController: CelestiaViewController) -> Bool {
+        #if targetEnvironment(macCatalyst)
+        // Check if the associated window is activated
+        if let window = view.window?.nsWindow {
+            if window.responds(to: NSSelectorFromString("isMainWindow")) {
+                let isMainWindow = window.value(forKey: "isMainWindow") as! Bool
+                if !isMainWindow {
+                    return false
+                }
+            }
+        }
+        #endif
         return presentedViewController == nil
     }
 
@@ -720,7 +752,7 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     @objc private func presentHelp() {
-        let url = URL.fromGuide(guideItemID: "823FB82E-F660-BE54-F3E4-681F5BFD365D", language: AppCore.language, shareable: false)
+        let url = URL.fromGuideShort(path: "/help/welcome", language: AppCore.language, shareable: false)
         let vc = FallbackWebViewController(url: url, fallbackViewControllerCreator: OnboardViewController() { [unowned self] (action) in
             switch action {
             case .tutorial(let tutorial):

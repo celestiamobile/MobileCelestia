@@ -13,7 +13,14 @@ import UIKit
 
 import CelestiaCore
 
-class CameraControlViewController: BaseTableViewController {
+final class CameraControlViewController: BaseTableViewController {
+    #if targetEnvironment(macCatalyst)
+    private let singleRowBaseIndex = 0
+    #else
+    private let singleRowBaseIndex = 1
+    #endif
+
+    #if !targetEnvironment(macCatalyst)
     struct Item {
         let title: String
         let minusKey: Int
@@ -27,6 +34,7 @@ class CameraControlViewController: BaseTableViewController {
     ]
 
     private var lastKey: Int?
+    #endif
 
     @Injected(\.executor) private var executor
 
@@ -55,20 +63,36 @@ private extension CameraControlViewController {
 
 extension CameraControlViewController {
     override func numberOfSections(in tableView: UITableView) -> Int {
+        #if targetEnvironment(macCatalyst)
         return 2
+        #else
+        return 3
+        #endif
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 0 { return controlItems.count }
-        return 1
+        if section >= singleRowBaseIndex { return 1 }
+        #if !targetEnvironment(macCatalyst)
+        return controlItems.count
+        #else
+        fatalError()
+        #endif
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.section == 1 {
+        if indexPath.section == singleRowBaseIndex {
             let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
-            cell.title = CelestiaString("Reverse Direction", comment: "")
+            cell.title = CelestiaString("Flight Mode", comment: "")
+            cell.accessoryType = .disclosureIndicator
             return cell
         }
+        if indexPath.section == singleRowBaseIndex + 1 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
+            cell.title = CelestiaString("Reverse Direction", comment: "")
+            cell.accessoryType = .none
+            return cell
+        }
+        #if !targetEnvironment(macCatalyst)
         let item = controlItems[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "Stepper", for: indexPath) as! SettingStepperCell
         cell.title = item.title
@@ -80,14 +104,19 @@ extension CameraControlViewController {
             self.handleStop()
         }
         return cell
+        #else
+        fatalError()
+        #endif
     }
 
+    #if !targetEnvironment(macCatalyst)
     override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         if section == 0 {
             return CelestiaString("Long press on stepper to change orientation.", comment: "")
         }
         return nil
     }
+    #endif
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
@@ -96,10 +125,18 @@ extension CameraControlViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        executor.run { $0.simulation.reverseObserverOrientation() }
+        if indexPath.section == singleRowBaseIndex {
+            navigationController?.pushViewController(ObserverModeViewController(), animated: true)
+            return
+        }
+        if indexPath.section == singleRowBaseIndex + 1 {
+            executor.run { $0.simulation.reverseObserverOrientation() }
+            return
+        }
     }
 }
 
+#if !targetEnvironment(macCatalyst)
 private extension CameraControlViewController {
     func handleItemChange(index: Int, plus: Bool) {
         let key = plus ? controlItems[index].plusKey : controlItems[index].minusKey
@@ -119,3 +156,4 @@ private extension CameraControlViewController {
         }
     }
 }
+#endif

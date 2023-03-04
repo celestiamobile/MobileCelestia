@@ -208,6 +208,7 @@ extension GoToInputViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
         cell.title = item.title
         cell.detail = item.detail
+        cell.accessoryType = .disclosureIndicator
         return cell
     }
 
@@ -225,13 +226,12 @@ extension GoToInputViewController {
         if item is ObjectNameItem {
             objectNameHandler(self)
         } else if item is UnitItem {
-            guard let cell = tableView.cellForRow(at: indexPath) else { return }
-            showSelection(nil, options: DistanceUnit.allCases.map({ CelestiaString($0.name, comment: "") }), source: .view(view: cell, sourceRect: nil)) { [weak self] index in
+            let vc = SettingSelectionViewController(title: CelestiaString("Distance Unit", comment: ""), options: DistanceUnit.allCases.map { CelestiaString($0.name, comment: "") }, selectedIndex: DistanceUnit.allCases.firstIndex(of: unit), selectionChange: { [weak self] index in
                 guard let self = self else { return }
-                guard let newIndex = index else { return }
-                self.unit = DistanceUnit.allCases[newIndex]
+                self.unit = DistanceUnit.allCases[index]
                 self.reload()
-            }
+            })
+            navigationController?.pushViewController(vc, animated: true)
         } else if let valueItem = item as? DoubleValueItem {
             showTextInput(item.title, text: item.detail, keyboardType: .decimalPad) { [weak self] string in
                 guard let self = self else { return }

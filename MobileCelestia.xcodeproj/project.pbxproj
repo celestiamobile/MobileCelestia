@@ -76,6 +76,11 @@
 		EA544E5F2566BC50003F351D /* DestinationDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA544E5E2566BC50003F351D /* DestinationDetailViewController.swift */; };
 		EA5D32E7266F9518005D5931 /* SheetPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5D32E6266F9518005D5931 /* SheetPresentationController.swift */; };
 		EA5E185D2477C78E00F5374B /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5E185B2477C78E00F5374B /* Toast.swift */; };
+		EA6671C929B3919C00A7846E /* SettingSelectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6671C829B3919C00A7846E /* SettingSelectionCell.swift */; };
+		EA6671CB29B391B900A7846E /* SettingSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6671CA29B391B900A7846E /* SettingSelectionViewController.swift */; };
+		EA6671CE29B3947800A7846E /* GameControllerAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6671CD29B3947800A7846E /* GameControllerAction.swift */; };
+		EA6671D129B3A81200A7846E /* ObserverModeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6671D029B3A81200A7846E /* ObserverModeViewController.swift */; };
+		EA6671D329B3A9AE00A7846E /* LinkFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6671D229B3A9AE00A7846E /* LinkFooterView.swift */; };
 		EA7209E027C64270004C1400 /* UILabel+DynamicType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA7209DF27C64270004C1400 /* UILabel+DynamicType.swift */; };
 		EA775EB42664B63F00479295 /* ActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA775EB32664B63F00479295 /* ActionButton.swift */; };
 		EA787309296DE50D0099AB11 /* Injecton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA787308296DE50D0099AB11 /* Injecton.swift */; };
@@ -255,6 +260,11 @@
 		EA544E5E2566BC50003F351D /* DestinationDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DestinationDetailViewController.swift; sourceTree = "<group>"; };
 		EA5D32E6266F9518005D5931 /* SheetPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SheetPresentationController.swift; sourceTree = "<group>"; };
 		EA5E185B2477C78E00F5374B /* Toast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
+		EA6671C829B3919C00A7846E /* SettingSelectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingSelectionCell.swift; sourceTree = "<group>"; };
+		EA6671CA29B391B900A7846E /* SettingSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingSelectionViewController.swift; sourceTree = "<group>"; };
+		EA6671CD29B3947800A7846E /* GameControllerAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameControllerAction.swift; sourceTree = "<group>"; };
+		EA6671D029B3A81200A7846E /* ObserverModeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObserverModeViewController.swift; sourceTree = "<group>"; };
+		EA6671D229B3A9AE00A7846E /* LinkFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkFooterView.swift; sourceTree = "<group>"; };
 		EA7209DF27C64270004C1400 /* UILabel+DynamicType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+DynamicType.swift"; sourceTree = "<group>"; };
 		EA775EB32664B63F00479295 /* ActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButton.swift; sourceTree = "<group>"; };
 		EA787308296DE50D0099AB11 /* Injecton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Injecton.swift; sourceTree = "<group>"; };
@@ -420,6 +430,7 @@
 		977394A92403F05100E38B82 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				EA6671C829B3919C00A7846E /* SettingSelectionCell.swift */,
 				977394AB2403F07C00E38B82 /* SettingsCoordinatorController.swift */,
 				977394AD2403F08800E38B82 /* SettingsMainViewController.swift */,
 				EA86E38326FE20C000FF2278 /* SettingsFrameRateViewController.swift */,
@@ -435,6 +446,7 @@
 				97EB41C82408F26200E6D441 /* SettingStepperCell.swift */,
 				EABDE366247170F000E0A5FA /* SettngSliderCell.swift */,
 				EABDE3A82473DAA300E0A5FA /* SettingCommonViewController.swift */,
+				EA6671CA29B391B900A7846E /* SettingSelectionViewController.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -496,6 +508,7 @@
 		979D2F7C23FEB1A6005D2592 /* MobileCelestia */ = {
 			isa = PBXGroup;
 			children = (
+				EA6671CC29B3946C00A7846E /* Control */,
 				EA374CCF263A8B1E0069589C /* GoTo */,
 				EABF790E253895DD00F2460C /* Resource */,
 				EAF4851D249B5C0F00E5B817 /* Common */,
@@ -630,6 +643,15 @@
 			path = GoTo;
 			sourceTree = "<group>";
 		};
+		EA6671CC29B3946C00A7846E /* Control */ = {
+			isa = PBXGroup;
+			children = (
+				EA6671D029B3A81200A7846E /* ObserverModeViewController.swift */,
+				EA6671CD29B3947800A7846E /* GameControllerAction.swift */,
+			);
+			path = Control;
+			sourceTree = "<group>";
+		};
 		EA787338296EB5D50099AB11 /* Core */ = {
 			isa = PBXGroup;
 			children = (
@@ -704,6 +726,7 @@
 				EA85C914289E9AD2009ADB1C /* AutoSizingView.swift */,
 				EA85C916289EA1ED009ADB1C /* IconView.swift */,
 				EA85C91A289F5811009ADB1C /* ButtonView.swift */,
+				EA6671D229B3A9AE00A7846E /* LinkFooterView.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -992,6 +1015,7 @@
 				EA85C915289E9AD2009ADB1C /* AutoSizingView.swift in Sources */,
 				EABF7911253895FD00F2460C /* ResourceViewController.swift in Sources */,
 				EAA6C4CB253B5CD200ED1D60 /* InstalledResourceViewController.swift in Sources */,
+				EA6671D329B3A9AE00A7846E /* LinkFooterView.swift in Sources */,
 				EA85C91B289F5811009ADB1C /* ButtonView.swift in Sources */,
 				EAF48520249B5C2500E5B817 /* StandardButton.swift in Sources */,
 				EA775EB42664B63F00479295 /* ActionButton.swift in Sources */,
@@ -1007,9 +1031,11 @@
 				977CDD30240BD78F00137127 /* TutorialActionCell.swift in Sources */,
 				EABDE3A92473DAA300E0A5FA /* SettingCommonViewController.swift in Sources */,
 				9773949C2402A8F700E38B82 /* ToolbarViewController.swift in Sources */,
+				EA6671D129B3A81200A7846E /* ObserverModeViewController.swift in Sources */,
 				EA85C917289EA1ED009ADB1C /* IconView.swift in Sources */,
 				979D2F8223FEB1A6005D2592 /* CelestiaViewController.swift in Sources */,
 				EA78733E296EB61B0099AB11 /* URL.swift in Sources */,
+				EA6671CB29B391B900A7846E /* SettingSelectionViewController.swift in Sources */,
 				EA7209E027C64270004C1400 /* UILabel+DynamicType.swift in Sources */,
 				977394AE2403F08800E38B82 /* SettingsMainViewController.swift in Sources */,
 				973BBA452405216700E3B061 /* AboutViewController.swift in Sources */,
@@ -1035,6 +1061,8 @@
 				EA787341296EB68A0099AB11 /* Bundle.swift in Sources */,
 				EA17952027B371D700D47397 /* GuideItem.swift in Sources */,
 				977394AC2403F07C00E38B82 /* SettingsCoordinatorController.swift in Sources */,
+				EA6671C929B3919C00A7846E /* SettingSelectionCell.swift in Sources */,
+				EA6671CE29B3947800A7846E /* GameControllerAction.swift in Sources */,
 				974F86E02403BD3C00356795 /* BodyDescriptionCell.swift in Sources */,
 				972477D72404A65C00729B45 /* BrowserCoordinatorController.swift in Sources */,
 				974F86E12403BD3C00356795 /* BodyInfoLayoutDelegate.swift in Sources */,
@@ -1215,7 +1243,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
-				SHARED_BUILD_NUMBER = 284;
+				SHARED_BUILD_NUMBER = 287;
 				SHARED_BUILD_VERSION = 1.5.19;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1272,7 +1300,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				SDKROOT = iphoneos;
-				SHARED_BUILD_NUMBER = 284;
+				SHARED_BUILD_NUMBER = 287;
 				SHARED_BUILD_VERSION = 1.5.19;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";

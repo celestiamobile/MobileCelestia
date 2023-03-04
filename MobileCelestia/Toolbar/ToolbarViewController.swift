@@ -50,11 +50,7 @@ enum AppToolbarAction: String {
     #endif
 
     static var persistentAction: [[AppToolbarAction]] {
-        #if targetEnvironment(macCatalyst)
-        return [[.setting], [.share, .search, .home, .paperplane], [.time, .script, .speedometer], [.browse, .favorite, .event], [.addons, .download, .newsarchive], [.help]]
-        #else
         return [[.setting], [.share, .search, .home, .paperplane], [.camera, .time, .script, .speedometer], [.browse, .favorite, .event], [.addons, .download, .newsarchive], [.help]]
-        #endif
     }
 }
 
