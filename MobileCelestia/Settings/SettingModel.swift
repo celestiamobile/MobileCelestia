@@ -27,6 +27,7 @@ enum SettingType: Hashable {
     case custom
     case keyedSelection
     case prefSelection
+    case selection
 }
 
 struct AssociatedSelectionItem: Hashable {
@@ -51,6 +52,7 @@ typealias AssociatedPreferenceSwitchItem = SettingPreferenceSwitchItem
 typealias AssociatedCheckmarkItem = SettingCheckmarkItem
 typealias AssociatedKeyedSelectionItem = SettingKeyedSelectionItem
 typealias AssociatedPreferenceSelectionItem = SettingPreferenceSelectionItem
+typealias AssociatedSelectionSingleItem = SettingSelectionSingleItem
 typealias AssociatedCustomItem = BlockHolder<CelestiaExecutor>
 
 class BlockHolder<T: Sendable>: NSObject {
@@ -108,6 +110,17 @@ struct SettingKeyedSelectionItem: Hashable {
     let name: String
     let key: String
     let index: Int
+}
+
+struct SettingSelectionSingleItem: Hashable {
+    struct Option: Hashable {
+        let name: String
+        let value: Int
+    }
+
+    let key: String
+    let options: [Option]
+    let defaultOption: Int
 }
 
 struct SettingSliderItem: Hashable {
@@ -705,14 +718,28 @@ let mainSetting = [
                     AssociatedCommonItem(
                         title: CelestiaString("Star Style", comment: ""),
                         sections: [
-                            AssociatedSelectionItem(
-                                key: "starStyle",
-                                items: [
-                                    SettingSelectionItem(name: CelestiaString("Fuzzy Points", comment: ""), index: 0),
-                                    SettingSelectionItem(name: CelestiaString("Points", comment: ""), index: 1),
-                                    SettingSelectionItem(name: CelestiaString("Scaled Discs", comment: ""), index: 2),
-                                ]
-                            ).toSection()
+                            .init(header: nil, rows: [
+                                SettingItem(name: CelestiaString("Star Style", comment: ""), type: .selection, associatedItem: .init(
+                                    AssociatedSelectionSingleItem(key: "starStyle", options: [
+                                        .init(name: CelestiaString("Fuzzy Points", comment: ""), value: 0),
+                                        .init(name: CelestiaString("Points", comment: ""), value: 1),
+                                        .init(name: CelestiaString("Scaled Discs", comment: ""), value: 2),
+                                    ], defaultOption: 0)
+                                )),
+                                SettingItem(name: CelestiaString("Star Colors", comment: ""), type: .selection, associatedItem: .init(
+                                    AssociatedSelectionSingleItem(key: "starColors", options: [
+                                        .init(name: CelestiaString("Classic Colors", comment: ""), value: 0),
+                                        .init(name: CelestiaString("Blackbody D65", comment: ""), value: 1),
+                                    ], defaultOption: 1)
+                                )),
+                                SettingItem(
+                                    name: CelestiaString("Tinted Illumination Saturation", comment: ""),
+                                    type: .slider,
+                                    associatedItem: .init(
+                                        AssociatedSliderItem(key: "tintSaturation", minValue: 0, maxValue: 1)
+                                    )
+                                ),
+                            ], footer: CelestiaString("Tinted illumination saturation setting is only effective with Blackbody D65 star colors.", comment: ""))
                         ]
                     )
                 )

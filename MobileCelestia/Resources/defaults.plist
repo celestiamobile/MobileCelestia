@@ -170,6 +170,10 @@
 		<integer>0</integer>
 		<key>scriptSystemAccessPolicy</key>
 		<integer>0</integer>
+		<key>starColors</key>
+		<integer>1</integer>
+		<key>tintSaturation</key>
+		<real>0.5</real>
 	</dict>
 </dict>
 </plist>

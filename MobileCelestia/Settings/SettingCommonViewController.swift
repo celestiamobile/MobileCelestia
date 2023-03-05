@@ -171,6 +171,29 @@ extension SettingCommonViewController {
             } else {
                 logWrongAssociatedItemType(row.associatedItem)
             }
+        case .selection:
+            if let item = row.associatedItem.base as? AssociatedSelectionSingleItem {
+                let currentValue = core.value(forKey: item.key) as? Int ?? item.defaultOption
+                if #available(iOS 15, *) {
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "Selection15", for: indexPath) as! SettingSelectionCell
+                    cell.title = row.name
+                    cell.selectionData = SettingSelectionCell.SelectionData(options: item.options.map { $0.name }, selectedIndex: item.options.firstIndex(where: { $0.value == currentValue }) ?? -1)
+                    cell.selectionChange = { [weak self] index in
+                        guard let self else { return }
+                        Task {
+                            await self.executor.setValue(item.options[index].value, forKey: item.key)
+                        }
+                    }
+                    return cell
+                }
+                let cell = tableView.dequeueReusableCell(withIdentifier: "Selection", for: indexPath) as! SettingTextCell
+                cell.title = row.name
+                cell.detail = item.options.first(where: { $0.value == currentValue })?.name ?? ""
+                cell.accessoryType = .disclosureIndicator
+                return cell
+            } else {
+                logWrongAssociatedItemType(row.associatedItem)
+            }
         default:
             fatalError("SettingCommonViewController cannot handle this type of item")
         }
@@ -211,6 +234,20 @@ extension SettingCommonViewController {
                 guard let self else { return }
                 self.userDefaults[item.key] = item.options[newIndex].value
                 self.tableView.reloadData()
+            }
+            navigationController?.pushViewController(vc, animated: true)
+        case .selection:
+            if #available(iOS 15, *) {
+                break
+            }
+            guard let item = row.associatedItem.base as? AssociatedSelectionSingleItem else { break }
+            let currentValue = core.value(forKey: item.key) as? Int ?? item.defaultOption
+            let vc = SettingSelectionViewController(title: row.name, options: item.options.map { $0.name }, selectedIndex: item.options.firstIndex(where: { $0.value == currentValue })) { [weak self] newIndex in
+                guard let self else { return }
+                Task {
+                    await self.executor.setValue(item.options[newIndex].value, forKey: item.key)
+                    self.tableView.reloadData()
+                }
             }
             navigationController?.pushViewController(vc, animated: true)
         default:
