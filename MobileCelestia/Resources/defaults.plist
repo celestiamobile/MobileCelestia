@@ -152,8 +152,6 @@
 		<integer>1</integer>
 		<key>starStyle</key>
 		<integer>0</integer>
-		<key>showTintedIllumination</key>
-		<integer>0</integer>
 		<key>timeZone</key>
 		<integer>0</integer>
 		<key>showFadingOrbits</key>

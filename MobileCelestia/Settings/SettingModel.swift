@@ -732,13 +732,6 @@ let mainSetting = [
                                         AssociatedCheckmarkItem(name: CelestiaString("Smooth Lines", comment: ""), key: "showSmoothLines", representation: .switch)
                                     )
                                 ),
-                                SettingItem(
-                                    name: CelestiaString("Tinted Illumination", comment: ""),
-                                    type: .checkmark,
-                                    associatedItem: .init(
-                                        AssociatedCheckmarkItem(name: CelestiaString("Tinted Illumination", comment: ""), key: "showTintedIllumination", representation: .switch)
-                                    )
-                                ),
                             ], footer: nil),
                             .init(header: nil, rows: [
                                 SettingItem(
