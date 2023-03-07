@@ -26,7 +26,6 @@ jobs:
   - checkout: CelestiaContent
     fetchDepth: 1
   - checkout: CelestiaLocalization
-    fetchDepth: 1
   - checkout: self
 
 
@@ -37,6 +36,8 @@ jobs:
       cd ../CelestiaCore
       git checkout origin/$(Build.SourceBranchName)
       git submodule update --init
+      cd ../CelestiaLocalization
+      git checkout origin/$(Build.SourceBranchName)
     displayName: 'Checkout Branch'
     condition: ne( variables['Build.Reason'], 'PullRequest' )
 
@@ -47,14 +48,22 @@ jobs:
       cd ../CelestiaCore
       git checkout origin/$(System.PullRequest.TargetBranch)
       git submodule update --init
+      cd ../CelestiaLocalization
+      git checkout origin/$(System.PullRequest.TargetBranch)
     displayName: 'Checkout Branch (PR)'
     condition: eq( variables['Build.Reason'], 'PullRequest' )
 
   - script: |
       cd Celestia
-      git cherry-pick origin/angle
+      git cherry-pick origin/angle-$(Build.SourceBranchName)
     displayName: 'Cherry-Pick ANGLE Commit'
-    condition: eq( variables['backend'], 'metalAngle' )
+    condition: and(eq( variables['backend'], 'metalAngle' ), ne( variables['Build.Reason'], 'PullRequest' ))
+
+  - script: |
+      cd Celestia
+      git cherry-pick origin/angle-$(System.PullRequest.TargetBranch)
+    displayName: 'Cherry-Pick ANGLE Commit (PR)'
+    condition: and(eq( variables['backend'], 'metalAngle' ), eq( variables['Build.Reason'], 'PullRequest' ))
 
   - script: |
       cd CelestiaCore

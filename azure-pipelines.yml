@@ -21,7 +21,8 @@ trigger:
   branches:
     include:
     - releases/*
-    - master
+    - main
+    - develop
 
 stages:
 - stage: Build_iOS
