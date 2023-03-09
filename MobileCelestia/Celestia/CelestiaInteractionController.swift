@@ -675,7 +675,11 @@ extension UIPanGestureRecognizer {
 }
 
 extension CelestiaInteractionController: AppCoreDelegate {
-    nonisolated func celestiaAppCoreFatalErrorHappened(_ error: String) {}
+    nonisolated func celestiaAppCoreFatalErrorHappened(_ error: String) {
+        Task { @MainActor in
+            self.showError(error)
+        }
+    }
     nonisolated func celestiaAppCoreCursorShapeChanged(_ shape: CursorShape) {}
     nonisolated func celestiaAppCoreWatchedFlagDidChange(_ changedFlag: WatcherFlag) {}
 }
