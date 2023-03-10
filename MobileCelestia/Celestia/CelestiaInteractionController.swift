@@ -400,10 +400,10 @@ extension CelestiaInteractionController {
         var button = interactionMode.button
         if #available(iOS 13.4, *) {
             modifiers = pan.modifierFlags
-            if pan.buttonMask.contains(.secondary) {
+            if pan.buttonMask.contains(.primary) {
+                button = .left
+            } else if pan.buttonMask.contains(.secondary) {
                 button = .right
-            } else if pan.buttonMask.contains(.primary) {
-                button = modifiers.contains(.alternate) ? .right : .left
             }
         }
         switch pan.state {
