@@ -157,6 +157,11 @@ extension UIViewController {
     }
 
     func present(_ viewController: UIViewController, source: PopoverSource?, completion: (() -> Void)? = nil) {
+        // Present from the top view controller to ensure that it can get presented correctly
+        var presentingController = self
+        while let viewController = presentingController.presentedViewController {
+            presentingController = viewController
+        }
         switch source {
         case .barButtonItem(let barButtonItem):
             viewController.popoverPresentationController?.barButtonItem = barButtonItem
@@ -180,6 +185,6 @@ extension UIViewController {
                 viewController.popoverPresentationController?.permittedArrowDirections = []
             }
         }
-        present(viewController, animated: true, completion: completion)
+        presentingController.present(viewController, animated: true, completion: completion)
     }
 }
