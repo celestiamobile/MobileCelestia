@@ -214,5 +214,9 @@
 	<array>
 		<string>space.celestia.celestia.addon-user-activity</string>
 	</array>
+	<key>NSSupportsSuddenTermination</key>
+	<false/>
+	<key>NSSupportsAutomaticTermination</key>
+	<false/>
 </dict>
 </plist>
