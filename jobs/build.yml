@@ -136,6 +136,10 @@ jobs:
     displayName: 'Download Mac (Developer ID) Provisioning Profile'
 
   - script: |
+      rm -rf CelestiaCore/libs/dependency/.git
+    displayName: 'Remove Unneeded Files'
+
+  - script: |
       sed -i '' 's/APPCENTER-APP-CATALYST/63a9e404-a07b-40eb-a5e7-320f65934b05/g' MobileCelestia/AppDelegate.swift
       sed -i '' 's/APPCENTER-APP-IOS/4c46cd7d-ea97-452b-920c-4328ac062db3/g' MobileCelestia/AppDelegate.swift
       echo "New Content:"
