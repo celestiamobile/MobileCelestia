@@ -38,7 +38,6 @@ jobs:
       git submodule update --init thirdparty/miniaudio
       cd ../CelestiaCore
       git checkout origin/$(Build.SourceBranchName)
-      git submodule update --init
       cd ../CelestiaLocalization
       git checkout origin/$(Build.SourceBranchName)
     displayName: 'Checkout Branch'
@@ -50,7 +49,6 @@ jobs:
       git submodule update --init thirdparty/miniaudio
       cd ../CelestiaCore
       git checkout origin/$(System.PullRequest.TargetBranch)
-      git submodule update --init
       cd ../CelestiaLocalization
       git checkout origin/$(System.PullRequest.TargetBranch)
     displayName: 'Checkout Branch (PR)'
@@ -79,6 +77,33 @@ jobs:
       git cherry-pick origin/angle-for-catalyst
     displayName: 'Cherry-Pick ANGLE for Catalyst Commit (2)'
     condition: and(eq( variables['sdk'], 'macosx' ), eq( variables['backend'], 'metalAngle' ))
+
+  - script: |
+      mkdir -p CelestiaCore/libs/dependency/ios
+      mkdir -p CelestiaCore/libs/dependency/catalyst
+    displayName: 'Creating Directories for Third Party Dependencies'
+
+  - task: UniversalPackages@0
+    inputs:
+      command: 'download'
+      downloadDirectory: 'CelestiaCore/libs/dependency/catalyst'
+      feedsToUse: 'internal'
+      vstsFeed: '9f9dcde1-dcba-4537-8214-71c8a03b99a0/14bb1031-e6b2-40ac-b287-73e7fcb5900e'
+      vstsFeedPackage: 'ef4b9b1c-43f9-4b15-91ae-8a601ae5ef45'
+      vstsPackageVersion: '0.0.4'
+    displayName: 'Download Catalyst Dependencies'
+    condition: eq( variables['sdk'], 'macosx' )
+
+  - task: UniversalPackages@0
+    inputs:
+      command: 'download'
+      downloadDirectory: 'CelestiaCore/libs/dependency/ios'
+      feedsToUse: 'internal'
+      vstsFeed: '9f9dcde1-dcba-4537-8214-71c8a03b99a0/14bb1031-e6b2-40ac-b287-73e7fcb5900e'
+      vstsFeedPackage: '929aa8ac-b8eb-409b-afe7-30f2b73aebc8'
+      vstsPackageVersion: '0.0.4'
+    displayName: 'Download iOS Dependencies'
+    condition: eq( variables['sdk'], 'iphoneos' )
 
   - script: |
       sudo xcode-select -s /Applications/Xcode_$XC_VERSION.app
@@ -137,10 +162,6 @@ jobs:
     inputs:
       secureFile: 'DeveloperIDApplication20270202.provisionprofile'
     displayName: 'Download Mac (Developer ID) Provisioning Profile'
-
-  - script: |
-      rm -rf CelestiaCore/libs/dependency/.git
-    displayName: 'Remove Unneeded Files'
 
   - script: |
       sed -i '' 's/APPCENTER-APP-CATALYST/63a9e404-a07b-40eb-a5e7-320f65934b05/g' MobileCelestia/AppDelegate.swift
