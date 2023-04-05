@@ -34,15 +34,15 @@ stages:
       signing: appStore
       backend: openGL
 
-- stage: Build_Catalyst_DeveloperID_MetalANGLE
-  displayName: 'Build Catalyst (Developer ID, MetalANGLE)'
-  dependsOn: []
-  jobs:
-  - template: jobs/build.yml
-    parameters:
-      sdk: macosx
-      signing: developerID
-      backend: metalAngle
+#- stage: Build_Catalyst_DeveloperID_MetalANGLE
+#  displayName: 'Build Catalyst (Developer ID, MetalANGLE)'
+#  dependsOn: []
+#  jobs:
+#  - template: jobs/build.yml
+#    parameters:
+#      sdk: macosx
+#      signing: developerID
+#      backend: metalAngle
 
 - stage: Build_Catalyst_DeveloperID_OpenGL
   displayName: 'Build Catalyst (Developer ID, OpenGL)'

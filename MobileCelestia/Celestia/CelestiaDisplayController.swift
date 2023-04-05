@@ -48,9 +48,13 @@ class CelestiaDisplayController: AsyncGLViewController {
     private static let windowDidEndLiveResizeNotification = Notification.Name("NSWindowDidEndLiveResizeNotification")
     #endif
 
+    private var isRTL = false
+
     #if targetEnvironment(macCatalyst)
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        isRTL = UIView.userInterfaceLayoutDirection(for: view.semanticContentAttribute) == .rightToLeft
 
         NotificationCenter.default.addObserver(self, selector: #selector(windowWillStartLiveResizing(_:)), name: Self.windowWillStartLiveResizeNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(windowDidEndLiveResizing(_:)), name: Self.windowDidEndLiveResizeNotification, object: nil)
@@ -63,6 +67,8 @@ class CelestiaDisplayController: AsyncGLViewController {
     #else
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        isRTL = UIView.userInterfaceLayoutDirection(for: view.semanticContentAttribute) == .rightToLeft
 
         view.contentMode = .center
     }
@@ -157,6 +163,7 @@ extension CelestiaDisplayController {
             return false
         }
 
+        core.layoutDirection = isRTL ? .RTL : .LTR
         updateContentScale()
         start()
 
