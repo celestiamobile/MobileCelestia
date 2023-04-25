@@ -125,9 +125,12 @@ extension ToolbarViewController: UICollectionViewDataSource {
         cell.touchUpHandler = { [unowned self] _, inside in
             guard inside else { return }
             if self.finishOnSelection {
-                self.dismiss(animated: true, completion: nil)
+                self.dismiss(animated: true) {
+                    self.selectionHandler?(action)
+                }
+            } else {
+                self.selectionHandler?(action)
             }
-            self.selectionHandler?(action)
         }
 
         return cell
