@@ -14,8 +14,8 @@ jobs:
     XC_ARCHIVE_PARENT_PATH: ${{ '$(system.defaultworkingdirectory)/archive' }}
     XC_ARCHIVE_PATH: ${{ '$(system.defaultworkingdirectory)/archive/MobileCelestia.xcarchive' }}
     XC_EXPORT_PATH: ${{ '$(agent.buildDirectory)/output' }}
-    IOS_PROVISIONING_PROFILE_UUID: ${{ 'e7ca62e1-10a8-4df5-a020-c858328c0ce0' }}
-    MAC_APP_STORE_PROVISIONING_PROFILE_UUID: ${{ '082a6a29-41ff-481b-9e5a-11c923454481' }}
+    IOS_PROVISIONING_PROFILE_UUID: ${{ 'fe451b3b-1598-4925-b852-dd8007daa2f0' }}
+    MAC_APP_STORE_PROVISIONING_PROFILE_UUID: ${{ '2e15b5f5-ee70-4c9c-a99f-ee480b2f4643' }}
     MAC_DEVELOPER_ID_PROVISIONING_PROFILE_UUID: ${{ '6700a055-c231-4a7f-86e8-2409fc00e06d' }}
     DISTRIBUTION_IDENTITY: 'Apple Distribution: Linfeng Li (22NR5428TD)'
     DEVELOPER_ID_IDENTITY: 'Developer ID Application: Linfeng Li (22NR5428TD)'
@@ -120,13 +120,13 @@ jobs:
   - task: DownloadSecureFile@1
     name: iosProvisioningProfile
     inputs:
-      secureFile: 'MobileCelestia220509iOS.mobileprovision'
+      secureFile: 'CelestiaIOS20230425.mobileprovision'
     displayName: 'Download iOS Provisioning Profile'
 
   - task: DownloadSecureFile@1
     name: macAppStoreProvisioningProfile
     inputs:
-      secureFile: 'MobileCelestia220509macOS.provisionprofile'
+      secureFile: 'CelestiaCatalyst20230425.provisionprofile'
     displayName: 'Download Mac (App Store) Provisioning Profile'
 
   - task: DownloadSecureFile@1
