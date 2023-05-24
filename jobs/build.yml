@@ -14,9 +14,9 @@ jobs:
     XC_ARCHIVE_PARENT_PATH: ${{ '$(system.defaultworkingdirectory)/archive' }}
     XC_ARCHIVE_PATH: ${{ '$(system.defaultworkingdirectory)/archive/MobileCelestia.xcarchive' }}
     XC_EXPORT_PATH: ${{ '$(agent.buildDirectory)/output' }}
-    IOS_PROVISIONING_PROFILE_UUID: ${{ 'fe451b3b-1598-4925-b852-dd8007daa2f0' }}
-    MAC_APP_STORE_PROVISIONING_PROFILE_UUID: ${{ '2e15b5f5-ee70-4c9c-a99f-ee480b2f4643' }}
-    MAC_DEVELOPER_ID_PROVISIONING_PROFILE_UUID: ${{ '6700a055-c231-4a7f-86e8-2409fc00e06d' }}
+    IOS_PROVISIONING_PROFILE_UUID: ${{ 'fe126c02-f218-471b-8af4-94d33dc76a29' }}
+    MAC_APP_STORE_PROVISIONING_PROFILE_UUID: ${{ 'e5feda40-1051-424e-b898-7b24d0f29ba9' }}
+    MAC_DEVELOPER_ID_PROVISIONING_PROFILE_UUID: ${{ '1e444495-f70f-40b9-9897-7e05ab2cc975' }}
     DISTRIBUTION_IDENTITY: 'Apple Distribution: Linfeng Li (22NR5428TD)'
     DEVELOPER_ID_IDENTITY: 'Developer ID Application: Linfeng Li (22NR5428TD)'
 
@@ -102,37 +102,37 @@ jobs:
   - task: DownloadSecureFile@1
     name: macInstallerP12
     inputs:
-      secureFile: '20220509_macOS.p12'
+      secureFile: 'MacInstallerDistribution20240523.p12'
     displayName: 'Download Mac Installer Certificate'
 
   - task: DownloadSecureFile@1
     name: distributionP12
     inputs:
-      secureFile: '20220509_2.p12'
+      secureFile: 'AppleDistribution20240523.p12'
     displayName: 'Download Distribution Certificate'
 
   - task: DownloadSecureFile@1
     name: developerIDP12
     inputs:
-      secureFile: 'DeveloperID.p12'
+      secureFile: 'DeveloperIDApplication20270202.p12'
     displayName: 'Download Developer ID Certificate'
 
   - task: DownloadSecureFile@1
     name: iosProvisioningProfile
     inputs:
-      secureFile: 'CelestiaIOS20230425.mobileprovision'
+      secureFile: 'iOSDistribution20240523.mobileprovision'
     displayName: 'Download iOS Provisioning Profile'
 
   - task: DownloadSecureFile@1
     name: macAppStoreProvisioningProfile
     inputs:
-      secureFile: 'CelestiaCatalyst20230425.provisionprofile'
+      secureFile: 'MacDistribution20240523.provisionprofile'
     displayName: 'Download Mac (App Store) Provisioning Profile'
 
   - task: DownloadSecureFile@1
     name: macDeveloperIDProvisioningProfile
     inputs:
-      secureFile: 'MC_macOS_DeveloperID_20211225.provisionprofile'
+      secureFile: 'DeveloperIDApplication20270202.provisionprofile'
     displayName: 'Download Mac (Developer ID) Provisioning Profile'
 
   - script: |
