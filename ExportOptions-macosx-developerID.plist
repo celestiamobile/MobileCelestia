@@ -9,7 +9,7 @@
 	<key>provisioningProfiles</key>
 	<dict>
 		<key>space.celestia.MobileCelestia</key>
-		<string>6700a055-c231-4a7f-86e8-2409fc00e06d</string>
+		<string>1e444495-f70f-40b9-9897-7e05ab2cc975</string>
 	</dict>
 	<key>signingCertificate</key>
 	<string>Developer ID Application</string>
