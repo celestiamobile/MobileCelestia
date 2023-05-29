@@ -49,6 +49,19 @@ class CelestiaViewController: UIViewController {
     private(set) var displayScreen: UIScreen
     private(set) var isMirroring: Bool
 
+    // On Mac, we have top title bar/toolbar, which covers
+    // part of the view, we do not to extend to below the bars
+    #if targetEnvironment(macCatalyst)
+    private let safeAreaEdges: NSDirectionalRectEdge = .top
+    #else
+    private let safeAreaEdges: NSDirectionalRectEdge = {
+        if #available(iOS 14, *), ProcessInfo.processInfo.isiOSAppOnMac {
+            return .top
+        }
+        return []
+    }()
+    #endif
+
     init(screen: UIScreen, executor: CelestiaExecutor, userDefaults: UserDefaults) {
         appScreen = screen
         displayScreen = screen
@@ -76,7 +89,7 @@ class CelestiaViewController: UIViewController {
         super.viewDidLoad()
 
         displayController.delegate = self
-        install(displayController)
+        install(displayController, safeAreaEdges: safeAreaEdges)
 
         NotificationCenter.default.addObserver(self, selector: #selector(windowDidMoveToScreenNotification(_:)), name: NSNotification.Name("UIWindowDidMoveToScreenNotification"), object: nil)
     }
@@ -148,7 +161,7 @@ extension CelestiaViewController: CelestiaDisplayControllerDelegate {
             let interactionController = CelestiaInteractionController()
             interactionController.delegate = self
             interactionController.targetProvider = self
-            self.install(interactionController)
+            self.install(interactionController, safeAreaEdges: self.safeAreaEdges)
             self.interactionController = interactionController
             if self.isMirroring {
                 interactionController.startMirroring()
@@ -192,7 +205,7 @@ extension CelestiaViewController {
         dummyViewController.view.backgroundColor = .black
         window.rootViewController = dummyViewController
         setDisplayScreen(screen)
-        dummyViewController.install(displayController)
+        dummyViewController.install(displayController, safeAreaEdges: safeAreaEdges)
         interactionController?.startMirroring()
         isMirroring = true
     }
@@ -203,7 +216,7 @@ extension CelestiaViewController {
         displayController.remove()
         window.rootViewController = nil
         setDisplayScreen(appScreen)
-        install(displayController)
+        install(displayController, safeAreaEdges: safeAreaEdges)
         view.sendSubviewToBack(displayController.view)
         isMirroring = false
         interactionController?.stopMirroring()

@@ -12,18 +12,35 @@
 import UIKit
 
 public extension UIViewController {
-    func install(_ child: UIViewController) {
+    func install(_ child: UIViewController, safeAreaEdges: NSDirectionalRectEdge = []) {
         addChild(child)
 
         child.view.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(child.view)
 
-        NSLayoutConstraint.activate([
-            child.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            child.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            child.view.topAnchor.constraint(equalTo: view.topAnchor),
-            child.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
+        if safeAreaEdges.contains(.leading) {
+            child.view.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor).isActive = true
+        } else {
+            child.view.leadingAnchor.constraint(equalTo: view.leadingAnchor).isActive = true
+        }
+
+        if safeAreaEdges.contains(.trailing) {
+            child.view.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor).isActive = true
+        } else {
+            child.view.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
+        }
+
+        if safeAreaEdges.contains(.top) {
+            child.view.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
+        } else {
+            child.view.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
+        }
+
+        if safeAreaEdges.contains(.bottom) {
+            child.view.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
+        } else {
+            child.view.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        }
 
         child.didMove(toParent: self)
     }
