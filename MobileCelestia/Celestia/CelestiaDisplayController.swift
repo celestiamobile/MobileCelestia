@@ -16,7 +16,7 @@ import AsyncGL
 
 protocol CelestiaDisplayControllerDelegate: AnyObject {
     func celestiaDisplayController(_ celestiaDisplayController: CelestiaDisplayController, loadingStatusUpdated status: String)
-    func celestiaDisplayControllerLoadingFailedShouldRetry(_ celestiaDisplayController: CelestiaDisplayController) -> Bool
+    func celestiaDisplayController(_ celestiaDisplayController: CelestiaDisplayController, loadingFailedShouldRetry shouldRetry: @escaping (Bool) -> Void)
     func celestiaDisplayControllerLoadingFailed(_ celestiaDisplayController: CelestiaDisplayController)
     func celestiaDisplayControllerLoadingSucceeded(_ celestiaDisplayController: CelestiaDisplayController)
 }
@@ -144,13 +144,25 @@ extension CelestiaDisplayController {
             guard self.core.startSimulation(configFileName: self.configFileURL.url.path, extraDirectories: [UserDefaults.extraDirectory].compactMap{$0?.path}, progress: { (st) in
                 delegate?.celestiaDisplayController(self, loadingStatusUpdated: st)
             }) else {
-                shouldRetry = delegate?.celestiaDisplayControllerLoadingFailedShouldRetry(self) ?? false
+                var dispatchGroup = DispatchGroup()
+                dispatchGroup.enter()
+                delegate?.celestiaDisplayController(self, loadingFailedShouldRetry: { retry in
+                    shouldRetry = retry
+                    dispatchGroup.leave()
+                })
+                dispatchGroup.wait()
                 continue
             }
 
             guard self.core.startRenderer() else {
                 print("Failed to start renderer.")
-                shouldRetry = delegate?.celestiaDisplayControllerLoadingFailedShouldRetry(self) ?? false
+                var dispatchGroup = DispatchGroup()
+                dispatchGroup.enter()
+                delegate?.celestiaDisplayController(self, loadingFailedShouldRetry: { retry in
+                    shouldRetry = retry
+                    dispatchGroup.leave()
+                })
+                dispatchGroup.wait()
                 continue
             }
 

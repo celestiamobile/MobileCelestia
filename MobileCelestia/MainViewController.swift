@@ -425,13 +425,16 @@ extension MainViewController: CelestiaControllerDelegate {
         loadingController.update(with: status)
     }
 
-    func celestiaControllerLoadingFailedShouldRetry(_ celestiaController: CelestiaViewController) -> Bool {
-        if retried { return false }
+    func celestiaController(_ celestiaController: CelestiaViewController, loadingFailedShouldRetry shouldRetry: @escaping (Bool) -> Void) {
+        if retried {
+            shouldRetry(false)
+            return
+        }
         showError(CelestiaString("Error loading data, fallback to original configuration.", comment: ""))
         retried = true
         userDefaults.saveConfigFile(nil)
         userDefaults.saveDataDirectory(nil)
-        return true
+        shouldRetry(true)
     }
 
     func celestiaControllerLoadingFailed(_ celestiaController: CelestiaViewController) {

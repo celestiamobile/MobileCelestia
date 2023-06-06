@@ -28,7 +28,7 @@ typealias CelestiaLoadingResult = Result<Void, CelestiaLoadingError>
 @MainActor
 protocol CelestiaControllerDelegate: AnyObject {
     func celestiaController(_ celestiaController: CelestiaViewController, loadingStatusUpdated status: String)
-    func celestiaControllerLoadingFailedShouldRetry(_ celestiaController: CelestiaViewController) -> Bool
+    func celestiaController(_ celestiaController: CelestiaViewController, loadingFailedShouldRetry shouldRetry: @escaping (Bool) -> Void)
     func celestiaControllerLoadingFailed(_ celestiaController: CelestiaViewController)
     func celestiaControllerLoadingSucceeded(_ celestiaController: CelestiaViewController)
     func celestiaControllerRequestShowActionMenu(_ celestiaController: CelestiaViewController)
@@ -170,9 +170,9 @@ extension CelestiaViewController: CelestiaDisplayControllerDelegate {
         }
     }
 
-    nonisolated func celestiaDisplayControllerLoadingFailedShouldRetry(_ celestiaDisplayController: CelestiaDisplayController) -> Bool {
-        return DispatchQueue.main.sync {
-            return delegate.celestiaControllerLoadingFailedShouldRetry(self)
+    nonisolated func celestiaDisplayController(_ celestiaDisplayController: CelestiaDisplayController, loadingFailedShouldRetry shouldRetry: @escaping (Bool) -> Void) {
+        Task.detached { @MainActor in
+            self.delegate?.celestiaController(self, loadingFailedShouldRetry: shouldRetry)
         }
     }
 
