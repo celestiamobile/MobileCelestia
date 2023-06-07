@@ -2,13 +2,13 @@ jobs:
 - job: Build
   displayName: 'Build'
   pool:
-    vmImage: 'macos-12'
+    vmImage: 'macos-13'
 
   variables:
     sdk: ${{ parameters.sdk }}
     signing: ${{ parameters.signing }}
     backend: ${{ parameters.backend }}
-    XC_VERSION: ${{ '14.2' }}
+    XC_VERSION: ${{ '14.3.1' }}
     XC_WORKSPACE: ${{ 'MobileCelestia/MobileCelestia.xcworkspace' }}
     XC_SCHEME: ${{ 'MobileCelestia' }}
     XC_ARCHIVE_PARENT_PATH: ${{ '$(system.defaultworkingdirectory)/archive' }}
