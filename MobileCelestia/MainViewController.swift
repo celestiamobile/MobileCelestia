@@ -528,15 +528,6 @@ extension MainViewController: CelestiaControllerDelegate {
         case .addons:
             presentInstalledAddons()
         case .download:
-#if targetEnvironment(macCatalyst)
-            let baseURL = "https://celestia.mobi/resources/categories"
-            var components = URLComponents(string: baseURL)!
-            components.queryItems = [
-                URLQueryItem(name: "lang", value: AppCore.language),
-            ]
-            let url = components.url!
-            UIApplication.shared.open(url, options: [:], completionHandler: nil)
-#else
             let baseURL = "https://celestia.mobi/resources/categories"
             var components = URLComponents(string: baseURL)!
             components.queryItems = [
@@ -548,7 +539,6 @@ extension MainViewController: CelestiaControllerDelegate {
             let url = components.url!
             let nav = UINavigationController(rootViewController: CommonWebViewController(url: url, filterURL: false))
             showViewController(nav)
-#endif
         case .paperplane:
             presentGoTo()
         case .speedometer:
