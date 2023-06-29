@@ -11,6 +11,9 @@
 
 import Foundation
 import GameController
+#if os(visionOS)
+import simd
+#endif
 
 public class GameControllerManager {
     private let executor: AsyncProviderExecutor
@@ -143,9 +146,13 @@ public class GameControllerManager {
                     }
                 case .tapCenter:
                     await self.executor.run { core in
+                        #if os(visionOS)
+                        pressed ? core.touchDown(simd_float3(x: 0, y: 0, z: -1)) : core.touchUp(simd_float3(x: 0, y: 0, z: -1))
+                        #else
                         let size = core.size
                         let center = CGPoint(x: size.width / 2, y: size.height / 2)
                         pressed ? core.mouseButtonDown(at: center, modifiers: 0, with: .left) : core.mouseButtonUp(at: center, modifiers: 0, with: .left)
+                        #endif
                     }
                 case .goTo:
                     if !pressed {
