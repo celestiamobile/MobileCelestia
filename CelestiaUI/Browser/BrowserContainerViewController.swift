@@ -220,9 +220,9 @@ class BrowserSidebarController: BaseTableViewController {
 }
 #endif
 
-public struct CategoryInfo {
+public struct CategoryInfo: Codable, Hashable {
     public let category: String
-    let isLeaf: Bool
+    public let isLeaf: Bool
 }
 
 final class BrowserPredefinedItem: BrowserItem {
