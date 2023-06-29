@@ -1,0 +1,198 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "Celestia Data" : {
+      "localizations" : {
+        "zh_CN" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Celestia 数据"
+          }
+        },
+        "zh_TW" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Celestia 資料"
+          }
+        }
+      }
+    },
+    "Connected" : {
+      "localizations" : {
+        "zh_CN" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已连接"
+          }
+        },
+        "zh_TW" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "已連線"
+          }
+        }
+      }
+    },
+    "Game Controller" : {
+      "localizations" : {
+        "zh_CN" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "手柄"
+          }
+        },
+        "zh_TW" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "手柄"
+          }
+        }
+      }
+    },
+    "Loaded" : {
+      "localizations" : {
+        "zh_CN" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加载完成"
+          }
+        },
+        "zh_TW" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "載入完成"
+          }
+        }
+      }
+    },
+    "Loading" : {
+      "localizations" : {
+        "zh_CN" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加载中"
+          }
+        },
+        "zh_TW" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "載入中"
+          }
+        }
+      }
+    },
+    "Loading Celestia failed…" : {
+      "localizations" : {
+        "zh_CN" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "加载 Celestia 失败…"
+          }
+        },
+        "zh_TW" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "載入 Celestia 失敗…"
+          }
+        }
+      }
+    },
+    "Not Connected" : {
+      "localizations" : {
+        "zh_CN" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未连接"
+          }
+        },
+        "zh_TW" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未連線"
+          }
+        }
+      }
+    },
+    "Please wait while we load essential files for Celestia" : {
+      "localizations" : {
+        "zh_CN" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "我们正在加载必要的 Celestia 数据文件中，请稍等"
+          }
+        },
+        "zh_TW" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "我們正在載入必要的 Celestia 資料檔案中，請稍等"
+          }
+        }
+      }
+    },
+    "Start Celestia" : {
+      "localizations" : {
+        "zh_CN" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "启动 Celestia"
+          }
+        },
+        "zh_TW" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "啟動 Celestia"
+          }
+        }
+      }
+    },
+    "Unknown status" : {
+      "localizations" : {
+        "zh_CN" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未知状态"
+          }
+        },
+        "zh_TW" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "未知狀態"
+          }
+        }
+      }
+    },
+    "Use Mixed Immersion" : {
+      "localizations" : {
+        "zh_CN" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用混合式沉浸体验"
+          }
+        },
+        "zh_TW" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使用混合式沉浸體驗"
+          }
+        }
+      }
+    },
+    "Welcome to Celestia" : {
+      "localizations" : {
+        "zh_CN" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "欢迎来到 Celestia"
+          }
+        },
+        "zh_TW" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "歡迎來到 Celestia"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}
