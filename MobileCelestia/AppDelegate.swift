@@ -32,8 +32,6 @@ let requestOpenFileNotificationName = Notification.Name("RequestOpenFileNotifica
 let requestCopyNotificationName = Notification.Name("RequestCopyNotificationName")
 let requestPasteNotificationName = Notification.Name("RequestPasteNotificationName")
 
-let officialWebsiteURL = URL(string: "https://celestia.mobi")!
-let supportForumURL = URL(string: "https://celestia.space/forum")!
 let apiPrefix = "https://celestia.mobi/api"
 
 @UIApplicationMain
@@ -259,14 +257,6 @@ extension AppDelegate {
 
     @objc private func showHelp(_ sender: Any) {
         NotificationCenter.default.post(name: showHelpNotificationName, object: nil, userInfo: nil)
-    }
-
-    @objc private func openOfficialWebsite() {
-        UIApplication.shared.open(officialWebsiteURL, options: [:], completionHandler: nil)
-    }
-
-    @objc private func openSupportForum() {
-        UIApplication.shared.open(supportForumURL, options: [:], completionHandler: nil)
     }
 
     @objc private func showPreferences() {

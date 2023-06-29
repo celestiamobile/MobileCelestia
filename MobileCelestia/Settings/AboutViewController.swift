@@ -11,7 +11,10 @@
 
 import UIKit
 
-class AboutViewController: BaseTableViewController {
+final class AboutViewController: BaseTableViewController {
+    private let officialWebsiteURL = URL(string: "https://celestia.mobi")!
+    private let aboutCelestiaURL = URL(string: "https://celestia.mobi/about")!
+
     private var items: [[TextItem]] = []
 
     init() {
@@ -63,7 +66,7 @@ class AboutViewController: BaseTableViewController {
 
         totalItems.append([
             TextItem.link(title: CelestiaString("Official Website", comment: ""), url: officialWebsiteURL),
-            TextItem.link(title: CelestiaString("Support Forum", comment: ""), url: supportForumURL)
+            TextItem.link(title: CelestiaString("About Celestia", comment: ""), url: aboutCelestiaURL),
         ])
 
         items = totalItems
