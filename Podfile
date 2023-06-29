@@ -22,6 +22,12 @@ target 'CelestiaUI' do
   pod "MWRequest", :git => "https://github.com/levinli303/mwrequest.git", :tag => mwrequest_version_tag
 end
 
+target 'CelestiaXR' do
+  pod 'ZIPFoundation', zipfoundation_version
+
+  pod "MWRequest", :git => "https://github.com/levinli303/mwrequest.git", :tag => mwrequest_version_tag
+end
+
 post_install do |installer|
     installer.pods_project.targets.each do |target|
         target.build_configurations.each do |config|
@@ -31,6 +37,8 @@ post_install do |installer|
             config.build_settings['SUPPORTS_MACCATALYST'] = "YES"
             config.build_settings['MACOSX_DEPLOYMENT_TARGET'] = "10.15"
             config.build_settings['IPHONEOS_DEPLOYMENT_TARGET'] = "13.1"
+            config.build_settings['XROS_DEPLOYMENT_TARGET'] = "1.0"
+            config.build_settings['SUPPORTED_PLATFORMS'] = "iphonesimulator iphoneos xrsimulator xros"
         end
     end
 end
