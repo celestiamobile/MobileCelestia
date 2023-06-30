@@ -23,17 +23,18 @@
 @property EGLImageKHR eglColorImage;
 @property EGLImageKHR eglDepthImage;
 @property GLuint glColorTexture;
+@property GLuint glIntermediateColorTexture;
 @property GLuint glDepthTexture;
 @property GLuint glFramebuffer;
 @property GLint width;
 @property GLint height;
 - (instancetype)init NS_UNAVAILABLE;
-- (instancetype)initWithRenderPassDescriptor:(MTLRenderPassDescriptor *)renderPassDescriptor eglColorImage:(EGLImageKHR)eglColorImage eglDepthImage:(EGLImageKHR)eglDepthImage glColorTexture:(GLuint)glColorTexture glDepthTexture:(GLuint)glDepthTexture glFramebuffer:(GLuint)glFramebuffer width:(GLint)width height:(GLint)height;
+- (instancetype)initWithRenderPassDescriptor:(MTLRenderPassDescriptor *)renderPassDescriptor eglColorImage:(EGLImageKHR)eglColorImage eglDepthImage:(EGLImageKHR)eglDepthImage glColorTexture:(GLuint)glColorTexture glDepthTexture:(GLuint)glDepthTexture glIntermediateColorTexture:(GLuint)glIntermediateColorTexture glFramebuffer:(GLuint)glFramebuffer width:(GLint)width height:(GLint)height;
 @end
 
 @implementation CXCRendererSurface
 
-- (instancetype)initWithRenderPassDescriptor:(MTLRenderPassDescriptor *)renderPassDescriptor eglColorImage:(EGLImageKHR)eglColorImage eglDepthImage:(EGLImageKHR)eglDepthImage glColorTexture:(GLuint)glColorTexture glDepthTexture:(GLuint)glDepthTexture glFramebuffer:(GLuint)glFramebuffer width:(GLint)width height:(GLint)height {
+- (instancetype)initWithRenderPassDescriptor:(MTLRenderPassDescriptor *)renderPassDescriptor eglColorImage:(EGLImageKHR)eglColorImage eglDepthImage:(EGLImageKHR)eglDepthImage glColorTexture:(GLuint)glColorTexture glDepthTexture:(GLuint)glDepthTexture glIntermediateColorTexture:(GLuint)glIntermediateColorTexture glFramebuffer:(GLuint)glFramebuffer width:(GLint)width height:(GLint)height {
     self = [super init];
     if (self) {
         _renderPassDescriptor = renderPassDescriptor;
@@ -41,6 +42,7 @@
         _eglDepthImage = eglDepthImage;
         _glColorTexture = glColorTexture;
         _glDepthTexture = glDepthTexture;
+        _glIntermediateColorTexture = glIntermediateColorTexture;
         _glFramebuffer = glFramebuffer;
         _width = width;
         _height = height;
@@ -68,6 +70,11 @@
 @property dispatch_semaphore_t semaphore;
 
 @property CelestiaAppCore *appCore;
+
+@property GLuint postprocessProgram;
+@property GLuint postprocessProgramVAO;
+@property GLuint postprocessProgramVBO;
+@property GLuint postprocessProgramTextureLocation;
 
 @end
 
@@ -144,6 +151,9 @@
     }
 
     eglMakeCurrent(_eglDisplay, NULL, NULL, _eglContext);
+
+    [self prepareDegammaProgram];
+
     [CelestiaAppCore initGL];
     [[NSFileManager defaultManager] changeCurrentDirectoryPath:_resourceFolderPath];
     [_appCore startSimulationWithConfigFileName:_configFilePath extraDirectories:nil progressReporter:^(NSString * _Nonnull progress) {
@@ -151,6 +161,81 @@
     }];
     [_appCore startRenderer];
     [_appCore start];
+}
+
+- (void)prepareDegammaProgram {
+    const char* vShaderSource =
+        "attribute vec2 in_Position;\n"
+        "attribute vec2 in_TexCoord;\n"
+        "varying vec2 texCoord;\n"
+        "void main()\n"
+        "{\n"
+        "    gl_Position = vec4(in_Position.xy, 0.0, 1.0);\n"
+        "    texCoord = in_TexCoord.st;\n"
+        "}";
+    const char* fShaderSource =
+        "precision mediump float;\n"
+        "varying vec2 texCoord;\n"
+        "uniform sampler2D tex;\n"
+        "void main()\n"
+        "{\n"
+        "    gl_FragColor = texture2D(tex, texCoord);\n"
+        "    gl_FragColor.rgb = pow(gl_FragColor.rgb, vec3(2.2));\n"
+        "}\n";
+
+    GLuint vShader = glCreateShader(GL_VERTEX_SHADER);
+    glShaderSource(vShader, 1, &vShaderSource, NULL);
+    glCompileShader(vShader);
+
+    GLint compiled;
+    glGetShaderiv(vShader, GL_COMPILE_STATUS, &compiled);
+
+    GLuint fShader = glCreateShader(GL_FRAGMENT_SHADER);
+    glShaderSource(fShader, 1, &fShaderSource, NULL);
+    glCompileShader(fShader);
+
+    glGetShaderiv(fShader, GL_COMPILE_STATUS, &compiled);
+
+    GLuint program = glCreateProgram();
+    glAttachShader(program, vShader);
+    glAttachShader(program, fShader);
+    glBindAttribLocation(program, 0, "in_Position");
+    glBindAttribLocation(program, 1, "in_TexCoord");
+    glLinkProgram(program);
+
+    GLint linked;
+    glGetProgramiv(program, GL_LINK_STATUS, &linked);
+
+    glDeleteShader(vShader);
+    glDeleteShader(fShader);
+
+    GLuint vbo, vao;
+    glGenVertexArrays(1, &vao);
+    glBindVertexArray(vao);
+    glGenBuffers(1, &vbo);
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    const float quadVertices[] =
+    {
+        // positions   // texCoords
+        -1.0f,  1.0f,  0.0f, 0.0f,
+        -1.0f, -1.0f,  0.0f, 1.0f,
+         1.0f, -1.0f,  1.0f, 1.0f,
+
+        -1.0f,  1.0f,  0.0f, 0.0f,
+         1.0f, -1.0f,  1.0f, 1.0f,
+         1.0f,  1.0f,  1.0f, 0.0f
+    };
+    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
+    glEnableVertexAttribArray(0);
+    glEnableVertexAttribArray(1);
+    glBindVertexArray(0);
+
+    self.postprocessProgram = program;
+    self.postprocessProgramTextureLocation = glGetUniformLocation(program, "tex");
+    self.postprocessProgramVBO = vbo;
+    self.postprocessProgramVAO = vao;
 }
 
 - (void)runWorldTrackingARSession {
@@ -209,8 +294,8 @@
     {
         GLuint framebuffer = resource.glFramebuffer;
         glDeleteFramebuffers(1, &framebuffer);
-        GLuint textures[] = { resource.glColorTexture, resource.glDepthTexture };
-        glDeleteTextures(2, textures);
+        GLuint textures[] = { resource.glColorTexture, resource.glDepthTexture, resource.glIntermediateColorTexture };
+        glDeleteTextures(3, textures);
         eglDestroyImageKHR(_eglDisplay, resource.eglColorImage);
         eglDestroyImageKHR(_eglDisplay, resource.eglDepthImage);
     }
@@ -241,6 +326,27 @@
         simd_float4x4 cameraMatrix = simd_mul(poseTransform, cp_view_get_transform(view));
         [_appCore setCameraTransform:simd_inverse(cameraMatrix)];
         [_appCore draw];
+
+        glFlush();
+
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderSurface.glColorTexture, 0);
+        glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, 0, 0);
+
+        glViewport(0, 0, (GLsizei)renderSurface.width, (GLsizei)renderSurface.height);
+        glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        glUseProgram(self.postprocessProgram);
+
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, renderSurface.glIntermediateColorTexture);
+        glUniform1i(self.postprocessProgramTextureLocation, 0);
+
+        glBindVertexArray(self.postprocessProgramVAO);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+        glBindTexture(GL_TEXTURE_2D, 0);
+        glFlush();
+        glBindVertexArray(0);
 
         [resources addObject:renderSurface];
     }
@@ -290,15 +396,24 @@
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glEGLImageTargetTexture2DOES(GL_TEXTURE_2D, eglDepthImage);
+
+    GLuint glIntermediateColorTexture;
+    glGenTextures(1, &glIntermediateColorTexture);
+    glBindTexture(GL_TEXTURE_2D, glIntermediateColorTexture);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)colorTexture.width, (GLsizei)colorTexture.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+
     GLuint glFramebuffer;
     glGenFramebuffers(1, &glFramebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, glFramebuffer);
-    glFramebufferParameteri(GL_FRAMEBUFFER, GL_FRAMEBUFFER_FLIP_Y_MESA, 1);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, glColorTexture, 0);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, glIntermediateColorTexture, 0);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, glDepthTexture, 0);
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    return [[CXCRendererSurface alloc] initWithRenderPassDescriptor:passDescriptor eglColorImage:eglColorImage eglDepthImage:eglDepthImage glColorTexture:glColorTexture glDepthTexture:glDepthTexture glFramebuffer:glFramebuffer width:(GLint)colorTexture.width height:(GLint)colorTexture.height];
+    return [[CXCRendererSurface alloc] initWithRenderPassDescriptor:passDescriptor eglColorImage:eglColorImage eglDepthImage:eglDepthImage glColorTexture:glColorTexture glDepthTexture:glDepthTexture glIntermediateColorTexture:glIntermediateColorTexture glFramebuffer:glFramebuffer width:(GLint)colorTexture.width height:(GLint)colorTexture.height];
 }
 
 @end
