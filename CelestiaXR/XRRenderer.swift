@@ -10,6 +10,7 @@
 //
 
 import CelestiaCore
+import CelestiaUI
 import CelestiaXRCore
 import CompositorServices
 import Foundation
@@ -35,24 +36,28 @@ class XRRenderer: ObservableObject {
     private func registerListeners() {
         renderer.fileNameUpdater = { [weak self] newFileName in
             guard let self else { return }
-            Task { @MainActor in
+            Task.detached { @MainActor in
                 self.currentFileName = newFileName
             }
         }
 
         renderer.statusUpdater = { [weak self] newStatus in
             guard let self else { return }
-            Task { @MainActor in
+            Task.detached { @MainActor in
                 self.rendererStatus = newStatus
             }
         }
 
         renderer.selectionUpdater = { [weak self] newSelection in
             guard let self else { return }
-            Task { @MainActor in
+            Task.detached { @MainActor in
                 self.selection = newSelection
             }
         }
+    }
+
+    func enqueue(task: @escaping (AppCore) -> Void) {
+        renderer.enqueueTask(task)
     }
 
     func updateRenderer() {
@@ -67,5 +72,25 @@ class XRRenderer: ObservableObject {
 
     func startRendering(with layerRenderer: LayerRenderer) {
         renderer.startRendering(withLayerRenderer: layerRenderer)
+    }
+}
+
+extension XRRenderer: AsyncProviderExecutor {
+    func run(_ task: @escaping @Sendable (AppCore) -> Void) async {
+        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
+            enqueue { appCore in
+                task(appCore)
+                continuation.resume()
+            }
+        }
+    }
+    
+    func get<T>(_ task: @escaping @Sendable (AppCore) -> T) async -> T {
+        return await withCheckedContinuation { continuation in
+            enqueue { appCore in
+                let result = task(appCore)
+                continuation.resume(returning: result)
+            }
+        }
     }
 }

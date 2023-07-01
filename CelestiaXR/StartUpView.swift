@@ -9,6 +9,8 @@
 // of the License, or (at your option) any later version.
 //
 
+import CelestiaCore
+import CelestiaUI
 import SwiftUI
 
 struct StartUpView: View {
@@ -20,6 +22,8 @@ struct StartUpView: View {
 
     @Environment(\.openImmersiveSpace) var openImmersiveSpace
     @Environment(\.dismissImmersiveSpace) var dismissImmersiveSpace
+    @Environment(\.openWindow) var openWindow
+    @Environment(\.dismissWindow) var dismissWindow
 
     @ViewBuilder
     func startCelestiaView() -> some View {
@@ -29,6 +33,7 @@ struct StartUpView: View {
                 await openImmersiveSpace(id: "ImmersiveSpace")
                 isOpeningImmersiveSpace = false
                 isImmersiveSpaceOpened = true
+                openWindow(id: "InfoWindow")
             }
         }
     }
@@ -37,12 +42,16 @@ struct StartUpView: View {
     func celestiaRunningView() -> some View {
         VStack {
             Text("Celestia is running...")
+            Button("Open Browser") {
+                openWindow(id: "BrowserWindow")
+            }
             Button("Pause Celestia") {
                 Task {
                     isDismissingImmersiveSpace = true
                     await dismissImmersiveSpace()
                     isDismissingImmersiveSpace = false
                     isImmersiveSpaceOpened = false
+                    dismissWindow(id: "InfoWindow")
                 }
             }
         }
@@ -86,5 +95,6 @@ struct StartUpView: View {
                 Text("Unknown status")
             }
         }
+        .padding()
     }
 }

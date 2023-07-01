@@ -33,6 +33,16 @@ struct CelestiaXRApp: App {
                 .environmentObject(renderer)
         }
 
+        WindowGroup(id: "InfoWindow") {
+            InfoWindow()
+                .environmentObject(renderer)
+        }
+
+        WindowGroup(id: "BrowserWindow") {
+            BrowserView()
+                .environmentObject(renderer)
+        }
+
         ImmersiveSpace(id: "ImmersiveSpace") {
             CompositorLayer(configuration: MetalLayerConfiguration()) { layerRenderer in
                 renderer.startRendering(with: layerRenderer)

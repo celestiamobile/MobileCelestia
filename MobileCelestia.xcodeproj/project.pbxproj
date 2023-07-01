@@ -40,6 +40,10 @@
 		97F1141E2408AE06003A06D7 /* DataLocationSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F1141D2408AE06003A06D7 /* DataLocationSelectionViewController.swift */; };
 		97FF95A5240A340300E9F44F /* BaseResultHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FF95A4240A340300E9F44F /* BaseResultHandler.swift */; };
 		D75E8DEAC2EBA3F7F8E06011 /* Pods_MobileCelestia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCC04706AE5EC279AAF950C2 /* Pods_MobileCelestia.framework */; };
+		EA0AFB7F2A506F3D00C6746B /* CelestiaUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA50E75E2A505627005E7D7A /* CelestiaUI.framework */; };
+		EA0AFB802A506F3D00C6746B /* CelestiaUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EA50E75E2A505627005E7D7A /* CelestiaUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		EA0AFB9A2A50789000C6746B /* InfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0AFB992A50789000C6746B /* InfoView.swift */; };
+		EA14B02E2A51B1E100F069C0 /* BrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA14B02D2A51B1E100F069C0 /* BrowserView.swift */; };
 		EA17951B27B1510500D47397 /* CelestiaScriptHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA17951A27B1510500D47397 /* CelestiaScriptHandler.swift */; };
 		EA17952027B371D700D47397 /* GuideItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA17951F27B371D700D47397 /* GuideItem.swift */; };
 		EA1823ED27C08D3D00E0F5E4 /* CelestiaHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = EA1823EC27C08D3D00E0F5E4 /* CelestiaHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -91,7 +95,6 @@
 		EA787341296EB68A0099AB11 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA787340296EB68A0099AB11 /* Bundle.swift */; };
 		EA787344296EBBAC0099AB11 /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA787343296EBBAC0099AB11 /* Task.swift */; };
 		EA7BF37C27033AE40058F704 /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA7BF37B27033AE40058F704 /* GameController.framework */; };
-		EA85C8E0289BE766009ADB1C /* Metal.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA85C8DA289BE746009ADB1C /* Metal.framework */; };
 		EA85C913289E9A7D009ADB1C /* UIContentSizeCategory+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA85C912289E9A7D009ADB1C /* UIContentSizeCategory+Extension.swift */; };
 		EA85C915289E9AD2009ADB1C /* AutoSizingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA85C914289E9AD2009ADB1C /* AutoSizingView.swift */; };
 		EA85C917289EA1ED009ADB1C /* IconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA85C916289EA1ED009ADB1C /* IconView.swift */; };
@@ -123,6 +126,7 @@
 		EA9FB23F27B7852A00E0DC1F /* CommonSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9FB23E27B7852A00E0DC1F /* CommonSceneDelegate.swift */; };
 		EAA5A7A1259DBFE6001AFA82 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = EAA5A7A3259DBFE6001AFA82 /* InfoPlist.strings */; };
 		EAA6C4CB253B5CD200ED1D60 /* InstalledResourceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAA6C4CA253B5CD200ED1D60 /* InstalledResourceViewController.swift */; };
+		EAB623A32A51179100063D1B /* InfoWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAB623A22A51179100063D1B /* InfoWindow.swift */; };
 		EAB623AB2A51AA0A00063D1B /* SubsystemBrowserCoordinatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF48514249B2C4700E5B817 /* SubsystemBrowserCoordinatorViewController.swift */; };
 		EAB623AC2A51AA0A00063D1B /* BrowserContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972477D02404A19700729B45 /* BrowserContainerViewController.swift */; };
 		EAB623AD2A51AA0A00063D1B /* BrowserCoordinatorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972477D62404A65C00729B45 /* BrowserCoordinatorController.swift */; };
@@ -180,6 +184,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = 971A65CC23019BC5009E4EA1;
 			remoteInfo = CelestiaCore;
+		};
+		EA0AFB812A506F3D00C6746B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 979D2F7223FEB1A6005D2592 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EA50E75D2A505627005E7D7A;
+			remoteInfo = CelestiaUI;
 		};
 		EA1823EE27C08D3D00E0F5E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -239,6 +250,7 @@
 			dstSubfolderSpec = 10;
 			files = (
 				EA8680C42A46BECE003B5D39 /* libEGL.framework in Embed Frameworks */,
+				EA0AFB802A506F3D00C6746B /* CelestiaUI.framework in Embed Frameworks */,
 				EA8680C62A46BECE003B5D39 /* libGLESv2.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
@@ -312,8 +324,10 @@
 		97F1141D2408AE06003A06D7 /* DataLocationSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataLocationSelectionViewController.swift; sourceTree = "<group>"; };
 		97FF95A4240A340300E9F44F /* BaseResultHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseResultHandler.swift; sourceTree = "<group>"; };
 		9E22703CD906FE8145500765 /* Pods-MobileCelestia.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileCelestia.debug.xcconfig"; path = "Target Support Files/Pods-MobileCelestia/Pods-MobileCelestia.debug.xcconfig"; sourceTree = "<group>"; };
+		EA0AFB992A50789000C6746B /* InfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoView.swift; sourceTree = "<group>"; };
 		EA113708262C72AA002E49DA /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EA113709262C72B2002E49DA /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		EA14B02D2A51B1E100F069C0 /* BrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserView.swift; sourceTree = "<group>"; };
 		EA17951A27B1510500D47397 /* CelestiaScriptHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaScriptHandler.swift; sourceTree = "<group>"; };
 		EA17951F27B371D700D47397 /* GuideItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideItem.swift; sourceTree = "<group>"; };
 		EA1823EA27C08D3D00E0F5E4 /* CelestiaHelper.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CelestiaHelper.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -394,6 +408,7 @@
 		EAA6C4CA253B5CD200ED1D60 /* InstalledResourceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstalledResourceViewController.swift; sourceTree = "<group>"; };
 		EAB08FE32780550600BB82F0 /* Font.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Font.swift; sourceTree = "<group>"; };
 		EAB623B42A51AB5100063D1B /* UIViewController+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
+		EAB623A22A51179100063D1B /* InfoWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoWindow.swift; sourceTree = "<group>"; };
 		EABDE366247170F000E0A5FA /* SettngSliderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettngSliderCell.swift; sourceTree = "<group>"; };
 		EABDE3A82473DAA300E0A5FA /* SettingCommonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingCommonViewController.swift; sourceTree = "<group>"; };
 		EABF7910253895FD00F2460C /* ResourceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceViewController.swift; sourceTree = "<group>"; };
@@ -465,17 +480,11 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		EAC84351252C816500691943 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		EA86806D2A4692DB003B5D39 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EA0AFB7F2A506F3D00C6746B /* CelestiaUI.framework in Frameworks */,
 				EA8680922A46937A003B5D39 /* libc++.tbd in Frameworks */,
 				EA8680C52A46BECE003B5D39 /* libGLESv2.framework in Frameworks */,
 				EA8680C32A46BECE003B5D39 /* libEGL.framework in Frameworks */,
@@ -735,6 +744,23 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		EA14B02B2A51B1CE00F069C0 /* Info */ = {
+			isa = PBXGroup;
+			children = (
+				EAB623A22A51179100063D1B /* InfoWindow.swift */,
+				EA0AFB992A50789000C6746B /* InfoView.swift */,
+			);
+			path = Info;
+			sourceTree = "<group>";
+		};
+		EA14B02C2A51B1D700F069C0 /* Browser */ = {
+			isa = PBXGroup;
+			children = (
+				EA14B02D2A51B1E100F069C0 /* BrowserView.swift */,
+			);
+			path = Browser;
+			sourceTree = "<group>";
+		};
 		EA1823EB27C08D3D00E0F5E4 /* CelestiaHelper */ = {
 			isa = PBXGroup;
 			children = (
@@ -859,6 +885,8 @@
 		EA8680712A4692DB003B5D39 /* CelestiaXR */ = {
 			isa = PBXGroup;
 			children = (
+				EA14B02C2A51B1D700F069C0 /* Browser */,
+				EA14B02B2A51B1CE00F069C0 /* Info */,
 				EA246B902A50341500E1A1AB /* XRRenderer.swift */,
 				EA8680762A4692DB003B5D39 /* CelestiaXRApp.swift */,
 				EA8680782A4692DB003B5D39 /* StartUpView.swift */,
@@ -1106,6 +1134,7 @@
 			);
 			dependencies = (
 				EA8680AF2A46B497003B5D39 /* PBXTargetDependency */,
+				EA0AFB822A506F3D00C6746B /* PBXTargetDependency */,
 			);
 			name = CelestiaXR;
 			packageProductDependencies = (
@@ -1264,18 +1293,10 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		EAC84352252C816500691943 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		EA86806E2A4692DB003B5D39 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EA50FDA32A49603F00E23091 /* Fonts in Resources */,
 				EA86807F2A4692DC003B5D39 /* Assets.xcassets in Resources */,
 				EA8680822A4692DC003B5D39 /* Preview Assets.xcassets in Resources */,
 			);
@@ -1570,9 +1591,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EA0AFB9A2A50789000C6746B /* InfoView.swift in Sources */,
 				EA8680792A4692DB003B5D39 /* StartUpView.swift in Sources */,
 				EA246B912A50341500E1A1AB /* XRRenderer.swift in Sources */,
 				EA8680772A4692DB003B5D39 /* CelestiaXRApp.swift in Sources */,
+				EAB623A32A51179100063D1B /* InfoWindow.swift in Sources */,
+				EA14B02E2A51B1E100F069C0 /* BrowserView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1601,6 +1625,11 @@
 			isa = PBXTargetDependency;
 			target = 979D2F7923FEB1A6005D2592 /* MobileCelestia */;
 			targetProxy = 979D2F9123FEB1A8005D2592 /* PBXContainerItemProxy */;
+		};
+		EA0AFB822A506F3D00C6746B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EA50E75D2A505627005E7D7A /* CelestiaUI */;
+			targetProxy = EA0AFB812A506F3D00C6746B /* PBXContainerItemProxy */;
 		};
 		EA1823EF27C08D3D00E0F5E4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1970,9 +1999,14 @@
 				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.CelestiaUI;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,6,7";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -2016,6 +2050,11 @@
 				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				TARGETED_DEVICE_FAMILY = "1,2,6,7";
 			};
 			name = Release;
 		};

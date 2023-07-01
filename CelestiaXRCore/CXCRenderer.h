@@ -37,6 +37,7 @@ NS_SWIFT_NAME(Renderer)
 - (instancetype)initWithResourceFolderPath:(NSString *)resourceFolderPath configFilePath:(NSString *)configFilePath;
 - (instancetype)initRenderer:(CXCRenderer *)renderer;
 
+- (void)enqueueTask:(void (^)(CelestiaAppCore *))task;
 - (void)prepare;
 - (void)startRenderingWithLayerRenderer:(cp_layer_renderer_t)layerRenderer;
 

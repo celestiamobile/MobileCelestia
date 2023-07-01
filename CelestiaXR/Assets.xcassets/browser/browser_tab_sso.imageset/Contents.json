@@ -1,0 +1,21 @@
+{
+  "images" : [
+    {
+      "filename" : "browser_tab_sso.pdf",
+      "idiom" : "universal"
+    },
+    {
+      "filename" : "browser_tab_sso_compact.pdf",
+      "height-class" : "compact",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  },
+  "properties" : {
+    "preserves-vector-representation" : true,
+    "template-rendering-intent" : "template"
+  }
+}

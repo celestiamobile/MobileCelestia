@@ -42,6 +42,7 @@
 @property dispatch_semaphore_t renderSemaphore;
 
 @property CelestiaSelection *selection;
+@property NSMutableArray<void (^)(CelestiaAppCore *)> *tasks;
 
 @property BOOL inheritedFromPreviousRenderer;
 
@@ -69,6 +70,7 @@
 
         _renderStatus = CXCRendererStatusNone;
         _resourceLock = [[NSLock alloc] init];
+        _tasks = [NSMutableArray array];
 
         _inheritedFromPreviousRenderer = NO;
     }
@@ -94,6 +96,7 @@
 
         _renderStatus = CXCRendererStatusNone;
         _resourceLock = [[NSLock alloc] init];
+        _tasks = [NSMutableArray array];
 
         _inheritedFromPreviousRenderer = YES;
     }
@@ -152,6 +155,12 @@
 - (void)setSelectionUpdater:(void (^)(CelestiaSelection * _Nonnull))selectionUpdater {
     [_resourceLock lock];
     _selectionUpdater = selectionUpdater;
+    [_resourceLock unlock];
+}
+
+- (void)enqueueTask:(void (^)(CelestiaAppCore * _Nonnull))task {
+    [_resourceLock lock];
+    [_tasks addObject:task];
     [_resourceLock unlock];
 }
 
@@ -311,6 +320,14 @@
 }
 
 - (NSArray<CXCRendererSurface *> *)drawAndPresentFrame:(cp_frame_t)frame drawable:(cp_drawable_t)drawable {
+    [_resourceLock lock];
+    NSArray<void (^)(CelestiaAppCore *)> *taskCopy = [_tasks copy];
+    [_tasks removeAllObjects];
+    [_resourceLock unlock];
+
+    for (void (^task)(CelestiaAppCore *) in taskCopy)
+        task(_appCore);
+
     [_appCore tick];
 
     CelestiaSelection *newSelection = [[_appCore simulation] selection];
@@ -326,6 +343,8 @@
 
     id<MTLCommandBuffer> commandBuffer = [_renderResource.commandQueue commandBuffer];
 
+    [[_appCore simulation] setObserverTransform:simd_inverse(poseTransform)];
+
     NSMutableArray *resources = [NSMutableArray array];
     for (int i = 0; i < cp_drawable_get_view_count(drawable); ++i) {
         CXCRendererSurface *renderSurface = [self createRenderPassDescriptorForDrawable:drawable index:i];
@@ -335,8 +354,7 @@
         [_appCore resize:CGSizeMake(renderSurface.width, renderSurface.height)];
         [_appCore setCustomPerspectiveProjectionLeft:-tangents[0] * depthRange[1] right:tangents[1] * depthRange[1] top:tangents[2] * depthRange[1] bottom:-tangents[3] * depthRange[1] nearZ:depthRange[1] farZ:depthRange[0]];
 
-        simd_float4x4 cameraMatrix = simd_mul(poseTransform, cp_view_get_transform(view));
-        [_appCore setCameraTransform:simd_inverse(cameraMatrix)];
+        [_appCore setCameraTransform:simd_inverse(cp_view_get_transform(view))];
         [_appCore draw];
 
         glFlush();
