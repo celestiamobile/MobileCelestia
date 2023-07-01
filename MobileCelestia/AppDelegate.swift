@@ -15,6 +15,7 @@ import CelestiaCore
 #if targetEnvironment(macCatalyst)
 import CelestiaHelper
 #endif
+import CelestiaUI
 
 import AppCenter
 import AppCenterAnalytics

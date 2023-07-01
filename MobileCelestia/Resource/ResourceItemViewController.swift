@@ -10,6 +10,7 @@
 //
 
 import CelestiaCore
+import CelestiaUI
 import CoreSpotlight
 import MobileCoreServices
 import MWRequest

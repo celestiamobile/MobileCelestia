@@ -9,9 +9,9 @@
 // of the License, or (at your option) any later version.
 //
 
-import Foundation
-
 import CelestiaCore
+import CelestiaUI
+import Foundation
 
 enum SettingType: Hashable {
     case slider

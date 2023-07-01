@@ -11,10 +11,10 @@
 
 import UIKit
 
-class StandardButton: UIButton {
-    let animationDuration: TimeInterval = 0.1
+open class StandardButton: UIButton {
+    public let animationDuration: TimeInterval = 0.1
 
-    override var isHighlighted: Bool {
+    public override var isHighlighted: Bool {
         get { return super.isHighlighted }
         set {
             super.isHighlighted = newValue
@@ -24,13 +24,13 @@ class StandardButton: UIButton {
         }
     }
 
-    override init(frame: CGRect) {
+    public override init(frame: CGRect) {
         super.init(frame: frame)
 
         setup()
     }
 
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         super.init(coder: coder)
 
         setup()
@@ -45,11 +45,11 @@ class StandardButton: UIButton {
 
 @available(iOS 13.4, *)
 extension StandardButton: UIPointerInteractionDelegate {
-    func pointerInteraction(_ interaction: UIPointerInteraction, regionFor request: UIPointerRegionRequest, defaultRegion: UIPointerRegion) -> UIPointerRegion? {
+    public func pointerInteraction(_ interaction: UIPointerInteraction, regionFor request: UIPointerRegionRequest, defaultRegion: UIPointerRegion) -> UIPointerRegion? {
         return defaultRegion
     }
 
-    func pointerInteraction(_ interaction: UIPointerInteraction, styleFor region: UIPointerRegion) -> UIPointerStyle? {
+    public func pointerInteraction(_ interaction: UIPointerInteraction, styleFor region: UIPointerRegion) -> UIPointerStyle? {
         return UIPointerStyle(effect: .highlight(UITargetedPreview(view: self)))
     }
 }

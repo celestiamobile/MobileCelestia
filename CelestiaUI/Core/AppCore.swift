@@ -12,7 +12,9 @@
 import CelestiaCore
 import Foundation
 
-extension AppCore: @unchecked Sendable {
+extension AppCore: @unchecked Sendable {}
+
+public extension AppCore {
     func receive(_ action: CelestiaAction) {
         if textEnterMode != .normal {
             textEnterMode = .normal
@@ -21,18 +23,7 @@ extension AppCore: @unchecked Sendable {
     }
 }
 
-private struct AppCoreKey: InjectionKey {
-    static var currentValue: AppCore = AppCore()
-}
-
-extension InjectedValues {
-    var appCore: AppCore {
-        get { Self[AppCoreKey.self] }
-        set { Self[AppCoreKey.self] = newValue }
-    }
-}
-
-extension DSOCatalog {
+public extension DSOCatalog {
     subscript(index: Int) -> DSO {
         get {
             return object(at: index)
@@ -46,7 +37,7 @@ public struct DSOCatalogIterator: IteratorProtocol {
 
     public typealias Element = DSO
 
-    init(catalog: DSOCatalog) {
+    public init(catalog: DSOCatalog) {
         self.catalog = catalog
     }
 
@@ -68,33 +59,24 @@ extension DSOCatalog: Sequence {
 }
 
 // MARK: Localization
-func CelestiaString(_ key: String, comment: String, domain: String = "celestia_ui") -> String {
+public func CelestiaString(_ key: String, comment: String, domain: String = "celestia_ui") -> String {
     if key.isEmpty { return key }
     return LocalizedString(key, domain)
 }
 
-func CelestiaFilename(_ key: String) -> String {
+public func CelestiaFilename(_ key: String) -> String {
     return LocalizedFilename(key)
 }
 
-// MARK: Scripting
-func readScripts() -> [Script] {
-    var scripts = Script.scripts(inDirectory: "scripts", deepScan: true)
-    if let extraScriptsPath = UserDefaults.extraScriptDirectory?.path {
-        scripts += Script.scripts(inDirectory: extraScriptsPath, deepScan: true)
-    }
-    return scripts
-}
-
 // MARK: Bookmark
-final class BookmarkNode: NSObject {
-    let isFolder: Bool
+public final class BookmarkNode: NSObject {
+    public let isFolder: Bool
 
-    @objc var name: String
-    @objc var url: String
-    @objc var children: [BookmarkNode]
+    @objc public var name: String
+    @objc public var url: String
+    @objc public var children: [BookmarkNode]
 
-    init(name: String, url: String, isFolder: Bool, children: [BookmarkNode] = []) {
+    public init(name: String, url: String, isFolder: Bool, children: [BookmarkNode] = []) {
         self.name = name
         self.url = url
         self.isFolder = isFolder
@@ -102,7 +84,7 @@ final class BookmarkNode: NSObject {
         super.init()
     }
 
-    @objc var isLeaf: Bool {
+    @objc public var isLeaf: Bool {
         return !isFolder
     }
 }
@@ -116,7 +98,7 @@ extension BookmarkNode: Codable {
     }
 }
 
-extension AppCore {
+public extension AppCore {
     var currentBookmark: BookmarkNode? {
         let selection = simulation.selection
         if selection.isEmpty {
@@ -138,7 +120,7 @@ extension AppCore {
     }
 }
 
-func readBookmarks() -> [BookmarkNode] {
+public func readBookmarks() -> [BookmarkNode] {
     guard let path = NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .userDomainMask, true).first else {
         return []
     }
@@ -152,7 +134,7 @@ func readBookmarks() -> [BookmarkNode] {
     }
 }
 
-func storeBookmarks(_ bookmarks: [BookmarkNode]) {
+public func storeBookmarks(_ bookmarks: [BookmarkNode]) {
     guard let path = NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .userDomainMask, true).first else {
         return
     }
@@ -164,7 +146,7 @@ func storeBookmarks(_ bookmarks: [BookmarkNode]) {
     }
 }
 
-extension String {
+public extension String {
     var toLocalizationTemplate: String {
         // FIXME: this does not fix multiple %s with different indices
         return replacingOccurrences(of: "%s", with: "%@")
@@ -172,7 +154,7 @@ extension String {
 }
 
 // MARK: Overview
-extension AppCore {
+public extension AppCore {
     func overviewForSelection(_ selection: Selection) -> String {
         if let body = selection.body {
             return overviewForBody(body)

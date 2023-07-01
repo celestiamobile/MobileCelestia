@@ -29,7 +29,7 @@ public extension UIColor {
     }
 }
 
-extension UIColor {
+public extension UIColor {
     class var darkSeparator: UIColor {
         if #available(iOS 13.0, *) {
             return .separator
@@ -119,7 +119,7 @@ extension UIColor {
 }
 
 #if !targetEnvironment(macCatalyst)
-extension UIColor {
+public extension UIColor {
     class var buttonBackground: UIColor {
         return UIColor(rgb: 0x404659)
     }
@@ -133,7 +133,7 @@ extension UIColor {
     }
 }
 
-extension UIColor {
+public extension UIColor {
     class var progressBackground: UIColor {
         return themeLabel.withAlphaComponent(0.38)
     }

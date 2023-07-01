@@ -9,9 +9,9 @@
 // of the License, or (at your option) any later version.
 //
 
-import UIKit
-
 import CelestiaCore
+import CelestiaUI
+import UIKit
 
 @available(iOS 13, *)
 class MainSceneDelegate: CommonSceneDelegate {

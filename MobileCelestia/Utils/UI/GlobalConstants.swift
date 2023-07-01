@@ -1,7 +1,7 @@
 //
 // GlobalConstants.swift
 //
-// Copyright © 2022 Celestia Development Team. All rights reserved.
+// Copyright © 2023 Celestia Development Team. All rights reserved.
 //
 // This program is free software; you can redistribute it and/or
 // modify it under the terms of the GNU General Public License
@@ -9,10 +9,9 @@
 // of the License, or (at your option) any later version.
 //
 
-import CoreGraphics
-import UIKit
+import CelestiaUI
 
-enum GlobalConstants {
+extension GlobalConstants {
     static let listItemMediumMarginHorizontal: CGFloat = 16
     static let listItemMediumMarginVertical: CGFloat = 12
     static let listItemSmallMarginHorizontal: CGFloat = 12
@@ -20,14 +19,10 @@ enum GlobalConstants {
     static let listItemGapHorizontal: CGFloat = 8
     static let listItemGapVertical: CGFloat = 8
 
-    static let pageMediumMarginHorizontal: CGFloat = 16
-    static let pageMediumMarginVertical: CGFloat = 12
     static let pageSmallMarginHorizontal: CGFloat = 12
     static let pageSmallMarginVertical: CGFloat = 8
     static let pageLargeGapHorizontal: CGFloat = 16
     static let pageLargeGapVertical: CGFloat = 12
-    static let pageMediumGapHorizontal: CGFloat = 12
-    static let pageMediumGapVertical: CGFloat = 8
     static let pageSmallGapHorizontal: CGFloat = 6
     static let pageSmallGapVertical: CGFloat = 4
 
@@ -46,21 +41,4 @@ enum GlobalConstants {
     static let baseCellHeight: CGFloat = 44
 
     static let transitionDuration: TimeInterval = 0.2
-
-    static func preferredUIElementScaling(for traitCollection: UITraitCollection) -> CGFloat {
-        #if targetEnvironment(macCatalyst)
-        if #available(iOS 14.0, *) {
-            // Mac idiom, needs scaling
-            if traitCollection.userInterfaceIdiom == .mac {
-                return 0.77
-            }
-            // iPad idiom no need for scaling
-            return 1
-        }
-        // macCatalyst 13, only iPad idiom is available
-        return 1
-        #else
-        return 1
-        #endif
-    }
 }

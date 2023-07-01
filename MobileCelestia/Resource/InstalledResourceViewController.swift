@@ -10,6 +10,7 @@
 //
 
 import CelestiaCore
+import CelestiaUI
 import UIKit
 
 extension ResourceItem: AsyncListItem, @unchecked Sendable {

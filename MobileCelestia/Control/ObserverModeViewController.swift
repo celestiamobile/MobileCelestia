@@ -10,6 +10,7 @@
 //
 
 import CelestiaCore
+import CelestiaUI
 import UIKit
 
 class ObserverModeViewController: BaseTableViewController {

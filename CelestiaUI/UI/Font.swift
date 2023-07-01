@@ -11,7 +11,7 @@
 
 import UIKit
 
-extension UIFont {
+public extension UIFont {
     static func preferredFont(forTextStyle style: TextStyle, weight: Weight) -> UIFont {
         let metrics = UIFontMetrics(forTextStyle: style)
         let desc = UIFontDescriptor.preferredFontDescriptor(withTextStyle: style)
