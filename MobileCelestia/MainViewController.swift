@@ -10,6 +10,7 @@
 //
 
 import CelestiaCore
+import CelestiaUI
 import LinkPresentation
 import UniformTypeIdentifiers
 import UIKit

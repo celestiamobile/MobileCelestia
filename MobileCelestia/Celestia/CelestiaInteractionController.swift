@@ -9,30 +9,10 @@
 // of the License, or (at your option) any later version.
 //
 
-import UIKit
 import CelestiaCore
+import CelestiaUI
 import GameController
-
-enum CelestiaAction: Int8 {
-    case goTo = 103
-    case goToSurface = 7
-    case center = 99
-    case playpause = 32
-    case reverse = 106
-    case slower = 107
-    case faster = 108
-    case currentTime = 33
-    case syncOrbit = 121
-    case lock = 58
-    case chase = 34
-    case follow = 102
-    case runDemo = 100
-    case cancelScript = 27
-    case home = 104
-    case track = 116
-    case stop = 115
-    case reverseSpeed = 113
-}
+import UIKit
 
 enum CelestiaContinuousAction: Int {
     case travelFaster = 97
@@ -44,12 +24,6 @@ enum CelestiaContinuousAction: Int {
     case f5 = 15
     case f6 = 16
     case f7 = 17
-}
-
-extension CelestiaAction {
-    static var allCases: [CelestiaAction] {
-        return [.goTo, .center, .follow, .chase, .track, .syncOrbit, .lock, .goToSurface]
-    }
 }
 
 @MainActor

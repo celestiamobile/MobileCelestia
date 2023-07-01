@@ -9,12 +9,11 @@
 // of the License, or (at your option) any later version.
 //
 
+import CelestiaCore
 import LinkPresentation
 import UIKit
 
-import CelestiaCore
-
-enum ObjectAction {
+public enum ObjectAction {
     case select
     case web(url: URL)
     case wrapped(action: CelestiaAction)
@@ -29,7 +28,7 @@ private extension ObjectAction {
     }
 }
 
-final class InfoViewController: UIViewController {
+final public class InfoViewController: UIViewController {
     private lazy var layout = InfoCollectionLayout()
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: self.layout)
 
@@ -37,14 +36,14 @@ final class InfoViewController: UIViewController {
     private let isEmbeddedInNavigationController: Bool
     private let bodyInfo: BodyInfo
 
-    var selectionHandler: ((UIViewController, ObjectAction, UIView) -> Void)?
-    var menuProvider: ((ObjectAction) -> UIMenu?)?
+    public var selectionHandler: ((UIViewController, ObjectAction, UIView) -> Void)?
+    public var menuProvider: ((ObjectAction) -> UIMenu?)?
 
     private var actions: [ObjectAction]
 
     private var linkMetaData: AnyObject?
 
-    init(info: Selection, core: AppCore, isEmbeddedInNavigationController: Bool) {
+    public init(info: Selection, core: AppCore, isEmbeddedInNavigationController: Bool) {
         self.info = info
         self.isEmbeddedInNavigationController = isEmbeddedInNavigationController
         var actions = ObjectAction.allCases
@@ -69,12 +68,12 @@ final class InfoViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func loadView() {
+    public override func loadView() {
         view = UIView()
         view.backgroundColor = isEmbeddedInNavigationController ? .darkBackground : .darkSecondaryBackground
     }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
 
         setup()
@@ -100,7 +99,7 @@ final class InfoViewController: UIViewController {
         }
     }
 
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+    public override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
 
         if traitCollection.preferredContentSizeCategory != previousTraitCollection?.preferredContentSizeCategory {
@@ -138,11 +137,11 @@ private extension InfoViewController {
 }
 
 extension InfoViewController: UICollectionViewDataSource {
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
+    public func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 2
     }
 
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if section == 0 {
             if #available(iOS 13.0, *), linkMetaData is LPLinkMetadata {
                 return 2
@@ -152,7 +151,7 @@ extension InfoViewController: UICollectionViewDataSource {
         return actions.count
     }
 
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if indexPath.section == 0 {
             if indexPath.item == 0 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Description", for: indexPath) as! BodyDescriptionCell
@@ -255,7 +254,7 @@ private extension ObjectAction {
     }
 }
 
-extension CelestiaAction {
+public extension CelestiaAction {
     var description: String {
         switch self {
         case .goTo:

@@ -11,6 +11,7 @@
 
 import AsyncGL
 import CelestiaCore
+import CelestiaUI
 import Foundation
 
 final class CelestiaExecutor: AsyncGLExecutor, @unchecked Sendable {

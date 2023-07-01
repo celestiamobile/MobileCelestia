@@ -9,9 +9,9 @@
 // of the License, or (at your option) any later version.
 //
 
-import UIKit
-
+import CelestiaUI
 import MobileCoreServices
+import UIKit
 import UniformTypeIdentifiers
 
 class DataLocationSelectionViewController: BaseTableViewController {

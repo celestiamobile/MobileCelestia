@@ -11,8 +11,8 @@
 
 import UIKit
 
-class ActionButton: StandardButton {
-    enum Constants {
+public class ActionButton: StandardButton {
+    public enum Constants {
         static func contentEdgeInsets(for traitCollection: UITraitCollection) -> UIEdgeInsets {
             let scale = GlobalConstants.preferredUIElementScaling(for: traitCollection)
             return UIEdgeInsets(top: 10 * scale, left: 0, bottom: 10 * scale, right: 0)
@@ -23,13 +23,13 @@ class ActionButton: StandardButton {
         }
     }
 
-    override init(frame: CGRect) {
+    public override init(frame: CGRect) {
         super.init(frame: frame)
 
         setup()
     }
 
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         super.init(coder: coder)
 
         setup()
@@ -54,7 +54,7 @@ class ActionButton: StandardButton {
     }
 
     #if targetEnvironment(macCatalyst)
-    override func tintColorDidChange() {
+    public override func tintColorDidChange() {
         super.tintColorDidChange()
 
         if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
@@ -64,7 +64,7 @@ class ActionButton: StandardButton {
     }
     #endif
 
-    override func didAddSubview(_ subview: UIView) {
+    public override func didAddSubview(_ subview: UIView) {
         super.didAddSubview(subview)
 
         guard #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac else { return }
@@ -81,8 +81,8 @@ class ActionButton: StandardButton {
 }
 
 @MainActor
-class ActionButtonHelper {
-    static func newButton() -> UIButton {
+public class ActionButtonHelper {
+    public static func newButton() -> UIButton {
         #if !targetEnvironment(macCatalyst)
         if #available(iOS 15.0, *) {
             var configuration = UIButton.Configuration.filled()

@@ -10,8 +10,8 @@
 //
 
 import UIKit
-
 import CelestiaCore
+import CelestiaUI
 
 enum FavoriteItemType: Int {
     case bookmark    = 0

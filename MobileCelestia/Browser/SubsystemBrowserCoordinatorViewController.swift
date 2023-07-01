@@ -9,9 +9,9 @@
 // of the License, or (at your option) any later version.
 //
 
-import UIKit
-
 import CelestiaCore
+import CelestiaUI
+import UIKit
 
 class SubsystemBrowserCoordinatorViewController: UINavigationController {
     private let item: BrowserItem

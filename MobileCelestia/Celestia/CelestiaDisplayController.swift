@@ -144,7 +144,7 @@ extension CelestiaDisplayController {
             guard self.core.startSimulation(configFileName: self.configFileURL.url.path, extraDirectories: [UserDefaults.extraDirectory].compactMap{$0?.path}, progress: { (st) in
                 delegate?.celestiaDisplayController(self, loadingStatusUpdated: st)
             }) else {
-                var dispatchGroup = DispatchGroup()
+                let dispatchGroup = DispatchGroup()
                 dispatchGroup.enter()
                 delegate?.celestiaDisplayController(self, loadingFailedShouldRetry: { retry in
                     shouldRetry = retry
@@ -156,7 +156,7 @@ extension CelestiaDisplayController {
 
             guard self.core.startRenderer() else {
                 print("Failed to start renderer.")
-                var dispatchGroup = DispatchGroup()
+                let dispatchGroup = DispatchGroup()
                 dispatchGroup.enter()
                 delegate?.celestiaDisplayController(self, loadingFailedShouldRetry: { retry in
                     shouldRetry = retry
