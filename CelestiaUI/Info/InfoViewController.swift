@@ -29,33 +29,30 @@ private extension ObjectAction {
 }
 
 final public class InfoViewController: UIViewController {
+    private enum Constants {
+        static let buttonSpacing: CGFloat = GlobalConstants.pageMediumGapHorizontal
+    }
+
     private lazy var layout = InfoCollectionLayout()
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: self.layout)
 
-    private let info: Selection
+    private let core: AppCore
     private let isEmbeddedInNavigationController: Bool
-    private let bodyInfo: BodyInfo
+    private var info: Selection
+    private var bodyInfo: BodyInfo
+    private var bodyInfoNeedsUpdating = false
 
     public var selectionHandler: ((UIViewController, ObjectAction, UIView) -> Void)?
     public var menuProvider: ((ObjectAction) -> UIMenu?)?
 
-    private var actions: [ObjectAction]
+    private var actions: [ObjectAction] = []
 
     private var linkMetaData: AnyObject?
 
     public init(info: Selection, core: AppCore, isEmbeddedInNavigationController: Bool) {
+        self.core = core
         self.info = info
         self.isEmbeddedInNavigationController = isEmbeddedInNavigationController
-        var actions = ObjectAction.allCases
-        if let urlString = info.webInfoURL, let url = URL(string: urlString) {
-            actions.append(.web(url: url))
-        }
-        if let surfaces = info.body?.alternateSurfaceNames, surfaces.count > 0 {
-            actions.append(.alternateSurfaces)
-        }
-        actions.append(.subsystem)
-        actions.append(.mark)
-        self.actions = actions
         self.bodyInfo = BodyInfo(selection: info, core: core)
         super.init(nibName: nil, bundle: nil)
 
@@ -77,14 +74,50 @@ final public class InfoViewController: UIViewController {
         super.viewDidLoad()
 
         setup()
+        reload()
+    }
+
+    public func setSelection(_ selection: Selection) {
+        guard !info.isEqual(to: selection) else {
+            return
+        }
+        linkMetaData = nil
+        info = selection
+        bodyInfoNeedsUpdating = true
+        reload()
+    }
+
+    private func reload() {
+        if bodyInfoNeedsUpdating {
+            bodyInfo = BodyInfo(selection: info, core: core)
+            if isEmbeddedInNavigationController {
+                title = bodyInfo.name
+            }
+            bodyInfoNeedsUpdating = false
+        }
+
+        var actions = ObjectAction.allCases
+        if let urlString = info.webInfoURL, let url = URL(string: urlString) {
+            actions.append(.web(url: url))
+        }
+        if let surfaces = info.body?.alternateSurfaceNames, surfaces.count > 0 {
+            actions.append(.alternateSurfaces)
+        }
+        actions.append(.subsystem)
+        actions.append(.mark)
+        self.actions = actions
+
+        collectionView.reloadData()
 
         guard let urlString = info.webInfoURL, let url = URL(string: urlString), #available(iOS 13.0, *) else { return }
 
+        let current = info
         let metaDataProvider = LPMetadataProvider()
         metaDataProvider.startFetchingMetadata(for: url) { [weak self] metaData, error in
             guard let data = metaData, error == nil else { return }
             Task.detached { @MainActor in
-                guard let self = self else { return }
+                guard let self else { return }
+                guard self.info.isEqual(to: current) else { return }
                 self.linkMetaData = data
                 self.actions.removeAll(where: {
                     switch $0 {
@@ -294,5 +327,36 @@ public extension CelestiaAction {
         case .reverseSpeed:
             return CelestiaString("Reverse Direction", comment: "")
         }
+    }
+}
+
+extension InfoViewController: UICollectionViewDelegateFlowLayout {
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        let width = collectionView.bounds.width - 2 * GlobalConstants.pageMediumMarginHorizontal
+        let height = collectionView.bounds.height
+        if indexPath.section == 0 { return CGSize(width: width.rounded(.towardZero), height: height) }
+        return CGSize(width: ((width - Constants.buttonSpacing) / 2).rounded(.towardZero), height: 1)
+    }
+
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
+        if section == 0 {
+            return GlobalConstants.pageMediumGapVertical
+        }
+        return Constants.buttonSpacing
+    }
+
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        if section == 0 {
+            return GlobalConstants.pageMediumGapHorizontal
+        }
+        return Constants.buttonSpacing
+    }
+
+    public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        let horizontal = GlobalConstants.pageMediumMarginHorizontal
+        if section == 0 {
+            return UIEdgeInsets(top: GlobalConstants.pageMediumMarginVertical, left: horizontal, bottom: GlobalConstants.pageMediumGapVertical, right: horizontal)
+        }
+        return UIEdgeInsets(top: 0, left: horizontal, bottom: GlobalConstants.pageMediumMarginVertical, right: horizontal)
     }
 }

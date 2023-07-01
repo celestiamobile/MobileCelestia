@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -68,7 +68,6 @@
 		EA50E7612A505627005E7D7A /* CelestiaUI.h in Headers */ = {isa = PBXBuildFile; fileRef = EA50E7602A505627005E7D7A /* CelestiaUI.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		EA50E7642A505627005E7D7A /* CelestiaUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA50E75E2A505627005E7D7A /* CelestiaUI.framework */; };
 		EA50E7652A505627005E7D7A /* CelestiaUI.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EA50E75E2A505627005E7D7A /* CelestiaUI.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		EA50E7752A505DCE005E7D7A /* BodyInfoLayoutDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974F86DD2403BD3B00356795 /* BodyInfoLayoutDelegate.swift */; };
 		EA50E7762A505DCE005E7D7A /* BodyActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974F86DB2403BD3B00356795 /* BodyActionCell.swift */; };
 		EA50E7772A505DCE005E7D7A /* LinkPreviewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA445D14265CF6CD00E5D46A /* LinkPreviewCell.swift */; };
 		EA50E7782A505DCE005E7D7A /* BodyDescriptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974F86DC2403BD3B00356795 /* BodyDescriptionCell.swift */; };
@@ -221,7 +220,6 @@
 		974F86A9240362BA00356795 /* ToolbarButtonCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarButtonCell.swift; sourceTree = "<group>"; };
 		974F86DB2403BD3B00356795 /* BodyActionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BodyActionCell.swift; sourceTree = "<group>"; };
 		974F86DC2403BD3B00356795 /* BodyDescriptionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BodyDescriptionCell.swift; sourceTree = "<group>"; };
-		974F86DD2403BD3B00356795 /* BodyInfoLayoutDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BodyInfoLayoutDelegate.swift; sourceTree = "<group>"; };
 		974F86DE2403BD3B00356795 /* InfoViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InfoViewController.swift; sourceTree = "<group>"; };
 		974F86E32403C30E00356795 /* BodyInfoModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyInfoModel.swift; sourceTree = "<group>"; };
 		9773949B2402A8F700E38B82 /* ToolbarViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarViewController.swift; sourceTree = "<group>"; };
@@ -446,7 +444,6 @@
 			children = (
 				974F86DB2403BD3B00356795 /* BodyActionCell.swift */,
 				974F86DC2403BD3B00356795 /* BodyDescriptionCell.swift */,
-				974F86DD2403BD3B00356795 /* BodyInfoLayoutDelegate.swift */,
 				974F86DE2403BD3B00356795 /* InfoViewController.swift */,
 				974F86E32403C30E00356795 /* BodyInfoModel.swift */,
 				EA445D14265CF6CD00E5D46A /* LinkPreviewCell.swift */,
@@ -1237,7 +1234,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				EA50E7772A505DCE005E7D7A /* LinkPreviewCell.swift in Sources */,
-				EA50E7752A505DCE005E7D7A /* BodyInfoLayoutDelegate.swift in Sources */,
 				EA50E7812A505EA4005E7D7A /* Color.swift in Sources */,
 				EA50E7832A505EDF005E7D7A /* CelestiaAction.swift in Sources */,
 				EA50E7802A505E82005E7D7A /* GlobalConstants.swift in Sources */,
