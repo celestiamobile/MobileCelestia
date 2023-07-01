@@ -12,69 +12,38 @@
 #import <libEGL/libEGL.h>
 #import <libGLESv2/libGLESv2.h>
 #import <ARKit/ARKit.h>
-#import <Spatial/Spatial.h>
 
 #import <CelestiaCore/CelestiaCore.h>
 
 #import "CXCRenderer.h"
+#import "CXCRenderResource.h"
+#import "CXCRenderSurface.h"
 
-@interface CXCRendererSurface : NSObject
-@property MTLRenderPassDescriptor *renderPassDescriptor;
-@property EGLImageKHR eglColorImage;
-@property EGLImageKHR eglDepthImage;
-@property GLuint glColorTexture;
-@property GLuint glIntermediateColorTexture;
-@property GLuint glDepthTexture;
-@property GLuint glFramebuffer;
-@property GLint width;
-@property GLint height;
-- (instancetype)init NS_UNAVAILABLE;
-- (instancetype)initWithRenderPassDescriptor:(MTLRenderPassDescriptor *)renderPassDescriptor eglColorImage:(EGLImageKHR)eglColorImage eglDepthImage:(EGLImageKHR)eglDepthImage glColorTexture:(GLuint)glColorTexture glDepthTexture:(GLuint)glDepthTexture glIntermediateColorTexture:(GLuint)glIntermediateColorTexture glFramebuffer:(GLuint)glFramebuffer width:(GLint)width height:(GLint)height;
-@end
-
-@implementation CXCRendererSurface
-
-- (instancetype)initWithRenderPassDescriptor:(MTLRenderPassDescriptor *)renderPassDescriptor eglColorImage:(EGLImageKHR)eglColorImage eglDepthImage:(EGLImageKHR)eglDepthImage glColorTexture:(GLuint)glColorTexture glDepthTexture:(GLuint)glDepthTexture glIntermediateColorTexture:(GLuint)glIntermediateColorTexture glFramebuffer:(GLuint)glFramebuffer width:(GLint)width height:(GLint)height {
-    self = [super init];
-    if (self) {
-        _renderPassDescriptor = renderPassDescriptor;
-        _eglColorImage = eglColorImage;
-        _eglDepthImage = eglDepthImage;
-        _glColorTexture = glColorTexture;
-        _glDepthTexture = glDepthTexture;
-        _glIntermediateColorTexture = glIntermediateColorTexture;
-        _glFramebuffer = glFramebuffer;
-        _width = width;
-        _height = height;
-    }
-    return self;
+@interface CXCRenderer () {
+    CXCRendererStatus _renderStatus;
+    void (^_selectionUpdater)(CelestiaSelection *);
+    void (^_statusUpdater)(CXCRendererStatus);
+    void (^_fileNameUpdater)(NSString *);
 }
-@end
 
-@interface CXCRenderer ()
-@property (readonly) cp_layer_renderer_t layerRenderer;
+@property NSLock *resourceLock;
+
+@property NSThread *renderThread;
+@property CXCRenderResource *renderResource;
+
+@property cp_layer_renderer_t layerRenderer;
+
 @property ar_session_t arSession;
 @property ar_world_tracking_provider_t worldTrackingProvider;
 
-@property CFTimeInterval lastRenderTime;
-@property CFTimeInterval sceneTime;
-@property id<MTLDevice> device;
-@property id<MTLCommandQueue> commandQueue;
+@property NSString *resourceFolderPath;
+@property NSString *configFilePath;
 
-@property EGLContext eglContext;
-@property EGLDisplay eglDisplay;
+@property dispatch_semaphore_t renderSemaphore;
 
-@property (readonly) NSString *resourceFolderPath;
-@property (readonly) NSString *configFilePath;
+@property CelestiaSelection *selection;
 
-@property dispatch_semaphore_t semaphore;
-
-@property CelestiaAppCore *appCore;
-
-@property GLuint postprocessProgram;
-@property GLuint postprocessProgramVAO;
-@property GLuint postprocessProgramVBO;
-@property GLuint postprocessProgramTextureLocation;
+@property BOOL inheritedFromPreviousRenderer;
 
 @end
 
@@ -83,24 +52,138 @@
 - (instancetype)initWithResourceFolderPath:(NSString *)resourceFolderPath configFilePath:(NSString *)configFilePath {
     self = [super init];
     if (self) {
-        _lastRenderTime = CACurrentMediaTime();
-        _sceneTime = 0.0;
-        _device = MTLCreateSystemDefaultDevice();
-        _commandQueue = [_device newCommandQueue];
-        _eglContext = EGL_NO_CONTEXT;
-        _eglDisplay = EGL_NO_DISPLAY;
+        _renderResource = [[CXCRenderResource alloc] init];
+        _renderThread = [[NSThread alloc] initWithTarget:self selector:@selector(main) object:nil];
+        _renderSemaphore = dispatch_semaphore_create(0);
+
+        _arSession = NULL;
+        _worldTrackingProvider = NULL;
+
+        _layerRenderer = NULL;
+
         _appCore = [[CelestiaAppCore alloc] init];
+        _selection = [[CelestiaSelection alloc] init];
+
         _resourceFolderPath = resourceFolderPath;
         _configFilePath = configFilePath;
-        _semaphore = dispatch_semaphore_create(0);
+
+        _renderStatus = CXCRendererStatusNone;
+        _resourceLock = [[NSLock alloc] init];
+
+        _inheritedFromPreviousRenderer = NO;
     }
     return self;
 }
 
+- (instancetype)initRenderer:(CXCRenderer *)renderer {
+    self = [super init];
+    if (self) {
+        _renderResource = renderer.renderResource;
+        _renderThread = [[NSThread alloc] initWithTarget:self selector:@selector(main) object:nil];
+        _renderSemaphore = dispatch_semaphore_create(0);
+
+        _arSession = renderer.arSession;
+        _worldTrackingProvider = NULL;
+
+        _layerRenderer = NULL;
+
+        _appCore = renderer.appCore;
+
+        _resourceFolderPath = renderer.resourceFolderPath;
+        _configFilePath = renderer.configFilePath;
+
+        _renderStatus = CXCRendererStatusNone;
+        _resourceLock = [[NSLock alloc] init];
+
+        _inheritedFromPreviousRenderer = YES;
+    }
+    return self;
+}
+
+- (CXCRendererStatus)status {
+    [_resourceLock lock];
+    CXCRendererStatus current = _renderStatus;
+    [_resourceLock unlock];
+    return current;
+}
+
+- (void)setStatus:(CXCRendererStatus)status {
+    [_resourceLock lock];
+    _renderStatus = status;
+    if (_statusUpdater != nil) {
+        _statusUpdater(status);
+    }
+    [_resourceLock unlock];
+}
+
+- (void (^)(CXCRendererStatus))statusUpdater {
+    [_resourceLock lock];
+    void (^updater)(CXCRendererStatus) = _statusUpdater;
+    [_resourceLock unlock];
+    return updater;
+}
+
+- (void)setStatusUpdater:(void (^)(CXCRendererStatus))statusUpdater {
+    [_resourceLock lock];
+    _statusUpdater = statusUpdater;
+    [_resourceLock unlock];
+}
+
+- (void (^)(NSString * _Nonnull))fileNameUpdater {
+    [_resourceLock lock];
+    void (^updater)(NSString * _Nonnull) = _fileNameUpdater;
+    [_resourceLock unlock];
+    return updater;
+}
+
+- (void)setFileNameUpdater:(void (^)(NSString * _Nonnull))fileNameUpdater {
+    [_resourceLock lock];
+    _fileNameUpdater = fileNameUpdater;
+    [_resourceLock unlock];
+}
+
+- (void (^)(CelestiaSelection * _Nonnull))selectionUpdater {
+    [_resourceLock lock];
+    void (^updater)(CelestiaSelection * _Nonnull) = _selectionUpdater;
+    [_resourceLock unlock];
+    return updater;
+}
+
+- (void)setSelectionUpdater:(void (^)(CelestiaSelection * _Nonnull))selectionUpdater {
+    [_resourceLock lock];
+    _selectionUpdater = selectionUpdater;
+    [_resourceLock unlock];
+}
+
+- (void)prepare {
+    [_renderThread setName:@"CXCRenderer"];
+    [_renderThread start];
+    [self setStatus:CXCRendererStatusLoading];
+}
+
 - (void)main {
     [self runWorldTrackingARSession];
-    [self prepareResources];
-    dispatch_semaphore_wait(_semaphore, DISPATCH_TIME_FOREVER);
+
+    if (!_inheritedFromPreviousRenderer) {
+        if (![_renderResource prepare]) {
+            [self stopWorldTrackingARSession];
+            [self setStatus:CXCRendererStatusNone];
+            return;
+        }
+
+        if (![self prepareCelestia]) {
+            [_renderResource cleanup];
+            [self stopWorldTrackingARSession];
+            [self setStatus:CXCRendererStatusNone];
+            return;
+        }
+    }
+
+    [self setStatus:CXCRendererStatusLoaded];
+
+    dispatch_semaphore_wait(_renderSemaphore, DISPATCH_TIME_FOREVER);
+    [self setStatus:CXCRendererStatusRendering];
+
     BOOL isRunning = YES;
     while (isRunning) {
         @autoreleasepool {
@@ -112,130 +195,53 @@
                     [self renderFrame];
                     break;
                 case cp_layer_renderer_state_invalidated:
-                    isRunning = false;
+                    isRunning = NO;
                     break;
             }
         }
     }
+    [self setStatus:CXCRendererStatusInvalidated];
 }
 
 - (void)startRenderingWithLayerRenderer:(cp_layer_renderer_t)layerRenderer {
     _layerRenderer = layerRenderer;
-    dispatch_semaphore_signal(_semaphore);
+    dispatch_semaphore_signal(_renderSemaphore);
 }
 
-- (void)prepareResources {
-    if (_eglDisplay == EGL_NO_DISPLAY)
-    {
-        EGLAttrib displayAttribs[] = { EGL_NONE };
-        _eglDisplay = eglGetPlatformDisplay(EGL_PLATFORM_ANGLE_ANGLE, NULL, displayAttribs);
-        eglInitialize(_eglDisplay, NULL, NULL);
+- (BOOL)prepareCelestia {
+    if (![CelestiaAppCore initGL]) {
+        NSLog(@"Error calling [CelestiaAppCore initGL]");
+        [self cleanupCelestia];
+        return NO;
     }
-
-    if (_eglContext == EGL_NO_CONTEXT)
-    {
-        EGLConfig config = 0;
-        EGLint configAttribs[] =
-        {
-            EGL_BLUE_SIZE, 8,
-            EGL_GREEN_SIZE, 8,
-            EGL_RED_SIZE, 8,
-            EGL_DEPTH_SIZE, 24,
-            EGL_NONE
-        };
-        EGLint numConfigs;
-        eglChooseConfig(_eglDisplay, configAttribs, &config, 1, &numConfigs);
-
-        EGLint ctxAttribs[] = { EGL_CONTEXT_MAJOR_VERSION, 2, EGL_CONTEXT_MINOR_VERSION, 0, EGL_CONTEXT_OPENGL_NO_ERROR_KHR, EGL_TRUE, EGL_NONE };
-        _eglContext = eglCreateContext(_eglDisplay, config, EGL_NO_CONTEXT, ctxAttribs);
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    NSString *oldCurrentDirectory = [fileManager currentDirectoryPath];
+    if (![fileManager changeCurrentDirectoryPath:_resourceFolderPath]) {
+        NSLog(@"Error changing current directory");
+        [self cleanupCelestia];
+        return NO;
     }
-
-    eglMakeCurrent(_eglDisplay, NULL, NULL, _eglContext);
-
-    [self prepareDegammaProgram];
-
-    [CelestiaAppCore initGL];
-    [[NSFileManager defaultManager] changeCurrentDirectoryPath:_resourceFolderPath];
-    [_appCore startSimulationWithConfigFileName:_configFilePath extraDirectories:nil progressReporter:^(NSString * _Nonnull progress) {
-        NSLog(@"Loading %@", progress);
-    }];
-    [_appCore startRenderer];
+    if (![_appCore startSimulationWithConfigFileName:_configFilePath extraDirectories:nil progressReporter:^(NSString * _Nonnull progress) {
+        void (^updater)(NSString * _Nonnull) = [self fileNameUpdater];
+        if (updater != nil)
+            updater(progress);
+    }]) {
+        NSLog(@"Error preparing simulation");
+        [self cleanupCelestia];
+        [fileManager changeCurrentDirectoryPath:oldCurrentDirectory];
+        return NO;
+    }
+    if (![_appCore startRenderer]) {
+        NSLog(@"Error preparing Celestia renderer");
+        [self cleanupCelestia];
+        [fileManager changeCurrentDirectoryPath:oldCurrentDirectory];
+        return NO;
+    }
     [_appCore start];
+    return YES;
 }
 
-- (void)prepareDegammaProgram {
-    const char* vShaderSource =
-        "attribute vec2 in_Position;\n"
-        "attribute vec2 in_TexCoord;\n"
-        "varying vec2 texCoord;\n"
-        "void main()\n"
-        "{\n"
-        "    gl_Position = vec4(in_Position.xy, 0.0, 1.0);\n"
-        "    texCoord = in_TexCoord.st;\n"
-        "}";
-    const char* fShaderSource =
-        "precision mediump float;\n"
-        "varying vec2 texCoord;\n"
-        "uniform sampler2D tex;\n"
-        "void main()\n"
-        "{\n"
-        "    gl_FragColor = texture2D(tex, texCoord);\n"
-        "    gl_FragColor.rgb = pow(gl_FragColor.rgb, vec3(2.2));\n"
-        "}\n";
-
-    GLuint vShader = glCreateShader(GL_VERTEX_SHADER);
-    glShaderSource(vShader, 1, &vShaderSource, NULL);
-    glCompileShader(vShader);
-
-    GLint compiled;
-    glGetShaderiv(vShader, GL_COMPILE_STATUS, &compiled);
-
-    GLuint fShader = glCreateShader(GL_FRAGMENT_SHADER);
-    glShaderSource(fShader, 1, &fShaderSource, NULL);
-    glCompileShader(fShader);
-
-    glGetShaderiv(fShader, GL_COMPILE_STATUS, &compiled);
-
-    GLuint program = glCreateProgram();
-    glAttachShader(program, vShader);
-    glAttachShader(program, fShader);
-    glBindAttribLocation(program, 0, "in_Position");
-    glBindAttribLocation(program, 1, "in_TexCoord");
-    glLinkProgram(program);
-
-    GLint linked;
-    glGetProgramiv(program, GL_LINK_STATUS, &linked);
-
-    glDeleteShader(vShader);
-    glDeleteShader(fShader);
-
-    GLuint vbo, vao;
-    glGenVertexArrays(1, &vao);
-    glBindVertexArray(vao);
-    glGenBuffers(1, &vbo);
-    glBindBuffer(GL_ARRAY_BUFFER, vbo);
-    const float quadVertices[] =
-    {
-        // positions   // texCoords
-        -1.0f,  1.0f,  0.0f, 0.0f,
-        -1.0f, -1.0f,  0.0f, 1.0f,
-         1.0f, -1.0f,  1.0f, 1.0f,
-
-        -1.0f,  1.0f,  0.0f, 0.0f,
-         1.0f, -1.0f,  1.0f, 1.0f,
-         1.0f,  1.0f,  1.0f, 0.0f
-    };
-    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
-    glEnableVertexAttribArray(0);
-    glEnableVertexAttribArray(1);
-    glBindVertexArray(0);
-
-    self.postprocessProgram = program;
-    self.postprocessProgramTextureLocation = glGetUniformLocation(program, "tex");
-    self.postprocessProgramVBO = vbo;
-    self.postprocessProgramVAO = vao;
+- (void)cleanupCelestia {
 }
 
 - (void)runWorldTrackingARSession {
@@ -246,6 +252,10 @@
 
     _arSession = ar_session_create();
     ar_session_run(_arSession, dataProviders);
+}
+
+- (void)stopWorldTrackingARSession {
+    ar_session_stop_all_data_providers(_arSession);
 }
 
 - (ar_pose_t)createPoseForTiming:(cp_frame_timing_t)timing {
@@ -290,32 +300,34 @@
 
     cp_frame_end_submission(frame);
 
-    for (CXCRendererSurface *resource in resources)
-    {
+    for (CXCRendererSurface *resource in resources) {
         GLuint framebuffer = resource.glFramebuffer;
         glDeleteFramebuffers(1, &framebuffer);
         GLuint textures[] = { resource.glColorTexture, resource.glDepthTexture, resource.glIntermediateColorTexture };
         glDeleteTextures(3, textures);
-        eglDestroyImageKHR(_eglDisplay, resource.eglColorImage);
-        eglDestroyImageKHR(_eglDisplay, resource.eglDepthImage);
+        eglDestroyImageKHR(_renderResource.eglDisplay, resource.eglColorImage);
+        eglDestroyImageKHR(_renderResource.eglDisplay, resource.eglDepthImage);
     }
 }
 
 - (NSArray<CXCRendererSurface *> *)drawAndPresentFrame:(cp_frame_t)frame drawable:(cp_drawable_t)drawable {
-    CFTimeInterval renderTime = CACurrentMediaTime();
-    CFTimeInterval timestep = MIN(renderTime - _lastRenderTime, 1.0 / 60.0);
-    _sceneTime += timestep;
-
     [_appCore tick];
+
+    CelestiaSelection *newSelection = [[_appCore simulation] selection];
+    if (_selection == nil || ![newSelection isEqualToSelection:_selection]) {
+        _selection = newSelection;
+        void (^updater)(CelestiaSelection * _Nonnull) = [self selectionUpdater];
+        if (updater != nil)
+            updater(newSelection);
+    }
 
     ar_pose_t arPose = cp_drawable_get_ar_pose(drawable);
     simd_float4x4 poseTransform = ar_pose_get_origin_from_device_transform(arPose);
 
-    id<MTLCommandBuffer> commandBuffer = [_commandQueue commandBuffer];
+    id<MTLCommandBuffer> commandBuffer = [_renderResource.commandQueue commandBuffer];
 
     NSMutableArray *resources = [NSMutableArray array];
-    for (int i = 0; i < cp_drawable_get_view_count(drawable); ++i)
-    {
+    for (int i = 0; i < cp_drawable_get_view_count(drawable); ++i) {
         CXCRendererSurface *renderSurface = [self createRenderPassDescriptorForDrawable:drawable index:i];
         cp_view_t view = cp_drawable_get_view(drawable, i);
         simd_float4 tangents = cp_view_get_tangents(view);
@@ -336,17 +348,18 @@
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        glUseProgram(self.postprocessProgram);
+        glUseProgram(_renderResource.postprocessProgram);
 
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, renderSurface.glIntermediateColorTexture);
-        glUniform1i(self.postprocessProgramTextureLocation, 0);
+        glUniform1i(_renderResource.postprocessProgramTextureLocation, 0);
 
-        glBindVertexArray(self.postprocessProgramVAO);
+        glBindVertexArray(_renderResource.postprocessProgramVAO);
         glDrawArrays(GL_TRIANGLES, 0, 6);
         glBindTexture(GL_TEXTURE_2D, 0);
-        glFlush();
         glBindVertexArray(0);
+
+        glFlush();
 
         [resources addObject:renderSurface];
     }
@@ -374,11 +387,11 @@
     passDescriptor.renderTargetArrayLength = cp_drawable_get_view_count(drawable);
     passDescriptor.rasterizationRateMap = cp_drawable_get_rasterization_rate_map(drawable, index);
 
-    eglMakeCurrent(_eglDisplay, NULL, NULL, _eglContext);
+    eglMakeCurrent(_renderResource.eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, _renderResource.eglContext);
 
     const EGLint emptyAttributes[] = { EGL_NONE };
-    EGLImageKHR eglColorImage = eglCreateImageKHR(_eglDisplay, EGL_NO_CONTEXT, EGL_METAL_TEXTURE_ANGLE, (__bridge EGLClientBuffer)colorTexture, emptyAttributes);
-    EGLImageKHR eglDepthImage = eglCreateImageKHR(_eglDisplay, EGL_NO_CONTEXT, EGL_METAL_TEXTURE_ANGLE, (__bridge EGLClientBuffer)depthTexture, emptyAttributes);
+    EGLImageKHR eglColorImage = eglCreateImageKHR(_renderResource.eglDisplay, EGL_NO_CONTEXT, EGL_METAL_TEXTURE_ANGLE, (__bridge EGLClientBuffer)colorTexture, emptyAttributes);
+    EGLImageKHR eglDepthImage = eglCreateImageKHR(_renderResource.eglDisplay, EGL_NO_CONTEXT, EGL_METAL_TEXTURE_ANGLE, (__bridge EGLClientBuffer)depthTexture, emptyAttributes);
 
     GLuint glColorTexture;
     glGenTextures(1, &glColorTexture);
@@ -417,11 +430,3 @@
 }
 
 @end
-
-CXCRenderer *CXC_RendererStart(NSString *resourceFolderPath, NSString *configFilePath)
-{
-    CXCRenderer *renderer = [[CXCRenderer alloc] initWithResourceFolderPath:resourceFolderPath configFilePath:configFilePath];
-    [renderer setName:@"CXCRenderer"];
-    [renderer start];
-    return renderer;
-}
