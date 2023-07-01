@@ -1442,7 +1442,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9D0C23E4CFF77618699E6457 /* Pods-MobileCelestia.debug.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = MobileCelestia/Celestia.entitlements;
@@ -1469,7 +1468,6 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 378830D4B8D9287E2A114B82 /* Pods-MobileCelestia.release.xcconfig */;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = MobileCelestia/Celestia.entitlements;
