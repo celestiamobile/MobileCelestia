@@ -11,6 +11,7 @@
 
 import CelestiaXRCore
 import CompositorServices
+import Observation
 import SwiftUI
 
 struct MetalLayerConfiguration: CompositorLayerConfiguration {
@@ -24,16 +25,17 @@ struct MetalLayerConfiguration: CompositorLayerConfiguration {
 
 @main
 struct CelestiaXRApp: App {
-    var renderer = CXC_RendererStart(Bundle.main.path(forResource: "CelestiaResources", ofType: nil)!, "celestia.cfg")
+    private var renderer = XRRenderer(renderer: Renderer(resourceFolderPath: Bundle.main.path(forResource: "CelestiaResources", ofType: nil)!, configFilePath: "celestia.cfg"))
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            StartUpView()
+                .environmentObject(renderer)
         }
 
         ImmersiveSpace(id: "ImmersiveSpace") {
             CompositorLayer(configuration: MetalLayerConfiguration()) { layerRenderer in
-                renderer.startRendering(withLayerRenderer: layerRenderer)
+                renderer.startRendering(with: layerRenderer)
             }
         }.immersionStyle(selection: .constant(.full), in: .full)
     }

@@ -10,20 +10,36 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <CelestiaCore/CelestiaCore.h>
 #import <CompositorServices/CompositorServices.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
+typedef NS_ENUM(NSUInteger, CXCRendererStatus) {
+    CXCRendererStatusNone,
+    CXCRendererStatusLoading,
+    CXCRendererStatusLoaded,
+    CXCRendererStatusRendering,
+    CXCRendererStatusInvalidated,
+} NS_SWIFT_NAME(RendererStatus);
+
 NS_SWIFT_NAME(Renderer)
-@interface CXCRenderer : NSThread
+@interface CXCRenderer : NSObject
+
+@property (readonly) CXCRendererStatus status;
+@property (nullable) void (^selectionUpdater)(CelestiaSelection *);
+@property (nullable) void (^statusUpdater)(CXCRendererStatus);
+@property (nullable) void (^fileNameUpdater)(NSString *);
+
+@property (readonly) CelestiaAppCore *appCore;
 
 - (instancetype)init NS_UNAVAILABLE;
 - (instancetype)initWithResourceFolderPath:(NSString *)resourceFolderPath configFilePath:(NSString *)configFilePath;
+- (instancetype)initRenderer:(CXCRenderer *)renderer;
 
+- (void)prepare;
 - (void)startRenderingWithLayerRenderer:(cp_layer_renderer_t)layerRenderer;
 
 @end
-
-CXCRenderer *CXC_RendererStart(NSString *resourceFolderPath, NSString *configFilePath);
 
 NS_ASSUME_NONNULL_END

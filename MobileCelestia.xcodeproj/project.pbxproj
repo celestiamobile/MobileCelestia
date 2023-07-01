@@ -47,6 +47,11 @@
 		EA1823F727C08E3500E0F5E4 /* CEHExceptionCatching.h in Headers */ = {isa = PBXBuildFile; fileRef = EA1823F527C08E3500E0F5E4 /* CEHExceptionCatching.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		EA1823F827C08E3500E0F5E4 /* CEHExceptionCatching.m in Sources */ = {isa = PBXBuildFile; fileRef = EA1823F627C08E3500E0F5E4 /* CEHExceptionCatching.m */; };
 		EA1BE1572748E9DC0046074C /* DisplaySceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BE1562748E9DC0046074C /* DisplaySceneDelegate.swift */; };
+		EA246B8A2A50134500E1A1AB /* CXCRenderResource.h in Headers */ = {isa = PBXBuildFile; fileRef = EA246B882A50134500E1A1AB /* CXCRenderResource.h */; };
+		EA246B8B2A50134500E1A1AB /* CXCRenderResource.m in Sources */ = {isa = PBXBuildFile; fileRef = EA246B892A50134500E1A1AB /* CXCRenderResource.m */; };
+		EA246B8E2A50138300E1A1AB /* CXCRenderSurface.h in Headers */ = {isa = PBXBuildFile; fileRef = EA246B8C2A50138300E1A1AB /* CXCRenderSurface.h */; };
+		EA246B8F2A50138300E1A1AB /* CXCRenderSurface.m in Sources */ = {isa = PBXBuildFile; fileRef = EA246B8D2A50138300E1A1AB /* CXCRenderSurface.m */; };
+		EA246B912A50341500E1A1AB /* XRRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA246B902A50341500E1A1AB /* XRRenderer.swift */; };
 		EA26E5E62A319D7F00B03DDE /* libEGL.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA26E5E42A319D7F00B03DDE /* libEGL.xcframework */; };
 		EA26E5E72A319D7F00B03DDE /* libEGL.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EA26E5E42A319D7F00B03DDE /* libEGL.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EA26E5E82A319D7F00B03DDE /* libGLESv2.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA26E5E52A319D7F00B03DDE /* libGLESv2.xcframework */; };
@@ -92,7 +97,7 @@
 		EA85C917289EA1ED009ADB1C /* IconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA85C916289EA1ED009ADB1C /* IconView.swift */; };
 		EA85C91B289F5811009ADB1C /* ButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA85C91A289F5811009ADB1C /* ButtonView.swift */; };
 		EA8680772A4692DB003B5D39 /* CelestiaXRApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA8680762A4692DB003B5D39 /* CelestiaXRApp.swift */; };
-		EA8680792A4692DB003B5D39 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA8680782A4692DB003B5D39 /* ContentView.swift */; };
+		EA8680792A4692DB003B5D39 /* StartUpView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA8680782A4692DB003B5D39 /* StartUpView.swift */; };
 		EA86807F2A4692DC003B5D39 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EA86807E2A4692DC003B5D39 /* Assets.xcassets */; };
 		EA8680822A4692DC003B5D39 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EA8680812A4692DC003B5D39 /* Preview Assets.xcassets */; };
 		EA86808D2A46931A003B5D39 /* CelestiaCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 979D2FA423FEB1D6005D2592 /* CelestiaCore.framework */; };
@@ -320,6 +325,11 @@
 		EA1BC6E624A0E94900F3F51B /* EventFinderResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventFinderResultViewController.swift; sourceTree = "<group>"; };
 		EA1BE1562748E9DC0046074C /* DisplaySceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplaySceneDelegate.swift; sourceTree = "<group>"; };
 		EA1EF056249393BE0039F493 /* Celestia.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Celestia.entitlements; sourceTree = "<group>"; };
+		EA246B882A50134500E1A1AB /* CXCRenderResource.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CXCRenderResource.h; sourceTree = "<group>"; };
+		EA246B892A50134500E1A1AB /* CXCRenderResource.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CXCRenderResource.m; sourceTree = "<group>"; };
+		EA246B8C2A50138300E1A1AB /* CXCRenderSurface.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CXCRenderSurface.h; sourceTree = "<group>"; };
+		EA246B8D2A50138300E1A1AB /* CXCRenderSurface.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CXCRenderSurface.m; sourceTree = "<group>"; };
+		EA246B902A50341500E1A1AB /* XRRenderer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = XRRenderer.swift; sourceTree = "<group>"; };
 		EA26E5E42A319D7F00B03DDE /* libEGL.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libEGL.xcframework; path = ../CelestiaCore/libs/dependency/xcframeworks/libEGL.xcframework; sourceTree = "<group>"; };
 		EA26E5E52A319D7F00B03DDE /* libGLESv2.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libGLESv2.xcframework; path = ../CelestiaCore/libs/dependency/xcframeworks/libGLESv2.xcframework; sourceTree = "<group>"; };
 		EA28CA4D24A25FE7004B011E /* BottomControlViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomControlViewController.swift; sourceTree = "<group>"; };
@@ -359,7 +369,7 @@
 		EA85C91A289F5811009ADB1C /* ButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonView.swift; sourceTree = "<group>"; };
 		EA8680702A4692DB003B5D39 /* CelestiaXR.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CelestiaXR.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA8680762A4692DB003B5D39 /* CelestiaXRApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaXRApp.swift; sourceTree = "<group>"; };
-		EA8680782A4692DB003B5D39 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		EA8680782A4692DB003B5D39 /* StartUpView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartUpView.swift; sourceTree = "<group>"; };
 		EA86807E2A4692DC003B5D39 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EA8680812A4692DC003B5D39 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		EA86808F2A46936D003B5D39 /* libbz2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbz2.tbd; path = Platforms/XROS.platform/Developer/SDKs/XROS1.0.sdk/usr/lib/libbz2.tbd; sourceTree = DEVELOPER_DIR; };
@@ -849,8 +859,9 @@
 		EA8680712A4692DB003B5D39 /* CelestiaXR */ = {
 			isa = PBXGroup;
 			children = (
+				EA246B902A50341500E1A1AB /* XRRenderer.swift */,
 				EA8680762A4692DB003B5D39 /* CelestiaXRApp.swift */,
-				EA8680782A4692DB003B5D39 /* ContentView.swift */,
+				EA8680782A4692DB003B5D39 /* StartUpView.swift */,
 				EA86807E2A4692DC003B5D39 /* Assets.xcassets */,
 				EA8680802A4692DC003B5D39 /* Preview Content */,
 			);
@@ -871,6 +882,10 @@
 				EA8680AC2A46B497003B5D39 /* CelestiaXRCore.h */,
 				EA8680BC2A46B505003B5D39 /* CXCRenderer.m */,
 				EA8680BE2A46B516003B5D39 /* CXCRenderer.h */,
+				EA246B882A50134500E1A1AB /* CXCRenderResource.h */,
+				EA246B892A50134500E1A1AB /* CXCRenderResource.m */,
+				EA246B8C2A50138300E1A1AB /* CXCRenderSurface.h */,
+				EA246B8D2A50138300E1A1AB /* CXCRenderSurface.m */,
 			);
 			path = CelestiaXRCore;
 			sourceTree = "<group>";
@@ -986,7 +1001,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				EA8680BF2A46B60D003B5D39 /* CXCRenderer.h in Headers */,
+				EA246B8E2A50138300E1A1AB /* CXCRenderSurface.h in Headers */,
 				EA8680AD2A46B497003B5D39 /* CelestiaXRCore.h in Headers */,
+				EA246B8A2A50134500E1A1AB /* CXCRenderResource.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1553,7 +1570,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EA8680792A4692DB003B5D39 /* ContentView.swift in Sources */,
+				EA8680792A4692DB003B5D39 /* StartUpView.swift in Sources */,
+				EA246B912A50341500E1A1AB /* XRRenderer.swift in Sources */,
 				EA8680772A4692DB003B5D39 /* CelestiaXRApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1562,6 +1580,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EA246B8F2A50138300E1A1AB /* CXCRenderSurface.m in Sources */,
+				EA246B8B2A50134500E1A1AB /* CXCRenderResource.m in Sources */,
 				EA8680BD2A46B505003B5D39 /* CXCRenderer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
