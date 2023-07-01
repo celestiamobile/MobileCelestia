@@ -16,17 +16,23 @@
 #import <CelestiaCore/CelestiaCore.h>
 
 #import "CXCRenderer.h"
+#import "CXCFont.h"
+#import "CXCFontCollection.h"
+#import "CXCInputEvent.h"
 #import "CXCRenderResource.h"
 #import "CXCRenderSurface.h"
+
+#include <os/lock.h>
 
 @interface CXCRenderer () {
     CXCRendererStatus _renderStatus;
     void (^_selectionUpdater)(CelestiaSelection *);
     void (^_statusUpdater)(CXCRendererStatus);
     void (^_fileNameUpdater)(NSString *);
+    void (^_messageUpdater)(NSString *);
 }
 
-@property NSLock *resourceLock;
+@property os_unfair_lock resourceLock;
 
 @property NSThread *renderThread;
 @property CXCRenderResource *renderResource;
@@ -38,18 +44,30 @@
 
 @property NSString *resourceFolderPath;
 @property NSString *configFilePath;
+@property NSArray<NSString *> *extraDirectories;
+@property NSUserDefaults *userDefaults;
+@property NSString *appDefaultsPath;
 
 @property dispatch_semaphore_t renderSemaphore;
 
 @property CelestiaSelection *selection;
+@property NSString *message;
+@property NSMutableArray<void (^)(CelestiaAppCore *)> *tasks;
 
 @property BOOL inheritedFromPreviousRenderer;
 
+@property NSMutableArray<CXCInputEvent *> *currentEvents;
+@property CXCInputEventPhase previousEventPhase;
+
+@property NSMutableArray<CXCRendererSurface *> *surfaces;
+
+@property CXCFontCollection *defaultFonts;
+@property NSDictionary<NSString *, CXCFontCollection *> *otherFonts;
 @end
 
 @implementation CXCRenderer
 
-- (instancetype)initWithResourceFolderPath:(NSString *)resourceFolderPath configFilePath:(NSString *)configFilePath {
+- (instancetype)initWithResourceFolderPath:(NSString *)resourceFolderPath configFilePath:(NSString *)configFilePath extraDirectories:(NSArray<NSString *> *)extraDirectories userDefaults:(NSUserDefaults *)userDefaults appDefaultsPath:(nullable NSString *)appDefaultsPath defaultFonts:(CXCFontCollection *)defaultFonts otherFonts:(NSDictionary<NSString *, CXCFontCollection *> *)otherFonts {
     self = [super init];
     if (self) {
         _renderResource = [[CXCRenderResource alloc] init];
@@ -63,14 +81,26 @@
 
         _appCore = [[CelestiaAppCore alloc] init];
         _selection = [[CelestiaSelection alloc] init];
+        _message = @"";
 
         _resourceFolderPath = resourceFolderPath;
         _configFilePath = configFilePath;
+        _userDefaults = userDefaults;
+        _appDefaultsPath = appDefaultsPath;
+        _extraDirectories = [extraDirectories copy];
 
         _renderStatus = CXCRendererStatusNone;
-        _resourceLock = [[NSLock alloc] init];
+        _resourceLock = OS_UNFAIR_LOCK_INIT;
+        _tasks = [NSMutableArray array];
 
         _inheritedFromPreviousRenderer = NO;
+
+        _currentEvents = [NSMutableArray array];
+        _previousEventPhase = CXCInputEventPhaseEnded;
+        _surfaces = [NSMutableArray array];
+
+        _defaultFonts = defaultFonts;
+        _otherFonts = [otherFonts copy];
     }
     return self;
 }
@@ -88,71 +118,109 @@
         _layerRenderer = NULL;
 
         _appCore = renderer.appCore;
+        _selection = renderer.selection;
+        _message = renderer.message;
 
         _resourceFolderPath = renderer.resourceFolderPath;
         _configFilePath = renderer.configFilePath;
+        _userDefaults = renderer.userDefaults;
+        _appDefaultsPath = renderer.appDefaultsPath;
+        _extraDirectories = [renderer.extraDirectories copy];
 
         _renderStatus = CXCRendererStatusNone;
-        _resourceLock = [[NSLock alloc] init];
+        _resourceLock = OS_UNFAIR_LOCK_INIT;
+        _tasks = [NSMutableArray array];
 
         _inheritedFromPreviousRenderer = YES;
+
+        _currentEvents = [NSMutableArray array];
+        _previousEventPhase = CXCInputEventPhaseEnded;
+        _surfaces = [NSMutableArray array];
+
+        _defaultFonts = renderer.defaultFonts;
+        _otherFonts = [renderer.otherFonts copy];
     }
     return self;
 }
 
 - (CXCRendererStatus)status {
-    [_resourceLock lock];
+    os_unfair_lock_lock(&_resourceLock);
     CXCRendererStatus current = _renderStatus;
-    [_resourceLock unlock];
+    os_unfair_lock_unlock(&_resourceLock);
     return current;
 }
 
 - (void)setStatus:(CXCRendererStatus)status {
-    [_resourceLock lock];
+    os_unfair_lock_lock(&_resourceLock);
     _renderStatus = status;
     if (_statusUpdater != nil) {
         _statusUpdater(status);
     }
-    [_resourceLock unlock];
+    os_unfair_lock_unlock(&_resourceLock);
 }
 
 - (void (^)(CXCRendererStatus))statusUpdater {
-    [_resourceLock lock];
+    os_unfair_lock_lock(&_resourceLock);
     void (^updater)(CXCRendererStatus) = _statusUpdater;
-    [_resourceLock unlock];
+    os_unfair_lock_unlock(&_resourceLock);
     return updater;
 }
 
 - (void)setStatusUpdater:(void (^)(CXCRendererStatus))statusUpdater {
-    [_resourceLock lock];
+    os_unfair_lock_lock(&_resourceLock);
     _statusUpdater = statusUpdater;
-    [_resourceLock unlock];
+    os_unfair_lock_unlock(&_resourceLock);
 }
 
 - (void (^)(NSString * _Nonnull))fileNameUpdater {
-    [_resourceLock lock];
+    os_unfair_lock_lock(&_resourceLock);
     void (^updater)(NSString * _Nonnull) = _fileNameUpdater;
-    [_resourceLock unlock];
+    os_unfair_lock_unlock(&_resourceLock);
     return updater;
 }
 
 - (void)setFileNameUpdater:(void (^)(NSString * _Nonnull))fileNameUpdater {
-    [_resourceLock lock];
+    os_unfair_lock_lock(&_resourceLock);
     _fileNameUpdater = fileNameUpdater;
-    [_resourceLock unlock];
+    os_unfair_lock_unlock(&_resourceLock);
+}
+
+- (void (^)(NSString * _Nonnull))messageUpdater {
+    os_unfair_lock_lock(&_resourceLock);
+    void (^updater)(NSString * _Nonnull) = _messageUpdater;
+    os_unfair_lock_unlock(&_resourceLock);
+    return updater;
+}
+
+- (void)setMessageUpdater:(void (^)(NSString * _Nonnull))messageUpdater {
+    os_unfair_lock_lock(&_resourceLock);
+    _messageUpdater = messageUpdater;
+    os_unfair_lock_unlock(&_resourceLock);
 }
 
 - (void (^)(CelestiaSelection * _Nonnull))selectionUpdater {
-    [_resourceLock lock];
+    os_unfair_lock_lock(&_resourceLock);
     void (^updater)(CelestiaSelection * _Nonnull) = _selectionUpdater;
-    [_resourceLock unlock];
+    os_unfair_lock_unlock(&_resourceLock);
     return updater;
 }
 
 - (void)setSelectionUpdater:(void (^)(CelestiaSelection * _Nonnull))selectionUpdater {
-    [_resourceLock lock];
+    os_unfair_lock_lock(&_resourceLock);
     _selectionUpdater = selectionUpdater;
-    [_resourceLock unlock];
+    os_unfair_lock_unlock(&_resourceLock);
+}
+
+- (void)enqueueEvents:(NSArray<CXCInputEvent *> *)events {
+    os_unfair_lock_lock(&_resourceLock);
+    [_currentEvents addObjectsFromArray:events];
+    os_unfair_lock_unlock(&_resourceLock);
+}
+
+- (void)enqueueTask:(void (^)(CelestiaAppCore * _Nonnull))task {
+    os_unfair_lock_lock(&_resourceLock);
+    [_tasks addObject:task];
+    os_unfair_lock_unlock(&_resourceLock);
 }
 
 - (void)prepare {
@@ -184,6 +252,8 @@
     dispatch_semaphore_wait(_renderSemaphore, DISPATCH_TIME_FOREVER);
     [self setStatus:CXCRendererStatusRendering];
 
+    eglMakeCurrent(_renderResource.eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, _renderResource.eglContext);
+
     BOOL isRunning = YES;
     while (isRunning) {
         @autoreleasepool {
@@ -200,6 +270,7 @@
             }
         }
     }
+    [self cleanupSurfaces];
     [self setStatus:CXCRendererStatusInvalidated];
 }
 
@@ -221,7 +292,24 @@
         [self cleanupCelestia];
         return NO;
     }
-    if (![_appCore startSimulationWithConfigFileName:_configFilePath extraDirectories:nil progressReporter:^(NSString * _Nonnull progress) {
+    [CelestiaAppCore setLocaleDirectory:[_resourceFolderPath stringByAppendingPathComponent:@"locale"]];
+    NSMutableArray<NSString *> *validExtraDirectories = [NSMutableArray array];
+    for (NSString *extraDirectory in _extraDirectories) {
+        BOOL isDir = NO;
+        if ([fileManager fileExistsAtPath:extraDirectory isDirectory:&isDir]) {
+            if (isDir) {
+                [validExtraDirectories addObject:extraDirectory];
+            }
+        }
+        else {
+            if ([fileManager createDirectoryAtPath:extraDirectory withIntermediateDirectories:NO attributes:nil error:NULL]) {
+                [validExtraDirectories addObject:extraDirectory];
+            }
+        }
+    }
+    _extraDirectories = validExtraDirectories;
+
+    if (![_appCore startSimulationWithConfigFileName:_configFilePath extraDirectories:validExtraDirectories progressReporter:^(NSString * _Nonnull progress) {
         void (^updater)(NSString * _Nonnull) = [self fileNameUpdater];
         if (updater != nil)
             updater(progress);
@@ -237,11 +325,40 @@
         [fileManager changeCurrentDirectoryPath:oldCurrentDirectory];
         return NO;
     }
+
+    /* Load values from user defaults and default config */
+    [_appCore loadUserDefaults:_userDefaults withAppDefaultsAtPath:_appDefaultsPath];
+
+    /* Disable features that do not work well in XR */
+    [_appCore setHudDetail:0];
+    [_appCore disableMessages];
+    [_appCore disableSelectionPointer];
+
+    /* Configure fonts */
+    [_appCore clearFonts];
+    CXCFontCollection *fonts = [_otherFonts objectForKey:[CelestiaAppCore language]];
+    if (fonts == nil)
+        fonts = _defaultFonts;
+    [_appCore setFont:fonts.mainFont.path collectionIndex:fonts.mainFont.index fontSize:fonts.mainFont.size];
+    [_appCore setTitleFont:fonts.titleFont.path collectionIndex:fonts.titleFont.index fontSize:fonts.titleFont.size];
+    [_appCore setRendererFont:fonts.normalRenderFont.path collectionIndex:fonts.normalRenderFont.index fontSize:fonts.normalRenderFont.size fontStyle:CelestiaRendererFontStyleNormal];
+    [_appCore setRendererFont:fonts.largeRenderFont.path collectionIndex:fonts.largeRenderFont.index fontSize:fonts.largeRenderFont.size fontStyle:CelestiaRendererFontStyleLarge];
+
     [_appCore start];
     return YES;
 }
 
 - (void)cleanupCelestia {
+}
+
+- (void)cleanupSurfaces {
+    for (CXCRendererSurface *surface in _surfaces) {
+        GLuint framebuffer = surface.glFramebuffer;
+        glDeleteFramebuffers(1, &framebuffer);
+        GLuint textures[] = { surface.glIntermediateColorTexture };
+        glDeleteTextures(1, textures);
+    }
+    _surfaces = [NSMutableArray array];
 }
 
 - (void)runWorldTrackingARSession {
@@ -301,16 +418,44 @@
     cp_frame_end_submission(frame);
 
     for (CXCRendererSurface *resource in resources) {
-        GLuint framebuffer = resource.glFramebuffer;
-        glDeleteFramebuffers(1, &framebuffer);
-        GLuint textures[] = { resource.glColorTexture, resource.glDepthTexture, resource.glIntermediateColorTexture };
-        glDeleteTextures(3, textures);
+        GLuint textures[] = { resource.glColorTexture, resource.glDepthTexture };
+        glDeleteTextures(2, textures);
         eglDestroyImageKHR(_renderResource.eglDisplay, resource.eglColorImage);
         eglDestroyImageKHR(_renderResource.eglDisplay, resource.eglDepthImage);
     }
 }
 
 - (NSArray<CXCRendererSurface *> *)drawAndPresentFrame:(cp_frame_t)frame drawable:(cp_drawable_t)drawable {
+    os_unfair_lock_lock(&_resourceLock);
+    NSArray<void (^)(CelestiaAppCore *)> *taskCopy = [_tasks copy];
+    NSArray<CXCInputEvent *> *eventCopy = [_currentEvents copy];
+    [_tasks removeAllObjects];
+    [_currentEvents removeAllObjects];
+    os_unfair_lock_unlock(&_resourceLock);
+
+    for (void (^task)(CelestiaAppCore *) in taskCopy)
+        task(_appCore);
+
+    for (CXCInputEvent *event in eventCopy)
+    {
+        CXCInputEventPhase currentPhase = event.phase;
+        SPVector3D direction = event.selectionRay.direction;
+        simd_float3 ray = simd_make_float3((float)direction.x, (float)direction.y, (float)direction.z);
+        switch (currentPhase)
+        {
+        case CXCInputEventPhaseActive:
+            if (_previousEventPhase == CXCInputEventPhaseEnded || _previousEventPhase == CXCInputEventPhaseCancelled)
+                [_appCore touchDown3D:ray];
+            else
+                [_appCore touchMove3D:ray];
+            break;
+        case CXCInputEventPhaseEnded:
+        case CXCInputEventPhaseCancelled:
+            [_appCore touchUp3D:ray];
+        }
+        _previousEventPhase = currentPhase;
+    }
+
     [_appCore tick];
 
     CelestiaSelection *newSelection = [[_appCore simulation] selection];
@@ -320,23 +465,33 @@
         if (updater != nil)
             updater(newSelection);
     }
+    NSString *message = [_appCore currentMessage];
+    if (![_message isEqualToString:message]) {
+        _message = message;
+        void (^updater)(NSString * _Nonnull) = [self messageUpdater];
+        if (updater != nil)
+            updater(message);
+    }
 
     ar_pose_t arPose = cp_drawable_get_ar_pose(drawable);
     simd_float4x4 poseTransform = ar_pose_get_origin_from_device_transform(arPose);
 
-    id<MTLCommandBuffer> commandBuffer = [_renderResource.commandQueue commandBuffer];
+    [[_appCore simulation] setObserverTransform:simd_inverse(poseTransform)];
 
     NSMutableArray *resources = [NSMutableArray array];
     for (int i = 0; i < cp_drawable_get_view_count(drawable); ++i) {
-        CXCRendererSurface *renderSurface = [self createRenderPassDescriptorForDrawable:drawable index:i];
+        CXCRendererSurface *previous = nil;
+        if ([_surfaces count] > i)
+            previous = [_surfaces objectAtIndex:i];
+        CXCRendererSurface *renderSurface = [self createRenderPassDescriptorForDrawable:drawable index:i previousSurface:previous];
+
         cp_view_t view = cp_drawable_get_view(drawable, i);
         simd_float4 tangents = cp_view_get_tangents(view);
         simd_float2 depthRange = cp_drawable_get_depth_range(drawable);
         [_appCore resize:CGSizeMake(renderSurface.width, renderSurface.height)];
         [_appCore setCustomPerspectiveProjectionLeft:-tangents[0] * depthRange[1] right:tangents[1] * depthRange[1] top:tangents[2] * depthRange[1] bottom:-tangents[3] * depthRange[1] nearZ:depthRange[1] farZ:depthRange[0]];
 
-        simd_float4x4 cameraMatrix = simd_mul(poseTransform, cp_view_get_transform(view));
-        [_appCore setCameraTransform:simd_inverse(cameraMatrix)];
+        [_appCore setCameraTransform:simd_inverse(cp_view_get_transform(view))];
         [_appCore draw];
 
         glFlush();
@@ -361,22 +516,30 @@
 
         glFlush();
 
+        if (previous == nil)
+            [_surfaces addObject:renderSurface];
+
         [resources addObject:renderSurface];
     }
 
     glFinish();
 
+    // Create a dummy commandBuffer
+    id<MTLCommandBuffer> commandBuffer = [_renderResource.commandQueue commandBuffer];
     cp_drawable_encode_present(drawable, commandBuffer);
     [commandBuffer commit];
 
     return [resources copy];
 }
 
-- (CXCRendererSurface *)createRenderPassDescriptorForDrawable:(cp_drawable_t)drawable index:(size_t)index {
+- (CXCRendererSurface *)createRenderPassDescriptorForDrawable:(cp_drawable_t)drawable index:(size_t)index previousSurface:(CXCRendererSurface *)previousSurface {
     MTLRenderPassDescriptor *passDescriptor = [[MTLRenderPassDescriptor alloc] init];
 
     id<MTLTexture> colorTexture = cp_drawable_get_color_texture(drawable, index);
     id<MTLTexture> depthTexture = cp_drawable_get_depth_texture(drawable, index);
+
+    GLsizei width = (GLsizei)colorTexture.width;
+    GLsizei height = (GLsizei)colorTexture.height;
 
     passDescriptor.colorAttachments[0].texture = colorTexture;
     passDescriptor.colorAttachments[0].storeAction = MTLStoreActionStore;
@@ -386,8 +549,6 @@
 
     passDescriptor.renderTargetArrayLength = cp_drawable_get_view_count(drawable);
     passDescriptor.rasterizationRateMap = cp_drawable_get_rasterization_rate_map(drawable, index);
-
-    eglMakeCurrent(_renderResource.eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, _renderResource.eglContext);
 
     const EGLint emptyAttributes[] = { EGL_NONE };
     EGLImageKHR eglColorImage = eglCreateImageKHR(_renderResource.eglDisplay, EGL_NO_CONTEXT, EGL_METAL_TEXTURE_ANGLE, (__bridge EGLClientBuffer)colorTexture, emptyAttributes);
@@ -411,22 +572,45 @@
     glEGLImageTargetTexture2DOES(GL_TEXTURE_2D, eglDepthImage);
 
     GLuint glIntermediateColorTexture;
-    glGenTextures(1, &glIntermediateColorTexture);
-    glBindTexture(GL_TEXTURE_2D, glIntermediateColorTexture);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)colorTexture.width, (GLsizei)colorTexture.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    if (previousSurface == nil) {
+        glGenTextures(1, &glIntermediateColorTexture);
+        glBindTexture(GL_TEXTURE_2D, glIntermediateColorTexture);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    } else {
+        glIntermediateColorTexture = previousSurface.glIntermediateColorTexture;
+        if (previousSurface.width != width || previousSurface.height != height) {
+            glBindTexture(GL_TEXTURE_2D, glIntermediateColorTexture);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+        }
+    }
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     GLuint glFramebuffer;
-    glGenFramebuffers(1, &glFramebuffer);
+    if (previousSurface == nil) {
+        glGenFramebuffers(1, &glFramebuffer);
+    } else {
+        glFramebuffer = previousSurface.glFramebuffer;
+    }
     glBindFramebuffer(GL_FRAMEBUFFER, glFramebuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, glIntermediateColorTexture, 0);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, glDepthTexture, 0);
-    glBindTexture(GL_TEXTURE_2D, 0);
 
-    return [[CXCRendererSurface alloc] initWithRenderPassDescriptor:passDescriptor eglColorImage:eglColorImage eglDepthImage:eglDepthImage glColorTexture:glColorTexture glDepthTexture:glDepthTexture glIntermediateColorTexture:glIntermediateColorTexture glFramebuffer:glFramebuffer width:(GLint)colorTexture.width height:(GLint)colorTexture.height];
+    if (previousSurface == nil) {
+        return [[CXCRendererSurface alloc] initWithRenderPassDescriptor:passDescriptor eglColorImage:eglColorImage eglDepthImage:eglDepthImage glColorTexture:glColorTexture glDepthTexture:glDepthTexture glIntermediateColorTexture:glIntermediateColorTexture glFramebuffer:glFramebuffer width:width height:height];
+    } else {
+        previousSurface.renderPassDescriptor = passDescriptor;
+        previousSurface.eglColorImage = eglColorImage;
+        previousSurface.eglDepthImage = eglDepthImage;
+        previousSurface.glColorTexture = glColorTexture;
+        previousSurface.glDepthTexture = glDepthTexture;
+        previousSurface.width = width;
+        previousSurface.height = height;
+        return previousSurface;
+    }
 }
 
 @end

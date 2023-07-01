@@ -110,7 +110,9 @@ private extension SearchViewController {
         searchBar.keyboardAppearance = .dark
         searchBar.delegate = self
 
+        #if !os(xrOS)
         tableView.keyboardDismissMode = .interactive
+        #endif
         tableView.register(resultsInSidebar ? UITableViewCell.self : TextCell.self, forCellReuseIdentifier: "Text")
     }
 }

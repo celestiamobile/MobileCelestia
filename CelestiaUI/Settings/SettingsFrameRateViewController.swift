@@ -9,6 +9,7 @@
 // of the License, or (at your option) any later version.
 //
 
+#if !os(xrOS)
 import UIKit
 
 class SettingsFrameRateViewController: BaseTableViewController {
@@ -100,3 +101,4 @@ extension SettingsFrameRateViewController {
         tableView.reloadData()
     }
 }
+#endif

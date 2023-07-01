@@ -17,6 +17,12 @@ target 'CelestiaUI' do
   pod "MWRequest", :git => "https://github.com/levinli303/mwrequest.git", :tag => "0.3.6"
 end
 
+target 'CelestiaXR' do
+  pod 'ZIPFoundation', '~> 0.9.16'
+
+  pod "MWRequest", :git => "https://github.com/levinli303/mwrequest.git", :tag => "0.3.6"
+end
+
 post_install do |installer|
     installer.pods_project.targets.each do |target|
         target.build_configurations.each do |config|

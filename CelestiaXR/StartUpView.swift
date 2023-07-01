@@ -9,10 +9,13 @@
 // of the License, or (at your option) any later version.
 //
 
+import CelestiaCore
+import CelestiaUI
 import SwiftUI
 
 struct StartUpView: View {
     @EnvironmentObject var renderer: XRRenderer
+    @EnvironmentObject var interactionManager: InteractionManager
 
     @State var isDismissingImmersiveSpace = false
     @State var isOpeningImmersiveSpace = false
@@ -20,6 +23,8 @@ struct StartUpView: View {
 
     @Environment(\.openImmersiveSpace) var openImmersiveSpace
     @Environment(\.dismissImmersiveSpace) var dismissImmersiveSpace
+    @Environment(\.openWindow) var openWindow
+    @Environment(\.dismissWindow) var dismissWindow
 
     @ViewBuilder
     func startCelestiaView() -> some View {
@@ -29,6 +34,7 @@ struct StartUpView: View {
                 await openImmersiveSpace(id: "ImmersiveSpace")
                 isOpeningImmersiveSpace = false
                 isImmersiveSpaceOpened = true
+                openWindow(id: "InfoWindow")
             }
         }
     }
@@ -37,14 +43,46 @@ struct StartUpView: View {
     func celestiaRunningView() -> some View {
         VStack {
             Text("Celestia is running...")
+            Group {
+                Button("Open Browser") {
+                    openWindow(id: "BrowserWindow")
+                }
+                Button("Open Search") {
+                    openWindow(id: "MainSearch")
+                }
+                Button("Open GoTo") {
+                    openWindow(id: "GoTo")
+                }
+                Button("Open Eclipse Finder") {
+                    openWindow(id: "EclipseFinder")
+                }
+                Button("Open Camera Control") {
+                    openWindow(id: "CameraControl")
+                }
+                Button("Open Favorite") {
+                    openWindow(id: "FavoriteView")
+                }
+                Button("Open Settings") {
+                    openWindow(id: "SettingsView")
+                }
+                Button("Open Add-on Management") {
+                    openWindow(id: "AddonManagementView")
+                }
+                Button("Download Add-ons") {
+                    openWindow(id: "AddonCategoriesView")
+                }
+            }
             Button("Pause Celestia") {
                 Task {
                     isDismissingImmersiveSpace = true
                     await dismissImmersiveSpace()
                     isDismissingImmersiveSpace = false
                     isImmersiveSpaceOpened = false
+                    dismissWindow(id: "InfoWindow")
                 }
             }
+            Text(renderer.message)
+                .font(.largeTitle)
         }
     }
 
@@ -61,11 +99,7 @@ struct StartUpView: View {
                     renderer.prepare()
                 }
             case .loading:
-                if let currentFileName = renderer.currentFileName {
-                    Text("Celestia is loading \(currentFileName)")
-                } else {
-                    Text("Celestia is loading...")
-                }
+                LoadingView(currentFile: renderer.currentFileName)
             case .loaded:
                 if isOpeningImmersiveSpace {
                     Text("Celestia is starting...")
@@ -84,6 +118,13 @@ struct StartUpView: View {
                 }
             @unknown default:
                 Text("Unknown status")
+            }
+        }
+        .padding()
+        .onChange(of: renderer.rendererStatus) { _, newValue in
+            if newValue == .rendering, interactionManager.gameControllerManager == nil {
+                let renderer = self.renderer
+                interactionManager.gameControllerManager = GameControllerManager(executor: renderer, canAcceptEvents: { return renderer.rendererStatus == .rendering })
             }
         }
     }

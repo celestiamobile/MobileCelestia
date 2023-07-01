@@ -13,9 +13,12 @@ import CelestiaCore
 import UIKit
 
 public enum SettingAction {
+    #if !os(xrOS)
     case refreshFrameRate(newFrameRate: Int)
+    #endif
 }
 
+#if !os(xrOS)
 public struct FrameRateSettingContext {
     let frameRateUserDefaultsKey: String
 
@@ -23,6 +26,7 @@ public struct FrameRateSettingContext {
         self.frameRateUserDefaultsKey = frameRateUserDefaultsKey
     }
 }
+#endif
 
 public struct DataLocationSettingContext {
     let userDefaults: UserDefaults
@@ -54,14 +58,44 @@ public class SettingsCoordinatorController: UIViewController {
     private let bundle: Bundle
     private let defaultDataDirectory: URL
     private let settings: [SettingSection]
+    #if !os(xrOS)
     private let frameRateContext: FrameRateSettingContext
+    #endif
     private let dataLocationContext: DataLocationSettingContext
 
     private let actionHandler: (SettingAction) -> Void
     private let dateInputHandler: (_ viewController: UIViewController, _ title: String, _ format: String) async -> Date?
     private let rendererInfoProvider: () async -> String
+    #if !os(xrOS)
     private let screenProvider: () -> UIScreen
+    #endif
 
+    #if os(xrOS)
+    public init(
+        core: AppCore,
+        executor: AsyncProviderExecutor,
+        userDefaults: UserDefaults,
+        bundle: Bundle,
+        defaultDataDirectory: URL,
+        settings: [SettingSection],
+        dataLocationContext: DataLocationSettingContext,
+        actionHandler: @escaping ((SettingAction) -> Void),
+        dateInputHandler: @escaping (_ viewController: UIViewController, _ title: String, _ format: String) async -> Date?,
+        rendererInfoProvider: @escaping () async -> String
+    ) {
+        self.core = core
+        self.executor = executor
+        self.userDefaults = userDefaults
+        self.bundle = bundle
+        self.defaultDataDirectory = defaultDataDirectory
+        self.settings = settings
+        self.dataLocationContext = dataLocationContext
+        self.actionHandler = actionHandler
+        self.dateInputHandler = dateInputHandler
+        self.rendererInfoProvider = rendererInfoProvider
+        super.init(nibName: nil, bundle: nil)
+    }
+    #else
     public init(
         core: AppCore,
         executor: AsyncProviderExecutor,
@@ -90,6 +124,7 @@ public class SettingsCoordinatorController: UIViewController {
         self.screenProvider = screenProvider
         super.init(nibName: nil, bundle: nil)
     }
+    #endif
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -137,10 +172,12 @@ private extension SettingsCoordinatorController {
                 viewController = TextViewController(title: item.name, text: renderInfo)
             case .dataLocation:
                 viewController = DataLocationSelectionViewController(userDefaults: dataLocationContext.userDefaults, dataDirectoryUserDefaultsKey: dataLocationContext.dataDirectoryUserDefaultsKey, configFileUserDefaultsKey: dataLocationContext.configFileUserDefaultsKey, defaultDataDirectoryURL: dataLocationContext.defaultDataDirectoryURL, defaultConfigFileURL: dataLocationContext.defaultConfigFileURL)
+            #if !os(xrOS)
             case .frameRate:
                 viewController = SettingsFrameRateViewController(screen: self.screenProvider(), userDefaults: userDefaults, userDefaultsKey: frameRateContext.frameRateUserDefaultsKey, frameRateUpdateHandler: { [weak self] newFrameRate in
                     self?.actionHandler(.refreshFrameRate(newFrameRate: newFrameRate))
                 })
+            #endif
             case .slider, .prefSwitch, .checkmark, .action, .custom, .keyedSelection, .prefSelection, .selection:
                 fatalError("Use .common for slider/action setting item.")
             }

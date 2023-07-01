@@ -135,7 +135,9 @@ class GoToInputViewController: BaseTableViewController {
 private extension GoToInputViewController {
     func setUp() {
         title = CelestiaString("Go to Object", comment: "")
+        #if !os(xrOS)
         tableView.keyboardDismissMode = .interactive
+        #endif
         tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         tableView.register(LongitudeLatitudeInputCell.self, forCellReuseIdentifier: "LonLat")
         if #available(iOS 15.0, *) {

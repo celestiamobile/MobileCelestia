@@ -12,8 +12,12 @@
 #import <Foundation/Foundation.h>
 #import <CelestiaCore/CelestiaCore.h>
 #import <CompositorServices/CompositorServices.h>
+#import <Spatial/Spatial.h>
 
 NS_ASSUME_NONNULL_BEGIN
+
+@class CXCFontCollection;
+@class CXCInputEvent;
 
 typedef NS_ENUM(NSUInteger, CXCRendererStatus) {
     CXCRendererStatusNone,
@@ -30,13 +34,16 @@ NS_SWIFT_NAME(Renderer)
 @property (nullable) void (^selectionUpdater)(CelestiaSelection *);
 @property (nullable) void (^statusUpdater)(CXCRendererStatus);
 @property (nullable) void (^fileNameUpdater)(NSString *);
+@property (nullable) void (^messageUpdater)(NSString *);
 
 @property (readonly) CelestiaAppCore *appCore;
 
 - (instancetype)init NS_UNAVAILABLE;
-- (instancetype)initWithResourceFolderPath:(NSString *)resourceFolderPath configFilePath:(NSString *)configFilePath;
+- (instancetype)initWithResourceFolderPath:(NSString *)resourceFolderPath configFilePath:(NSString *)configFilePath extraDirectories:(NSArray<NSString *> *)extraDirectories userDefaults:(NSUserDefaults *)userDefaults appDefaultsPath:(nullable NSString *)appDefaultsPath defaultFonts:(CXCFontCollection *)defaultFonts otherFonts:(NSDictionary<NSString *, CXCFontCollection *> *)otherFonts;
 - (instancetype)initRenderer:(CXCRenderer *)renderer;
 
+- (void)enqueueTask:(void (^)(CelestiaAppCore *))task;
+- (void)enqueueEvents:(NSArray<CXCInputEvent *> *)events;
 - (void)prepare;
 - (void)startRenderingWithLayerRenderer:(cp_layer_renderer_t)layerRenderer;
 

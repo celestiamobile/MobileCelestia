@@ -21,7 +21,9 @@ public enum SettingType: Hashable {
     case render
     case time
     case dataLocation
+    #if !os(xrOS)
     case frameRate
+    #endif
     case checkmark
     case custom
     case keyedSelection
@@ -865,7 +867,9 @@ public func rendererSettings(extraItems: [SettingItem<AnyHashable>]) -> SettingS
             )
         ),
     ]
+    #if !os(xrOS)
     items.append(SettingItem(name: CelestiaString("Frame Rate", comment: ""), type: .frameRate, associatedItem: .init(0)))
+    #endif
     items.append(contentsOf: extraItems)
     items.append(SettingItem(name: CelestiaString("Render Info", comment: ""), type: .render, associatedItem: .init(0)))
 
@@ -874,7 +878,9 @@ public func rendererSettings(extraItems: [SettingItem<AnyHashable>]) -> SettingS
 
 public func advancedSettings(extraItems: [SettingItem<AnyHashable>]) -> SettingSection {
     var items = extraItems
+    #if !os(xrOS)
     items.append(SettingItem(name: CelestiaString("Data Location", comment: ""), type: .dataLocation, associatedItem: .init(0)))
+    #endif
     items.append(contentsOf: [
         SettingItem(
             name: CelestiaString("Security", comment: ""),

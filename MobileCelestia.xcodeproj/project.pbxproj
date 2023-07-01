@@ -26,6 +26,10 @@
 		979D2FAF23FEB2BD005D2592 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 979D2FAE23FEB2B9005D2592 /* libz.tbd */; };
 		97C3A9F22445FACF00EB365A /* CelestiaControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C3A9F12445FACF00EB365A /* CelestiaControlView.swift */; };
 		D75E8DEAC2EBA3F7F8E06011 /* Pods_MobileCelestia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCC04706AE5EC279AAF950C2 /* Pods_MobileCelestia.framework */; };
+		EA0AFB7F2A506F3D00C6746B /* CelestiaUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA50E75E2A505627005E7D7A /* CelestiaUI.framework */; };
+		EA0AFB9A2A50789000C6746B /* InfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA0AFB992A50789000C6746B /* InfoView.swift */; };
+		EA14B02E2A51B1E100F069C0 /* BrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA14B02D2A51B1E100F069C0 /* BrowserView.swift */; };
+		EA14B0342A51B98800F069C0 /* SubsystemBrowserView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA14B0332A51B98800F069C0 /* SubsystemBrowserView.swift */; };
 		EA1823ED27C08D3D00E0F5E4 /* CelestiaHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = EA1823EC27C08D3D00E0F5E4 /* CelestiaHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		EA1823F027C08D3D00E0F5E4 /* CelestiaHelper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA1823EA27C08D3D00E0F5E4 /* CelestiaHelper.framework */; platformFilter = maccatalyst; };
 		EA1823F727C08E3500E0F5E4 /* CEHExceptionCatching.h in Headers */ = {isa = PBXBuildFile; fileRef = EA1823F527C08E3500E0F5E4 /* CEHExceptionCatching.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -37,9 +41,7 @@
 		EA246B8F2A50138300E1A1AB /* CXCRenderSurface.m in Sources */ = {isa = PBXBuildFile; fileRef = EA246B8D2A50138300E1A1AB /* CXCRenderSurface.m */; };
 		EA246B912A50341500E1A1AB /* XRRenderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA246B902A50341500E1A1AB /* XRRenderer.swift */; };
 		EA26E5E62A319D7F00B03DDE /* libEGL.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA26E5E42A319D7F00B03DDE /* libEGL.xcframework */; };
-		EA26E5E72A319D7F00B03DDE /* libEGL.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EA26E5E42A319D7F00B03DDE /* libEGL.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EA26E5E82A319D7F00B03DDE /* libGLESv2.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA26E5E52A319D7F00B03DDE /* libGLESv2.xcframework */; };
-		EA26E5E92A319D7F00B03DDE /* libGLESv2.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EA26E5E52A319D7F00B03DDE /* libGLESv2.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EA28CA4E24A25FE7004B011E /* BottomControlViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA28CA4D24A25FE7004B011E /* BottomControlViewController.swift */; };
 		EA28CA5324A2F399004B011E /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = EA28CA5124A2F399004B011E /* Fonts */; };
 		EA4E2D782A56B4570046D62E /* CelestiaFoundation.h in Headers */ = {isa = PBXBuildFile; fileRef = EA4E2D772A56B4570046D62E /* CelestiaFoundation.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -69,8 +71,10 @@
 		EA5D106C2A5E73C4003437F9 /* libGLESv2.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = EA26E5E52A319D7F00B03DDE /* libGLESv2.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EA5D32E7266F9518005D5931 /* SheetPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5D32E6266F9518005D5931 /* SheetPresentationController.swift */; };
 		EA5E185D2477C78E00F5374B /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5E185B2477C78E00F5374B /* Toast.swift */; };
+		EA66BBBD2A5594F0008A7AAA /* InteractionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA66BBBC2A5594F0008A7AAA /* InteractionManager.swift */; };
 		EA66BBC62A55AABF008A7AAA /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394BC2404189000E38B82 /* SearchViewController.swift */; };
 		EA66BBC72A55AABF008A7AAA /* SearchCoordinatorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394BE24041A9A00E38B82 /* SearchCoordinatorController.swift */; };
+		EA66BBD62A55AF2C008A7AAA /* MainSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA66BBD52A55AF2C008A7AAA /* MainSearch.swift */; };
 		EA66BBDF2A55BA88008A7AAA /* DistanceInputCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACAB98828BB314300192C75 /* DistanceInputCell.swift */; };
 		EA66BBE02A55BA88008A7AAA /* LongitudeLatitudeInputCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACAB98628BB2B3E00192C75 /* LongitudeLatitudeInputCell.swift */; };
 		EA66BBE12A55BA88008A7AAA /* GoToInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA374CD9263A8B770069589C /* GoToInputViewController.swift */; };
@@ -118,6 +122,7 @@
 		EA9A426F288CD80300AF3BD6 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA9A426E288CD80200AF3BD6 /* AudioToolbox.framework */; };
 		EA9FB23F27B7852A00E0DC1F /* CommonSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9FB23E27B7852A00E0DC1F /* CommonSceneDelegate.swift */; };
 		EAA5A7A1259DBFE6001AFA82 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = EAA5A7A3259DBFE6001AFA82 /* InfoPlist.strings */; };
+		EAA79CC82A569E190056DB91 /* FontCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAA79CC72A569E190056DB91 /* FontCollection.swift */; };
 		EAA79CCC2A56A01F0056DB91 /* SettingsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAA79CCB2A56A01F0056DB91 /* SettingsModel.swift */; };
 		EAA79CCE2A56AB2D0056DB91 /* SettingCommonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABDE3A82473DAA300E0A5FA /* SettingCommonViewController.swift */; };
 		EAA79CCF2A56AC1C0056DB91 /* TimeSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973BBA632405481200E3B061 /* TimeSettingViewController.swift */; };
@@ -125,6 +130,7 @@
 		EAA79CD22A56ADA90056DB91 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973BBA442405216700E3B061 /* AboutViewController.swift */; };
 		EAA79CD42A56AF6D0056DB91 /* SettingsFrameRateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA86E38326FE20C000FF2278 /* SettingsFrameRateViewController.swift */; };
 		EAA79CD62A56B0100056DB91 /* DataLocationSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F1141D2408AE06003A06D7 /* DataLocationSelectionViewController.swift */; };
+		EAB623A32A51179100063D1B /* InfoWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAB623A22A51179100063D1B /* InfoWindow.swift */; };
 		EAB623AB2A51AA0A00063D1B /* SubsystemBrowserCoordinatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF48514249B2C4700E5B817 /* SubsystemBrowserCoordinatorViewController.swift */; };
 		EAB623AC2A51AA0A00063D1B /* BrowserContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972477D02404A19700729B45 /* BrowserContainerViewController.swift */; };
 		EAB623AD2A51AA0A00063D1B /* BrowserCoordinatorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972477D62404A65C00729B45 /* BrowserCoordinatorController.swift */; };
@@ -138,6 +144,7 @@
 		EAB623B72A51AC2C00063D1B /* UILabel+DynamicType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA7209DF27C64270004C1400 /* UILabel+DynamicType.swift */; };
 		EAB8F2252A56BD6100C4E777 /* SettingsMainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394AD2403F08800E38B82 /* SettingsMainViewController.swift */; };
 		EAB8F2272A56BDA600C4E777 /* SettingsCoordinatorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394AB2403F07C00E38B82 /* SettingsCoordinatorController.swift */; };
+		EAB8F2482A56CC4A00C4E777 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAB8F2472A56CC4A00C4E777 /* SettingsView.swift */; };
 		EAB8F2582A56D71600C4E777 /* ResourceItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF792B25389B3100F2460C /* ResourceItem.swift */; };
 		EAB8F2592A56D71600C4E777 /* ResourceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF79492538A86500F2460C /* ResourceManager.swift */; };
 		EAB8F25A2A56D71600C4E777 /* CelestiaScriptHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA17951A27B1510500D47397 /* CelestiaScriptHandler.swift */; };
@@ -150,16 +157,34 @@
 		EAB8F2642A56DC3200C4E777 /* ResourceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF7910253895FD00F2460C /* ResourceViewController.swift */; };
 		EAB8F2652A56DC3200C4E777 /* FallbackWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAFF95F328885A64009C2FFD /* FallbackWebViewController.swift */; };
 		EAB8F2662A56DC3200C4E777 /* AsyncListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF791D2538986400F2460C /* AsyncListViewController.swift */; };
+		EABC91D72A56E6F5007E27F0 /* AddonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABC91D52A56E6F5007E27F0 /* AddonView.swift */; };
+		EABC91D82A56E6F5007E27F0 /* AddonManagementView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABC91D62A56E6F5007E27F0 /* AddonManagementView.swift */; };
+		EABC91DB2A56E787007E27F0 /* AddonWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABC91DA2A56E787007E27F0 /* AddonWindow.swift */; };
 		EABC91FA2A56F254007E27F0 /* ResourceCategoriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABC91F92A56F254007E27F0 /* ResourceCategoriesViewController.swift */; };
+		EABC92092A56F4D2007E27F0 /* AddonCategoriesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABC92082A56F4D2007E27F0 /* AddonCategoriesView.swift */; };
 		EABC921F2A56FBAA007E27F0 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA787340296EB68A0099AB11 /* Bundle.swift */; };
 		EABC92342A56FF80007E27F0 /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EABC92332A56FF80007E27F0 /* SharedAssets.xcassets */; };
+		EABC923B2A570042007E27F0 /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EABC92332A56FF80007E27F0 /* SharedAssets.xcassets */; };
 		EABC92402A57021C007E27F0 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978406DB240294D000876FD1 /* LoadingViewController.swift */; };
 		EABC92412A570220007E27F0 /* LoadingFailureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978406DE24029D9100876FD1 /* LoadingFailureViewController.swift */; };
+		EABC924F2A570343007E27F0 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABC924E2A570343007E27F0 /* LoadingView.swift */; };
+		EAC2AEDC2A556783000E9CF0 /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = EA28CA5124A2F399004B011E /* Fonts */; };
+		EAC2AEDD2A556787000E9CF0 /* defaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 97143F1623FFAEFD00F35D87 /* defaults.plist */; };
+		EAC2AEE02A557C6E000E9CF0 /* CXCFont.h in Headers */ = {isa = PBXBuildFile; fileRef = EAC2AEDE2A557C6E000E9CF0 /* CXCFont.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		EAC2AEE12A557C6E000E9CF0 /* CXCFont.m in Sources */ = {isa = PBXBuildFile; fileRef = EAC2AEDF2A557C6E000E9CF0 /* CXCFont.m */; };
+		EAC2AEE42A557C79000E9CF0 /* CXCFontCollection.h in Headers */ = {isa = PBXBuildFile; fileRef = EAC2AEE22A557C79000E9CF0 /* CXCFontCollection.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		EAC2AEE52A557C79000E9CF0 /* CXCFontCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = EAC2AEE32A557C79000E9CF0 /* CXCFontCollection.m */; };
+		EAC457062A52C10C00F79BA3 /* BrowserItemStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC457052A52C10C00F79BA3 /* BrowserItemStore.swift */; };
+		EAC457082A52C2E000F79BA3 /* SubsystemBrowserWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC457072A52C2E000F79BA3 /* SubsystemBrowserWindow.swift */; };
+		EAC457192A5303F000F79BA3 /* CXCInputEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = EAC457172A5303F000F79BA3 /* CXCInputEvent.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		EAC4571A2A5303F000F79BA3 /* CXCInputEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = EAC457182A5303F000F79BA3 /* CXCInputEvent.m */; };
 		EAC8435F252C818700691943 /* CELMacBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = EAC8435E252C818700691943 /* CELMacBridge.m */; };
 		EAC84364252C84B600691943 /* CelestiaMacBridge.bundle in Embed PlugIns */ = {isa = PBXBuildFile; fileRef = EAC84354252C816500691943 /* CelestiaMacBridge.bundle */; platformFilter = maccatalyst; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		EAD12A852A5650E0007EE4D6 /* GoToView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD12A842A5650E0007EE4D6 /* GoToView.swift */; };
 		EAD12A8E2A5656FF007EE4D6 /* EventFinderInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E424A0E93D00F3F51B /* EventFinderInputViewController.swift */; };
 		EAD12A8F2A5656FF007EE4D6 /* EventFinderResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E624A0E94900F3F51B /* EventFinderResultViewController.swift */; };
 		EAD12A902A5656FF007EE4D6 /* EventFinderCoordinatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E224A0E92B00F3F51B /* EventFinderCoordinatorViewController.swift */; };
+		EAD12A992A565E1B007EE4D6 /* EclipseFinder.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD12A982A565E1B007EE4D6 /* EclipseFinder.swift */; };
 		EAD12AA22A566DE1007EE4D6 /* ObserverModeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6671D029B3A81200A7846E /* ObserverModeViewController.swift */; };
 		EAD12AA32A566DE7007EE4D6 /* FavoriteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97401CA32414DAF50015F8E8 /* FavoriteViewController.swift */; };
 		EAD12AA42A566DE7007EE4D6 /* DestinationDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA544E5E2566BC50003F351D /* DestinationDetailViewController.swift */; };
@@ -169,8 +194,11 @@
 		EAD12AA82A566EE1007EE4D6 /* LinkFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6671D229B3A9AE00A7846E /* LinkFooterView.swift */; };
 		EAD12AA92A567514007EE4D6 /* CameraControlViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EB41C52408F20700E6D441 /* CameraControlViewController.swift */; };
 		EAD12AAA2A56757F007EE4D6 /* StepperCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EB41C82408F26200E6D441 /* StepperCell.swift */; };
+		EAD12AC02A567AD1007EE4D6 /* FavoriteView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD12ABF2A567AD1007EE4D6 /* FavoriteView.swift */; };
+		EAD12AC22A567ADB007EE4D6 /* CameraControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD12AC12A567ADB007EE4D6 /* CameraControlView.swift */; };
 		EADE7FBB252B517600D4174F /* CelestiaDisplayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE7FBA252B517600D4174F /* CelestiaDisplayController.swift */; };
 		EADE7FC0252B54A400D4174F /* CelestiaInteractionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE7FBF252B54A400D4174F /* CelestiaInteractionController.swift */; };
+		EAE4E34D2A56B7FB005A6549 /* CelestiaFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA4E2D752A56B4570046D62E /* CelestiaFoundation.framework */; };
 		EAE92A5C2A558B4400BFE06E /* AsyncProviderExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE92A5B2A558B4400BFE06E /* AsyncProviderExecutor.swift */; };
 		EAE92A5F2A558B8D00BFE06E /* GameControllerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE92A5E2A558B8D00BFE06E /* GameControllerManager.swift */; };
 		EAE92A602A558B9900BFE06E /* GameControllerAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6671CD29B3947800A7846E /* GameControllerAction.swift */; };
@@ -192,6 +220,13 @@
 			proxyType = 2;
 			remoteGlobalIDString = 971A65CC23019BC5009E4EA1;
 			remoteInfo = CelestiaCore;
+		};
+		EA0AFB812A506F3D00C6746B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 979D2F7223FEB1A6005D2592 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EA50E75D2A505627005E7D7A;
+			remoteInfo = CelestiaUI;
 		};
 		EA1823EE27C08D3D00E0F5E4 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -221,19 +256,19 @@
 			remoteGlobalIDString = EA50E75D2A505627005E7D7A;
 			remoteInfo = CelestiaUI;
 		};
-		EAB8F21A2A56BC8100C4E777 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 979D2F9F23FEB1D5005D2592 /* CelestiaCore.xcodeproj */;
-			proxyType = 1;
-			remoteGlobalIDString = 971A65CB23019BC5009E4EA1;
-			remoteInfo = CelestiaCore;
-		};
 		EA8680AE2A46B497003B5D39 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 979D2F7223FEB1A6005D2592 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = EA8680A92A46B497003B5D39;
 			remoteInfo = CelestiaXRCore;
+		};
+		EAB8F21A2A56BC8100C4E777 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 979D2F9F23FEB1D5005D2592 /* CelestiaCore.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 971A65CB23019BC5009E4EA1;
+			remoteInfo = CelestiaCore;
 		};
 		EAC84365252C84B600691943 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -249,21 +284,16 @@
 			remoteGlobalIDString = 971A65CB23019BC5009E4EA1;
 			remoteInfo = CelestiaCore;
 		};
+		EAE4E34F2A56B7FB005A6549 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 979D2F7223FEB1A6005D2592 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EA4E2D742A56B4570046D62E;
+			remoteInfo = CelestiaFoundation;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXCopyFilesBuildPhase section */
-		EA5D106A2A5E73C2003437F9 /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				EA5D106C2A5E73C4003437F9 /* libGLESv2.xcframework in Embed Frameworks */,
-				EA5D10692A5E73C2003437F9 /* libEGL.xcframework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		EA8680C72A46BECE003B5D39 /* Embed Frameworks */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
@@ -345,8 +375,11 @@
 		97F1141D2408AE06003A06D7 /* DataLocationSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataLocationSelectionViewController.swift; sourceTree = "<group>"; };
 		97FF95A4240A340300E9F44F /* BaseResultHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseResultHandler.swift; sourceTree = "<group>"; };
 		9E22703CD906FE8145500765 /* Pods-MobileCelestia.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileCelestia.debug.xcconfig"; path = "Target Support Files/Pods-MobileCelestia/Pods-MobileCelestia.debug.xcconfig"; sourceTree = "<group>"; };
+		EA0AFB992A50789000C6746B /* InfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoView.swift; sourceTree = "<group>"; };
 		EA113708262C72AA002E49DA /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EA113709262C72B2002E49DA /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		EA14B02D2A51B1E100F069C0 /* BrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserView.swift; sourceTree = "<group>"; };
+		EA14B0332A51B98800F069C0 /* SubsystemBrowserView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubsystemBrowserView.swift; sourceTree = "<group>"; };
 		EA17951A27B1510500D47397 /* CelestiaScriptHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaScriptHandler.swift; sourceTree = "<group>"; };
 		EA17951F27B371D700D47397 /* GuideItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideItem.swift; sourceTree = "<group>"; };
 		EA1823EA27C08D3D00E0F5E4 /* CelestiaHelper.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CelestiaHelper.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -386,6 +419,8 @@
 		EA6671CD29B3947800A7846E /* GameControllerAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameControllerAction.swift; sourceTree = "<group>"; };
 		EA6671D029B3A81200A7846E /* ObserverModeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObserverModeViewController.swift; sourceTree = "<group>"; };
 		EA6671D229B3A9AE00A7846E /* LinkFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkFooterView.swift; sourceTree = "<group>"; };
+		EA66BBBC2A5594F0008A7AAA /* InteractionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractionManager.swift; sourceTree = "<group>"; };
+		EA66BBD52A55AF2C008A7AAA /* MainSearch.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSearch.swift; sourceTree = "<group>"; };
 		EA7209DF27C64270004C1400 /* UILabel+DynamicType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+DynamicType.swift"; sourceTree = "<group>"; };
 		EA775EB32664B63F00479295 /* ActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButton.swift; sourceTree = "<group>"; };
 		EA787308296DE50D0099AB11 /* Injecton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Injecton.swift; sourceTree = "<group>"; };
@@ -430,25 +465,45 @@
 		EAA5A7A2259DBFE6001AFA82 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EAA5A7A7259DC062001AFA82 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EAA6C4CA253B5CD200ED1D60 /* InstalledResourceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstalledResourceViewController.swift; sourceTree = "<group>"; };
+		EAA79CC72A569E190056DB91 /* FontCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontCollection.swift; sourceTree = "<group>"; };
 		EAA79CCB2A56A01F0056DB91 /* SettingsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsModel.swift; sourceTree = "<group>"; };
 		EAA79CD82A56B10A0056DB91 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		EAB08FE32780550600BB82F0 /* Font.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Font.swift; sourceTree = "<group>"; };
+		EAB623A22A51179100063D1B /* InfoWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoWindow.swift; sourceTree = "<group>"; };
 		EAB623B42A51AB5100063D1B /* UIViewController+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
+		EAB8F2472A56CC4A00C4E777 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		EAB8F2612A56DB9200C4E777 /* URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URL.swift; sourceTree = "<group>"; };
+		EABC91D52A56E6F5007E27F0 /* AddonView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddonView.swift; sourceTree = "<group>"; };
+		EABC91D62A56E6F5007E27F0 /* AddonManagementView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddonManagementView.swift; sourceTree = "<group>"; };
+		EABC91DA2A56E787007E27F0 /* AddonWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddonWindow.swift; sourceTree = "<group>"; };
 		EABC91F92A56F254007E27F0 /* ResourceCategoriesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceCategoriesViewController.swift; sourceTree = "<group>"; };
+		EABC92082A56F4D2007E27F0 /* AddonCategoriesView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddonCategoriesView.swift; sourceTree = "<group>"; };
 		EABC92332A56FF80007E27F0 /* SharedAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SharedAssets.xcassets; sourceTree = "<group>"; };
+		EABC924E2A570343007E27F0 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
 		EABDE3A82473DAA300E0A5FA /* SettingCommonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingCommonViewController.swift; sourceTree = "<group>"; };
 		EABF7910253895FD00F2460C /* ResourceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceViewController.swift; sourceTree = "<group>"; };
 		EABF791D2538986400F2460C /* AsyncListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncListViewController.swift; sourceTree = "<group>"; };
 		EABF792B25389B3100F2460C /* ResourceItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceItem.swift; sourceTree = "<group>"; };
 		EABF793B2538A1C100F2460C /* ResourceItemViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceItemViewController.swift; sourceTree = "<group>"; };
 		EABF79492538A86500F2460C /* ResourceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceManager.swift; sourceTree = "<group>"; };
+		EAC2AEDE2A557C6E000E9CF0 /* CXCFont.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CXCFont.h; sourceTree = "<group>"; };
+		EAC2AEDF2A557C6E000E9CF0 /* CXCFont.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CXCFont.m; sourceTree = "<group>"; };
+		EAC2AEE22A557C79000E9CF0 /* CXCFontCollection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CXCFontCollection.h; sourceTree = "<group>"; };
+		EAC2AEE32A557C79000E9CF0 /* CXCFontCollection.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CXCFontCollection.m; sourceTree = "<group>"; };
+		EAC457052A52C10C00F79BA3 /* BrowserItemStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserItemStore.swift; sourceTree = "<group>"; };
+		EAC457072A52C2E000F79BA3 /* SubsystemBrowserWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubsystemBrowserWindow.swift; sourceTree = "<group>"; };
+		EAC457172A5303F000F79BA3 /* CXCInputEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CXCInputEvent.h; sourceTree = "<group>"; };
+		EAC457182A5303F000F79BA3 /* CXCInputEvent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CXCInputEvent.m; sourceTree = "<group>"; };
 		EAC84354252C816500691943 /* CelestiaMacBridge.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CelestiaMacBridge.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		EAC84356252C816500691943 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EAC8435D252C818700691943 /* CELMacBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CELMacBridge.h; sourceTree = "<group>"; };
 		EAC8435E252C818700691943 /* CELMacBridge.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CELMacBridge.m; sourceTree = "<group>"; };
 		EACAB98628BB2B3E00192C75 /* LongitudeLatitudeInputCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongitudeLatitudeInputCell.swift; sourceTree = "<group>"; };
 		EACAB98828BB314300192C75 /* DistanceInputCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DistanceInputCell.swift; sourceTree = "<group>"; };
+		EAD12A842A5650E0007EE4D6 /* GoToView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoToView.swift; sourceTree = "<group>"; };
+		EAD12A982A565E1B007EE4D6 /* EclipseFinder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EclipseFinder.swift; sourceTree = "<group>"; };
+		EAD12ABF2A567AD1007EE4D6 /* FavoriteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteView.swift; sourceTree = "<group>"; };
+		EAD12AC12A567ADB007EE4D6 /* CameraControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraControlView.swift; sourceTree = "<group>"; };
 		EAD94F66261EED7700A93C93 /* UITableView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Extensions.swift"; sourceTree = "<group>"; };
 		EAD962992782BA2B00CDF86E /* Info-macos.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-macos.plist"; sourceTree = "<group>"; };
 		EADE7FBA252B517600D4174F /* CelestiaDisplayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaDisplayController.swift; sourceTree = "<group>"; };
@@ -517,23 +572,18 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		EAC84351252C816500691943 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		EA86806D2A4692DB003B5D39 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EA0AFB7F2A506F3D00C6746B /* CelestiaUI.framework in Frameworks */,
 				EA8680922A46937A003B5D39 /* libc++.tbd in Frameworks */,
 				EA8680C52A46BECE003B5D39 /* libGLESv2.framework in Frameworks */,
 				EA8680C32A46BECE003B5D39 /* libEGL.framework in Frameworks */,
 				EA8680B02A46B497003B5D39 /* CelestiaXRCore.framework in Frameworks */,
 				EA8680942A469394003B5D39 /* libz.tbd in Frameworks */,
 				EA8680902A469372003B5D39 /* libbz2.tbd in Frameworks */,
+				EAE4E34D2A56B7FB005A6549 /* CelestiaFoundation.framework in Frameworks */,
 				EA86808D2A46931A003B5D39 /* CelestiaCore.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -766,6 +816,26 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		EA14B02B2A51B1CE00F069C0 /* Info */ = {
+			isa = PBXGroup;
+			children = (
+				EAB623A22A51179100063D1B /* InfoWindow.swift */,
+				EA0AFB992A50789000C6746B /* InfoView.swift */,
+			);
+			path = Info;
+			sourceTree = "<group>";
+		};
+		EA14B02C2A51B1D700F069C0 /* Browser */ = {
+			isa = PBXGroup;
+			children = (
+				EA14B02D2A51B1E100F069C0 /* BrowserView.swift */,
+				EA14B0332A51B98800F069C0 /* SubsystemBrowserView.swift */,
+				EAC457052A52C10C00F79BA3 /* BrowserItemStore.swift */,
+				EAC457072A52C2E000F79BA3 /* SubsystemBrowserWindow.swift */,
+			);
+			path = Browser;
+			sourceTree = "<group>";
+		};
 		EA1823EB27C08D3D00E0F5E4 /* CelestiaHelper */ = {
 			isa = PBXGroup;
 			children = (
@@ -861,6 +931,14 @@
 			path = Search;
 			sourceTree = "<group>";
 		};
+		EA66BBD42A55AF15008A7AAA /* Search */ = {
+			isa = PBXGroup;
+			children = (
+				EA66BBD52A55AF2C008A7AAA /* MainSearch.swift */,
+			);
+			path = Search;
+			sourceTree = "<group>";
+		};
 		EA66BBDE2A55BA52008A7AAA /* GoTo */ = {
 			isa = PBXGroup;
 			children = (
@@ -905,6 +983,58 @@
 			path = Help;
 			sourceTree = "<group>";
 		};
+		EA8680712A4692DB003B5D39 /* CelestiaXR */ = {
+			isa = PBXGroup;
+			children = (
+				EABC924D2A570339007E27F0 /* Loading */,
+				EABC91D42A56E6DF007E27F0 /* Addons */,
+				EAB8F2462A56CC4000C4E777 /* Settings */,
+				EAD12ABE2A567AC3007EE4D6 /* Favorite */,
+				EAD12ABD2A567ABF007EE4D6 /* Control */,
+				EAD12A972A565E0C007EE4D6 /* Event */,
+				EAD12A832A5650A9007EE4D6 /* GoTo */,
+				EA66BBD42A55AF15008A7AAA /* Search */,
+				EA14B02C2A51B1D700F069C0 /* Browser */,
+				EA14B02B2A51B1CE00F069C0 /* Info */,
+				EA246B902A50341500E1A1AB /* XRRenderer.swift */,
+				EA8680762A4692DB003B5D39 /* CelestiaXRApp.swift */,
+				EA8680782A4692DB003B5D39 /* StartUpView.swift */,
+				EA66BBBC2A5594F0008A7AAA /* InteractionManager.swift */,
+				EAA79CC72A569E190056DB91 /* FontCollection.swift */,
+				EA86807E2A4692DC003B5D39 /* Assets.xcassets */,
+				EA8680802A4692DC003B5D39 /* Preview Content */,
+			);
+			path = CelestiaXR;
+			sourceTree = "<group>";
+		};
+		EA8680802A4692DC003B5D39 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				EA8680812A4692DC003B5D39 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		EA8680AB2A46B497003B5D39 /* CelestiaXRCore */ = {
+			isa = PBXGroup;
+			children = (
+				EA8680AC2A46B497003B5D39 /* CelestiaXRCore.h */,
+				EA8680BC2A46B505003B5D39 /* CXCRenderer.m */,
+				EA8680BE2A46B516003B5D39 /* CXCRenderer.h */,
+				EA246B882A50134500E1A1AB /* CXCRenderResource.h */,
+				EA246B892A50134500E1A1AB /* CXCRenderResource.m */,
+				EA246B8C2A50138300E1A1AB /* CXCRenderSurface.h */,
+				EA246B8D2A50138300E1A1AB /* CXCRenderSurface.m */,
+				EAC457172A5303F000F79BA3 /* CXCInputEvent.h */,
+				EAC457182A5303F000F79BA3 /* CXCInputEvent.m */,
+				EAC2AEDE2A557C6E000E9CF0 /* CXCFont.h */,
+				EAC2AEDF2A557C6E000E9CF0 /* CXCFont.m */,
+				EAC2AEE22A557C79000E9CF0 /* CXCFontCollection.h */,
+				EAC2AEE32A557C79000E9CF0 /* CXCFontCollection.m */,
+			);
+			path = CelestiaXRCore;
+			sourceTree = "<group>";
+		};
 		EAA79CCA2A56A0000056DB91 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
@@ -934,38 +1064,12 @@
 			path = Cell;
 			sourceTree = "<group>";
 		};
-		EA8680712A4692DB003B5D39 /* CelestiaXR */ = {
+		EAB8F2462A56CC4000C4E777 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
-				EA246B902A50341500E1A1AB /* XRRenderer.swift */,
-				EA8680762A4692DB003B5D39 /* CelestiaXRApp.swift */,
-				EA8680782A4692DB003B5D39 /* StartUpView.swift */,
-				EA86807E2A4692DC003B5D39 /* Assets.xcassets */,
-				EA8680802A4692DC003B5D39 /* Preview Content */,
+				EAB8F2472A56CC4A00C4E777 /* SettingsView.swift */,
 			);
-			path = CelestiaXR;
-			sourceTree = "<group>";
-		};
-		EA8680802A4692DC003B5D39 /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				EA8680812A4692DC003B5D39 /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
-			sourceTree = "<group>";
-		};
-		EA8680AB2A46B497003B5D39 /* CelestiaXRCore */ = {
-			isa = PBXGroup;
-			children = (
-				EA8680AC2A46B497003B5D39 /* CelestiaXRCore.h */,
-				EA8680BC2A46B505003B5D39 /* CXCRenderer.m */,
-				EA8680BE2A46B516003B5D39 /* CXCRenderer.h */,
-				EA246B882A50134500E1A1AB /* CXCRenderResource.h */,
-				EA246B892A50134500E1A1AB /* CXCRenderResource.m */,
-				EA246B8C2A50138300E1A1AB /* CXCRenderSurface.h */,
-				EA246B8D2A50138300E1A1AB /* CXCRenderSurface.m */,
-			);
-			path = CelestiaXRCore;
+			path = Settings;
 			sourceTree = "<group>";
 		};
 		EAB8F2532A56D70600C4E777 /* Addon */ = {
@@ -981,6 +1085,25 @@
 				EABC91F92A56F254007E27F0 /* ResourceCategoriesViewController.swift */,
 			);
 			path = Addon;
+			sourceTree = "<group>";
+		};
+		EABC91D42A56E6DF007E27F0 /* Addons */ = {
+			isa = PBXGroup;
+			children = (
+				EABC92082A56F4D2007E27F0 /* AddonCategoriesView.swift */,
+				EABC91D62A56E6F5007E27F0 /* AddonManagementView.swift */,
+				EABC91D52A56E6F5007E27F0 /* AddonView.swift */,
+				EABC91DA2A56E787007E27F0 /* AddonWindow.swift */,
+			);
+			path = Addons;
+			sourceTree = "<group>";
+		};
+		EABC924D2A570339007E27F0 /* Loading */ = {
+			isa = PBXGroup;
+			children = (
+				EABC924E2A570343007E27F0 /* LoadingView.swift */,
+			);
+			path = Loading;
 			sourceTree = "<group>";
 		};
 		EABF792225389B1700F2460C /* Models */ = {
@@ -1005,12 +1128,28 @@
 			path = CelestiaMacBridge;
 			sourceTree = "<group>";
 		};
+		EAD12A832A5650A9007EE4D6 /* GoTo */ = {
+			isa = PBXGroup;
+			children = (
+				EAD12A842A5650E0007EE4D6 /* GoToView.swift */,
+			);
+			path = GoTo;
+			sourceTree = "<group>";
+		};
 		EAD12A8D2A5656F1007EE4D6 /* Event */ = {
 			isa = PBXGroup;
 			children = (
 				EA1BC6E224A0E92B00F3F51B /* EventFinderCoordinatorViewController.swift */,
 				EA1BC6E424A0E93D00F3F51B /* EventFinderInputViewController.swift */,
 				EA1BC6E624A0E94900F3F51B /* EventFinderResultViewController.swift */,
+			);
+			path = Event;
+			sourceTree = "<group>";
+		};
+		EAD12A972A565E0C007EE4D6 /* Event */ = {
+			isa = PBXGroup;
+			children = (
+				EAD12A982A565E1B007EE4D6 /* EclipseFinder.swift */,
 			);
 			path = Event;
 			sourceTree = "<group>";
@@ -1033,6 +1172,22 @@
 				EA6671D029B3A81200A7846E /* ObserverModeViewController.swift */,
 			);
 			path = Control;
+			sourceTree = "<group>";
+		};
+		EAD12ABD2A567ABF007EE4D6 /* Control */ = {
+			isa = PBXGroup;
+			children = (
+				EAD12AC12A567ADB007EE4D6 /* CameraControlView.swift */,
+			);
+			path = Control;
+			sourceTree = "<group>";
+		};
+		EAD12ABE2A567AC3007EE4D6 /* Favorite */ = {
+			isa = PBXGroup;
+			children = (
+				EAD12ABF2A567AD1007EE4D6 /* FavoriteView.swift */,
+			);
+			path = Favorite;
 			sourceTree = "<group>";
 		};
 		EAE92A5D2A558B7B00BFE06E /* Interaction */ = {
@@ -1078,7 +1233,10 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EAC2AEE42A557C79000E9CF0 /* CXCFontCollection.h in Headers */,
+				EAC457192A5303F000F79BA3 /* CXCInputEvent.h in Headers */,
 				EA8680BF2A46B60D003B5D39 /* CXCRenderer.h in Headers */,
+				EAC2AEE02A557C6E000E9CF0 /* CXCFont.h in Headers */,
 				EA246B8E2A50138300E1A1AB /* CXCRenderSurface.h in Headers */,
 				EA8680AD2A46B497003B5D39 /* CelestiaXRCore.h in Headers */,
 				EA246B8A2A50134500E1A1AB /* CXCRenderResource.h in Headers */,
@@ -1206,6 +1364,8 @@
 			);
 			dependencies = (
 				EA8680AF2A46B497003B5D39 /* PBXTargetDependency */,
+				EA0AFB822A506F3D00C6746B /* PBXTargetDependency */,
+				EAE4E3502A56B7FB005A6549 /* PBXTargetDependency */,
 			);
 			name = CelestiaXR;
 			packageProductDependencies = (
@@ -1376,18 +1536,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		EAC84352252C816500691943 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		EA86806E2A4692DB003B5D39 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EA50FDA32A49603F00E23091 /* Fonts in Resources */,
+				EABC923B2A570042007E27F0 /* SharedAssets.xcassets in Resources */,
+				EAC2AEDD2A556787000E9CF0 /* defaults.plist in Resources */,
+				EAC2AEDC2A556783000E9CF0 /* Fonts in Resources */,
 				EA86807F2A4692DC003B5D39 /* Assets.xcassets in Resources */,
 				EA8680822A4692DC003B5D39 /* Preview Assets.xcassets in Resources */,
 			);
@@ -1468,46 +1623,6 @@
 			shellPath = /bin/sh;
 			shellScript = "CELESTIA_CORE_ROOT=$SRCROOT/../CelestiaCore\n\nSH_FILE=$CELESTIA_CORE_ROOT/convert_po.sh\n\nchmod +x $SH_FILE\n\n$SH_FILE\n";
 		};
-		EA9FB24027B7B0E800E0DC1F /* Copy Localized Files */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Localized Files";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "SH_FILE=$SRCROOT/copy_localized_files.sh\n\nchmod +x $SH_FILE\n\n$SH_FILE\n";
-		};
-		F90AC7257B1C8C12CBD3053F /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-MobileCelestia-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
 		EA50FDA22A49601F00E23091 /* Copy General Data */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1561,6 +1676,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "SH_FILE=$SRCROOT/copy_localized_files.sh\n\nchmod +x $SH_FILE\n\n$SH_FILE\n";
+		};
+		F90AC7257B1C8C12CBD3053F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-MobileCelestia-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1715,9 +1852,28 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EABC91D82A56E6F5007E27F0 /* AddonManagementView.swift in Sources */,
+				EAD12A992A565E1B007EE4D6 /* EclipseFinder.swift in Sources */,
+				EA66BBBD2A5594F0008A7AAA /* InteractionManager.swift in Sources */,
+				EABC924F2A570343007E27F0 /* LoadingView.swift in Sources */,
+				EAA79CC82A569E190056DB91 /* FontCollection.swift in Sources */,
+				EAD12AC02A567AD1007EE4D6 /* FavoriteView.swift in Sources */,
+				EAD12A852A5650E0007EE4D6 /* GoToView.swift in Sources */,
+				EAB8F2482A56CC4A00C4E777 /* SettingsView.swift in Sources */,
+				EA66BBD62A55AF2C008A7AAA /* MainSearch.swift in Sources */,
+				EA0AFB9A2A50789000C6746B /* InfoView.swift in Sources */,
+				EABC92092A56F4D2007E27F0 /* AddonCategoriesView.swift in Sources */,
+				EAC457062A52C10C00F79BA3 /* BrowserItemStore.swift in Sources */,
+				EAC457082A52C2E000F79BA3 /* SubsystemBrowserWindow.swift in Sources */,
+				EAD12AC22A567ADB007EE4D6 /* CameraControlView.swift in Sources */,
 				EA8680792A4692DB003B5D39 /* StartUpView.swift in Sources */,
 				EA246B912A50341500E1A1AB /* XRRenderer.swift in Sources */,
+				EABC91D72A56E6F5007E27F0 /* AddonView.swift in Sources */,
 				EA8680772A4692DB003B5D39 /* CelestiaXRApp.swift in Sources */,
+				EAB623A32A51179100063D1B /* InfoWindow.swift in Sources */,
+				EA14B0342A51B98800F069C0 /* SubsystemBrowserView.swift in Sources */,
+				EABC91DB2A56E787007E27F0 /* AddonWindow.swift in Sources */,
+				EA14B02E2A51B1E100F069C0 /* BrowserView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1726,8 +1882,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				EA246B8F2A50138300E1A1AB /* CXCRenderSurface.m in Sources */,
+				EAC2AEE52A557C79000E9CF0 /* CXCFontCollection.m in Sources */,
 				EA246B8B2A50134500E1A1AB /* CXCRenderResource.m in Sources */,
+				EAC4571A2A5303F000F79BA3 /* CXCInputEvent.m in Sources */,
 				EA8680BD2A46B505003B5D39 /* CXCRenderer.m in Sources */,
+				EAC2AEE12A557C6E000E9CF0 /* CXCFont.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1746,6 +1905,11 @@
 			isa = PBXTargetDependency;
 			target = 979D2F7923FEB1A6005D2592 /* MobileCelestia */;
 			targetProxy = 979D2F9123FEB1A8005D2592 /* PBXContainerItemProxy */;
+		};
+		EA0AFB822A506F3D00C6746B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EA50E75D2A505627005E7D7A /* CelestiaUI */;
+			targetProxy = EA0AFB812A506F3D00C6746B /* PBXContainerItemProxy */;
 		};
 		EA1823EF27C08D3D00E0F5E4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1768,15 +1932,15 @@
 			target = EA50E75D2A505627005E7D7A /* CelestiaUI */;
 			targetProxy = EA50E7622A505627005E7D7A /* PBXContainerItemProxy */;
 		};
-		EAB8F21B2A56BC8100C4E777 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = CelestiaCore;
-			targetProxy = EAB8F21A2A56BC8100C4E777 /* PBXContainerItemProxy */;
-		};
 		EA8680AF2A46B497003B5D39 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = EA8680A92A46B497003B5D39 /* CelestiaXRCore */;
 			targetProxy = EA8680AE2A46B497003B5D39 /* PBXContainerItemProxy */;
+		};
+		EAB8F21B2A56BC8100C4E777 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = CelestiaCore;
+			targetProxy = EAB8F21A2A56BC8100C4E777 /* PBXContainerItemProxy */;
 		};
 		EAC84366252C84B600691943 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1788,6 +1952,11 @@
 			isa = PBXTargetDependency;
 			name = CelestiaCore;
 			targetProxy = EACF64402668973F00A649B1 /* PBXContainerItemProxy */;
+		};
+		EAE4E3502A56B7FB005A6549 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = EA4E2D742A56B4570046D62E /* CelestiaFoundation */;
+			targetProxy = EAE4E34F2A56B7FB005A6549 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -2124,8 +2293,13 @@
 				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.CelestiaFoundation;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,6,7";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -2158,8 +2332,13 @@
 				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.CelestiaFoundation;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,6,7";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -2200,9 +2379,14 @@
 				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.CelestiaUI;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,6,7";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -2243,9 +2427,14 @@
 				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.CelestiaUI;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = YES;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,6,7";
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
