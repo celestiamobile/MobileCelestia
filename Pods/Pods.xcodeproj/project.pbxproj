@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 52;
+	objectVersion = 54;
 	objects = {
 
 /* Begin PBXAggregateTarget section */
@@ -16,7 +16,6 @@
 			dependencies = (
 			);
 			name = AppCenter;
-			productName = AppCenter;
 		};
 /* End PBXAggregateTarget section */
 
@@ -125,14 +124,14 @@
 		06F2DB77F44E1094448A45732DAA0481 /* Archive+Writing.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Archive+Writing.swift"; path = "Sources/ZIPFoundation/Archive+Writing.swift"; sourceTree = "<group>"; };
 		08220F89BC50E0F5FCB0FBC056705B20 /* Data+Compression.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Data+Compression.swift"; path = "Sources/ZIPFoundation/Data+Compression.swift"; sourceTree = "<group>"; };
 		09A074C2016B9C9F2016AC0A26FFEAD8 /* RequestHandler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RequestHandler.swift; path = Sources/MWRequest/RequestHandler.swift; sourceTree = "<group>"; };
-		0CB942215866AB287FA196AA0140A342 /* glext_explicit_context_autogen.inc */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.pascal; name = glext_explicit_context_autogen.inc; path = GL/GLES/glext_explicit_context_autogen.inc; sourceTree = "<group>"; };
+		0CB942215866AB287FA196AA0140A342 /* glext_explicit_context_autogen.inc */ = {isa = PBXFileReference; includeInIndex = 1; name = glext_explicit_context_autogen.inc; path = GL/GLES/glext_explicit_context_autogen.inc; sourceTree = "<group>"; };
 		0E18756AE352AA1356827D92A118125D /* AsyncGLExecutor+Private.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "AsyncGLExecutor+Private.h"; path = "AsyncGL/AsyncGLExecutor+Private.h"; sourceTree = "<group>"; };
-		14670DF148E8C79B9DFBF3F3F6EFBF78 /* gl31ext_explicit_context_autogen.inc */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.pascal; name = gl31ext_explicit_context_autogen.inc; path = GL/GLES3/gl31ext_explicit_context_autogen.inc; sourceTree = "<group>"; };
+		14670DF148E8C79B9DFBF3F3F6EFBF78 /* gl31ext_explicit_context_autogen.inc */ = {isa = PBXFileReference; includeInIndex = 1; name = gl31ext_explicit_context_autogen.inc; path = GL/GLES3/gl31ext_explicit_context_autogen.inc; sourceTree = "<group>"; };
 		189D34B986488F9D9BEAEE12BFA436D8 /* MWRequest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = MWRequest.debug.xcconfig; sourceTree = "<group>"; };
-		20507D311BAE00E0D572A02B8AF1EC4F /* gl3ext_explicit_context_autogen.inc */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.pascal; name = gl3ext_explicit_context_autogen.inc; path = GL/GLES3/gl3ext_explicit_context_autogen.inc; sourceTree = "<group>"; };
+		20507D311BAE00E0D572A02B8AF1EC4F /* gl3ext_explicit_context_autogen.inc */ = {isa = PBXFileReference; includeInIndex = 1; name = gl3ext_explicit_context_autogen.inc; path = GL/GLES3/gl3ext_explicit_context_autogen.inc; sourceTree = "<group>"; };
 		232BA6A666CDD4EF5CE138BEA226AEC9 /* MWRequest.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = MWRequest.modulemap; sourceTree = "<group>"; };
 		26750D171D032E0BFA4B97D3190E0EB4 /* AsyncGL.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = AsyncGL.release.xcconfig; sourceTree = "<group>"; };
-		27A211133D23340DAC3FDC42D1BC1D54 /* MWRequest.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = MWRequest.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		27A211133D23340DAC3FDC42D1BC1D54 /* MWRequest */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = MWRequest; path = MWRequest.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		2A1142E507458BCD78401726C331D2D6 /* glplatform.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = glplatform.h; path = GL/GLES/glplatform.h; sourceTree = "<group>"; };
 		2D22CDD9C1D0FCFB1B437DFE4C9BD70C /* AsyncGLExecutor.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = AsyncGLExecutor.m; path = AsyncGL/AsyncGLExecutor.m; sourceTree = "<group>"; };
 		31D803B3F3EB5952FD5D37D04C0CA830 /* Pods-MobileCelestia-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-MobileCelestia-dummy.m"; sourceTree = "<group>"; };
@@ -144,7 +143,7 @@
 		45480FF36CE140004EE47690BA10E33F /* Pods-MobileCelestia-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-MobileCelestia-Info.plist"; sourceTree = "<group>"; };
 		454E791CF9080D5501C7B3A0CA725B33 /* angle_gl.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = angle_gl.h; path = GL/angle_gl.h; sourceTree = "<group>"; };
 		4659429B9D457341BA524CE764786CA3 /* ZIPFoundation-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "ZIPFoundation-dummy.m"; sourceTree = "<group>"; };
-		48A4A6EDC08C8AC933D0DCD507E9D173 /* ZIPFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ZIPFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		48A4A6EDC08C8AC933D0DCD507E9D173 /* ZIPFoundation */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = ZIPFoundation; path = ZIPFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		4B0C505F91DB30F2C92608AAF8E34AAF /* AsyncRequestHandler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AsyncRequestHandler.swift; path = Sources/MWRequest/AsyncRequestHandler.swift; sourceTree = "<group>"; };
 		500914EDFB02780AC7FBAB0CED0F3BA9 /* ZIPFoundation-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "ZIPFoundation-prefix.pch"; sourceTree = "<group>"; };
 		5579309D9A496143EF659E1C2B15568D /* gl3.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = gl3.h; path = GL/GLES3/gl3.h; sourceTree = "<group>"; };
@@ -158,7 +157,7 @@
 		70A30EF87A93D79A7CF67FD07046A954 /* AsyncGLView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = AsyncGLView.m; path = AsyncGL/AsyncGLView.m; sourceTree = "<group>"; };
 		73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		7772B5AAAA0EECB15C57A1EFB67480B3 /* ZIPFoundation.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = ZIPFoundation.modulemap; sourceTree = "<group>"; };
-		78020024F1A70DF61F2E78929295C055 /* AsyncGL.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AsyncGL.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		78020024F1A70DF61F2E78929295C055 /* AsyncGL */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = AsyncGL; path = AsyncGL.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		79ED1066EBA675EADFFA38C6C4359EAD /* Archive+ReadingDeprecated.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Archive+ReadingDeprecated.swift"; path = "Sources/ZIPFoundation/Archive+ReadingDeprecated.swift"; sourceTree = "<group>"; };
 		7D9F0C69FCB4C255197D09CECFF33F99 /* egl.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = egl.h; path = GL/GLES/egl.h; sourceTree = "<group>"; };
 		7EBC22C67E549839CC27970A3E789765 /* Pods-MobileCelestia-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-MobileCelestia-acknowledgements.markdown"; sourceTree = "<group>"; };
@@ -167,7 +166,7 @@
 		840EEFB7B8353A993E65BEDCB2983393 /* Archive+ZIP64.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Archive+ZIP64.swift"; path = "Sources/ZIPFoundation/Archive+ZIP64.swift"; sourceTree = "<group>"; };
 		8533C9A08A9672203BEC7306377904BA /* Archive+Progress.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Archive+Progress.swift"; path = "Sources/ZIPFoundation/Archive+Progress.swift"; sourceTree = "<group>"; };
 		8A1D4A3568332DE47B84111104B5CE59 /* AsyncGL-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "AsyncGL-dummy.m"; sourceTree = "<group>"; };
-		8A320761869CCD891DAF614EC581E9EE /* AppCenterCrashes.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = wrapper.xcframework; name = AppCenterCrashes.xcframework; path = "AppCenter-SDK-Apple/AppCenterCrashes.xcframework"; sourceTree = "<group>"; };
+		8A320761869CCD891DAF614EC581E9EE /* AppCenterCrashes.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; name = AppCenterCrashes.xcframework; path = "AppCenter-SDK-Apple/AppCenterCrashes.xcframework"; sourceTree = "<group>"; };
 		8E4C2F3B636FA8FE9C2E4640FB1172A8 /* gl2ext.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = gl2ext.h; path = GL/GLES2/gl2ext.h; sourceTree = "<group>"; };
 		8F106B4868D609BB138FA3B94DADDEE5 /* Request.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Request.swift; path = Sources/MWRequest/Request.swift; sourceTree = "<group>"; };
 		8F1B4791188367B0B92534DC648A8204 /* gl3platform.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = gl3platform.h; path = GL/GLES3/gl3platform.h; sourceTree = "<group>"; };
@@ -175,7 +174,7 @@
 		9372B09BDBFD7A700B5C3AE6ED1E8B5D /* egl.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = egl.h; path = GL/EGL/egl.h; sourceTree = "<group>"; };
 		98CE512CD3DCFD75ED38D8BA2551FFA4 /* Archive+Reading.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Archive+Reading.swift"; path = "Sources/ZIPFoundation/Archive+Reading.swift"; sourceTree = "<group>"; };
 		9AA363F5F6B6A7992DC1CC3CFDEA6C43 /* export.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = export.h; path = GL/export.h; sourceTree = "<group>"; };
-		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
+		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
 		A0E7119C8CD7EDE1E8D35A080A565539 /* AsyncGLExecutor.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AsyncGLExecutor.h; path = AsyncGL/AsyncGLExecutor.h; sourceTree = "<group>"; };
 		A5A701D221F9A36C019EADFA552A6CDA /* eglplatform.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = eglplatform.h; path = GL/EGL/eglplatform.h; sourceTree = "<group>"; };
 		A867C56949646032CFD2E4B33D8B87AF /* gl2platform.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = gl2platform.h; path = GL/GLES2/gl2platform.h; sourceTree = "<group>"; };
@@ -187,7 +186,7 @@
 		BBAB83FA75DFDAAE05B9BB957E902F19 /* ZIPFoundation-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "ZIPFoundation-umbrella.h"; sourceTree = "<group>"; };
 		BD2D1AECE8D718B4565096AE984F016A /* AsyncGLAPI.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AsyncGLAPI.h; path = AsyncGL/AsyncGLAPI.h; sourceTree = "<group>"; };
 		C070E41C580CBB99AD11129A8AD8247E /* AsyncGL.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = AsyncGL.debug.xcconfig; sourceTree = "<group>"; };
-		C86A50C13BCBBC3054E814B939E22EB6 /* AppCenter.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = wrapper.xcframework; name = AppCenter.xcframework; path = "AppCenter-SDK-Apple/AppCenter.xcframework"; sourceTree = "<group>"; };
+		C86A50C13BCBBC3054E814B939E22EB6 /* AppCenter.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; name = AppCenter.xcframework; path = "AppCenter-SDK-Apple/AppCenter.xcframework"; sourceTree = "<group>"; };
 		CD252CB81799DE6837025C1DD883AD71 /* AppCenter-xcframeworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "AppCenter-xcframeworks.sh"; sourceTree = "<group>"; };
 		CDD5DC9C959EA8057BF0AAFFC276E371 /* FileManager+ZIP.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "FileManager+ZIP.swift"; path = "Sources/ZIPFoundation/FileManager+ZIP.swift"; sourceTree = "<group>"; };
 		CEB20A86ED59C1394409045116BE6C4C /* Pods-MobileCelestia-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-MobileCelestia-acknowledgements.plist"; sourceTree = "<group>"; };
@@ -204,9 +203,9 @@
 		DD174BD602EEA384F88D45726782B93F /* AsyncGLView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AsyncGLView.h; path = AsyncGL/AsyncGLView.h; sourceTree = "<group>"; };
 		DD951EE2B5A0D1E9896BA8C989CA879B /* gl2ext_angle.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = gl2ext_angle.h; path = GL/GLES2/gl2ext_angle.h; sourceTree = "<group>"; };
 		DDD50F75F03D8C5A9038D1EAA9DF144B /* AsyncGL-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "AsyncGL-prefix.pch"; sourceTree = "<group>"; };
-		DFD7F7F9AC9E98D221BA2687E8EE25EA /* AppCenterAnalytics.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = wrapper.xcframework; name = AppCenterAnalytics.xcframework; path = "AppCenter-SDK-Apple/AppCenterAnalytics.xcframework"; sourceTree = "<group>"; };
+		DFD7F7F9AC9E98D221BA2687E8EE25EA /* AppCenterAnalytics.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; name = AppCenterAnalytics.xcframework; path = "AppCenter-SDK-Apple/AppCenterAnalytics.xcframework"; sourceTree = "<group>"; };
 		E24930AAB382B8CCD094C56891F540BB /* ZIPFoundation.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = ZIPFoundation.release.xcconfig; sourceTree = "<group>"; };
-		E5E796FAF4CC374542C851539B619BB6 /* gl2ext_explicit_context_autogen.inc */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.pascal; name = gl2ext_explicit_context_autogen.inc; path = GL/GLES2/gl2ext_explicit_context_autogen.inc; sourceTree = "<group>"; };
+		E5E796FAF4CC374542C851539B619BB6 /* gl2ext_explicit_context_autogen.inc */ = {isa = PBXFileReference; includeInIndex = 1; name = gl2ext_explicit_context_autogen.inc; path = GL/GLES2/gl2ext_explicit_context_autogen.inc; sourceTree = "<group>"; };
 		E8B8210847AA5785B5F466AD55A5A89C /* AsyncGL-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "AsyncGL-Info.plist"; sourceTree = "<group>"; };
 		E9962598F6F6BC437BB8B529A3E9A7C0 /* URL+ZIP.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "URL+ZIP.swift"; path = "Sources/ZIPFoundation/URL+ZIP.swift"; sourceTree = "<group>"; };
 		E9A5E2236D5AD3DF332E10ED498F2450 /* khrplatform.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = khrplatform.h; path = GL/KHR/khrplatform.h; sourceTree = "<group>"; };
@@ -293,6 +292,7 @@
 				09A074C2016B9C9F2016AC0A26FFEAD8 /* RequestHandler.swift */,
 				B367419239D538B7600C1DC37F581228 /* Support Files */,
 			);
+			name = MWRequest;
 			path = MWRequest;
 			sourceTree = "<group>";
 		};
@@ -362,6 +362,7 @@
 				E9962598F6F6BC437BB8B529A3E9A7C0 /* URL+ZIP.swift */,
 				0600914407982521F8AFB435D55074FF /* Support Files */,
 			);
+			name = ZIPFoundation;
 			path = ZIPFoundation;
 			sourceTree = "<group>";
 		};
@@ -381,6 +382,7 @@
 				8DC64FEB1C86ADC5CA1D1581FB59AB50 /* Crashes */,
 				8E61D83491A46ADB1A7DE0F60C31D86E /* Support Files */,
 			);
+			name = AppCenter;
 			path = AppCenter;
 			sourceTree = "<group>";
 		};
@@ -472,6 +474,7 @@
 				E9A5E2236D5AD3DF332E10ED498F2450 /* khrplatform.h */,
 				DE027786F3BCF0FB8740F577A9F47E8A /* Support Files */,
 			);
+			name = AsyncGL;
 			path = AsyncGL;
 			sourceTree = "<group>";
 		};
@@ -497,10 +500,10 @@
 		DDF8F1427780F4C0F116881605E277A3 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				78020024F1A70DF61F2E78929295C055 /* AsyncGL.framework */,
-				27A211133D23340DAC3FDC42D1BC1D54 /* MWRequest.framework */,
+				78020024F1A70DF61F2E78929295C055 /* AsyncGL */,
+				27A211133D23340DAC3FDC42D1BC1D54 /* MWRequest */,
 				D9A4B9EF8730C7123A86378223DBC3F6 /* Pods-MobileCelestia */,
-				48A4A6EDC08C8AC933D0DCD507E9D173 /* ZIPFoundation.framework */,
+				48A4A6EDC08C8AC933D0DCD507E9D173 /* ZIPFoundation */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -625,7 +628,7 @@
 			);
 			name = ZIPFoundation;
 			productName = ZIPFoundation;
-			productReference = 48A4A6EDC08C8AC933D0DCD507E9D173 /* ZIPFoundation.framework */;
+			productReference = 48A4A6EDC08C8AC933D0DCD507E9D173 /* ZIPFoundation */;
 			productType = "com.apple.product-type.framework";
 		};
 		B0461866C4B5B8EDBF49D135C70E49C4 /* AsyncGL */ = {
@@ -643,7 +646,7 @@
 			);
 			name = AsyncGL;
 			productName = AsyncGL;
-			productReference = 78020024F1A70DF61F2E78929295C055 /* AsyncGL.framework */;
+			productReference = 78020024F1A70DF61F2E78929295C055 /* AsyncGL */;
 			productType = "com.apple.product-type.framework";
 		};
 		B45BC50C299B8144F2CCD63D4E7A880D /* MWRequest */ = {
@@ -661,7 +664,7 @@
 			);
 			name = MWRequest;
 			productName = MWRequest;
-			productReference = 27A211133D23340DAC3FDC42D1BC1D54 /* MWRequest.framework */;
+			productReference = 27A211133D23340DAC3FDC42D1BC1D54 /* MWRequest */;
 			productType = "com.apple.product-type.framework";
 		};
 /* End PBXNativeTarget section */
@@ -674,7 +677,7 @@
 				LastUpgradeCheck = 1300;
 			};
 			buildConfigurationList = 4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */;
-			compatibilityVersion = "Xcode 11.0";
+			compatibilityVersion = "Xcode 12.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
