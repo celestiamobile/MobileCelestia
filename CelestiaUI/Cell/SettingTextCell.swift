@@ -9,18 +9,17 @@
 // of the License, or (at your option) any later version.
 //
 
-import CelestiaUI
 import UIKit
 
-class SettingTextCell: UITableViewCell {
+public class SettingTextCell: UITableViewCell {
     private lazy var label = UILabel(textStyle: .body)
     private lazy var detailLabel = UILabel(textStyle: .body)
 
-    var title: String? { didSet { label.text = title }  }
-    var titleColor: UIColor? { didSet { label.textColor = titleColor } }
-    var detail: String? { didSet { detailLabel.text = detail } }
+    public var title: String? { didSet { label.text = title }  }
+    public var titleColor: UIColor? { didSet { label.textColor = titleColor } }
+    public var detail: String? { didSet { detailLabel.text = detail } }
 
-    override func prepareForReuse() {
+    public override func prepareForReuse() {
         super.prepareForReuse()
 
         label.text = nil
@@ -28,17 +27,17 @@ class SettingTextCell: UITableViewCell {
         label.textColor = .darkLabel
     }
 
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+    public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
         setup()
     }
 
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func sizeThatFits(_ size: CGSize) -> CGSize {
+    public override func sizeThatFits(_ size: CGSize) -> CGSize {
         let maxLayoutSpace = CGSize(width: contentView.frame.width - 2 * GlobalConstants.listItemMediumMarginHorizontal, height: CGFloat.infinity)
         let size1 = label.sizeThatFits(maxLayoutSpace)
         let size2 = detailLabel.sizeThatFits(maxLayoutSpace)
@@ -49,7 +48,7 @@ class SettingTextCell: UITableViewCell {
         return CGSize(width: size.width, height: size1.height + size2.height + 2 * GlobalConstants.listItemMediumMarginVertical + GlobalConstants.listItemGapVertical)
     }
 
-    override func layoutSubviews() {
+    public override func layoutSubviews() {
         super.layoutSubviews()
 
         let maxLayoutSpace = CGSize(width: contentView.frame.width - 2 * GlobalConstants.listItemMediumMarginHorizontal, height: CGFloat.infinity)

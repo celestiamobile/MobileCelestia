@@ -10,17 +10,21 @@
 //
 
 import CelestiaCore
-import CelestiaUI
 import UIKit
 
-class BrowserContainerViewController: UIViewController {
+public protocol AsyncProviderExecutor {
+    func run(_ task: @escaping @Sendable (AppCore) -> Void) async
+    func get<T>(_ task: @escaping @Sendable (AppCore) -> T) async -> T
+}
+
+public class BrowserContainerViewController: UIViewController {
     #if targetEnvironment(macCatalyst)
     private lazy var controller = UISplitViewController()
     #else
     private lazy var controller = UITabBarController()
     #endif
 
-    @Injected(\.executor) private var executor
+    private var executor: AsyncProviderExecutor
 
     private static var solBrowserRoot: BrowserItem?
     private static var dsoBrowserRoot: BrowserItem?
@@ -33,21 +37,22 @@ class BrowserContainerViewController: UIViewController {
 
     private let activityIndicator = UIActivityIndicatorView(style: .large)
 
-    init(selected: @escaping (Selection) -> UIViewController) {
+    public init(selected: @escaping (Selection) -> UIViewController, executor: AsyncProviderExecutor) {
         self.selected = selected
+        self.executor = executor
         super.init(nibName: nil, bundle: nil)
     }
 
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func loadView() {
+    public override func loadView() {
         view = UIView()
         view.backgroundColor = .darkBackground
     }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
 
         setUp()

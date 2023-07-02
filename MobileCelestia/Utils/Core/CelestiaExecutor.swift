@@ -14,7 +14,7 @@ import CelestiaCore
 import CelestiaUI
 import Foundation
 
-final class CelestiaExecutor: AsyncGLExecutor, @unchecked Sendable {
+final class CelestiaExecutor: AsyncGLExecutor, AsyncProviderExecutor, @unchecked Sendable {
     @Injected(\.appCore) private var core
 
     func run(_ task: @escaping (AppCore) -> Void) {

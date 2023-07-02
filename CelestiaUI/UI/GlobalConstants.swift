@@ -13,10 +13,17 @@ import CoreGraphics
 import UIKit
 
 public enum GlobalConstants {
+    public static let listItemMediumMarginHorizontal: CGFloat = 16
+    public static let listItemMediumMarginVertical: CGFloat = 12
+    public static let listItemGapHorizontal: CGFloat = 8
+    public static let listItemGapVertical: CGFloat = 8
+
     public static let pageMediumMarginHorizontal: CGFloat = 16
     public static let pageMediumMarginVertical: CGFloat = 12
     public static let pageMediumGapHorizontal: CGFloat = 12
     public static let pageMediumGapVertical: CGFloat = 8
+
+    public static let baseCellHeight: CGFloat = 44
 
     public static func preferredUIElementScaling(for traitCollection: UITraitCollection) -> CGFloat {
         #if targetEnvironment(macCatalyst)

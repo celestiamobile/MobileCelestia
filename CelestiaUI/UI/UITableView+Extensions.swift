@@ -11,7 +11,7 @@
 
 import UIKit
 
-extension UITableView.Style {
+public extension UITableView.Style {
     static var defaultGrouped: UITableView.Style {
         #if targetEnvironment(macCatalyst)
         return .insetGrouped

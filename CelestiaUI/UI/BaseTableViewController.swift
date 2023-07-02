@@ -9,11 +9,10 @@
 // of the License, or (at your option) any later version.
 //
 
-import CelestiaUI
 import UIKit
 
-class BaseTableViewController: UITableViewController {
-    override func loadView() {
+open class BaseTableViewController: UITableViewController {
+    public override func loadView() {
         super.loadView()
 
         if tableView.style == .plain {

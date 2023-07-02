@@ -11,7 +11,7 @@
 
 import UIKit
 
-extension UILabel {
+public extension UILabel {
     convenience init(textStyle: UIFont.TextStyle, weight: UIFont.Weight? = nil) {
         self.init()
         let labelFont: UIFont

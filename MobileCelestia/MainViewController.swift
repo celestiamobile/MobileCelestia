@@ -944,7 +944,7 @@ extension MainViewController: CelestiaControllerDelegate {
     private func showBrowser() {
         let controller = BrowserContainerViewController(selected: { [unowned self] (info) in
             return self.createSelectionInfoViewController(with: info, isEmbeddedInNavigation: true)
-        })
+        }, executor: executor)
         #if targetEnvironment(macCatalyst)
         showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600), titleVisible: false)
         #else

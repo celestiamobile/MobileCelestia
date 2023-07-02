@@ -10,15 +10,14 @@
 //
 
 import CelestiaCore
-import CelestiaUI
 import UIKit
 
-class SubsystemBrowserCoordinatorViewController: UINavigationController {
+public class SubsystemBrowserCoordinatorViewController: UINavigationController {
     private let item: BrowserItem
 
     private let selection: (Selection) -> UIViewController
 
-    init(item: BrowserItem, selection: @escaping (Selection) -> UIViewController) {
+    public init(item: BrowserItem, selection: @escaping (Selection) -> UIViewController) {
         self.item = item
         self.selection = selection
         super.init(rootViewController: UIViewController())
@@ -26,7 +25,7 @@ class SubsystemBrowserCoordinatorViewController: UINavigationController {
         setViewControllers([create(for: item)], animated: false)
     }
 
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }

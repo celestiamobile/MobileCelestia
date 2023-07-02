@@ -12,12 +12,8 @@
 import CelestiaUI
 
 extension GlobalConstants {
-    static let listItemMediumMarginHorizontal: CGFloat = 16
-    static let listItemMediumMarginVertical: CGFloat = 12
     static let listItemSmallMarginHorizontal: CGFloat = 12
     static let listItemSmallMarginVertical: CGFloat = 8
-    static let listItemGapHorizontal: CGFloat = 8
-    static let listItemGapVertical: CGFloat = 8
 
     static let pageSmallMarginHorizontal: CGFloat = 12
     static let pageSmallMarginVertical: CGFloat = 8
@@ -37,8 +33,6 @@ extension GlobalConstants {
     static let bottomControlViewMarginVertical: CGFloat = 2
     static let bottomControlViewDimension: CGFloat = 60
     static let bottomControlContainerCornerRadius: CGFloat = 8
-
-    static let baseCellHeight: CGFloat = 44
 
     static let transitionDuration: TimeInterval = 0.2
 }
