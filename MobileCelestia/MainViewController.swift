@@ -814,7 +814,7 @@ extension MainViewController: CelestiaControllerDelegate {
 
     private func createSelectionInfoViewController(with selection: Selection, isEmbeddedInNavigation: Bool) -> InfoViewController {
         let controller = InfoViewController(info: selection, core: core, isEmbeddedInNavigationController: isEmbeddedInNavigation)
-        controller.selectionHandler = { [unowned self] (viewController, action, sender) in
+        controller.selectionHandler = { [unowned self] (viewController, selection, action, sender) in
             switch action {
             case .select:
                 self.executor.run { $0.simulation.selection = selection }

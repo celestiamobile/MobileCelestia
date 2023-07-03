@@ -42,7 +42,7 @@ final public class InfoViewController: UIViewController {
     private var bodyInfo: BodyInfo
     private var bodyInfoNeedsUpdating = false
 
-    public var selectionHandler: ((UIViewController, ObjectAction, UIView) -> Void)?
+    public var selectionHandler: ((UIViewController, Selection, ObjectAction, UIView) -> Void)?
     public var menuProvider: ((ObjectAction) -> UIMenu?)?
 
     private var actions: [ObjectAction] = []
@@ -203,7 +203,7 @@ extension InfoViewController: UICollectionViewDataSource {
         cell.title = action.description
         cell.menu = menuProvider?(action)
         cell.actionHandler = { [unowned self] view in
-            self.selectionHandler?(self, action, view)
+            self.selectionHandler?(self, self.info, action, view)
         }
         return cell
     }
