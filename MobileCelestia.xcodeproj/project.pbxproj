@@ -148,6 +148,8 @@
 		EABF794A2538A86500F2460C /* ResourceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF79492538A86500F2460C /* ResourceManager.swift */; };
 		EAC457062A52C10C00F79BA3 /* BrowserItemStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC457052A52C10C00F79BA3 /* BrowserItemStore.swift */; };
 		EAC457082A52C2E000F79BA3 /* SubsystemBrowserWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC457072A52C2E000F79BA3 /* SubsystemBrowserWindow.swift */; };
+		EAC457192A5303F000F79BA3 /* CXCInputEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = EAC457172A5303F000F79BA3 /* CXCInputEvent.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		EAC4571A2A5303F000F79BA3 /* CXCInputEvent.m in Sources */ = {isa = PBXBuildFile; fileRef = EAC457182A5303F000F79BA3 /* CXCInputEvent.m */; };
 		EAC8435F252C818700691943 /* CELMacBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = EAC8435E252C818700691943 /* CELMacBridge.m */; };
 		EAC84364252C84B600691943 /* CelestiaMacBridge.bundle in Embed PlugIns */ = {isa = PBXBuildFile; fileRef = EAC84354252C816500691943 /* CelestiaMacBridge.bundle */; platformFilter = maccatalyst; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EAD12A8E2A5656FF007EE4D6 /* EventFinderInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E424A0E93D00F3F51B /* EventFinderInputViewController.swift */; };
@@ -411,8 +413,8 @@
 		EAA5A7A7259DC062001AFA82 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EAA6C4CA253B5CD200ED1D60 /* InstalledResourceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstalledResourceViewController.swift; sourceTree = "<group>"; };
 		EAB08FE32780550600BB82F0 /* Font.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Font.swift; sourceTree = "<group>"; };
-		EAB623B42A51AB5100063D1B /* UIViewController+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		EAB623A22A51179100063D1B /* InfoWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InfoWindow.swift; sourceTree = "<group>"; };
+		EAB623B42A51AB5100063D1B /* UIViewController+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		EABDE366247170F000E0A5FA /* SettngSliderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettngSliderCell.swift; sourceTree = "<group>"; };
 		EABDE3A82473DAA300E0A5FA /* SettingCommonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingCommonViewController.swift; sourceTree = "<group>"; };
 		EABF7910253895FD00F2460C /* ResourceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceViewController.swift; sourceTree = "<group>"; };
@@ -422,6 +424,8 @@
 		EABF79492538A86500F2460C /* ResourceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceManager.swift; sourceTree = "<group>"; };
 		EAC457052A52C10C00F79BA3 /* BrowserItemStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserItemStore.swift; sourceTree = "<group>"; };
 		EAC457072A52C2E000F79BA3 /* SubsystemBrowserWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubsystemBrowserWindow.swift; sourceTree = "<group>"; };
+		EAC457172A5303F000F79BA3 /* CXCInputEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CXCInputEvent.h; sourceTree = "<group>"; };
+		EAC457182A5303F000F79BA3 /* CXCInputEvent.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CXCInputEvent.m; sourceTree = "<group>"; };
 		EAC84354252C816500691943 /* CelestiaMacBridge.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CelestiaMacBridge.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
 		EAC84356252C816500691943 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		EAC8435D252C818700691943 /* CELMacBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CELMacBridge.h; sourceTree = "<group>"; };
@@ -883,14 +887,6 @@
 			path = UI;
 			sourceTree = "<group>";
 		};
-		EAB623B32A51AAE100063D1B /* Cell */ = {
-			isa = PBXGroup;
-			children = (
-				977394B22403F74800E38B82 /* SettingTextCell.swift */,
-			);
-			path = Cell;
-			sourceTree = "<group>";
-		};
 		EA8680712A4692DB003B5D39 /* CelestiaXR */ = {
 			isa = PBXGroup;
 			children = (
@@ -923,8 +919,18 @@
 				EA246B892A50134500E1A1AB /* CXCRenderResource.m */,
 				EA246B8C2A50138300E1A1AB /* CXCRenderSurface.h */,
 				EA246B8D2A50138300E1A1AB /* CXCRenderSurface.m */,
+				EAC457172A5303F000F79BA3 /* CXCInputEvent.h */,
+				EAC457182A5303F000F79BA3 /* CXCInputEvent.m */,
 			);
 			path = CelestiaXRCore;
+			sourceTree = "<group>";
+		};
+		EAB623B32A51AAE100063D1B /* Cell */ = {
+			isa = PBXGroup;
+			children = (
+				977394B22403F74800E38B82 /* SettingTextCell.swift */,
+			);
+			path = Cell;
 			sourceTree = "<group>";
 		};
 		EABF790E253895DD00F2460C /* Resource */ = {
@@ -1037,6 +1043,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EAC457192A5303F000F79BA3 /* CXCInputEvent.h in Headers */,
 				EA8680BF2A46B60D003B5D39 /* CXCRenderer.h in Headers */,
 				EA246B8E2A50138300E1A1AB /* CXCRenderSurface.h in Headers */,
 				EA8680AD2A46B497003B5D39 /* CelestiaXRCore.h in Headers */,
@@ -1364,46 +1371,6 @@
 			shellPath = /bin/sh;
 			shellScript = "CELESTIA_CORE_ROOT=$SRCROOT/../CelestiaCore\n\nSH_FILE=$CELESTIA_CORE_ROOT/convert_po.sh\n\nchmod +x $SH_FILE\n\n$SH_FILE\n";
 		};
-		EA9FB24027B7B0E800E0DC1F /* Copy Localized Files */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Localized Files";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "SH_FILE=$SRCROOT/copy_localized_files.sh\n\nchmod +x $SH_FILE\n\n$SH_FILE\n";
-		};
-		F90AC7257B1C8C12CBD3053F /* [CP] Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
-				"${PODS_ROOT}/Manifest.lock",
-			);
-			name = "[CP] Check Pods Manifest.lock";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-MobileCelestia-checkManifestLockResult.txt",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
 		EA50FDA22A49601F00E23091 /* Copy General Data */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1457,6 +1424,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "SH_FILE=$SRCROOT/copy_localized_files.sh\n\nchmod +x $SH_FILE\n\n$SH_FILE\n";
+		};
+		F90AC7257B1C8C12CBD3053F /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-MobileCelestia-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1618,6 +1607,7 @@
 			files = (
 				EA246B8F2A50138300E1A1AB /* CXCRenderSurface.m in Sources */,
 				EA246B8B2A50134500E1A1AB /* CXCRenderResource.m in Sources */,
+				EAC4571A2A5303F000F79BA3 /* CXCInputEvent.m in Sources */,
 				EA8680BD2A46B505003B5D39 /* CXCRenderer.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -2057,16 +2047,16 @@
 				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.CelestiaUI;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
 				SUPPORTS_MACCATALYST = YES;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,6,7";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
 			};
 			name = Release;
 		};

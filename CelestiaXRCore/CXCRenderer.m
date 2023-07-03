@@ -16,6 +16,7 @@
 #import <CelestiaCore/CelestiaCore.h>
 
 #import "CXCRenderer.h"
+#import "CXCInputEvent.h"
 #import "CXCRenderResource.h"
 #import "CXCRenderSurface.h"
 
@@ -48,6 +49,8 @@
 
 @property BOOL inheritedFromPreviousRenderer;
 
+@property NSMutableArray<CXCInputEvent *> *currentEvents;
+
 @end
 
 @implementation CXCRenderer
@@ -75,6 +78,8 @@
         _tasks = [NSMutableArray array];
 
         _inheritedFromPreviousRenderer = NO;
+
+        _currentEvents = [NSMutableArray array];
     }
     return self;
 }
@@ -101,70 +106,77 @@
         _tasks = [NSMutableArray array];
 
         _inheritedFromPreviousRenderer = YES;
+
+        _currentEvents = [NSMutableArray array];
     }
     return self;
 }
 
 - (CXCRendererStatus)status {
     os_unfair_lock_lock(&_resourceLock);
-    os_unfair_lock_lock(&_resourceLock);;
     CXCRendererStatus current = _renderStatus;
-    os_unfair_lock_unlock(&_resourceLock);;
+    os_unfair_lock_unlock(&_resourceLock);
     return current;
 }
 
 - (void)setStatus:(CXCRendererStatus)status {
-    os_unfair_lock_lock(&_resourceLock);;
+    os_unfair_lock_lock(&_resourceLock);
     _renderStatus = status;
     if (_statusUpdater != nil) {
         _statusUpdater(status);
     }
-    os_unfair_lock_unlock(&_resourceLock);;
+    os_unfair_lock_unlock(&_resourceLock);
 }
 
 - (void (^)(CXCRendererStatus))statusUpdater {
-    os_unfair_lock_lock(&_resourceLock);;
+    os_unfair_lock_lock(&_resourceLock);
     void (^updater)(CXCRendererStatus) = _statusUpdater;
-    os_unfair_lock_unlock(&_resourceLock);;
+    os_unfair_lock_unlock(&_resourceLock);
     return updater;
 }
 
 - (void)setStatusUpdater:(void (^)(CXCRendererStatus))statusUpdater {
-    os_unfair_lock_lock(&_resourceLock);;
+    os_unfair_lock_lock(&_resourceLock);
     _statusUpdater = statusUpdater;
-    os_unfair_lock_unlock(&_resourceLock);;
+    os_unfair_lock_unlock(&_resourceLock);
 }
 
 - (void (^)(NSString * _Nonnull))fileNameUpdater {
-    os_unfair_lock_lock(&_resourceLock);;
+    os_unfair_lock_lock(&_resourceLock);
     void (^updater)(NSString * _Nonnull) = _fileNameUpdater;
-    os_unfair_lock_unlock(&_resourceLock);;
+    os_unfair_lock_unlock(&_resourceLock);
     return updater;
 }
 
 - (void)setFileNameUpdater:(void (^)(NSString * _Nonnull))fileNameUpdater {
-    os_unfair_lock_lock(&_resourceLock);;
+    os_unfair_lock_lock(&_resourceLock);
     _fileNameUpdater = fileNameUpdater;
-    os_unfair_lock_unlock(&_resourceLock);;
+    os_unfair_lock_unlock(&_resourceLock);
 }
 
 - (void (^)(CelestiaSelection * _Nonnull))selectionUpdater {
-    os_unfair_lock_lock(&_resourceLock);;
+    os_unfair_lock_lock(&_resourceLock);
     void (^updater)(CelestiaSelection * _Nonnull) = _selectionUpdater;
-    os_unfair_lock_unlock(&_resourceLock);;
+    os_unfair_lock_unlock(&_resourceLock);
     return updater;
 }
 
 - (void)setSelectionUpdater:(void (^)(CelestiaSelection * _Nonnull))selectionUpdater {
-    os_unfair_lock_lock(&_resourceLock);;
+    os_unfair_lock_lock(&_resourceLock);
     _selectionUpdater = selectionUpdater;
-    os_unfair_lock_unlock(&_resourceLock);;
+    os_unfair_lock_unlock(&_resourceLock);
+}
+
+- (void)enqueueEvents:(NSArray<CXCInputEvent *> *)events {
+    os_unfair_lock_lock(&_resourceLock);
+    [_currentEvents addObjectsFromArray:events];
+    os_unfair_lock_unlock(&_resourceLock);
 }
 
 - (void)enqueueTask:(void (^)(CelestiaAppCore * _Nonnull))task {
-    os_unfair_lock_lock(&_resourceLock);;
+    os_unfair_lock_lock(&_resourceLock);
     [_tasks addObject:task];
-    os_unfair_lock_unlock(&_resourceLock);;
+    os_unfair_lock_unlock(&_resourceLock);
 }
 
 - (void)prepare {
@@ -323,10 +335,12 @@
 }
 
 - (NSArray<CXCRendererSurface *> *)drawAndPresentFrame:(cp_frame_t)frame drawable:(cp_drawable_t)drawable {
-    os_unfair_lock_lock(&_resourceLock);;
+    os_unfair_lock_lock(&_resourceLock);
     NSArray<void (^)(CelestiaAppCore *)> *taskCopy = [_tasks copy];
+    NSArray<CXCInputEvent *> *eventCopy = [_currentEvents copy];
     [_tasks removeAllObjects];
-    os_unfair_lock_unlock(&_resourceLock);;
+    [_currentEvents removeAllObjects];
+    os_unfair_lock_unlock(&_resourceLock);
 
     for (void (^task)(CelestiaAppCore *) in taskCopy)
         task(_appCore);

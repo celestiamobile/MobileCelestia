@@ -12,8 +12,11 @@
 #import <Foundation/Foundation.h>
 #import <CelestiaCore/CelestiaCore.h>
 #import <CompositorServices/CompositorServices.h>
+#import <Spatial/Spatial.h>
 
 NS_ASSUME_NONNULL_BEGIN
+
+@class CXCInputEvent;
 
 typedef NS_ENUM(NSUInteger, CXCRendererStatus) {
     CXCRendererStatusNone,
@@ -38,6 +41,7 @@ NS_SWIFT_NAME(Renderer)
 - (instancetype)initRenderer:(CXCRenderer *)renderer;
 
 - (void)enqueueTask:(void (^)(CelestiaAppCore *))task;
+- (void)enqueueEvents:(NSArray<CXCInputEvent *> *)events;
 - (void)prepare;
 - (void)startRenderingWithLayerRenderer:(cp_layer_renderer_t)layerRenderer;
 

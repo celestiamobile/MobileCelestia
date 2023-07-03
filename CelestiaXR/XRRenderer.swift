@@ -14,6 +14,7 @@ import CelestiaUI
 import CelestiaXRCore
 import CompositorServices
 import Foundation
+import SwiftUI
 
 class XRRenderer: ObservableObject {
     private var renderer: Renderer
@@ -54,6 +55,24 @@ class XRRenderer: ObservableObject {
                 self.selection = newSelection
             }
         }
+    }
+
+    func enqueue(events: SpatialEventCollection) {
+        let mapped = events.map { event in
+            let phase: InputEventPhase
+            switch event.phase {
+            case .active:
+                phase = .active
+            case .cancelled:
+                phase = .cancelled
+            case .ended:
+                phase = .ended
+            @unknown default:
+                phase = .cancelled
+            }
+            return InputEvent(location: event.location, location3D: event.location3D, selectionRay: event.selectionRay ?? Ray3D(origin: .zero, direction: .zero), phase: phase)
+        }
+        renderer.enqueue(mapped)
     }
 
     func enqueue(task: @escaping (AppCore) -> Void) {

@@ -55,6 +55,9 @@ struct CelestiaXRApp: App {
         ImmersiveSpace(id: "ImmersiveSpace") {
             CompositorLayer(configuration: MetalLayerConfiguration()) { layerRenderer in
                 renderer.startRendering(with: layerRenderer)
+                layerRenderer.onSpatialEvent = { collection in
+                    renderer.enqueue(events: collection)
+                }
             }
         }.immersionStyle(selection: .constant(.full), in: .full)
     }
