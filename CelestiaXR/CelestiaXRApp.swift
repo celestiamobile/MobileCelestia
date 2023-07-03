@@ -25,6 +25,7 @@ struct MetalLayerConfiguration: CompositorLayerConfiguration {
 
 @main
 struct CelestiaXRApp: App {
+    private var browserItemStore = BrowserItemStore()
     private var renderer = XRRenderer(renderer: Renderer(resourceFolderPath: Bundle.main.path(forResource: "CelestiaResources", ofType: nil)!, configFilePath: "celestia.cfg"))
 
     var body: some Scene {
@@ -36,11 +37,19 @@ struct CelestiaXRApp: App {
         WindowGroup(id: "InfoWindow") {
             InfoWindow()
                 .environmentObject(renderer)
+                .environmentObject(browserItemStore)
         }
 
         WindowGroup(id: "BrowserWindow") {
             BrowserView()
                 .environmentObject(renderer)
+                .environmentObject(browserItemStore)
+        }
+
+        WindowGroup(id: "SubsystemWindow", for: UUID.self) { $id in
+            SubsystemBrowserWindow(id: id ?? UUID())
+                .environmentObject(renderer)
+                .environmentObject(browserItemStore)
         }
 
         ImmersiveSpace(id: "ImmersiveSpace") {

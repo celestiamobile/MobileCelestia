@@ -16,34 +16,47 @@ import SwiftUI
 struct InfoView: UIViewControllerRepresentable {
     typealias UIViewControllerType = InfoViewController
 
-    @EnvironmentObject var renderer: XRRenderer
+    @Environment(\.openWindow) private var openWindow
+
+    @EnvironmentObject private var renderer: XRRenderer
+    @EnvironmentObject private var browerItemStore: BrowserItemStore
 
     let selection: Selection
     let isEmbeddedInNavigationController: Bool
 
+    private func openSubsystemBrowser(_ selection: Selection) {
+        if let entry = selection.object {
+            let item = BrowserItem(name: renderer.appCore.simulation.universe.name(for: selection), catEntry: entry, provider: renderer.appCore.simulation.universe)
+            if let id = browerItemStore.save(item: item) {
+                openWindow(id: "SubsystemWindow", value: id)
+            }
+        }
+    }
+
     func makeUIViewController(context: Context) -> InfoViewController {
         let vc = InfoViewController(info: selection, core: renderer.appCore, isEmbeddedInNavigationController: false)
-        vc.selectionHandler = { _, action, _ in
-            renderer.enqueue { appCore in
-                switch action {
-                case .select:
+        vc.selectionHandler = { _, selection, action, _ in
+            switch action {
+            case .select:
+                renderer.enqueue { appCore in
                     appCore.simulation.selection = selection
-                case .web:
-                    // TODO: call open URL?
-                    break
-                case let .wrapped(action):
+                }
+            case .web:
+                // TODO: call open URL?
+                break
+            case let .wrapped(action):
+                renderer.enqueue { appCore in
                     appCore.simulation.selection = selection
                     appCore.receive(action)
-                case .subsystem:
-                    // TODO: show a window
-                    break
-                case .alternateSurfaces:
-                    // TODO: present menu from the view
-                    break
-                case .mark:
-                    // TODO: should probably just remove this action
-                    break
                 }
+            case .subsystem:
+               openSubsystemBrowser(selection)
+            case .alternateSurfaces:
+                // TODO: present menu from the view
+                break
+            case .mark:
+                // TODO: should probably just remove this action
+                break
             }
         }
         return vc

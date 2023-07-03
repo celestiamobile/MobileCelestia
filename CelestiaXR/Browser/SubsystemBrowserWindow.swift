@@ -1,5 +1,5 @@
 //
-// InfoWindow.swift
+// SubsystemBrowserWindow.swift
 //
 // Copyright © 2023 Celestia Development Team. All rights reserved.
 //
@@ -9,17 +9,18 @@
 // of the License, or (at your option) any later version.
 //
 
-import CelestiaCore
 import SwiftUI
 
-struct InfoWindow: View {
-    @EnvironmentObject private var renderer: XRRenderer
+struct SubsystemBrowserWindow: View {
+    @EnvironmentObject private var browerItemStore: BrowserItemStore
+
+    let id: UUID
 
     var body: some View {
-        if !renderer.selection.isEmpty {
-            InfoView(selection: renderer.selection, isEmbeddedInNavigationController: false)
+        if let item = browerItemStore.getItem(by: id) {
+            SubsystemBrowserView(item: item)
         } else {
-            Text("No object is selected...")
+            EmptyView()
         }
     }
 }

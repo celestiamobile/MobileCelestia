@@ -1,5 +1,5 @@
 //
-// BrowserView.swift
+// SubsystemBrowserView.swift
 //
 // Copyright © 2023 Celestia Development Team. All rights reserved.
 //
@@ -9,21 +9,23 @@
 // of the License, or (at your option) any later version.
 //
 
+import CelestiaCore
 import CelestiaUI
 import SwiftUI
 
-struct BrowserView: UIViewControllerRepresentable {
-    typealias UIViewControllerType = BrowserContainerViewController
+struct SubsystemBrowserView: UIViewControllerRepresentable {
+    typealias UIViewControllerType = SubsystemBrowserCoordinatorViewController
 
     @EnvironmentObject private var renderer: XRRenderer
 
-    func makeUIViewController(context: Context) -> BrowserContainerViewController {
-        let vc = BrowserContainerViewController(selected: { selection in
+    let item: BrowserItem
+
+    func makeUIViewController(context: Context) -> SubsystemBrowserCoordinatorViewController {
+        return SubsystemBrowserCoordinatorViewController(item: item) { selection in
             return UIHostingController(rootView: InfoView(selection: selection, isEmbeddedInNavigationController: true))
-        }, executor: renderer)
-        return vc
+        }
     }
 
-    func updateUIViewController(_ uiViewController: BrowserContainerViewController, context: Context) {
+    func updateUIViewController(_ uiViewController: SubsystemBrowserCoordinatorViewController, context: Context) {
     }
 }
