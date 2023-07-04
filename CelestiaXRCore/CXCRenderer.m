@@ -50,6 +50,9 @@
 @property BOOL inheritedFromPreviousRenderer;
 
 @property NSMutableArray<CXCInputEvent *> *currentEvents;
+@property CXCInputEventPhase previousEventPhase;
+
+@property NSMutableArray<CXCRendererSurface *> *surfaces;
 
 @end
 
@@ -80,6 +83,8 @@
         _inheritedFromPreviousRenderer = NO;
 
         _currentEvents = [NSMutableArray array];
+        _previousEventPhase = CXCInputEventPhaseEnded;
+        _surfaces = [NSMutableArray array];
     }
     return self;
 }
@@ -108,6 +113,8 @@
         _inheritedFromPreviousRenderer = YES;
 
         _currentEvents = [NSMutableArray array];
+        _previousEventPhase = CXCInputEventPhaseEnded;
+        _surfaces = [NSMutableArray array];
     }
     return self;
 }
@@ -208,6 +215,8 @@
     dispatch_semaphore_wait(_renderSemaphore, DISPATCH_TIME_FOREVER);
     [self setStatus:CXCRendererStatusRendering];
 
+    eglMakeCurrent(_renderResource.eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, _renderResource.eglContext);
+
     BOOL isRunning = YES;
     while (isRunning) {
         @autoreleasepool {
@@ -224,6 +233,7 @@
             }
         }
     }
+    [self cleanupSurfaces];
     [self setStatus:CXCRendererStatusInvalidated];
 }
 
@@ -266,6 +276,16 @@
 }
 
 - (void)cleanupCelestia {
+}
+
+- (void)cleanupSurfaces {
+    for (CXCRendererSurface *surface in _surfaces) {
+        GLuint framebuffer = surface.glFramebuffer;
+        glDeleteFramebuffers(1, &framebuffer);
+        GLuint textures[] = { surface.glIntermediateColorTexture };
+        glDeleteTextures(1, textures);
+    }
+    _surfaces = [NSMutableArray array];
 }
 
 - (void)runWorldTrackingARSession {
@@ -325,10 +345,8 @@
     cp_frame_end_submission(frame);
 
     for (CXCRendererSurface *resource in resources) {
-        GLuint framebuffer = resource.glFramebuffer;
-        glDeleteFramebuffers(1, &framebuffer);
-        GLuint textures[] = { resource.glColorTexture, resource.glDepthTexture, resource.glIntermediateColorTexture };
-        glDeleteTextures(3, textures);
+        GLuint textures[] = { resource.glColorTexture, resource.glDepthTexture };
+        glDeleteTextures(2, textures);
         eglDestroyImageKHR(_renderResource.eglDisplay, resource.eglColorImage);
         eglDestroyImageKHR(_renderResource.eglDisplay, resource.eglDepthImage);
     }
@@ -345,6 +363,26 @@
     for (void (^task)(CelestiaAppCore *) in taskCopy)
         task(_appCore);
 
+    for (CXCInputEvent *event in eventCopy)
+    {
+        CXCInputEventPhase currentPhase = event.phase;
+        SPVector3D direction = event.selectionRay.direction;
+        simd_float3 ray = simd_make_float3((float)direction.x, (float)direction.y, (float)direction.z);
+        switch (currentPhase)
+        {
+        case CXCInputEventPhaseActive:
+            if (_previousEventPhase == CXCInputEventPhaseEnded || _previousEventPhase == CXCInputEventPhaseCancelled)
+                [_appCore touchDown3D:ray];
+            else
+                [_appCore touchMove3D:ray];
+            break;
+        case CXCInputEventPhaseEnded:
+        case CXCInputEventPhaseCancelled:
+            [_appCore touchUp3D:ray];
+        }
+        _previousEventPhase = currentPhase;
+    }
+
     [_appCore tick];
 
     CelestiaSelection *newSelection = [[_appCore simulation] selection];
@@ -358,13 +396,15 @@
     ar_pose_t arPose = cp_drawable_get_ar_pose(drawable);
     simd_float4x4 poseTransform = ar_pose_get_origin_from_device_transform(arPose);
 
-    id<MTLCommandBuffer> commandBuffer = [_renderResource.commandQueue commandBuffer];
-
     [[_appCore simulation] setObserverTransform:simd_inverse(poseTransform)];
 
     NSMutableArray *resources = [NSMutableArray array];
     for (int i = 0; i < cp_drawable_get_view_count(drawable); ++i) {
-        CXCRendererSurface *renderSurface = [self createRenderPassDescriptorForDrawable:drawable index:i];
+        CXCRendererSurface *previous = nil;
+        if ([_surfaces count] > i)
+            previous = [_surfaces objectAtIndex:i];
+        CXCRendererSurface *renderSurface = [self createRenderPassDescriptorForDrawable:drawable index:i previousSurface:previous];
+
         cp_view_t view = cp_drawable_get_view(drawable, i);
         simd_float4 tangents = cp_view_get_tangents(view);
         simd_float2 depthRange = cp_drawable_get_depth_range(drawable);
@@ -396,22 +436,30 @@
 
         glFlush();
 
+        if (previous == nil)
+            [_surfaces addObject:renderSurface];
+
         [resources addObject:renderSurface];
     }
 
     glFinish();
 
+    // Create a dummy commandBuffer
+    id<MTLCommandBuffer> commandBuffer = [_renderResource.commandQueue commandBuffer];
     cp_drawable_encode_present(drawable, commandBuffer);
     [commandBuffer commit];
 
     return [resources copy];
 }
 
-- (CXCRendererSurface *)createRenderPassDescriptorForDrawable:(cp_drawable_t)drawable index:(size_t)index {
+- (CXCRendererSurface *)createRenderPassDescriptorForDrawable:(cp_drawable_t)drawable index:(size_t)index previousSurface:(CXCRendererSurface *)previousSurface {
     MTLRenderPassDescriptor *passDescriptor = [[MTLRenderPassDescriptor alloc] init];
 
     id<MTLTexture> colorTexture = cp_drawable_get_color_texture(drawable, index);
     id<MTLTexture> depthTexture = cp_drawable_get_depth_texture(drawable, index);
+
+    GLsizei width = (GLsizei)colorTexture.width;
+    GLsizei height = (GLsizei)colorTexture.height;
 
     passDescriptor.colorAttachments[0].texture = colorTexture;
     passDescriptor.colorAttachments[0].storeAction = MTLStoreActionStore;
@@ -421,8 +469,6 @@
 
     passDescriptor.renderTargetArrayLength = cp_drawable_get_view_count(drawable);
     passDescriptor.rasterizationRateMap = cp_drawable_get_rasterization_rate_map(drawable, index);
-
-    eglMakeCurrent(_renderResource.eglDisplay, EGL_NO_SURFACE, EGL_NO_SURFACE, _renderResource.eglContext);
 
     const EGLint emptyAttributes[] = { EGL_NONE };
     EGLImageKHR eglColorImage = eglCreateImageKHR(_renderResource.eglDisplay, EGL_NO_CONTEXT, EGL_METAL_TEXTURE_ANGLE, (__bridge EGLClientBuffer)colorTexture, emptyAttributes);
@@ -446,22 +492,45 @@
     glEGLImageTargetTexture2DOES(GL_TEXTURE_2D, eglDepthImage);
 
     GLuint glIntermediateColorTexture;
-    glGenTextures(1, &glIntermediateColorTexture);
-    glBindTexture(GL_TEXTURE_2D, glIntermediateColorTexture);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, (GLsizei)colorTexture.width, (GLsizei)colorTexture.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    if (previousSurface == nil) {
+        glGenTextures(1, &glIntermediateColorTexture);
+        glBindTexture(GL_TEXTURE_2D, glIntermediateColorTexture);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    } else {
+        glIntermediateColorTexture = previousSurface.glIntermediateColorTexture;
+        if (previousSurface.width != width || previousSurface.height != height) {
+            glBindTexture(GL_TEXTURE_2D, glIntermediateColorTexture);
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+        }
+    }
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     GLuint glFramebuffer;
-    glGenFramebuffers(1, &glFramebuffer);
+    if (previousSurface == nil) {
+        glGenFramebuffers(1, &glFramebuffer);
+    } else {
+        glFramebuffer = previousSurface.glFramebuffer;
+    }
     glBindFramebuffer(GL_FRAMEBUFFER, glFramebuffer);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, glIntermediateColorTexture, 0);
     glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, glDepthTexture, 0);
-    glBindTexture(GL_TEXTURE_2D, 0);
 
-    return [[CXCRendererSurface alloc] initWithRenderPassDescriptor:passDescriptor eglColorImage:eglColorImage eglDepthImage:eglDepthImage glColorTexture:glColorTexture glDepthTexture:glDepthTexture glIntermediateColorTexture:glIntermediateColorTexture glFramebuffer:glFramebuffer width:(GLint)colorTexture.width height:(GLint)colorTexture.height];
+    if (previousSurface == nil) {
+        return [[CXCRendererSurface alloc] initWithRenderPassDescriptor:passDescriptor eglColorImage:eglColorImage eglDepthImage:eglDepthImage glColorTexture:glColorTexture glDepthTexture:glDepthTexture glIntermediateColorTexture:glIntermediateColorTexture glFramebuffer:glFramebuffer width:width height:height];
+    } else {
+        previousSurface.renderPassDescriptor = passDescriptor;
+        previousSurface.eglColorImage = eglColorImage;
+        previousSurface.eglDepthImage = eglDepthImage;
+        previousSurface.glColorTexture = glColorTexture;
+        previousSurface.glDepthTexture = glDepthTexture;
+        previousSurface.width = width;
+        previousSurface.height = height;
+        return previousSurface;
+    }
 }
 
 @end
