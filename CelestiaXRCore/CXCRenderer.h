@@ -16,6 +16,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@class CXCFontCollection;
 @class CXCInputEvent;
 
 typedef NS_ENUM(NSUInteger, CXCRendererStatus) {
@@ -33,11 +34,12 @@ NS_SWIFT_NAME(Renderer)
 @property (nullable) void (^selectionUpdater)(CelestiaSelection *);
 @property (nullable) void (^statusUpdater)(CXCRendererStatus);
 @property (nullable) void (^fileNameUpdater)(NSString *);
+@property (nullable) void (^messageUpdater)(NSString *);
 
 @property (readonly) CelestiaAppCore *appCore;
 
 - (instancetype)init NS_UNAVAILABLE;
-- (instancetype)initWithResourceFolderPath:(NSString *)resourceFolderPath configFilePath:(NSString *)configFilePath userDefaultsPath:(nullable NSString *)userDefaultsPath;
+- (instancetype)initWithResourceFolderPath:(NSString *)resourceFolderPath configFilePath:(NSString *)configFilePath userDefaultsPath:(nullable NSString *)userDefaultsPath defaultFonts:(CXCFontCollection *)defaultFonts otherFonts:(NSDictionary<NSString *, CXCFontCollection *> *)otherFonts;
 - (instancetype)initRenderer:(CXCRenderer *)renderer;
 
 - (void)enqueueTask:(void (^)(CelestiaAppCore *))task;

@@ -54,6 +54,8 @@ struct StartUpView: View {
                     dismissWindow(id: "InfoWindow")
                 }
             }
+            Text(renderer.message)
+                .font(.largeTitle)
         }
     }
 

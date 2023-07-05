@@ -25,8 +25,52 @@ struct MetalLayerConfiguration: CompositorLayerConfiguration {
 
 @main
 struct CelestiaXRApp: App {
-    private var browserItemStore = BrowserItemStore()
-    private var renderer = XRRenderer(renderer: Renderer(resourceFolderPath: Bundle.main.path(forResource: "CelestiaResources", ofType: nil)!, configFilePath: "celestia.cfg", userDefaultsPath: Bundle.main.path(forResource: "defaults", ofType: "plist")))
+    private let browserItemStore = BrowserItemStore()
+    private let renderer: XRRenderer = {
+        let resourceFolderPath = Bundle.main.path(forResource: "CelestiaResources", ofType: nil)!
+        let defaultConfigPlistPath = Bundle.main.path(forResource: "defaults", ofType: "plist")
+        let fontDirectoryPath = Bundle.main.url(forResource: "Fonts", withExtension: nil)!
+        let defaultFonts = FontCollection(
+            mainFont: Font(path: fontDirectoryPath.appending(component: "NotoSans-Regular.ttf").path(), index: 0, size: 9),
+            titleFont: Font(path: fontDirectoryPath.appending(component: "NotoSans-Bold.ttf").path(), index: 0, size: 15),
+            normalRenderFont: Font(path: fontDirectoryPath.appending(component: "NotoSans-Regular.ttf").path(), index: 0, size: 9),
+            largeRenderFont: Font(path: fontDirectoryPath.appending(component: "NotoSans-Bold.ttf").path(), index: 0, size: 15)
+        )
+        let otherFonts = [
+            "ar": FontCollection(
+                mainFont: Font(path: fontDirectoryPath.appending(component: "NotoSansArabic-Regular.ttf").path(), index: 0, size: 9),
+                titleFont: Font(path: fontDirectoryPath.appending(component: "NotoSansArabic-Bold.ttf").path(), index: 0, size: 15),
+                normalRenderFont: Font(path: fontDirectoryPath.appending(component: "NotoSansArabic-Regular.ttf").path(), index: 0, size: 9),
+                largeRenderFont: Font(path: fontDirectoryPath.appending(component: "NotoSansArabic-Bold.ttf").path(), index: 0, size: 15)
+            ),
+            "ja": FontCollection(
+                mainFont: Font(path: fontDirectoryPath.appending(component: "NotoSansCJK-Regular.ttc").path(), index: 0, size: 9),
+                titleFont: Font(path: fontDirectoryPath.appending(component: "NotoSansCJK-Bold.ttc").path(), index: 0, size: 15),
+                normalRenderFont: Font(path: fontDirectoryPath.appending(component: "NotoSansCJK-Regular.ttc").path(), index: 0, size: 9),
+                largeRenderFont: Font(path: fontDirectoryPath.appending(component: "NotoSansCJK-Bold.ttc").path(), index: 0, size: 15)
+            ),
+            "ko": FontCollection(
+                mainFont: Font(path: fontDirectoryPath.appending(component: "NotoSansCJK-Regular.ttc").path(), index: 1, size: 9),
+                titleFont: Font(path: fontDirectoryPath.appending(component: "NotoSansCJK-Bold.ttc").path(), index: 1, size: 15),
+                normalRenderFont: Font(path: fontDirectoryPath.appending(component: "NotoSansCJK-Regular.ttc").path(), index: 1, size: 9),
+                largeRenderFont: Font(path: fontDirectoryPath.appending(component: "NotoSansCJK-Bold.ttc").path(), index: 1, size: 15)
+            ),
+            "zh_CN": FontCollection(
+                mainFont: Font(path: fontDirectoryPath.appending(component: "NotoSansCJK-Regular.ttc").path(), index: 2, size: 9),
+                titleFont: Font(path: fontDirectoryPath.appending(component: "NotoSansCJK-Bold.ttc").path(), index: 2, size: 15),
+                normalRenderFont: Font(path: fontDirectoryPath.appending(component: "NotoSansCJK-Regular.ttc").path(), index: 2, size: 9),
+                largeRenderFont: Font(path: fontDirectoryPath.appending(component: "NotoSansCJK-Bold.ttc").path(), index: 2, size: 15)
+            ),
+            "zh_TW": FontCollection(
+                mainFont: Font(path: fontDirectoryPath.appending(component: "NotoSansCJK-Regular.ttc").path(), index: 3, size: 9),
+                titleFont: Font(path: fontDirectoryPath.appending(component: "NotoSansCJK-Bold.ttc").path(), index: 3, size: 15),
+                normalRenderFont: Font(path: fontDirectoryPath.appending(component: "NotoSansCJK-Regular.ttc").path(), index: 3, size: 9),
+                largeRenderFont: Font(path: fontDirectoryPath.appending(component: "NotoSansCJK-Bold.ttc").path(), index: 3, size: 15)
+            )
+        ]
+
+        return XRRenderer(renderer: Renderer(resourceFolderPath: resourceFolderPath, configFilePath: "celestia.cfg", userDefaultsPath:defaultConfigPlistPath, defaultFonts: defaultFonts, otherFonts: otherFonts))
+    }()
 
     var body: some Scene {
         WindowGroup {

@@ -24,12 +24,14 @@ class XRRenderer: ObservableObject {
     @Published var rendererStatus: RendererStatus
     @Published var currentFileName: String?
     @Published var selection: Selection
+    @Published var message: String
 
     init(renderer: Renderer) {
         self.renderer = renderer
         rendererStatus = .none
         currentFileName = nil
         selection = Selection()
+        message = ""
 
         registerListeners()
     }
@@ -53,6 +55,13 @@ class XRRenderer: ObservableObject {
             guard let self else { return }
             Task.detached { @MainActor in
                 self.selection = newSelection
+            }
+        }
+
+        renderer.messageUpdater = { [weak self] message in
+            guard let self else { return }
+            Task.detached { @MainActor in
+                self.message = message
             }
         }
     }

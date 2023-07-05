@@ -16,6 +16,8 @@
 #import <CelestiaCore/CelestiaCore.h>
 
 #import "CXCRenderer.h"
+#import "CXCFont.h"
+#import "CXCFontCollection.h"
 #import "CXCInputEvent.h"
 #import "CXCRenderResource.h"
 #import "CXCRenderSurface.h"
@@ -27,6 +29,7 @@
     void (^_selectionUpdater)(CelestiaSelection *);
     void (^_statusUpdater)(CXCRendererStatus);
     void (^_fileNameUpdater)(NSString *);
+    void (^_messageUpdater)(NSString *);
 }
 
 @property os_unfair_lock resourceLock;
@@ -46,6 +49,7 @@
 @property dispatch_semaphore_t renderSemaphore;
 
 @property CelestiaSelection *selection;
+@property NSString *message;
 @property NSMutableArray<void (^)(CelestiaAppCore *)> *tasks;
 
 @property BOOL inheritedFromPreviousRenderer;
@@ -55,11 +59,13 @@
 
 @property NSMutableArray<CXCRendererSurface *> *surfaces;
 
+@property CXCFontCollection *defaultFonts;
+@property NSDictionary<NSString *, CXCFontCollection *> *otherFonts;
 @end
 
 @implementation CXCRenderer
 
-- (instancetype)initWithResourceFolderPath:(NSString *)resourceFolderPath configFilePath:(NSString *)configFilePath userDefaultsPath:(NSString *)userDefaultsPath {
+- (instancetype)initWithResourceFolderPath:(NSString *)resourceFolderPath configFilePath:(NSString *)configFilePath userDefaultsPath:(NSString *)userDefaultsPath defaultFonts:(CXCFontCollection *)defaultFonts otherFonts:(NSDictionary<NSString *, CXCFontCollection *> *)otherFonts {
     self = [super init];
     if (self) {
         _renderResource = [[CXCRenderResource alloc] init];
@@ -73,6 +79,7 @@
 
         _appCore = [[CelestiaAppCore alloc] init];
         _selection = [[CelestiaSelection alloc] init];
+        _message = @"";
 
         _resourceFolderPath = resourceFolderPath;
         _configFilePath = configFilePath;
@@ -87,6 +94,9 @@
         _currentEvents = [NSMutableArray array];
         _previousEventPhase = CXCInputEventPhaseEnded;
         _surfaces = [NSMutableArray array];
+
+        _defaultFonts = defaultFonts;
+        _otherFonts = [otherFonts copy];
     }
     return self;
 }
@@ -104,6 +114,8 @@
         _layerRenderer = NULL;
 
         _appCore = renderer.appCore;
+        _selection = renderer.selection;
+        _message = renderer.message;
 
         _resourceFolderPath = renderer.resourceFolderPath;
         _configFilePath = renderer.configFilePath;
@@ -118,6 +130,9 @@
         _currentEvents = [NSMutableArray array];
         _previousEventPhase = CXCInputEventPhaseEnded;
         _surfaces = [NSMutableArray array];
+
+        _defaultFonts = renderer.defaultFonts;
+        _otherFonts = [renderer.otherFonts copy];
     }
     return self;
 }
@@ -161,6 +176,19 @@
 - (void)setFileNameUpdater:(void (^)(NSString * _Nonnull))fileNameUpdater {
     os_unfair_lock_lock(&_resourceLock);
     _fileNameUpdater = fileNameUpdater;
+    os_unfair_lock_unlock(&_resourceLock);
+}
+
+- (void (^)(NSString * _Nonnull))messageUpdater {
+    os_unfair_lock_lock(&_resourceLock);
+    void (^updater)(NSString * _Nonnull) = _messageUpdater;
+    os_unfair_lock_unlock(&_resourceLock);
+    return updater;
+}
+
+- (void)setMessageUpdater:(void (^)(NSString * _Nonnull))messageUpdater {
+    os_unfair_lock_lock(&_resourceLock);
+    _messageUpdater = messageUpdater;
     os_unfair_lock_unlock(&_resourceLock);
 }
 
@@ -258,6 +286,7 @@
         [self cleanupCelestia];
         return NO;
     }
+    [CelestiaAppCore setLocaleDirectory:[_resourceFolderPath stringByAppendingPathComponent:@"locale"]];
     if (![_appCore startSimulationWithConfigFileName:_configFilePath extraDirectories:nil progressReporter:^(NSString * _Nonnull progress) {
         void (^updater)(NSString * _Nonnull) = [self fileNameUpdater];
         if (updater != nil)
@@ -274,11 +303,25 @@
         [fileManager changeCurrentDirectoryPath:oldCurrentDirectory];
         return NO;
     }
+
+    /* Load values from user defaults and default config */
     [_appCore loadUserDefaultsWithAppDefaultsAtPath:_userDefaultsPath];
+
+    /* Disable features that do not work well in XR */
     [_appCore setHudDetail:0];
     [_appCore disableMessages];
     [_appCore disableSelectionPointer];
+
+    /* Configure fonts */
     [_appCore clearFonts];
+    CXCFontCollection *fonts = [_otherFonts objectForKey:[CelestiaAppCore language]];
+    if (fonts == nil)
+        fonts = _defaultFonts;
+    [_appCore setFont:fonts.mainFont.path collectionIndex:fonts.mainFont.index fontSize:fonts.mainFont.size];
+    [_appCore setTitleFont:fonts.titleFont.path collectionIndex:fonts.titleFont.index fontSize:fonts.titleFont.size];
+    [_appCore setRendererFont:fonts.normalRenderFont.path collectionIndex:fonts.normalRenderFont.index fontSize:fonts.normalRenderFont.size fontStyle:CelestiaRendererFontStyleNormal];
+    [_appCore setRendererFont:fonts.largeRenderFont.path collectionIndex:fonts.largeRenderFont.index fontSize:fonts.largeRenderFont.size fontStyle:CelestiaRendererFontStyleLarge];
+
     [_appCore start];
     return YES;
 }
@@ -399,6 +442,13 @@
         void (^updater)(CelestiaSelection * _Nonnull) = [self selectionUpdater];
         if (updater != nil)
             updater(newSelection);
+    }
+    NSString *message = [_appCore currentMessage];
+    if (![_message isEqualToString:message]) {
+        _message = message;
+        void (^updater)(NSString * _Nonnull) = [self messageUpdater];
+        if (updater != nil)
+            updater(message);
     }
 
     ar_pose_t arPose = cp_drawable_get_ar_pose(drawable);

@@ -148,6 +148,10 @@
 		EABF794A2538A86500F2460C /* ResourceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF79492538A86500F2460C /* ResourceManager.swift */; };
 		EAC2AEDC2A556783000E9CF0 /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = EA28CA5124A2F399004B011E /* Fonts */; };
 		EAC2AEDD2A556787000E9CF0 /* defaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 97143F1623FFAEFD00F35D87 /* defaults.plist */; };
+		EAC2AEE02A557C6E000E9CF0 /* CXCFont.h in Headers */ = {isa = PBXBuildFile; fileRef = EAC2AEDE2A557C6E000E9CF0 /* CXCFont.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		EAC2AEE12A557C6E000E9CF0 /* CXCFont.m in Sources */ = {isa = PBXBuildFile; fileRef = EAC2AEDF2A557C6E000E9CF0 /* CXCFont.m */; };
+		EAC2AEE42A557C79000E9CF0 /* CXCFontCollection.h in Headers */ = {isa = PBXBuildFile; fileRef = EAC2AEE22A557C79000E9CF0 /* CXCFontCollection.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		EAC2AEE52A557C79000E9CF0 /* CXCFontCollection.m in Sources */ = {isa = PBXBuildFile; fileRef = EAC2AEE32A557C79000E9CF0 /* CXCFontCollection.m */; };
 		EAC457062A52C10C00F79BA3 /* BrowserItemStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC457052A52C10C00F79BA3 /* BrowserItemStore.swift */; };
 		EAC457082A52C2E000F79BA3 /* SubsystemBrowserWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC457072A52C2E000F79BA3 /* SubsystemBrowserWindow.swift */; };
 		EAC457192A5303F000F79BA3 /* CXCInputEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = EAC457172A5303F000F79BA3 /* CXCInputEvent.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -424,6 +428,10 @@
 		EABF792B25389B3100F2460C /* ResourceItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceItem.swift; sourceTree = "<group>"; };
 		EABF793B2538A1C100F2460C /* ResourceItemViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceItemViewController.swift; sourceTree = "<group>"; };
 		EABF79492538A86500F2460C /* ResourceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceManager.swift; sourceTree = "<group>"; };
+		EAC2AEDE2A557C6E000E9CF0 /* CXCFont.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CXCFont.h; sourceTree = "<group>"; };
+		EAC2AEDF2A557C6E000E9CF0 /* CXCFont.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CXCFont.m; sourceTree = "<group>"; };
+		EAC2AEE22A557C79000E9CF0 /* CXCFontCollection.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CXCFontCollection.h; sourceTree = "<group>"; };
+		EAC2AEE32A557C79000E9CF0 /* CXCFontCollection.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CXCFontCollection.m; sourceTree = "<group>"; };
 		EAC457052A52C10C00F79BA3 /* BrowserItemStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BrowserItemStore.swift; sourceTree = "<group>"; };
 		EAC457072A52C2E000F79BA3 /* SubsystemBrowserWindow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubsystemBrowserWindow.swift; sourceTree = "<group>"; };
 		EAC457172A5303F000F79BA3 /* CXCInputEvent.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CXCInputEvent.h; sourceTree = "<group>"; };
@@ -923,6 +931,10 @@
 				EA246B8D2A50138300E1A1AB /* CXCRenderSurface.m */,
 				EAC457172A5303F000F79BA3 /* CXCInputEvent.h */,
 				EAC457182A5303F000F79BA3 /* CXCInputEvent.m */,
+				EAC2AEDE2A557C6E000E9CF0 /* CXCFont.h */,
+				EAC2AEDF2A557C6E000E9CF0 /* CXCFont.m */,
+				EAC2AEE22A557C79000E9CF0 /* CXCFontCollection.h */,
+				EAC2AEE32A557C79000E9CF0 /* CXCFontCollection.m */,
 			);
 			path = CelestiaXRCore;
 			sourceTree = "<group>";
@@ -1045,8 +1057,10 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EAC2AEE42A557C79000E9CF0 /* CXCFontCollection.h in Headers */,
 				EAC457192A5303F000F79BA3 /* CXCInputEvent.h in Headers */,
 				EA8680BF2A46B60D003B5D39 /* CXCRenderer.h in Headers */,
+				EAC2AEE02A557C6E000E9CF0 /* CXCFont.h in Headers */,
 				EA246B8E2A50138300E1A1AB /* CXCRenderSurface.h in Headers */,
 				EA8680AD2A46B497003B5D39 /* CelestiaXRCore.h in Headers */,
 				EA246B8A2A50134500E1A1AB /* CXCRenderResource.h in Headers */,
@@ -1610,9 +1624,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				EA246B8F2A50138300E1A1AB /* CXCRenderSurface.m in Sources */,
+				EAC2AEE52A557C79000E9CF0 /* CXCFontCollection.m in Sources */,
 				EA246B8B2A50134500E1A1AB /* CXCRenderResource.m in Sources */,
 				EAC4571A2A5303F000F79BA3 /* CXCInputEvent.m in Sources */,
 				EA8680BD2A46B505003B5D39 /* CXCRenderer.m in Sources */,
+				EAC2AEE12A557C6E000E9CF0 /* CXCFont.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
