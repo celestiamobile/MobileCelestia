@@ -11,7 +11,6 @@
 
 import CelestiaCore
 import CelestiaUI
-import GameController
 import UIKit
 
 enum CelestiaContinuousAction: Int {
@@ -144,7 +143,7 @@ class CelestiaInteractionController: UIViewController {
     private weak var currentShowAnimator: UIViewPropertyAnimator?
     private weak var currentHideAnimator: UIViewPropertyAnimator?
 
-    private var connectedGameController: GCController?
+    private var gameControllerManager: GameControllerManager?
 
     override func loadView() {
         let container = UIView()
@@ -183,8 +182,8 @@ class CelestiaInteractionController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        setupGestures()
-        startObservingGameControllerConnection()
+        setUpGestures()
+        setUpGameControllerManager()
 
         core.delegate = self
     }
@@ -310,7 +309,7 @@ extension CelestiaInteractionController {
         }
     }
 
-    private func setupGestures() {
+    private func setUpGestures() {
         let pan1 = PanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
         pan1.minimumNumberOfTouches = 1
         pan1.maximumNumberOfTouches = 1
@@ -706,199 +705,68 @@ extension CelestiaInteractionController {
 }
 
 private extension CelestiaInteractionController {
-    func startObservingGameControllerConnection() {
-        if #available(iOS 14.0, *), let current = GCController.current {
-            gameControllerChanged(current)
-        } else if let firstController = GCController.controllers().first {
-            gameControllerChanged(firstController)
-        }
-
-        NotificationCenter.default.addObserver(self, selector: #selector(gameControllerConnected(_:)), name: .GCControllerDidConnect, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(gameControllerDisconnected(_:)), name: .GCControllerDidDisconnect, object: nil)
-    }
-
-    @objc func gameControllerConnected(_ notification: Notification) {
-        guard let controller = notification.object as? GCController else { return }
-
-        gameControllerChanged(controller)
-    }
-
-    private func gameControllerChanged(_ controller: GCController) {
-        var buttonA: GCDeviceButtonInput?
-        var buttonB: GCDeviceButtonInput?
-        var buttonX: GCDeviceButtonInput?
-        var buttonY: GCDeviceButtonInput?
-        var leftThumbstick: GCControllerDirectionPad?
-        var rightThumbstick: GCControllerDirectionPad?
-        var leftTrigger: GCDeviceButtonInput?
-        var rightTrigger: GCDeviceButtonInput?
-        var leftBumper: GCDeviceButtonInput?
-        var rightBumper: GCDeviceButtonInput?
-        var dpadUp: GCDeviceButtonInput?
-        var dpadDown: GCDeviceButtonInput?
-        var dpadLeft: GCDeviceButtonInput?
-        var dpadRight: GCDeviceButtonInput?
-        var buttonMenu: GCDeviceButtonInput?
-
-        if let extendedGamepad = controller.extendedGamepad {
-            buttonA = extendedGamepad.buttonA
-            buttonB = extendedGamepad.buttonB
-            buttonX = extendedGamepad.buttonX
-            buttonY = extendedGamepad.buttonY
-            leftThumbstick = extendedGamepad.leftThumbstick
-            rightThumbstick = extendedGamepad.rightThumbstick
-            leftTrigger = extendedGamepad.leftTrigger
-            rightTrigger = extendedGamepad.rightTrigger
-            leftBumper = extendedGamepad.leftShoulder
-            rightBumper = extendedGamepad.rightShoulder
-            dpadUp = extendedGamepad.dpad.up
-            dpadDown = extendedGamepad.dpad.down
-            dpadLeft = extendedGamepad.dpad.left
-            dpadRight = extendedGamepad.dpad.right
-            buttonMenu = extendedGamepad.buttonMenu
-        } else if let microGamepad = controller.microGamepad {
-            buttonA = microGamepad.buttonA
-            buttonX = microGamepad.buttonX
-            dpadUp = microGamepad.dpad.up
-            dpadDown = microGamepad.dpad.down
-            dpadLeft = microGamepad.dpad.left
-            dpadRight = microGamepad.dpad.right
-            buttonMenu = microGamepad.buttonMenu
-        }
-
-        let buttonStateChangedHandler = { [weak self] (key: UserDefaultsKey, defaultValue: GameControllerAction, pressed: Bool) in
-            guard let self = self else { return }
-            guard self.delegate?.celestiaInteractionControllerCanAcceptKeyEvents(self) == true else {
-                return
-            }
-            let value: Int = self.userDefaults[key] ?? defaultValue.rawValue
-            guard let action = GameControllerAction(rawValue: value) else { return }
-
-            switch action {
-            case .noop:
-                break
-            case .moveFaster:
-                self.executor.run { pressed ? $0.joystickButtonDown(.button2) : $0.joystickButtonUp(.button2) }
-            case .moveSlower:
-                self.executor.run { pressed ? $0.joystickButtonDown(.button1) : $0.joystickButtonUp(.button1) }
-            case .stopSpeed:
-                if !pressed {
-                    self.executor.run { $0.charEnter(115) }
+    private func setUpGameControllerManager() {
+        gameControllerManager = GameControllerManager(
+            executor: executor,
+            canAcceptEvents: { [weak self] in
+                guard let self else { return false }
+                return self.delegate?.celestiaInteractionControllerCanAcceptKeyEvents(self) ?? false
+            },
+            actionRemapper: { [weak self] button in
+                guard let self else { return nil }
+                guard let remapped: Int = self.userDefaults[button.userDefaultsKey] else { return nil }
+                return GameControllerAction(rawValue: remapped)
+            },
+            axisInversion: { [weak self] axis in
+                guard let self else { return false }
+                switch axis {
+                case .X:
+                    return self.userDefaults[.gameControllerInvertX] == true
+                case .Y:
+                    return self.userDefaults[.gameControllerInvertY] == true
                 }
-            case .reverseSpeed:
-                if !pressed {
-                    self.executor.run { $0.charEnter(113) }
-                }
-            case .reverseOrientation:
-                if !pressed {
-                    self.executor.run { $0.simulation.reverseObserverOrientation() }
-                }
-            case .tapCenter:
-                self.executor.run { core in
-                    let size = core.size
-                    let center = CGPoint(x: size.width / 2, y: size.height / 2)
-                    pressed ? core.mouseButtonDown(at: center, modifiers: 0, with: .left) : core.mouseButtonUp(at: center, modifiers: 0, with: .left)
-                }
-            case .goTo:
-                if !pressed {
-                    self.executor.run { $0.charEnter(103) }
-                }
-            case .esc:
-                if !pressed {
-                    self.executor.run { $0.charEnter(27) }
-                }
-            case .pitchUp:
-                self.executor.run { pressed ? $0.keyDown(26) : $0.keyUp(26) }
-            case .pitchDown:
-                self.executor.run { pressed ? $0.keyDown(32) : $0.keyUp(32) }
-            case .yawLeft:
-                self.executor.run { pressed ? $0.keyDown(28) : $0.keyUp(28) }
-            case .yawRight:
-                self.executor.run { pressed ? $0.keyDown(30) : $0.keyUp(30) }
-            case .rollLeft:
-                self.executor.run { pressed ? $0.keyDown(31) : $0.keyUp(31) }
-            case .rollRight:
-                self.executor.run { pressed ? $0.keyDown(33) : $0.keyUp(33) }
-            }
-        }
-        let thumbstickChangedHandler = { [weak self] (xValue: Float, yValue: Float) in
-            guard let self = self else { return }
-            guard self.delegate?.celestiaInteractionControllerCanAcceptKeyEvents(self) == true else {
-                return
-            }
-            let shouldInvertX = self.userDefaults[.gameControllerInvertX] == true
-            let shouldInvertY = self.userDefaults[.gameControllerInvertY] == true
-            self.executor.run { core in
-                core.joystickAxis(.X, amount: shouldInvertX ? -xValue : xValue)
-                core.joystickAxis(.Y, amount: shouldInvertY ? -yValue : yValue)
-            }
-        }
-        buttonMenu?.valueChangedHandler = { [weak self] _, _, pressed in
-            guard let self = self else { return }
-            guard self.delegate?.celestiaInteractionControllerCanAcceptKeyEvents(self) == true else {
-                return
-            }
-            if !pressed {
+            },
+            menuButtonHandler: { [weak self] in
+                guard let self else { return }
                 self.delegate?.celestiaInteractionControllerRequestShowActionMenu(self)
             }
-        }
-        leftThumbstick?.valueChangedHandler = { _, xValue, yValue in
-            thumbstickChangedHandler(xValue, yValue)
-        }
-        rightThumbstick?.valueChangedHandler = { _, xValue, yValue in
-            thumbstickChangedHandler(xValue, yValue)
-        }
-        buttonA?.valueChangedHandler = { _, _, pressed in
-            buttonStateChangedHandler(.gameControllerRemapA, .moveSlower, pressed)
-        }
-        buttonB?.valueChangedHandler = { _, _, pressed in
-            buttonStateChangedHandler(.gameControllerRemapB, .noop, pressed)
-        }
-        buttonX?.valueChangedHandler = { _, _, pressed in
-            buttonStateChangedHandler(.gameControllerRemapX, .moveFaster, pressed)
-        }
-        buttonY?.valueChangedHandler = { _, _, pressed in
-            buttonStateChangedHandler(.gameControllerRemapY, .noop, pressed)
-        }
-        leftTrigger?.valueChangedHandler = { _, _, pressed in
-            buttonStateChangedHandler(.gameControllerRemapLT, .rollLeft, pressed)
-        }
-        rightTrigger?.valueChangedHandler = { _, _, pressed in
-            buttonStateChangedHandler(.gameControllerRemapRT, .rollRight, pressed)
-        }
-        leftBumper?.valueChangedHandler = { _, _, pressed in
-            buttonStateChangedHandler(.gameControllerRemapLB, .noop, pressed)
-        }
-        rightBumper?.valueChangedHandler = { _, _, pressed in
-            buttonStateChangedHandler(.gameControllerRemapRB, .noop, pressed)
-        }
-        dpadLeft?.valueChangedHandler = { _, _, pressed in
-            buttonStateChangedHandler(.gameControllerRemapDpadLeft, .rollLeft, pressed)
-        }
-        dpadRight?.valueChangedHandler = { _, _, pressed in
-            buttonStateChangedHandler(.gameControllerRemapDpadRight, .rollRight, pressed)
-        }
-        dpadUp?.valueChangedHandler = { _, _, pressed in
-            buttonStateChangedHandler(.gameControllerRemapDpadUp, .pitchUp, pressed)
-        }
-        dpadDown?.valueChangedHandler = { _, _, pressed in
-            buttonStateChangedHandler(.gameControllerRemapDpadDown, .pitchDown, pressed)
-        }
-
-        connectedGameController = controller
-    }
-
-    @objc func gameControllerDisconnected(_ notification: Notification) {
-        guard let controller = notification.object as? GCController else { return }
-
-        if connectedGameController == controller {
-            connectedGameController = nil
-        }
+        )
     }
 }
 
 private extension CGPoint {
     func scale(by factor: CGFloat) -> CGPoint {
         return applying(CGAffineTransform(scaleX: factor, y: factor))
+    }
+}
+
+private extension GameControllerButton {
+    var userDefaultsKey: UserDefaultsKey {
+        switch self {
+        case .A:
+            return .gameControllerRemapA
+        case .B:
+            return .gameControllerRemapB
+        case .X:
+            return .gameControllerRemapX
+        case .Y:
+            return .gameControllerRemapY
+        case .LT:
+            return .gameControllerRemapLT
+        case .RT:
+            return .gameControllerRemapRT
+        case .LB:
+            return .gameControllerRemapLB
+        case .RB:
+            return .gameControllerRemapRB
+        case .dpadLeft:
+            return .gameControllerRemapDpadLeft
+        case .dpadRight:
+            return .gameControllerRemapDpadRight
+        case .dpadUp:
+            return .gameControllerRemapDpadUp
+        case .dpadDown:
+            return .gameControllerRemapDpadDown
+        }
     }
 }

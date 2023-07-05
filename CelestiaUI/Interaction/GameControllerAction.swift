@@ -10,10 +10,9 @@
 //
 
 import CelestiaCore
-import CelestiaUI
 import Foundation
 
-enum GameControllerAction: Int, CaseIterable {
+public enum GameControllerAction: Int, CaseIterable {
     case noop
     case moveFaster
     case moveSlower
@@ -30,7 +29,7 @@ enum GameControllerAction: Int, CaseIterable {
     case rollLeft
     case rollRight
 
-    var name: String {
+    public var name: String {
         switch self {
         case .noop:
             return CelestiaString("None", comment: "")
