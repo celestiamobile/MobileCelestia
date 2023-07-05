@@ -131,6 +131,7 @@
 		EADE7FBB252B517600D4174F /* CelestiaDisplayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE7FBA252B517600D4174F /* CelestiaDisplayController.swift */; };
 		EADE7FC0252B54A400D4174F /* CelestiaInteractionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE7FBF252B54A400D4174F /* CelestiaInteractionController.swift */; };
 		EAE6AC0F27A438E400F953DF /* CommonWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE6AC0E27A438E400F953DF /* CommonWebViewController.swift */; };
+		EAE92A5C2A558B4400BFE06E /* AsyncProviderExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE92A5B2A558B4400BFE06E /* AsyncProviderExecutor.swift */; };
 		EAFF95F428885A64009C2FFD /* FallbackWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAFF95F328885A64009C2FFD /* FallbackWebViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -338,6 +339,7 @@
 		EADE7FBA252B517600D4174F /* CelestiaDisplayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaDisplayController.swift; sourceTree = "<group>"; };
 		EADE7FBF252B54A400D4174F /* CelestiaInteractionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaInteractionController.swift; sourceTree = "<group>"; };
 		EAE6AC0E27A438E400F953DF /* CommonWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonWebViewController.swift; sourceTree = "<group>"; };
+		EAE92A5B2A558B4400BFE06E /* AsyncProviderExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncProviderExecutor.swift; sourceTree = "<group>"; };
 		EAF4851325A2B0E600F0E9F9 /* bg */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = bg; path = bg.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EAF48514249B2C4700E5B817 /* SubsystemBrowserCoordinatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubsystemBrowserCoordinatorViewController.swift; sourceTree = "<group>"; };
 		EAF4851F249B5C2500E5B817 /* StandardButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandardButton.swift; sourceTree = "<group>"; };
@@ -703,6 +705,7 @@
 				EA78730A296DE5CE0099AB11 /* AppCore.swift */,
 				EA787339296EB5F40099AB11 /* Selection.swift */,
 				EA50E7822A505EDF005E7D7A /* CelestiaAction.swift */,
+				EAE92A5B2A558B4400BFE06E /* AsyncProviderExecutor.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -1237,6 +1240,7 @@
 				EAB623AD2A51AA0A00063D1B /* BrowserCoordinatorController.swift in Sources */,
 				EAB623AB2A51AA0A00063D1B /* SubsystemBrowserCoordinatorViewController.swift in Sources */,
 				EAB623AF2A51AA4400063D1B /* BaseTableViewController.swift in Sources */,
+				EAE92A5C2A558B4400BFE06E /* AsyncProviderExecutor.swift in Sources */,
 				EA50E7812A505EA4005E7D7A /* Color.swift in Sources */,
 				EAB623B02A51AA7B00063D1B /* Selection.swift in Sources */,
 				EA50E7832A505EDF005E7D7A /* CelestiaAction.swift in Sources */,

@@ -12,11 +12,6 @@
 import CelestiaCore
 import UIKit
 
-public protocol AsyncProviderExecutor {
-    func run(_ task: @escaping @Sendable (AppCore) -> Void) async
-    func get<T>(_ task: @escaping @Sendable (AppCore) -> T) async -> T
-}
-
 public class BrowserContainerViewController: UIViewController {
     #if targetEnvironment(macCatalyst)
     private lazy var controller = UISplitViewController()
