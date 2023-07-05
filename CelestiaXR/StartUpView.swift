@@ -46,6 +46,21 @@ struct StartUpView: View {
             Button("Open Browser") {
                 openWindow(id: "BrowserWindow")
             }
+            Button("Open Search") {
+                openWindow(id: "MainSearch")
+            }
+            Button("Open GoTo") {
+                openWindow(id: "GoTo")
+            }
+            Button("Open Eclipse Finder") {
+                openWindow(id: "EclipseFinder")
+            }
+            Button("Open Camera Control") {
+                openWindow(id: "CameraControl")
+            }
+            Button("Open Favorite") {
+                openWindow(id: "FavoriteView")
+            }
             Button("Pause Celestia") {
                 Task {
                     isDismissingImmersiveSpace = true

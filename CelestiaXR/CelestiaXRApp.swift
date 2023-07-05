@@ -98,6 +98,31 @@ struct CelestiaXRApp: App {
                 .environmentObject(browserItemStore)
         }
 
+        WindowGroup(id: "MainSearch") {
+            MainSearch()
+                .environmentObject(renderer)
+        }
+
+        WindowGroup(id: "GoTo") {
+            GoToView()
+                .environmentObject(renderer)
+        }
+
+        WindowGroup(id: "EclipseFinder") {
+            EclipseFinder()
+                .environmentObject(renderer)
+        }
+
+        WindowGroup(id: "CameraControl") {
+            CameraControlView()
+                .environmentObject(renderer)
+        }
+
+        WindowGroup(id: "FavoriteView") {
+            FavoriteView()
+                .environmentObject(renderer)
+        }
+
         ImmersiveSpace(id: "ImmersiveSpace") {
             CompositorLayer(configuration: MetalLayerConfiguration()) { layerRenderer in
                 renderer.startRendering(with: layerRenderer)
