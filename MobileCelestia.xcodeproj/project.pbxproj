@@ -93,7 +93,6 @@
 		EA787341296EB68A0099AB11 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA787340296EB68A0099AB11 /* Bundle.swift */; };
 		EA787344296EBBAC0099AB11 /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA787343296EBBAC0099AB11 /* Task.swift */; };
 		EA7BF37C27033AE40058F704 /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA7BF37B27033AE40058F704 /* GameController.framework */; };
-		EA85C8D5289BE459009ADB1C /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA85C8D3289BE459009ADB1C /* OpenGL.framework */; platformFilter = maccatalyst; };
 		EA85C8D6289BE45A009ADB1C /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA85C8D4289BE459009ADB1C /* OpenGLES.framework */; platformFilter = ios; };
 		EA85C913289E9A7D009ADB1C /* UIContentSizeCategory+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA85C912289E9A7D009ADB1C /* UIContentSizeCategory+Extension.swift */; };
 		EA85C915289E9AD2009ADB1C /* AutoSizingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA85C914289E9AD2009ADB1C /* AutoSizingView.swift */; };
@@ -274,7 +273,7 @@
 		EA1BE1562748E9DC0046074C /* DisplaySceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplaySceneDelegate.swift; sourceTree = "<group>"; };
 		EA1EF056249393BE0039F493 /* Celestia.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Celestia.entitlements; sourceTree = "<group>"; };
 		EA28CA4D24A25FE7004B011E /* BottomControlViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomControlViewController.swift; sourceTree = "<group>"; };
-		EA28CA5124A2F399004B011E /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Fonts; path = ../../../CelestiaCore/Fonts; sourceTree = "<group>"; };
+		EA28CA5124A2F399004B011E /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Fonts; path = ../../CelestiaCore/Fonts; sourceTree = "<group>"; };
 		EA374CD1263A8B320069589C /* GoToContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoToContainerViewController.swift; sourceTree = "<group>"; };
 		EA374CD9263A8B770069589C /* GoToInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoToInputViewController.swift; sourceTree = "<group>"; };
 		EA3EC553277C8EAD00936D4F /* Celestia-macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Celestia-macOS.entitlements"; sourceTree = "<group>"; };
@@ -303,7 +302,6 @@
 		EA787340296EB68A0099AB11 /* Bundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bundle.swift; sourceTree = "<group>"; };
 		EA787343296EBBAC0099AB11 /* Task.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Task.swift; sourceTree = "<group>"; };
 		EA7BF37B27033AE40058F704 /* GameController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameController.framework; path = System/Library/Frameworks/GameController.framework; sourceTree = SDKROOT; };
-		EA85C8D3289BE459009ADB1C /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX12.3.sdk/System/Library/Frameworks/OpenGL.framework; sourceTree = DEVELOPER_DIR; };
 		EA85C8D4289BE459009ADB1C /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		EA85C912289E9A7D009ADB1C /* UIContentSizeCategory+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIContentSizeCategory+Extension.swift"; sourceTree = "<group>"; };
 		EA85C914289E9AD2009ADB1C /* AutoSizingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoSizingView.swift; sourceTree = "<group>"; };
@@ -358,7 +356,6 @@
 				EA85C8D6289BE45A009ADB1C /* OpenGLES.framework in Frameworks */,
 				EA9A426F288CD80300AF3BD6 /* AudioToolbox.framework in Frameworks */,
 				EA7BF37C27033AE40058F704 /* GameController.framework in Frameworks */,
-				EA85C8D5289BE459009ADB1C /* OpenGL.framework in Frameworks */,
 				EA50E7642A505627005E7D7A /* CelestiaUI.framework in Frameworks */,
 				979D2FAF23FEB2BD005D2592 /* libz.tbd in Frameworks */,
 				979D2FAB23FEB2AA005D2592 /* libc++.tbd in Frameworks */,
@@ -524,6 +521,7 @@
 				EAC84355252C816500691943 /* CelestiaMacBridge */,
 				EA1823EB27C08D3D00E0F5E4 /* CelestiaHelper */,
 				EA50E75F2A505627005E7D7A /* CelestiaUI */,
+				973E2EF92400F9E100B0F059 /* Resources */,
 				979D2F7B23FEB1A6005D2592 /* Products */,
 				979D2FA523FEB1DD005D2592 /* Frameworks */,
 				D065056EEA0615965A87D9B4 /* Pods */,
@@ -559,7 +557,6 @@
 				977394992402A8DA00E38B82 /* Toolbar */,
 				978406E124029DA900876FD1 /* Loading */,
 				973E2EFA2400FA0300B0F059 /* Utils */,
-				973E2EF92400F9E100B0F059 /* Resources */,
 				979D2F7D23FEB1A6005D2592 /* AppDelegate.swift */,
 				978406D624028F0000876FD1 /* MainViewController.swift */,
 				EA934C8F251D90C500DD284C /* MainSceneDelegate.swift */,
@@ -596,7 +593,6 @@
 		979D2FA523FEB1DD005D2592 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				EA85C8D3289BE459009ADB1C /* OpenGL.framework */,
 				EA85C8D4289BE459009ADB1C /* OpenGLES.framework */,
 				EA9A426E288CD80200AF3BD6 /* AudioToolbox.framework */,
 				EA9A426C288CD7FE00AF3BD6 /* AVFoundation.framework */,
