@@ -41,6 +41,7 @@
 
 @property NSString *resourceFolderPath;
 @property NSString *configFilePath;
+@property NSString *userDefaultsPath;
 
 @property dispatch_semaphore_t renderSemaphore;
 
@@ -58,7 +59,7 @@
 
 @implementation CXCRenderer
 
-- (instancetype)initWithResourceFolderPath:(NSString *)resourceFolderPath configFilePath:(NSString *)configFilePath {
+- (instancetype)initWithResourceFolderPath:(NSString *)resourceFolderPath configFilePath:(NSString *)configFilePath userDefaultsPath:(NSString *)userDefaultsPath {
     self = [super init];
     if (self) {
         _renderResource = [[CXCRenderResource alloc] init];
@@ -75,6 +76,7 @@
 
         _resourceFolderPath = resourceFolderPath;
         _configFilePath = configFilePath;
+        _userDefaultsPath = userDefaultsPath;
 
         _renderStatus = CXCRendererStatusNone;
         _resourceLock = OS_UNFAIR_LOCK_INIT;
@@ -105,6 +107,7 @@
 
         _resourceFolderPath = renderer.resourceFolderPath;
         _configFilePath = renderer.configFilePath;
+        _userDefaultsPath = renderer.userDefaultsPath;
 
         _renderStatus = CXCRendererStatusNone;
         _resourceLock = OS_UNFAIR_LOCK_INIT;
@@ -271,6 +274,11 @@
         [fileManager changeCurrentDirectoryPath:oldCurrentDirectory];
         return NO;
     }
+    [_appCore loadUserDefaultsWithAppDefaultsAtPath:_userDefaultsPath];
+    [_appCore setHudDetail:0];
+    [_appCore disableMessages];
+    [_appCore disableSelectionPointer];
+    [_appCore clearFonts];
     [_appCore start];
     return YES;
 }

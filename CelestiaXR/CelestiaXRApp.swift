@@ -26,7 +26,7 @@ struct MetalLayerConfiguration: CompositorLayerConfiguration {
 @main
 struct CelestiaXRApp: App {
     private var browserItemStore = BrowserItemStore()
-    private var renderer = XRRenderer(renderer: Renderer(resourceFolderPath: Bundle.main.path(forResource: "CelestiaResources", ofType: nil)!, configFilePath: "celestia.cfg"))
+    private var renderer = XRRenderer(renderer: Renderer(resourceFolderPath: Bundle.main.path(forResource: "CelestiaResources", ofType: nil)!, configFilePath: "celestia.cfg", userDefaultsPath: Bundle.main.path(forResource: "defaults", ofType: "plist")))
 
     var body: some Scene {
         WindowGroup {

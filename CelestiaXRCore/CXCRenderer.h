@@ -37,7 +37,7 @@ NS_SWIFT_NAME(Renderer)
 @property (readonly) CelestiaAppCore *appCore;
 
 - (instancetype)init NS_UNAVAILABLE;
-- (instancetype)initWithResourceFolderPath:(NSString *)resourceFolderPath configFilePath:(NSString *)configFilePath;
+- (instancetype)initWithResourceFolderPath:(NSString *)resourceFolderPath configFilePath:(NSString *)configFilePath userDefaultsPath:(nullable NSString *)userDefaultsPath;
 - (instancetype)initRenderer:(CXCRenderer *)renderer;
 
 - (void)enqueueTask:(void (^)(CelestiaAppCore *))task;

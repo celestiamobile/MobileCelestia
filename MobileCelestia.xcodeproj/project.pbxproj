@@ -146,6 +146,8 @@
 		EABF792C25389B3100F2460C /* ResourceItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF792B25389B3100F2460C /* ResourceItem.swift */; };
 		EABF793C2538A1C100F2460C /* ResourceItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF793B2538A1C100F2460C /* ResourceItemViewController.swift */; };
 		EABF794A2538A86500F2460C /* ResourceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF79492538A86500F2460C /* ResourceManager.swift */; };
+		EAC2AEDC2A556783000E9CF0 /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = EA28CA5124A2F399004B011E /* Fonts */; };
+		EAC2AEDD2A556787000E9CF0 /* defaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 97143F1623FFAEFD00F35D87 /* defaults.plist */; };
 		EAC457062A52C10C00F79BA3 /* BrowserItemStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC457052A52C10C00F79BA3 /* BrowserItemStore.swift */; };
 		EAC457082A52C2E000F79BA3 /* SubsystemBrowserWindow.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAC457072A52C2E000F79BA3 /* SubsystemBrowserWindow.swift */; };
 		EAC457192A5303F000F79BA3 /* CXCInputEvent.h in Headers */ = {isa = PBXBuildFile; fileRef = EAC457172A5303F000F79BA3 /* CXCInputEvent.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -1313,6 +1315,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EAC2AEDD2A556787000E9CF0 /* defaults.plist in Resources */,
+				EAC2AEDC2A556783000E9CF0 /* Fonts in Resources */,
 				EA86807F2A4692DC003B5D39 /* Assets.xcassets in Resources */,
 				EA8680822A4692DC003B5D39 /* Preview Assets.xcassets in Resources */,
 			);
