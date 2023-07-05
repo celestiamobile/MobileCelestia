@@ -45,7 +45,7 @@ class ToolbarImageButton: ImageButtonView<ToolbarImageButton.Configuration> {
             button.imageView?.contentMode = .scaleAspectFit
             button.contentHorizontalAlignment = .fill
             button.contentVerticalAlignment = .fill
-            button.tintColor = .darkLabel
+            button.tintColor = .label
             return button
         }(), boundingBoxSize: CGSize(width: GlobalConstants.bottomControlViewItemDimension, height: GlobalConstants.bottomControlViewItemDimension), configurationBuilder: Configuration(image: image, accessibilityLabel: accessibilityLabel, touchDownHandler: touchDownHandler, touchUpHandler: touchUpHandler))
     }
@@ -150,10 +150,7 @@ class ToolbarImageTextButtonCell: UICollectionViewCell, ToolbarCell {
 
         override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
             UIView.animate(withDuration: Constants.highlightAnimationDuration) {
-                var color = UIColor.darkSelection
-                if #available(iOS 13.0, *) {
-                    color = color.resolvedColor(with: self.traitCollection)
-                }
+                var color = UIColor.darkSelection.resolvedColor(with: self.traitCollection)
                 self.layer.backgroundColor = color.cgColor
             }
             return true
@@ -180,7 +177,7 @@ class ToolbarImageTextButtonCell: UICollectionViewCell, ToolbarCell {
         let dimension = GlobalConstants.preferredUIElementScaling(for: traitCollection) * Constants.iconDimension
         return IconView(baseSize: CGSize(width: dimension, height: dimension)) { imageView in
             imageView.contentMode = .scaleAspectFit
-            imageView.tintColor = .darkLabel
+            imageView.tintColor = .label
         }
     }()
     private lazy var label = UILabel(textStyle: .body)
@@ -227,7 +224,7 @@ class ToolbarImageTextButtonCell: UICollectionViewCell, ToolbarCell {
             label.trailingAnchor.constraint(equalTo: bg.trailingAnchor, constant: -GlobalConstants.listItemMediumMarginHorizontal),
             label.topAnchor.constraint(greaterThanOrEqualTo: bg.topAnchor, constant: GlobalConstants.listItemMediumMarginVertical),
         ])
-        label.textColor = .darkLabel
+        label.textColor = .label
     }
 
     @objc private func touchDown(_ sender: UIButton) {
@@ -275,7 +272,7 @@ class ToolbarSeparatorCell: UICollectionViewCell {
     }
 
     private func setup() {
-        sep.backgroundColor = .darkSeparator
+        sep.backgroundColor = .separator
         sep.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(sep)
         NSLayoutConstraint.activate([

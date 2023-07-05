@@ -142,7 +142,7 @@ class MainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        view.backgroundColor = .darkBackground
+        view.backgroundColor = .systemBackground
 
         celestiaController.delegate = self
         install(celestiaController)
@@ -456,9 +456,7 @@ extension MainViewController: CelestiaControllerDelegate {
         self.setupToolbar()
         self.setupTouchBar()
         #endif
-        if #available(iOS 13.0, *) {
-            UIMenuSystem.main.setNeedsRebuild()
-        }
+        UIMenuSystem.main.setNeedsRebuild()
         UIApplication.shared.isIdleTimerDisabled = true
 
         self.openURLOrScriptOrGreeting()
@@ -736,12 +734,6 @@ extension MainViewController: CelestiaControllerDelegate {
     private func presentCameraControl() {
         let vc = CameraControlViewController()
         let controller = UINavigationController(rootViewController: vc)
-        if #available(iOS 13.0, *) {
-        } else {
-            controller.navigationBar.barStyle = .black
-            controller.navigationBar.barTintColor = .darkBackground
-            controller.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
-        }
         showViewController(controller)
     }
 

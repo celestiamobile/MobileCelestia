@@ -37,7 +37,7 @@ class SearchCoordinatorController: UIViewController {
 
     override func loadView() {
         view = UIView()
-        view.backgroundColor = .darkBackground
+        view.backgroundColor = .systemBackground
     }
 
     override func viewDidLoad() {
@@ -75,18 +75,11 @@ private extension SearchCoordinatorController {
         split.preferredDisplayMode = .oneBesideSecondary
         split.preferredPrimaryColumnWidthFraction = 0.3
         let emptyVc = UIViewController()
-        emptyVc.view.backgroundColor = .darkBackground
+        emptyVc.view.backgroundColor = .systemBackground
         split.viewControllers = [UINavigationController(rootViewController: main), emptyVc]
         install(split)
         #else
         navigation = UINavigationController(rootViewController: main)
-
-        if #available(iOS 13.0, *) {
-        } else {
-            navigation.navigationBar.barStyle = .black
-            navigation.navigationBar.barTintColor = .darkBackground
-            navigation.navigationBar.titleTextAttributes?[.foregroundColor] = UIColor.darkLabel
-        }
         install(navigation)
         #endif
     }

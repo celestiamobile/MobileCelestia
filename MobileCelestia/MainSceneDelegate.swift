@@ -13,7 +13,6 @@ import CelestiaCore
 import CelestiaUI
 import UIKit
 
-@available(iOS 13, *)
 class MainSceneDelegate: CommonSceneDelegate {
     var window: UIWindow?
 

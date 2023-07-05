@@ -81,7 +81,7 @@ class CelestiaViewController: UIViewController {
 
     override func loadView() {
         let container = UIView()
-        container.backgroundColor = .darkBackground
+        container.backgroundColor = .systemBackground
         view = container
     }
 

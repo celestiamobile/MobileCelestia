@@ -35,15 +35,9 @@ class SettingSwitchCell: UITableViewCell {
 private extension SettingSwitchCell {
     func setup() {
         selectionStyle = .none
-
-        if #available(iOS 13.0, *) {
-        } else {
-            backgroundColor = .darkSecondaryBackground
-        }
-
         label.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(label)
-        label.textColor = .darkLabel
+        label.textColor = .label
         label.numberOfLines = 0
 
         NSLayoutConstraint.activate([

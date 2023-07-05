@@ -24,7 +24,7 @@ public class SettingTextCell: UITableViewCell {
 
         label.text = nil
         detailLabel.text = nil
-        label.textColor = .darkLabel
+        label.textColor = .label
     }
 
     public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -86,20 +86,13 @@ public class SettingTextCell: UITableViewCell {
 
 private extension SettingTextCell {
     func setup() {
-        if #available(iOS 13.0, *) {
-        } else {
-            backgroundColor = .darkSecondaryBackground
-            selectedBackgroundView = UIView()
-            selectedBackgroundView?.backgroundColor = .darkSelection
-        }
-
         contentView.addSubview(label)
-        label.textColor = .darkLabel
+        label.textColor = .label
 
         label.numberOfLines = 0
 
         contentView.addSubview(detailLabel)
-        detailLabel.textColor = .darkTertiaryLabel
+        detailLabel.textColor = .tertiaryLabel
 
         detailLabel.numberOfLines = 0
     }

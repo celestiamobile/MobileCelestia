@@ -49,7 +49,7 @@ private extension SettingSelectionCell {
 
         label.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(label)
-        label.textColor = .darkLabel
+        label.textColor = .label
         label.numberOfLines = 0
 
         NSLayoutConstraint.activate([

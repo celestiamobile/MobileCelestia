@@ -30,17 +30,9 @@ class MultiLineTextCell: UITableViewCell {
 }
 
 private extension MultiLineTextCell {
-    func setup() {
-        if #available(iOS 13.0, *) {
-        } else {
-            backgroundColor = .darkSecondaryBackground
-            selectedBackgroundView = UIView()
-            selectedBackgroundView?.backgroundColor = .darkSelection
-        }
-
-        label.translatesAutoresizingMaskIntoConstraints = false
+    func setup() {        label.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(label)
-        label.textColor = .darkLabel
+        label.textColor = .label
         label.numberOfLines = 0
 
         NSLayoutConstraint.activate([

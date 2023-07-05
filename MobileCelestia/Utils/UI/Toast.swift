@@ -32,12 +32,7 @@ class Toast {
         }
 
         private func setup() {
-            let style: UIBlurEffect.Style
-            if #available(iOS 13.0, *) {
-                style = .regular
-            } else {
-                style = .dark
-            }
+            let style: UIBlurEffect.Style = .regular
             let view = UIVisualEffectView(effect: UIBlurEffect(style: style))
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)
@@ -49,7 +44,7 @@ class Toast {
                 bottomAnchor.constraint(equalTo: view.bottomAnchor),
             ])
 
-            label.textColor = .darkLabel
+            label.textColor = .label
             label.numberOfLines = 2
             label.translatesAutoresizingMaskIntoConstraints = false
             label.textAlignment = .center

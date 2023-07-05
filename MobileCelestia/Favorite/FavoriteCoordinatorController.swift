@@ -69,7 +69,7 @@ class FavoriteCoordinatorController: UIViewController {
 
     override func loadView() {
         view = UIView()
-        view.backgroundColor = .darkBackground
+        view.backgroundColor = .systemBackground
     }
 
     override func viewDidLoad() {
@@ -93,7 +93,7 @@ private extension FavoriteCoordinatorController {
         controller.preferredPrimaryColumnWidthFraction = 0.3
         let contentVc: UIViewController
         let emptyVc = UIViewController()
-        emptyVc.view.backgroundColor = .darkBackground
+        emptyVc.view.backgroundColor = .systemBackground
         contentVc = emptyVc
         controller.viewControllers = [main, contentVc]
         install(controller)

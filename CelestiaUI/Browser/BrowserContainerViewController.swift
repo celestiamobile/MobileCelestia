@@ -49,7 +49,7 @@ public class BrowserContainerViewController: UIViewController {
 
     public override func loadView() {
         view = UIView()
-        view.backgroundColor = .darkBackground
+        view.backgroundColor = .systemBackground
     }
 
     public override func viewDidLoad() {
@@ -138,7 +138,7 @@ private extension BrowserContainerViewController {
             }
         }
         let emptyVc = UIViewController()
-        emptyVc.view.backgroundColor = .darkBackground
+        emptyVc.view.backgroundColor = .systemBackground
         controller.viewControllers = [sidebarController, emptyVc]
         #else
         var allControllers = [BrowserCoordinatorController]()
@@ -150,12 +150,6 @@ private extension BrowserContainerViewController {
             allControllers.append(BrowserCoordinatorController(item: dsoRoot, image: #imageLiteral(resourceName: "browser_tab_dso"), selection: handler))
         }
         controller.setViewControllers(allControllers, animated: false)
-
-        if #available(iOS 13.0, *) {
-        } else {
-            controller.tabBar.barStyle = .black
-            controller.tabBar.barTintColor = .darkBackground
-        }
         #endif
     }
 }

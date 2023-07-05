@@ -12,7 +12,6 @@
 import LinkPresentation
 import UIKit
 
-@available(iOS 13.0, *)
 final class LinkPreviewCell: UICollectionViewCell {
     func setMetaData(_ linkMetaData: LPLinkMetadata) {
         contentView.subviews.compactMap { $0 as? LPLinkView }.forEach { view in

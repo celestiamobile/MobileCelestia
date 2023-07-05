@@ -20,7 +20,7 @@ class TutorialDescriptionCell: UITableViewCell {
 
     private lazy var label = UILabel(textStyle: .body)
     private lazy var iv = IconView(baseSize: CGSize(width: Constants.iconDimension, height: Constants.iconDimension)) { imageView in
-        imageView.tintColor = .darkLabel
+        imageView.tintColor = .label
         imageView.contentMode = .scaleAspectFit
     }
 
@@ -53,7 +53,7 @@ private extension TutorialDescriptionCell {
 
         label.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(label)
-        label.textColor = .darkLabel
+        label.textColor = .label
         label.numberOfLines = 0
 
         NSLayoutConstraint.activate([

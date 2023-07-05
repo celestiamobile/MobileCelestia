@@ -16,14 +16,14 @@ open class BaseTableViewController: UITableViewController {
         super.loadView()
 
         if tableView.style == .plain {
-            tableView.backgroundColor = .darkBackground
+            tableView.backgroundColor = .systemBackground
         } else if tableView.style == .grouped {
-            tableView.backgroundColor = .darkGroupedBackground
-        } else if #available(iOS 13.0, *), tableView.style == .insetGrouped {
-            tableView.backgroundColor = .darkGroupedBackground
+            tableView.backgroundColor = .systemGroupedBackground
+        } else if tableView.style == .insetGrouped {
+            tableView.backgroundColor = .systemGroupedBackground
         }
         tableView.alwaysBounceVertical = false
-        tableView.separatorColor = .darkSeparator
+        tableView.separatorColor = .separator
         tableView.estimatedRowHeight = GlobalConstants.baseCellHeight
     }
 }

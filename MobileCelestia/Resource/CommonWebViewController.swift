@@ -38,13 +38,7 @@ class CommonWebViewController: UIViewController {
         return UIBarButtonItem(image: UIImage(systemName: isRTL ? "chevron.right" : "chevron.left"), style: .plain, target: self, action: #selector(goBack))
     }()
 
-    private lazy var activityIndicator: UIActivityIndicatorView = {
-        if #available(iOS 13, *) {
-            return UIActivityIndicatorView(style: .large)
-        } else {
-            return UIActivityIndicatorView(style: .whiteLarge)
-        }
-    }()
+    private lazy var activityIndicator = UIActivityIndicatorView(style: .large)
 
     override func loadView() {
         let containerView = UIView()

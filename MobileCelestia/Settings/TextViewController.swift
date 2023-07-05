@@ -27,7 +27,7 @@ class TextViewController: UIViewController {
 
     override func loadView() {
         view = UIView()
-        view.backgroundColor = .darkBackground
+        view.backgroundColor = .systemBackground
     }
 
     override func viewDidLoad() {
@@ -42,7 +42,7 @@ private extension TextViewController {
         let textView = UITextView()
         textView.backgroundColor = .clear
         textView.isEditable = false
-        textView.textColor = .darkLabel
+        textView.textColor = .label
         textView.adjustsFontForContentSizeCategory = true
         textView.font = UIFont.preferredFont(forTextStyle: .footnote)
         textView.contentInset = UIEdgeInsets(top: GlobalConstants.pageMediumMarginVertical, left: GlobalConstants.pageMediumMarginHorizontal, bottom: GlobalConstants.pageMediumMarginVertical, right: GlobalConstants.pageMediumMarginHorizontal)

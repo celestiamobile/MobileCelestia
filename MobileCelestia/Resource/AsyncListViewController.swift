@@ -22,13 +22,7 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
     class var useStandardUITableViewCell: Bool { return false }
     class var alwaysRefreshOnAppear: Bool { return false }
 
-    private lazy var activityIndicator: UIActivityIndicatorView = {
-        if #available(iOS 13, *) {
-            return UIActivityIndicatorView(style: .large)
-        } else {
-            return UIActivityIndicatorView(style: .whiteLarge)
-        }
-    }()
+    private lazy var activityIndicator = UIActivityIndicatorView(style: .large)
 
     private lazy var refreshButton: UIButton = {
         if #available(iOS 15.0, *) {

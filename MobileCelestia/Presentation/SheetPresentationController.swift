@@ -111,11 +111,7 @@ class SheetPresentationController: UIPresentationController {
 
     private lazy var sheetContainer: UIView = {
         let sheetContainer = UIView()
-        if #available(iOS 13.0, *) {
-            sheetContainer.backgroundColor = .secondarySystemBackground
-        } else {
-            sheetContainer.backgroundColor = .darkSecondaryBackground
-        }
+        sheetContainer.backgroundColor = .secondarySystemBackground
         sheetContainer.addSubview(sheetHandle)
         sheetContainer.layer.cornerRadius = Constants.sheetHandleContainerCornerRadius
         sheetContainer.clipsToBounds = true

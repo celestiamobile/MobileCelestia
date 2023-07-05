@@ -338,9 +338,7 @@ extension CelestiaInteractionController {
         tap.delegate = self
         targetInteractionView.addGestureRecognizer(tap)
 
-        if #available(iOS 13.0, *) {
-            targetInteractionView.addInteraction(UIContextMenuInteraction(delegate: self))
-        }
+        targetInteractionView.addInteraction(UIContextMenuInteraction(delegate: self))
 
         if let clickGesture = targetInteractionView.gestureRecognizers?.filter({ String(cString: object_getClassName($0)) == "_UISecondaryClickDriverGestureRecognizer" }).first {
             clickGesture.require(toFail: pan1)
@@ -492,7 +490,6 @@ extension CelestiaInteractionController: UIGestureRecognizerDelegate {
     }
 }
 
-@available(iOS 13.0, *)
 extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
         let location = interaction.location(with: renderingTargetGeometry)
@@ -585,7 +582,6 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
     }
 }
 
-@available(iOS 13.0, *)
 extension UIContextMenuInteraction {
     func location(with targetGeometry: RenderingTargetGeometry) -> CGPoint {
         let viewLoc = location(in: view)
@@ -595,7 +591,6 @@ extension UIContextMenuInteraction {
     }
 }
 
-@available(iOS 13.0, *)
 extension BrowserItem {
     @MainActor
     func createMenuItems(additionalItemName: String, with callback: @escaping (Selection) -> Void) -> UIMenu? {

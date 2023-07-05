@@ -38,7 +38,7 @@ class DestinationDetailViewController: UIViewController {
 
     override func loadView() {
         view = UIView()
-        view.backgroundColor = .darkBackground
+        view.backgroundColor = .systemBackground
 
         setup()
     }
@@ -85,7 +85,7 @@ private extension DestinationDetailViewController {
             contentStack.trailingAnchor.constraint(equalTo: contentContainer.trailingAnchor),
         ])
 
-        descriptionLabel.textColor = .darkSecondaryLabel
+        descriptionLabel.textColor = .secondaryLabel
         descriptionLabel.numberOfLines = 0
         descriptionLabel.lineBreakMode = .byCharWrapping
 

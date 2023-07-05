@@ -47,7 +47,7 @@ final public class InfoViewController: UIViewController {
 
     private var actions: [ObjectAction] = []
 
-    private var linkMetaData: AnyObject?
+    private var linkMetaData: LPLinkMetadata?
 
     public init(info: Selection, core: AppCore, isEmbeddedInNavigationController: Bool) {
         self.core = core
@@ -67,7 +67,7 @@ final public class InfoViewController: UIViewController {
 
     public override func loadView() {
         view = UIView()
-        view.backgroundColor = isEmbeddedInNavigationController ? .darkBackground : .darkSecondaryBackground
+        view.backgroundColor = isEmbeddedInNavigationController ? .systemBackground : .secondarySystemBackground
     }
 
     public override func viewDidLoad() {
@@ -109,7 +109,7 @@ final public class InfoViewController: UIViewController {
 
         collectionView.reloadData()
 
-        guard let urlString = info.webInfoURL, let url = URL(string: urlString), #available(iOS 13.0, *) else { return }
+        guard let urlString = info.webInfoURL, let url = URL(string: urlString) else { return }
 
         let current = info
         let metaDataProvider = LPMetadataProvider()
@@ -160,9 +160,7 @@ private extension InfoViewController {
         (collectionView.collectionViewLayout as! UICollectionViewFlowLayout).estimatedItemSize = CGSize(width: 1, height: 1)
         collectionView.register(BodyDescriptionCell.self, forCellWithReuseIdentifier: "Description")
         collectionView.register(BodyActionCell.self, forCellWithReuseIdentifier: "Action")
-        if #available(iOS 13.0, *) {
-            collectionView.register(LinkPreviewCell.self, forCellWithReuseIdentifier: "LinkPreview")
-        }
+        collectionView.register(LinkPreviewCell.self, forCellWithReuseIdentifier: "LinkPreview")
 
         collectionView.dataSource = self
         collectionView.delegate = self
@@ -176,7 +174,7 @@ extension InfoViewController: UICollectionViewDataSource {
 
     public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if section == 0 {
-            if #available(iOS 13.0, *), linkMetaData is LPLinkMetadata {
+            if linkMetaData != nil {
                 return 2
             }
             return 1
@@ -191,9 +189,9 @@ extension InfoViewController: UICollectionViewDataSource {
                 cell.update(with: bodyInfo, showTitle: !isEmbeddedInNavigationController)
                 return cell
             }
-            if #available(iOS 13.0, *), let metaData = linkMetaData as? LPLinkMetadata {
+            if let linkMetaData {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LinkPreview", for: indexPath) as! LinkPreviewCell
-                cell.setMetaData(metaData)
+                cell.setMetaData(linkMetaData)
                 return cell
             }
             fatalError()

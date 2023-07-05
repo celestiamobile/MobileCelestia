@@ -63,13 +63,13 @@ extension BodyDescriptionCell {
     func update(with info: BodyInfo, showTitle: Bool) {
         let attributedString = NSMutableAttributedString()
         if showTitle {
-            attributedString.append(NSAttributedString(string: info.name, attributes: [.foregroundColor: UIColor.darkLabel, .font: UIFont.preferredFont(forTextStyle: .title2, weight: .semibold)]))
+            attributedString.append(NSAttributedString(string: info.name, attributes: [.foregroundColor: UIColor.label, .font: UIFont.preferredFont(forTextStyle: .title2, weight: .semibold)]))
 
             let gap = NSMutableParagraphStyle()
             gap.lineSpacing = GlobalConstants.pageMediumGapVertical
             attributedString.append(NSAttributedString(string: "\n", attributes: [.paragraphStyle: gap]))
         }
-        attributedString.append(NSAttributedString(string: info.overview, attributes: [.foregroundColor: UIColor.darkSecondaryLabel, .font: UIFont.preferredFont(forTextStyle: .body)]))
+        attributedString.append(NSAttributedString(string: info.overview, attributes: [.foregroundColor: UIColor.secondaryLabel, .font: UIFont.preferredFont(forTextStyle: .body)]))
         descriptionLabel.attributedText = attributedString
     }
 }

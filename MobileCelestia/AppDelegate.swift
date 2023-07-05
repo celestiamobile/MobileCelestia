@@ -88,7 +88,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         #else
         UISlider.appearance().minimumTrackTintColor = .themeLabel
-        UISlider.appearance().maximumTrackTintColor = .darkSystemFill
+        UISlider.appearance().maximumTrackTintColor = .systemFill
         UISwitch.appearance().onTintColor = .themeLabel
         UIBarButtonItem.appearance().tintColor = .themeLabel
         UIButton.appearance().tintColor = .themeLabel
@@ -160,7 +160,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     #if targetEnvironment(macCatalyst)
-    @available(iOS 13, *)
     func application(_ application: UIApplication, configurationForConnecting connectingSceneSession: UISceneSession, options: UIScene.ConnectionOptions) -> UISceneConfiguration {
         if options.userActivities.contains(where: { $0.activityType == PanelSceneDelegate.activityType }) {
             return UISceneConfiguration(name: "Panel", sessionRole: .windowApplication)
@@ -199,7 +198,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         NotificationCenter.default.post(name: requestPasteNotificationName, object: nil)
     }
 
-    @available(iOS 13, *)
     override func validate(_ command: UICommand) {
         super.validate(command)
         let actionName = NSStringFromSelector(command.action)
@@ -221,7 +219,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 }
 
-@available(iOS 13.0, *)
 extension AppDelegate {
     override func buildMenu(with builder: UIMenuBuilder) {
         super.buildMenu(with: builder)

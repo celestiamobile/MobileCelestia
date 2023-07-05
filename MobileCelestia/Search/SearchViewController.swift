@@ -89,7 +89,7 @@ private extension SearchViewController {
         }
 
         #if !targetEnvironment(macCatalyst)
-        view.backgroundColor = .darkBackground
+        view.backgroundColor = .systemBackground
         #endif
 
         searchQueue.maxConcurrentOperationCount = 1

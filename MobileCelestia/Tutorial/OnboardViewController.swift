@@ -43,11 +43,11 @@ class OnboardViewController: UIViewController {
 
 private extension OnboardViewController {
     func setup() {
-        view.backgroundColor = .darkSecondaryBackground
+        view.backgroundColor = .secondarySystemBackground
 
         let welcomeView = UILabel(textStyle: .largeTitle)
         welcomeView.text = CelestiaString("Welcome to Celestia", comment: "")
-        welcomeView.textColor = .darkLabel
+        welcomeView.textColor = .label
         welcomeView.numberOfLines = 0
         welcomeView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(welcomeView)

@@ -38,11 +38,6 @@ private extension SettingSliderCell {
     func setup() {
         selectionStyle = .none
 
-        if #available(iOS 13.0, *) {
-        } else {
-            backgroundColor = .darkSecondaryBackground
-        }
-
         topContainer.translatesAutoresizingMaskIntoConstraints = false
         bottomContainer.translatesAutoresizingMaskIntoConstraints = false
 
@@ -61,7 +56,7 @@ private extension SettingSliderCell {
 
         label.translatesAutoresizingMaskIntoConstraints = false
         topContainer.addSubview(label)
-        label.textColor = .darkLabel
+        label.textColor = .label
         label.numberOfLines = 0
 
         NSLayoutConstraint.activate([

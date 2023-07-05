@@ -68,7 +68,7 @@ class ControlButton: ImageButtonView<ControlButton.Configuration> {
             uiButton.imageView?.contentMode = .scaleAspectFit
             uiButton.contentHorizontalAlignment = .fill
             uiButton.contentVerticalAlignment = .fill
-            uiButton.tintColor = .darkSecondaryLabel
+            uiButton.tintColor = .secondaryLabel
             switch button {
             case .pressAndHold(_, _, let accessibilityLabel):
                 uiButton.accessibilityLabel = accessibilityLabel
@@ -170,12 +170,7 @@ final class CelestiaControlView: UIView {
             }
         }
 
-        let style: UIBlurEffect.Style
-        if #available(iOS 13.0, *) {
-            style = .regular
-        } else {
-            style = .dark
-        }
+        let style: UIBlurEffect.Style = .regular
         let visualBackground = UIVisualEffectView(effect: UIBlurEffect(style: style))
         visualBackground.translatesAutoresizingMaskIntoConstraints = false
         addSubview(visualBackground)
