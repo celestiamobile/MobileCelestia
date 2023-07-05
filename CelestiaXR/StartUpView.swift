@@ -15,6 +15,7 @@ import SwiftUI
 
 struct StartUpView: View {
     @EnvironmentObject var renderer: XRRenderer
+    @EnvironmentObject var interactionManager: InteractionManager
 
     @State var isDismissingImmersiveSpace = false
     @State var isOpeningImmersiveSpace = false
@@ -98,5 +99,11 @@ struct StartUpView: View {
             }
         }
         .padding()
+        .onChange(of: renderer.rendererStatus) { _, newValue in
+            if newValue == .rendering, interactionManager.gameControllerManager == nil {
+                let renderer = self.renderer
+                interactionManager.gameControllerManager = GameControllerManager(executor: renderer, canAcceptEvents: { return renderer.rendererStatus == .rendering })
+            }
+        }
     }
 }

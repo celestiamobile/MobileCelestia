@@ -71,11 +71,13 @@ struct CelestiaXRApp: App {
 
         return XRRenderer(renderer: Renderer(resourceFolderPath: resourceFolderPath, configFilePath: "celestia.cfg", userDefaultsPath:defaultConfigPlistPath, defaultFonts: defaultFonts, otherFonts: otherFonts))
     }()
+    private let interactionManager = InteractionManager()
 
     var body: some Scene {
         WindowGroup {
             StartUpView()
                 .environmentObject(renderer)
+                .environmentObject(interactionManager)
         }
 
         WindowGroup(id: "InfoWindow") {

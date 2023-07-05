@@ -89,6 +89,7 @@
 		EA66BBE12A55BA88008A7AAA /* GoToInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA374CD9263A8B770069589C /* GoToInputViewController.swift */; };
 		EA66BBE22A55BA88008A7AAA /* GoToContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA374CD1263A8B320069589C /* GoToContainerViewController.swift */; };
 		EA66BBE32A564888008A7AAA /* SelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6671CA29B391B900A7846E /* SelectionViewController.swift */; };
+		EA66BBBD2A5594F0008A7AAA /* InteractionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA66BBBC2A5594F0008A7AAA /* InteractionManager.swift */; };
 		EA787309296DE50D0099AB11 /* Injecton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA787308296DE50D0099AB11 /* Injecton.swift */; };
 		EA78730F296DEA6B0099AB11 /* CelestiaExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA78730E296DEA6B0099AB11 /* CelestiaExecutor.swift */; };
 		EA78733D296EB61B0099AB11 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA78733B296EB61A0099AB11 /* UserDefaults.swift */; };
@@ -377,6 +378,7 @@
 		EA6671CD29B3947800A7846E /* GameControllerAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameControllerAction.swift; sourceTree = "<group>"; };
 		EA6671D029B3A81200A7846E /* ObserverModeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObserverModeViewController.swift; sourceTree = "<group>"; };
 		EA6671D229B3A9AE00A7846E /* LinkFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkFooterView.swift; sourceTree = "<group>"; };
+		EA66BBBC2A5594F0008A7AAA /* InteractionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InteractionManager.swift; sourceTree = "<group>"; };
 		EA7209DF27C64270004C1400 /* UILabel+DynamicType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+DynamicType.swift"; sourceTree = "<group>"; };
 		EA775EB32664B63F00479295 /* ActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButton.swift; sourceTree = "<group>"; };
 		EA787308296DE50D0099AB11 /* Injecton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Injecton.swift; sourceTree = "<group>"; };
@@ -905,6 +907,7 @@
 				EA246B902A50341500E1A1AB /* XRRenderer.swift */,
 				EA8680762A4692DB003B5D39 /* CelestiaXRApp.swift */,
 				EA8680782A4692DB003B5D39 /* StartUpView.swift */,
+				EA66BBBC2A5594F0008A7AAA /* InteractionManager.swift */,
 				EA86807E2A4692DC003B5D39 /* Assets.xcassets */,
 				EA8680802A4692DC003B5D39 /* Preview Content */,
 			);
@@ -1607,6 +1610,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EA66BBBD2A5594F0008A7AAA /* InteractionManager.swift in Sources */,
 				EA0AFB9A2A50789000C6746B /* InfoView.swift in Sources */,
 				EAC457062A52C10C00F79BA3 /* BrowserItemStore.swift in Sources */,
 				EAC457082A52C2E000F79BA3 /* SubsystemBrowserWindow.swift in Sources */,
