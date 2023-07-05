@@ -10,10 +10,9 @@
 //
 
 import CelestiaCore
-import CelestiaUI
 import UIKit
 
-class SearchCoordinatorController: UIViewController {
+public class SearchCoordinatorController: UIViewController {
     private var main: SearchViewController!
 
     #if targetEnvironment(macCatalyst)
@@ -22,12 +21,13 @@ class SearchCoordinatorController: UIViewController {
     private var navigation: UINavigationController!
     #endif
 
-    @Injected(\.appCore) private var core
+    private let executor: AsyncProviderExecutor
 
     private let selection: (Selection, Bool) -> UIViewController
 
-    init(selected: @escaping (Selection, Bool) -> UIViewController) {
+    public init(executor: AsyncProviderExecutor, selected: @escaping (Selection, Bool) -> UIViewController) {
         self.selection = selected
+        self.executor = executor
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -35,12 +35,12 @@ class SearchCoordinatorController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func loadView() {
+    public override func loadView() {
         view = UIView()
         view.backgroundColor = .systemBackground
     }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
 
         setUp()
@@ -54,19 +54,21 @@ private extension SearchCoordinatorController {
         #else
         let resultsInSidebar = false
         #endif
-        main = SearchViewController(resultsInSidebar: resultsInSidebar) { [unowned self] name in
-            let sim = self.core.simulation
-            let object = sim.findObject(from: name)
-            guard !object.isEmpty else {
-                self.showError(CelestiaString("Object not found", comment: ""))
-                return
+        main = SearchViewController(resultsInSidebar: resultsInSidebar, executor: executor) { [unowned self] name in
+            Task {
+                let object = await self.executor.get {
+                    $0.simulation.findObject(from: name)
+                }
+                guard !object.isEmpty else {
+                    self.showError(CelestiaString("Object not found", comment: ""))
+                    return
+                }
+                #if targetEnvironment(macCatalyst)
+                self.split.viewControllers = [self.split.viewControllers[0], self.selection(object, false)]
+                #else
+                self.navigation.pushViewController(self.selection(object, true), animated: true)
+                #endif
             }
-
-            #if targetEnvironment(macCatalyst)
-            self.split.viewControllers = [self.split.viewControllers[0], self.selection(object, false)]
-            #else
-            self.navigation.pushViewController(self.selection(object, true), animated: true)
-            #endif
         }
 
         #if targetEnvironment(macCatalyst)

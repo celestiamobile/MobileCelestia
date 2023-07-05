@@ -923,7 +923,7 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     private func showSearch() {
-        let controller = SearchCoordinatorController { [unowned self] info, isEmbeddedInNavigation in
+        let controller = SearchCoordinatorController(executor: executor) { [unowned self] info, isEmbeddedInNavigation in
             return self.createSelectionInfoViewController(with: info, isEmbeddedInNavigation: isEmbeddedInNavigation)
         }
         #if targetEnvironment(macCatalyst)

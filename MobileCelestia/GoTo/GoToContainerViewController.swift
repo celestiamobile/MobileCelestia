@@ -10,9 +10,12 @@
 //
 
 import CelestiaCore
+import CelestiaUI
 import UIKit
 
 class GoToContainerViewController: UINavigationController {
+    @Injected(\.executor) private var executor
+
     private let locationHandler: ((GoToLocation) -> Void)
 
     init(locationHandler: @escaping ((GoToLocation) -> Void)) {
@@ -22,7 +25,7 @@ class GoToContainerViewController: UINavigationController {
         setViewControllers([
             GoToInputViewController(objectNameHandler: { [weak self] controller in
                 guard let self else { return }
-                let searchController = SearchViewController(resultsInSidebar: false) { [weak self, weak controller] name in
+                let searchController = SearchViewController(resultsInSidebar: false, executor: self.executor) { [weak self, weak controller] name in
                     guard let self else { return }
                     guard let controller = controller else { return }
                     self.popViewController(animated: true)

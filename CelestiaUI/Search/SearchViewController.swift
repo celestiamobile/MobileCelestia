@@ -10,7 +10,6 @@
 //
 
 import CelestiaCore
-import CelestiaUI
 import UIKit
 
 struct SearchResult {
@@ -22,7 +21,7 @@ struct SearchResultSection {
     let results: [SearchResult]
 }
 
-class SearchViewController: BaseTableViewController {
+public class SearchViewController: BaseTableViewController {
     private lazy var searchController = UISearchController(searchResultsController: nil)
 
     private let resultsInSidebar: Bool
@@ -35,36 +34,37 @@ class SearchViewController: BaseTableViewController {
 
     private var shouldActivate = true
 
-    @Injected(\.appCore) private var core
+    private let executor: AsyncProviderExecutor
 
-    init(resultsInSidebar: Bool, selected: @escaping (String) -> Void) {
+    public init(resultsInSidebar: Bool, executor: AsyncProviderExecutor, selected: @escaping (String) -> Void) {
         self.resultsInSidebar = resultsInSidebar
         self.selected = selected
+        self.executor = executor
         super.init(style: resultsInSidebar ? .defaultGrouped : .plain)
     }
 
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
 
         setUp()
     }
 
-    override func viewDidAppear(_ animated: Bool) {
+    public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
         if shouldActivate {
             Task {
-                try await Task.sleep(seconds: 0.1)
+                try await Task.sleep(nanoseconds: 100000000)
                 self.searchController.searchBar.becomeFirstResponder()
             }
         }
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
+    public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
         shouldActivate = searchController.searchBar.isFirstResponder
@@ -104,6 +104,7 @@ private extension SearchViewController {
 
         searchBar.sizeToFit()
 
+        searchController.obscuresBackgroundDuringPresentation = false
         definesPresentationContext = true
         searchController.searchResultsUpdater = self
         searchBar.keyboardAppearance = .dark
@@ -115,7 +116,7 @@ private extension SearchViewController {
 }
 
 extension SearchViewController: UISearchBarDelegate {
-    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+    public func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
         guard let text = searchBar.text, !text.isEmpty, resultSections.reduce(0, { $0 + $1.results.count }) == 0 else { return }
         itemSelected(with: text)
@@ -129,7 +130,7 @@ extension SearchViewController: UISearchBarDelegate {
 }
 
 extension SearchViewController: UISearchResultsUpdating {
-    func updateSearchResults(for searchController: UISearchController) {
+    public func updateSearchResults(for searchController: UISearchController) {
         guard searchController.isActive else { return }
 
         guard let text = searchController.searchBar.text, !text.isEmpty else {
@@ -141,8 +142,8 @@ extension SearchViewController: UISearchResultsUpdating {
         searchQueue.cancelAllOperations()
         searchQueue.addOperation { [weak self] in
             guard let self = self else { return }
-            let results = self.search(with: text)
             Task.detached { @MainActor in
+                let results = await self.search(with: text)
                 guard text == self.searchController.searchBar.text else { return }
                 self.resultSections = results
                 self.tableView.reloadData()
@@ -152,22 +153,24 @@ extension SearchViewController: UISearchResultsUpdating {
 }
 
 extension SearchViewController {
-    private func search(with text: String) -> [SearchResultSection] {
-        let simulation = core.simulation
-        return [SearchResultSection(title: nil, results: simulation.completion(for: text).map { SearchResult(name: $0) })]
+    private func search(with text: String) async -> [SearchResultSection] {
+        let completions = await executor.get {
+            $0.simulation.completion(for: text)
+        }
+        return [SearchResultSection(title: nil, results: completions.map { SearchResult(name: $0) })]
     }
 }
 
 extension SearchViewController {
-    override func numberOfSections(in tableView: UITableView) -> Int {
+    public override func numberOfSections(in tableView: UITableView) -> Int {
         return resultSections.count
     }
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return resultSections[section].results.count
     }
 
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let result = resultSections[indexPath.section].results[indexPath.row]
         if resultsInSidebar {
             let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath)
@@ -185,15 +188,15 @@ extension SearchViewController {
         return cell
     }
 
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    public override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return resultSections[section].title
     }
 
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    public override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
 
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    public override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selection = resultSections[indexPath.section].results[indexPath.row]
         selected(selection.name)
     }

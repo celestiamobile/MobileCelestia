@@ -150,7 +150,7 @@ class ToolbarImageTextButtonCell: UICollectionViewCell, ToolbarCell {
 
         override func beginTracking(_ touch: UITouch, with event: UIEvent?) -> Bool {
             UIView.animate(withDuration: Constants.highlightAnimationDuration) {
-                var color = UIColor.darkSelection.resolvedColor(with: self.traitCollection)
+                let color = UIColor.darkSelection.resolvedColor(with: self.traitCollection)
                 self.layer.backgroundColor = color.cgColor
             }
             return true
