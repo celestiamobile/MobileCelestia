@@ -11,11 +11,11 @@
 
 import Foundation
 
-class UniformedURL {
+public class UniformedURL {
     private let securityScoped: Bool
 
-    let url: URL
-    let stale: Bool
+    public let url: URL
+    public let stale: Bool
 
     private init?(url: URL, securityScoped: Bool, stale: Bool) {
         if securityScoped && !url.startAccessingSecurityScopedResource() {
@@ -26,11 +26,11 @@ class UniformedURL {
         self.securityScoped = securityScoped
     }
 
-    convenience init(url: URL, securityScoped: Bool = false) {
+    public convenience init(url: URL, securityScoped: Bool = false) {
         self.init(url: url, securityScoped: securityScoped, stale: false)!
     }
 
-    convenience init?(bookmark: Data) throws {
+    public convenience init?(bookmark: Data) throws {
         var stale: Bool = false
         #if os(macOS) || targetEnvironment(macCatalyst)
         let resolved = try URL(resolvingBookmarkData: bookmark, options: .withSecurityScope, relativeTo: nil, bookmarkDataIsStale: &stale)

@@ -9,10 +9,9 @@
 // of the License, or (at your option) any later version.
 //
 
-import CelestiaUI
 import UIKit
 
-class SettingsFrameRateViewController: BaseTableViewController {
+public class SettingsFrameRateViewController: BaseTableViewController {
     private struct FrameRateItem {
         let frameRate: Int
         let isMaximum: Bool
@@ -23,28 +22,31 @@ class SettingsFrameRateViewController: BaseTableViewController {
     }
 
     private var items: [FrameRateItem] = []
-    @Injected(\.userDefaults) private var userDefaults
+    private let userDefaults: UserDefaults
+    private let userDefaultsKey: String
 
     private let frameRateUpdateHandler: (Int) -> Void
     private let screen: UIScreen
 
-    init(screen: UIScreen, frameRateUpdateHandler: @escaping (Int) -> Void) {
+    public init(screen: UIScreen, userDefaults: UserDefaults, userDefaultsKey: String, frameRateUpdateHandler: @escaping (Int) -> Void) {
         self.screen = screen
+        self.userDefaults = userDefaults
+        self.userDefaultsKey = userDefaultsKey
         self.frameRateUpdateHandler = frameRateUpdateHandler
         super.init(style: .defaultGrouped)
     }
 
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
 
-        setup()
+        setUp()
     }
 
-    override func viewWillAppear(_ animated: Bool) {
+    public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
         loadContents()
@@ -67,19 +69,19 @@ class SettingsFrameRateViewController: BaseTableViewController {
 }
 
 private extension SettingsFrameRateViewController {
-    func setup() {
+    func setUp() {
         tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         title = CelestiaString("Frame Rate", comment: "")
     }
 }
 
 extension SettingsFrameRateViewController {
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return items.count
     }
 
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let selectedFrameRate: Int = userDefaults[.frameRate] ?? 60
+    public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let selectedFrameRate: Int = userDefaults.value(forKey: userDefaultsKey) as? Int ?? 60
         let item = items[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
         cell.title = String.localizedStringWithFormat(CelestiaString(item.isMaximum ? "Maximum (%d FPS)" : "%d FPS", comment: ""), item.frameRate)
@@ -87,11 +89,11 @@ extension SettingsFrameRateViewController {
         return cell
     }
 
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    public override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
 
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    public override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let item = items[indexPath.row]
         frameRateUpdateHandler(item.frameRateValue)

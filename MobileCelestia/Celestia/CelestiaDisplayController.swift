@@ -10,6 +10,7 @@
 //
 
 import UIKit
+import CelestiaUI
 import CelestiaCore
 
 import AsyncGL

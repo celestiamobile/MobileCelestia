@@ -8,9 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		97143F1823FFAEFD00F35D87 /* defaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 97143F1623FFAEFD00F35D87 /* defaults.plist */; };
-		973BBA452405216700E3B061 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973BBA442405216700E3B061 /* AboutViewController.swift */; };
-		973BBA642405481200E3B061 /* TimeSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973BBA632405481200E3B061 /* TimeSettingViewController.swift */; };
-		973BBA6624054E9900E3B061 /* TextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973BBA6524054E9900E3B061 /* TextViewController.swift */; };
 		974F86AA240362BA00356795 /* ToolbarButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974F86A9240362BA00356795 /* ToolbarButtonCell.swift */; };
 		9773949C2402A8F700E38B82 /* ToolbarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9773949B2402A8F700E38B82 /* ToolbarViewController.swift */; };
 		9773949E2402A96B00E38B82 /* SlideInPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9773949D2402A96B00E38B82 /* SlideInPresentationController.swift */; };
@@ -35,7 +32,6 @@
 		979D2FAD23FEB2B4005D2592 /* libbz2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 979D2FAC23FEB2AE005D2592 /* libbz2.tbd */; };
 		979D2FAF23FEB2BD005D2592 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 979D2FAE23FEB2B9005D2592 /* libz.tbd */; };
 		97C3A9F22445FACF00EB365A /* CelestiaControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C3A9F12445FACF00EB365A /* CelestiaControlView.swift */; };
-		97F1141E2408AE06003A06D7 /* DataLocationSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F1141D2408AE06003A06D7 /* DataLocationSelectionViewController.swift */; };
 		97FF95A5240A340300E9F44F /* BaseResultHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FF95A4240A340300E9F44F /* BaseResultHandler.swift */; };
 		D75E8DEAC2EBA3F7F8E06011 /* Pods_MobileCelestia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCC04706AE5EC279AAF950C2 /* Pods_MobileCelestia.framework */; };
 		EA17951B27B1510500D47397 /* CelestiaScriptHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA17951A27B1510500D47397 /* CelestiaScriptHandler.swift */; };
@@ -76,7 +72,6 @@
 		EA787309296DE50D0099AB11 /* Injecton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA787308296DE50D0099AB11 /* Injecton.swift */; };
 		EA78730F296DEA6B0099AB11 /* CelestiaExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA78730E296DEA6B0099AB11 /* CelestiaExecutor.swift */; };
 		EA78733D296EB61B0099AB11 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA78733B296EB61A0099AB11 /* UserDefaults.swift */; };
-		EA78733E296EB61B0099AB11 /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA78733C296EB61B0099AB11 /* URL.swift */; };
 		EA787341296EB68A0099AB11 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA787340296EB68A0099AB11 /* Bundle.swift */; };
 		EA787344296EBBAC0099AB11 /* Task.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA787343296EBBAC0099AB11 /* Task.swift */; };
 		EA7BF37C27033AE40058F704 /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA7BF37B27033AE40058F704 /* GameController.framework */; };
@@ -88,7 +83,6 @@
 		EA85C915289E9AD2009ADB1C /* AutoSizingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA85C914289E9AD2009ADB1C /* AutoSizingView.swift */; };
 		EA85C917289EA1ED009ADB1C /* IconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA85C916289EA1ED009ADB1C /* IconView.swift */; };
 		EA85C91B289F5811009ADB1C /* ButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA85C91A289F5811009ADB1C /* ButtonView.swift */; };
-		EA86E38426FE20C000FF2278 /* SettingsFrameRateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA86E38326FE20C000FF2278 /* SettingsFrameRateViewController.swift */; };
 		EA934C90251D90C500DD284C /* MainSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA934C8F251D90C500DD284C /* MainSceneDelegate.swift */; };
 		EA934C9A251D92AD00DD284C /* PanelSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA934C99251D92A700DD284C /* PanelSceneDelegate.swift */; };
 		EA9A426D288CD7FE00AF3BD6 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA9A426C288CD7FE00AF3BD6 /* AVFoundation.framework */; };
@@ -96,6 +90,15 @@
 		EA9FB23F27B7852A00E0DC1F /* CommonSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9FB23E27B7852A00E0DC1F /* CommonSceneDelegate.swift */; };
 		EAA5A7A1259DBFE6001AFA82 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = EAA5A7A3259DBFE6001AFA82 /* InfoPlist.strings */; };
 		EAA6C4CB253B5CD200ED1D60 /* InstalledResourceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAA6C4CA253B5CD200ED1D60 /* InstalledResourceViewController.swift */; };
+		EAA79CCC2A56A01F0056DB91 /* SettingsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAA79CCB2A56A01F0056DB91 /* SettingsModel.swift */; };
+		EAA79CCE2A56AB2D0056DB91 /* SettingCommonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABDE3A82473DAA300E0A5FA /* SettingCommonViewController.swift */; };
+		EAA79CCF2A56AC1C0056DB91 /* TimeSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973BBA632405481200E3B061 /* TimeSettingViewController.swift */; };
+		EAA79CD12A56AD770056DB91 /* TextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973BBA6524054E9900E3B061 /* TextViewController.swift */; };
+		EAA79CD22A56ADA90056DB91 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973BBA442405216700E3B061 /* AboutViewController.swift */; };
+		EAA79CD42A56AF6D0056DB91 /* SettingsFrameRateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA86E38326FE20C000FF2278 /* SettingsFrameRateViewController.swift */; };
+		EAA79CD62A56B0100056DB91 /* DataLocationSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F1141D2408AE06003A06D7 /* DataLocationSelectionViewController.swift */; };
+		EAA79CD72A56B0F00056DB91 /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA78733C296EB61B0099AB11 /* URL.swift */; };
+		EAA79CD92A56B10A0056DB91 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAA79CD82A56B10A0056DB91 /* UserDefaults.swift */; };
 		EAB623AB2A51AA0A00063D1B /* SubsystemBrowserCoordinatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF48514249B2C4700E5B817 /* SubsystemBrowserCoordinatorViewController.swift */; };
 		EAB623AC2A51AA0A00063D1B /* BrowserContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972477D02404A19700729B45 /* BrowserContainerViewController.swift */; };
 		EAB623AD2A51AA0A00063D1B /* BrowserCoordinatorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972477D62404A65C00729B45 /* BrowserCoordinatorController.swift */; };
@@ -107,7 +110,6 @@
 		EAB623B52A51AB5100063D1B /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAB623B42A51AB5100063D1B /* UIViewController+Extension.swift */; };
 		EAB623B62A51AC0F00063D1B /* TextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394B22403F74800E38B82 /* TextCell.swift */; };
 		EAB623B72A51AC2C00063D1B /* UILabel+DynamicType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA7209DF27C64270004C1400 /* UILabel+DynamicType.swift */; };
-		EABDE3A92473DAA300E0A5FA /* SettingCommonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABDE3A82473DAA300E0A5FA /* SettingCommonViewController.swift */; };
 		EABF7911253895FD00F2460C /* ResourceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF7910253895FD00F2460C /* ResourceViewController.swift */; };
 		EABF791E2538986400F2460C /* AsyncListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF791D2538986400F2460C /* AsyncListViewController.swift */; };
 		EABF792C25389B3100F2460C /* ResourceItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF792B25389B3100F2460C /* ResourceItem.swift */; };
@@ -323,6 +325,8 @@
 		EAA5A7A2259DBFE6001AFA82 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EAA5A7A7259DC062001AFA82 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EAA6C4CA253B5CD200ED1D60 /* InstalledResourceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstalledResourceViewController.swift; sourceTree = "<group>"; };
+		EAA79CCB2A56A01F0056DB91 /* SettingsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsModel.swift; sourceTree = "<group>"; };
+		EAA79CD82A56B10A0056DB91 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		EAB08FE32780550600BB82F0 /* Font.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Font.swift; sourceTree = "<group>"; };
 		EAB623B42A51AB5100063D1B /* UIViewController+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		EABDE3A82473DAA300E0A5FA /* SettingCommonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingCommonViewController.swift; sourceTree = "<group>"; };
@@ -462,13 +466,7 @@
 			children = (
 				977394AB2403F07C00E38B82 /* SettingsCoordinatorController.swift */,
 				977394AD2403F08800E38B82 /* SettingsMainViewController.swift */,
-				EA86E38326FE20C000FF2278 /* SettingsFrameRateViewController.swift */,
-				973BBA632405481200E3B061 /* TimeSettingViewController.swift */,
-				973BBA442405216700E3B061 /* AboutViewController.swift */,
-				97F1141D2408AE06003A06D7 /* DataLocationSelectionViewController.swift */,
 				977394B02403F30900E38B82 /* SettingModel.swift */,
-				973BBA6524054E9900E3B061 /* TextViewController.swift */,
-				EABDE3A82473DAA300E0A5FA /* SettingCommonViewController.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -632,6 +630,7 @@
 		EA50E75F2A505627005E7D7A /* CelestiaUI */ = {
 			isa = PBXGroup;
 			children = (
+				EAA79CCA2A56A0000056DB91 /* Settings */,
 				EAD12AA12A566DD2007EE4D6 /* Control */,
 				EAD12AA02A566DA1007EE4D6 /* Favorite */,
 				EAD12A8D2A5656F1007EE4D6 /* Event */,
@@ -667,6 +666,8 @@
 				EA787339296EB5F40099AB11 /* Selection.swift */,
 				EA50E7822A505EDF005E7D7A /* CelestiaAction.swift */,
 				EAE92A5B2A558B4400BFE06E /* AsyncProviderExecutor.swift */,
+				EA78733C296EB61B0099AB11 /* URL.swift */,
+				EAA79CD82A56B10A0056DB91 /* UserDefaults.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -708,7 +709,6 @@
 		EA787338296EB5D50099AB11 /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				EA78733C296EB61B0099AB11 /* URL.swift */,
 				EA78733B296EB61A0099AB11 /* UserDefaults.swift */,
 				EA78730E296DEA6B0099AB11 /* CelestiaExecutor.swift */,
 				EA787308296DE50D0099AB11 /* Injecton.swift */,
@@ -728,6 +728,20 @@
 				EA50E7882A506406005E7D7A /* GlobalConstants.swift */,
 			);
 			path = UI;
+			sourceTree = "<group>";
+		};
+		EAA79CCA2A56A0000056DB91 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				97F1141D2408AE06003A06D7 /* DataLocationSelectionViewController.swift */,
+				973BBA442405216700E3B061 /* AboutViewController.swift */,
+				973BBA6524054E9900E3B061 /* TextViewController.swift */,
+				973BBA632405481200E3B061 /* TimeSettingViewController.swift */,
+				EA86E38326FE20C000FF2278 /* SettingsFrameRateViewController.swift */,
+				EABDE3A82473DAA300E0A5FA /* SettingCommonViewController.swift */,
+				EAA79CCB2A56A01F0056DB91 /* SettingsModel.swift */,
+			);
+			path = Settings;
 			sourceTree = "<group>";
 		};
 		EAB623B32A51AAE100063D1B /* Cell */ = {
@@ -1160,17 +1174,13 @@
 				977CDD2E240BC6A900137127 /* TutorialDescriptionCell.swift in Sources */,
 				EAFF95F428885A64009C2FFD /* FallbackWebViewController.swift in Sources */,
 				977CDD30240BD78F00137127 /* TutorialActionCell.swift in Sources */,
-				EABDE3A92473DAA300E0A5FA /* SettingCommonViewController.swift in Sources */,
 				EA50E7872A50609C005E7D7A /* AppCoreMisc.swift in Sources */,
 				9773949C2402A8F700E38B82 /* ToolbarViewController.swift in Sources */,
 				EA85C917289EA1ED009ADB1C /* IconView.swift in Sources */,
 				979D2F8223FEB1A6005D2592 /* CelestiaViewController.swift in Sources */,
-				EA78733E296EB61B0099AB11 /* URL.swift in Sources */,
 				977394AE2403F08800E38B82 /* SettingsMainViewController.swift in Sources */,
-				973BBA452405216700E3B061 /* AboutViewController.swift in Sources */,
 				EA934C90251D90C500DD284C /* MainSceneDelegate.swift in Sources */,
 				EADE7FBB252B517600D4174F /* CelestiaDisplayController.swift in Sources */,
-				973BBA642405481200E3B061 /* TimeSettingViewController.swift in Sources */,
 				EA787344296EBBAC0099AB11 /* Task.swift in Sources */,
 				EABF794A2538A86500F2460C /* ResourceManager.swift in Sources */,
 				97C3A9F22445FACF00EB365A /* CelestiaControlView.swift in Sources */,
@@ -1193,7 +1203,6 @@
 				EA9FB23F27B7852A00E0DC1F /* CommonSceneDelegate.swift in Sources */,
 				EA934C9A251D92AD00DD284C /* PanelSceneDelegate.swift in Sources */,
 				EA85C913289E9A7D009ADB1C /* UIContentSizeCategory+Extension.swift in Sources */,
-				97F1141E2408AE06003A06D7 /* DataLocationSelectionViewController.swift in Sources */,
 				97FF95A5240A340300E9F44F /* BaseResultHandler.swift in Sources */,
 				EA5D32E7266F9518005D5931 /* SheetPresentationController.swift in Sources */,
 				EADE7FC0252B54A400D4174F /* CelestiaInteractionController.swift in Sources */,
@@ -1202,8 +1211,6 @@
 				9773949E2402A96B00E38B82 /* SlideInPresentationController.swift in Sources */,
 				EA787309296DE50D0099AB11 /* Injecton.swift in Sources */,
 				EA17951B27B1510500D47397 /* CelestiaScriptHandler.swift in Sources */,
-				973BBA6624054E9900E3B061 /* TextViewController.swift in Sources */,
-				EA86E38426FE20C000FF2278 /* SettingsFrameRateViewController.swift in Sources */,
 				979D2F7E23FEB1A6005D2592 /* AppDelegate.swift in Sources */,
 				EA5E185D2477C78E00F5374B /* Toast.swift in Sources */,
 			);
@@ -1229,16 +1236,20 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EAA79CD92A56B10A0056DB91 /* UserDefaults.swift in Sources */,
 				EA66BBE12A55BA88008A7AAA /* GoToInputViewController.swift in Sources */,
 				EA50E7772A505DCE005E7D7A /* LinkPreviewCell.swift in Sources */,
 				EAB623AC2A51AA0A00063D1B /* BrowserContainerViewController.swift in Sources */,
 				EAB623AD2A51AA0A00063D1B /* BrowserCoordinatorController.swift in Sources */,
 				EAB623AB2A51AA0A00063D1B /* SubsystemBrowserCoordinatorViewController.swift in Sources */,
 				EAB623AF2A51AA4400063D1B /* BaseTableViewController.swift in Sources */,
+				EAA79CCC2A56A01F0056DB91 /* SettingsModel.swift in Sources */,
 				EAE92A5C2A558B4400BFE06E /* AsyncProviderExecutor.swift in Sources */,
 				EAD12AA72A566E4F007EE4D6 /* SelectionCell.swift in Sources */,
 				EA50E7812A505EA4005E7D7A /* Color.swift in Sources */,
 				EAE92A5F2A558B8D00BFE06E /* GameControllerManager.swift in Sources */,
+				EAA79CD12A56AD770056DB91 /* TextViewController.swift in Sources */,
+				EAA79CD22A56ADA90056DB91 /* AboutViewController.swift in Sources */,
 				EA839CB52A5696E100BF1CB4 /* SwitchCell.swift in Sources */,
 				EAB623B02A51AA7B00063D1B /* Selection.swift in Sources */,
 				EAE92A622A558D2900BFE06E /* GameControllerButton.swift in Sources */,
@@ -1266,17 +1277,22 @@
 				EAE92A642A558E8000BFE06E /* GameControllerThumbstickAxis.swift in Sources */,
 				EAB623B62A51AC0F00063D1B /* TextCell.swift in Sources */,
 				EAD12A902A5656FF007EE4D6 /* EventFinderCoordinatorViewController.swift in Sources */,
+				EAA79CCF2A56AC1C0056DB91 /* TimeSettingViewController.swift in Sources */,
 				EA66BBC62A55AABF008A7AAA /* SearchViewController.swift in Sources */,
 				EAD12AA82A566EE1007EE4D6 /* LinkFooterView.swift in Sources */,
 				EA50E7762A505DCE005E7D7A /* BodyActionCell.swift in Sources */,
+				EAA79CD72A56B0F00056DB91 /* URL.swift in Sources */,
 				EAD12AAA2A56757F007EE4D6 /* StepperCell.swift in Sources */,
 				EA50E77A2A505DCE005E7D7A /* InfoViewController.swift in Sources */,
+				EAA79CD42A56AF6D0056DB91 /* SettingsFrameRateViewController.swift in Sources */,
 				EAD12AA52A566DE7007EE4D6 /* FavoriteItemViewController.swift in Sources */,
 				EA66BBE32A564888008A7AAA /* SelectionViewController.swift in Sources */,
 				EA50E7792A505DCE005E7D7A /* BodyInfoModel.swift in Sources */,
 				EA50E77C2A505E09005E7D7A /* ActionButton.swift in Sources */,
 				EAD12A8E2A5656FF007EE4D6 /* EventFinderInputViewController.swift in Sources */,
+				EAA79CD62A56B0100056DB91 /* DataLocationSelectionViewController.swift in Sources */,
 				EA839CB42A5696E100BF1CB4 /* SliderCell.swift in Sources */,
+				EAA79CCE2A56AB2D0056DB91 /* SettingCommonViewController.swift in Sources */,
 				EAE92A602A558B9900BFE06E /* GameControllerAction.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -10,12 +10,12 @@
 //
 
 import CelestiaCore
-import CelestiaUI
 import UIKit
 
-class TimeSettingViewController: BaseTableViewController {
-    @Injected(\.appCore) private var core
-    @Injected(\.executor) private var executor
+public class TimeSettingViewController: BaseTableViewController {
+    private let core: AppCore
+    private let executor: AsyncProviderExecutor
+    private let dateInputHandler: (_ viewController: UIViewController, _ title: String, _ format: String) async -> Date?
 
     private lazy var displayDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -24,34 +24,41 @@ class TimeSettingViewController: BaseTableViewController {
         return formatter
     }()
 
-    init() {
+    public init(
+        core: AppCore,
+        executor: AsyncProviderExecutor,
+        dateInputHandler: @escaping (_ viewController: UIViewController, _ title: String, _ format: String) async -> Date?
+    ) {
+        self.core = core
+        self.executor = executor
+        self.dateInputHandler = dateInputHandler
         super.init(style: .defaultGrouped)
     }
     
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
 
-        setup()
+        setUp()
     }
 }
 
 private extension TimeSettingViewController {
-    func setup() {
+    func setUp() {
         tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         title = CelestiaString("Current Time", comment: "")
     }
 }
 
 extension TimeSettingViewController {
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 2
     }
 
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
         if indexPath.row == 0 {
             cell.title = CelestiaString("Select Time", comment: "")
@@ -64,34 +71,32 @@ extension TimeSettingViewController {
         return cell
     }
 
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    public override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.row == 0 {
             let preferredFormat = DateFormatter.dateFormat(fromTemplate: "yyyyMMddHHmmss", options: 0, locale: Locale.current) ?? "yyyy/MM/dd HH:mm:ss"
-            showDateInputDifferentiated(String.localizedStringWithFormat(CelestiaString("Please enter the time in \"%s\" format.", comment: "").toLocalizationTemplate, preferredFormat), format: preferredFormat) { [weak self] (result) in
-                guard let self = self else { return }
-
-                guard let date = result else {
+            let title = String.localizedStringWithFormat(CelestiaString("Please enter the time in \"%s\" format.", comment: "").toLocalizationTemplate, preferredFormat)
+            Task {
+                guard let date = await dateInputHandler(self, title, preferredFormat) else {
                     self.showError(CelestiaString("Unrecognized time string.", comment: ""))
                     return
                 }
-
-                Task {
-                    await self.executor.run { core in
-                        core.simulation.time = date
-                    }
-                    self.tableView.reloadData()
+                await self.executor.run { core in
+                    core.simulation.time = date
                 }
+                self.tableView.reloadData()
             }
         } else {
             Task {
-                await executor.receive(.currentTime)
+                await executor.run {
+                    $0.receive(.currentTime)
+                }
                 self.tableView.reloadData()
             }
         }
     }
 
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    public override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
 }

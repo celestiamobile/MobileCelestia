@@ -9,27 +9,31 @@
 // of the License, or (at your option) any later version.
 //
 
-import CelestiaUI
 import UIKit
 
-final class AboutViewController: BaseTableViewController {
+public final class AboutViewController: BaseTableViewController {
     private let officialWebsiteURL = URL(string: "https://celestia.mobi")!
     private let aboutCelestiaURL = URL(string: "https://celestia.mobi/about")!
 
     private var items: [[TextItem]] = []
 
-    init() {
+    private let bundle: Bundle
+    private let defaultDirectoryURL: URL
+
+    public init(bundle: Bundle, defaultDirectoryURL: URL) {
+        self.bundle = bundle
+        self.defaultDirectoryURL = defaultDirectoryURL
         super.init(style: .defaultGrouped)
     }
 
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
 
-        setup()
+        setUp()
 
         loadContents()
     }
@@ -37,13 +41,13 @@ final class AboutViewController: BaseTableViewController {
     private func loadContents() {
         var totalItems = [[TextItem]]()
 
-        let shortVersion = Bundle.app.infoDictionary!["CFBundleShortVersionString"] as! String
-        let buildNumber = Bundle.app.infoDictionary!["CFBundleVersion"] as! String
+        let shortVersion = bundle.infoDictionary!["CFBundleShortVersionString"] as! String
+        let buildNumber = bundle.infoDictionary!["CFBundleVersion"] as! String
         let versionItem = TextItem.short(title: CelestiaString("Version", comment: ""), detail: "\(shortVersion)(\(buildNumber))")
 
         totalItems.append([versionItem])
 
-        let authorsPath = UserDefaults.defaultDataDirectory.appendingPathComponent("AUTHORS").path
+        let authorsPath = defaultDirectoryURL.appendingPathComponent("AUTHORS").path
         if let text = try? String(contentsOfFile: authorsPath) {
             totalItems.append([
                 TextItem.short(title: CelestiaString("Authors", comment: ""), detail: ""),
@@ -51,7 +55,7 @@ final class AboutViewController: BaseTableViewController {
             ])
         }
 
-        let translatorsPath = UserDefaults.defaultDataDirectory.appendingPathComponent("TRANSLATORS").path
+        let translatorsPath = defaultDirectoryURL.appendingPathComponent("TRANSLATORS").path
         if let text = try? String(contentsOfFile: translatorsPath) {
             totalItems.append([
                 TextItem.short(title: CelestiaString("Translators", comment: ""), detail: ""),
@@ -76,7 +80,7 @@ final class AboutViewController: BaseTableViewController {
 }
 
 private extension AboutViewController {
-    func setup() {
+    func setUp() {
         tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         tableView.register(MultiLineTextCell.self, forCellReuseIdentifier: "MultiLine")
         title = CelestiaString("About", comment: "")
@@ -84,15 +88,15 @@ private extension AboutViewController {
 }
 
 extension AboutViewController {
-    override func numberOfSections(in tableView: UITableView) -> Int {
+    public override func numberOfSections(in tableView: UITableView) -> Int {
         return items.count
     }
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return items[section].count
     }
 
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = items[indexPath.section][indexPath.row]
         switch item {
         case .short(let title, let detail):
@@ -119,11 +123,11 @@ extension AboutViewController {
         }
     }
 
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    public override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
 
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    public override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let item = items[indexPath.section][indexPath.row]
         switch item {

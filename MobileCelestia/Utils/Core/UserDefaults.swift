@@ -9,6 +9,7 @@
 // of the License, or (at your option) any later version.
 //
 
+import CelestiaUI
 import Foundation
 
 enum UserDefaultsKey: String {
@@ -100,32 +101,12 @@ extension UserDefaults {
 
     static let extraScriptDirectory: URL? = extraDirectory?.appendingPathComponent("scripts")
 
-    private func path(for key: UserDefaultsKey, defaultValue: URL) -> UniformedURL {
-        if let bookmark: Data = self[key] {
-            if let url = try? UniformedURL(bookmark: bookmark) {
-                if url.stale {
-                    do {
-                        if let newBookmark = try url.bookmark() {
-                            self[key] = newBookmark
-                        }
-                    } catch {}
-                }
-                return url
-            }
-            return UniformedURL(url: defaultValue)
-        } else if let path: String = self[key] {
-            return UniformedURL(url: URL(fileURLWithPath: path))
-        } else {
-            return UniformedURL(url: defaultValue)
-        }
-    }
-
     func currentDataDirectory() -> UniformedURL {
-        return path(for: .dataDirPath, defaultValue: Self.defaultDataDirectory)
+        return url(for: UserDefaultsKey.dataDirPath.rawValue, defaultValue: Self.defaultDataDirectory)
     }
 
     func currentConfigFile() -> UniformedURL {
-        return path(for: .configFile, defaultValue: Self.defaultConfigFile)
+        return url(for: UserDefaultsKey.configFile.rawValue, defaultValue: Self.defaultConfigFile)
     }
 
     func saveDataDirectory(_ bookmark: Data?) {

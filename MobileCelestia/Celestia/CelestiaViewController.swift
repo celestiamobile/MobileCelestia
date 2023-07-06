@@ -10,8 +10,9 @@
 //
 
 import AsyncGL
-import UIKit
 import CelestiaCore
+import CelestiaUI
+import UIKit
 
 enum CelestiaLoadingError: Error {
     case openGLError

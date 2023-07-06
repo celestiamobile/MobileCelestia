@@ -9,8 +9,9 @@
 // of the License, or (at your option) any later version.
 //
 
-import UIKit
 import CelestiaCore
+import CelestiaUI
+import UIKit
 
 enum SettingAction {
     case refreshFrameRate(newFrameRate: Int)
@@ -70,14 +71,16 @@ private extension SettingsCoordinatorController {
             switch item.type {
             case .common:
                 if let associated = item.associatedItem.base as? AssociatedCommonItem {
-                    viewController = SettingCommonViewController(item: associated)
+                    viewController = SettingCommonViewController(core: core, executor: executor, userDefaults: userDefaults, item: associated)
                 } else {
                     logWrongAssociatedItemType(item.associatedItem)
                 }
             case .about:
-                viewController = AboutViewController()
+                viewController = AboutViewController(bundle: .app, defaultDirectoryURL: UserDefaults.defaultDataDirectory)
             case .time:
-                viewController = TimeSettingViewController()
+                viewController = TimeSettingViewController(core: core, executor: executor, dateInputHandler: { viewController, title, format in
+                    return await viewController.getDateInputDifferentiated(title, format: format)
+                })
             case .render:
                 let renderInfo = self.executor.get { core -> String in
                     self.executor.makeRenderContextCurrent()
@@ -85,9 +88,9 @@ private extension SettingsCoordinatorController {
                 }
                 viewController = TextViewController(title: item.name, text: renderInfo)
             case .dataLocation:
-                viewController = DataLocationSelectionViewController()
+                viewController = DataLocationSelectionViewController(userDefaults: userDefaults, dataDirectoryUserDefaultsKey: UserDefaultsKey.dataDirPath.rawValue, configFileUserDefaultsKey: UserDefaultsKey.configFile.rawValue, defaultDataDirectoryURL: UserDefaults.defaultDataDirectory, defaultConfigFileURL: UserDefaults.defaultConfigFile)
             case .frameRate:
-                viewController = SettingsFrameRateViewController(screen: self.screenProvider(), frameRateUpdateHandler: { [weak self] newFrameRate in
+                viewController = SettingsFrameRateViewController(screen: self.screenProvider(), userDefaults: userDefaults, userDefaultsKey: UserDefaultsKey.frameRate.rawValue, frameRateUpdateHandler: { [weak self] newFrameRate in
                     self?.actionHandler(.refreshFrameRate(newFrameRate: newFrameRate))
                 })
             case .slider, .prefSwitch, .checkmark, .action, .custom, .keyedSelection, .prefSelection, .selection:

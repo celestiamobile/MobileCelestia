@@ -9,13 +9,17 @@
 // of the License, or (at your option) any later version.
 //
 
-import CelestiaUI
 import MobileCoreServices
 import UIKit
 import UniformTypeIdentifiers
 
-class DataLocationSelectionViewController: BaseTableViewController {
-    @Injected(\.userDefaults) private var userDefaults
+public class DataLocationSelectionViewController: BaseTableViewController {
+    private let userDefaults: UserDefaults
+    private let dataDirectoryUserDefaultsKey: String
+    private let configFileUserDefaultsKey: String
+    private let defaultDataDirectoryURL: URL
+    private let defaultConfigFileURL: URL
+
     private var items: [[TextItem]] = []
 
     private enum Location: Int {
@@ -25,21 +29,26 @@ class DataLocationSelectionViewController: BaseTableViewController {
 
     private var currentPicker: Location?
 
-    init() {
+    public init(userDefaults: UserDefaults, dataDirectoryUserDefaultsKey: String, configFileUserDefaultsKey: String, defaultDataDirectoryURL: URL, defaultConfigFileURL: URL) {
+        self.userDefaults = userDefaults
+        self.dataDirectoryUserDefaultsKey = dataDirectoryUserDefaultsKey
+        self.configFileUserDefaultsKey = configFileUserDefaultsKey
+        self.defaultConfigFileURL = defaultConfigFileURL
+        self.defaultDataDirectoryURL = defaultDataDirectoryURL
         super.init(style: .defaultGrouped)
     }
 
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
 
-        setup()
+        setUp()
     }
 
-    override func viewWillAppear(_ animated: Bool) {
+    public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
         loadContents()
@@ -50,9 +59,9 @@ class DataLocationSelectionViewController: BaseTableViewController {
 
         totalItems.append([
             TextItem.short(title: CelestiaString("Data Directory", comment: ""),
-                           detail: userDefaults.currentDataDirectory().url == UserDefaults.defaultDataDirectory ? CelestiaString("Default", comment: "") : CelestiaString("Custom", comment: "")),
+                           detail: userDefaults.url(for: dataDirectoryUserDefaultsKey, defaultValue: defaultDataDirectoryURL).url == defaultDataDirectoryURL ? CelestiaString("Default", comment: "") : CelestiaString("Custom", comment: "")),
             TextItem.short(title: CelestiaString("Config File", comment: ""),
-                           detail: userDefaults.currentConfigFile().url == UserDefaults.defaultConfigFile ? CelestiaString("Default", comment: "") : CelestiaString("Custom", comment: "")),
+                           detail: userDefaults.url(for: configFileUserDefaultsKey, defaultValue: defaultConfigFileURL).url == defaultConfigFileURL ? CelestiaString("Default", comment: "") : CelestiaString("Custom", comment: "")),
         ])
 
         totalItems.append([
@@ -65,22 +74,22 @@ class DataLocationSelectionViewController: BaseTableViewController {
 }
 
 private extension DataLocationSelectionViewController {
-    func setup() {
+    func setUp() {
         tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         title = CelestiaString("Data Location", comment: "")
     }
 }
 
 extension DataLocationSelectionViewController {
-    override func numberOfSections(in tableView: UITableView) -> Int {
+    public override func numberOfSections(in tableView: UITableView) -> Int {
         return items.count
     }
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return items[section].count
     }
 
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = items[indexPath.section][indexPath.row]
         switch item {
         case .short(let title, let detail):
@@ -95,15 +104,15 @@ extension DataLocationSelectionViewController {
         }
     }
 
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    public override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
 
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    public override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.section == 1 {
-            userDefaults.saveDataDirectory(nil)
-            userDefaults.saveConfigFile(nil)
+            userDefaults.setValue(nil, forKey: dataDirectoryUserDefaultsKey)
+            userDefaults.setValue(nil, forKey: configFileUserDefaultsKey)
 
             loadContents()
         } else {
@@ -122,7 +131,7 @@ extension DataLocationSelectionViewController {
         }
     }
 
-    override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+    public override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         if section == 0 {
             return CelestiaString("Configuration will take effect after a restart.", comment: "")
         }
@@ -131,7 +140,7 @@ extension DataLocationSelectionViewController {
 }
 
 extension DataLocationSelectionViewController: UIDocumentPickerDelegate {
-    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+    public func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
         guard let url = urls.first else { return }
         // try to start reading
         if !url.startAccessingSecurityScopedResource() {
@@ -148,9 +157,9 @@ extension DataLocationSelectionViewController: UIDocumentPickerDelegate {
             let bookmark = try url.bookmarkData(options: .init(rawValue: 0), includingResourceValuesForKeys: nil, relativeTo: nil)
             #endif
             if currentPicker == .dataDirectory {
-                userDefaults.saveDataDirectory(bookmark)
+                userDefaults.setValue(bookmark, forKey: dataDirectoryUserDefaultsKey)
             } else if currentPicker == .configFile {
-                userDefaults.saveConfigFile(bookmark)
+                userDefaults.setValue(bookmark, forKey: dataDirectoryUserDefaultsKey)
             }
         } catch let error {
             showError(error.localizedDescription)
