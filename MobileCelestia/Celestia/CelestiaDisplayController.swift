@@ -9,11 +9,10 @@
 // of the License, or (at your option) any later version.
 //
 
-import UIKit
-import CelestiaUI
-import CelestiaCore
-
 import AsyncGL
+import CelestiaCore
+import CelestiaFoundation
+import UIKit
 
 protocol CelestiaDisplayControllerDelegate: AnyObject {
     func celestiaDisplayController(_ celestiaDisplayController: CelestiaDisplayController, loadingStatusUpdated status: String)

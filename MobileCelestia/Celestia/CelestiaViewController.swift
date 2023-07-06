@@ -11,7 +11,7 @@
 
 import AsyncGL
 import CelestiaCore
-import CelestiaUI
+import CelestiaFoundation
 import UIKit
 
 enum CelestiaLoadingError: Error {

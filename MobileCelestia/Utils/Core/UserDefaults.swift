@@ -9,7 +9,7 @@
 // of the License, or (at your option) any later version.
 //
 
-import CelestiaUI
+import CelestiaFoundation
 import Foundation
 
 enum UserDefaultsKey: String {

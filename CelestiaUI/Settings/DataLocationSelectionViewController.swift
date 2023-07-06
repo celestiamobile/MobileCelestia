@@ -9,6 +9,7 @@
 // of the License, or (at your option) any later version.
 //
 
+import CelestiaFoundation
 import MobileCoreServices
 import UIKit
 import UniformTypeIdentifiers

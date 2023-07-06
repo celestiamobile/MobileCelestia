@@ -12,6 +12,7 @@
 import UIKit
 
 import CelestiaCore
+import CelestiaFoundation
 #if targetEnvironment(macCatalyst)
 import CelestiaHelper
 #endif

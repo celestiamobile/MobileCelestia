@@ -10,6 +10,7 @@
 //
 
 import CelestiaCore
+import CelestiaFoundation
 import CelestiaUI
 import UIKit
 

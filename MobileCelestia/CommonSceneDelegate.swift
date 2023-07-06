@@ -9,7 +9,7 @@
 // of the License, or (at your option) any later version.
 //
 
-import CelestiaUI
+import CelestiaFoundation
 import UIKit
 
 class CommonSceneDelegate: UIResponder, UIWindowSceneDelegate {
