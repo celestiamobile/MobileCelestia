@@ -26,6 +26,7 @@ class SettingsCoordinatorController: UIViewController {
 
     @Injected(\.appCore) private var core
     @Injected(\.executor) private var executor
+    @Injected(\.userDefaults) private var userDefaults
 
     private let actionHandler: ((SettingAction) -> Void)
     private let screenProvider: (() -> UIScreen)
@@ -54,7 +55,7 @@ class SettingsCoordinatorController: UIViewController {
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
 
-        core.storeUserDefaults()
+        core.store(userDefaults)
     }
 }
 

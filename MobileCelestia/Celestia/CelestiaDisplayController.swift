@@ -166,7 +166,7 @@ extension CelestiaDisplayController {
                 continue
             }
 
-            self.core.loadUserDefaultsWithAppDefaults(atPath: Bundle.app.path(forResource: "defaults", ofType: "plist"))
+            self.core.load(userDefaults, withAppDefaultsAtPath: Bundle.app.path(forResource: "defaults", ofType: "plist"))
             success = true
         }
 
