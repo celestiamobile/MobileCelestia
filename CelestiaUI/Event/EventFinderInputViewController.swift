@@ -80,7 +80,7 @@ class EventFinderInputViewController: BaseTableViewController {
 private extension EventFinderInputViewController {
     func setup() {
         title = CelestiaString("Eclipse Finder", comment: "")
-        tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Text")
+        tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: CelestiaString("Find", comment: ""), style: .plain, target: self, action: #selector(findEclipse))
     }
@@ -117,7 +117,7 @@ extension EventFinderInputViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = allSections[indexPath.section][indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
         cell.title = item.title
 
         if item is ObjectItem {

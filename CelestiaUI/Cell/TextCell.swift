@@ -1,5 +1,5 @@
 //
-// SettingTextCell.swift
+// TextCell.swift
 //
 // Copyright © 2020 Celestia Development Team. All rights reserved.
 //
@@ -11,7 +11,7 @@
 
 import UIKit
 
-public class SettingTextCell: UITableViewCell {
+public class TextCell: UITableViewCell {
     private lazy var label = UILabel(textStyle: .body)
     private lazy var detailLabel = UILabel(textStyle: .body)
 
@@ -30,7 +30,7 @@ public class SettingTextCell: UITableViewCell {
     public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
-        setup()
+        setUp()
     }
 
     public required init?(coder: NSCoder) {
@@ -84,8 +84,8 @@ public class SettingTextCell: UITableViewCell {
     }
 }
 
-private extension SettingTextCell {
-    func setup() {
+private extension TextCell {
+    func setUp() {
         contentView.addSubview(label)
         label.textColor = .label
 

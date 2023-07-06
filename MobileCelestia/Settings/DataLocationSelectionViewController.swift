@@ -66,7 +66,7 @@ class DataLocationSelectionViewController: BaseTableViewController {
 
 private extension DataLocationSelectionViewController {
     func setup() {
-        tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Text")
+        tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         title = CelestiaString("Data Location", comment: "")
     }
 }
@@ -84,7 +84,7 @@ extension DataLocationSelectionViewController {
         let item = items[indexPath.section][indexPath.row]
         switch item {
         case .short(let title, let detail):
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
             cell.title = title
             cell.detail = detail
             cell.selectionStyle = .default

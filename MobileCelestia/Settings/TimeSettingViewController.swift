@@ -41,7 +41,7 @@ class TimeSettingViewController: BaseTableViewController {
 
 private extension TimeSettingViewController {
     func setup() {
-        tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Text")
+        tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         title = CelestiaString("Current Time", comment: "")
     }
 }
@@ -52,7 +52,7 @@ extension TimeSettingViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
         if indexPath.row == 0 {
             cell.title = CelestiaString("Select Time", comment: "")
             cell.detail = displayDateFormatter.string(from: core.simulation.time)

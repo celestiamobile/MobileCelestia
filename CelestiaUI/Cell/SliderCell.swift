@@ -1,5 +1,5 @@
 //
-// SettngSliderCell.swift
+// SliderCell.swift
 //
 // Copyright © 2020 Celestia Development Team. All rights reserved.
 //
@@ -9,33 +9,32 @@
 // of the License, or (at your option) any later version.
 //
 
-import CelestiaUI
 import UIKit
 
-class SettingSliderCell: UITableViewCell {
+public class SliderCell: UITableViewCell {
     private lazy var topContainer = UIView()
     private lazy var bottomContainer = UIView()
     private lazy var label = UILabel(textStyle: .body)
     private lazy var slider = UISlider()
 
-    var title: String? { didSet { label.text = title }  }
-    var value: Double = 0 { didSet { slider.value = Float(value) * 100 } }
+    public var title: String? { didSet { label.text = title }  }
+    public var value: Double = 0 { didSet { slider.value = Float(value) * 100 } }
 
-    var valueChangeBlock: ((Double) -> Void)?
+    public var valueChangeBlock: ((Double) -> Void)?
 
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+    public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
-        setup()
+        setUp()
     }
 
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
 
-private extension SettingSliderCell {
-    func setup() {
+private extension SliderCell {
+    func setUp() {
         selectionStyle = .none
 
         topContainer.translatesAutoresizingMaskIntoConstraints = false

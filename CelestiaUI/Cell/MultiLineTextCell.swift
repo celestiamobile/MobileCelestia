@@ -9,28 +9,27 @@
 // of the License, or (at your option) any later version.
 //
 
-import CelestiaUI
 import UIKit
 
-class MultiLineTextCell: UITableViewCell {
+public class MultiLineTextCell: UITableViewCell {
     private lazy var label = UILabel(textStyle: .body)
 
-    var title: String? { didSet { label.text = title }  }
-    var attributedTitle: NSAttributedString? { didSet { label.attributedText = attributedTitle } }
+    public var title: String? { didSet { label.text = title }  }
+    public var attributedTitle: NSAttributedString? { didSet { label.attributedText = attributedTitle } }
 
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+    public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
-        setup()
+        setUp()
     }
 
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
 
 private extension MultiLineTextCell {
-    func setup() {        label.translatesAutoresizingMaskIntoConstraints = false
+    func setUp() {        label.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(label)
         label.textColor = .label
         label.numberOfLines = 0

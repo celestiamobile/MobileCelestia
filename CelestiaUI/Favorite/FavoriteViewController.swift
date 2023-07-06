@@ -70,7 +70,7 @@ private extension FavoriteViewController {
         #if targetEnvironment(macCatalyst)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Text")
         #else
-        tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Text")
+        tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         #endif
         title = CelestiaString("Favorites", comment: "")
     }
@@ -93,7 +93,7 @@ extension FavoriteViewController {
             cell.textLabel?.text = type?.description
         }
         #else
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
         cell.title = type?.description
         #endif
         return cell

@@ -111,7 +111,7 @@ private extension SearchViewController {
         searchBar.delegate = self
 
         tableView.keyboardDismissMode = .interactive
-        tableView.register(resultsInSidebar ? UITableViewCell.self : SettingTextCell.self, forCellReuseIdentifier: "Text")
+        tableView.register(resultsInSidebar ? UITableViewCell.self : TextCell.self, forCellReuseIdentifier: "Text")
     }
 }
 
@@ -183,7 +183,7 @@ extension SearchViewController {
             }
             return cell
         }
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
         cell.title = result.name
         return cell
     }

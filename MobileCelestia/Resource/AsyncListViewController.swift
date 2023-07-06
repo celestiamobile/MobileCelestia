@@ -150,7 +150,7 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
             cell.accessoryType = Self.showDisclosureIndicator ? .disclosureIndicator : .none
             return cell
         }
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
         cell.accessoryType = Self.showDisclosureIndicator ? .disclosureIndicator : .none
         cell.title = item.name
         return cell
@@ -182,7 +182,7 @@ private extension AsyncListViewController {
         if Self.useStandardUITableViewCell {
             tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Text")
         } else {
-            tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Text")
+            tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         }
 
         refreshButton.setTitle(CelestiaString("Refresh", comment: ""), for: .normal)

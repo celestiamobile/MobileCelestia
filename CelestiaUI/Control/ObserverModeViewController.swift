@@ -87,7 +87,7 @@ private extension ObserverModeViewController {
         if #available(iOS 15.0, *) {
             tableView.register(SelectionCell.self, forCellReuseIdentifier: "Selection")
         }
-        tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Text")
+        tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         tableView.register(LinkFooterView.self, forHeaderFooterViewReuseIdentifier: "Footer")
         tableView.keyboardDismissMode = .interactive
 
@@ -118,7 +118,7 @@ extension ObserverModeViewController {
             }
             return cell
         }
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
         let title: String
         let detail: String
         let type: UITableViewCell.AccessoryType

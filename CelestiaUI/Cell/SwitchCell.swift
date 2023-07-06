@@ -1,5 +1,5 @@
 //
-// SettingSwitchCell.swift
+// SwitchCell.swift
 //
 // Copyright © 2020 Celestia Development Team. All rights reserved.
 //
@@ -9,31 +9,30 @@
 // of the License, or (at your option) any later version.
 //
 
-import CelestiaUI
 import UIKit
 
-class SettingSwitchCell: UITableViewCell {
+public class SwitchCell: UITableViewCell {
     private lazy var label = UILabel(textStyle: .body)
     private lazy var `switch` = UISwitch()
 
-    var title: String? { didSet { label.text = title }  }
-    var enabled: Bool = false { didSet { `switch`.isOn = enabled } }
+    public var title: String? { didSet { label.text = title }  }
+    public var enabled: Bool = false { didSet { `switch`.isOn = enabled } }
 
-    var toggleBlock: ((Bool) -> Void)?
+    public var toggleBlock: ((Bool) -> Void)?
 
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+    public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
-        setup()
+        setUp()
     }
 
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
 
-private extension SettingSwitchCell {
-    func setup() {
+private extension SwitchCell {
+    func setUp() {
         selectionStyle = .none
         label.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(label)

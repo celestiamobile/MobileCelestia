@@ -31,7 +31,7 @@ public final class SelectionViewController: BaseTableViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
 
-        tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Cell")
+        tableView.register(TextCell.self, forCellReuseIdentifier: "Cell")
     }
 }
 
@@ -45,7 +45,7 @@ extension SelectionViewController {
     }
 
     public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! SettingTextCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! TextCell
         cell.title = options[indexPath.row]
         cell.accessoryType = indexPath.row == selectedIndex ? .checkmark : .none
         return cell

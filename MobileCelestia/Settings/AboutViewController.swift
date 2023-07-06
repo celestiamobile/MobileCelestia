@@ -77,7 +77,7 @@ final class AboutViewController: BaseTableViewController {
 
 private extension AboutViewController {
     func setup() {
-        tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Text")
+        tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         tableView.register(MultiLineTextCell.self, forCellReuseIdentifier: "MultiLine")
         title = CelestiaString("About", comment: "")
     }
@@ -96,7 +96,7 @@ extension AboutViewController {
         let item = items[indexPath.section][indexPath.row]
         switch item {
         case .short(let title, let detail):
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
             cell.title = title
             cell.detail = detail
             cell.selectionStyle = .none
@@ -107,7 +107,7 @@ extension AboutViewController {
             cell.selectionStyle = .none
             return cell
         case .link(let title, _):
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
             cell.title = title
             #if targetEnvironment(macCatalyst)
             cell.titleColor = cell.tintColor

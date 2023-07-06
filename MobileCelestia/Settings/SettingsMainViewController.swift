@@ -40,7 +40,7 @@ private extension SettingsMainViewController {
         #if targetEnvironment(macCatalyst)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Text")
         #else
-        tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Text")
+        tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         #endif
         title = CelestiaString("Settings", comment: "")
     }
@@ -67,7 +67,7 @@ extension SettingsMainViewController {
             cell.textLabel?.text = item.name
         }
         #else
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
         cell.title = item.name
         cell.accessoryType = .disclosureIndicator
         #endif

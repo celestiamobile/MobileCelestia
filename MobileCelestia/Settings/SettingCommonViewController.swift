@@ -38,12 +38,12 @@ class SettingCommonViewController: BaseTableViewController {
 
 private extension SettingCommonViewController {
     func setup() {
-        tableView.register(SettingSliderCell.self, forCellReuseIdentifier: "Slider")
-        tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Action")
-        tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Checkmark")
-        tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Custom")
-        tableView.register(SettingSwitchCell.self, forCellReuseIdentifier: "Switch")
-        tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Selection")
+        tableView.register(SliderCell.self, forCellReuseIdentifier: "Slider")
+        tableView.register(TextCell.self, forCellReuseIdentifier: "Action")
+        tableView.register(TextCell.self, forCellReuseIdentifier: "Checkmark")
+        tableView.register(TextCell.self, forCellReuseIdentifier: "Custom")
+        tableView.register(SwitchCell.self, forCellReuseIdentifier: "Switch")
+        tableView.register(TextCell.self, forCellReuseIdentifier: "Selection")
         if #available(iOS 15, *) {
             tableView.register(SelectionCell.self, forCellReuseIdentifier: "Selection15")
         }
@@ -73,7 +73,7 @@ extension SettingCommonViewController {
                 let maxValue = item.maxValue
                 let minValue = item.minValue
                 let key = item.key
-                let cell = tableView.dequeueReusableCell(withIdentifier: "Slider", for: indexPath) as! SettingSliderCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: "Slider", for: indexPath) as! SliderCell
                 cell.title = row.name
                 cell.value = ((core.value(forKey: key) as! Double) - minValue) / (maxValue - minValue)
                 cell.valueChangeBlock = { [weak self] (value) in
@@ -90,7 +90,7 @@ extension SettingCommonViewController {
             }
         case .action:
             if row.associatedItem.base is AssociatedActionItem {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "Action", for: indexPath) as! SettingTextCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: "Action", for: indexPath) as! TextCell
                 cell.title = row.name
                 return cell
             } else {
@@ -98,7 +98,7 @@ extension SettingCommonViewController {
             }
         case .custom:
             if row.associatedItem.base is AssociatedCustomItem {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "Custom", for: indexPath) as! SettingTextCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: "Custom", for: indexPath) as! TextCell
                 cell.title = row.name
                 return cell
             } else {
@@ -108,7 +108,7 @@ extension SettingCommonViewController {
             if let item = row.associatedItem.base as? AssociatedCheckmarkItem {
                 let enabled = core.value(forKey: item.key) as? Bool ?? false
                 if item.representation == .switch {
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "Switch", for: indexPath) as! SettingSwitchCell
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "Switch", for: indexPath) as! SwitchCell
                     cell.title = row.name
                     cell.enabled = enabled
                     cell.toggleBlock = { [weak self] newValue in
@@ -119,7 +119,7 @@ extension SettingCommonViewController {
                     }
                     return cell
                 } else {
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "Checkmark", for: indexPath) as! SettingTextCell
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "Checkmark", for: indexPath) as! TextCell
                     cell.title = row.name
                     cell.accessoryType = enabled ? .checkmark : .none
                     return cell
@@ -130,7 +130,7 @@ extension SettingCommonViewController {
         case .keyedSelection:
             if let item = row.associatedItem.base as? AssociatedKeyedSelectionItem {
                 let selectedIndex = core.value(forKey: item.key) as? Int ?? 0
-                let cell = tableView.dequeueReusableCell(withIdentifier: "Checkmark", for: indexPath) as! SettingTextCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: "Checkmark", for: indexPath) as! TextCell
                 cell.title = row.name
                 cell.accessoryType = selectedIndex == item.index ? .checkmark : .none
                 return cell
@@ -139,7 +139,7 @@ extension SettingCommonViewController {
             }
         case .prefSwitch:
             if let item = row.associatedItem.base as? AssociatedPreferenceSwitchItem {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "Switch", for: indexPath) as! SettingSwitchCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: "Switch", for: indexPath) as! SwitchCell
                 cell.enabled = userDefaults[item.key] ?? item.defaultOn
                 cell.title = row.name
                 cell.toggleBlock = { [weak self] enabled in
@@ -163,7 +163,7 @@ extension SettingCommonViewController {
                     }
                     return cell
                 }
-                let cell = tableView.dequeueReusableCell(withIdentifier: "Selection", for: indexPath) as! SettingTextCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: "Selection", for: indexPath) as! TextCell
                 cell.title = row.name
                 cell.detail = item.options.first(where: { $0.value == currentValue })?.name ?? ""
                 cell.accessoryType = .disclosureIndicator
@@ -186,7 +186,7 @@ extension SettingCommonViewController {
                     }
                     return cell
                 }
-                let cell = tableView.dequeueReusableCell(withIdentifier: "Selection", for: indexPath) as! SettingTextCell
+                let cell = tableView.dequeueReusableCell(withIdentifier: "Selection", for: indexPath) as! TextCell
                 cell.title = row.name
                 cell.detail = item.options.first(where: { $0.value == currentValue })?.name ?? ""
                 cell.accessoryType = .disclosureIndicator

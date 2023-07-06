@@ -68,7 +68,7 @@ class SettingsFrameRateViewController: BaseTableViewController {
 
 private extension SettingsFrameRateViewController {
     func setup() {
-        tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Text")
+        tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         title = CelestiaString("Frame Rate", comment: "")
     }
 }
@@ -81,7 +81,7 @@ extension SettingsFrameRateViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let selectedFrameRate: Int = userDefaults[.frameRate] ?? 60
         let item = items[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
         cell.title = String.localizedStringWithFormat(CelestiaString(item.isMaximum ? "Maximum (%d FPS)" : "%d FPS", comment: ""), item.frameRate)
         cell.accessoryType = item.frameRateValue == selectedFrameRate ? .checkmark : .none
         return cell

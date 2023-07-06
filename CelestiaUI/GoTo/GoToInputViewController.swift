@@ -136,7 +136,7 @@ private extension GoToInputViewController {
     func setUp() {
         title = CelestiaString("Go to Object", comment: "")
         tableView.keyboardDismissMode = .interactive
-        tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Text")
+        tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         tableView.register(LongitudeLatitudeInputCell.self, forCellReuseIdentifier: "LonLat")
         if #available(iOS 15.0, *) {
             tableView.register(DistanceInputCell.self, forCellReuseIdentifier: "Distance")
@@ -216,7 +216,7 @@ extension GoToInputViewController {
             }
             return cell
         }
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
         cell.title = item.title
         cell.detail = item.detail
         cell.accessoryType = .disclosureIndicator

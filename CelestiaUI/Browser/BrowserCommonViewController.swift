@@ -37,7 +37,7 @@ class BrowserCommonViewController: BaseTableViewController {
 
 private extension BrowserCommonViewController {
     func setup() {
-        tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Text")
+        tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
     }
 }
 
@@ -58,7 +58,7 @@ extension BrowserCommonViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
         if item.entry != nil && indexPath.section == 0 {
             cell.title = item.name
             cell.accessoryType = .none
