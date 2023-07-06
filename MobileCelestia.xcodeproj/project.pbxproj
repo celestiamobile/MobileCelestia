@@ -121,6 +121,7 @@
 		EAB8F2662A56DC3200C4E777 /* AsyncListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF791D2538986400F2460C /* AsyncListViewController.swift */; };
 		EABC91FA2A56F254007E27F0 /* ResourceCategoriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABC91F92A56F254007E27F0 /* ResourceCategoriesViewController.swift */; };
 		EABC921F2A56FBAA007E27F0 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA787340296EB68A0099AB11 /* Bundle.swift */; };
+		EABC92342A56FF80007E27F0 /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EABC92332A56FF80007E27F0 /* SharedAssets.xcassets */; };
 		EAC8435F252C818700691943 /* CELMacBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = EAC8435E252C818700691943 /* CELMacBridge.m */; };
 		EAC84364252C84B600691943 /* CelestiaMacBridge.bundle in Embed PlugIns */ = {isa = PBXBuildFile; fileRef = EAC84354252C816500691943 /* CelestiaMacBridge.bundle */; platformFilter = maccatalyst; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EAD12A8E2A5656FF007EE4D6 /* EventFinderInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E424A0E93D00F3F51B /* EventFinderInputViewController.swift */; };
@@ -349,6 +350,7 @@
 		EAB623B42A51AB5100063D1B /* UIViewController+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		EAB8F2612A56DB9200C4E777 /* URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URL.swift; sourceTree = "<group>"; };
 		EABC91F92A56F254007E27F0 /* ResourceCategoriesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceCategoriesViewController.swift; sourceTree = "<group>"; };
+		EABC92332A56FF80007E27F0 /* SharedAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SharedAssets.xcassets; sourceTree = "<group>"; };
 		EABDE3A82473DAA300E0A5FA /* SettingCommonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingCommonViewController.swift; sourceTree = "<group>"; };
 		EABF7910253895FD00F2460C /* ResourceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceViewController.swift; sourceTree = "<group>"; };
 		EABF791D2538986400F2460C /* AsyncListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncListViewController.swift; sourceTree = "<group>"; };
@@ -455,6 +457,7 @@
 				EA28CA5124A2F399004B011E /* Fonts */,
 				97143F1623FFAEFD00F35D87 /* defaults.plist */,
 				EAA5A7A3259DBFE6001AFA82 /* InfoPlist.strings */,
+				EABC92332A56FF80007E27F0 /* SharedAssets.xcassets */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -1123,6 +1126,7 @@
 				979D2F8723FEB1A8005D2592 /* Assets.xcassets in Resources */,
 				97143F1823FFAEFD00F35D87 /* defaults.plist in Resources */,
 				EA28CA5324A2F399004B011E /* Fonts in Resources */,
+				EABC92342A56FF80007E27F0 /* SharedAssets.xcassets in Resources */,
 				EAA5A7A1259DBFE6001AFA82 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
