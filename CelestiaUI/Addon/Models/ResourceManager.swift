@@ -9,7 +9,6 @@
 // of the License, or (at your option) any later version.
 //
 
-import CelestiaUI
 import Foundation
 import ZIPFoundation
 
@@ -26,8 +25,8 @@ extension ResourceManagerError: LocalizedError {
     }
 }
 
-final class ResourceManager: @unchecked Sendable {
-    static let extraAddonDirectory: URL? = UserDefaults.extraDirectory?.appendingPathComponent("extras")
+public final class ResourceManager: @unchecked Sendable {
+    private let extraAddonDirectory: URL?
 
     // Notification names
     static let downloadProgress = Notification.Name("ResourceDownloadManagerDownloadProgress")
@@ -44,12 +43,16 @@ final class ResourceManager: @unchecked Sendable {
 
     private var observations: [String: NSKeyValueObservation] = [:]
 
+    public init(extraAddonDirectory: URL?) {
+        self.extraAddonDirectory = extraAddonDirectory
+    }
+
     func isDownloading(identifier: String) -> Bool {
         return tasks[identifier] != nil
     }
 
     func canInstallPlugins() -> Bool {
-        guard let addonDirectory = Self.extraAddonDirectory else { return false }
+        guard let addonDirectory = extraAddonDirectory else { return false }
         let fm = FileManager.default
         var isDir: ObjCBool = false
         return fm.fileExists(atPath: addonDirectory.path, isDirectory: &isDir) && isDir.boolValue
@@ -61,12 +64,12 @@ final class ResourceManager: @unchecked Sendable {
     }
 
     func contextDirectory(forAddonWithIdentifier identifier: String) -> URL? {
-        guard let addonDirectory = Self.extraAddonDirectory else { return nil }
+        guard let addonDirectory = extraAddonDirectory else { return nil }
         return addonDirectory.appendingPathComponent(identifier)
     }
 
     func installedResources() -> [ResourceItem] {
-        guard let addonDirectory = Self.extraAddonDirectory else { return [] }
+        guard let addonDirectory = extraAddonDirectory else { return [] }
         var items = [ResourceItem]()
         let fm = FileManager.default
         guard let folders = try? fm.contentsOfDirectory(atPath: addonDirectory.path) else { return [] }
@@ -82,7 +85,7 @@ final class ResourceManager: @unchecked Sendable {
     }
 
     func uninstall(identifier: String) throws {
-        guard let addonDirectory = Self.extraAddonDirectory else { return }
+        guard let addonDirectory = extraAddonDirectory else { return }
         try FileManager.default.removeItem(at: addonDirectory.appendingPathComponent(identifier))
     }
 
@@ -142,16 +145,5 @@ final class ResourceManager: @unchecked Sendable {
         }
         try fm.unzipItem(at: movedPath, to: destinationURL)
         return destinationURL
-    }
-}
-
-private struct ResourceManagerKey: InjectionKey {
-    static var currentValue: ResourceManager = ResourceManager()
-}
-
-extension InjectedValues {
-    var resourceManager: ResourceManager {
-        get { Self[ResourceManagerKey.self] }
-        set { Self[ResourceManagerKey.self] = newValue }
     }
 }

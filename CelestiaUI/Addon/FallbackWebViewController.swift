@@ -11,27 +11,27 @@
 
 import UIKit
 
-class FallbackWebViewController: UIViewController {
+public class FallbackWebViewController: UIViewController {
     private let webViewController: CommonWebViewController
     private let fallbackViewControllerCreator: () -> UIViewController
 
-    init(url: URL, matchingQueryKeys: [String] = [], contextDirectory: URL? = nil, filterURL: Bool = true, fallbackViewControllerCreator: @escaping @autoclosure () -> UIViewController) {
-        webViewController = CommonWebViewController(url: url, matchingQueryKeys: matchingQueryKeys, contextDirectory: contextDirectory, filterURL: filterURL)
+    public init(executor: AsyncProviderExecutor, resourceManager: ResourceManager, url: URL, matchingQueryKeys: [String] = [], contextDirectory: URL? = nil, filterURL: Bool = true, fallbackViewControllerCreator: @escaping @autoclosure () -> UIViewController) {
+        webViewController = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: url, matchingQueryKeys: matchingQueryKeys, contextDirectory: contextDirectory, filterURL: filterURL)
         self.fallbackViewControllerCreator = fallbackViewControllerCreator
         super.init(nibName: nil, bundle: nil)
     }
 
-    override func loadView() {
+    public override func loadView() {
         let container = UIView()
         container.backgroundColor = .systemBackground
         view = container
     }
 
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
 
         webViewController.delegate = self

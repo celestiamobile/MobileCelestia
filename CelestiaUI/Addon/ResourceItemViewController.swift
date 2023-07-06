@@ -10,13 +10,12 @@
 //
 
 import CelestiaCore
-import CelestiaUI
 import CoreSpotlight
 import MobileCoreServices
 import MWRequest
 import UIKit
 
-class ResourceItemViewController: UIViewController {
+public class ResourceItemViewController: UIViewController {
     enum ResourceItemState {
         case none
         case downloading
@@ -49,10 +48,10 @@ class ResourceItemViewController: UIViewController {
     private lazy var goToButton = ActionButtonHelper.newButton()
     private lazy var buttonStack = UIStackView(arrangedSubviews: [goToButton, statusButtonContainer])
 
-    @Injected(\.resourceManager) private var resourceManager
+    private let resourceManager: ResourceManager
 
     private lazy var itemInfoController: CommonWebViewController = {
-        return CommonWebViewController(url: .fromAddon(addonItemID: itemID, language: AppCore.language), matchingQueryKeys: ["item"], contextDirectory: resourceManager.contextDirectory(forAddonWithIdentifier: itemID))
+        return CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromAddon(addonItemID: itemID, language: AppCore.language), matchingQueryKeys: ["item"], contextDirectory: resourceManager.contextDirectory(forAddonWithIdentifier: itemID))
     }()
 
     private var scrollViewTopToViewTopConstrant: NSLayoutConstraint?
@@ -62,10 +61,11 @@ class ResourceItemViewController: UIViewController {
 
     private var associatedUserActivity: NSUserActivity
 
-    @Injected(\.appCore) private var core
-    @Injected(\.executor) private var executor
+    private let executor: AsyncProviderExecutor
 
-    init(item: ResourceItem, needsRefetchItem: Bool) {
+    public init(executor: AsyncProviderExecutor, resourceManager: ResourceManager, item: ResourceItem, needsRefetchItem: Bool) {
+        self.executor = executor
+        self.resourceManager = resourceManager
         self.itemID = item.id
         self.item = item
         self.needsRefetchItem = needsRefetchItem
@@ -91,17 +91,17 @@ class ResourceItemViewController: UIViewController {
         title = item.name
     }
 
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func loadView() {
+    public override func loadView() {
         view = UIView()
         view.backgroundColor = .black
         setup()
     }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
 
         updateUI()
@@ -120,23 +120,22 @@ class ResourceItemViewController: UIViewController {
         }
     }
 
-    override func viewDidAppear(_ animated: Bool) {
+    public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
         associatedUserActivity.becomeCurrent()
     }
 
-    override func viewWillDisappear(_ animated: Bool) {
+    public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
         associatedUserActivity.resignCurrent()
     }
 
     private func refresh() {
-        let requestURL = apiPrefix + "/resource/item"
         Task {
             do {
-                let item: ResourceItem = try await RequestHandler.getDecoded(url: requestURL, parameters: ["lang": AppCore.language, "item": itemID], decoder: ResourceItem.networkResponseDecoder)
+                let item = try await ResourceItem.getMetadata(id: itemID, language: AppCore.language)
                 self.item = item
                 self.title = item.name
                 self.associatedUserActivity.title = item.name
@@ -165,13 +164,18 @@ class ResourceItemViewController: UIViewController {
             return
         }
         guard let objectName = item.objectName else { return }
-        let object = core.simulation.findObject(from: objectName)
-        if object.isEmpty {
-            showError(CelestiaString("Object not found", comment: ""))
-            return
-        }
         Task {
-            await executor.selectAndReceive(object, action: .goTo)
+            let object = await executor.get { core in
+                return core.simulation.findObject(from: objectName)
+            }
+            if object.isEmpty {
+                showError(CelestiaString("Object not found", comment: ""))
+                return
+            }
+            await executor.run { core in
+                core.simulation.selection = object
+                core.receive(.goTo)
+            }
         }
     }
 
@@ -320,8 +324,11 @@ private extension ResourceItemViewController {
                 goToButton.isHidden = true
             }
         } else {
-            if currentState == .installed, let objectName = item.objectName, !core.simulation.findObject(from: objectName).isEmpty {
-                goToButton.isHidden = false
+            if currentState == .installed, let objectName = item.objectName {
+                Task {
+                    let exists = await executor.get { $0.simulation.findObject(from: objectName).isEmpty }
+                    goToButton.isHidden = !exists
+                }
             } else {
                 goToButton.isHidden = true
             }

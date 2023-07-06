@@ -34,8 +34,6 @@ let requestOpenFileNotificationName = Notification.Name("RequestOpenFileNotifica
 let requestCopyNotificationName = Notification.Name("RequestCopyNotificationName")
 let requestPasteNotificationName = Notification.Name("RequestPasteNotificationName")
 
-let apiPrefix = "https://celestia.mobi/api"
-
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
 

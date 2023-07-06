@@ -11,7 +11,7 @@
 
 import Foundation
 
-struct ResourceItem: Codable {
+public struct ResourceItem: Codable {
     let name: String
     let description: String
     let type: String?
@@ -23,7 +23,7 @@ struct ResourceItem: Codable {
     let objectName: String?
     let mainScriptName: String?
 
-    static let networkResponseDecoder: JSONDecoder = {
+    public static let networkResponseDecoder: JSONDecoder = {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .secondsSince1970
         return decoder

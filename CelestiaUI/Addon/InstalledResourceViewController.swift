@@ -10,7 +10,6 @@
 //
 
 import CelestiaCore
-import CelestiaUI
 import UIKit
 
 extension ResourceItem: AsyncListItem, @unchecked Sendable {
@@ -23,10 +22,19 @@ extension ResourceItem: AsyncListItem, @unchecked Sendable {
 }
 
 class InstalledResourceViewController: AsyncListViewController<ResourceItem> {
-    @Injected(\.resourceManager) private var resourceManager
+    private let resourceManager: ResourceManager
 
     override class var alwaysRefreshOnAppear: Bool { return true }
 
+    init(resourceManager: ResourceManager, selection: @escaping (ResourceItem) -> Void) {
+        self.resourceManager = resourceManager
+        super.init(selection: selection)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 

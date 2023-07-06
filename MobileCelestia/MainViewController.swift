@@ -16,78 +16,6 @@ import LinkPresentation
 import UniformTypeIdentifiers
 import UIKit
 
-extension URL {
-    static func fromGuide(guideItemID: String, language: String, shareable: Bool? = nil) -> URL {
-        let baseURL = "https://celestia.mobi/resources/guide"
-        var components = URLComponents(string: baseURL)!
-        #if targetEnvironment(macCatalyst)
-        let platform = "catalyst"
-        #else
-        let platform = "ios"
-        #endif
-        var queryItems = [
-            URLQueryItem(name: "guide", value: guideItemID),
-            URLQueryItem(name: "lang", value: language),
-            URLQueryItem(name: "platform", value: platform),
-            URLQueryItem(name: "theme", value: "dark")
-        ]
-        if let shareable = shareable {
-            queryItems.append(URLQueryItem(name: "share", value: shareable ? "true" : "false"))
-        }
-        components.queryItems = queryItems
-        return components.url!
-    }
-
-    static func fromGuideShort(path: String, language: String, shareable: Bool? = nil) -> URL {
-        let baseURL = "https://celestia.mobi"
-        var components = URLComponents(string: baseURL)!
-        components.path = path
-        #if targetEnvironment(macCatalyst)
-        let platform = "catalyst"
-        #else
-        let platform = "ios"
-        #endif
-        var queryItems = [
-            URLQueryItem(name: "lang", value: language),
-            URLQueryItem(name: "platform", value: platform),
-            URLQueryItem(name: "theme", value: "dark")
-        ]
-        if let shareable = shareable {
-            queryItems.append(URLQueryItem(name: "share", value: shareable ? "true" : "false"))
-        }
-        components.queryItems = queryItems
-        return components.url!
-    }
-
-    static func fromAddon(addonItemID: String, language: String) -> URL {
-        let baseURL = "https://celestia.mobi/resources/item"
-        var components = URLComponents(string: baseURL)!
-        #if targetEnvironment(macCatalyst)
-        let platform = "catalyst"
-        #else
-        let platform = "ios"
-        #endif
-        components.queryItems = [
-            URLQueryItem(name: "item", value: addonItemID),
-            URLQueryItem(name: "lang", value: language),
-            URLQueryItem(name: "platform", value: platform),
-            URLQueryItem(name: "theme", value: "dark"),
-            URLQueryItem(name: "titleVisibility", value: "collapsed"),
-        ]
-        return components.url!
-    }
-
-    static func fromAddonForSharing(addonItemID: String, language: String) -> URL {
-        let baseURL = "https://celestia.mobi/resources/item"
-        var components = URLComponents(string: baseURL)!
-        components.queryItems = [
-            URLQueryItem(name: "item", value: addonItemID),
-            URLQueryItem(name: "lang", value: language),
-        ]
-        return components.url!
-    }
-}
-
 class MainViewController: UIViewController {
     enum LoadingStatus {
         case notLoaded
@@ -109,6 +37,8 @@ class MainViewController: UIViewController {
     @Injected(\.appCore) private var core
     @Injected(\.executor) private var executor
     @Injected(\.userDefaults) private var userDefaults
+
+    private let resourceManager = ResourceManager(extraAddonDirectory: UserDefaults.extraDirectory?.appendingPathComponent("extras"))
 
     private var viewControllerStack: [UIViewController] = []
 
@@ -291,7 +221,7 @@ extension MainViewController {
         if let guide = guideToOpen {
             // Need to wrap it in a NavVC without NavBar to make sure
             // the scrolling behavior is correct on macCatalyst
-            let nav = UINavigationController(rootViewController: CommonWebViewController(url: .fromGuide(guideItemID: guide, language: locale), matchingQueryKeys: ["guide"]))
+            let nav = UINavigationController(rootViewController: CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromGuide(guideItemID: guide, language: locale), matchingQueryKeys: ["guide"]))
             nav.setNavigationBarHidden(true, animated: false)
             showViewController(nav, key: guide, titleVisible: false)
             cleanup()
@@ -299,11 +229,10 @@ extension MainViewController {
         }
 
         if let addon = addonToOpen {
-            let requestURL = apiPrefix + "/resource/item"
             Task {
                 do {
-                    let item: ResourceItem = try await RequestHandler.getDecoded(url: requestURL, parameters: ["lang": locale, "item": addon], decoder: ResourceItem.networkResponseDecoder)
-                    let nav = UINavigationController(rootViewController: ResourceItemViewController(item: item, needsRefetchItem: false))
+                    let item = try await ResourceItem.getMetadata(id: addon, language: locale)
+                    let nav = UINavigationController(rootViewController: ResourceItemViewController(executor: executor, resourceManager: resourceManager, item: item, needsRefetchItem: false))
                     self.showViewController(nav, key: addon)
                 } catch {}
             }
@@ -312,12 +241,11 @@ extension MainViewController {
         }
 
         // Check news
-        let requestURL = apiPrefix + "/resource/latest"
         Task {
             do {
-                let item: GuideItem = try await RequestHandler.getDecoded(url: requestURL, parameters: ["lang": locale, "type": "news"])
+                let item = try await GuideItem.getLatestMetadata(language: locale)
                 if userDefaults[.lastNewsID] == item.id { return }
-                let vc = CommonWebViewController(url: .fromGuide(guideItemID: item.id, language: locale), matchingQueryKeys: ["guide"])
+                let vc = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromGuide(guideItemID: item.id, language: locale), matchingQueryKeys: ["guide"])
                 vc.ackHandler = { [weak self] id in
                     if let self, id == item.id {
                         self.userDefaults[.lastNewsID] = item.id
@@ -528,17 +456,7 @@ extension MainViewController: CelestiaControllerDelegate {
         case .addons:
             presentInstalledAddons()
         case .download:
-            let baseURL = "https://celestia.mobi/resources/categories"
-            var components = URLComponents(string: baseURL)!
-            components.queryItems = [
-                URLQueryItem(name: "lang", value: AppCore.language),
-                URLQueryItem(name: "theme", value: "dark"),
-                URLQueryItem(name: "platform", value: "ios"),
-                URLQueryItem(name: "api", value: "1"),
-            ]
-            let url = components.url!
-            let nav = UINavigationController(rootViewController: CommonWebViewController(url: url, filterURL: false))
-            showViewController(nav)
+            showViewController(ResourceCategoriesViewController(executor: executor, resourceManager: resourceManager))
         case .paperplane:
             presentGoTo()
         case .speedometer:
@@ -605,7 +523,7 @@ extension MainViewController: CelestiaControllerDelegate {
                 return (url, name)
             }
 
-            self.requestShareURL(url, placeholder: name)
+            self.shareURL(url, placeholder: name)
         }
     }
 
@@ -620,7 +538,7 @@ extension MainViewController: CelestiaControllerDelegate {
             }
         }, share: { object, viewController in
             guard let node = object as? BookmarkNode, node.isLeaf else { return }
-            viewController.requestShareURL(node.url, placeholder: node.name)
+            viewController.shareURL(node.url, placeholder: node.name)
         }, textInputHandler: { viewController, title, text in
             return await viewController.getTextInputDifferentiated(title, text: text)
         })
@@ -744,7 +662,7 @@ extension MainViewController: CelestiaControllerDelegate {
 
     @objc private func presentHelp() {
         let url = URL.fromGuideShort(path: "/help/welcome", language: AppCore.language, shareable: false)
-        let vc = FallbackWebViewController(url: url, fallbackViewControllerCreator: OnboardViewController() { [unowned self] (action) in
+        let vc = FallbackWebViewController(executor: executor, resourceManager: resourceManager, url: url, fallbackViewControllerCreator: OnboardViewController() { [unowned self] (action) in
             switch action {
             case .tutorial(let tutorial):
                 self.handleTutorialAction(tutorial)
@@ -769,7 +687,7 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     private func presentInstalledAddons() {
-        let controller = ResourceViewController()
+        let controller = ResourceViewController(executor: executor, resourceManager: resourceManager)
         showViewController(controller)
     }
 
@@ -1010,63 +928,6 @@ extension MainViewController {
 }
 
 extension UIViewController {
-    func requestShareURL(_ url: String, placeholder: String) {
-        let showShareFail: (String?) -> Void = { [unowned self] message in
-            self.showError(CelestiaString("Cannot share URL", comment: ""), detail: message)
-        }
-        guard let url = URL(string: url) else {
-            showShareFail(nil)
-            return
-        }
-
-        class CelestiaURLObject: NSObject, UIActivityItemSource {
-            func activityViewControllerPlaceholderItem(_ activityViewController: UIActivityViewController) -> Any {
-                return url
-            }
-
-            func activityViewController(_ activityViewController: UIActivityViewController, itemForActivityType activityType: UIActivity.ActivityType?) -> Any? {
-                return url
-            }
-
-            func activityViewControllerLinkMetadata(_ activityViewController: UIActivityViewController) -> LPLinkMetadata? {
-                let metadata = LPLinkMetadata()
-                metadata.url = url
-                metadata.title = title
-                metadata.originalURL = url
-                return metadata
-            }
-
-            let title: String
-            let url: URL
-
-            init(title: String, url: URL) {
-                self.title = title
-                self.url = url
-                super.init()
-            }
-        }
-
-        showShareSheet(for: CelestiaURLObject(title: placeholder, url: url))
-    }
-
-    func showShareSheet(for item: Any, source: PopoverSource? = nil) {
-        let activityController = UIActivityViewController(activityItems: [item], applicationActivities: nil)
-        callAfterDismissCurrent(animated: true) { [weak self] in
-            guard let self = self else { return }
-            self.present(activityController, source: source)
-        }
-    }
-
-    func callAfterDismissCurrent(animated: Bool, block: @escaping () -> Void) {
-        if presentedViewController == nil || presentedViewController?.isBeingDismissed == true {
-            block()
-        } else {
-            dismiss(animated: animated) {
-                block()
-            }
-        }
-    }
-
     func presentAfterDismissCurrent(_ viewController: UIViewController, animated: Bool) {
         callAfterDismissCurrent(animated: animated) { [weak self] in
             self?.present(viewController, animated: animated)

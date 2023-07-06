@@ -51,7 +51,7 @@ class MainSceneDelegate: CommonSceneDelegate {
         if let userActivity = connectionOptions.userActivities.first {
             // Delay this so the view gets loaded before user activity gets handled
             Task {
-                try await Task.sleep(seconds: 0.5)
+                try await Task.sleep(nanoseconds: 500000000)
                 AppDelegate.handleUserActivity(userActivity)
             }
         }

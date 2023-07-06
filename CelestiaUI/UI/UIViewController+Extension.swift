@@ -9,6 +9,7 @@
 // of the License, or (at your option) any later version.
 //
 
+import LinkPresentation
 import UIKit
 
 public enum PopoverSource {
@@ -211,5 +212,62 @@ public extension UIViewController {
             }
             completion?(formatter.date(from: result))
         }
+    }
+
+    func showShareSheet(for item: Any, source: PopoverSource? = nil) {
+        let activityController = UIActivityViewController(activityItems: [item], applicationActivities: nil)
+        callAfterDismissCurrent(animated: true) { [weak self] in
+            guard let self = self else { return }
+            self.present(activityController, source: source)
+        }
+    }
+
+    func callAfterDismissCurrent(animated: Bool, block: @escaping () -> Void) {
+        if presentedViewController == nil || presentedViewController?.isBeingDismissed == true {
+            block()
+        } else {
+            dismiss(animated: animated) {
+                block()
+            }
+        }
+    }
+
+    func shareURL(_ url: String, placeholder: String) {
+        let showShareFail: (String?) -> Void = { [unowned self] message in
+            self.showError(CelestiaString("Cannot share URL", comment: ""), detail: message)
+        }
+        guard let url = URL(string: url) else {
+            showShareFail(nil)
+            return
+        }
+
+        class CelestiaURLObject: NSObject, UIActivityItemSource {
+            func activityViewControllerPlaceholderItem(_ activityViewController: UIActivityViewController) -> Any {
+                return url
+            }
+
+            func activityViewController(_ activityViewController: UIActivityViewController, itemForActivityType activityType: UIActivity.ActivityType?) -> Any? {
+                return url
+            }
+
+            func activityViewControllerLinkMetadata(_ activityViewController: UIActivityViewController) -> LPLinkMetadata? {
+                let metadata = LPLinkMetadata()
+                metadata.url = url
+                metadata.title = title
+                metadata.originalURL = url
+                return metadata
+            }
+
+            let title: String
+            let url: URL
+
+            init(title: String, url: URL) {
+                self.title = title
+                self.url = url
+                super.init()
+            }
+        }
+
+        showShareSheet(for: CelestiaURLObject(title: placeholder, url: url))
     }
 }

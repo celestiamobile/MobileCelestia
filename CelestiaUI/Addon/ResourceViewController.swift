@@ -11,23 +11,28 @@
 
 import UIKit
 
-class ResourceViewController: UINavigationController {
-    init() {
+public class ResourceViewController: UINavigationController {
+    private let executor: AsyncProviderExecutor
+    private let resourceManager: ResourceManager
+
+    public init(executor: AsyncProviderExecutor, resourceManager: ResourceManager) {
+        self.executor = executor
+        self.resourceManager = resourceManager
         super.init(rootViewController: UIViewController())
         setViewControllers([
-            InstalledResourceViewController { [weak self] item in
+            InstalledResourceViewController(resourceManager: resourceManager) { [weak self] item in
                 self?.viewItem(item)
             }
         ], animated: false)
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    public required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
 
 private extension ResourceViewController {
     private func viewItem(_ item: ResourceItem) {
-        pushViewController(ResourceItemViewController(item: item, needsRefetchItem: true), animated: true)
+        pushViewController(ResourceItemViewController(executor: executor, resourceManager: resourceManager, item: item, needsRefetchItem: true), animated: true)
     }
 }

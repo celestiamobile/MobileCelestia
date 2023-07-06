@@ -25,6 +25,8 @@ public enum GlobalConstants {
     public static let pageMediumGapHorizontal: CGFloat = 12
     public static let pageMediumGapVertical: CGFloat = 8
 
+    public static let pageLargeGapVertical: CGFloat = 12
+
     public static let baseCellHeight: CGFloat = 44
 
     public static func preferredUIElementScaling(for traitCollection: UITraitCollection) -> CGFloat {

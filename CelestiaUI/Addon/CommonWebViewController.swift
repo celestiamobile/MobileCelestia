@@ -10,6 +10,7 @@
 //
 
 import CelestiaCore
+import MWRequest
 import UIKit
 import WebKit
 
@@ -18,18 +19,19 @@ protocol CommonWebViewControllerDelegate: AnyObject {
     func webViewLoadFailed()
 }
 
-class CommonWebViewController: UIViewController {
+public class CommonWebViewController: UIViewController {
     private let url: URL
     private let matchingQueryKeys: [String]
     private let contextDirectory: URL?
     private let filterURL: Bool
     private var titleObservation: NSKeyValueObservation?
 
-    @Injected(\.executor) private var executor
+    private let executor: AsyncProviderExecutor
+    private let resourceManager: ResourceManager
 
     weak var delegate: CommonWebViewControllerDelegate?
 
-    var ackHandler: ((String) -> Void)?
+    public var ackHandler: ((String) -> Void)?
 
     private let webView: WKWebView
 
@@ -40,7 +42,7 @@ class CommonWebViewController: UIViewController {
 
     private lazy var activityIndicator = UIActivityIndicatorView(style: .large)
 
-    override func loadView() {
+    public override func loadView() {
         let containerView = UIView()
         containerView.addSubview(webView)
         containerView.addSubview(activityIndicator)
@@ -57,7 +59,9 @@ class CommonWebViewController: UIViewController {
         view = containerView
     }
 
-    init(url: URL, matchingQueryKeys: [String] = [], contextDirectory: URL? = nil, filterURL: Bool = true) {
+    public init(executor: AsyncProviderExecutor, resourceManager: ResourceManager, url: URL, matchingQueryKeys: [String] = [], contextDirectory: URL? = nil, filterURL: Bool = true) {
+        self.executor = executor
+        self.resourceManager = resourceManager
         self.url = url
         self.matchingQueryKeys = matchingQueryKeys
         self.contextDirectory = contextDirectory
@@ -84,7 +88,7 @@ class CommonWebViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
 
         activityIndicator.startAnimating()
@@ -134,7 +138,7 @@ extension CommonWebViewController: WKNavigationDelegate {
         return true
     }
 
-    nonisolated func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+    public nonisolated func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         if !filterURL {
             decisionHandler(.allow)
             return
@@ -157,7 +161,7 @@ extension CommonWebViewController: WKNavigationDelegate {
         }
     }
 
-    nonisolated func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
+    public nonisolated func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
         Task.detached { @MainActor in
             self.activityIndicator.stopAnimating()
             self.activityIndicator.isHidden = true
@@ -165,13 +169,13 @@ extension CommonWebViewController: WKNavigationDelegate {
         }
     }
 
-    nonisolated func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+    public nonisolated func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
         Task.detached { @MainActor in
             self.delegate?.webViewLoadFailed()
         }
     }
 
-    nonisolated func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+    public nonisolated func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
         Task.detached { @MainActor in
             self.delegate?.webViewLoadFailed()
         }
@@ -219,18 +223,17 @@ extension CommonWebViewController: CelestiaScriptHandlerDelegate {
     }
 
     func openAddonNext(id: String) {
-        let requestURL = apiPrefix + "/resource/item"
         Task {
             do {
-                let item: ResourceItem = try await RequestHandler.getDecoded(url: requestURL, parameters: ["lang": AppCore.language, "item": id], decoder: ResourceItem.networkResponseDecoder)
-                self.navigationController?.pushViewController(ResourceItemViewController(item: item, needsRefetchItem: false), animated: true)
+                let item: ResourceItem = try await ResourceItem.getMetadata(id: id, language: AppCore.language)
+                self.navigationController?.pushViewController(ResourceItemViewController(executor: self.executor, resourceManager: self.resourceManager, item: item, needsRefetchItem: false), animated: true)
             } catch {}
         }
     }
 
     func runDemo() {
         Task {
-            await executor.receive(.runDemo)
+            await executor.run { $0.receive(.runDemo) }
         }
     }
 }

@@ -12,19 +12,19 @@
 import Foundation
 import MWRequest
 
-struct BaseResult: JSONDecodable {
-    static var decoder: JSONDecoder? { return nil }
+public struct BaseResult: JSONDecodable {
+    public static var decoder: JSONDecoder? { return nil }
 
-    struct Info: Decodable {
-        let detail: String?
-        let reason: String?
+    public struct Info: Decodable {
+        public let detail: String?
+        public let reason: String?
     }
 
-    let status: Int
-    let info: Info
+    public let status: Int
+    public let info: Info
 }
 
-enum WrappedError: Error {
+public enum WrappedError: Error {
     case missingBody
     case requestError(error: RequestError)
     case serverError(message: String?)
@@ -32,9 +32,9 @@ enum WrappedError: Error {
     case unknown
 }
 
-typealias RequestHandler = AsyncJSONRequestHandler<BaseResult>
+public typealias RequestHandler = AsyncJSONRequestHandler<BaseResult>
 
-extension RequestHandler {
+public extension RequestHandler {
     class func getDecoded<T: Decodable>(url: String,
                                         parameters: [String: String] = [:],
                                         decoder: JSONDecoder = JSONDecoder(),
@@ -63,5 +63,17 @@ extension RequestHandler {
                 throw WrappedError.unknown
             }
         }
+    }
+}
+
+public extension ResourceItem {
+    static func getMetadata(id: String, language: String) async throws -> ResourceItem {
+        return try await RequestHandler.getDecoded(url: URL.addonMetadata.absoluteString, parameters: ["lang": language, "item": id], decoder: ResourceItem.networkResponseDecoder)
+    }
+}
+
+public extension GuideItem {
+    static func getLatestMetadata(language: String) async throws -> GuideItem {
+        return try await RequestHandler.getDecoded(url: URL.latestGuideMetadata.absoluteString, parameters: ["lang": language, "type": "news"])
     }
 }

@@ -18,7 +18,6 @@ extension GlobalConstants {
     static let pageSmallMarginHorizontal: CGFloat = 12
     static let pageSmallMarginVertical: CGFloat = 8
     static let pageLargeGapHorizontal: CGFloat = 16
-    static let pageLargeGapVertical: CGFloat = 12
     static let pageSmallGapHorizontal: CGFloat = 6
     static let pageSmallGapVertical: CGFloat = 4
 

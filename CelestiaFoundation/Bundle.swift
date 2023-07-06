@@ -11,7 +11,7 @@
 
 import Foundation
 
-extension Bundle {
+public extension Bundle {
     static let app: Bundle = {
         let current = Bundle.main
         if current.bundleURL.pathExtension == "appex" {

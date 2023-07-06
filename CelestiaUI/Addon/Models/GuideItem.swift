@@ -11,7 +11,7 @@
 
 import Foundation
 
-struct GuideItem: Codable {
+public struct GuideItem: Codable {
     let title: String
-    let id: String
+    public let id: String
 }
