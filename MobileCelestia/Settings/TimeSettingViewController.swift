@@ -68,7 +68,7 @@ extension TimeSettingViewController {
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.row == 0 {
             let preferredFormat = DateFormatter.dateFormat(fromTemplate: "yyyyMMddHHmmss", options: 0, locale: Locale.current) ?? "yyyy/MM/dd HH:mm:ss"
-            showDateInput(String.localizedStringWithFormat(CelestiaString("Please enter the time in \"%s\" format.", comment: "").toLocalizationTemplate, preferredFormat), format: preferredFormat) { [weak self] (result) in
+            showDateInputDifferentiated(String.localizedStringWithFormat(CelestiaString("Please enter the time in \"%s\" format.", comment: "").toLocalizationTemplate, preferredFormat), format: preferredFormat) { [weak self] (result) in
                 guard let self = self else { return }
 
                 guard let date = result else {

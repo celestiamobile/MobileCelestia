@@ -51,9 +51,6 @@
 		EA1823F027C08D3D00E0F5E4 /* CelestiaHelper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA1823EA27C08D3D00E0F5E4 /* CelestiaHelper.framework */; platformFilter = maccatalyst; };
 		EA1823F727C08E3500E0F5E4 /* CEHExceptionCatching.h in Headers */ = {isa = PBXBuildFile; fileRef = EA1823F527C08E3500E0F5E4 /* CEHExceptionCatching.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		EA1823F827C08E3500E0F5E4 /* CEHExceptionCatching.m in Sources */ = {isa = PBXBuildFile; fileRef = EA1823F627C08E3500E0F5E4 /* CEHExceptionCatching.m */; };
-		EA1BC6E324A0E92B00F3F51B /* EventFinderCoordinatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E224A0E92B00F3F51B /* EventFinderCoordinatorViewController.swift */; };
-		EA1BC6E524A0E93D00F3F51B /* EventFinderInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E424A0E93D00F3F51B /* EventFinderInputViewController.swift */; };
-		EA1BC6E724A0E94900F3F51B /* EventFinderResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E624A0E94900F3F51B /* EventFinderResultViewController.swift */; };
 		EA1BE1572748E9DC0046074C /* DisplaySceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BE1562748E9DC0046074C /* DisplaySceneDelegate.swift */; };
 		EA28CA4E24A25FE7004B011E /* BottomControlViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA28CA4D24A25FE7004B011E /* BottomControlViewController.swift */; };
 		EA28CA5324A2F399004B011E /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = EA28CA5124A2F399004B011E /* Fonts */; };
@@ -127,6 +124,9 @@
 		EABF794A2538A86500F2460C /* ResourceManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF79492538A86500F2460C /* ResourceManager.swift */; };
 		EAC8435F252C818700691943 /* CELMacBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = EAC8435E252C818700691943 /* CELMacBridge.m */; };
 		EAC84364252C84B600691943 /* CelestiaMacBridge.bundle in Embed PlugIns */ = {isa = PBXBuildFile; fileRef = EAC84354252C816500691943 /* CelestiaMacBridge.bundle */; platformFilter = maccatalyst; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		EAD12A8E2A5656FF007EE4D6 /* EventFinderInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E424A0E93D00F3F51B /* EventFinderInputViewController.swift */; };
+		EAD12A8F2A5656FF007EE4D6 /* EventFinderResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E624A0E94900F3F51B /* EventFinderResultViewController.swift */; };
+		EAD12A902A5656FF007EE4D6 /* EventFinderCoordinatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E224A0E92B00F3F51B /* EventFinderCoordinatorViewController.swift */; };
 		EADE7FBB252B517600D4174F /* CelestiaDisplayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE7FBA252B517600D4174F /* CelestiaDisplayController.swift */; };
 		EADE7FC0252B54A400D4174F /* CelestiaInteractionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE7FBF252B54A400D4174F /* CelestiaInteractionController.swift */; };
 		EAE6AC0F27A438E400F953DF /* CommonWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE6AC0E27A438E400F953DF /* CommonWebViewController.swift */; };
@@ -545,7 +545,6 @@
 				EABF790E253895DD00F2460C /* Resource */,
 				EAF4851D249B5C0F00E5B817 /* Common */,
 				97C3A9EF2445FAA100EB365A /* Celestia */,
-				EA1BC6E024A0E90A00F3F51B /* Event */,
 				97401CA12414DA6B0015F8E8 /* Favorite */,
 				977CDD27240BC4ED00137127 /* Tutorial */,
 				97DB1FD424067757001F222F /* Presentation */,
@@ -649,19 +648,10 @@
 			path = CelestiaHelper;
 			sourceTree = "<group>";
 		};
-		EA1BC6E024A0E90A00F3F51B /* Event */ = {
-			isa = PBXGroup;
-			children = (
-				EA1BC6E224A0E92B00F3F51B /* EventFinderCoordinatorViewController.swift */,
-				EA1BC6E424A0E93D00F3F51B /* EventFinderInputViewController.swift */,
-				EA1BC6E624A0E94900F3F51B /* EventFinderResultViewController.swift */,
-			);
-			path = Event;
-			sourceTree = "<group>";
-		};
 		EA50E75F2A505627005E7D7A /* CelestiaUI */ = {
 			isa = PBXGroup;
 			children = (
+				EAD12A8D2A5656F1007EE4D6 /* Event */,
 				EA66BBDE2A55BA52008A7AAA /* GoTo */,
 				EA66BBC52A55AAA5008A7AAA /* Search */,
 				EAE92A5D2A558B7B00BFE06E /* Interaction */,
@@ -805,6 +795,16 @@
 				EAC8435E252C818700691943 /* CELMacBridge.m */,
 			);
 			path = CelestiaMacBridge;
+			sourceTree = "<group>";
+		};
+		EAD12A8D2A5656F1007EE4D6 /* Event */ = {
+			isa = PBXGroup;
+			children = (
+				EA1BC6E224A0E92B00F3F51B /* EventFinderCoordinatorViewController.swift */,
+				EA1BC6E424A0E93D00F3F51B /* EventFinderInputViewController.swift */,
+				EA1BC6E624A0E94900F3F51B /* EventFinderResultViewController.swift */,
+			);
+			path = Event;
 			sourceTree = "<group>";
 		};
 		EAE92A5D2A558B7B00BFE06E /* Interaction */ = {
@@ -1185,7 +1185,6 @@
 				EA50E7892A506406005E7D7A /* GlobalConstants.swift in Sources */,
 				EA1BE1572748E9DC0046074C /* DisplaySceneDelegate.swift in Sources */,
 				978406DF24029D9100876FD1 /* LoadingFailureViewController.swift in Sources */,
-				EA1BC6E524A0E93D00F3F51B /* EventFinderInputViewController.swift in Sources */,
 				EA787341296EB68A0099AB11 /* Bundle.swift in Sources */,
 				EA17952027B371D700D47397 /* GuideItem.swift in Sources */,
 				977394AC2403F07C00E38B82 /* SettingsCoordinatorController.swift in Sources */,
@@ -1210,11 +1209,9 @@
 				EA5D32E7266F9518005D5931 /* SheetPresentationController.swift in Sources */,
 				EADE7FC0252B54A400D4174F /* CelestiaInteractionController.swift in Sources */,
 				978406DC240294D000876FD1 /* LoadingViewController.swift in Sources */,
-				EA1BC6E324A0E92B00F3F51B /* EventFinderCoordinatorViewController.swift in Sources */,
 				EA78730F296DEA6B0099AB11 /* CelestiaExecutor.swift in Sources */,
 				9773949E2402A96B00E38B82 /* SlideInPresentationController.swift in Sources */,
 				EA787309296DE50D0099AB11 /* Injecton.swift in Sources */,
-				EA1BC6E724A0E94900F3F51B /* EventFinderResultViewController.swift in Sources */,
 				EA17951B27B1510500D47397 /* CelestiaScriptHandler.swift in Sources */,
 				973BBA6624054E9900E3B061 /* TextViewController.swift in Sources */,
 				EA86E38426FE20C000FF2278 /* SettingsFrameRateViewController.swift in Sources */,
@@ -1268,15 +1265,18 @@
 				EA50E7782A505DCE005E7D7A /* BodyDescriptionCell.swift in Sources */,
 				EAB623B22A51AAB600063D1B /* UITableView+Extensions.swift in Sources */,
 				EA66BBE22A55BA88008A7AAA /* GoToContainerViewController.swift in Sources */,
+				EAD12A8F2A5656FF007EE4D6 /* EventFinderResultViewController.swift in Sources */,
 				EA66BBE02A55BA88008A7AAA /* LongitudeLatitudeInputCell.swift in Sources */,
 				EAE92A642A558E8000BFE06E /* GameControllerThumbstickAxis.swift in Sources */,
 				EAB623B62A51AC0F00063D1B /* SettingTextCell.swift in Sources */,
+				EAD12A902A5656FF007EE4D6 /* EventFinderCoordinatorViewController.swift in Sources */,
 				EA66BBC62A55AABF008A7AAA /* SearchViewController.swift in Sources */,
 				EA50E7762A505DCE005E7D7A /* BodyActionCell.swift in Sources */,
 				EA50E77A2A505DCE005E7D7A /* InfoViewController.swift in Sources */,
 				EA66BBE32A564888008A7AAA /* SettingSelectionViewController.swift in Sources */,
 				EA50E7792A505DCE005E7D7A /* BodyInfoModel.swift in Sources */,
 				EA50E77C2A505E09005E7D7A /* ActionButton.swift in Sources */,
+				EAD12A8E2A5656FF007EE4D6 /* EventFinderInputViewController.swift in Sources */,
 				EAE92A602A558B9900BFE06E /* GameControllerAction.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -9,10 +9,8 @@
 // of the License, or (at your option) any later version.
 //
 
-import CelestiaUI
-import UIKit
-
 import CelestiaCore
+import UIKit
 
 protocol EventFinderInputItem {
     var title: String { get }
@@ -41,7 +39,7 @@ class EventFinderInputViewController: BaseTableViewController {
     private lazy var endTime = Date()
     private var objectName = LocalizedString("Earth", "celestia-data")
 
-    @Injected(\.appCore) private var core
+    private let executor: AsyncProviderExecutor
 
     private lazy var displayDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -51,9 +49,20 @@ class EventFinderInputViewController: BaseTableViewController {
     }()
 
     private let resultHandler: (([Eclipse]) -> Void)
+    private let textInputHandler: (_ viewController: UIViewController, _ title: String) async -> String?
+    private let dateInputHandler: (_ viewController: UIViewController, _ title: String, _ format: String) async -> Date?
 
-    init(resultHandler: @escaping (([Eclipse]) -> Void)) {
+    init(
+        executor: AsyncProviderExecutor,
+        resultHandler: @escaping (([Eclipse]) -> Void),
+        textInputHandler: @escaping (_ viewController: UIViewController, _ title: String) async -> String?,
+        dateInputHandler: @escaping (_ viewController: UIViewController, _ title: String, _ format: String) async -> Date?
+    ) {
+        self.executor = executor
         self.resultHandler = resultHandler
+        self.textInputHandler = textInputHandler
+        self.dateInputHandler = dateInputHandler
+
         super.init(style: .defaultGrouped)
     }
 
@@ -73,20 +82,22 @@ private extension EventFinderInputViewController {
         title = CelestiaString("Eclipse Finder", comment: "")
         tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Text")
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: CelestiaString("Find", comment: ""), style: .plain, target: self, action: #selector(find))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: CelestiaString("Find", comment: ""), style: .plain, target: self, action: #selector(findEclipse))
     }
 
-    @objc private func find() {
-        guard let body = core.simulation.findObject(from: objectName).body else {
-            self.showError(CelestiaString("Object not found", comment: ""))
-            return
-        }
-        let finder = EclipseFinder(body: body)
-        let alert = showLoading(CelestiaString("Calculating…", comment: "")) {
-            finder.abort()
-        }
-
+    @objc private func findEclipse() {
         Task {
+            let objectName = self.objectName
+            guard let body = await executor.get({ core in return core.simulation.findObject(from: objectName).body }) else {
+                showError(CelestiaString("Object not found", comment: ""))
+                return
+            }
+
+            let finder = EclipseFinder(body: body)
+            let alert = showLoading(CelestiaString("Calculating…", comment: "")) {
+                finder.abort()
+            }
+
             let results = await finder.search(kind: [.lunar, .solar], from: self.startTime, to: self.endTime)
             alert.dismiss(animated: true) {
                 self.resultHandler(results)
@@ -127,20 +138,17 @@ extension EventFinderInputViewController {
         let item = allSections[indexPath.section][indexPath.row]
         if let it = item as? DateItem {
             let preferredFormat = DateFormatter.dateFormat(fromTemplate: "yyyyMMddHHmmss", options: 0, locale: Locale.current) ?? "yyyy/MM/dd HH:mm:ss"
-            showDateInput(String.localizedStringWithFormat(CelestiaString("Please enter the time in \"%s\" format.", comment: "").toLocalizationTemplate, preferredFormat), format: preferredFormat) { [weak self] (result) in
-                guard let self = self else { return }
-
-                guard let date = result else {
+            Task {
+                let title = String.localizedStringWithFormat(CelestiaString("Please enter the time in \"%s\" format.", comment: "").toLocalizationTemplate, preferredFormat)
+                guard let date = await self.dateInputHandler(self, title, preferredFormat) else {
                     self.showError(CelestiaString("Unrecognized time string.", comment: ""))
                     return
                 }
-
                 if it.isStartTime {
                     self.startTime = date
                 } else {
                     self.endTime = date
                 }
-
                 tableView.reloadData()
             }
         } else if item is ObjectItem {
@@ -151,10 +159,11 @@ extension EventFinderInputViewController {
                     guard let self = self, let index = index else { return }
                     if index >= self.selectableObjects.count {
                         // User choose other, show text input for the object name
-                        self.showTextInputDifferentiated(CelestiaString("Please enter an object name.", comment: "")) { text in
-                            guard let objectName = text else { return }
-                            self.objectName = objectName
-                            tableView.reloadData()
+                        Task {
+                            if let text = await self.textInputHandler(self, CelestiaString("Please enter an object name.", comment: "")) {
+                                self.objectName = text
+                                tableView.reloadData()
+                            }
                         }
                         return
                     }

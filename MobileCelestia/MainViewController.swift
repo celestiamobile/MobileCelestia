@@ -753,9 +753,14 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     private func presentEventFinder() {
-        showViewController(EventFinderCoordinatorViewController { [unowned self] eclipse in
+        showViewController(EventFinderCoordinatorViewController(executor: executor, eventHandler: { [weak self] eclipse in
+            guard let self else { return }
             self.executor.run { $0.simulation.goToEclipse(eclipse) }
-        })
+        }, textInputHandler: { viewController, title in
+            return await viewController.getTextInputDifferentiated(title)
+        }, dateInputHandler: { viewController, title, format in
+            return await viewController.getDateInput(title, format: format)
+        }))
     }
 
     private func presentInstalledAddons() {

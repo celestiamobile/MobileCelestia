@@ -33,10 +33,18 @@ extension UIViewController {
         showTextInputDifferentiated(title, message: message, text: text, placeholder: placeholder, keyboardType: keyboardType, source: source, completion: completion)
     }
 
-    func showDateInput(_ title: String, format: String, source: PopoverSource? = nil, completion: ((Date?) -> Void)? = nil) {
+    func getDateInputDifferentiated(_ title: String, format: String, source: PopoverSource? = nil) async -> Date? {
+        return await withCheckedContinuation { continuation in
+            showDateInputDifferentiated(title, format: format, source: source) { result in
+                continuation.resume(returning: result)
+            }
+        }
+    }
+
+    func showDateInputDifferentiated(_ title: String, format: String, source: PopoverSource? = nil, completion: ((Date?) -> Void)? = nil) {
         let formatter = DateFormatter()
         formatter.dateFormat = format
-        showTextInput(title, message: nil, text: nil, placeholder: formatter.string(from: Date()), source: source) { result in
+        showTextInputDifferentiated(title, message: nil, text: nil, placeholder: formatter.string(from: Date()), source: source) { result in
             guard let result = result else {
                 // cancelled, do not call completion
                 return

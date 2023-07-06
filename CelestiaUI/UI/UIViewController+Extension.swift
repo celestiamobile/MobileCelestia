@@ -192,4 +192,24 @@ public extension UIViewController {
         alert.preferredAction = confirmAction
         presentAlert(alert, source: source)
     }
+
+    func getDateInput(_ title: String, format: String, source: PopoverSource? = nil) async -> Date? {
+        return await withCheckedContinuation { continuation in
+            showDateInput(title, format: format, source: source) { result in
+                continuation.resume(returning: result)
+            }
+        }
+    }
+
+    func showDateInput(_ title: String, format: String, source: PopoverSource? = nil, completion: ((Date?) -> Void)? = nil) {
+        let formatter = DateFormatter()
+        formatter.dateFormat = format
+        showTextInput(title, message: nil, text: nil, placeholder: formatter.string(from: Date()), source: source) { result in
+            guard let result = result else {
+                // cancelled, do not call completion
+                return
+            }
+            completion?(formatter.date(from: result))
+        }
+    }
 }
