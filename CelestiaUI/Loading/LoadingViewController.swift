@@ -9,37 +9,35 @@
 // of the License, or (at your option) any later version.
 //
 
-import CelestiaUI
 import UIKit
 
-class LoadingViewController: UIViewController {
+public class LoadingViewController: UIViewController {
     private enum Constants {
         static let loadingGapVertical: CGFloat = 24
     }
 
     private var statusLabel = UILabel(textStyle: .body)
 
-    override func loadView() {
+    public override func loadView() {
         view = UIView()
         view.backgroundColor = .systemBackground
     }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
 
-        setup()
+        setUp()
     }
-
 }
 
 extension LoadingViewController {
-    func update(with status: String) {
+    public func update(with status: String) {
         statusLabel.text = String.localizedStringWithFormat(CelestiaString("Loading: %s", comment: "").toLocalizationTemplate, status)
     }
 }
 
 private extension LoadingViewController {
-    func setup() {
+    func setUp() {
         let container = UIView()
         container.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(container)

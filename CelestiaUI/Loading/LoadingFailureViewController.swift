@@ -9,22 +9,20 @@
 // of the License, or (at your option) any later version.
 //
 
-import CelestiaUI
 import UIKit
 
-class LoadingFailureViewController: UIViewController {
-
-    override func loadView() {
+public class LoadingFailureViewController: UIViewController {
+    public override func loadView() {
         view = UIView()
     }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
 
-        setup()
+        setUp()
     }
 
-    private func setup() {
+    private func setUp() {
         let label = UILabel(textStyle: .body)
         view.addSubview(label)
         label.textColor = .label
