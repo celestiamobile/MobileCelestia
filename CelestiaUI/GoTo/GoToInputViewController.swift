@@ -10,7 +10,6 @@
 //
 
 import CelestiaCore
-import CelestiaUI
 import UIKit
 
 protocol GoToInputItem {
@@ -84,6 +83,7 @@ class GoToInputViewController: BaseTableViewController {
 
     private let locationHandler: ((GoToLocation) -> Void)
     private let objectNameHandler: ((GoToInputViewController) -> Void)
+    private let textInputHandler: (_ viewController: UIViewController, _ title: String, _ text: String, _ keyboardType: UIKeyboardType) async -> String?
 
     private var objectName: String = LocalizedString("Earth", "celestia-data")
     private var longitude: Float = 0
@@ -92,9 +92,9 @@ class GoToInputViewController: BaseTableViewController {
     private var distance: Double = 8
     private var unit: DistanceUnit = .radii
 
-    @Injected(\.appCore) private var core
-
     private var allSections: [Section] = []
+
+    private let executor: AsyncProviderExecutor
 
     private lazy var numberFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
@@ -103,9 +103,16 @@ class GoToInputViewController: BaseTableViewController {
         return formatter
     }()
 
-    init(objectNameHandler: @escaping (GoToInputViewController) -> Void, locationHandler: @escaping ((GoToLocation) -> Void)) {
+    init(
+        executor: AsyncProviderExecutor,
+        objectNameHandler: @escaping (GoToInputViewController) -> Void,
+        locationHandler: @escaping ((GoToLocation) -> Void),
+        textInputHandler: @escaping (_ viewController: UIViewController, _ title: String, _ text: String, _ keyboardType: UIKeyboardType) async -> String?
+    ) {
+        self.executor = executor
         self.objectNameHandler = objectNameHandler
         self.locationHandler = locationHandler
+        self.textInputHandler = textInputHandler
         super.init(style: .defaultGrouped)
     }
 
@@ -141,12 +148,15 @@ private extension GoToInputViewController {
     }
 
     @objc private func go() {
-        let selection = core.simulation.findObject(from: objectName)
-        guard !selection.isEmpty else {
-            showError(CelestiaString("Object not found", comment: ""))
-            return
+        Task {
+            let objectName = self.objectName
+            let selection = await executor.get { $0.simulation.findObject(from: objectName) }
+            guard !selection.isEmpty else {
+                showError(CelestiaString("Object not found", comment: ""))
+                return
+            }
+            locationHandler(GoToLocation(selection: selection, longitude: longitude, latitude: latitude, distance: distance, unit: unit))
         }
-        locationHandler(GoToLocation(selection: selection, longitude: longitude, latitude: latitude, distance: distance, unit: unit))
     }
 
     private func reload() {
@@ -227,21 +237,22 @@ extension GoToInputViewController {
         if item is ObjectNameItem {
             objectNameHandler(self)
         } else if item is UnitItem {
-            let vc = SettingSelectionViewController(title: CelestiaString("Distance Unit", comment: ""), options: DistanceUnit.allCases.map { CelestiaString($0.name, comment: "") }, selectedIndex: DistanceUnit.allCases.firstIndex(of: unit), selectionChange: { [weak self] index in
+            let vc = SelectionViewController(title: CelestiaString("Distance Unit", comment: ""), options: DistanceUnit.allCases.map { CelestiaString($0.name, comment: "") }, selectedIndex: DistanceUnit.allCases.firstIndex(of: unit), selectionChange: { [weak self] index in
                 guard let self = self else { return }
                 self.unit = DistanceUnit.allCases[index]
                 self.reload()
             })
             navigationController?.pushViewController(vc, animated: true)
         } else if let valueItem = item as? DoubleValueItem {
-            showTextInput(item.title, text: item.detail, keyboardType: .decimalPad) { [weak self] string in
-                guard let self = self else { return }
-                guard let newString = string, let value = self.numberFormatter.number(from: newString)?.doubleValue ?? Double(newString) else { return }
-                switch valueItem.type {
-                case .distance:
-                    self.distance = value
+            Task {
+                if let text = await textInputHandler(self, item.title, item.detail, .decimalPad), let value = self.numberFormatter.number(from: text)?.doubleValue ?? Double(text) {
+
+                    switch valueItem.type {
+                    case .distance:
+                        self.distance = value
+                    }
+                    self.reload()
                 }
-                self.reload()
             }
         }
     }

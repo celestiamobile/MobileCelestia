@@ -230,7 +230,7 @@ extension SettingCommonViewController {
             }
             guard let item = row.associatedItem.base as? AssociatedPreferenceSelectionItem else { break }
             let currentValue: Int = userDefaults[item.key] ?? item.defaultOption
-            let vc = SettingSelectionViewController(title: row.name, options: item.options.map { $0.name }, selectedIndex: item.options.firstIndex(where: { $0.value == currentValue })) { [weak self] newIndex in
+            let vc = SelectionViewController(title: row.name, options: item.options.map { $0.name }, selectedIndex: item.options.firstIndex(where: { $0.value == currentValue })) { [weak self] newIndex in
                 guard let self else { return }
                 self.userDefaults[item.key] = item.options[newIndex].value
                 self.tableView.reloadData()
@@ -242,7 +242,7 @@ extension SettingCommonViewController {
             }
             guard let item = row.associatedItem.base as? AssociatedSelectionSingleItem else { break }
             let currentValue = core.value(forKey: item.key) as? Int ?? item.defaultOption
-            let vc = SettingSelectionViewController(title: row.name, options: item.options.map { $0.name }, selectedIndex: item.options.firstIndex(where: { $0.value == currentValue })) { [weak self] newIndex in
+            let vc = SelectionViewController(title: row.name, options: item.options.map { $0.name }, selectedIndex: item.options.firstIndex(where: { $0.value == currentValue })) { [weak self] newIndex in
                 guard let self else { return }
                 Task {
                     await self.executor.setValue(item.options[newIndex].value, forKey: item.key)

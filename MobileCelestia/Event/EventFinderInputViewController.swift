@@ -151,7 +151,7 @@ extension EventFinderInputViewController {
                     guard let self = self, let index = index else { return }
                     if index >= self.selectableObjects.count {
                         // User choose other, show text input for the object name
-                        self.showTextInput(CelestiaString("Please enter an object name.", comment: "")) { text in
+                        self.showTextInputDifferentiated(CelestiaString("Please enter an object name.", comment: "")) { text in
                             guard let objectName = text else { return }
                             self.objectName = objectName
                             tableView.reloadData()

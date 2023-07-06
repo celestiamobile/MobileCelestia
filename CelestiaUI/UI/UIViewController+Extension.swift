@@ -165,4 +165,31 @@ public extension UIViewController {
         }
         presentingController.present(viewController, animated: true, completion: completion)
     }
+
+    func getTextInput(_ title: String, message: String? = nil, text: String? = nil, placeholder: String? = nil, keyboardType: UIKeyboardType = .default, source: PopoverSource? = nil) async -> String? {
+        return await withCheckedContinuation { continuation in
+            showTextInput(title, message: message, text: text, placeholder: placeholder, keyboardType: keyboardType, source: source) { result in
+                continuation.resume(returning: result)
+            }
+        }
+    }
+
+    func showTextInput(_ title: String, message: String? = nil, text: String? = nil, placeholder: String? = nil, keyboardType: UIKeyboardType = .default, source: PopoverSource? = nil, completion: ((String?) -> Void)? = nil) {
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        let confirmAction = UIAlertAction(title: CelestiaString("OK", comment: ""), style: .default, handler: { [unowned alert] (_) in
+            completion?(alert.textFields?.first?.text ?? "")
+        })
+        alert.addTextField { (textField) in
+            textField.text = text
+            textField.placeholder = placeholder
+            textField.keyboardAppearance = .dark
+            textField.keyboardType = keyboardType
+        }
+        alert.addAction(confirmAction)
+        alert.addAction(UIAlertAction(title: CelestiaString("Cancel", comment: ""), style: .cancel, handler: { (_) in
+            completion?(nil)
+        }))
+        alert.preferredAction = confirmAction
+        presentAlert(alert, source: source)
+    }
 }

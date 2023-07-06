@@ -325,7 +325,7 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: BaseTableViewContr
 
     private func requestRenameObject(at index: Int, completionHandler: ((Bool) -> Void)? = nil) {
         let item = itemList[index]
-        showTextInput(CelestiaString("Please enter a new name.", comment: ""), text: item.title) { [unowned self] (text) in
+        showTextInputDifferentiated(CelestiaString("Please enter a new name.", comment: ""), text: item.title) { [unowned self] (text) in
             guard let newName = text else {
                 completionHandler?(false)
                 return

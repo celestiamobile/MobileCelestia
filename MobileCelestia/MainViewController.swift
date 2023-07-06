@@ -764,9 +764,11 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     private func presentGoTo() {
-        showViewController(GoToContainerViewController() { [weak self] location in
+        showViewController(GoToContainerViewController(executor: executor, locationHandler: { [weak self] location in
             self?.executor.run { $0.simulation.go(to: location) }
-        })
+        }, textInputHandler: { viewController, title, text, keyboardType in
+            return await viewController.getTextInputDifferentiated(title, text: text, keyboardType: keyboardType)
+        }))
     }
 
     private func presentSpeedControl() {

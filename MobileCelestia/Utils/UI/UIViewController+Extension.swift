@@ -13,7 +13,15 @@ import CelestiaUI
 import UIKit
 
 extension UIViewController {
-    func showTextInput(_ title: String, message: String? = nil, text: String? = nil, placeholder: String? = nil, keyboardType: UIKeyboardType = .default, source: PopoverSource? = nil, completion: ((String?) -> Void)? = nil) {
+    func getTextInputDifferentiated(_ title: String, message: String? = nil, text: String? = nil, placeholder: String? = nil, keyboardType: UIKeyboardType = .default, source: PopoverSource? = nil) async -> String? {
+        return await withCheckedContinuation { continuation in
+            showTextInputDifferentiated(title, message: message, text: text, placeholder: placeholder, keyboardType: keyboardType, source: source) { result in
+                continuation.resume(returning: result)
+            }
+        }
+    }
+
+    func showTextInputDifferentiated(_ title: String, message: String? = nil, text: String? = nil, placeholder: String? = nil, keyboardType: UIKeyboardType = .default, source: PopoverSource? = nil, completion: ((String?) -> Void)? = nil) {
         #if targetEnvironment(macCatalyst)
         if let window = view.window?.nsWindow {
             MacBridge.showTextInputSheetForWindow(window, title: title, message: message, text: text, placeholder: placeholder, okButtonTitle: CelestiaString("OK", comment: ""), cancelButtonTitle: CelestiaString("Cancel", comment: "")) { result in
@@ -22,22 +30,7 @@ extension UIViewController {
             return
         }
         #endif
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let confirmAction = UIAlertAction(title: CelestiaString("OK", comment: ""), style: .default, handler: { [unowned alert] (_) in
-            completion?(alert.textFields?.first?.text ?? "")
-        })
-        alert.addTextField { (textField) in
-            textField.text = text
-            textField.placeholder = placeholder
-            textField.keyboardAppearance = .dark
-            textField.keyboardType = keyboardType
-        }
-        alert.addAction(confirmAction)
-        alert.addAction(UIAlertAction(title: CelestiaString("Cancel", comment: ""), style: .cancel, handler: { (_) in
-            completion?(nil)
-        }))
-        alert.preferredAction = confirmAction
-        presentAlert(alert, source: source)
+        showTextInputDifferentiated(title, message: message, text: text, placeholder: placeholder, keyboardType: keyboardType, source: source, completion: completion)
     }
 
     func showDateInput(_ title: String, format: String, source: PopoverSource? = nil, completion: ((Date?) -> Void)? = nil) {

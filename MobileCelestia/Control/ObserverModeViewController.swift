@@ -162,7 +162,7 @@ extension ObserverModeViewController {
         case .coordinateSystem:
             if #available(iOS 15.0, *) {
             } else {
-                let vc = SettingSelectionViewController(title: CelestiaString("Coordinate System", comment: ""), options: supportedCoordinateSystems.map { $0.name }, selectedIndex: supportedCoordinateSystems.firstIndex(of: coordinateSystem), selectionChange: { [weak self] index in
+                let vc = SelectionViewController(title: CelestiaString("Coordinate System", comment: ""), options: supportedCoordinateSystems.map { $0.name }, selectedIndex: supportedCoordinateSystems.firstIndex(of: coordinateSystem), selectionChange: { [weak self] index in
                     guard let self = self else { return }
                     self.coordinateSystem = self.supportedCoordinateSystems[index]
                     self.updateRows()

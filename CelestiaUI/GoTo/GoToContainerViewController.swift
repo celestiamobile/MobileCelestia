@@ -10,32 +10,29 @@
 //
 
 import CelestiaCore
-import CelestiaUI
 import UIKit
 
-class GoToContainerViewController: UINavigationController {
-    @Injected(\.executor) private var executor
-
-    private let locationHandler: ((GoToLocation) -> Void)
-
-    init(locationHandler: @escaping ((GoToLocation) -> Void)) {
-        self.locationHandler = locationHandler
+public class GoToContainerViewController: UINavigationController {
+    public init(
+        executor: AsyncProviderExecutor,
+        locationHandler: @escaping ((GoToLocation) -> Void),
+        textInputHandler: @escaping (_ viewController: UIViewController, _ title: String, _ text: String, _ keyboardType: UIKeyboardType) async -> String?
+    ) {
         super.init(rootViewController: UIViewController())
 
         setViewControllers([
-            GoToInputViewController(objectNameHandler: { [weak self] controller in
+            GoToInputViewController(executor: executor, objectNameHandler: { [weak self] controller in
                 guard let self else { return }
-                let searchController = SearchViewController(resultsInSidebar: false, executor: self.executor) { [weak self, weak controller] name in
+                let searchController = SearchViewController(resultsInSidebar: false, executor: executor) { [weak self, weak controller] name in
                     guard let self else { return }
                     guard let controller = controller else { return }
                     self.popViewController(animated: true)
                     controller.updateObjectName(name)
                 }
                 self.pushViewController(searchController, animated: true)
-            }) { [weak self] location in
-                guard let self = self else { return }
-                self.locationHandler(location)
-            }
+            }, locationHandler: { location in
+                locationHandler(location)
+            }, textInputHandler: textInputHandler)
         ], animated: false)
     }
 
