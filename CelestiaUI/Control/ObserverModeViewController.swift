@@ -10,11 +10,10 @@
 //
 
 import CelestiaCore
-import CelestiaUI
 import UIKit
 
-class ObserverModeViewController: BaseTableViewController {
-    @Injected(\.executor) private var executor
+public class ObserverModeViewController: BaseTableViewController {
+    private let executor: AsyncProviderExecutor
 
     private let supportedCoordinateSystems: [CoordinateSystem] = [
         .universal,
@@ -36,15 +35,16 @@ class ObserverModeViewController: BaseTableViewController {
 
     private var rows: [Row] = [.coordinateSystem, .referenceObjectName, .targetObjectName]
 
-    init() {
+    public init(executor: AsyncProviderExecutor) {
+        self.executor = executor
         super.init(style: .defaultGrouped)
     }
 
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
 
         setUp()
@@ -85,7 +85,7 @@ private extension ObserverModeViewController {
         navigationItem.backButtonTitle = ""
         title = CelestiaString("Flight Mode", comment: "")
         if #available(iOS 15.0, *) {
-            tableView.register(SettingSelectionCell.self, forCellReuseIdentifier: "Selection")
+            tableView.register(SelectionCell.self, forCellReuseIdentifier: "Selection")
         }
         tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Text")
         tableView.register(LinkFooterView.self, forHeaderFooterViewReuseIdentifier: "Footer")
@@ -96,20 +96,20 @@ private extension ObserverModeViewController {
 }
 
 extension ObserverModeViewController {
-    override func numberOfSections(in tableView: UITableView) -> Int {
+    public override func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return rows.count
     }
 
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let row = rows[indexPath.row]
         if #available(iOS 15.0, *), row == .coordinateSystem {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Selection", for: indexPath) as! SettingSelectionCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Selection", for: indexPath) as! SelectionCell
             cell.title = CelestiaString("Coordinate System", comment: "")
-            cell.selectionData = SettingSelectionCell.SelectionData(options: supportedCoordinateSystems.map { $0.name }, selectedIndex: supportedCoordinateSystems.firstIndex(of: coordinateSystem) ?? -1)
+            cell.selectionData = SelectionCell.SelectionData(options: supportedCoordinateSystems.map { $0.name }, selectedIndex: supportedCoordinateSystems.firstIndex(of: coordinateSystem) ?? -1)
             cell.selectionChange = { [weak self] index in
                 guard let self else { return }
                 self.coordinateSystem = self.supportedCoordinateSystems[index]
@@ -142,21 +142,21 @@ extension ObserverModeViewController {
         return cell
     }
 
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    public override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
 
-    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+    public override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         let footer = tableView.dequeueReusableHeaderFooterView(withIdentifier: "Footer") as! LinkFooterView
         footer.info = LinkFooterView.LinkInfo(text: CelestiaString("Flight mode decides how you move around in Celestia. Learn more…", comment: ""), linkText: CelestiaString("Learn more…", comment: ""), link: "https://celestia.mobi/help/flight-mode?lang=\(AppCore.language)")
         return footer
     }
 
-    override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+    public override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return UITableView.automaticDimension
     }
 
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    public override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         switch rows[indexPath.row] {
         case .coordinateSystem:

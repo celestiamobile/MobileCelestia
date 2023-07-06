@@ -10,10 +10,9 @@
 //
 
 import CelestiaCore
-import CelestiaUI
 import UIKit
 
-final class CameraControlViewController: BaseTableViewController {
+public final class CameraControlViewController: BaseTableViewController {
     #if targetEnvironment(macCatalyst)
     private let singleRowBaseIndex = 0
     #else
@@ -21,7 +20,7 @@ final class CameraControlViewController: BaseTableViewController {
     #endif
 
     #if !targetEnvironment(macCatalyst)
-    struct Item {
+    private struct Item {
         let title: String
         let minusKey: Int
         let plusKey: Int
@@ -36,33 +35,34 @@ final class CameraControlViewController: BaseTableViewController {
     private var lastKey: Int?
     #endif
 
-    @Injected(\.executor) private var executor
+    private let executor: AsyncProviderExecutor
 
-    init() {
+    public init(executor: AsyncProviderExecutor) {
+        self.executor = executor
         super.init(style: .defaultGrouped)
     }
 
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
 
-        setup()
+        setUp()
     }
 }
 
 private extension CameraControlViewController {
-    func setup() {
+    func setUp() {
         tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Text")
-        tableView.register(SettingStepperCell.self, forCellReuseIdentifier: "Stepper")
+        tableView.register(StepperCell.self, forCellReuseIdentifier: "Stepper")
         title = CelestiaString("Camera Control", comment: "")
     }
 }
 
 extension CameraControlViewController {
-    override func numberOfSections(in tableView: UITableView) -> Int {
+    public override func numberOfSections(in tableView: UITableView) -> Int {
         #if targetEnvironment(macCatalyst)
         return 2
         #else
@@ -70,7 +70,7 @@ extension CameraControlViewController {
         #endif
     }
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         if section >= singleRowBaseIndex { return 1 }
         #if !targetEnvironment(macCatalyst)
         return controlItems.count
@@ -79,7 +79,7 @@ extension CameraControlViewController {
         #endif
     }
 
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == singleRowBaseIndex {
             let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! SettingTextCell
             cell.title = CelestiaString("Flight Mode", comment: "")
@@ -94,7 +94,7 @@ extension CameraControlViewController {
         }
         #if !targetEnvironment(macCatalyst)
         let item = controlItems[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Stepper", for: indexPath) as! SettingStepperCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Stepper", for: indexPath) as! StepperCell
         cell.title = item.title
         cell.selectionStyle = .none
         cell.changeBlock = { [unowned self] (plus) in
@@ -110,7 +110,7 @@ extension CameraControlViewController {
     }
 
     #if !targetEnvironment(macCatalyst)
-    override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+    public override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         if section == 0 {
             return CelestiaString("Long press on stepper to change orientation.", comment: "")
         }
@@ -118,19 +118,21 @@ extension CameraControlViewController {
     }
     #endif
 
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    public override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
 
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    public override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
         if indexPath.section == singleRowBaseIndex {
-            navigationController?.pushViewController(ObserverModeViewController(), animated: true)
+            navigationController?.pushViewController(ObserverModeViewController(executor: executor), animated: true)
             return
         }
         if indexPath.section == singleRowBaseIndex + 1 {
-            executor.run { $0.simulation.reverseObserverOrientation() }
+            Task {
+                await executor.run { $0.simulation.reverseObserverOrientation() }
+            }
             return
         }
     }
@@ -142,16 +144,22 @@ private extension CameraControlViewController {
         let key = plus ? controlItems[index].plusKey : controlItems[index].minusKey
         if let prev = lastKey {
             if key == prev { return }
-            executor.run { $0.keyUp(prev) }
+            Task {
+                await executor.run { $0.keyUp(prev) }
+            }
         }
 
-        executor.run { $0.keyDown(key) }
+        Task {
+            await executor.run { $0.keyDown(key) }
+        }
         lastKey = key
     }
 
     func handleStop() {
         if let key = lastKey {
-            executor.run { $0.keyUp(key) }
+            Task {
+                await executor.run { $0.keyUp(key) }
+            }
             lastKey = nil
         }
     }

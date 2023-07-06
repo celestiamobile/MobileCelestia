@@ -1,5 +1,5 @@
 //
-// SettingSelectionViewController.swift
+// SelectionViewController.swift
 //
 // Copyright © 2023 Celestia Development Team. All rights reserved.
 //

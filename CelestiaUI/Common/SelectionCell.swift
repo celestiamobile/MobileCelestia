@@ -1,5 +1,5 @@
 //
-// SettingSelectionCell.swift
+// SelectionCell.swift
 //
 // Copyright © 2023 Celestia Development Team. All rights reserved.
 //
@@ -9,41 +9,45 @@
 // of the License, or (at your option) any later version.
 //
 
-import CelestiaUI
 import UIKit
 
 @available(iOS 15.0, *)
-class SettingSelectionCell: UITableViewCell {
+public class SelectionCell: UITableViewCell {
     private lazy var label = UILabel(textStyle: .body)
     private lazy var button = UIButton(configuration: .plain())
 
-    var title: String? { didSet { label.text = title }  }
-    var selectionData = SelectionData(options: [], selectedIndex: -1) {
+    public var title: String? { didSet { label.text = title }  }
+    public var selectionData = SelectionData(options: [], selectedIndex: -1) {
         didSet {
             reloadMenu()
         }
     }
 
-    struct SelectionData {
+    public struct SelectionData {
         let options: [String]
         let selectedIndex: Int
+
+        public init(options: [String], selectedIndex: Int) {
+            self.options = options
+            self.selectedIndex = selectedIndex
+        }
     }
 
-    var selectionChange: ((Int) -> Void)?
+    public var selectionChange: ((Int) -> Void)?
 
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+    public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 
         setUp()
     }
 
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
 
 @available(iOS 15.0, *)
-private extension SettingSelectionCell {
+private extension SelectionCell {
     func setUp() {
         selectionStyle = .none
 

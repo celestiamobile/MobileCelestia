@@ -24,8 +24,6 @@ extension GlobalConstants {
 
     static let listTextGapVertical: CGFloat = 4
 
-    static let listItemAccessoryMinMarginVertical: CGFloat = 6
-
     static let listItemSeparatorInsetLeading: CGFloat = 16
 
     static let bottomControlViewItemDimension: CGFloat = 52

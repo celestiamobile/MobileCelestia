@@ -10,7 +10,6 @@
 //
 
 import CelestiaCore
-import CelestiaUI
 import UIKit
 
 class DestinationDetailViewController: UIViewController {
@@ -20,7 +19,7 @@ class DestinationDetailViewController: UIViewController {
     private lazy var scrollView = UIScrollView(frame: .zero)
     private lazy var goToButton = ActionButtonHelper.newButton()
 
-    private lazy var descriptionLabel = UILabel(textStyle: .body)
+    private lazy var descriptionLabel = UITextView()
 
     private lazy var contentStack = UIStackView(arrangedSubviews: [
         descriptionLabel,
@@ -86,8 +85,13 @@ private extension DestinationDetailViewController {
         ])
 
         descriptionLabel.textColor = .secondaryLabel
-        descriptionLabel.numberOfLines = 0
-        descriptionLabel.lineBreakMode = .byCharWrapping
+        descriptionLabel.backgroundColor = .clear
+        descriptionLabel.textContainer.maximumNumberOfLines = 0
+        descriptionLabel.textContainerInset = UIEdgeInsets(top: 0, left: -descriptionLabel.textContainer.lineFragmentPadding, bottom: 0, right: -descriptionLabel.textContainer.lineFragmentPadding)
+        descriptionLabel.isScrollEnabled = false
+        descriptionLabel.isEditable = false
+        descriptionLabel.adjustsFontForContentSizeCategory = true
+        descriptionLabel.textContainer.lineBreakMode = .byWordWrapping
 
         goToButton.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(goToButton)

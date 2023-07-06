@@ -1,5 +1,5 @@
 //
-// SettingStepperCell.swift
+// StepperCell.swift
 //
 // Copyright © 2020 Celestia Development Team. All rights reserved.
 //
@@ -9,10 +9,9 @@
 // of the License, or (at your option) any later version.
 //
 
-import CelestiaUI
 import UIKit
 
-class SettingStepperCell: UITableViewCell {
+class StepperCell: UITableViewCell {
     private lazy var label = UILabel(textStyle: .body)
     private lazy var stepper = UIStepper()
 
@@ -39,7 +38,7 @@ class SettingStepperCell: UITableViewCell {
     }
 }
 
-private extension SettingStepperCell {
+private extension StepperCell {
     func setup() {
         selectionStyle = .none
 

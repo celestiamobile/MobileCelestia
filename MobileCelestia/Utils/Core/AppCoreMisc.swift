@@ -22,12 +22,3 @@ extension InjectedValues {
         set { Self[AppCoreKey.self] = newValue }
     }
 }
-
-// MARK: Scripting
-func readScripts() -> [Script] {
-    var scripts = Script.scripts(inDirectory: "scripts", deepScan: true)
-    if let extraScriptsPath = UserDefaults.extraScriptDirectory?.path {
-        scripts += Script.scripts(inDirectory: extraScriptsPath, deepScan: true)
-    }
-    return scripts
-}

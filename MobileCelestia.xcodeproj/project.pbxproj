@@ -12,9 +12,6 @@
 		973BBA61240538DB00E3B061 /* MultiLineTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973BBA60240538DB00E3B061 /* MultiLineTextCell.swift */; };
 		973BBA642405481200E3B061 /* TimeSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973BBA632405481200E3B061 /* TimeSettingViewController.swift */; };
 		973BBA6624054E9900E3B061 /* TextViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973BBA6524054E9900E3B061 /* TextViewController.swift */; };
-		97401CA52414DAF50015F8E8 /* FavoriteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97401CA32414DAF50015F8E8 /* FavoriteViewController.swift */; };
-		97401CA62414DAF50015F8E8 /* FavoriteCoordinatorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97401CA42414DAF50015F8E8 /* FavoriteCoordinatorController.swift */; };
-		97401CAB2414DCAC0015F8E8 /* FavoriteItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97401CAA2414DCAC0015F8E8 /* FavoriteItemViewController.swift */; };
 		974F86AA240362BA00356795 /* ToolbarButtonCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 974F86A9240362BA00356795 /* ToolbarButtonCell.swift */; };
 		9773949C2402A8F700E38B82 /* ToolbarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9773949B2402A8F700E38B82 /* ToolbarViewController.swift */; };
 		9773949E2402A96B00E38B82 /* SlideInPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9773949D2402A96B00E38B82 /* SlideInPresentationController.swift */; };
@@ -40,8 +37,6 @@
 		979D2FAD23FEB2B4005D2592 /* libbz2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 979D2FAC23FEB2AE005D2592 /* libbz2.tbd */; };
 		979D2FAF23FEB2BD005D2592 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 979D2FAE23FEB2B9005D2592 /* libz.tbd */; };
 		97C3A9F22445FACF00EB365A /* CelestiaControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C3A9F12445FACF00EB365A /* CelestiaControlView.swift */; };
-		97EB41C62408F20700E6D441 /* CameraControlViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EB41C52408F20700E6D441 /* CameraControlViewController.swift */; };
-		97EB41C92408F26200E6D441 /* SettingStepperCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EB41C82408F26200E6D441 /* SettingStepperCell.swift */; };
 		97F1141E2408AE06003A06D7 /* DataLocationSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F1141D2408AE06003A06D7 /* DataLocationSelectionViewController.swift */; };
 		97FF95A5240A340300E9F44F /* BaseResultHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97FF95A4240A340300E9F44F /* BaseResultHandler.swift */; };
 		D75E8DEAC2EBA3F7F8E06011 /* Pods_MobileCelestia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FCC04706AE5EC279AAF950C2 /* Pods_MobileCelestia.framework */; };
@@ -71,19 +66,15 @@
 		EA50E7852A505F13005E7D7A /* Font.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAB08FE32780550600BB82F0 /* Font.swift */; };
 		EA50E7872A50609C005E7D7A /* AppCoreMisc.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA50E7862A50609C005E7D7A /* AppCoreMisc.swift */; };
 		EA50E7892A506406005E7D7A /* GlobalConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA50E7882A506406005E7D7A /* GlobalConstants.swift */; };
-		EA544E5F2566BC50003F351D /* DestinationDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA544E5E2566BC50003F351D /* DestinationDetailViewController.swift */; };
 		EA5D32E7266F9518005D5931 /* SheetPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5D32E6266F9518005D5931 /* SheetPresentationController.swift */; };
 		EA5E185D2477C78E00F5374B /* Toast.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5E185B2477C78E00F5374B /* Toast.swift */; };
-		EA6671C929B3919C00A7846E /* SettingSelectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6671C829B3919C00A7846E /* SettingSelectionCell.swift */; };
-		EA6671D129B3A81200A7846E /* ObserverModeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6671D029B3A81200A7846E /* ObserverModeViewController.swift */; };
-		EA6671D329B3A9AE00A7846E /* LinkFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6671D229B3A9AE00A7846E /* LinkFooterView.swift */; };
 		EA66BBC62A55AABF008A7AAA /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394BC2404189000E38B82 /* SearchViewController.swift */; };
 		EA66BBC72A55AABF008A7AAA /* SearchCoordinatorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394BE24041A9A00E38B82 /* SearchCoordinatorController.swift */; };
 		EA66BBDF2A55BA88008A7AAA /* DistanceInputCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACAB98828BB314300192C75 /* DistanceInputCell.swift */; };
 		EA66BBE02A55BA88008A7AAA /* LongitudeLatitudeInputCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACAB98628BB2B3E00192C75 /* LongitudeLatitudeInputCell.swift */; };
 		EA66BBE12A55BA88008A7AAA /* GoToInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA374CD9263A8B770069589C /* GoToInputViewController.swift */; };
 		EA66BBE22A55BA88008A7AAA /* GoToContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA374CD1263A8B320069589C /* GoToContainerViewController.swift */; };
-		EA66BBE32A564888008A7AAA /* SettingSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6671CA29B391B900A7846E /* SettingSelectionViewController.swift */; };
+		EA66BBE32A564888008A7AAA /* SelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6671CA29B391B900A7846E /* SelectionViewController.swift */; };
 		EA787309296DE50D0099AB11 /* Injecton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA787308296DE50D0099AB11 /* Injecton.swift */; };
 		EA78730F296DEA6B0099AB11 /* CelestiaExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA78730E296DEA6B0099AB11 /* CelestiaExecutor.swift */; };
 		EA78733D296EB61B0099AB11 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA78733B296EB61A0099AB11 /* UserDefaults.swift */; };
@@ -127,6 +118,15 @@
 		EAD12A8E2A5656FF007EE4D6 /* EventFinderInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E424A0E93D00F3F51B /* EventFinderInputViewController.swift */; };
 		EAD12A8F2A5656FF007EE4D6 /* EventFinderResultViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E624A0E94900F3F51B /* EventFinderResultViewController.swift */; };
 		EAD12A902A5656FF007EE4D6 /* EventFinderCoordinatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E224A0E92B00F3F51B /* EventFinderCoordinatorViewController.swift */; };
+		EAD12AA22A566DE1007EE4D6 /* ObserverModeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6671D029B3A81200A7846E /* ObserverModeViewController.swift */; };
+		EAD12AA32A566DE7007EE4D6 /* FavoriteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97401CA32414DAF50015F8E8 /* FavoriteViewController.swift */; };
+		EAD12AA42A566DE7007EE4D6 /* DestinationDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA544E5E2566BC50003F351D /* DestinationDetailViewController.swift */; };
+		EAD12AA52A566DE7007EE4D6 /* FavoriteItemViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97401CAA2414DCAC0015F8E8 /* FavoriteItemViewController.swift */; };
+		EAD12AA62A566DE7007EE4D6 /* FavoriteCoordinatorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97401CA42414DAF50015F8E8 /* FavoriteCoordinatorController.swift */; };
+		EAD12AA72A566E4F007EE4D6 /* SelectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6671C829B3919C00A7846E /* SelectionCell.swift */; };
+		EAD12AA82A566EE1007EE4D6 /* LinkFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6671D229B3A9AE00A7846E /* LinkFooterView.swift */; };
+		EAD12AA92A567514007EE4D6 /* CameraControlViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EB41C52408F20700E6D441 /* CameraControlViewController.swift */; };
+		EAD12AAA2A56757F007EE4D6 /* StepperCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EB41C82408F26200E6D441 /* StepperCell.swift */; };
 		EADE7FBB252B517600D4174F /* CelestiaDisplayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE7FBA252B517600D4174F /* CelestiaDisplayController.swift */; };
 		EADE7FC0252B54A400D4174F /* CelestiaInteractionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE7FBF252B54A400D4174F /* CelestiaInteractionController.swift */; };
 		EAE6AC0F27A438E400F953DF /* CommonWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE6AC0E27A438E400F953DF /* CommonWebViewController.swift */; };
@@ -259,7 +259,7 @@
 		979D2FAE23FEB2B9005D2592 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		97C3A9F12445FACF00EB365A /* CelestiaControlView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaControlView.swift; sourceTree = "<group>"; };
 		97EB41C52408F20700E6D441 /* CameraControlViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraControlViewController.swift; sourceTree = "<group>"; };
-		97EB41C82408F26200E6D441 /* SettingStepperCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingStepperCell.swift; sourceTree = "<group>"; };
+		97EB41C82408F26200E6D441 /* StepperCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepperCell.swift; sourceTree = "<group>"; };
 		97F1141D2408AE06003A06D7 /* DataLocationSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataLocationSelectionViewController.swift; sourceTree = "<group>"; };
 		97FF95A4240A340300E9F44F /* BaseResultHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseResultHandler.swift; sourceTree = "<group>"; };
 		9E22703CD906FE8145500765 /* Pods-MobileCelestia.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MobileCelestia.debug.xcconfig"; path = "Target Support Files/Pods-MobileCelestia/Pods-MobileCelestia.debug.xcconfig"; sourceTree = "<group>"; };
@@ -290,8 +290,8 @@
 		EA544E5E2566BC50003F351D /* DestinationDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DestinationDetailViewController.swift; sourceTree = "<group>"; };
 		EA5D32E6266F9518005D5931 /* SheetPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SheetPresentationController.swift; sourceTree = "<group>"; };
 		EA5E185B2477C78E00F5374B /* Toast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
-		EA6671C829B3919C00A7846E /* SettingSelectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingSelectionCell.swift; sourceTree = "<group>"; };
-		EA6671CA29B391B900A7846E /* SettingSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingSelectionViewController.swift; sourceTree = "<group>"; };
+		EA6671C829B3919C00A7846E /* SelectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectionCell.swift; sourceTree = "<group>"; };
+		EA6671CA29B391B900A7846E /* SelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionViewController.swift; sourceTree = "<group>"; };
 		EA6671CD29B3947800A7846E /* GameControllerAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameControllerAction.swift; sourceTree = "<group>"; };
 		EA6671D029B3A81200A7846E /* ObserverModeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObserverModeViewController.swift; sourceTree = "<group>"; };
 		EA6671D229B3A9AE00A7846E /* LinkFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkFooterView.swift; sourceTree = "<group>"; };
@@ -435,17 +435,6 @@
 			path = Utils;
 			sourceTree = "<group>";
 		};
-		97401CA12414DA6B0015F8E8 /* Favorite */ = {
-			isa = PBXGroup;
-			children = (
-				EA544E5E2566BC50003F351D /* DestinationDetailViewController.swift */,
-				97401CA42414DAF50015F8E8 /* FavoriteCoordinatorController.swift */,
-				97401CA32414DAF50015F8E8 /* FavoriteViewController.swift */,
-				97401CAA2414DCAC0015F8E8 /* FavoriteItemViewController.swift */,
-			);
-			path = Favorite;
-			sourceTree = "<group>";
-		};
 		974F86DA2403BD2600356795 /* Info */ = {
 			isa = PBXGroup;
 			children = (
@@ -471,19 +460,16 @@
 		977394A92403F05100E38B82 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
-				EA6671C829B3919C00A7846E /* SettingSelectionCell.swift */,
 				977394AB2403F07C00E38B82 /* SettingsCoordinatorController.swift */,
 				977394AD2403F08800E38B82 /* SettingsMainViewController.swift */,
 				EA86E38326FE20C000FF2278 /* SettingsFrameRateViewController.swift */,
 				973BBA632405481200E3B061 /* TimeSettingViewController.swift */,
 				973BBA442405216700E3B061 /* AboutViewController.swift */,
 				97F1141D2408AE06003A06D7 /* DataLocationSelectionViewController.swift */,
-				97EB41C52408F20700E6D441 /* CameraControlViewController.swift */,
 				977394B02403F30900E38B82 /* SettingModel.swift */,
 				977394B7240409CF00E38B82 /* SettingSwitchCell.swift */,
 				973BBA60240538DB00E3B061 /* MultiLineTextCell.swift */,
 				973BBA6524054E9900E3B061 /* TextViewController.swift */,
-				97EB41C82408F26200E6D441 /* SettingStepperCell.swift */,
 				EABDE366247170F000E0A5FA /* SettngSliderCell.swift */,
 				EABDE3A82473DAA300E0A5FA /* SettingCommonViewController.swift */,
 			);
@@ -541,11 +527,9 @@
 		979D2F7C23FEB1A6005D2592 /* MobileCelestia */ = {
 			isa = PBXGroup;
 			children = (
-				EA6671CC29B3946C00A7846E /* Control */,
 				EABF790E253895DD00F2460C /* Resource */,
 				EAF4851D249B5C0F00E5B817 /* Common */,
 				97C3A9EF2445FAA100EB365A /* Celestia */,
-				97401CA12414DA6B0015F8E8 /* Favorite */,
 				977CDD27240BC4ED00137127 /* Tutorial */,
 				97DB1FD424067757001F222F /* Presentation */,
 				977394A92403F05100E38B82 /* Settings */,
@@ -651,6 +635,8 @@
 		EA50E75F2A505627005E7D7A /* CelestiaUI */ = {
 			isa = PBXGroup;
 			children = (
+				EAD12AA12A566DD2007EE4D6 /* Control */,
+				EAD12AA02A566DA1007EE4D6 /* Favorite */,
 				EAD12A8D2A5656F1007EE4D6 /* Event */,
 				EA66BBDE2A55BA52008A7AAA /* GoTo */,
 				EA66BBC52A55AAA5008A7AAA /* Search */,
@@ -669,7 +655,10 @@
 		EA50E77B2A505DFA005E7D7A /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				EA6671CA29B391B900A7846E /* SettingSelectionViewController.swift */,
+				97EB41C82408F26200E6D441 /* StepperCell.swift */,
+				EA6671D229B3A9AE00A7846E /* LinkFooterView.swift */,
+				EA6671CA29B391B900A7846E /* SelectionViewController.swift */,
+				EA6671C829B3919C00A7846E /* SelectionCell.swift */,
 				EAF4851F249B5C2500E5B817 /* StandardButton.swift */,
 				EA775EB32664B63F00479295 /* ActionButton.swift */,
 			);
@@ -699,14 +688,6 @@
 				EAA16A9728A6654600DBCE4F /* GlobalConstants.swift */,
 			);
 			path = UI;
-			sourceTree = "<group>";
-		};
-		EA6671CC29B3946C00A7846E /* Control */ = {
-			isa = PBXGroup;
-			children = (
-				EA6671D029B3A81200A7846E /* ObserverModeViewController.swift */,
-			);
-			path = Control;
 			sourceTree = "<group>";
 		};
 		EA66BBC52A55AAA5008A7AAA /* Search */ = {
@@ -807,6 +788,26 @@
 			path = Event;
 			sourceTree = "<group>";
 		};
+		EAD12AA02A566DA1007EE4D6 /* Favorite */ = {
+			isa = PBXGroup;
+			children = (
+				EA544E5E2566BC50003F351D /* DestinationDetailViewController.swift */,
+				97401CA42414DAF50015F8E8 /* FavoriteCoordinatorController.swift */,
+				97401CA32414DAF50015F8E8 /* FavoriteViewController.swift */,
+				97401CAA2414DCAC0015F8E8 /* FavoriteItemViewController.swift */,
+			);
+			path = Favorite;
+			sourceTree = "<group>";
+		};
+		EAD12AA12A566DD2007EE4D6 /* Control */ = {
+			isa = PBXGroup;
+			children = (
+				97EB41C52408F20700E6D441 /* CameraControlViewController.swift */,
+				EA6671D029B3A81200A7846E /* ObserverModeViewController.swift */,
+			);
+			path = Control;
+			sourceTree = "<group>";
+		};
 		EAE92A5D2A558B7B00BFE06E /* Interaction */ = {
 			isa = PBXGroup;
 			children = (
@@ -824,7 +825,6 @@
 				EA85C914289E9AD2009ADB1C /* AutoSizingView.swift */,
 				EA85C916289EA1ED009ADB1C /* IconView.swift */,
 				EA85C91A289F5811009ADB1C /* ButtonView.swift */,
-				EA6671D229B3A9AE00A7846E /* LinkFooterView.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -1155,10 +1155,8 @@
 				EA85C915289E9AD2009ADB1C /* AutoSizingView.swift in Sources */,
 				EABF7911253895FD00F2460C /* ResourceViewController.swift in Sources */,
 				EAA6C4CB253B5CD200ED1D60 /* InstalledResourceViewController.swift in Sources */,
-				EA6671D329B3A9AE00A7846E /* LinkFooterView.swift in Sources */,
 				EA85C91B289F5811009ADB1C /* ButtonView.swift in Sources */,
 				EA28CA4E24A25FE7004B011E /* BottomControlViewController.swift in Sources */,
-				97401CA62414DAF50015F8E8 /* FavoriteCoordinatorController.swift in Sources */,
 				977CDD2E240BC6A900137127 /* TutorialDescriptionCell.swift in Sources */,
 				977394B8240409CF00E38B82 /* SettingSwitchCell.swift in Sources */,
 				EAFF95F428885A64009C2FFD /* FallbackWebViewController.swift in Sources */,
@@ -1166,7 +1164,6 @@
 				EABDE3A92473DAA300E0A5FA /* SettingCommonViewController.swift in Sources */,
 				EA50E7872A50609C005E7D7A /* AppCoreMisc.swift in Sources */,
 				9773949C2402A8F700E38B82 /* ToolbarViewController.swift in Sources */,
-				EA6671D129B3A81200A7846E /* ObserverModeViewController.swift in Sources */,
 				EA85C917289EA1ED009ADB1C /* IconView.swift in Sources */,
 				979D2F8223FEB1A6005D2592 /* CelestiaViewController.swift in Sources */,
 				EA78733E296EB61B0099AB11 /* URL.swift in Sources */,
@@ -1177,10 +1174,8 @@
 				973BBA642405481200E3B061 /* TimeSettingViewController.swift in Sources */,
 				EA787344296EBBAC0099AB11 /* Task.swift in Sources */,
 				EABF794A2538A86500F2460C /* ResourceManager.swift in Sources */,
-				EA544E5F2566BC50003F351D /* DestinationDetailViewController.swift in Sources */,
 				973BBA61240538DB00E3B061 /* MultiLineTextCell.swift in Sources */,
 				97C3A9F22445FACF00EB365A /* CelestiaControlView.swift in Sources */,
-				97401CAB2414DCAC0015F8E8 /* FavoriteItemViewController.swift in Sources */,
 				977394B12403F30900E38B82 /* SettingModel.swift in Sources */,
 				EA50E7892A506406005E7D7A /* GlobalConstants.swift in Sources */,
 				EA1BE1572748E9DC0046074C /* DisplaySceneDelegate.swift in Sources */,
@@ -1188,13 +1183,10 @@
 				EA787341296EB68A0099AB11 /* Bundle.swift in Sources */,
 				EA17952027B371D700D47397 /* GuideItem.swift in Sources */,
 				977394AC2403F07C00E38B82 /* SettingsCoordinatorController.swift in Sources */,
-				EA6671C929B3919C00A7846E /* SettingSelectionCell.swift in Sources */,
-				97EB41C92408F26200E6D441 /* SettingStepperCell.swift in Sources */,
 				EA78733D296EB61B0099AB11 /* UserDefaults.swift in Sources */,
 				977CDD34240BDFE500137127 /* OnboardViewController.swift in Sources */,
 				974F86AA240362BA00356795 /* ToolbarButtonCell.swift in Sources */,
 				977CDD2A240BC50A00137127 /* TutorialViewController.swift in Sources */,
-				97401CA52414DAF50015F8E8 /* FavoriteViewController.swift in Sources */,
 				EABF793C2538A1C100F2460C /* ResourceItemViewController.swift in Sources */,
 				978406D724028F0000876FD1 /* MainViewController.swift in Sources */,
 				EABF792C25389B3100F2460C /* ResourceItem.swift in Sources */,
@@ -1203,7 +1195,6 @@
 				EA9FB23F27B7852A00E0DC1F /* CommonSceneDelegate.swift in Sources */,
 				EA934C9A251D92AD00DD284C /* PanelSceneDelegate.swift in Sources */,
 				EA85C913289E9A7D009ADB1C /* UIContentSizeCategory+Extension.swift in Sources */,
-				97EB41C62408F20700E6D441 /* CameraControlViewController.swift in Sources */,
 				97F1141E2408AE06003A06D7 /* DataLocationSelectionViewController.swift in Sources */,
 				97FF95A5240A340300E9F44F /* BaseResultHandler.swift in Sources */,
 				EA5D32E7266F9518005D5931 /* SheetPresentationController.swift in Sources */,
@@ -1248,10 +1239,12 @@
 				EAB623AB2A51AA0A00063D1B /* SubsystemBrowserCoordinatorViewController.swift in Sources */,
 				EAB623AF2A51AA4400063D1B /* BaseTableViewController.swift in Sources */,
 				EAE92A5C2A558B4400BFE06E /* AsyncProviderExecutor.swift in Sources */,
+				EAD12AA72A566E4F007EE4D6 /* SelectionCell.swift in Sources */,
 				EA50E7812A505EA4005E7D7A /* Color.swift in Sources */,
 				EAE92A5F2A558B8D00BFE06E /* GameControllerManager.swift in Sources */,
 				EAB623B02A51AA7B00063D1B /* Selection.swift in Sources */,
 				EAE92A622A558D2900BFE06E /* GameControllerButton.swift in Sources */,
+				EAD12AA92A567514007EE4D6 /* CameraControlViewController.swift in Sources */,
 				EA50E7832A505EDF005E7D7A /* CelestiaAction.swift in Sources */,
 				EAB623B12A51AA9300063D1B /* UIViewController+Extension.swift in Sources */,
 				EA50E7802A505E82005E7D7A /* GlobalConstants.swift in Sources */,
@@ -1259,21 +1252,28 @@
 				EAB623AE2A51AA0A00063D1B /* BrowserCommonViewController.swift in Sources */,
 				EA50E77E2A505E42005E7D7A /* AppCore.swift in Sources */,
 				EA50E7852A505F13005E7D7A /* Font.swift in Sources */,
+				EAD12AA22A566DE1007EE4D6 /* ObserverModeViewController.swift in Sources */,
 				EA66BBDF2A55BA88008A7AAA /* DistanceInputCell.swift in Sources */,
+				EAD12AA62A566DE7007EE4D6 /* FavoriteCoordinatorController.swift in Sources */,
 				EA66BBC72A55AABF008A7AAA /* SearchCoordinatorController.swift in Sources */,
 				EAB623B72A51AC2C00063D1B /* UILabel+DynamicType.swift in Sources */,
+				EAD12AA32A566DE7007EE4D6 /* FavoriteViewController.swift in Sources */,
 				EA50E7782A505DCE005E7D7A /* BodyDescriptionCell.swift in Sources */,
 				EAB623B22A51AAB600063D1B /* UITableView+Extensions.swift in Sources */,
 				EA66BBE22A55BA88008A7AAA /* GoToContainerViewController.swift in Sources */,
 				EAD12A8F2A5656FF007EE4D6 /* EventFinderResultViewController.swift in Sources */,
 				EA66BBE02A55BA88008A7AAA /* LongitudeLatitudeInputCell.swift in Sources */,
+				EAD12AA42A566DE7007EE4D6 /* DestinationDetailViewController.swift in Sources */,
 				EAE92A642A558E8000BFE06E /* GameControllerThumbstickAxis.swift in Sources */,
 				EAB623B62A51AC0F00063D1B /* SettingTextCell.swift in Sources */,
 				EAD12A902A5656FF007EE4D6 /* EventFinderCoordinatorViewController.swift in Sources */,
 				EA66BBC62A55AABF008A7AAA /* SearchViewController.swift in Sources */,
+				EAD12AA82A566EE1007EE4D6 /* LinkFooterView.swift in Sources */,
 				EA50E7762A505DCE005E7D7A /* BodyActionCell.swift in Sources */,
+				EAD12AAA2A56757F007EE4D6 /* StepperCell.swift in Sources */,
 				EA50E77A2A505DCE005E7D7A /* InfoViewController.swift in Sources */,
-				EA66BBE32A564888008A7AAA /* SettingSelectionViewController.swift in Sources */,
+				EAD12AA52A566DE7007EE4D6 /* FavoriteItemViewController.swift in Sources */,
+				EA66BBE32A564888008A7AAA /* SelectionViewController.swift in Sources */,
 				EA50E7792A505DCE005E7D7A /* BodyInfoModel.swift in Sources */,
 				EA50E77C2A505E09005E7D7A /* ActionButton.swift in Sources */,
 				EAD12A8E2A5656FF007EE4D6 /* EventFinderInputViewController.swift in Sources */,

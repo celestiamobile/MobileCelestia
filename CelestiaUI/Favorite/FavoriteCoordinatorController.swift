@@ -10,10 +10,9 @@
 //
 
 import CelestiaCore
-import CelestiaUI
 import UIKit
 
-enum FavoriteRoot {
+public enum FavoriteRoot {
     case main
 }
 
@@ -26,59 +25,86 @@ class FavoriteNavigationController: UINavigationController, UINavigationBarDeleg
 }
 #endif
 
-class FavoriteCoordinatorController: UIViewController {
+public class FavoriteCoordinatorController: UIViewController {
     #if targetEnvironment(macCatalyst)
     private lazy var controller = UISplitViewController()
     #endif
     private var navigation: UINavigationController!
 
-    @Injected(\.appCore) private var core
+    private let executor: AsyncProviderExecutor
+    private let extraScriptDirectoryPathProvider: (() -> String?)?
 
-    private lazy var main = FavoriteViewController(currentSelection: nil, selected: { [unowned self] (item) in
+    private lazy var main = FavoriteViewController(currentSelection: nil, selected: { [weak self] (item) in
+        guard let self else { return }
         switch item {
         case .bookmark:
             self.replace(self.bookmarkRoot)
         case .script:
-            self.replace(AnyFavoriteItemList(title: CelestiaString("Scripts", comment: ""), items: readScripts()))
+            self.replace(AnyFavoriteItemList(title: CelestiaString("Scripts", comment: ""), items: scripts))
         case .destination:
-            self.replace(AnyFavoriteItemList(title: CelestiaString("Destinations", comment: ""), items: core.destinations))
+            Task {
+                let destinations = await self.executor.get { $0.destinations }
+                self.replace(AnyFavoriteItemList(title: CelestiaString("Destinations", comment: ""), items: destinations))
+            }
         }
     })
 
+    private lazy var scripts: [Script] = {
+        var scripts = Script.scripts(inDirectory: "scripts", deepScan: true)
+        if let extraScriptsPath = self.extraScriptDirectoryPathProvider?() {
+            scripts += Script.scripts(inDirectory: extraScriptsPath, deepScan: true)
+        }
+        return scripts
+    }()
+
     private lazy var bookmarkRoot: BookmarkNode = {
-        let node = BookmarkNode(name: CelestiaString("Bookmarks", comment: ""),
-                                url: "",
-                                isFolder: true, children: readBookmarks())
+        let node = BookmarkNode(
+            name: CelestiaString("Bookmarks", comment: ""),
+            url: "",
+            isFolder: true,
+            children: readBookmarks()
+        )
         return node
     }()
 
     private let root: FavoriteRoot
     private let selected: (Any) -> Void
     private let share: (Any, UIViewController) -> Void
+    private let textInputHandler: (_ viewController: UIViewController, _ title: String, _ text: String) async -> String?
 
-    init(root: FavoriteRoot, selected: @escaping (Any) -> Void, share: @escaping (Any, UIViewController) -> Void) {
+    public init(
+        executor: AsyncProviderExecutor,
+        root: FavoriteRoot,
+        extraScriptDirectoryPathProvider: (() -> String?)? = nil,
+        selected: @escaping (Any) -> Void,
+        share: @escaping (Any, UIViewController) -> Void,
+        textInputHandler: @escaping (_ viewController: UIViewController, _ title: String, _ text: String) async -> String?
+    ) {
+        self.executor = executor
         self.root = root
+        self.extraScriptDirectoryPathProvider = extraScriptDirectoryPathProvider
         self.selected = selected
         self.share = share
+        self.textInputHandler = textInputHandler
         super.init(nibName: nil, bundle: nil)
     }
 
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func loadView() {
+    public override func loadView() {
         view = UIView()
         view.backgroundColor = .systemBackground
     }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
 
         setup()
     }
 
-    override func viewDidDisappear(_ animated: Bool) {
+    public override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
 
         storeBookmarks(bookmarkRoot.children)
@@ -144,9 +170,9 @@ private extension FavoriteCoordinatorController {
             guard itemList is BookmarkNode, let self else {
                 fatalError()
             }
-            return self.core.currentBookmark as? T.Item
+            return await self.executor.get { $0.currentBookmark } as? T.Item
         }, share: { [weak self] object, viewController in
             self?.share(object, viewController)
-        })
+        }, textInputHandler: textInputHandler)
     }
 }

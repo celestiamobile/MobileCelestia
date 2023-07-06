@@ -609,7 +609,9 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     private func presentFavorite(_ root: FavoriteRoot) {
-        let controller = FavoriteCoordinatorController(root: root, selected: { [unowned self] object in
+        let controller = FavoriteCoordinatorController(executor: executor, root: root, extraScriptDirectoryPathProvider: {
+            return UserDefaults.extraScriptDirectory?.path
+        }, selected: { [unowned self] object in
             if let url = object as? URL {
                 self.celestiaController.openURL(UniformedURL(url: url, securityScoped: false))
             } else if let destination = object as? Destination {
@@ -618,6 +620,8 @@ extension MainViewController: CelestiaControllerDelegate {
         }, share: { object, viewController in
             guard let node = object as? BookmarkNode, node.isLeaf else { return }
             viewController.requestShareURL(node.url, placeholder: node.name)
+        }, textInputHandler: { viewController, title, text in
+            return await viewController.getTextInputDifferentiated(title, text: text)
         })
 #if targetEnvironment(macCatalyst)
         showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600), titleVisible: false)
@@ -732,7 +736,7 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     private func presentCameraControl() {
-        let vc = CameraControlViewController()
+        let vc = CameraControlViewController(executor: executor)
         let controller = UINavigationController(rootViewController: vc)
         showViewController(controller)
     }

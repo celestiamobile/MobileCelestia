@@ -9,32 +9,31 @@
 // of the License, or (at your option) any later version.
 //
 
-import CelestiaUI
 import UIKit
 
-class LinkFooterView: UITableViewHeaderFooterView {
+public class LinkFooterView: UITableViewHeaderFooterView {
     private var textView = UITextView()
 
-    struct LinkInfo {
+    public struct LinkInfo {
         let text: String
         let linkText: String
         let link: String
     }
 
-    var info: LinkInfo? {
+    public var info: LinkInfo? {
         didSet {
             updateTextView()
         }
     }
 
-    override init(reuseIdentifier: String?) {
+    public override init(reuseIdentifier: String?) {
         super.init(reuseIdentifier: reuseIdentifier)
 
         setUp()
         updateTextView()
     }
 
-    required init?(coder: NSCoder) {
+    public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 

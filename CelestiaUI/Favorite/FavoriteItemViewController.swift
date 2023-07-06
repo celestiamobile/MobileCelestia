@@ -10,7 +10,6 @@
 //
 
 import CelestiaCore
-import CelestiaUI
 import UIKit
 
 protocol FavoriteItemList {
@@ -184,16 +183,24 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: BaseTableViewContr
     private let itemList: ItemList
 
     private let selection: (ItemList.Item) -> Void
-    private let add: (() -> ItemList.Item?)?
+    private let add: (() async -> ItemList.Item?)?
     private let share: (ItemList.Item, FavoriteItemViewController<ItemList>) -> Void
+    private let textInputHandler: (_ viewController: UIViewController, _ title: String, _ text: String) async -> String?
 
     private lazy var addBarButtonItem =                 UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(requestAdd(_:)))
 
-    init(item: ItemList, selection: @escaping (ItemList.Item) -> Void, add: (() -> ItemList.Item?)?, share: @escaping (ItemList.Item, FavoriteItemViewController<ItemList>) -> Void) {
+    init(
+        item: ItemList,
+        selection: @escaping (ItemList.Item) -> Void,
+        add: (() async -> ItemList.Item?)?,
+        share: @escaping (ItemList.Item, FavoriteItemViewController<ItemList>) -> Void,
+        textInputHandler: @escaping (_ viewController: UIViewController, _ title: String, _ text: String) async -> String?
+    ) {
         self.itemList = item
         self.selection = selection
         self.add = add
         self.share = share
+        self.textInputHandler = textInputHandler
         super.init(style: .defaultGrouped)
     }
 
@@ -310,12 +317,14 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: BaseTableViewContr
     }
 
     @objc private func requestAdd(_ sender: UIBarButtonItem) {
-        guard let item = add?() else {
-            showError(CelestiaString("Cannot add object", comment: ""))
-            return
+        Task {
+            guard let item = await add?() else {
+                showError(CelestiaString("Cannot add object", comment: ""))
+                return
+            }
+            itemList.append(item)
+            tableView.reloadData()
         }
-        itemList.append(item)
-        tableView.reloadData()
     }
 
     private func requestRemoveObject(at index: Int) {
@@ -325,13 +334,13 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: BaseTableViewContr
 
     private func requestRenameObject(at index: Int, completionHandler: ((Bool) -> Void)? = nil) {
         let item = itemList[index]
-        showTextInputDifferentiated(CelestiaString("Please enter a new name.", comment: ""), text: item.title) { [unowned self] (text) in
-            guard let newName = text else {
+        Task {
+            guard let text = await textInputHandler(self, CelestiaString("Please enter a new name.", comment: ""), item.title) else {
                 completionHandler?(false)
                 return
             }
-            item.rename(to: newName)
-            self.tableView.reloadData()
+            item.rename(to: text)
+            tableView.reloadData()
             completionHandler?(true)
         }
     }

@@ -45,7 +45,7 @@ private extension SettingCommonViewController {
         tableView.register(SettingSwitchCell.self, forCellReuseIdentifier: "Switch")
         tableView.register(SettingTextCell.self, forCellReuseIdentifier: "Selection")
         if #available(iOS 15, *) {
-            tableView.register(SettingSelectionCell.self, forCellReuseIdentifier: "Selection15")
+            tableView.register(SelectionCell.self, forCellReuseIdentifier: "Selection15")
         }
         title = item.title
     }
@@ -154,9 +154,9 @@ extension SettingCommonViewController {
             if let item = row.associatedItem.base as? AssociatedPreferenceSelectionItem {
                 let currentValue: Int = self.userDefaults[item.key] ?? item.defaultOption
                 if #available(iOS 15, *) {
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "Selection15", for: indexPath) as! SettingSelectionCell
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "Selection15", for: indexPath) as! SelectionCell
                     cell.title = row.name
-                    cell.selectionData = SettingSelectionCell.SelectionData(options: item.options.map { $0.name }, selectedIndex: item.options.firstIndex(where: { $0.value == currentValue }) ?? -1)
+                    cell.selectionData = SelectionCell.SelectionData(options: item.options.map { $0.name }, selectedIndex: item.options.firstIndex(where: { $0.value == currentValue }) ?? -1)
                     cell.selectionChange = { [weak self] index in
                         guard let self else { return }
                         self.userDefaults[item.key] = item.options[index].value
@@ -175,9 +175,9 @@ extension SettingCommonViewController {
             if let item = row.associatedItem.base as? AssociatedSelectionSingleItem {
                 let currentValue = core.value(forKey: item.key) as? Int ?? item.defaultOption
                 if #available(iOS 15, *) {
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "Selection15", for: indexPath) as! SettingSelectionCell
+                    let cell = tableView.dequeueReusableCell(withIdentifier: "Selection15", for: indexPath) as! SelectionCell
                     cell.title = row.name
-                    cell.selectionData = SettingSelectionCell.SelectionData(options: item.options.map { $0.name }, selectedIndex: item.options.firstIndex(where: { $0.value == currentValue }) ?? -1)
+                    cell.selectionData = SelectionCell.SelectionData(options: item.options.map { $0.name }, selectedIndex: item.options.firstIndex(where: { $0.value == currentValue }) ?? -1)
                     cell.selectionChange = { [weak self] index in
                         guard let self else { return }
                         Task {
