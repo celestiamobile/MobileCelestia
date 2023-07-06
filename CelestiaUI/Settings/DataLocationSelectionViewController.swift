@@ -4,7 +4,7 @@
 // Copyright © 2020 Celestia Development Team. All rights reserved.
 //
 // This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License
+// modify it under the terms of the GNU General License
 // as published by the Free Software Foundation; either version 2
 // of the License, or (at your option) any later version.
 //
@@ -14,7 +14,7 @@ import MobileCoreServices
 import UIKit
 import UniformTypeIdentifiers
 
-public class DataLocationSelectionViewController: BaseTableViewController {
+class DataLocationSelectionViewController: BaseTableViewController {
     private let userDefaults: UserDefaults
     private let dataDirectoryUserDefaultsKey: String
     private let configFileUserDefaultsKey: String
@@ -30,7 +30,7 @@ public class DataLocationSelectionViewController: BaseTableViewController {
 
     private var currentPicker: Location?
 
-    public init(userDefaults: UserDefaults, dataDirectoryUserDefaultsKey: String, configFileUserDefaultsKey: String, defaultDataDirectoryURL: URL, defaultConfigFileURL: URL) {
+    init(userDefaults: UserDefaults, dataDirectoryUserDefaultsKey: String, configFileUserDefaultsKey: String, defaultDataDirectoryURL: URL, defaultConfigFileURL: URL) {
         self.userDefaults = userDefaults
         self.dataDirectoryUserDefaultsKey = dataDirectoryUserDefaultsKey
         self.configFileUserDefaultsKey = configFileUserDefaultsKey
@@ -39,17 +39,17 @@ public class DataLocationSelectionViewController: BaseTableViewController {
         super.init(style: .defaultGrouped)
     }
 
-    public required init?(coder: NSCoder) {
+    required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    public override func viewDidLoad() {
+    override func viewDidLoad() {
         super.viewDidLoad()
 
         setUp()
     }
 
-    public override func viewWillAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
         loadContents()
@@ -82,15 +82,15 @@ private extension DataLocationSelectionViewController {
 }
 
 extension DataLocationSelectionViewController {
-    public override func numberOfSections(in tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return items.count
     }
 
-    public override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return items[section].count
     }
 
-    public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = items[indexPath.section][indexPath.row]
         switch item {
         case .short(let title, let detail):
@@ -105,11 +105,11 @@ extension DataLocationSelectionViewController {
         }
     }
 
-    public override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
 
-    public override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.section == 1 {
             userDefaults.setValue(nil, forKey: dataDirectoryUserDefaultsKey)
@@ -132,7 +132,7 @@ extension DataLocationSelectionViewController {
         }
     }
 
-    public override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+    override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         if section == 0 {
             return CelestiaString("Configuration will take effect after a restart.", comment: "")
         }
@@ -141,7 +141,7 @@ extension DataLocationSelectionViewController {
 }
 
 extension DataLocationSelectionViewController: UIDocumentPickerDelegate {
-    public func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+    func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
         guard let url = urls.first else { return }
         // try to start reading
         if !url.startAccessingSecurityScopedResource() {

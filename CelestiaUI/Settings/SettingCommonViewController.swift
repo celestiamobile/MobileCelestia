@@ -4,7 +4,7 @@
 // Copyright © 2020 Celestia Development Team. All rights reserved.
 //
 // This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License
+// modify it under the terms of the GNU General License
 // as published by the Free Software Foundation; either version 2
 // of the License, or (at your option) any later version.
 //
@@ -12,14 +12,14 @@
 import CelestiaCore
 import UIKit
 
-public class SettingCommonViewController: BaseTableViewController {
+class SettingCommonViewController: BaseTableViewController {
     private let item: SettingCommonItem
 
     private let core: AppCore
     private let executor: AsyncProviderExecutor
     private let userDefaults: UserDefaults
 
-    public init(core: AppCore, executor: AsyncProviderExecutor, userDefaults: UserDefaults, item: SettingCommonItem) {
+    init(core: AppCore, executor: AsyncProviderExecutor, userDefaults: UserDefaults, item: SettingCommonItem) {
         self.item = item
         self.core = core
         self.executor = executor
@@ -27,11 +27,11 @@ public class SettingCommonViewController: BaseTableViewController {
         super.init(style: .defaultGrouped)
     }
 
-    public required init?(coder: NSCoder) {
+    required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    public override func viewDidLoad() {
+    override func viewDidLoad() {
         super.viewDidLoad()
 
         setUp()
@@ -54,11 +54,11 @@ private extension SettingCommonViewController {
 }
 
 extension SettingCommonViewController {
-    public override func numberOfSections(in tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         return item.sections.count
     }
 
-    public override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return item.sections[section].rows.count
     }
 
@@ -66,7 +66,7 @@ extension SettingCommonViewController {
         fatalError("Wrong associated item \(item.base)")
     }
 
-    public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let row = item.sections[indexPath.section].rows[indexPath.row]
 
         switch row.type {
@@ -207,7 +207,7 @@ extension SettingCommonViewController {
         }
     }
 
-    public override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
         let row = item.sections[indexPath.section].rows[indexPath.row]
@@ -273,15 +273,15 @@ extension SettingCommonViewController {
         }
     }
 
-    public override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
 
-    public override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return item.sections[section].header
     }
 
-    public override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
+    override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         return item.sections[section].footer
     }
 }

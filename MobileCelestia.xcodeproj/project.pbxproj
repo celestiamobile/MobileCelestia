@@ -12,9 +12,7 @@
 		9773949C2402A8F700E38B82 /* ToolbarViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9773949B2402A8F700E38B82 /* ToolbarViewController.swift */; };
 		9773949E2402A96B00E38B82 /* SlideInPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9773949D2402A96B00E38B82 /* SlideInPresentationController.swift */; };
 		977394A02402A9AF00E38B82 /* PresentationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9773949F2402A9AF00E38B82 /* PresentationManager.swift */; };
-		977394AC2403F07C00E38B82 /* SettingsCoordinatorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394AB2403F07C00E38B82 /* SettingsCoordinatorController.swift */; };
-		977394AE2403F08800E38B82 /* SettingsMainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394AD2403F08800E38B82 /* SettingsMainViewController.swift */; };
-		977394B12403F30900E38B82 /* SettingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394B02403F30900E38B82 /* SettingModel.swift */; };
+		977394B12403F30900E38B82 /* SettingsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394B02403F30900E38B82 /* SettingsModel.swift */; };
 		977CDD2A240BC50A00137127 /* TutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CDD29240BC50A00137127 /* TutorialViewController.swift */; };
 		977CDD2E240BC6A900137127 /* TutorialDescriptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CDD2D240BC6A900137127 /* TutorialDescriptionCell.swift */; };
 		977CDD30240BD78F00137127 /* TutorialActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CDD2F240BD78F00137127 /* TutorialActionCell.swift */; };
@@ -112,6 +110,8 @@
 		EAB623B52A51AB5100063D1B /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAB623B42A51AB5100063D1B /* UIViewController+Extension.swift */; };
 		EAB623B62A51AC0F00063D1B /* TextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394B22403F74800E38B82 /* TextCell.swift */; };
 		EAB623B72A51AC2C00063D1B /* UILabel+DynamicType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA7209DF27C64270004C1400 /* UILabel+DynamicType.swift */; };
+		EAB8F2252A56BD6100C4E777 /* SettingsMainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394AD2403F08800E38B82 /* SettingsMainViewController.swift */; };
+		EAB8F2272A56BDA600C4E777 /* SettingsCoordinatorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394AB2403F07C00E38B82 /* SettingsCoordinatorController.swift */; };
 		EABF7911253895FD00F2460C /* ResourceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF7910253895FD00F2460C /* ResourceViewController.swift */; };
 		EABF791E2538986400F2460C /* AsyncListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF791D2538986400F2460C /* AsyncListViewController.swift */; };
 		EABF792C25389B3100F2460C /* ResourceItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF792B25389B3100F2460C /* ResourceItem.swift */; };
@@ -243,8 +243,8 @@
 		9773949F2402A9AF00E38B82 /* PresentationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentationManager.swift; sourceTree = "<group>"; };
 		977394A22403E68800E38B82 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		977394AB2403F07C00E38B82 /* SettingsCoordinatorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCoordinatorController.swift; sourceTree = "<group>"; };
-		977394AD2403F08800E38B82 /* SettingsMainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsMainViewController.swift; sourceTree = "<group>"; };
-		977394B02403F30900E38B82 /* SettingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingModel.swift; sourceTree = "<group>"; };
+		977394AD2403F08800E38B82 /* SettingsMainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SettingsMainViewController.swift; path = ../../MobileCelestia/Settings/SettingsMainViewController.swift; sourceTree = "<group>"; };
+		977394B02403F30900E38B82 /* SettingsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsModel.swift; sourceTree = "<group>"; };
 		977394B22403F74800E38B82 /* TextCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextCell.swift; sourceTree = "<group>"; };
 		977394BC2404189000E38B82 /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
 		977394BE24041A9A00E38B82 /* SearchCoordinatorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchCoordinatorController.swift; sourceTree = "<group>"; };
@@ -487,9 +487,7 @@
 		977394A92403F05100E38B82 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
-				977394AB2403F07C00E38B82 /* SettingsCoordinatorController.swift */,
-				977394AD2403F08800E38B82 /* SettingsMainViewController.swift */,
-				977394B02403F30900E38B82 /* SettingModel.swift */,
+				977394B02403F30900E38B82 /* SettingsModel.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -766,6 +764,8 @@
 		EAA79CCA2A56A0000056DB91 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				977394AB2403F07C00E38B82 /* SettingsCoordinatorController.swift */,
+				977394AD2403F08800E38B82 /* SettingsMainViewController.swift */,
 				97F1141D2408AE06003A06D7 /* DataLocationSelectionViewController.swift */,
 				973BBA442405216700E3B061 /* AboutViewController.swift */,
 				973BBA6524054E9900E3B061 /* TextViewController.swift */,
@@ -1250,19 +1250,17 @@
 				9773949C2402A8F700E38B82 /* ToolbarViewController.swift in Sources */,
 				EA85C917289EA1ED009ADB1C /* IconView.swift in Sources */,
 				979D2F8223FEB1A6005D2592 /* CelestiaViewController.swift in Sources */,
-				977394AE2403F08800E38B82 /* SettingsMainViewController.swift in Sources */,
 				EA934C90251D90C500DD284C /* MainSceneDelegate.swift in Sources */,
 				EADE7FBB252B517600D4174F /* CelestiaDisplayController.swift in Sources */,
 				EA787344296EBBAC0099AB11 /* Task.swift in Sources */,
 				EABF794A2538A86500F2460C /* ResourceManager.swift in Sources */,
 				97C3A9F22445FACF00EB365A /* CelestiaControlView.swift in Sources */,
-				977394B12403F30900E38B82 /* SettingModel.swift in Sources */,
+				977394B12403F30900E38B82 /* SettingsModel.swift in Sources */,
 				EA50E7892A506406005E7D7A /* GlobalConstants.swift in Sources */,
 				EA1BE1572748E9DC0046074C /* DisplaySceneDelegate.swift in Sources */,
 				978406DF24029D9100876FD1 /* LoadingFailureViewController.swift in Sources */,
 				EA787341296EB68A0099AB11 /* Bundle.swift in Sources */,
 				EA17952027B371D700D47397 /* GuideItem.swift in Sources */,
-				977394AC2403F07C00E38B82 /* SettingsCoordinatorController.swift in Sources */,
 				EA78733D296EB61B0099AB11 /* UserDefaults.swift in Sources */,
 				977CDD34240BDFE500137127 /* OnboardViewController.swift in Sources */,
 				974F86AA240362BA00356795 /* ToolbarButtonCell.swift in Sources */,
@@ -1320,6 +1318,7 @@
 				EA66BBE12A55BA88008A7AAA /* GoToInputViewController.swift in Sources */,
 				EA50E7772A505DCE005E7D7A /* LinkPreviewCell.swift in Sources */,
 				EAB623AC2A51AA0A00063D1B /* BrowserContainerViewController.swift in Sources */,
+				EAB8F2272A56BDA600C4E777 /* SettingsCoordinatorController.swift in Sources */,
 				EAB623AD2A51AA0A00063D1B /* BrowserCoordinatorController.swift in Sources */,
 				EAB623AB2A51AA0A00063D1B /* SubsystemBrowserCoordinatorViewController.swift in Sources */,
 				EAB623AF2A51AA4400063D1B /* BaseTableViewController.swift in Sources */,
@@ -1338,6 +1337,7 @@
 				EAB623B12A51AA9300063D1B /* UIViewController+Extension.swift in Sources */,
 				EA50E7802A505E82005E7D7A /* GlobalConstants.swift in Sources */,
 				EA839CB32A5696E100BF1CB4 /* MultiLineTextCell.swift in Sources */,
+				EAB8F2252A56BD6100C4E777 /* SettingsMainViewController.swift in Sources */,
 				EA50E77F2A505E5C005E7D7A /* StandardButton.swift in Sources */,
 				EAB623AE2A51AA0A00063D1B /* BrowserCommonViewController.swift in Sources */,
 				EA50E77E2A505E42005E7D7A /* AppCore.swift in Sources */,

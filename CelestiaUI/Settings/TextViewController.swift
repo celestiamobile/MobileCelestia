@@ -4,32 +4,32 @@
 // Copyright © 2020 Celestia Development Team. All rights reserved.
 //
 // This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License
+// modify it under the terms of the GNU General License
 // as published by the Free Software Foundation; either version 2
 // of the License, or (at your option) any later version.
 //
 
 import UIKit
 
-public class TextViewController: UIViewController {
+class TextViewController: UIViewController {
     private let text: String
 
-    public init(title: String, text: String) {
+    init(title: String, text: String) {
         self.text = text
         super.init(nibName: nil, bundle: nil)
         self.title = title
     }
 
-    public required init?(coder: NSCoder) {
+    required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    public override func loadView() {
+    override func loadView() {
         view = UIView()
         view.backgroundColor = .systemBackground
     }
 
-    public override func viewDidLoad() {
+    override func viewDidLoad() {
         super.viewDidLoad()
 
         setUp()

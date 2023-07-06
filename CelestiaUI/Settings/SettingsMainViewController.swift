@@ -4,19 +4,17 @@
 // Copyright © 2020 Celestia Development Team. All rights reserved.
 //
 // This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General License
+// modify it under the terms of the GNU General Public License
 // as published by the Free Software Foundation; either version 2
 // of the License, or (at your option) any later version.
 //
 
 import UIKit
 
-class SettingsMainViewController: BaseTableViewController {
-    private let sections: [SettingSection]
-    private let selection: (SettingItem<AnyHashable>) async -> Void
+puclass SettingsMainViewController: BaseTableViewController {
+    private let selection: (SettingItem<AnyHashable>) -> Void
 
-    init(sections: [SettingSection], selection: @escaping (SettingItem<AnyHashable>) async -> Void) {
-        self.sections = sections
+    init(selection: @escaping (SettingItem<AnyHashable>) -> Void) {
         self.selection = selection
         #if targetEnvironment(macCatalyst)
         super.init(style: .grouped)
@@ -32,12 +30,12 @@ class SettingsMainViewController: BaseTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        setUp()
+        setup()
     }
 }
 
 private extension SettingsMainViewController {
-    func setUp() {
+    func setup() {
         #if targetEnvironment(macCatalyst)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Text")
         #else
@@ -49,15 +47,15 @@ private extension SettingsMainViewController {
 
 extension SettingsMainViewController {
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return sections.count
+        return mainSetting.count
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return sections[section].items.count
+        return mainSetting[section].items.count
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let item = sections[indexPath.section].items[indexPath.row]
+        let item = mainSetting[indexPath.section].items[indexPath.row]
         #if targetEnvironment(macCatalyst)
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath)
         if #available(iOS 14.0, *) {
@@ -76,7 +74,7 @@ extension SettingsMainViewController {
     }
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return sections[section].title
+        return mainSetting[section].title
     }
 
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -84,8 +82,6 @@ extension SettingsMainViewController {
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        Task {
-            await selection(sections[indexPath.section].items[indexPath.row])
-        }
+        selection(mainSetting[indexPath.section].items[indexPath.row])
     }
 }

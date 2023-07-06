@@ -4,14 +4,14 @@
 // Copyright © 2020 Celestia Development Team. All rights reserved.
 //
 // This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License
+// modify it under the terms of the GNU General License
 // as published by the Free Software Foundation; either version 2
 // of the License, or (at your option) any later version.
 //
 
 import UIKit
 
-public class SettingsFrameRateViewController: BaseTableViewController {
+class SettingsFrameRateViewController: BaseTableViewController {
     private struct FrameRateItem {
         let frameRate: Int
         let isMaximum: Bool
@@ -28,7 +28,7 @@ public class SettingsFrameRateViewController: BaseTableViewController {
     private let frameRateUpdateHandler: (Int) -> Void
     private let screen: UIScreen
 
-    public init(screen: UIScreen, userDefaults: UserDefaults, userDefaultsKey: String, frameRateUpdateHandler: @escaping (Int) -> Void) {
+    init(screen: UIScreen, userDefaults: UserDefaults, userDefaultsKey: String, frameRateUpdateHandler: @escaping (Int) -> Void) {
         self.screen = screen
         self.userDefaults = userDefaults
         self.userDefaultsKey = userDefaultsKey
@@ -36,17 +36,17 @@ public class SettingsFrameRateViewController: BaseTableViewController {
         super.init(style: .defaultGrouped)
     }
 
-    public required init?(coder: NSCoder) {
+    required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    public override func viewDidLoad() {
+    override func viewDidLoad() {
         super.viewDidLoad()
 
         setUp()
     }
 
-    public override func viewWillAppear(_ animated: Bool) {
+    override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
         loadContents()
@@ -76,11 +76,11 @@ private extension SettingsFrameRateViewController {
 }
 
 extension SettingsFrameRateViewController {
-    public override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return items.count
     }
 
-    public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let selectedFrameRate: Int = userDefaults.value(forKey: userDefaultsKey) as? Int ?? 60
         let item = items[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
@@ -89,11 +89,11 @@ extension SettingsFrameRateViewController {
         return cell
     }
 
-    public override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
 
-    public override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let item = items[indexPath.row]
         frameRateUpdateHandler(item.frameRateValue)

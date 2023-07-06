@@ -764,7 +764,7 @@ extension MainViewController: CelestiaControllerDelegate {
         }, textInputHandler: { viewController, title in
             return await viewController.getTextInputDifferentiated(title)
         }, dateInputHandler: { viewController, title, format in
-            return await viewController.getDateInput(title, format: format)
+            return await viewController.getDateInputDifferentiated(title, format: format)
         }))
     }
 
@@ -916,17 +916,41 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     @objc private func showSettings() {
-        let controller = SettingsCoordinatorController(actionHandler: { [weak self]
-            settingsAction in
-            guard let self else { return }
-            switch settingsAction {
-            case .refreshFrameRate(let newFrameRate):
-                self.userDefaults[.frameRate] = newFrameRate
-                self.celestiaController.updateFrameRate(newFrameRate)
+        let executor = self.executor
+        let controller = SettingsCoordinatorController(
+            core: core,
+            executor: executor,
+            userDefaults: userDefaults,
+            bundle: .app,
+            defaultDataDirectory: UserDefaults.defaultDataDirectory,
+            settings: mainSetting,
+            frameRateContext: FrameRateSettingContext(frameRateUserDefaultsKey: UserDefaultsKey.frameRate.rawValue),
+            dataLocationContext: DataLocationSettingContext(
+                userDefaults: userDefaults,
+                dataDirectoryUserDefaultsKey: UserDefaultsKey.dataDirPath.rawValue,
+                configFileUserDefaultsKey: UserDefaultsKey.configFile.rawValue,
+                defaultDataDirectoryURL: UserDefaults.defaultDataDirectory,
+                defaultConfigFileURL: UserDefaults.defaultConfigFile
+            ),
+            actionHandler: { [weak self]
+                settingsAction in
+                guard let self else { return }
+                switch settingsAction {
+                case .refreshFrameRate(let newFrameRate):
+                    self.userDefaults[.frameRate] = newFrameRate
+                    self.celestiaController.updateFrameRate(newFrameRate)
+                }
+            }, dateInputHandler: { viewController, title, format in
+                return await viewController.getDateInputDifferentiated(title, format: format)
+            }, rendererInfoProvider: {
+                return await executor.get { core in
+                    executor.makeRenderContextCurrent()
+                    return core.renderInfo
+                }
+            }, screenProvider: { [unowned self] in
+                return self.celestiaController.displayScreen
             }
-        }, screenProvider: { [unowned self] in
-            return self.celestiaController.displayScreen
-        })
+        )
         #if targetEnvironment(macCatalyst)
         showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600), titleVisible: false)
         #else

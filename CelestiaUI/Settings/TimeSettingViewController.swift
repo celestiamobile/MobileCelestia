@@ -4,7 +4,7 @@
 // Copyright © 2020 Celestia Development Team. All rights reserved.
 //
 // This program is free software; you can redistribute it and/or
-// modify it under the terms of the GNU General Public License
+// modify it under the terms of the GNU General License
 // as published by the Free Software Foundation; either version 2
 // of the License, or (at your option) any later version.
 //
@@ -12,7 +12,7 @@
 import CelestiaCore
 import UIKit
 
-public class TimeSettingViewController: BaseTableViewController {
+class TimeSettingViewController: BaseTableViewController {
     private let core: AppCore
     private let executor: AsyncProviderExecutor
     private let dateInputHandler: (_ viewController: UIViewController, _ title: String, _ format: String) async -> Date?
@@ -24,7 +24,7 @@ public class TimeSettingViewController: BaseTableViewController {
         return formatter
     }()
 
-    public init(
+    init(
         core: AppCore,
         executor: AsyncProviderExecutor,
         dateInputHandler: @escaping (_ viewController: UIViewController, _ title: String, _ format: String) async -> Date?
@@ -35,11 +35,11 @@ public class TimeSettingViewController: BaseTableViewController {
         super.init(style: .defaultGrouped)
     }
     
-    public required init?(coder: NSCoder) {
+    required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public override func viewDidLoad() {
+    override func viewDidLoad() {
         super.viewDidLoad()
 
         setUp()
@@ -54,11 +54,11 @@ private extension TimeSettingViewController {
 }
 
 extension TimeSettingViewController {
-    public override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 2
     }
 
-    public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
         if indexPath.row == 0 {
             cell.title = CelestiaString("Select Time", comment: "")
@@ -71,7 +71,7 @@ extension TimeSettingViewController {
         return cell
     }
 
-    public override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.row == 0 {
             let preferredFormat = DateFormatter.dateFormat(fromTemplate: "yyyyMMddHHmmss", options: 0, locale: Locale.current) ?? "yyyy/MM/dd HH:mm:ss"
@@ -96,7 +96,7 @@ extension TimeSettingViewController {
         }
     }
 
-    public override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
 }
