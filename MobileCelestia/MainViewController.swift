@@ -26,6 +26,18 @@ class MainViewController: UIViewController {
 
     private(set) var celestiaController: CelestiaViewController!
     private lazy var loadingController = LoadingViewController()
+    private lazy var actionViewController: ToolbarViewController = {
+        let actions: [[AppToolbarAction]] = AppToolbarAction.persistentAction
+        let controller = ToolbarViewController(actions: actions)
+        controller.selectionHandler = { [weak self] action in
+            guard let self, let ac = action as? AppToolbarAction else { return }
+            self.toolbarActionSelected(ac)
+        }
+        return controller
+    }()
+    #if targetEnvironment(macCatalyst)
+    private var split: UISplitViewController?
+    #endif
 
     private var status: LoadingStatus = .notLoaded
     private var retried: Bool = false
@@ -76,7 +88,30 @@ class MainViewController: UIViewController {
         view.backgroundColor = .systemBackground
 
         celestiaController.delegate = self
+        #if targetEnvironment(macCatalyst)
+        if #available(macCatalyst 16.0, *) {
+            class NavigationController: UINavigationController, UINavigationBarDelegate {
+                func navigationBarNSToolbarSection(_ navigationBar: UINavigationBar) -> UINavigationBar.NSToolbarSection {
+                    return .content
+                }
+            }
+            let splitViewController = UISplitViewController()
+            splitViewController.preferredDisplayMode = .oneBesideSecondary
+            splitViewController.minimumPrimaryColumnWidth = ToolbarViewController.Constants.width
+            splitViewController.maximumPrimaryColumnWidth = ToolbarViewController.Constants.width
+            splitViewController.primaryBackgroundStyle = .sidebar
+            splitViewController.viewControllers = [
+                UIViewController(),
+                NavigationController(rootViewController: celestiaController)
+            ]
+            install(splitViewController)
+            split = splitViewController
+        } else {
+            install(celestiaController)
+        }
+        #else
         install(celestiaController)
+        #endif
 
         install(loadingController)
 
@@ -382,8 +417,12 @@ extension MainViewController: CelestiaControllerDelegate {
         self.status = .loaded
         self.loadingController.remove()
         #if targetEnvironment(macCatalyst)
-        self.setupToolbar()
-        self.setupTouchBar()
+        if #available(macCatalyst 16, *), let split {
+            split.viewControllers[0].install(actionViewController)
+        } else {
+            setupToolbar()
+        }
+        setupTouchBar()
         #endif
         UIMenuSystem.main.setNeedsRebuild()
         UIApplication.shared.isIdleTimerDisabled = true
@@ -392,15 +431,9 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     func celestiaControllerRequestShowActionMenu(_ celestiaController: CelestiaViewController) {
-        let actions: [[AppToolbarAction]] = AppToolbarAction.persistentAction
-        let controller = ToolbarViewController(actions: actions)
-        controller.selectionHandler = { [unowned self] (action) in
-            guard let ac = action as? AppToolbarAction else { return }
-            self.toolbarActionSelected(ac)
-        }
-        controller.modalPresentationStyle = .custom
-        controller.transitioningDelegate = toolbarSlideInManager
-        presentAfterDismissCurrent(controller, animated: true)
+        actionViewController.modalPresentationStyle = .custom
+        actionViewController.transitioningDelegate = toolbarSlideInManager
+        presentAfterDismissCurrent(actionViewController, animated: true)
     }
 
     func celestiaController(_ celestiaController: CelestiaViewController, requestShowInfoWithSelection selection: Selection) {
@@ -631,7 +664,7 @@ extension MainViewController: CelestiaControllerDelegate {
         view.addSubview(newController.view)
         // fixed constraints
         NSLayoutConstraint.activate([
-            newController.view.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            newController.view.leadingAnchor.constraint(equalTo: celestiaController.view.safeAreaLayoutGuide.leadingAnchor),
             newController.view.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             newController.view.widthAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.widthAnchor, multiplier: 0.8)
         ])

@@ -56,12 +56,24 @@ enum AppToolbarAction: String {
 }
 
 class ToolbarViewController: UIViewController {
-    private enum Constants {
+    enum Constants {
         static let width: CGFloat = 220
         static let separatorContainerHeight: CGFloat = 6
     }
 
-    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+    private lazy var collectionView: UICollectionView = {
+        #if targetEnvironment(macCatalyst)
+        let collectionViewLayout: UICollectionViewFlowLayout
+        if #available(macCatalyst 16, *) {
+            collectionViewLayout = FullWidthCollectionViewLayout()
+        } else {
+            collectionViewLayout = UICollectionViewFlowLayout()
+        }
+        #else
+        let collectionViewLayout = UICollectionViewFlowLayout()
+        #endif
+        return UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
+    }()
 
     private let actions: [[ToolbarAction]]
 
@@ -146,17 +158,52 @@ extension ToolbarViewController: UICollectionViewDataSource {
 
 private extension ToolbarViewController {
     func setup() {
-        let style: UIBlurEffect.Style = .regular
-        let backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: style))
-        backgroundView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(backgroundView)
+        #if targetEnvironment(macCatalyst)
+        let sidebackBackground: Bool
+        if #available(macCatalyst 16.0, *) {
+            sidebackBackground = true
+        } else {
+            sidebackBackground = false
+        }
+        #else
+        let sidebackBackground = false
+        #endif
 
-        NSLayoutConstraint.activate([
-            backgroundView.trailingAnchor.constraint(equalTo: view!.trailingAnchor),
-            backgroundView.topAnchor.constraint(equalTo: view!.topAnchor),
-            backgroundView.leadingAnchor.constraint(equalTo: view!.leadingAnchor),
-            backgroundView.bottomAnchor.constraint(equalTo: view!.bottomAnchor)
-        ])
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        if !sidebackBackground {
+            let style: UIBlurEffect.Style = .regular
+            let backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: style))
+            backgroundView.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(backgroundView)
+
+            NSLayoutConstraint.activate([
+                backgroundView.trailingAnchor.constraint(equalTo: view!.trailingAnchor),
+                backgroundView.topAnchor.constraint(equalTo: view!.topAnchor),
+                backgroundView.leadingAnchor.constraint(equalTo: view!.leadingAnchor),
+                backgroundView.bottomAnchor.constraint(equalTo: view!.bottomAnchor)
+            ])
+
+            let contentView = backgroundView.contentView
+            contentView.addSubview(collectionView)
+
+            NSLayoutConstraint.activate([
+                collectionView.topAnchor.constraint(equalTo: contentView.topAnchor),
+                collectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            ])
+
+            NSLayoutConstraint.activate([
+                collectionView.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor),
+                collectionView.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor)
+            ])
+        } else {
+            view.addSubview(collectionView)
+            NSLayoutConstraint.activate([
+                collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                collectionView.topAnchor.constraint(equalTo: view.topAnchor),
+                collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            ])
+        }
 
         let layout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
         layout.scrollDirection = .vertical
@@ -166,20 +213,6 @@ private extension ToolbarViewController {
         layout.footerReferenceSize = CGSize(width: Constants.width, height: Constants.separatorContainerHeight)
         layout.minimumLineSpacing = 0
         layout.minimumInteritemSpacing = 0
-
-        let contentView = backgroundView.contentView
-        contentView.addSubview(collectionView)
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-
-        NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-        ])
-
-        NSLayoutConstraint.activate([
-            collectionView.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor)
-        ])
 
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.showsVerticalScrollIndicator = false
@@ -195,6 +228,15 @@ private extension ToolbarViewController {
         }
     }
 }
+
+#if targetEnvironment(macCatalyst)
+class FullWidthCollectionViewLayout: UICollectionViewFlowLayout {
+    override func prepare() {
+        estimatedItemSize = CGSize(width: collectionViewContentSize.width, height: estimatedItemSize.height)
+        super.prepare()
+    }
+}
+#endif
 
 extension AppToolbarAction: ToolbarAction {
     var image: UIImage? {

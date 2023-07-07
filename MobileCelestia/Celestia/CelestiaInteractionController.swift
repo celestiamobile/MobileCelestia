@@ -80,12 +80,20 @@ class CelestiaInteractionController: UIViewController {
     private var zoomMode: ZoomMode? = nil
 
     #if targetEnvironment(macCatalyst)
+    private let needAddControlView: Bool = {
+        if #available(macCatalyst 16.0, *) {
+            return false
+        } else {
+            return true
+        }
+    }()
     private lazy var activeControlView = CelestiaControlView(items: [
         CelestiaControlButton.tap(image: UIImage(systemName: "info.circle"), action: .info, accessibilityLabel: CelestiaString("Get Info", comment: "")),
         CelestiaControlButton.tap(image: UIImage(systemName: "line.3.horizontal.circle") ?? UIImage(systemName: "line.horizontal.3.circle") ?? UIImage(named: "control_action_menu"), action: .showMenu, accessibilityLabel: CelestiaString("Menu", comment: "")),
         CelestiaControlButton.tap(image: UIImage(systemName: "xmark.circle"), action: .hide, accessibilityLabel: CelestiaString("Hide", comment: "")),
     ])
     #else
+    private let needAddControlView = true
     private lazy var activeControlView = CelestiaControlView(items: [
         CelestiaControlButton.toggle(accessibilityLabel:  CelestiaString("Toggle Interaction Mode", comment: ""), offImage: UIImage(systemName: "cube"), offAction: .switchToObject, offAccessibilityValue: CelestiaString("Camera Mode", comment: ""), onImage: UIImage(systemName: "video"), onAction: .switchToCamera, onAccessibilityValue: CelestiaString("Object Mode", comment: "")),
         CelestiaControlButton.pressAndHold(image: UIImage(systemName: "plus.circle"), action: .zoomIn, accessibilityLabel: CelestiaString("Zoom In", comment: "")),
@@ -161,17 +169,18 @@ class CelestiaInteractionController: UIViewController {
             targetInteractionView.trailingAnchor.constraint(equalTo: container.trailingAnchor)
         ])
 
-        activeControlView.delegate = self
-        activeControlView.translatesAutoresizingMaskIntoConstraints = false
+        if needAddControlView {
+            activeControlView.delegate = self
+            activeControlView.translatesAutoresizingMaskIntoConstraints = false
 
-        container.addSubview(activeControlView)
+            container.addSubview(activeControlView)
 
-        NSLayoutConstraint.activate([
-            activeControlView.centerYAnchor.constraint(equalTo: container.centerYAnchor),
-            activeControlView.trailingAnchor.constraint(equalTo: container.safeAreaLayoutGuide.trailingAnchor, constant: -Constants.controlViewMarginTrailing),
-        ])
-
-        currentControlView = activeControlView
+            NSLayoutConstraint.activate([
+                activeControlView.centerYAnchor.constraint(equalTo: container.centerYAnchor),
+                activeControlView.trailingAnchor.constraint(equalTo: container.safeAreaLayoutGuide.trailingAnchor, constant: -Constants.controlViewMarginTrailing),
+            ])
+            currentControlView = activeControlView
+        }
 
         auxillaryContextMenuPreviewView.backgroundColor = .clear
         container.addSubview(auxillaryContextMenuPreviewView)
@@ -258,11 +267,13 @@ extension CelestiaInteractionController: CelestiaControlViewDelegate {
     }
 
     private func showControlViewIfNeeded() {
+        guard needAddControlView else { return }
         guard !isControlViewVisible else { return }
         showControlView()
     }
 
     private func hideControlViewIfNeeded() {
+        guard needAddControlView else { return }
         guard isControlViewVisible else { return }
         hideControlView()
     }
@@ -514,10 +525,16 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
         guard let selection else { return nil }
 
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { [weak self] _ -> UIMenu? in
-            guard let self = self else { return nil }
+            guard let self else { return nil }
             let titleAction = UIAction(title: self.core.simulation.universe.name(for: selection)) { _ in }
             titleAction.attributes = [.disabled]
             var actions: [UIMenuElement] = [titleAction]
+
+            actions.append(UIMenu(options: .displayInline, children: [
+                UIAction(title: CelestiaString("Get Info", comment: "")) { _ in
+                    self.delegate?.celestiaInteractionController(self, requestShowInfoWithSelection: selection)
+                }
+            ]))
 
             actions.append(UIMenu(title: "", options: .displayInline, children: CelestiaAction.allCases.map { action in
                 return UIAction(title: action.description) { _ in
