@@ -398,12 +398,12 @@ extension CelestiaInteractionController {
             NSCursor.hide()
             #endif
             currentPanPoint = location
-            executor.run { $0.mouseButtonDown(at: location, modifiers: UInt(modifiers.rawValue), with: button) }
+            executor.runAsynchronously { $0.mouseButtonDown(at: location, modifiers: UInt(modifiers.rawValue), with: button) }
         case .changed:
             let current = currentPanPoint!
             let offset = CGPoint(x: location.x - current.x, y: location.y - current.y)
             currentPanPoint = location
-            executor.run { $0.mouseMove(by: offset, modifiers: UInt(modifiers.rawValue), with: button) }
+            executor.runAsynchronously { $0.mouseMove(by: offset, modifiers: UInt(modifiers.rawValue), with: button) }
         case .ended, .cancelled, .failed:
             fallthrough
         @unknown default:
@@ -414,7 +414,7 @@ extension CelestiaInteractionController {
             }
             NSCursor.unhide()
             #endif
-            executor.run { $0.mouseButtonUp(at: location, modifiers: UInt(modifiers.rawValue), with: button) }
+            executor.runAsynchronously { $0.mouseButtonUp(at: location, modifiers: UInt(modifiers.rawValue), with: button) }
             currentPanPoint = nil
         }
     }
@@ -438,7 +438,7 @@ extension CelestiaInteractionController {
             let length = hypot(abs(point1.x - point2.x), abs(point1.y - point2.y))
             let center = CGPoint(x: (point1.x + point2.x) / 2, y: (point1.y + point2.y) / 2)
             currentPinchDistance = length
-            executor.run { $0.mouseButtonDown(at: center, modifiers: 0, with: .left) }
+            executor.runAsynchronously { $0.mouseButtonDown(at: center, modifiers: 0, with: .left) }
         case .changed:
             if gesture.numberOfTouches < 2 {
                 // cancel the gesture recognizer
@@ -468,7 +468,7 @@ extension CelestiaInteractionController {
         switch tap.state {
         case .ended:
             let location = tap.location(with: renderingTargetGeometry)
-            executor.run { core in
+            executor.runAsynchronously { core in
                 core.mouseButtonDown(at: location, modifiers: 0, with: .left)
                 core.mouseButtonUp(at: location, modifiers: 0, with: .left)
             }
@@ -479,9 +479,9 @@ extension CelestiaInteractionController {
 
     private func zoom(deltaY: CGFloat, modifiers: UInt = 0, scrolling: Bool = false) {
         if scrolling || interactionMode == .object {
-            executor.run { $0.mouseWheel(by: deltaY, modifiers: modifiers) }
+            executor.runAsynchronously { $0.mouseWheel(by: deltaY, modifiers: modifiers) }
         } else {
-            executor.run { $0.mouseMove(by: CGPoint(x: 0, y: deltaY), modifiers: UInt(UIKeyModifierFlags.shift.rawValue), with: .left) }
+            executor.runAsynchronously { $0.mouseMove(by: CGPoint(x: 0, y: deltaY), modifiers: UInt(UIKeyModifierFlags.shift.rawValue), with: .left) }
         }
     }
 }
@@ -514,7 +514,7 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
         }
 
         let handler = ContextMenuHandler()
-        let selection = executor.get { core in
+        let selection = executor.getSynchronously { core in
             core.contextMenuHandler = handler
             core.mouseButtonDown(at: location, modifiers: 0, with: .right)
             core.mouseButtonUp(at: location, modifiers: 0, with: .right)
@@ -555,14 +555,14 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
             }
 
             if let alternativeSurfaces = selection.body?.alternateSurfaceNames, alternativeSurfaces.count > 0 {
-                let displaySurface = self.executor.get { $0.simulation.activeObserver.displayedSurface }
+                let displaySurface = self.executor.getSynchronously { $0.simulation.activeObserver.displayedSurface }
                 let defaultSurfaceItem = UIAction(title: CelestiaString("Default", comment: "")) { _ in
-                    self.executor.run { $0.simulation.activeObserver.displayedSurface = "" }
+                    self.executor.runAsynchronously { $0.simulation.activeObserver.displayedSurface = "" }
                 }
                 defaultSurfaceItem.state = displaySurface == "" ? .on : .off
                 let otherSurfaces = alternativeSurfaces.map { name -> UIAction in
                     let action = UIAction(title: name) { _ in
-                        self.executor.run { $0.simulation.activeObserver.displayedSurface = name }
+                        self.executor.runAsynchronously { $0.simulation.activeObserver.displayedSurface = name }
                     }
                     action.state = displaySurface == name ? .on : .off
                     return action
@@ -580,7 +580,7 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
                             await self.executor.mark(selection, markerType: marker)
                         }
                     } else {
-                        self.executor.run { $0.simulation.universe.unmark(selection) }
+                        self.executor.runAsynchronously { $0.simulation.universe.unmark(selection) }
                     }
                 }
             }
@@ -702,7 +702,7 @@ extension CelestiaInteractionController {
             return
         }
 
-        executor.run { $0.keyDown(with: input, modifiers: modifiers) }
+        executor.runAsynchronously { $0.keyDown(with: input, modifiers: modifiers) }
     }
 
     func keyUp(with input: String?, modifiers: UInt) {
@@ -710,14 +710,14 @@ extension CelestiaInteractionController {
             return
         }
 
-        executor.run { $0.keyUp(with: input, modifiers: modifiers) }
+        executor.runAsynchronously { $0.keyUp(with: input, modifiers: modifiers) }
     }
 
     func openURL(_ url: UniformedURL) {
         if url.url.isFileURL {
-            executor.run { $0.runScript(at: url.url.path) }
+            executor.runAsynchronously { $0.runScript(at: url.url.path) }
         } else {
-            executor.run { $0.go(to: url.url.absoluteString) }
+            executor.runAsynchronously { $0.go(to: url.url.absoluteString) }
         }
     }
 }

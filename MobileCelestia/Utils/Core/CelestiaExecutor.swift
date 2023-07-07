@@ -17,7 +17,7 @@ import Foundation
 final class CelestiaExecutor: AsyncGLExecutor, AsyncProviderExecutor, @unchecked Sendable {
     @Injected(\.appCore) private var core
 
-    func run(_ task: @escaping (AppCore) -> Void) {
+    func runAsynchronously(_ task: @escaping (AppCore) -> Void) {
         runTaskAsynchronously {
             task(self.core)
         }
@@ -33,7 +33,7 @@ final class CelestiaExecutor: AsyncGLExecutor, AsyncProviderExecutor, @unchecked
         }
     }
 
-    func get<T>(_ task: (AppCore) -> T) -> T {
+    func getSynchronously<T>(_ task: (AppCore) -> T) -> T {
         var item: T?
         runTaskSynchronously {
             item = task(core)

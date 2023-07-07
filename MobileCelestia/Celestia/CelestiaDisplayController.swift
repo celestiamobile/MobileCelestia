@@ -80,7 +80,7 @@ class CelestiaDisplayController: AsyncGLViewController {
         guard isLoaded else { return }
 
         let insets = view.safeAreaInsets.scale(by: view.contentScaleFactor)
-        executor.run { core in
+        executor.runAsynchronously { core in
             core.setSafeAreaInsets(insets)
         }
     }
@@ -91,8 +91,11 @@ class CelestiaDisplayController: AsyncGLViewController {
         guard isLoaded else { return }
 
         if previousTraitCollection?.displayScale != traitCollection.displayScale {
-            executor.run { _ in
-                self.updateContentScale()
+            let (viewSafeAreaInsets, viewScale, applicationScalingFactor) = getViewSpec()
+            let core = self.core
+            let executor = self.executor
+            executor.runAsynchronously { _ in
+                self.updateContentScale(viewSafeAreaInsets: viewSafeAreaInsets, viewScale: viewScale, applicationScalingFactor: applicationScalingFactor, core: core, executor: executor)
             }
         }
     }
@@ -176,7 +179,11 @@ extension CelestiaDisplayController {
         }
 
         core.layoutDirection = isRTL ? .RTL : .LTR
-        updateContentScale()
+        let (viewSafeAreaInsets, viewScale, applicationScalingFactor) = DispatchQueue.main.sync {
+            return self.getViewSpec()
+        }
+
+        updateContentScale(viewSafeAreaInsets: viewSafeAreaInsets, viewScale: viewScale, applicationScalingFactor: applicationScalingFactor, core: core, executor: executor)
         start()
 
         isLoaded = true
@@ -202,28 +209,26 @@ private extension AppCore {
 }
 
 extension CelestiaDisplayController {
-    private func updateContentScale() {
-        var viewSafeAreaInsets: UIEdgeInsets = .zero
-        var viewScale: CGFloat = 1.0
+    private func getViewSpec() -> (viewSafeAreaInsets: UIEdgeInsets, viewScale: CGFloat, applicationScalingFactor: CGFloat) {
+        let viewScale = userDefaults[.fullDPI] != false ? self.traitCollection.displayScale : 1
+        self.view.contentScaleFactor = viewScale
         var applicationScalingFactor: CGFloat = 1.0
 
-        DispatchQueue.main.sync {
-            viewScale = userDefaults[.fullDPI] != false ? self.traitCollection.displayScale : 1
-            self.view.contentScaleFactor = viewScale
-
-            #if targetEnvironment(macCatalyst)
-            applicationScalingFactor = MacBridge.catalystScaleFactor
-            #else
-            if #available(iOS 14, *) {
-                applicationScalingFactor = ProcessInfo.processInfo.isiOSAppOnMac ? 0.77 : 1
-            } else {
-                applicationScalingFactor = 1
-            }
-            #endif
-
-            viewSafeAreaInsets = self.view.safeAreaInsets
+        #if targetEnvironment(macCatalyst)
+        applicationScalingFactor = MacBridge.catalystScaleFactor
+        #else
+        if #available(iOS 14, *) {
+            applicationScalingFactor = ProcessInfo.processInfo.isiOSAppOnMac ? 0.77 : 1
+        } else {
+            applicationScalingFactor = 1
         }
+        #endif
 
+        let viewSafeAreaInsets = self.view.safeAreaInsets
+        return (viewSafeAreaInsets, viewScale, applicationScalingFactor)
+    }
+
+    nonisolated private func updateContentScale(viewSafeAreaInsets: UIEdgeInsets, viewScale: CGFloat, applicationScalingFactor: CGFloat, core: AppCore, executor: CelestiaExecutor) {
         core.setDPI(Int(96.0 * viewScale / applicationScalingFactor))
         core.setSafeAreaInsets(viewSafeAreaInsets.scale(by: viewScale))
         #if targetEnvironment(macCatalyst)

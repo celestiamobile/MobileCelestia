@@ -315,7 +315,7 @@ extension MainViewController {
             }
         }
         if let url = celURL {
-            executor.run { $0.go(to: url) }
+            executor.runAsynchronously { $0.go(to: url) }
         }
     }
 }
@@ -567,7 +567,7 @@ extension MainViewController: CelestiaControllerDelegate {
             if let url = object as? URL {
                 self.celestiaController.openURL(UniformedURL(url: url, securityScoped: false))
             } else if let destination = object as? Destination {
-                self.executor.run { $0.simulation.goToDestination(destination) }
+                self.executor.runAsynchronously { $0.simulation.goToDestination(destination) }
             }
         }, share: { object, viewController in
             guard let node = object as? BookmarkNode, node.isLeaf else { return }
@@ -639,14 +639,14 @@ extension MainViewController: CelestiaControllerDelegate {
                     }
                 }
             } else if let ac = action as? CelestiaContinuousAction {
-                self.executor.run { core in
+                self.executor.runAsynchronously { core in
                     core.keyUp(ac.rawValue)
                 }
             }
         }
         newController.touchDownHandler = { [unowned self] action in
             if let ac = action as? CelestiaContinuousAction {
-                self.executor.run { core in
+                self.executor.runAsynchronously { core in
                     core.keyDown(ac.rawValue)
                 }
             }
@@ -711,7 +711,7 @@ extension MainViewController: CelestiaControllerDelegate {
     private func presentEventFinder() {
         showViewController(EventFinderCoordinatorViewController(executor: executor, eventHandler: { [weak self] eclipse in
             guard let self else { return }
-            self.executor.run { $0.simulation.goToEclipse(eclipse) }
+            self.executor.runAsynchronously { $0.simulation.goToEclipse(eclipse) }
         }, textInputHandler: { viewController, title in
             return await viewController.getTextInputDifferentiated(title)
         }, dateInputHandler: { viewController, title, format in
@@ -726,7 +726,7 @@ extension MainViewController: CelestiaControllerDelegate {
 
     private func presentGoTo() {
         showViewController(GoToContainerViewController(executor: executor, locationHandler: { [weak self] location in
-            self?.executor.run { $0.simulation.go(to: location) }
+            self?.executor.runAsynchronously { $0.simulation.go(to: location) }
         }, textInputHandler: { viewController, title, text, keyboardType in
             return await viewController.getTextInputDifferentiated(title, text: text, keyboardType: keyboardType)
         }))
@@ -772,7 +772,7 @@ extension MainViewController: CelestiaControllerDelegate {
         controller.selectionHandler = { [unowned self] (viewController, selection, action, sender) in
             switch action {
             case .select:
-                self.executor.run { $0.simulation.selection = selection }
+                self.executor.runAsynchronously { $0.simulation.selection = selection }
             case .wrapped(let cac):
                 Task {
                     await self.executor.selectAndReceive(selection, action: cac)
@@ -799,7 +799,7 @@ extension MainViewController: CelestiaControllerDelegate {
                                 await self.executor.mark(selection, markerType: marker)
                             }
                         } else {
-                            self.executor.run { $0.simulation.universe.unmark(selection) }
+                            self.executor.runAsynchronously { $0.simulation.universe.unmark(selection) }
                         }
                     }
                 }
@@ -811,10 +811,10 @@ extension MainViewController: CelestiaControllerDelegate {
                     children = ([CelestiaString("Default", comment: "")] + alternativeSurfaces).enumerated().map { index, option in
                         return UIAction(title: option) { _ in
                             if index == 0 {
-                                self.executor.run { $0.simulation.activeObserver.displayedSurface = "" }
+                                self.executor.runAsynchronously { $0.simulation.activeObserver.displayedSurface = "" }
                                 return
                             }
-                            self.executor.run { $0.simulation.activeObserver.displayedSurface = alternativeSurfaces[index - 1] }
+                            self.executor.runAsynchronously { $0.simulation.activeObserver.displayedSurface = alternativeSurfaces[index - 1] }
                         }
                     }
                 }
@@ -835,7 +835,7 @@ extension MainViewController: CelestiaControllerDelegate {
                     await self.executor.mark(selection, markerType: marker)
                 }
             } else {
-                self.executor.run { $0.simulation.universe.unmark(selection) }
+                self.executor.runAsynchronously { $0.simulation.universe.unmark(selection) }
             }
         }
     }
@@ -846,10 +846,10 @@ extension MainViewController: CelestiaControllerDelegate {
             guard let self = self, let index = index else { return }
 
             if index == 0 {
-                self.executor.run { $0.simulation.activeObserver.displayedSurface = "" }
+                self.executor.runAsynchronously { $0.simulation.activeObserver.displayedSurface = "" }
                 return
             }
-            self.executor.run { $0.simulation.activeObserver.displayedSurface = alternativeSurfaces[index - 1] }
+            self.executor.runAsynchronously { $0.simulation.activeObserver.displayedSurface = alternativeSurfaces[index - 1] }
         }
     }
 
@@ -1048,9 +1048,9 @@ extension MainViewController: NSToolbarDelegate {
 
     @objc private func undoOrRedo(_ sender: NSToolbarItemGroup) {
         if sender.selectedIndex == 0 {
-            executor.run { $0.back() }
+            executor.runAsynchronously { $0.back() }
         } else {
-            executor.run { $0.forward() }
+            executor.runAsynchronously { $0.forward() }
         }
     }
 }
