@@ -84,6 +84,7 @@ private extension DestinationDetailViewController {
             contentStack.trailingAnchor.constraint(equalTo: contentContainer.trailingAnchor),
         ])
 
+        descriptionLabel.font = UIFont.preferredFont(forTextStyle: .body)
         descriptionLabel.textColor = .secondaryLabel
         descriptionLabel.backgroundColor = .clear
         descriptionLabel.textContainer.maximumNumberOfLines = 0

@@ -30,7 +30,7 @@ extension UIViewController {
             return
         }
         #endif
-        showTextInputDifferentiated(title, message: message, text: text, placeholder: placeholder, keyboardType: keyboardType, source: source, completion: completion)
+        showTextInput(title, message: message, text: text, placeholder: placeholder, keyboardType: keyboardType, source: source, completion: completion)
     }
 
     func getDateInputDifferentiated(_ title: String, format: String, source: PopoverSource? = nil) async -> Date? {
