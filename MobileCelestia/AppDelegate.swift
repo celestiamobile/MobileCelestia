@@ -22,6 +22,10 @@ import AppCenter
 import AppCenterAnalytics
 import AppCenterCrashes
 
+enum MenuBarAction: Hashable, Equatable {
+    case captureImage
+}
+
 let newURLOpenedNotificationName = Notification.Name("NewURLOpenedNotificationName")
 let newURLOpenedNotificationURLKey = "NewURLOpenedNotificationURLKey"
 let newAddonOpenedNotificationName = Notification.Name("NewAddonOpenedNotificationName")
@@ -33,9 +37,24 @@ let showPreferencesNotificationName = Notification.Name("ShowPreferencesNotifica
 let requestOpenFileNotificationName = Notification.Name("RequestOpenFileNotificationName")
 let requestCopyNotificationName = Notification.Name("RequestCopyNotificationName")
 let requestPasteNotificationName = Notification.Name("RequestPasteNotificationName")
+let menuBarActionNotificationName = Notification.Name("MenuBarNotificationName")
+let menuBarActionNotificationKey = "MenuBarActionNotificationKey"
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
+    private enum MenuAction: Hashable, Equatable {
+        case selector(_ selector: Selector)
+        case name(_ name: String)
+    }
+
+    private var menuActions: [MenuAction] = [
+        .selector(#selector(showHelp(_:))),
+        .selector(#selector(copy(_:))),
+        .selector(#selector(paste(_:))),
+        .selector(#selector(showPreferences)),
+        .selector(#selector(openScriptFile)),
+        .selector(#selector(captureImage)),
+    ]
 
     var window: UIWindow?
 
@@ -199,10 +218,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     override func validate(_ command: UICommand) {
         super.validate(command)
-        let actionName = NSStringFromSelector(command.action)
         if !core.isInitialized {
-            if command.action == #selector(showPreferences) || command.action == #selector(openScriptFile) || actionName == "copy:" || actionName == "paste:" || command.action == #selector(showHelp(_:)) {
-                command.attributes = .disabled
+            if menuActions.contains(.selector(command.action)) {
+                command.attributes.insert(.disabled)
             }
         }
     }
@@ -243,9 +261,18 @@ extension AppDelegate {
             preferencesCommand
         ]), afterMenu: .about)
 
-        builder.insertChild(UIMenu(title: "", image: nil, identifier: UIMenu.Identifier(identifierPrefix + "open"), options: .displayInline, children: [
+        let runScriptMenuIdentifier = UIMenu.Identifier(identifierPrefix + "open")
+        builder.insertChild(UIMenu(title: "", image: nil, identifier: runScriptMenuIdentifier, options: .displayInline, children: [
             UIKeyCommand(title: CelestiaString("Run Script…", comment: ""), image: nil, action: #selector(openScriptFile), input: "O", modifierFlags: .command)
         ]), atStartOfMenu: .file)
+        let captureImageMenuIdentifier = UIMenu.Identifier(identifierPrefix + "capture")
+        var captureImageKey = ""
+        if #available(iOS 13.4, *) {
+            captureImageKey = UIKeyCommand.f10
+        }
+        builder.insertSibling(UIMenu(title: "", image: nil, identifier: captureImageMenuIdentifier, options: .displayInline, children: [
+            UIKeyCommand(title: CelestiaString("Capture Image", comment: ""), image: nil, action: #selector(captureImage), input: captureImageKey)
+        ]), afterMenu: runScriptMenuIdentifier)
     }
 
     @objc private func openScriptFile() {
@@ -258,6 +285,10 @@ extension AppDelegate {
 
     @objc private func showPreferences() {
         NotificationCenter.default.post(name: showPreferencesNotificationName, object: nil, userInfo: nil)
+    }
+
+    @objc private func captureImage() {
+        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.captureImage])
     }
 }
 

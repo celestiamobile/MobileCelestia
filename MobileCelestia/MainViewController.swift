@@ -96,10 +96,11 @@ class MainViewController: UIViewController {
                 }
             }
             let splitViewController = UISplitViewController()
-            splitViewController.preferredDisplayMode = .oneBesideSecondary
+            splitViewController.preferredDisplayMode = .secondaryOnly
             splitViewController.minimumPrimaryColumnWidth = ToolbarViewController.Constants.width
             splitViewController.maximumPrimaryColumnWidth = ToolbarViewController.Constants.width
             splitViewController.primaryBackgroundStyle = .sidebar
+            splitViewController.delegate = self
             splitViewController.viewControllers = [
                 UIViewController(),
                 NavigationController(rootViewController: celestiaController)
@@ -127,6 +128,8 @@ class MainViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(requestOpenFile), name: requestOpenFileNotificationName, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(requestCopy), name: requestCopyNotificationName, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(requestPaste), name: requestPasteNotificationName, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(requestPaste), name: requestPasteNotificationName, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(menuBarAction(_:)), name: menuBarActionNotificationName, object: nil)
     }
 
     override var prefersHomeIndicatorAutoHidden: Bool {
@@ -316,6 +319,16 @@ extension MainViewController {
         }
         if let url = celURL {
             executor.runAsynchronously { $0.go(to: url) }
+        }
+    }
+
+    @objc private func menuBarAction(_ notification: Notification) {
+        guard let action = notification.userInfo?[menuBarActionNotificationKey] as? MenuBarAction else {
+            return
+        }
+        switch action {
+        case .captureImage:
+            shareImage()
         }
     }
 }
@@ -1176,6 +1189,13 @@ extension CelestiaAction: ToolbarTouchBarAction {
     init?(_ touchBarItemIdentifier: NSTouchBarItem.Identifier) {
         guard let rawValue = Int8(touchBarItemIdentifier.rawValue) else { return nil }
         self.init(rawValue: rawValue)
+    }
+}
+
+extension MainViewController: UISplitViewControllerDelegate {
+    func targetDisplayModeForAction(in svc: UISplitViewController) -> UISplitViewController.DisplayMode {
+        // Disable expanding when we are still loading
+        return status == .loaded ? .automatic : .secondaryOnly
     }
 }
 #endif

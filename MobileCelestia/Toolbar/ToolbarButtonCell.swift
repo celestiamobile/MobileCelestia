@@ -17,16 +17,16 @@ protocol ToolbarCell: UICollectionViewCell {
     var itemTitle: String? { get set }
     var itemImage: UIImage? { get set }
     var itemAccessibilityLabel: String? { get set }
-    var touchDownHandler: ((UIButton) -> Void)? { get set }
-    var touchUpHandler: ((UIButton, Bool) -> Void)? { get set }
+    var touchDownHandler: ((UIControl) -> Void)? { get set }
+    var touchUpHandler: ((UIControl, Bool) -> Void)? { get set }
 }
 
 class ToolbarImageButton: ImageButtonView<ToolbarImageButton.Configuration> {
     struct Configuration: ImageProvider {
         var image: UIImage?
         var accessibilityLabel: String?
-        var touchDownHandler: ((UIButton) -> Void)?
-        var touchUpHandler: ((UIButton, Bool) -> Void)?
+        var touchDownHandler: ((UIControl) -> Void)?
+        var touchUpHandler: ((UIControl, Bool) -> Void)?
 
         var shouldScaleOnMacCatalyst: Bool {
             return true
@@ -39,7 +39,7 @@ class ToolbarImageButton: ImageButtonView<ToolbarImageButton.Configuration> {
 
     private var areActionsSetUp = false
 
-    init(image: UIImage? = nil, accessibilityLabel: String? = nil, touchDownHandler: ((UIButton) -> Void)?, touchUpHandler: ((UIButton, Bool) -> Void)?) {
+    init(image: UIImage? = nil, accessibilityLabel: String? = nil, touchDownHandler: ((UIControl) -> Void)?, touchUpHandler: ((UIControl, Bool) -> Void)?) {
         super.init(buttonBuilder: {
             let button = StandardButton()
             button.imageView?.contentMode = .scaleAspectFit
@@ -84,8 +84,8 @@ class ToolbarImageButtonCell: UICollectionViewCell, ToolbarCell {
     var itemTitle: String?
     var itemImage: UIImage? { didSet { button.configuration.configuration.image = itemImage } }
     var itemAccessibilityLabel: String? { didSet { button.configuration.configuration.accessibilityLabel = itemAccessibilityLabel } }
-    var touchDownHandler: ((UIButton) -> Void)?
-    var touchUpHandler: ((UIButton, Bool) -> Void)?
+    var touchDownHandler: ((UIControl) -> Void)?
+    var touchUpHandler: ((UIControl, Bool) -> Void)?
 
     private lazy var button = ToolbarImageButton { [weak self] button in
         self?.touchDownHandler?(button)
@@ -169,8 +169,8 @@ class ToolbarImageTextButtonCell: UICollectionViewCell, ToolbarCell {
 
     var itemTitle: String? { didSet { label.text = itemTitle } }
     var itemImage: UIImage? { didSet { imageView.configuration.image = itemImage?.withRenderingMode(.alwaysTemplate) } }
-    var touchDownHandler: ((UIButton) -> Void)?
-    var touchUpHandler: ((UIButton, Bool) -> Void)?
+    var touchDownHandler: ((UIControl) -> Void)?
+    var touchUpHandler: ((UIControl, Bool) -> Void)?
     var itemAccessibilityLabel: String?
 
     private lazy var imageView: IconView = {
@@ -181,48 +181,51 @@ class ToolbarImageTextButtonCell: UICollectionViewCell, ToolbarCell {
         }
     }()
     private lazy var label = UILabel(textStyle: .body)
+    private lazy var background = SelectionView(frame: .zero)
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setup()
+        setUp()
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private func setup() {
-        let bg = SelectionView(frame: .zero)
-        bg.translatesAutoresizingMaskIntoConstraints = false
-        bg.addTarget(self, action: #selector(touchDown(_:)), for: .touchDown)
-        bg.addTarget(self, action: #selector(touchUpInside(_:)), for: .touchUpInside)
-        bg.addTarget(self, action: #selector(touchUpOutside(_:)), for: .touchUpOutside)
-        bg.addTarget(self, action: #selector(touchCancelled(_:)), for: .touchCancel)
+    private func setUp() {
+        if #available(iOS 15.0, *) {
+            background.focusEffect = UIFocusEffect()
+        }
+        background.translatesAutoresizingMaskIntoConstraints = false
+        background.addTarget(self, action: #selector(touchDown(_:)), for: .touchDown)
+        background.addTarget(self, action: #selector(touchUpInside(_:)), for: .touchUpInside)
+        background.addTarget(self, action: #selector(touchUpOutside(_:)), for: .touchUpOutside)
+        background.addTarget(self, action: #selector(touchCancelled(_:)), for: .touchCancel)
 
-        contentView.addSubview(bg)
+        contentView.addSubview(background)
         NSLayoutConstraint.activate([
-            bg.topAnchor.constraint(equalTo: contentView.topAnchor),
-            bg.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            bg.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            bg.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            background.topAnchor.constraint(equalTo: contentView.topAnchor),
+            background.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            background.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            background.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
         ])
 
-        bg.addSubview(imageView)
+        background.addSubview(imageView)
         imageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            imageView.centerYAnchor.constraint(equalTo: bg.centerYAnchor),
-            imageView.leadingAnchor.constraint(equalTo: bg.leadingAnchor, constant: GlobalConstants.listItemMediumMarginHorizontal),
-            imageView.topAnchor.constraint(greaterThanOrEqualTo: bg.topAnchor, constant: GlobalConstants.listItemAccessoryMinMarginVertical),
+            imageView.centerYAnchor.constraint(equalTo: background.centerYAnchor),
+            imageView.leadingAnchor.constraint(equalTo: background.leadingAnchor, constant: GlobalConstants.listItemMediumMarginHorizontal),
+            imageView.topAnchor.constraint(greaterThanOrEqualTo: background.topAnchor, constant: GlobalConstants.listItemAccessoryMinMarginVertical),
         ])
 
-        bg.addSubview(label)
+        background.addSubview(label)
         label.numberOfLines = 0
         label.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            label.centerYAnchor.constraint(equalTo: bg.centerYAnchor),
+            label.centerYAnchor.constraint(equalTo: background.centerYAnchor),
             label.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: GlobalConstants.listItemMediumMarginVertical),
-            label.trailingAnchor.constraint(equalTo: bg.trailingAnchor, constant: -GlobalConstants.listItemMediumMarginHorizontal),
-            label.topAnchor.constraint(greaterThanOrEqualTo: bg.topAnchor, constant: GlobalConstants.listItemMediumMarginVertical),
+            label.trailingAnchor.constraint(equalTo: background.trailingAnchor, constant: -GlobalConstants.listItemMediumMarginHorizontal),
+            label.topAnchor.constraint(greaterThanOrEqualTo: background.topAnchor, constant: GlobalConstants.listItemMediumMarginVertical),
         ])
         label.textColor = .label
     }

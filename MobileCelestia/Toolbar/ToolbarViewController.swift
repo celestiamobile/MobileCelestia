@@ -135,6 +135,9 @@ extension ToolbarViewController: UICollectionViewDataSource {
         let action = actions[indexPath.section][indexPath.row]
         cell.itemImage = action.image
         cell.itemTitle = action.title
+        if #available(iOS 15.0, *) {
+            cell.focusEffect = UIFocusEffect()
+        }
         cell.touchUpHandler = { [unowned self] _, inside in
             guard inside else { return }
             if self.finishOnSelection {
