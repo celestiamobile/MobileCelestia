@@ -14,6 +14,7 @@ import UIKit
 
 public enum FavoriteRoot {
     case main
+    case bookmarks
 }
 
 #if targetEnvironment(macCatalyst)
@@ -34,20 +35,29 @@ public class FavoriteCoordinatorController: UIViewController {
     private let executor: AsyncProviderExecutor
     private let extraScriptDirectoryPathProvider: (() -> String?)?
 
-    private lazy var main = FavoriteViewController(currentSelection: nil, selected: { [weak self] (item) in
-        guard let self else { return }
-        switch item {
-        case .bookmark:
-            self.replace(self.bookmarkRoot)
-        case .script:
-            self.replace(AnyFavoriteItemList(title: CelestiaString("Scripts", comment: ""), items: scripts))
-        case .destination:
-            Task {
-                let destinations = await self.executor.get { $0.destinations }
-                self.replace(AnyFavoriteItemList(title: CelestiaString("Destinations", comment: ""), items: destinations))
-            }
+    private lazy var main: FavoriteViewController = {
+        let type: FavoriteItemType?
+        switch root {
+        case .main:
+            type = .bookmark
+        case .bookmarks:
+            type = .bookmark
         }
-    })
+        return FavoriteViewController(currentSelection: type, selected: { [weak self] (item) in
+            guard let self else { return }
+            switch item {
+            case .bookmark:
+                self.replace(self.bookmarkRoot)
+            case .script:
+                self.replace(AnyFavoriteItemList(title: CelestiaString("Scripts", comment: ""), items: scripts))
+            case .destination:
+                Task {
+                    let destinations = await self.executor.get { $0.destinations }
+                    self.replace(AnyFavoriteItemList(title: CelestiaString("Destinations", comment: ""), items: destinations))
+                }
+            }
+        })
+    }()
 
     private lazy var scripts: [Script] = {
         var scripts = Script.scripts(inDirectory: "scripts", deepScan: true)
@@ -101,18 +111,19 @@ public class FavoriteCoordinatorController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
 
-        setup()
+        setUp()
     }
 
     public override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
 
         storeBookmarks(bookmarkRoot.children)
+        UIMenuSystem.main.setNeedsRebuild()
     }
 }
 
 private extension FavoriteCoordinatorController {
-    func setup() {
+    func setUp() {
         #if targetEnvironment(macCatalyst)
         controller.primaryBackgroundStyle = .sidebar
         controller.preferredDisplayMode = .oneBesideSecondary

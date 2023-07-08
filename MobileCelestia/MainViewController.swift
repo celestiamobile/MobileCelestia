@@ -131,6 +131,7 @@ class MainViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(requestPaste), name: requestPasteNotificationName, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(menuBarAction(_:)), name: menuBarActionNotificationName, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(requestRunScript(_:)), name: requestRunScriptNotificationName, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(requestOpenBookmark(_:)), name: requestOpenBookmarkNotificationName, object: nil)
     }
 
     override var prefersHomeIndicatorAutoHidden: Bool {
@@ -420,13 +421,28 @@ extension MainViewController {
             showViewController(ResourceCategoriesViewController(executor: executor, resourceManager: resourceManager))
         case .showInstalledAddons:
             presentInstalledAddons()
+        case .addBookmark:
+            Task {
+                guard let currentBookmark = await executor.get({ $0.currentBookmark }) else { return }
+                storeBookmarks(readBookmarks() + [currentBookmark])
+                UIMenuSystem.main.setNeedsRebuild()
+            }
+        case .organizeBookmarks:
+            presentFavorite(.bookmarks)
         }
     }
 
     @objc private func requestRunScript(_ notification: Notification) {
         guard let script = notification.userInfo?[requestRunScriptNotificationKey] as? Script else { return }
 
-        self.celestiaController.openURL(UniformedURL(url: URL(fileURLWithPath: script.filename), securityScoped: false))
+        celestiaController.openURL(UniformedURL(url: URL(fileURLWithPath: script.filename), securityScoped: false))
+    }
+
+    @objc private func requestOpenBookmark(_ notification: Notification) {
+        guard let bookmark = notification.userInfo?[requestOpenBookmarkNotificationKey] as? BookmarkNode else { return }
+        guard let url = URL(string: bookmark.url) else { return }
+
+        celestiaController.openURL(UniformedURL(url: url, securityScoped: false))
     }
 }
 

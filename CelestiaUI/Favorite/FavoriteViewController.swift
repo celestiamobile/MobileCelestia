@@ -61,6 +61,7 @@ class FavoriteViewController: BaseTableViewController {
         if let selection = currentSelection {
             currentSelection = nil
             tableView.selectRow(at: IndexPath(row: selection.rawValue, section: 0), animated: false, scrollPosition: .none)
+            selected(selection)
         }
     }
 }

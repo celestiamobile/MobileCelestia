@@ -49,6 +49,8 @@ enum MenuBarAction: Hashable, Equatable {
     case showOpenGLInfo
     case getAddons
     case showInstalledAddons
+    case addBookmark
+    case organizeBookmarks
 }
 
 let newURLOpenedNotificationName = Notification.Name("NewURLOpenedNotificationName")
@@ -66,6 +68,8 @@ let menuBarActionNotificationName = Notification.Name("MenuBarNotificationName")
 let menuBarActionNotificationKey = "MenuBarActionNotificationKey"
 let requestRunScriptNotificationName = Notification.Name("RequestRunScriptNotificationName")
 let requestRunScriptNotificationKey = Notification.Name("RequestRunScriptNotificationKey")
+let requestOpenBookmarkNotificationName = Notification.Name("RequestOpenBookmarkNotificationName")
+let requestOpenBookmarkNotificationKey = Notification.Name("RequestOpenBookmarkNotificationKey")
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -106,6 +110,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         .selector(#selector(showOpenGLInfo)),
         .selector(#selector(getAddons)),
         .selector(#selector(showInstalledAddons)),
+        .selector(#selector(addBookmark)),
+        .selector(#selector(organizeBookmarks)),
     ]
 
     var window: UIWindow?
@@ -396,16 +402,36 @@ extension AppDelegate {
         builder.insertChild(quickTimeSettingMenu, atStartOfMenu: timeMenu.identifier)
         builder.insertSibling(createMenuItem(identifierSuffix: "time.select", action: MenuActionContext(title: CelestiaString("Set Time…", comment: ""), action: #selector(showTimeSetting))), afterMenu: quickTimeSettingMenu.identifier)
 
-        var deleteActiveViewKey = ""
-        if #available(iOS 15, *) {
-            deleteActiveViewKey = UIKeyCommand.inputDelete
+        let bookmarkMenu = createMenuItemGroup(title: CelestiaString("Bookmarks", comment: ""), identifierSuffix: "bookmarks", actions: [], options: [])
+        builder.insertSibling(bookmarkMenu, afterMenu: timeMenu.identifier)
+        let bookmarkActionMenu = createMenuItemGroup(identifierSuffix: "bookmark.actions", actions: [
+            MenuActionContext(title: CelestiaString("Add Bookmark", comment: ""), action: #selector(addBookmark)),
+            MenuActionContext(title: CelestiaString("Organize Bookmarks…", comment: ""), action: #selector(organizeBookmarks)),
+        ])
+        builder.insertChild(bookmarkActionMenu, atStartOfMenu: bookmarkMenu.identifier)
+        if #available(iOS 14, *) {
+            let openBookmarkMenu = createMenuItemGroupDeferred(identifierSuffix: "bookmark.open", options: .displayInline) { [weak self] in
+                guard let self else { return [] }
+                guard self.core.isInitialized else { return [] }
+                let bookmarks = readBookmarks()
+                // Only leaf bookmarks on top level
+                return bookmarks.filter { $0.isLeaf }.map { bookmark in
+                    UIAction(title: bookmark.name) { _ in
+                        NotificationCenter.default.post(name: requestOpenBookmarkNotificationName, object: nil, userInfo: [requestOpenBookmarkNotificationKey: bookmark])
+                    }
+                }
+            }
+            builder.insertSibling(openBookmarkMenu, afterMenu: bookmarkActionMenu.identifier)
         }
+
+        let deleteActiveViewKey = String(Character(UnicodeScalar(0x7f)))
         builder.insertChild(createMenuItemGroup(identifierSuffix: "views", actions: [
             MenuActionContext(title: CelestiaString("Split Horizontally", comment: ""), action: #selector(splitHorizontally), input: "r", modifierFlags: .control),
             MenuActionContext(title: CelestiaString("Split Vertically", comment: ""), action: #selector(splitVertically), input: "u", modifierFlags: .control),
             MenuActionContext(title: CelestiaString("Delete Active View", comment: ""), action: #selector(deleteActiveView), input: deleteActiveViewKey),
             MenuActionContext(title: CelestiaString("Delete Other Views", comment: ""), action: #selector(deleteOtherViews), input: "d", modifierFlags: .control),
         ]), atStartOfMenu: .view)
+
 
         let runDemoMenu = createMenuItem(identifierSuffix: "help.demo", action: MenuActionContext(title: CelestiaString("Run Demo", comment: ""), action: #selector(runDemo), input: "d"))
         builder.insertChild(runDemoMenu, atEndOfMenu: .help)
@@ -438,11 +464,14 @@ extension AppDelegate {
     }
 
     @available(iOS 14, *)
-    private func createMenuItemGroupDeferred(title: String = "", identifierSuffix: String, menuBuilder: @escaping () -> [UIAction]) -> UIMenu {
+    private func createMenuItemGroupDeferred(title: String = "", identifierSuffix: String, options: UIMenu.Options = [], menuBuilder: @escaping @MainActor () async -> [UIAction]) -> UIMenu {
         let identifierPrefix = Bundle.app.bundleIdentifier! + "."
         let identifier = UIMenu.Identifier(identifierPrefix + identifierSuffix)
-        return UIMenu(title: title, identifier: identifier, children: [UIDeferredMenuElement { completion in
-            completion(menuBuilder())
+        return UIMenu(title: title, identifier: identifier, options: options, children: [UIDeferredMenuElement { completion in
+            Task { @MainActor in
+                let items = await menuBuilder()
+                completion(items)
+            }
         }])
     }
 
@@ -580,8 +609,12 @@ extension AppDelegate {
         NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.showInstalledAddons])
     }
 
-    private func runScript(_ script: Script) {
+    @objc private func addBookmark() {
+        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.addBookmark])
+    }
 
+    @objc private func organizeBookmarks() {
+        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.organizeBookmarks])
     }
 }
 

@@ -120,6 +120,7 @@ public extension AppCore {
     }
 }
 
+@MainActor
 public func readBookmarks() -> [BookmarkNode] {
     guard let path = NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .userDomainMask, true).first else {
         return []
@@ -134,6 +135,7 @@ public func readBookmarks() -> [BookmarkNode] {
     }
 }
 
+@MainActor
 public func storeBookmarks(_ bookmarks: [BookmarkNode]) {
     guard let path = NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .userDomainMask, true).first else {
         return
