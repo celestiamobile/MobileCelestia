@@ -24,6 +24,31 @@ import AppCenterCrashes
 
 enum MenuBarAction: Hashable, Equatable {
     case captureImage
+    case showAbout
+    case selectSol
+    case showGoto
+    case centerSelection
+    case followSelection
+    case gotoSelection
+    case syncOrbitSelection
+    case trackSelection
+    case showFlightMode
+    case showStarBrowser
+    case showEclipseFinder
+    case tenTimesFaster
+    case tenTimesSlower
+    case freezeTime
+    case realTime
+    case reverseTime
+    case showTimeSetting
+    case splitHorizontally
+    case splitVertically
+    case deleteActiveView
+    case deleteOtherViews
+    case runDemo
+    case showOpenGLInfo
+    case getAddons
+    case showInstalledAddons
 }
 
 let newURLOpenedNotificationName = Notification.Name("NewURLOpenedNotificationName")
@@ -54,6 +79,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         .selector(#selector(showPreferences)),
         .selector(#selector(openScriptFile)),
         .selector(#selector(captureImage)),
+        .selector(#selector(showAbout)),
+        .selector(#selector(selectSol)),
+        .selector(#selector(showGoto)),
+        .selector(#selector(centerSelection)),
+        .selector(#selector(gotoSelection)),
+        .selector(#selector(followSelection)),
+        .selector(#selector(syncOrbitSelection)),
+        .selector(#selector(trackSelection)),
+        .selector(#selector(showFlightMode)),
+        .selector(#selector(showStarBrowser)),
+        .selector(#selector(showEclipseFinder)),
+        .selector(#selector(tenTimesFaster)),
+        .selector(#selector(tenTimesSlower)),
+        .selector(#selector(freezeTime)),
+        .selector(#selector(realTime)),
+        .selector(#selector(reverseTime)),
+        .selector(#selector(showTimeSetting)),
+        .selector(#selector(splitHorizontally)),
+        .selector(#selector(splitVertically)),
+        .selector(#selector(deleteActiveView)),
+        .selector(#selector(deleteOtherViews)),
+        .selector(#selector(runDemo)),
+        .selector(#selector(showOpenGLInfo)),
+        .selector(#selector(getAddons)),
+        .selector(#selector(showInstalledAddons)),
     ]
 
     var window: UIWindow?
@@ -243,8 +293,13 @@ extension AppDelegate {
         guard builder.system == .main else { return }
 
         builder.remove(menu: .newScene)
-
-        let identifierPrefix = Bundle.app.bundleIdentifier! + "."
+        builder.remove(menu: .edit)
+        builder.remove(menu: .preferences)
+        builder.remove(menu: .about)
+        builder.remove(menu: .format)
+        if #available(iOS 14, *) {
+            builder.remove(menu: .openRecent)
+        }
 
         #if targetEnvironment(macCatalyst)
         let settingsTitle: String
@@ -256,23 +311,126 @@ extension AppDelegate {
         #else
         let settingsTitle = CelestiaString("Settings…", comment: "")
         #endif
-        let preferencesCommand = UIKeyCommand(title: settingsTitle, action: #selector(showPreferences), input: ",", modifierFlags: .command)
-        builder.insertSibling(UIMenu(identifier: UIMenu.Identifier(identifierPrefix + "preferences"), options: .displayInline, children: [
-            preferencesCommand
-        ]), afterMenu: .about)
+        let aboutMenu = createMenuItem(
+            identifierSuffix: "about",
+            action: MenuActionContext(title: CelestiaString("About Celestia", comment: ""), action: #selector(showAbout))
+        )
+        builder.insertChild(aboutMenu, atStartOfMenu: .application)
+        builder.insertSibling(createMenuItem(identifierSuffix: "preferences", action: MenuActionContext(title: settingsTitle, action: #selector(showPreferences), input: ",", modifierFlags: .command)), afterMenu: aboutMenu.identifier)
 
-        let runScriptMenuIdentifier = UIMenu.Identifier(identifierPrefix + "open")
-        builder.insertChild(UIMenu(title: "", image: nil, identifier: runScriptMenuIdentifier, options: .displayInline, children: [
-            UIKeyCommand(title: CelestiaString("Run Script…", comment: ""), image: nil, action: #selector(openScriptFile), input: "O", modifierFlags: .command)
-        ]), atStartOfMenu: .file)
-        let captureImageMenuIdentifier = UIMenu.Identifier(identifierPrefix + "capture")
+        let runScriptMenu = createMenuItem(identifierSuffix: "open", action: MenuActionContext(title: CelestiaString("Run Script…", comment: ""), action: #selector(openScriptFile), input: "O", modifierFlags: .command))
+        builder.insertChild(runScriptMenu, atStartOfMenu: .file)
         var captureImageKey = ""
         if #available(iOS 13.4, *) {
             captureImageKey = UIKeyCommand.f10
         }
-        builder.insertSibling(UIMenu(title: "", image: nil, identifier: captureImageMenuIdentifier, options: .displayInline, children: [
-            UIKeyCommand(title: CelestiaString("Capture Image", comment: ""), image: nil, action: #selector(captureImage), input: captureImageKey)
-        ]), afterMenu: runScriptMenuIdentifier)
+        let captureImageMenu = createMenuItem(identifierSuffix: "capture", action: MenuActionContext(title: CelestiaString("Capture Image", comment: ""), action: #selector(captureImage), input: captureImageKey))
+        builder.insertSibling(captureImageMenu, afterMenu: runScriptMenu.identifier)
+        let copyPasteMenu = createMenuItemGroup(identifierSuffix: "copypaste", actions: [
+            MenuActionContext(title: CelestiaString("Copy URL", comment: ""), action: #selector(copy(_:)), input: "c", modifierFlags: .command),
+            MenuActionContext(title: CelestiaString("Paste URL", comment: ""), action: #selector(paste(_:)), input: "v", modifierFlags: .command),
+        ])
+        builder.insertSibling(copyPasteMenu, afterMenu: captureImageMenu.identifier)
+
+        let navigationMenu = createMenuItemGroup(title: CelestiaString("Navigation", comment: ""), identifierSuffix: "navigation", actions: [], options: [])
+        builder.insertSibling(navigationMenu, afterMenu: .file)
+
+        let selectMenu = createMenuItemGroup(identifierSuffix: "select", actions: [
+            MenuActionContext(title: CelestiaString("Select Sol", comment: ""), action: #selector(selectSol), input: "h"),
+            MenuActionContext(title: CelestiaString("Go to Object", comment: ""), action: #selector(showGoto)),
+        ])
+        builder.insertChild(selectMenu, atStartOfMenu: navigationMenu.identifier)
+
+        let selectionActionMenu = createMenuItemGroup(identifierSuffix: "selection.actions", actions: [
+            MenuActionContext(title: CelestiaString("Center Selection", comment: ""), action: #selector(centerSelection), input: "c"),
+            MenuActionContext(title: CelestiaString("Go to Selection", comment: ""), action: #selector(gotoSelection), input: "g"),
+            MenuActionContext(title: CelestiaString("Follow Selection", comment: ""), action: #selector(followSelection), input: "f"),
+            MenuActionContext(title: CelestiaString("Sync Orbit Selection", comment: ""), action: #selector(syncOrbitSelection), input: "y"),
+            MenuActionContext(title: CelestiaString("Track Selection", comment: ""), action: #selector(trackSelection), input: "t"),
+        ])
+        builder.insertSibling(selectionActionMenu, afterMenu: selectMenu.identifier)
+        builder.insertSibling(createMenuItem(identifierSuffix: "flightmode", action: MenuActionContext(title: CelestiaString("Flight Mode", comment: ""), action: #selector(showFlightMode))), afterMenu: selectionActionMenu.identifier)
+
+        let toolsMenu = createMenuItemGroup(title: CelestiaString("Tools", comment: ""), identifierSuffix: "tools", actions: [], options: [])
+        builder.insertSibling(toolsMenu, afterMenu: navigationMenu.identifier)
+        let mainToolsMenu = createMenuItemGroup(identifierSuffix: "tools.main", actions: [
+            MenuActionContext(title: CelestiaString("Star Browser", comment: ""), action: #selector(showStarBrowser)),
+            MenuActionContext(title: CelestiaString("Eclipse Finder", comment: ""), action: #selector(showEclipseFinder)),
+        ])
+        builder.insertChild(mainToolsMenu, atStartOfMenu: toolsMenu.identifier)
+        let addonToolsMenu = createMenuItemGroup(identifierSuffix: "tools.addon", actions: [
+            MenuActionContext(title: CelestiaString("Get Add-ons", comment: ""), action: #selector(getAddons)),
+            MenuActionContext(title: CelestiaString("Installed Add-ons", comment: ""), action: #selector(showInstalledAddons)),
+        ])
+        builder.insertSibling(addonToolsMenu, afterMenu: mainToolsMenu.identifier)
+
+        let timeMenu = createMenuItemGroup(title: CelestiaString("Time", comment: ""), identifierSuffix: "time", actions: [], options: [])
+        builder.insertSibling(timeMenu, afterMenu: toolsMenu.identifier)
+        let quickTimeSettingMenu = createMenuItemGroup(identifierSuffix: "time.quick", actions: [
+            MenuActionContext(title: CelestiaString("10x Faster", comment: ""), action: #selector(tenTimesFaster), input: "l"),
+            MenuActionContext(title: CelestiaString("10x Slower", comment: ""), action: #selector(tenTimesSlower), input: "k"),
+            MenuActionContext(title: CelestiaString("Freeze", comment: ""), action: #selector(freezeTime), input: " "),
+            MenuActionContext(title: CelestiaString("Real Time", comment: ""), action: #selector(realTime)),
+            MenuActionContext(title: CelestiaString("Reverse Time", comment: ""), action: #selector(reverseTime), input: "j"),
+        ])
+        builder.insertChild(quickTimeSettingMenu, atStartOfMenu: timeMenu.identifier)
+        builder.insertSibling(createMenuItem(identifierSuffix: "time.select", action: MenuActionContext(title: CelestiaString("Set Time…", comment: ""), action: #selector(showTimeSetting))), afterMenu: quickTimeSettingMenu.identifier)
+
+        var deleteActiveViewKey = ""
+        if #available(iOS 15, *) {
+            deleteActiveViewKey = UIKeyCommand.inputDelete
+        }
+        builder.insertChild(createMenuItemGroup(identifierSuffix: "views", actions: [
+            MenuActionContext(title: CelestiaString("Split Horizontally", comment: ""), action: #selector(splitHorizontally), input: "r", modifierFlags: .control),
+            MenuActionContext(title: CelestiaString("Split Vertically", comment: ""), action: #selector(splitVertically), input: "u", modifierFlags: .control),
+            MenuActionContext(title: CelestiaString("Delete Active View", comment: ""), action: #selector(deleteActiveView), input: deleteActiveViewKey),
+            MenuActionContext(title: CelestiaString("Delete Other Views", comment: ""), action: #selector(deleteOtherViews), input: "d", modifierFlags: .control),
+        ]), atStartOfMenu: .view)
+
+        let runDemoMenu = createMenuItem(identifierSuffix: "help.demo", action: MenuActionContext(title: CelestiaString("Run Demo", comment: ""), action: #selector(runDemo), input: "d"))
+        builder.insertChild(runDemoMenu, atEndOfMenu: .help)
+        let openGLMenu = createMenuItem(identifierSuffix: "help.opengl", action: MenuActionContext(title: CelestiaString("OpenGL Info", comment: ""), action: #selector(showOpenGLInfo)))
+        builder.insertSibling(openGLMenu, afterMenu: runDemoMenu.identifier)
+    }
+
+    private struct MenuActionContext {
+        enum Input {
+            case none
+            case key(input: String, modifierFlags: UIKeyModifierFlags)
+        }
+        let title: String
+        let action: Selector
+        let input: Input
+
+        init(title: String, action: Selector, input: String = "", modifierFlags: UIKeyModifierFlags = []) {
+            self.title = title
+            self.action = action
+            if input.isEmpty {
+                self.input = .none
+            } else {
+                self.input = .key(input: input, modifierFlags: modifierFlags)
+            }
+        }
+    }
+
+    private func createMenuItem(identifierSuffix: String, action: MenuActionContext) -> UIMenu {
+        createMenuItemGroup(title: "", identifierSuffix: identifierSuffix, actions: [action], options: .displayInline)
+    }
+
+    private func createMenuItemGroup(title: String = "", identifierSuffix: String, actions: [MenuActionContext], options: UIMenu.Options = .displayInline) -> UIMenu {
+        let identifierPrefix = Bundle.app.bundleIdentifier! + "."
+        let identifier = UIMenu.Identifier(identifierPrefix + identifierSuffix)
+        return UIMenu(
+            title: title, image: nil, identifier: identifier, options: options,
+            children: actions.map({ action in
+                switch action.input {
+                case let .key(input, modifierFlags):
+                    return UIKeyCommand(title: action.title, action: action.action, input: input, modifierFlags: modifierFlags)
+                case .none:
+                    return UICommand(title: action.title, action: action.action)
+                }
+            })
+        )
     }
 
     @objc private func openScriptFile() {
@@ -289,6 +447,106 @@ extension AppDelegate {
 
     @objc private func captureImage() {
         NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.captureImage])
+    }
+
+    @objc private func showAbout() {
+        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.showAbout])
+    }
+
+    @objc private func selectSol() {
+        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.selectSol])
+    }
+
+    @objc private func showGoto() {
+        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.showGoto])
+    }
+
+    @objc private func centerSelection() {
+        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.centerSelection])
+    }
+
+    @objc private func gotoSelection() {
+        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.gotoSelection])
+    }
+
+    @objc private func followSelection() {
+        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.followSelection])
+    }
+
+    @objc private func syncOrbitSelection() {
+        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.syncOrbitSelection])
+    }
+
+    @objc private func trackSelection() {
+        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.trackSelection])
+    }
+
+    @objc private func showFlightMode() {
+        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.showFlightMode])
+    }
+
+    @objc private func showStarBrowser() {
+        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.showStarBrowser])
+    }
+
+    @objc private func showEclipseFinder() {
+        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.showEclipseFinder])
+    }
+
+    @objc private func tenTimesFaster() {
+        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.tenTimesFaster])
+    }
+
+    @objc private func tenTimesSlower() {
+        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.tenTimesSlower])
+    }
+
+    @objc private func freezeTime() {
+        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.freezeTime])
+    }
+
+    @objc private func realTime() {
+        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.realTime])
+    }
+
+    @objc private func reverseTime() {
+        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.reverseTime])
+    }
+
+    @objc private func showTimeSetting() {
+        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.showTimeSetting])
+    }
+
+    @objc private func splitHorizontally() {
+        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.splitHorizontally])
+    }
+
+    @objc private func splitVertically() {
+        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.splitVertically])
+    }
+
+    @objc private func deleteActiveView() {
+        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.deleteActiveView])
+    }
+
+    @objc private func deleteOtherViews() {
+        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.deleteOtherViews])
+    }
+
+    @objc private func runDemo() {
+        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.showAbout])
+    }
+
+    @objc private func showOpenGLInfo() {
+        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.showOpenGLInfo])
+    }
+
+    @objc private func getAddons() {
+        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.getAddons])
+    }
+
+    @objc private func showInstalledAddons() {
+        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.showInstalledAddons])
     }
 }
 

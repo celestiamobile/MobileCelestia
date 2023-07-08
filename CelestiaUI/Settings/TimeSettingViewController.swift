@@ -12,7 +12,7 @@
 import CelestiaCore
 import UIKit
 
-class TimeSettingViewController: BaseTableViewController {
+public class TimeSettingViewController: BaseTableViewController {
     private let core: AppCore
     private let executor: AsyncProviderExecutor
     private let dateInputHandler: (_ viewController: UIViewController, _ title: String, _ format: String) async -> Date?
@@ -24,7 +24,7 @@ class TimeSettingViewController: BaseTableViewController {
         return formatter
     }()
 
-    init(
+    public init(
         core: AppCore,
         executor: AsyncProviderExecutor,
         dateInputHandler: @escaping (_ viewController: UIViewController, _ title: String, _ format: String) async -> Date?
@@ -39,7 +39,7 @@ class TimeSettingViewController: BaseTableViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
 
         setUp()
@@ -54,11 +54,11 @@ private extension TimeSettingViewController {
 }
 
 extension TimeSettingViewController {
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 2
     }
 
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
         if indexPath.row == 0 {
             cell.title = CelestiaString("Select Time", comment: "")
@@ -71,7 +71,7 @@ extension TimeSettingViewController {
         return cell
     }
 
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    public override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.row == 0 {
             let preferredFormat = DateFormatter.dateFormat(fromTemplate: "yyyyMMddHHmmss", options: 0, locale: Locale.current) ?? "yyyy/MM/dd HH:mm:ss"
@@ -96,7 +96,7 @@ extension TimeSettingViewController {
         }
     }
 
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    public override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
 }

@@ -11,10 +11,10 @@
 
 import UIKit
 
-class TextViewController: UIViewController {
+public final class TextViewController: UIViewController {
     private let text: String
 
-    init(title: String, text: String) {
+    public init(title: String, text: String) {
         self.text = text
         super.init(nibName: nil, bundle: nil)
         self.title = title
@@ -24,12 +24,12 @@ class TextViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func loadView() {
+    public override func loadView() {
         view = UIView()
         view.backgroundColor = .systemBackground
     }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
 
         setUp()

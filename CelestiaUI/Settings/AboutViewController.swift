@@ -11,7 +11,7 @@
 
 import UIKit
 
-final class AboutViewController: BaseTableViewController {
+public final class AboutViewController: BaseTableViewController {
     private let officialWebsiteURL = URL(string: "https://celestia.mobi")!
     private let aboutCelestiaURL = URL(string: "https://celestia.mobi/about")!
 
@@ -20,7 +20,7 @@ final class AboutViewController: BaseTableViewController {
     private let bundle: Bundle
     private let defaultDirectoryURL: URL
 
-    init(bundle: Bundle, defaultDirectoryURL: URL) {
+    public init(bundle: Bundle, defaultDirectoryURL: URL) {
         self.bundle = bundle
         self.defaultDirectoryURL = defaultDirectoryURL
         super.init(style: .defaultGrouped)
@@ -30,7 +30,7 @@ final class AboutViewController: BaseTableViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
 
         setUp()
@@ -88,15 +88,15 @@ private extension AboutViewController {
 }
 
 extension AboutViewController {
-    override func numberOfSections(in tableView: UITableView) -> Int {
+    public override func numberOfSections(in tableView: UITableView) -> Int {
         return items.count
     }
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return items[section].count
     }
 
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = items[indexPath.section][indexPath.row]
         switch item {
         case .short(let title, let detail):
@@ -123,11 +123,11 @@ extension AboutViewController {
         }
     }
 
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    public override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
 
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    public override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let item = items[indexPath.section][indexPath.row]
         switch item {

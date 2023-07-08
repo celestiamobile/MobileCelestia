@@ -329,6 +329,96 @@ extension MainViewController {
         switch action {
         case .captureImage:
             shareImage()
+        case .showAbout:
+            let vc = AboutViewController(bundle: .app, defaultDirectoryURL: UserDefaults.defaultDataDirectory)
+            showViewController(UINavigationController(rootViewController: vc))
+        case .selectSol:
+            Task {
+                await executor.receive(.home)
+            }
+        case .showGoto:
+            presentGoTo()
+        case .centerSelection:
+            Task {
+                await executor.receive(.center)
+            }
+        case .followSelection:
+            Task {
+                await executor.receive(.follow)
+            }
+        case .trackSelection:
+            Task {
+                await executor.receive(.track)
+            }
+        case .syncOrbitSelection:
+            Task {
+                await executor.receive(.syncOrbit)
+            }
+        case .gotoSelection:
+            Task {
+                await executor.receive(.goTo)
+            }
+        case .showFlightMode:
+            showViewController(UINavigationController(rootViewController: ObserverModeViewController(executor: executor)))
+        case .showStarBrowser:
+            showBrowser()
+        case .showEclipseFinder:
+            presentEventFinder()
+        case .tenTimesFaster:
+            Task {
+                await executor.receive(.faster)
+            }
+        case .tenTimesSlower:
+            Task {
+                await executor.receive(.slower)
+            }
+        case .freezeTime:
+            Task {
+                await executor.receive(.playpause)
+            }
+        case .realTime:
+            Task {
+                await executor.receive(.currentTime)
+            }
+        case .reverseTime:
+            Task {
+                await executor.receive(.reverse)
+            }
+        case .showTimeSetting:
+            let vc = TimeSettingViewController(core: core, executor: executor) { viewController, title, format in
+                return await viewController.getDateInputDifferentiated(title, format: format)
+            }
+            showViewController(UINavigationController(rootViewController: vc))
+        case .splitHorizontally:
+            Task {
+                await executor.run { $0.charEnter(18) }
+            }
+        case .splitVertically:
+            Task {
+                await executor.run { $0.charEnter(21) }
+            }
+        case .deleteActiveView:
+            Task {
+                await executor.run { $0.charEnter(127) }
+            }
+        case .deleteOtherViews:
+            Task {
+                await executor.run { $0.charEnter(4) }
+            }
+        case .runDemo:
+            Task {
+                await executor.receive(.runDemo)
+            }
+        case .showOpenGLInfo:
+            Task {
+                let renderInfo = await self.executor.get { $0.renderInfo }
+                let vc = TextViewController(title: CelestiaString("OpenGL Info", comment: ""), text: renderInfo)
+                showViewController(UINavigationController(rootViewController: vc))
+            }
+        case .getAddons:
+            showViewController(ResourceCategoriesViewController(executor: executor, resourceManager: resourceManager))
+        case .showInstalledAddons:
+            presentInstalledAddons()
         }
     }
 }
