@@ -64,6 +64,8 @@ let requestCopyNotificationName = Notification.Name("RequestCopyNotificationName
 let requestPasteNotificationName = Notification.Name("RequestPasteNotificationName")
 let menuBarActionNotificationName = Notification.Name("MenuBarNotificationName")
 let menuBarActionNotificationKey = "MenuBarActionNotificationKey"
+let requestRunScriptNotificationName = Notification.Name("RequestRunScriptNotificationName")
+let requestRunScriptNotificationKey = Notification.Name("RequestRunScriptNotificationKey")
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -320,12 +322,30 @@ extension AppDelegate {
 
         let runScriptMenu = createMenuItem(identifierSuffix: "open", action: MenuActionContext(title: CelestiaString("Run Script…", comment: ""), action: #selector(openScriptFile), input: "O", modifierFlags: .command))
         builder.insertChild(runScriptMenu, atStartOfMenu: .file)
+        var identifierBeforeCaptureImage = runScriptMenu.identifier
+        if #available(iOS 14, *) {
+            let scriptsMenu = createMenuItemGroupDeferred(title: CelestiaString("Scripts", comment: ""), identifierSuffix: "scripts") { [weak self] in
+                guard let self else { return [] }
+                guard self.core.isInitialized else { return [] }
+                var scripts = Script.scripts(inDirectory: "scripts", deepScan: true)
+                if let extraScriptsDirectory = UserDefaults.extraScriptDirectory {
+                    scripts += Script.scripts(inDirectory: extraScriptsDirectory.path, deepScan: true)
+                }
+                return scripts.map { script in
+                    UIAction(title: script.title) { _ in
+                        NotificationCenter.default.post(name: requestRunScriptNotificationName, object: nil, userInfo: [requestRunScriptNotificationKey: script])
+                    }
+                }
+            }
+            builder.insertSibling(scriptsMenu, afterMenu: runScriptMenu.identifier)
+            identifierBeforeCaptureImage = scriptsMenu.identifier
+        }
         var captureImageKey = ""
         if #available(iOS 13.4, *) {
             captureImageKey = UIKeyCommand.f10
         }
         let captureImageMenu = createMenuItem(identifierSuffix: "capture", action: MenuActionContext(title: CelestiaString("Capture Image", comment: ""), action: #selector(captureImage), input: captureImageKey))
-        builder.insertSibling(captureImageMenu, afterMenu: runScriptMenu.identifier)
+        builder.insertSibling(captureImageMenu, afterMenu: identifierBeforeCaptureImage)
         let copyPasteMenu = createMenuItemGroup(identifierSuffix: "copypaste", actions: [
             MenuActionContext(title: CelestiaString("Copy URL", comment: ""), action: #selector(copy(_:)), input: "c", modifierFlags: .command),
             MenuActionContext(title: CelestiaString("Paste URL", comment: ""), action: #selector(paste(_:)), input: "v", modifierFlags: .command),
@@ -417,19 +437,30 @@ extension AppDelegate {
         createMenuItemGroup(title: "", identifierSuffix: identifierSuffix, actions: [action], options: .displayInline)
     }
 
+    @available(iOS 14, *)
+    private func createMenuItemGroupDeferred(title: String = "", identifierSuffix: String, menuBuilder: @escaping () -> [UIAction]) -> UIMenu {
+        let identifierPrefix = Bundle.app.bundleIdentifier! + "."
+        let identifier = UIMenu.Identifier(identifierPrefix + identifierSuffix)
+        return UIMenu(title: title, identifier: identifier, children: [UIDeferredMenuElement { completion in
+            completion(menuBuilder())
+        }])
+    }
+
+    private func createMenuItemCommand(_ action: MenuActionContext) -> UICommand {
+        switch action.input {
+        case let .key(input, modifierFlags):
+            return UIKeyCommand(title: action.title, action: action.action, input: input, modifierFlags: modifierFlags)
+        case .none:
+            return UICommand(title: action.title, action: action.action)
+        }
+    }
+
     private func createMenuItemGroup(title: String = "", identifierSuffix: String, actions: [MenuActionContext], options: UIMenu.Options = .displayInline) -> UIMenu {
         let identifierPrefix = Bundle.app.bundleIdentifier! + "."
         let identifier = UIMenu.Identifier(identifierPrefix + identifierSuffix)
         return UIMenu(
             title: title, image: nil, identifier: identifier, options: options,
-            children: actions.map({ action in
-                switch action.input {
-                case let .key(input, modifierFlags):
-                    return UIKeyCommand(title: action.title, action: action.action, input: input, modifierFlags: modifierFlags)
-                case .none:
-                    return UICommand(title: action.title, action: action.action)
-                }
-            })
+            children: actions.map({ createMenuItemCommand($0) })
         )
     }
 
@@ -547,6 +578,10 @@ extension AppDelegate {
 
     @objc private func showInstalledAddons() {
         NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.showInstalledAddons])
+    }
+
+    private func runScript(_ script: Script) {
+
     }
 }
 

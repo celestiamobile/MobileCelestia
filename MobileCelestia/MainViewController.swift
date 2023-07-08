@@ -130,6 +130,7 @@ class MainViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(requestPaste), name: requestPasteNotificationName, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(requestPaste), name: requestPasteNotificationName, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(menuBarAction(_:)), name: menuBarActionNotificationName, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(requestRunScript(_:)), name: requestRunScriptNotificationName, object: nil)
     }
 
     override var prefersHomeIndicatorAutoHidden: Bool {
@@ -420,6 +421,12 @@ extension MainViewController {
         case .showInstalledAddons:
             presentInstalledAddons()
         }
+    }
+
+    @objc private func requestRunScript(_ notification: Notification) {
+        guard let script = notification.userInfo?[requestRunScriptNotificationKey] as? Script else { return }
+
+        self.celestiaController.openURL(UniformedURL(url: URL(fileURLWithPath: script.filename), securityScoped: false))
     }
 }
 
