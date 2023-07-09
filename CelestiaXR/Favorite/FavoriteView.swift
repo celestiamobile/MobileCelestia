@@ -26,7 +26,7 @@ struct FavoriteView: UIViewControllerRepresentable {
 
     func makeUIViewController(context: Context) -> FavoriteCoordinatorController {
         return FavoriteCoordinatorController(executor: renderer, root: .main) {
-            let path = userDirectory.appending(component: "scripts").path()
+            let path = userDirectory.appending(component: "scripts").path(percentEncoded: false)
             var isDir: ObjCBool = false
             let fileManager = FileManager.default
             if fileManager.fileExists(atPath: path, isDirectory: &isDir) {
@@ -43,7 +43,7 @@ struct FavoriteView: UIViewControllerRepresentable {
             if let url = object as? URL {
                 self.renderer.enqueue { core in
                     if url.isFileURL {
-                        core.runScript(at: url.path())
+                        core.runScript(at: url.path(percentEncoded: false))
                     } else {
                         core.go(to: url.absoluteString)
                     }

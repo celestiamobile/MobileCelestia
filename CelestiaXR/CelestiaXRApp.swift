@@ -53,9 +53,9 @@ struct CelestiaXRApp: App {
             let (defaultFonts, otherFonts) = FontCollection.fontsInDirectory(fontDirectoryURL)
             return XRRenderer(
                 renderer: Renderer(
-                    resourceFolderPath: defaultDataDirectoryURL.path(),
-                    configFilePath: defaultConfigFileURL.path(),
-                    extraDirectories: [extraDirectoryURL.path()],
+                    resourceFolderPath: defaultDataDirectoryURL.path(percentEncoded: false),
+                    configFilePath: defaultConfigFileURL.path(percentEncoded: false),
+                    extraDirectories: [extraDirectoryURL.path(percentEncoded: false)],
                     userDefaults: defaults,
                     appDefaultsPath:defaultConfigPlistPath,
                     defaultFonts: defaultFonts,
@@ -146,6 +146,14 @@ struct CelestiaXRApp: App {
             WindowGroup(id: "SettingsView") {
                 SettingsView(userDefault: userDefaults, bundle: bundle, defaultDataDirectory: defaultDataDirectoryURL, defaultConfigFile: defaultConfigFileURL)
                     .environmentObject(renderer)
+            }
+        }
+
+        Group {
+            WindowGroup(id: "HelpView") {
+                HelpView()
+                    .environmentObject(renderer)
+                    .environmentObject(resourceManager)
             }
         }
 

@@ -26,6 +26,19 @@ struct StartUpView: View {
     @Environment(\.openWindow) var openWindow
     @Environment(\.dismissWindow) var dismissWindow
 
+    private let toolboxItems: [ToolboxView.Item] = [
+        ToolboxView.Item(image: "globe", title: "Browser", windowGroupID: "BrowserWindow"),
+        ToolboxView.Item(image: "magnifyingglass", title: "Search", windowGroupID: "MainSearch"),
+        ToolboxView.Item(image: "paperplane", title: "Go to Object", windowGroupID: "GoTo"),
+        ToolboxView.Item(image: "calendar", title: "Eclipse Finder", windowGroupID: "EclipseFinder"),
+        ToolboxView.Item(image: "video", title: "Camera Control", windowGroupID: "CameraControl"),
+        ToolboxView.Item(image: "star.circle", title: "Favorites", windowGroupID: "FavoriteView"),
+        ToolboxView.Item(image: "gear", title: "Settings", windowGroupID: "SettingsView"),
+        ToolboxView.Item(image: "folder", title: "Installed Add-ons", windowGroupID: "AddonManagementView"),
+        ToolboxView.Item(image: "square.and.arrow.down", title: "Get Add-ons", windowGroupID: "AddonCategoriesView"),
+        ToolboxView.Item(image: "questionmark.circle", title: "Help", windowGroupID: "HelpView"),
+    ]
+
     @ViewBuilder
     func startCelestiaView() -> some View {
         Button("Start Celestia") {
@@ -41,48 +54,41 @@ struct StartUpView: View {
 
     @ViewBuilder
     func celestiaRunningView() -> some View {
-        VStack {
-            Text("Celestia is running...")
-            Group {
-                Button("Open Browser") {
-                    openWindow(id: "BrowserWindow")
+        ScrollView {
+            VStack(spacing: 32) {
+                VStack(spacing: 24) {
+                    HStack {
+                        Text("Tools")
+                            .font(.extraLargeTitle2)
+                        Spacer()
+                    }
+                    ToolboxView(items: toolboxItems)
+                    Button("Pause Celestia") {
+                        Task {
+                            isDismissingImmersiveSpace = true
+                            await dismissImmersiveSpace()
+                            isDismissingImmersiveSpace = false
+                            isImmersiveSpaceOpened = false
+                            dismissWindow(id: "InfoWindow")
+                        }
+                    }
                 }
-                Button("Open Search") {
-                    openWindow(id: "MainSearch")
-                }
-                Button("Open GoTo") {
-                    openWindow(id: "GoTo")
-                }
-                Button("Open Eclipse Finder") {
-                    openWindow(id: "EclipseFinder")
-                }
-                Button("Open Camera Control") {
-                    openWindow(id: "CameraControl")
-                }
-                Button("Open Favorite") {
-                    openWindow(id: "FavoriteView")
-                }
-                Button("Open Settings") {
-                    openWindow(id: "SettingsView")
-                }
-                Button("Open Add-on Management") {
-                    openWindow(id: "AddonManagementView")
-                }
-                Button("Download Add-ons") {
-                    openWindow(id: "AddonCategoriesView")
-                }
-            }
-            Button("Pause Celestia") {
-                Task {
-                    isDismissingImmersiveSpace = true
-                    await dismissImmersiveSpace()
-                    isDismissingImmersiveSpace = false
-                    isImmersiveSpaceOpened = false
-                    dismissWindow(id: "InfoWindow")
+                if !renderer
+                    .message.isEmpty {
+                    VStack(spacing: 24) {
+                        HStack {
+                            Text("Messages")
+                                .font(.extraLargeTitle2)
+                            Spacer()
+                        }
+                        HStack {
+                            Text(renderer.message)
+                                .font(.largeTitle)
+                            Spacer()
+                        }
+                    }
                 }
             }
-            Text(renderer.message)
-                .font(.largeTitle)
         }
     }
 
