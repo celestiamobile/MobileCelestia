@@ -39,7 +39,7 @@ public class FavoriteCoordinatorController: UIViewController {
         let type: FavoriteItemType?
         switch root {
         case .main:
-            type = .bookmark
+            type = nil
         case .bookmarks:
             type = .bookmark
         }
