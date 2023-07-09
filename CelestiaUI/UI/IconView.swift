@@ -11,10 +11,10 @@
 
 import UIKit
 
-class IconView: AutoSizingView<UIImageView, IconView.Configuration> {
+public class IconView: AutoSizingView<UIImageView, IconView.Configuration> {
     private lazy var imageView = UIImageView()
 
-    struct Configuration: AutoSizingViewConfiguration {
+    public struct Configuration: AutoSizingViewConfiguration {
         func baseSizeForView(_ view: UIView) -> CGSize {
             return baseSize
         }
@@ -23,7 +23,7 @@ class IconView: AutoSizingView<UIImageView, IconView.Configuration> {
         var baseSize: CGSize
     }
 
-    init(image: UIImage? = nil, baseSize: CGSize, configuration: ((UIImageView) -> Void)? = nil) {
+    public init(image: UIImage? = nil, baseSize: CGSize, configuration: ((UIImageView) -> Void)? = nil) {
         super.init(viewBuilder: {
             let imageView = UIImageView()
             configuration?(imageView)
@@ -31,7 +31,7 @@ class IconView: AutoSizingView<UIImageView, IconView.Configuration> {
         }(), configuration: Configuration(image: image, baseSize: baseSize))
     }
 
-    override func apply(_ configuration: Configuration, view: UIImageView) {
+    public override func apply(_ configuration: Configuration, view: UIImageView) {
         view.image = configuration.image
         super.apply(configuration, view: view)
     }

@@ -820,18 +820,8 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     @objc private func presentHelp() {
-        let url = URL.fromGuideShort(path: "/help/welcome", language: AppCore.language, shareable: false)
-        let vc = FallbackWebViewController(executor: executor, resourceManager: resourceManager, url: url, fallbackViewControllerCreator: OnboardViewController() { [unowned self] (action) in
-            switch action {
-            case .tutorial(let tutorial):
-                self.handleTutorialAction(tutorial)
-            case .url(let url):
-                UIApplication.shared.open(url, options: [:], completionHandler: nil)
-            }
-        })
-        let nav = UINavigationController(rootViewController: vc)
-        nav.setNavigationBarHidden(true, animated: false)
-        showViewController(nav, titleVisible: false)
+        let vc = HelpViewController(executor: executor, resourceManager: resourceManager)
+        showViewController(vc, titleVisible: false)
     }
 
     private func presentEventFinder() {
@@ -1071,18 +1061,6 @@ extension MainViewController: CelestiaControllerDelegate {
 
         presentAfterDismissCurrent(viewController, animated: true)
         #endif
-    }
-}
-
-extension MainViewController {
-    private func handleTutorialAction(_ action: TutorialAction) {
-        dismiss(animated: true, completion: nil)
-        switch action {
-        case .runDemo:
-            Task {
-                await executor.receive(.runDemo)
-            }
-        }
     }
 }
 

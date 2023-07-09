@@ -12,20 +12,20 @@
 import UIKit
 
 @MainActor
-protocol AutoSizingViewConfiguration {
+public protocol AutoSizingViewConfiguration {
     func baseSizeForView(_ view: UIView) -> CGSize
 }
 
-class AutoSizingView<View: UIView, Configuration: AutoSizingViewConfiguration>: UIView {
+open class AutoSizingView<View: UIView, Configuration: AutoSizingViewConfiguration>: UIView {
     private let view: View
 
-    var configuration: Configuration {
+    public var configuration: Configuration {
         didSet {
             apply(configuration, view: view)
         }
     }
 
-    init(viewBuilder: @autoclosure () -> View, configuration: Configuration) {
+    public init(viewBuilder: @autoclosure () -> View, configuration: Configuration) {
         self.configuration = configuration
         self.view = viewBuilder()
         super.init(frame: .zero)
@@ -45,7 +45,7 @@ class AutoSizingView<View: UIView, Configuration: AutoSizingViewConfiguration>: 
         apply(configuration, view: view)
     }
 
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+    public override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
 
         if traitCollection.preferredContentSizeCategory != previousTraitCollection?.preferredContentSizeCategory {
@@ -54,30 +54,34 @@ class AutoSizingView<View: UIView, Configuration: AutoSizingViewConfiguration>: 
     }
 
     @available(*, unavailable)
-    required init?(coder: NSCoder) {
+    required public init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    func apply(_ configuration: Configuration, view: View) {
+    open func apply(_ configuration: Configuration, view: View) {
         invalidateIntrinsicContentSize()
     }
 
-    override var intrinsicContentSize: CGSize {
+    public override var intrinsicContentSize: CGSize {
         let scaling = textScaling
         return configuration.baseSizeForView(view).applying(CGAffineTransform(scaleX: scaling, y: scaling))
     }
 }
 
-class AnyAutoSizingView: AutoSizingView<UIView, AnyAutoSizingView.Configuration> {
-    struct Configuration: AutoSizingViewConfiguration {
+public class AnyAutoSizingView: AutoSizingView<UIView, AnyAutoSizingView.Configuration> {
+    public struct Configuration: AutoSizingViewConfiguration {
         var baseSize: CGSize
 
-        func baseSizeForView(_ view: UIView) -> CGSize {
+        public init(baseSize: CGSize) {
+            self.baseSize = baseSize
+        }
+
+        public func baseSizeForView(_ view: UIView) -> CGSize {
             return baseSize
         }
     }
 
-    init(viewBuilder: @autoclosure () -> UIView, baseSize: CGSize) {
+    public init(viewBuilder: @autoclosure () -> UIView, baseSize: CGSize) {
         super.init(viewBuilder: viewBuilder(), configuration: Configuration(baseSize: baseSize))
     }
 }

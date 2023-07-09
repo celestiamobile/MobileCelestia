@@ -11,7 +11,7 @@
 
 import UIKit
 
-extension UIContentSizeCategory {
+public extension UIContentSizeCategory {
     var textScaling: CGFloat {
         return UIFont.preferredFont(forTextStyle: .body, compatibleWith: UITraitCollection(preferredContentSizeCategory: self)).pointSize / UIFont.preferredFont(forTextStyle: .body, compatibleWith: UITraitCollection(preferredContentSizeCategory: .medium)).pointSize
     }
@@ -23,7 +23,7 @@ private extension UITraitCollection {
     }
 }
 
-extension UIView {
+public extension UIView {
     var textScaling: CGFloat {
         return traitCollection.textScaling
     }

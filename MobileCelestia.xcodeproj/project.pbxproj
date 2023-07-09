@@ -14,10 +14,6 @@
 		9773949E2402A96B00E38B82 /* SlideInPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9773949D2402A96B00E38B82 /* SlideInPresentationController.swift */; };
 		977394A02402A9AF00E38B82 /* PresentationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9773949F2402A9AF00E38B82 /* PresentationManager.swift */; };
 		977394B12403F30900E38B82 /* SettingsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394B02403F30900E38B82 /* SettingsModel.swift */; };
-		977CDD2A240BC50A00137127 /* TutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CDD29240BC50A00137127 /* TutorialViewController.swift */; };
-		977CDD2E240BC6A900137127 /* TutorialDescriptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CDD2D240BC6A900137127 /* TutorialDescriptionCell.swift */; };
-		977CDD30240BD78F00137127 /* TutorialActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CDD2F240BD78F00137127 /* TutorialActionCell.swift */; };
-		977CDD34240BDFE500137127 /* OnboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CDD33240BDFE500137127 /* OnboardViewController.swift */; };
 		978406D724028F0000876FD1 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978406D624028F0000876FD1 /* MainViewController.swift */; };
 		979D2F7E23FEB1A6005D2592 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979D2F7D23FEB1A6005D2592 /* AppDelegate.swift */; };
 		979D2F8223FEB1A6005D2592 /* CelestiaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979D2F8123FEB1A6005D2592 /* CelestiaViewController.swift */; };
@@ -75,10 +71,15 @@
 		EA839CB42A5696E100BF1CB4 /* SliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA839CB12A5696E100BF1CB4 /* SliderCell.swift */; };
 		EA839CB52A5696E100BF1CB4 /* SwitchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA839CB22A5696E100BF1CB4 /* SwitchCell.swift */; };
 		EA85C8D6289BE45A009ADB1C /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA85C8D4289BE459009ADB1C /* OpenGLES.framework */; platformFilter = ios; };
-		EA85C913289E9A7D009ADB1C /* UIContentSizeCategory+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA85C912289E9A7D009ADB1C /* UIContentSizeCategory+Extension.swift */; };
-		EA85C915289E9AD2009ADB1C /* AutoSizingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA85C914289E9AD2009ADB1C /* AutoSizingView.swift */; };
-		EA85C917289EA1ED009ADB1C /* IconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA85C916289EA1ED009ADB1C /* IconView.swift */; };
-		EA85C91B289F5811009ADB1C /* ButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA85C91A289F5811009ADB1C /* ButtonView.swift */; };
+		EA872EFC2A5ACA1F009E6A20 /* UIContentSizeCategory+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA85C912289E9A7D009ADB1C /* UIContentSizeCategory+Extension.swift */; };
+		EA872EFD2A5ACA53009E6A20 /* AutoSizingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA85C914289E9AD2009ADB1C /* AutoSizingView.swift */; };
+		EA872EFE2A5ACB1D009E6A20 /* IconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA85C916289EA1ED009ADB1C /* IconView.swift */; };
+		EA872EFF2A5ACB6E009E6A20 /* ButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA85C91A289F5811009ADB1C /* ButtonView.swift */; };
+		EA872F032A5ACC65009E6A20 /* HelpViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA872F022A5ACC65009E6A20 /* HelpViewController.swift */; };
+		EA872F042A5ACC9C009E6A20 /* OnboardViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CDD33240BDFE500137127 /* OnboardViewController.swift */; };
+		EA872F052A5ACC9C009E6A20 /* TutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CDD29240BC50A00137127 /* TutorialViewController.swift */; };
+		EA872F062A5ACC9C009E6A20 /* TutorialDescriptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CDD2D240BC6A900137127 /* TutorialDescriptionCell.swift */; };
+		EA872F072A5ACC9C009E6A20 /* TutorialActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CDD2F240BD78F00137127 /* TutorialActionCell.swift */; };
 		EA934C90251D90C500DD284C /* MainSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA934C8F251D90C500DD284C /* MainSceneDelegate.swift */; };
 		EA934C9A251D92AD00DD284C /* PanelSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA934C99251D92A700DD284C /* PanelSceneDelegate.swift */; };
 		EA9A426D288CD7FE00AF3BD6 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA9A426C288CD7FE00AF3BD6 /* AVFoundation.framework */; };
@@ -334,6 +335,7 @@
 		EA85C916289EA1ED009ADB1C /* IconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconView.swift; sourceTree = "<group>"; };
 		EA85C91A289F5811009ADB1C /* ButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonView.swift; sourceTree = "<group>"; };
 		EA86E38326FE20C000FF2278 /* SettingsFrameRateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsFrameRateViewController.swift; sourceTree = "<group>"; };
+		EA872F022A5ACC65009E6A20 /* HelpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpViewController.swift; sourceTree = "<group>"; };
 		EA934C8F251D90C500DD284C /* MainSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSceneDelegate.swift; sourceTree = "<group>"; };
 		EA934C99251D92A700DD284C /* PanelSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelSceneDelegate.swift; sourceTree = "<group>"; };
 		EA982BFE25496B6D00CDC642 /* BaseTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTableViewController.swift; sourceTree = "<group>"; };
@@ -501,17 +503,6 @@
 			path = Settings;
 			sourceTree = "<group>";
 		};
-		977CDD27240BC4ED00137127 /* Tutorial */ = {
-			isa = PBXGroup;
-			children = (
-				977CDD29240BC50A00137127 /* TutorialViewController.swift */,
-				977CDD2D240BC6A900137127 /* TutorialDescriptionCell.swift */,
-				977CDD2F240BD78F00137127 /* TutorialActionCell.swift */,
-				977CDD33240BDFE500137127 /* OnboardViewController.swift */,
-			);
-			path = Tutorial;
-			sourceTree = "<group>";
-		};
 		978406E124029DA900876FD1 /* Loading */ = {
 			isa = PBXGroup;
 			children = (
@@ -554,9 +545,7 @@
 		979D2F7C23FEB1A6005D2592 /* MobileCelestia */ = {
 			isa = PBXGroup;
 			children = (
-				EAF4851D249B5C0F00E5B817 /* Common */,
 				97C3A9EF2445FAA100EB365A /* Celestia */,
-				977CDD27240BC4ED00137127 /* Tutorial */,
 				97DB1FD424067757001F222F /* Presentation */,
 				977394A92403F05100E38B82 /* Settings */,
 				977394992402A8DA00E38B82 /* Toolbar */,
@@ -674,6 +663,7 @@
 		EA50E75F2A505627005E7D7A /* CelestiaUI */ = {
 			isa = PBXGroup;
 			children = (
+				EA872F012A5ACBFF009E6A20 /* Help */,
 				978406E124029DA900876FD1 /* Loading */,
 				EAB8F2532A56D70600C4E777 /* Addon */,
 				EAA79CCA2A56A0000056DB91 /* Settings */,
@@ -698,6 +688,9 @@
 		EA50E77B2A505DFA005E7D7A /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				EA85C91A289F5811009ADB1C /* ButtonView.swift */,
+				EA85C916289EA1ED009ADB1C /* IconView.swift */,
+				EA85C914289E9AD2009ADB1C /* AutoSizingView.swift */,
 				EA6671D229B3A9AE00A7846E /* LinkFooterView.swift */,
 				EA6671CA29B391B900A7846E /* SelectionViewController.swift */,
 				EAF4851F249B5C2500E5B817 /* StandardButton.swift */,
@@ -720,6 +713,7 @@
 		EA50E7842A505F03005E7D7A /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				EA85C912289E9A7D009ADB1C /* UIContentSizeCategory+Extension.swift */,
 				978406D92402906C00876FD1 /* UIViewController+Extension.swift */,
 				EAD94F66261EED7700A93C93 /* UITableView+Extensions.swift */,
 				EA982BFE25496B6D00CDC642 /* BaseTableViewController.swift */,
@@ -767,10 +761,21 @@
 			children = (
 				EAB623B42A51AB5100063D1B /* UIViewController+Extension.swift */,
 				EA5E185B2477C78E00F5374B /* Toast.swift */,
-				EA85C912289E9A7D009ADB1C /* UIContentSizeCategory+Extension.swift */,
 				EA50E7882A506406005E7D7A /* GlobalConstants.swift */,
 			);
 			path = UI;
+			sourceTree = "<group>";
+		};
+		EA872F012A5ACBFF009E6A20 /* Help */ = {
+			isa = PBXGroup;
+			children = (
+				977CDD29240BC50A00137127 /* TutorialViewController.swift */,
+				977CDD2D240BC6A900137127 /* TutorialDescriptionCell.swift */,
+				977CDD2F240BD78F00137127 /* TutorialActionCell.swift */,
+				977CDD33240BDFE500137127 /* OnboardViewController.swift */,
+				EA872F022A5ACC65009E6A20 /* HelpViewController.swift */,
+			);
+			path = Help;
 			sourceTree = "<group>";
 		};
 		EAA79CCA2A56A0000056DB91 /* Settings */ = {
@@ -878,16 +883,6 @@
 				EAE92A632A558E8000BFE06E /* GameControllerThumbstickAxis.swift */,
 			);
 			path = Interaction;
-			sourceTree = "<group>";
-		};
-		EAF4851D249B5C0F00E5B817 /* Common */ = {
-			isa = PBXGroup;
-			children = (
-				EA85C914289E9AD2009ADB1C /* AutoSizingView.swift */,
-				EA85C916289EA1ED009ADB1C /* IconView.swift */,
-				EA85C91A289F5811009ADB1C /* ButtonView.swift */,
-			);
-			path = Common;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1276,14 +1271,9 @@
 			files = (
 				EAB623B52A51AB5100063D1B /* UIViewController+Extension.swift in Sources */,
 				977394A02402A9AF00E38B82 /* PresentationManager.swift in Sources */,
-				EA85C915289E9AD2009ADB1C /* AutoSizingView.swift in Sources */,
-				EA85C91B289F5811009ADB1C /* ButtonView.swift in Sources */,
 				EA28CA4E24A25FE7004B011E /* BottomControlViewController.swift in Sources */,
-				977CDD2E240BC6A900137127 /* TutorialDescriptionCell.swift in Sources */,
-				977CDD30240BD78F00137127 /* TutorialActionCell.swift in Sources */,
 				EA50E7872A50609C005E7D7A /* AppCore.swift in Sources */,
 				9773949C2402A8F700E38B82 /* ToolbarViewController.swift in Sources */,
-				EA85C917289EA1ED009ADB1C /* IconView.swift in Sources */,
 				979D2F8223FEB1A6005D2592 /* CelestiaViewController.swift in Sources */,
 				EA934C90251D90C500DD284C /* MainSceneDelegate.swift in Sources */,
 				EADE7FBB252B517600D4174F /* CelestiaDisplayController.swift in Sources */,
@@ -1292,13 +1282,10 @@
 				EA50E7892A506406005E7D7A /* GlobalConstants.swift in Sources */,
 				EA1BE1572748E9DC0046074C /* DisplaySceneDelegate.swift in Sources */,
 				EA78733D296EB61B0099AB11 /* UserDefaults.swift in Sources */,
-				977CDD34240BDFE500137127 /* OnboardViewController.swift in Sources */,
 				974F86AA240362BA00356795 /* ToolbarButtonCell.swift in Sources */,
-				977CDD2A240BC50A00137127 /* TutorialViewController.swift in Sources */,
 				978406D724028F0000876FD1 /* MainViewController.swift in Sources */,
 				EA9FB23F27B7852A00E0DC1F /* CommonSceneDelegate.swift in Sources */,
 				EA934C9A251D92AD00DD284C /* PanelSceneDelegate.swift in Sources */,
-				EA85C913289E9A7D009ADB1C /* UIContentSizeCategory+Extension.swift in Sources */,
 				EA5D32E7266F9518005D5931 /* SheetPresentationController.swift in Sources */,
 				EADE7FC0252B54A400D4174F /* CelestiaInteractionController.swift in Sources */,
 				EA78730F296DEA6B0099AB11 /* CelestiaExecutor.swift in Sources */,
@@ -1345,6 +1332,7 @@
 				EAB623AC2A51AA0A00063D1B /* BrowserContainerViewController.swift in Sources */,
 				EAB8F2272A56BDA600C4E777 /* SettingsCoordinatorController.swift in Sources */,
 				EAB623AD2A51AA0A00063D1B /* BrowserCoordinatorController.swift in Sources */,
+				EA872EFF2A5ACB6E009E6A20 /* ButtonView.swift in Sources */,
 				EAB623AB2A51AA0A00063D1B /* SubsystemBrowserCoordinatorViewController.swift in Sources */,
 				EAB623AF2A51AA4400063D1B /* BaseTableViewController.swift in Sources */,
 				EAA79CCC2A56A01F0056DB91 /* SettingsModel.swift in Sources */,
@@ -1366,20 +1354,25 @@
 				EAB623B12A51AA9300063D1B /* UIViewController+Extension.swift in Sources */,
 				EA50E7802A505E82005E7D7A /* GlobalConstants.swift in Sources */,
 				EA839CB32A5696E100BF1CB4 /* MultiLineTextCell.swift in Sources */,
+				EA872EFD2A5ACA53009E6A20 /* AutoSizingView.swift in Sources */,
 				EAB8F2252A56BD6100C4E777 /* SettingsMainViewController.swift in Sources */,
+				EA872EFC2A5ACA1F009E6A20 /* UIContentSizeCategory+Extension.swift in Sources */,
 				EA50E77F2A505E5C005E7D7A /* StandardButton.swift in Sources */,
 				EAB623AE2A51AA0A00063D1B /* BrowserCommonViewController.swift in Sources */,
 				EA50E77E2A505E42005E7D7A /* AppCore.swift in Sources */,
 				EA50E7852A505F13005E7D7A /* Font.swift in Sources */,
+				EA872F042A5ACC9C009E6A20 /* OnboardViewController.swift in Sources */,
 				EAD12AA22A566DE1007EE4D6 /* ObserverModeViewController.swift in Sources */,
 				EA66BBDF2A55BA88008A7AAA /* DistanceInputCell.swift in Sources */,
 				EAB8F2632A56DC3200C4E777 /* InstalledResourceViewController.swift in Sources */,
 				EAD12AA62A566DE7007EE4D6 /* FavoriteCoordinatorController.swift in Sources */,
 				EAB8F25A2A56D71600C4E777 /* CelestiaScriptHandler.swift in Sources */,
 				EA66BBC72A55AABF008A7AAA /* SearchCoordinatorController.swift in Sources */,
+				EA872F052A5ACC9C009E6A20 /* TutorialViewController.swift in Sources */,
 				EAB623B72A51AC2C00063D1B /* UILabel+DynamicType.swift in Sources */,
 				EAD12AA32A566DE7007EE4D6 /* FavoriteViewController.swift in Sources */,
 				EA50E7782A505DCE005E7D7A /* BodyDescriptionCell.swift in Sources */,
+				EA872F062A5ACC9C009E6A20 /* TutorialDescriptionCell.swift in Sources */,
 				EAB623B22A51AAB600063D1B /* UITableView+Extensions.swift in Sources */,
 				EA66BBE22A55BA88008A7AAA /* GoToContainerViewController.swift in Sources */,
 				EAD12A8F2A5656FF007EE4D6 /* EventFinderResultViewController.swift in Sources */,
@@ -1391,8 +1384,10 @@
 				EAB623B62A51AC0F00063D1B /* TextCell.swift in Sources */,
 				EAD12A902A5656FF007EE4D6 /* EventFinderCoordinatorViewController.swift in Sources */,
 				EAB8F2622A56DB9200C4E777 /* URL.swift in Sources */,
+				EA872F032A5ACC65009E6A20 /* HelpViewController.swift in Sources */,
 				EAA79CCF2A56AC1C0056DB91 /* TimeSettingViewController.swift in Sources */,
 				EA66BBC62A55AABF008A7AAA /* SearchViewController.swift in Sources */,
+				EA872F072A5ACC9C009E6A20 /* TutorialActionCell.swift in Sources */,
 				EAD12AA82A566EE1007EE4D6 /* LinkFooterView.swift in Sources */,
 				EAB8F2652A56DC3200C4E777 /* FallbackWebViewController.swift in Sources */,
 				EA50E7762A505DCE005E7D7A /* BodyActionCell.swift in Sources */,
@@ -1406,6 +1401,7 @@
 				EA50E7792A505DCE005E7D7A /* BodyInfoModel.swift in Sources */,
 				EA50E77C2A505E09005E7D7A /* ActionButton.swift in Sources */,
 				EAD12A8E2A5656FF007EE4D6 /* EventFinderInputViewController.swift in Sources */,
+				EA872EFE2A5ACB1D009E6A20 /* IconView.swift in Sources */,
 				EAA79CD62A56B0100056DB91 /* DataLocationSelectionViewController.swift in Sources */,
 				EAB8F25D2A56D80D00C4E777 /* CommonWebViewController.swift in Sources */,
 				EA839CB42A5696E100BF1CB4 /* SliderCell.swift in Sources */,

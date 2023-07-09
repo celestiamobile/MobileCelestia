@@ -20,6 +20,8 @@ public enum GlobalConstants {
 
     public static let listItemAccessoryMinMarginVertical: CGFloat = 6
 
+    public static let listTextGapVertical: CGFloat = 4
+
     public static let pageMediumMarginHorizontal: CGFloat = 16
     public static let pageMediumMarginVertical: CGFloat = 12
     public static let pageMediumGapHorizontal: CGFloat = 12

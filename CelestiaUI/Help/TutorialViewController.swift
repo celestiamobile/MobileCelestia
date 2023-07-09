@@ -10,7 +10,6 @@
 //
 
 import CelestiaCore
-import CelestiaUI
 import UIKit
 
 enum TutorialAction {

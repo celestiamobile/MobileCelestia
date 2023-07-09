@@ -21,8 +21,6 @@ extension GlobalConstants {
     static let pageSmallGapHorizontal: CGFloat = 6
     static let pageSmallGapVertical: CGFloat = 4
 
-    static let listTextGapVertical: CGFloat = 4
-
     static let listItemSeparatorInsetLeading: CGFloat = 16
 
     static let bottomControlViewItemDimension: CGFloat = 52
