@@ -22,12 +22,15 @@ jobs:
 
   steps:
   - checkout: Celestia
+    fetchDepth: 0
   - checkout: CelestiaCore
+    fetchDepth: 0
   - checkout: CelestiaContent
     fetchDepth: 1
   - checkout: CelestiaLocalization
+    fetchDepth: 0
   - checkout: self
-
+    fetchDepth: 0
 
   - script: |
       cd Celestia
