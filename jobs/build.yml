@@ -58,25 +58,37 @@ jobs:
       cd Celestia
       git cherry-pick origin/angle-$(Build.SourceBranchName)
     displayName: 'Cherry-Pick ANGLE Commit'
-    condition: and(eq( variables['backend'], 'metalAngle' ), ne( variables['Build.Reason'], 'PullRequest' ))
+    condition: and(eq( variables['backend'], 'angle' ), ne( variables['Build.Reason'], 'PullRequest' ))
 
   - script: |
       cd Celestia
       git cherry-pick origin/angle-$(System.PullRequest.TargetBranch)
     displayName: 'Cherry-Pick ANGLE Commit (PR)'
-    condition: and(eq( variables['backend'], 'metalAngle' ), eq( variables['Build.Reason'], 'PullRequest' ))
+    condition: and(eq( variables['backend'], 'angle' ), eq( variables['Build.Reason'], 'PullRequest' ))
 
   - script: |
       cd CelestiaCore
-      git cherry-pick origin/angle-for-catalyst
-    displayName: 'Cherry-Pick ANGLE for Catalyst Commit (1)'
-    condition: and(eq( variables['sdk'], 'macosx' ), eq( variables['backend'], 'metalAngle' ))
+      git cherry-pick origin/angle-$(Build.SourceBranchName)
+    displayName: 'Cherry-Pick ANGLE Commit (1)'
+    condition: and( eq( variables['backend'], 'angle' ), ne( variables['Build.Reason'], 'PullRequest' ))
+
+  - script: |
+      cd CelestiaCore
+      git cherry-pick origin/angle-$(System.PullRequest.TargetBranch)
+    displayName: 'Cherry-Pick ANGLE Commit (1) (PR)'
+    condition: and(eq( variables['backend'], 'angle' ), eq( variables['Build.Reason'], 'PullRequest' ))
 
   - script: |
       cd MobileCelestia
-      git cherry-pick origin/angle-for-catalyst
-    displayName: 'Cherry-Pick ANGLE for Catalyst Commit (2)'
-    condition: and(eq( variables['sdk'], 'macosx' ), eq( variables['backend'], 'metalAngle' ))
+      git cherry-pick origin/angle-$(Build.SourceBranchName)
+    displayName: 'Cherry-Pick ANGLE Commit (2)'
+    condition: and(eq( variables['backend'], 'angle' ), ne( variables['Build.Reason'], 'PullRequest' ))
+
+  - script: |
+      cd MobileCelestia
+      git cherry-pick origin/angle-$(System.PullRequest.TargetBranch)
+    displayName: 'Cherry-Pick ANGLE Commit (2) (PR)'
+    condition: and(eq( variables['backend'], 'angle' ), eq( variables['Build.Reason'], 'PullRequest' ))
 
   - script: |
       mkdir -p CelestiaCore/libs/dependency/ios
@@ -90,7 +102,7 @@ jobs:
       feedsToUse: 'internal'
       vstsFeed: '9f9dcde1-dcba-4537-8214-71c8a03b99a0/14bb1031-e6b2-40ac-b287-73e7fcb5900e'
       vstsFeedPackage: 'ef4b9b1c-43f9-4b15-91ae-8a601ae5ef45'
-      vstsPackageVersion: '0.0.8'
+      vstsPackageVersion: '0.0.9'
     displayName: 'Download Catalyst Dependencies'
     condition: eq( variables['sdk'], 'macosx' )
 
@@ -101,7 +113,7 @@ jobs:
       feedsToUse: 'internal'
       vstsFeed: '9f9dcde1-dcba-4537-8214-71c8a03b99a0/14bb1031-e6b2-40ac-b287-73e7fcb5900e'
       vstsFeedPackage: '929aa8ac-b8eb-409b-afe7-30f2b73aebc8'
-      vstsPackageVersion: '0.0.8'
+      vstsPackageVersion: '0.0.9'
     displayName: 'Download iOS Dependencies'
     condition: eq( variables['sdk'], 'iphoneos' )
 
