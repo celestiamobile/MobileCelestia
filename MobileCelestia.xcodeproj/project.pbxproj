@@ -70,7 +70,6 @@
 		EA839CB32A5696E100BF1CB4 /* MultiLineTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA839CB02A5696E100BF1CB4 /* MultiLineTextCell.swift */; };
 		EA839CB42A5696E100BF1CB4 /* SliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA839CB12A5696E100BF1CB4 /* SliderCell.swift */; };
 		EA839CB52A5696E100BF1CB4 /* SwitchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA839CB22A5696E100BF1CB4 /* SwitchCell.swift */; };
-		EA85C8D6289BE45A009ADB1C /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA85C8D4289BE459009ADB1C /* OpenGLES.framework */; platformFilter = ios; };
 		EA872EFC2A5ACA1F009E6A20 /* UIContentSizeCategory+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA85C912289E9A7D009ADB1C /* UIContentSizeCategory+Extension.swift */; };
 		EA872EFD2A5ACA53009E6A20 /* AutoSizingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA85C914289E9AD2009ADB1C /* AutoSizingView.swift */; };
 		EA872EFE2A5ACB1D009E6A20 /* IconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA85C916289EA1ED009ADB1C /* IconView.swift */; };
@@ -329,7 +328,6 @@
 		EA839CB02A5696E100BF1CB4 /* MultiLineTextCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiLineTextCell.swift; sourceTree = "<group>"; };
 		EA839CB12A5696E100BF1CB4 /* SliderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SliderCell.swift; sourceTree = "<group>"; };
 		EA839CB22A5696E100BF1CB4 /* SwitchCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchCell.swift; sourceTree = "<group>"; };
-		EA85C8D4289BE459009ADB1C /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		EA85C912289E9A7D009ADB1C /* UIContentSizeCategory+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIContentSizeCategory+Extension.swift"; sourceTree = "<group>"; };
 		EA85C914289E9AD2009ADB1C /* AutoSizingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoSizingView.swift; sourceTree = "<group>"; };
 		EA85C916289EA1ED009ADB1C /* IconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconView.swift; sourceTree = "<group>"; };
@@ -390,7 +388,6 @@
 				979D2FAD23FEB2B4005D2592 /* libbz2.tbd in Frameworks */,
 				EA4E2D7C2A56B46B0046D62E /* CelestiaFoundation.framework in Frameworks */,
 				EA9A426D288CD7FE00AF3BD6 /* AVFoundation.framework in Frameworks */,
-				EA85C8D6289BE45A009ADB1C /* OpenGLES.framework in Frameworks */,
 				EA9A426F288CD80300AF3BD6 /* AudioToolbox.framework in Frameworks */,
 				EA7BF37C27033AE40058F704 /* GameController.framework in Frameworks */,
 				EA50E7642A505627005E7D7A /* CelestiaUI.framework in Frameworks */,
@@ -586,7 +583,6 @@
 		979D2FA523FEB1DD005D2592 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				EA85C8D4289BE459009ADB1C /* OpenGLES.framework */,
 				EA9A426E288CD80200AF3BD6 /* AudioToolbox.framework */,
 				EA9A426C288CD7FE00AF3BD6 /* AVFoundation.framework */,
 				EA7BF37B27033AE40058F704 /* GameController.framework */,
