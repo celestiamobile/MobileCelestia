@@ -305,9 +305,6 @@ extension AppDelegate {
         builder.remove(menu: .preferences)
         builder.remove(menu: .about)
         builder.remove(menu: .format)
-        if #available(iOS 14, *) {
-            builder.remove(menu: .openRecent)
-        }
 
         #if targetEnvironment(macCatalyst)
         let settingsTitle: String
@@ -328,7 +325,12 @@ extension AppDelegate {
 
         let runScriptMenu = createMenuItem(identifierSuffix: "open", action: MenuActionContext(title: CelestiaString("Run Script…", comment: ""), action: #selector(openScriptFile), input: "O", modifierFlags: .command))
         builder.insertChild(runScriptMenu, atStartOfMenu: .file)
-        var identifierBeforeCaptureImage = runScriptMenu.identifier
+        var captureImageKey = ""
+        if #available(iOS 13.4, *) {
+            captureImageKey = UIKeyCommand.f10
+        }
+        let captureImageMenu = createMenuItem(identifierSuffix: "capture", action: MenuActionContext(title: CelestiaString("Capture Image", comment: ""), action: #selector(captureImage), input: captureImageKey))
+
         if #available(iOS 14, *) {
             let scriptsMenu = createMenuItemGroupDeferred(title: CelestiaString("Scripts", comment: ""), identifierSuffix: "scripts") { [weak self] in
                 guard let self else { return [] }
@@ -343,15 +345,11 @@ extension AppDelegate {
                     }
                 }
             }
-            builder.insertSibling(scriptsMenu, afterMenu: runScriptMenu.identifier)
-            identifierBeforeCaptureImage = scriptsMenu.identifier
+            builder.insertSibling(scriptsMenu, beforeMenu: .close)
+            builder.insertSibling(captureImageMenu, afterMenu: scriptsMenu.identifier)
+        } else {
+            builder.insertSibling(captureImageMenu, beforeMenu: .close)
         }
-        var captureImageKey = ""
-        if #available(iOS 13.4, *) {
-            captureImageKey = UIKeyCommand.f10
-        }
-        let captureImageMenu = createMenuItem(identifierSuffix: "capture", action: MenuActionContext(title: CelestiaString("Capture Image", comment: ""), action: #selector(captureImage), input: captureImageKey))
-        builder.insertSibling(captureImageMenu, afterMenu: identifierBeforeCaptureImage)
         let copyPasteMenu = createMenuItemGroup(identifierSuffix: "copypaste", actions: [
             MenuActionContext(title: CelestiaString("Copy URL", comment: ""), action: #selector(copy(_:)), input: "c", modifierFlags: .command),
             MenuActionContext(title: CelestiaString("Paste URL", comment: ""), action: #selector(paste(_:)), input: "v", modifierFlags: .command),
@@ -662,6 +660,10 @@ class MacBridge {
         method(clazz, selector, window, title as NSString, message as NSString?, text as NSString?, placeholder as NSString?, okButtonTitle as NSString, cancelButtonTitle as NSString, { result in
             completion(result as String?)
         })
+    }
+
+    static func addRecentURL(_ url: URL) {
+        clazz.perform(NSSelectorFromString("addRecentOpenedFile:"), with: url)
     }
 }
 

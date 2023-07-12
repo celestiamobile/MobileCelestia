@@ -106,4 +106,8 @@
     }];
 }
 
++ (void)addRecentOpenedFile:(NSURL *)url {
+    [[NSDocumentController sharedDocumentController] noteNewRecentDocumentURL:url];
+}
+
 @end

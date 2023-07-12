@@ -506,6 +506,10 @@ extension MainViewController: UIDocumentPickerDelegate {
     func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
         guard let url = urls.first else { return }
 
+        #if targetEnvironment(macCatalyst)
+        MacBridge.addRecentURL(url)
+        #endif
+
         scriptOrCelURL = UniformedURL(url: url, securityScoped: true)
         openURLOrScriptOrGreeting()
     }
