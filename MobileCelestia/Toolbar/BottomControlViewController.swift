@@ -13,9 +13,14 @@ import CelestiaUI
 import UIKit
 
 enum BottomControlAction {
+    enum CustomActionType {
+        case showTimeSettings
+    }
+
     case toolbarAction(_ toolbarAction: ToolbarAction)
     case groupedActions(accessibilityLabel: String, actions: [ToolbarAction])
     case close
+    case custom(type: CustomActionType)
 
     var image: UIImage? {
         switch self {
@@ -25,6 +30,11 @@ enum BottomControlAction {
             return UIImage(systemName: "ellipsis")
         case .close:
             return UIImage(systemName: "chevron.down")?.withConfiguration(UIImage.SymbolConfiguration(weight: .black))
+        case let .custom(type):
+            switch type {
+            case .showTimeSettings:
+                return UIImage(systemName: "gear")?.withConfiguration(UIImage.SymbolConfiguration(weight: .bold))
+            }
         }
     }
 
@@ -36,6 +46,11 @@ enum BottomControlAction {
             return accessibilityLabel
         case .close:
             return CelestiaString("Close", comment: "")
+        case let .custom(type):
+            switch type {
+            case .showTimeSettings:
+                return CelestiaString("Settings", comment: "")
+            }
         }
     }
 }
@@ -55,6 +70,7 @@ class BottomControlViewController: UIViewController {
 
     var touchUpHandler: ((ToolbarAction, Bool) -> Void)?
     var touchDownHandler: ((ToolbarAction) -> Void)?
+    var customActionHandler: ((BottomControlAction.CustomActionType) -> Void)?
 
     init(actions: [BottomControlAction], hideAction: (() -> Void)?) {
         self.actions = actions + [.close]
@@ -138,6 +154,12 @@ extension BottomControlViewController: UICollectionViewDataSource {
                 guard inside else { return }
                 self.hideAction?()
                 self.hideAction = nil
+            }
+            cell.touchDownHandler = nil
+        case let .custom(type):
+            cell.touchUpHandler = { [unowned self] _, inside in
+                guard inside else { return }
+                self.customActionHandler?(type)
             }
             cell.touchDownHandler = nil
         }

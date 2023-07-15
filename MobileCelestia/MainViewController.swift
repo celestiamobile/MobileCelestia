@@ -387,10 +387,7 @@ extension MainViewController {
                 await executor.receive(.reverse)
             }
         case .showTimeSetting:
-            let vc = TimeSettingViewController(core: core, executor: executor) { viewController, title, format in
-                return await viewController.getDateInputDifferentiated(title, format: format)
-            }
-            showViewController(UINavigationController(rootViewController: vc))
+            showTimeSettings()
         case .splitHorizontally:
             Task {
                 await executor.run { $0.charEnter(18) }
@@ -734,7 +731,7 @@ extension MainViewController: CelestiaControllerDelegate {
             ]
         }
         Task {
-            await presentActionToolbar(for: (layoutDirectionDependentActions + [CelestiaAction.reverse]).map { .toolbarAction($0) })
+            await presentActionToolbar(for: (layoutDirectionDependentActions + [CelestiaAction.reverse]).map { .toolbarAction($0) } + [BottomControlAction.custom(type: .showTimeSettings)])
         }
     }
 
@@ -779,6 +776,12 @@ extension MainViewController: CelestiaControllerDelegate {
                 self.executor.runAsynchronously { core in
                     core.keyDown(ac.rawValue)
                 }
+            }
+        }
+        newController.customActionHandler = { [unowned self] type in
+            switch type {
+            case .showTimeSettings:
+                self.showTimeSettings()
             }
         }
         #if targetEnvironment(macCatalyst)
@@ -984,6 +987,13 @@ extension MainViewController: CelestiaControllerDelegate {
             return self.createSelectionInfoViewController(with: selection, isEmbeddedInNavigation: true)
         }
         showViewController(controller)
+    }
+
+    private func showTimeSettings() {
+        let vc = TimeSettingViewController(core: core, executor: executor) { viewController, title, format in
+            return await viewController.getDateInputDifferentiated(title, format: format)
+        }
+        showViewController(UINavigationController(rootViewController: vc))
     }
 
     @objc private func showSettings() {

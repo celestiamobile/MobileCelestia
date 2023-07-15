@@ -67,7 +67,16 @@ class PanelSceneDelegate: CommonSceneDelegate {
     private static var weakSessionTable = NSMapTable<NSString, UISceneSession>(keyOptions: .strongMemory, valueOptions: .weakMemory)
 
     static func present(_ viewController: UIViewController, key: String?, preferredSize: CGSize, titleVisible: Bool) {
-        let sessionTableKey = key ?? String(describing: type(of: viewController))
+        let sessionTableKey: String
+        if let key {
+            sessionTableKey = key
+        } else {
+            if let nav = viewController as? UINavigationController, let root = nav.viewControllers.first {
+                sessionTableKey = String(describing: type(of: root))
+            } else {
+                sessionTableKey = String(describing: type(of: viewController))
+            }
+        }
         if let existingSession = weakSessionTable.object(forKey: sessionTableKey as NSString) {
             UIApplication.shared.requestSceneSessionDestruction(existingSession, options: nil) { _ in }
         }
