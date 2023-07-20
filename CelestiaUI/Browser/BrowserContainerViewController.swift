@@ -145,7 +145,7 @@ private extension BrowserContainerViewController {
             controller.setViewController(SidebarNavigationController(rootViewController: sidebarController), for: .primary)
             controller.setViewController(ContentNavigationController(rootViewController: emptyVc), for: .secondary)
         } else {
-            controller.viewControllers = [SidebarNavigationController(rootViewController: sidebarController), ContentNavigationController(rootViewController: emptyVc)]
+            controller.viewControllers = [sidebarController, ContentNavigationController(rootViewController: emptyVc)]
         }
         #else
         var allControllers = [BrowserCoordinatorController]()

@@ -95,7 +95,7 @@ private extension SearchCoordinatorController {
             split.setViewController(SidebarNavigationController(rootViewController: main), for: .primary)
             split.setViewController(ContentNavigationController(rootViewController: emptyVc), for: .secondary)
         } else {
-            split.viewControllers = [SidebarNavigationController(rootViewController: main), ContentNavigationController(rootViewController: emptyVc)]
+            split.viewControllers = [UINavigationController(rootViewController: main), ContentNavigationController(rootViewController: emptyVc)]
         }
         install(split)
         #else

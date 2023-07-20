@@ -133,7 +133,7 @@ private extension FavoriteCoordinatorController {
             controller.setViewController(SidebarNavigationController(rootViewController: main), for: .primary)
             controller.setViewController(ContentNavigationController(rootViewController: contentVc), for: .secondary)
         } else {
-            controller.viewControllers = [SidebarNavigationController(rootViewController: main), ContentNavigationController(rootViewController: contentVc)]
+            controller.viewControllers = [main, ContentNavigationController(rootViewController: contentVc)]
         }
         install(controller)
         #else

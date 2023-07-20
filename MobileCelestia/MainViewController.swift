@@ -1095,19 +1095,7 @@ extension MainViewController {
 
 #if targetEnvironment(macCatalyst)
 extension MainViewController: NSToolbarDelegate {
-    private var undoOrRedoGroupItemIdentifier: NSToolbarItem.Identifier {
-        return NSToolbarItem.Identifier("undoOrRedoGroup")
-    }
-
     func toolbar(_ toolbar: NSToolbar, itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier, willBeInsertedIntoToolbar flag: Bool) -> NSToolbarItem? {
-        if itemIdentifier == undoOrRedoGroupItemIdentifier {
-            let isRTL = UIView.userInterfaceLayoutDirection(for: view.semanticContentAttribute) == .rightToLeft
-            let forwardImage = UIImage(systemName: isRTL ? "chevron.left" : "chevron.right")
-            let backwardImage = UIImage(systemName: isRTL ? "chevron.right" : "chevron.left")
-            let toolbarItemGroup = NSToolbarItemGroup(itemIdentifier: itemIdentifier, images: [backwardImage!, forwardImage!], selectionMode: .momentary, labels: [CelestiaString("Backward", comment: ""), CelestiaString("Forward", comment: "")], target: self, action: #selector(undoOrRedo(_:)))
-            return toolbarItemGroup
-        }
-
         guard let action = AppToolbarAction(rawValue: itemIdentifier.rawValue) else { return nil }
         let toolbarItem = NSToolbarItem(itemIdentifier: itemIdentifier, barButtonItem: UIBarButtonItem())
         toolbarItem.label = action.title ?? ""
@@ -1120,17 +1108,24 @@ extension MainViewController: NSToolbarDelegate {
     }
 
     private func defaultToolbarIdentifiers() -> [NSToolbarItem.Identifier] {
+        let rightActions: [AppToolbarAction]
+        if #available(macCatalyst 14, *) {
+            rightActions = [AppToolbarAction.share, .mirror, .search]
+        } else {
+            rightActions = [AppToolbarAction.share, .search]
+        }
         return
-            [undoOrRedoGroupItemIdentifier] +
             [AppToolbarAction.browse, .favorite, .home, .paperplane].map { NSToolbarItem.Identifier($0.rawValue) } +
             [.flexibleSpace] +
-            [AppToolbarAction.share, .mirror, .search].map { NSToolbarItem.Identifier($0.rawValue) }
+            rightActions.map { NSToolbarItem.Identifier($0.rawValue) }
     }
 
     private func availableIdentifiers() -> [NSToolbarItem.Identifier] {
         var actions = AppToolbarAction.persistentAction.reduce([AppToolbarAction](), { $0 + $1 })
-        actions.append(.mirror)
-        return actions.map { NSToolbarItem.Identifier(rawValue: $0.rawValue) } + [.flexibleSpace, .space] + [undoOrRedoGroupItemIdentifier]
+        if #available(macCatalyst 14.0, *) {
+            actions.append(.mirror)
+        }
+        return actions.map { NSToolbarItem.Identifier(rawValue: $0.rawValue) } + [.flexibleSpace, .space]
     }
 
     func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {

@@ -11,24 +11,25 @@
 
 import UIKit
 
+#if targetEnvironment(macCatalyst)
 public class ContentNavigationController: UINavigationController {}
 
-#if targetEnvironment(macCatalyst)
 @available(macCatalyst 16, *)
 extension ContentNavigationController: UINavigationBarDelegate {
     public func navigationBarNSToolbarSection(_ navigationBar: UINavigationBar) -> UINavigationBar.NSToolbarSection {
         return .content
     }
 }
-#endif
 
+@available(macCatalyst 16, *)
 public class SidebarNavigationController: UINavigationController {}
 
-#if targetEnvironment(macCatalyst)
 @available(macCatalyst 16, *)
 extension SidebarNavigationController: UINavigationBarDelegate {
     public func navigationBarNSToolbarSection(_ navigationBar: UINavigationBar) -> UINavigationBar.NSToolbarSection {
         return .sidebar
     }
 }
+#else
+typealias ContentNavigationController = UINavigationController
 #endif

@@ -175,7 +175,7 @@ private extension SettingsCoordinatorController {
             controller.setViewController(SidebarNavigationController(rootViewController: main), for: .primary)
             controller.setViewController(ContentNavigationController(rootViewController: emptyVc), for: .secondary)
         } else {
-            controller.viewControllers = [SidebarNavigationController(rootViewController: main), ContentNavigationController(rootViewController: emptyVc)]
+            controller.viewControllers = [main, ContentNavigationController(rootViewController: emptyVc)]
         }
         install(controller)
         #else
