@@ -12,7 +12,7 @@
 import CelestiaCore
 import UIKit
 
-class BrowserCoordinatorController: UINavigationController {
+class BrowserCoordinatorController: ContentNavigationController {
     private let item: BrowserItem
 
     private let selection: (Selection) -> UIViewController
@@ -54,12 +54,3 @@ private extension BrowserCoordinatorController {
         })
     }
 }
-
-#if targetEnvironment(macCatalyst)
-@available(macCatalyst 16.0, *)
-extension BrowserCoordinatorController: UINavigationBarDelegate {
-    func navigationBarNSToolbarSection(_ navigationBar: UINavigationBar) -> UINavigationBar.NSToolbarSection {
-        return .content
-    }
-}
-#endif

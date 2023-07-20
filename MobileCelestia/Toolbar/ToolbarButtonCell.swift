@@ -13,7 +13,7 @@ import CelestiaUI
 import UIKit
 
 @MainActor
-protocol ToolbarCell: UICollectionViewCell {
+protocol ToolbarCell: AnyObject {
     var itemTitle: String? { get set }
     var itemImage: UIImage? { get set }
     var itemAccessibilityLabel: String? { get set }
@@ -130,7 +130,7 @@ class ToolbarImageButtonCell: UICollectionViewCell, ToolbarCell {
     }
 }
 
-class ToolbarImageTextButtonCell: UICollectionViewCell, ToolbarCell {
+class ToolbarImageTextButtonCell: UITableViewCell, ToolbarCell {
     private enum Constants {
         static let iconDimension: CGFloat = 24
         static let highlightAnimationDuration: TimeInterval = 0.1
@@ -168,12 +168,12 @@ class ToolbarImageTextButtonCell: UICollectionViewCell, ToolbarCell {
     }
 
     var itemTitle: String? { didSet { label.text = itemTitle } }
-    var itemImage: UIImage? { didSet { imageView.configuration.image = itemImage?.withRenderingMode(.alwaysTemplate) } }
+    var itemImage: UIImage? { didSet { iconImageView.configuration.image = itemImage?.withRenderingMode(.alwaysTemplate) } }
     var touchDownHandler: ((UIControl) -> Void)?
     var touchUpHandler: ((UIControl, Bool) -> Void)?
     var itemAccessibilityLabel: String?
 
-    private lazy var imageView: IconView = {
+    private lazy var iconImageView: IconView = {
         let dimension = GlobalConstants.preferredUIElementScaling(for: traitCollection) * Constants.iconDimension
         return IconView(baseSize: CGSize(width: dimension, height: dimension)) { imageView in
             imageView.contentMode = .scaleAspectFit
@@ -183,8 +183,8 @@ class ToolbarImageTextButtonCell: UICollectionViewCell, ToolbarCell {
     private lazy var label = UILabel(textStyle: .body)
     private lazy var background = SelectionView(frame: .zero)
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         setUp()
     }
 
@@ -210,12 +210,12 @@ class ToolbarImageTextButtonCell: UICollectionViewCell, ToolbarCell {
             background.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
         ])
 
-        background.addSubview(imageView)
-        imageView.translatesAutoresizingMaskIntoConstraints = false
+        background.addSubview(iconImageView)
+        iconImageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            imageView.centerYAnchor.constraint(equalTo: background.centerYAnchor),
-            imageView.leadingAnchor.constraint(equalTo: background.leadingAnchor, constant: GlobalConstants.listItemMediumMarginHorizontal),
-            imageView.topAnchor.constraint(greaterThanOrEqualTo: background.topAnchor, constant: GlobalConstants.listItemAccessoryMinMarginVertical),
+            iconImageView.centerYAnchor.constraint(equalTo: background.centerYAnchor),
+            iconImageView.leadingAnchor.constraint(equalTo: background.leadingAnchor, constant: GlobalConstants.listItemMediumMarginHorizontal),
+            iconImageView.topAnchor.constraint(greaterThanOrEqualTo: background.topAnchor, constant: GlobalConstants.listItemAccessoryMinMarginVertical),
         ])
 
         background.addSubview(label)
@@ -223,7 +223,7 @@ class ToolbarImageTextButtonCell: UICollectionViewCell, ToolbarCell {
         label.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             label.centerYAnchor.constraint(equalTo: background.centerYAnchor),
-            label.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: GlobalConstants.listItemMediumMarginVertical),
+            label.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: GlobalConstants.listItemMediumMarginVertical),
             label.trailingAnchor.constraint(equalTo: background.trailingAnchor, constant: -GlobalConstants.listItemMediumMarginHorizontal),
             label.topAnchor.constraint(greaterThanOrEqualTo: background.topAnchor, constant: GlobalConstants.listItemMediumMarginVertical),
         ])
@@ -246,35 +246,26 @@ class ToolbarImageTextButtonCell: UICollectionViewCell, ToolbarCell {
     @objc private func touchCancelled(_ sender: UIButton) {
         touchUpHandler?(sender, false)
     }
-
-    override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {
-        let attributes = super.preferredLayoutAttributesFitting(layoutAttributes)
-        let fittingSize = contentView.systemLayoutSizeFitting(
-            CGSize(width: layoutAttributes.size.width, height: 0),
-            withHorizontalFittingPriority: UILayoutPriority.required,
-            verticalFittingPriority: UILayoutPriority.defaultLow)
-        attributes.size = CGSize(width: fittingSize.width.rounded(.down), height: fittingSize.height)
-        return attributes
-    }
 }
 
-class ToolbarSeparatorCell: UICollectionViewCell {
+class ToolbarSeparatorCell: UITableViewHeaderFooterView {
     private enum Constants {
         static let separatorInsetLeading: CGFloat = 32
     }
 
     let sep = UIView()
 
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setup()
+    override init(reuseIdentifier: String?) {
+        super.init(reuseIdentifier: reuseIdentifier)
+
+        setUp()
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private func setup() {
+    private func setUp() {
         sep.backgroundColor = .separator
         sep.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(sep)

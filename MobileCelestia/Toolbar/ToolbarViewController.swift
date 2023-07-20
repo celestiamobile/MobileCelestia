@@ -61,19 +61,7 @@ class ToolbarViewController: UIViewController {
         static let separatorContainerHeight: CGFloat = 6
     }
 
-    private lazy var collectionView: UICollectionView = {
-        #if targetEnvironment(macCatalyst)
-        let collectionViewLayout: UICollectionViewFlowLayout
-        if #available(macCatalyst 16, *) {
-            collectionViewLayout = FullWidthCollectionViewLayout()
-        } else {
-            collectionViewLayout = UICollectionViewFlowLayout()
-        }
-        #else
-        let collectionViewLayout = UICollectionViewFlowLayout()
-        #endif
-        return UICollectionView(frame: .zero, collectionViewLayout: collectionViewLayout)
-    }()
+    private lazy var tableView = UITableView(frame: .zero, style: .plain)
 
     private let actions: [[ToolbarAction]]
 
@@ -100,7 +88,7 @@ class ToolbarViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        setup()
+        setUp()
     }
 
     override var preferredContentSize: CGSize {
@@ -109,27 +97,19 @@ class ToolbarViewController: UIViewController {
         }
         set {}
     }
-
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-
-        if traitCollection.preferredContentSizeCategory != previousTraitCollection?.preferredContentSizeCategory {
-            collectionView.collectionViewLayout.invalidateLayout()
-        }
-    }
 }
 
-extension ToolbarViewController: UICollectionViewDataSource {
-    func numberOfSections(in collectionView: UICollectionView) -> Int {
+extension ToolbarViewController: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
         return actions.count
     }
 
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return actions[section].count
     }
 
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! ToolbarCell
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! (UITableViewCell & ToolbarCell)
 
         cell.backgroundColor = .clear
         let action = actions[indexPath.section][indexPath.row]
@@ -151,16 +131,22 @@ extension ToolbarViewController: UICollectionViewDataSource {
 
         return cell
     }
+}
 
-    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        let sup = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Separator", for: indexPath) as! ToolbarSeparatorCell
-        sup.isHidden = indexPath.section == actions.count - 1
-        return sup
+extension ToolbarViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        if section == actions.count - 1 { return nil }
+        return tableView.dequeueReusableHeaderFooterView(withIdentifier: "Separator")
+    }
+
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        if section == actions.count - 1 { return 0 }
+        return Constants.separatorContainerHeight
     }
 }
 
 private extension ToolbarViewController {
-    func setup() {
+    func setUp() {
         #if targetEnvironment(macCatalyst)
         let sidebackBackground: Bool
         if #available(macCatalyst 16.0, *) {
@@ -172,7 +158,10 @@ private extension ToolbarViewController {
         let sidebackBackground = false
         #endif
 
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.separatorStyle = .none
+        tableView.estimatedRowHeight = GlobalConstants.baseCellHeight
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.translatesAutoresizingMaskIntoConstraints = false
         if !sidebackBackground {
             let style: UIBlurEffect.Style = .regular
             let backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: style))
@@ -187,59 +176,40 @@ private extension ToolbarViewController {
             ])
 
             let contentView = backgroundView.contentView
-            contentView.addSubview(collectionView)
+            contentView.addSubview(tableView)
 
             NSLayoutConstraint.activate([
-                collectionView.topAnchor.constraint(equalTo: contentView.topAnchor),
-                collectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+                tableView.topAnchor.constraint(equalTo: contentView.topAnchor),
+                tableView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
             ])
 
             NSLayoutConstraint.activate([
-                collectionView.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor),
-                collectionView.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor)
+                tableView.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor),
+                tableView.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor)
             ])
         } else {
-            view.addSubview(collectionView)
+            view.addSubview(tableView)
             NSLayoutConstraint.activate([
-                collectionView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                collectionView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-                collectionView.topAnchor.constraint(equalTo: view.topAnchor),
-                collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+                tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                tableView.topAnchor.constraint(equalTo: view.topAnchor),
+                tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             ])
         }
 
-        let layout = collectionView.collectionViewLayout as! UICollectionViewFlowLayout
-        layout.scrollDirection = .vertical
+        tableView.showsVerticalScrollIndicator = false
+        tableView.backgroundColor = .clear
 
-        layout.itemSize = UICollectionViewFlowLayout.automaticSize
-        layout.estimatedItemSize = CGSize(width: Constants.width, height: GlobalConstants.baseCellHeight)
-        layout.footerReferenceSize = CGSize(width: Constants.width, height: Constants.separatorContainerHeight)
-        layout.minimumLineSpacing = 0
-        layout.minimumInteritemSpacing = 0
-
-        collectionView.showsHorizontalScrollIndicator = false
-        collectionView.showsVerticalScrollIndicator = false
-        collectionView.backgroundColor = .clear
-        collectionView.alwaysBounceVertical = false
-
-        collectionView.register(ToolbarSeparatorCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "Separator")
-        collectionView.register(ToolbarImageTextButtonCell.self, forCellWithReuseIdentifier: "Cell")
-        collectionView.dataSource = self
+        tableView.register(ToolbarSeparatorCell.self, forHeaderFooterViewReuseIdentifier: "Separator")
+        tableView.register(ToolbarImageTextButtonCell.self, forCellReuseIdentifier: "Cell")
+        tableView.dataSource = self
+        tableView.delegate = self
 
         if #available(iOS 15, *) {
             view.maximumContentSizeCategory = .extraExtraExtraLarge
         }
     }
 }
-
-#if targetEnvironment(macCatalyst)
-class FullWidthCollectionViewLayout: UICollectionViewFlowLayout {
-    override func prepare() {
-        estimatedItemSize = CGSize(width: collectionViewContentSize.width, height: estimatedItemSize.height)
-        super.prepare()
-    }
-}
-#endif
 
 extension AppToolbarAction: ToolbarAction {
     var image: UIImage? {

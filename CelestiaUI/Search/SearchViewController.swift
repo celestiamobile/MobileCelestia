@@ -97,7 +97,15 @@ private extension SearchViewController {
         // Configure search bar
         let searchBar = searchController.searchBar
         if resultsInSidebar {
-            navigationItem.titleView = searchBar
+            #if targetEnvironment(macCatalyst)
+            if #available(macCatalyst 16, *) {
+                navigationItem.searchController = searchController
+            } else {
+                navigationItem.titleView = searchBar
+            }
+            #else
+            navigationItem.searchController = searchController
+            #endif
         } else {
             navigationItem.searchController = searchController
         }

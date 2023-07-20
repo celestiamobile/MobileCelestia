@@ -16,7 +16,13 @@ public class SearchCoordinatorController: UIViewController {
     private var main: SearchViewController!
 
     #if targetEnvironment(macCatalyst)
-    private var split: UISplitViewController!
+    private lazy var split: UISplitViewController = {
+        if #available(macCatalyst 14, *) {
+            return UISplitViewController(style: .doubleColumn)
+        } else {
+            return UISplitViewController()
+        }
+    }()
     #else
     private var navigation: UINavigationController!
     #endif
@@ -63,22 +69,31 @@ private extension SearchCoordinatorController {
                     self.showError(CelestiaString("Object not found", comment: ""))
                     return
                 }
+                let viewController = self.selection(object, false)
                 #if targetEnvironment(macCatalyst)
-                self.split.viewControllers = [self.split.viewControllers[0], self.selection(object, false)]
+                if #available(macCatalyst 14, *) {
+                    self.split.setViewController(ContentNavigationController(rootViewController: viewController), for: .secondary)
+                } else {
+                    self.split.viewControllers = [self.split.viewControllers[0], ContentNavigationController(rootViewController: viewController)]
+                }
                 #else
-                self.navigation.pushViewController(self.selection(object, true), animated: true)
+                self.navigation.pushViewController(viewController, animated: true)
                 #endif
             }
         }
 
         #if targetEnvironment(macCatalyst)
-        split = UISplitViewController()
         split.primaryBackgroundStyle = .sidebar
         split.preferredDisplayMode = .oneBesideSecondary
         split.preferredPrimaryColumnWidthFraction = 0.3
         let emptyVc = UIViewController()
         emptyVc.view.backgroundColor = .systemBackground
-        split.viewControllers = [UINavigationController(rootViewController: main), emptyVc]
+        if #available(macCatalyst 14.0, *) {
+            split.setViewController(SidebarNavigationController(rootViewController: main), for: .primary)
+            split.setViewController(ContentNavigationController(rootViewController: emptyVc), for: .secondary)
+        } else {
+            split.viewControllers = [SidebarNavigationController(rootViewController: main), ContentNavigationController(rootViewController: emptyVc)]
+        }
         install(split)
         #else
         navigation = UINavigationController(rootViewController: main)

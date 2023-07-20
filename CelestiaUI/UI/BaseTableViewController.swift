@@ -22,7 +22,6 @@ open class BaseTableViewController: UITableViewController {
         } else if tableView.style == .insetGrouped {
             tableView.backgroundColor = .systemGroupedBackground
         }
-        tableView.alwaysBounceVertical = false
         tableView.separatorColor = .separator
         tableView.estimatedRowHeight = GlobalConstants.baseCellHeight
     }

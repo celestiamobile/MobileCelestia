@@ -42,7 +42,13 @@ public struct DataLocationSettingContext {
 
 public class SettingsCoordinatorController: UIViewController {
     #if targetEnvironment(macCatalyst)
-    private lazy var controller = UISplitViewController()
+    private lazy var controller: UISplitViewController = {
+        if #available(macCatalyst 14, *) {
+            return UISplitViewController(style: .doubleColumn)
+        } else {
+            return UISplitViewController()
+        }
+    }()
     #else
     private var navigation: UINavigationController!
     #endif
@@ -115,7 +121,8 @@ public class SettingsCoordinatorController: UIViewController {
 
 private extension SettingsCoordinatorController {
     func setup() {
-        main = SettingsMainViewController(sections: settings, selection: { [unowned self] item in
+        main = SettingsMainViewController(sections: settings, selection: { [weak self] item in
+            guard let self else { return }
             func logWrongAssociatedItemType(_ item: AnyHashable) -> Never {
                 fatalError("Wrong associated item \(item.base)")
             }
@@ -145,17 +152,16 @@ private extension SettingsCoordinatorController {
                 fatalError("Use .common for slider/action setting item.")
             }
             #if targetEnvironment(macCatalyst)
-            let navigationController: UINavigationController
-            if #available(iOS 16, *) {
-                navigationController = SettingsNavigationController(rootViewController: viewController)
-            } else {
-                navigationController = UINavigationController(rootViewController: viewController)
-            }
-            self.controller.viewControllers = [self.controller.viewControllers[0], navigationController]
-            if #available(iOS 16.0, *) {
-                if let windowScene = self.controller.view.window?.windowScene {
-                    windowScene.titlebar?.titleVisibility = .visible
+            let navigationController = ContentNavigationController(rootViewController: viewController)
+            if #available(macCatalyst 14, *) {
+                self.controller.setViewController(navigationController, for: .secondary)
+                if #available(iOS 16.0, *) {
+                    if let windowScene = self.controller.view.window?.windowScene {
+                        windowScene.titlebar?.titleVisibility = .visible
+                    }
                 }
+            } else {
+                self.controller.viewControllers = [self.controller.viewControllers[0], navigationController]
             }
             #else
             self.navigation.pushViewController(viewController, animated: true)
@@ -167,7 +173,12 @@ private extension SettingsCoordinatorController {
         controller.preferredPrimaryColumnWidthFraction = 0.3
         let emptyVc = UIViewController()
         emptyVc.view.backgroundColor = .systemBackground
-        controller.viewControllers = [main, emptyVc]
+        if #available(macCatalyst 14, *) {
+            controller.setViewController(SidebarNavigationController(rootViewController: main), for: .primary)
+            controller.setViewController(ContentNavigationController(rootViewController: emptyVc), for: .secondary)
+        } else {
+            controller.viewControllers = [SidebarNavigationController(rootViewController: main), ContentNavigationController(rootViewController: emptyVc)]
+        }
         install(controller)
         #else
         navigation = UINavigationController(rootViewController: main)
@@ -175,12 +186,3 @@ private extension SettingsCoordinatorController {
         #endif
     }
 }
-
-#if targetEnvironment(macCatalyst)
-@available(macCatalyst 16.0, *)
-private class SettingsNavigationController: UINavigationController, UINavigationBarDelegate {
-    func navigationBarNSToolbarSection(_ navigationBar: UINavigationBar) -> UINavigationBar.NSToolbarSection {
-        return .content
-    }
-}
-#endif

@@ -17,18 +17,15 @@ public enum FavoriteRoot {
     case bookmarks
 }
 
-#if targetEnvironment(macCatalyst)
-@available(macCatalyst 16.0, *)
-class FavoriteNavigationController: UINavigationController, UINavigationBarDelegate {
-    func navigationBarNSToolbarSection(_ navigationBar: UINavigationBar) -> UINavigationBar.NSToolbarSection {
-        return .content
-    }
-}
-#endif
-
 public class FavoriteCoordinatorController: UIViewController {
     #if targetEnvironment(macCatalyst)
-    private lazy var controller = UISplitViewController()
+    private lazy var controller: UISplitViewController = {
+        if #available(macCatalyst 14, *) {
+            return UISplitViewController(style: .doubleColumn)
+        } else {
+            return UISplitViewController()
+        }
+    }()
     #endif
     private var navigation: UINavigationController!
 
@@ -132,7 +129,12 @@ private extension FavoriteCoordinatorController {
         let emptyVc = UIViewController()
         emptyVc.view.backgroundColor = .systemBackground
         contentVc = emptyVc
-        controller.viewControllers = [main, contentVc]
+        if #available(macCatalyst 14, *) {
+            controller.setViewController(SidebarNavigationController(rootViewController: main), for: .primary)
+            controller.setViewController(ContentNavigationController(rootViewController: contentVc), for: .secondary)
+        } else {
+            controller.viewControllers = [SidebarNavigationController(rootViewController: main), ContentNavigationController(rootViewController: contentVc)]
+        }
         install(controller)
         #else
         navigation = UINavigationController(rootViewController: main)
@@ -142,15 +144,15 @@ private extension FavoriteCoordinatorController {
 
     func replace<T: FavoriteItemList>(_ itemList: T) {
         #if targetEnvironment(macCatalyst)
-        if #available(macCatalyst 16.0, *) {
-            navigation = FavoriteNavigationController(rootViewController: generateVC(itemList))
+        navigation = ContentNavigationController(rootViewController: generateVC(itemList))
+        if #available(macCatalyst 14, *) {
+            controller.setViewController(navigation, for: .secondary)
+            if #available(macCatalyst 16.0, *) {
+                let scene = view.window?.windowScene
+                scene?.titlebar?.titleVisibility = .visible
+            }
         } else {
-            navigation = UINavigationController(rootViewController: generateVC(itemList))
-        }
-        controller.viewControllers = [controller.viewControllers[0], navigation]
-        if #available(macCatalyst 16.0, *) {
-            let scene = view.window?.windowScene
-            scene?.titlebar?.titleVisibility = .visible
+            controller.viewControllers = [controller.viewControllers[0], navigation]
         }
         #else
         show(itemList)

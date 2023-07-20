@@ -122,7 +122,7 @@ extension BottomControlViewController: UICollectionViewDataSource {
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! ToolbarCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! (ToolbarCell & UICollectionViewCell)
 
         cell.backgroundColor = .clear
         let action = actions[indexPath.item]

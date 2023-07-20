@@ -90,21 +90,12 @@ class MainViewController: UIViewController {
         celestiaController.delegate = self
         #if targetEnvironment(macCatalyst)
         if #available(macCatalyst 16.0, *) {
-            class NavigationController: UINavigationController, UINavigationBarDelegate {
-                func navigationBarNSToolbarSection(_ navigationBar: UINavigationBar) -> UINavigationBar.NSToolbarSection {
-                    return .content
-                }
-            }
-            let splitViewController = UISplitViewController()
+            let splitViewController = UISplitViewController(style: .doubleColumn)
             splitViewController.preferredDisplayMode = .secondaryOnly
             splitViewController.minimumPrimaryColumnWidth = ToolbarViewController.Constants.width
             splitViewController.maximumPrimaryColumnWidth = ToolbarViewController.Constants.width
             splitViewController.primaryBackgroundStyle = .sidebar
-            splitViewController.delegate = self
-            splitViewController.viewControllers = [
-                UIViewController(),
-                NavigationController(rootViewController: celestiaController)
-            ]
+            splitViewController.setViewController(ContentNavigationController(rootViewController: celestiaController), for: .secondary)
             install(splitViewController)
             split = splitViewController
         } else {
@@ -545,7 +536,7 @@ extension MainViewController: CelestiaControllerDelegate {
         self.loadingController.remove()
         #if targetEnvironment(macCatalyst)
         if #available(macCatalyst 16, *), let split {
-            split.viewControllers[0].install(actionViewController)
+            split.setViewController(SidebarNavigationController(rootViewController: actionViewController), for: .primary)
         } else {
             setupToolbar()
         }
@@ -1294,13 +1285,6 @@ extension CelestiaAction: ToolbarTouchBarAction {
     init?(_ touchBarItemIdentifier: NSTouchBarItem.Identifier) {
         guard let rawValue = Int8(touchBarItemIdentifier.rawValue) else { return nil }
         self.init(rawValue: rawValue)
-    }
-}
-
-extension MainViewController: UISplitViewControllerDelegate {
-    func targetDisplayModeForAction(in svc: UISplitViewController) -> UISplitViewController.DisplayMode {
-        // Disable expanding when we are still loading
-        return status == .loaded ? .automatic : .secondaryOnly
     }
 }
 #endif

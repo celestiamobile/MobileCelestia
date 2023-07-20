@@ -14,7 +14,13 @@ import UIKit
 
 public class BrowserContainerViewController: UIViewController {
     #if targetEnvironment(macCatalyst)
-    private lazy var controller = UISplitViewController()
+    private lazy var controller: UISplitViewController = {
+        if #available(macCatalyst 14, *) {
+            return UISplitViewController(style: .doubleColumn)
+        } else {
+            return UISplitViewController()
+        }
+    }()
     #else
     private lazy var controller = UITabBarController()
     #endif
@@ -125,16 +131,24 @@ private extension BrowserContainerViewController {
         let sidebarController = BrowserSidebarController(browserRoots: browserRoot) { [weak self] item in
             guard let self else { return }
             let newVc = BrowserCoordinatorController(item: item, image: UIImage(), selection: handler)
-            self.controller.viewControllers = [self.controller.viewControllers[0], newVc]
-
-            if #available(macCatalyst 16.0, *) {
-                let scene = self.view.window?.windowScene
-                scene?.titlebar?.titleVisibility = .visible
+            if #available(macCatalyst 14, *) {
+                self.controller.setViewController(newVc, for: .secondary)
+                if #available(macCatalyst 16, *) {
+                    let scene = self.view.window?.windowScene
+                    scene?.titlebar?.titleVisibility = .visible
+                }
+            } else {
+                self.controller.viewControllers = [self.controller.viewControllers[0], newVc]
             }
         }
         let emptyVc = UIViewController()
         emptyVc.view.backgroundColor = .systemBackground
-        controller.viewControllers = [sidebarController, emptyVc]
+        if #available(macCatalyst 14.0, *) {
+            controller.setViewController(SidebarNavigationController(rootViewController: sidebarController), for: .primary)
+            controller.setViewController(ContentNavigationController(rootViewController: emptyVc), for: .secondary)
+        } else {
+            controller.viewControllers = [SidebarNavigationController(rootViewController: sidebarController), ContentNavigationController(rootViewController: emptyVc)]
+        }
         #else
         var allControllers = [BrowserCoordinatorController]()
         if let solRoot = Self.solBrowserRoot {
