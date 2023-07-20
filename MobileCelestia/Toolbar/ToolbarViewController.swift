@@ -61,7 +61,7 @@ class ToolbarViewController: UIViewController {
         static let separatorContainerHeight: CGFloat = 6
     }
 
-    private lazy var tableView = UITableView(frame: .zero, style: .plain)
+    private lazy var tableView = UITableView(frame: .zero, style: .grouped)
 
     private let actions: [[ToolbarAction]]
 
@@ -134,13 +134,21 @@ extension ToolbarViewController: UITableViewDataSource {
 }
 
 extension ToolbarViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        return nil
+    }
+
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return .leastNonzeroMagnitude
+    }
+
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         if section == actions.count - 1 { return nil }
         return tableView.dequeueReusableHeaderFooterView(withIdentifier: "Separator")
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        if section == actions.count - 1 { return 0 }
+        if section == actions.count - 1 { return CGFloat.leastNonzeroMagnitude }
         return Constants.separatorContainerHeight
     }
 }
@@ -158,6 +166,8 @@ private extension ToolbarViewController {
         let sidebackBackground = false
         #endif
 
+        tableView.tableHeaderView = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 0, height: CGFloat.leastNonzeroMagnitude)))
+        tableView.tableFooterView = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 0, height: CGFloat.leastNonzeroMagnitude)))
         tableView.separatorStyle = .none
         tableView.estimatedRowHeight = GlobalConstants.baseCellHeight
         tableView.rowHeight = UITableView.automaticDimension

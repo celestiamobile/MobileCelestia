@@ -29,17 +29,6 @@ public extension UIColor {
     }
 }
 
-public extension UIColor {
-    class var darkSelection: UIColor {
-        if UIColor.responds(to: NSSelectorFromString("tableCellPlainSelectedBackgroundColor")) {
-            if let color = UIColor.value(forKey: "tableCellPlainSelectedBackgroundColor") as? UIColor {
-                return color
-            }
-        }
-        return .systemGray4
-    }
-}
-
 #if !targetEnvironment(macCatalyst)
 public extension UIColor {
     class var buttonBackground: UIColor {
