@@ -15,7 +15,7 @@ import UIKit
 public class BrowserContainerViewController: UIViewController {
     #if targetEnvironment(macCatalyst)
     private lazy var controller: UISplitViewController = {
-        if #available(macCatalyst 14, *) {
+        if #available(macCatalyst 16, *) {
             return UISplitViewController(style: .doubleColumn)
         } else {
             return UISplitViewController()
@@ -131,19 +131,17 @@ private extension BrowserContainerViewController {
         let sidebarController = BrowserSidebarController(browserRoots: browserRoot) { [weak self] item in
             guard let self else { return }
             let newVc = BrowserCoordinatorController(item: item, image: UIImage(), selection: handler)
-            if #available(macCatalyst 14, *) {
+            if #available(macCatalyst 16, *) {
                 self.controller.setViewController(newVc, for: .secondary)
-                if #available(macCatalyst 16, *) {
-                    let scene = self.view.window?.windowScene
-                    scene?.titlebar?.titleVisibility = .visible
-                }
+                let scene = self.view.window?.windowScene
+                scene?.titlebar?.titleVisibility = .visible
             } else {
                 self.controller.viewControllers = [self.controller.viewControllers[0], newVc]
             }
         }
         let emptyVc = UIViewController()
         emptyVc.view.backgroundColor = .systemBackground
-        if #available(macCatalyst 14.0, *) {
+        if #available(macCatalyst 16.0, *) {
             controller.setViewController(SidebarNavigationController(rootViewController: sidebarController), for: .primary)
             controller.setViewController(ContentNavigationController(rootViewController: emptyVc), for: .secondary)
         } else {

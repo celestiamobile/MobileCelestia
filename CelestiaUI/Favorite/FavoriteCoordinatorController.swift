@@ -20,7 +20,7 @@ public enum FavoriteRoot {
 public class FavoriteCoordinatorController: UIViewController {
     #if targetEnvironment(macCatalyst)
     private lazy var controller: UISplitViewController = {
-        if #available(macCatalyst 14, *) {
+        if #available(macCatalyst 16, *) {
             return UISplitViewController(style: .doubleColumn)
         } else {
             return UISplitViewController()
@@ -129,7 +129,7 @@ private extension FavoriteCoordinatorController {
         let emptyVc = UIViewController()
         emptyVc.view.backgroundColor = .systemBackground
         contentVc = emptyVc
-        if #available(macCatalyst 14, *) {
+        if #available(macCatalyst 16, *) {
             controller.setViewController(SidebarNavigationController(rootViewController: main), for: .primary)
             controller.setViewController(ContentNavigationController(rootViewController: contentVc), for: .secondary)
         } else {
@@ -145,12 +145,10 @@ private extension FavoriteCoordinatorController {
     func replace<T: FavoriteItemList>(_ itemList: T) {
         #if targetEnvironment(macCatalyst)
         navigation = ContentNavigationController(rootViewController: generateVC(itemList))
-        if #available(macCatalyst 14, *) {
+        if #available(macCatalyst 16, *) {
             controller.setViewController(navigation, for: .secondary)
-            if #available(macCatalyst 16.0, *) {
-                let scene = view.window?.windowScene
-                scene?.titlebar?.titleVisibility = .visible
-            }
+            let scene = view.window?.windowScene
+            scene?.titlebar?.titleVisibility = .visible
         } else {
             controller.viewControllers = [controller.viewControllers[0], navigation]
         }

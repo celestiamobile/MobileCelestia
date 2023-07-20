@@ -43,7 +43,7 @@ public struct DataLocationSettingContext {
 public class SettingsCoordinatorController: UIViewController {
     #if targetEnvironment(macCatalyst)
     private lazy var controller: UISplitViewController = {
-        if #available(macCatalyst 14, *) {
+        if #available(macCatalyst 16, *) {
             return UISplitViewController(style: .doubleColumn)
         } else {
             return UISplitViewController()
@@ -153,12 +153,10 @@ private extension SettingsCoordinatorController {
             }
             #if targetEnvironment(macCatalyst)
             let navigationController = ContentNavigationController(rootViewController: viewController)
-            if #available(macCatalyst 14, *) {
+            if #available(macCatalyst 16, *) {
                 self.controller.setViewController(navigationController, for: .secondary)
-                if #available(iOS 16.0, *) {
-                    if let windowScene = self.controller.view.window?.windowScene {
-                        windowScene.titlebar?.titleVisibility = .visible
-                    }
+                if let windowScene = self.controller.view.window?.windowScene {
+                    windowScene.titlebar?.titleVisibility = .visible
                 }
             } else {
                 self.controller.viewControllers = [self.controller.viewControllers[0], navigationController]
@@ -173,7 +171,7 @@ private extension SettingsCoordinatorController {
         controller.preferredPrimaryColumnWidthFraction = 0.3
         let emptyVc = UIViewController()
         emptyVc.view.backgroundColor = .systemBackground
-        if #available(macCatalyst 14, *) {
+        if #available(macCatalyst 16, *) {
             controller.setViewController(SidebarNavigationController(rootViewController: main), for: .primary)
             controller.setViewController(ContentNavigationController(rootViewController: emptyVc), for: .secondary)
         } else {

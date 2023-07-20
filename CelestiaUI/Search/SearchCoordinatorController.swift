@@ -17,7 +17,7 @@ public class SearchCoordinatorController: UIViewController {
 
     #if targetEnvironment(macCatalyst)
     private lazy var split: UISplitViewController = {
-        if #available(macCatalyst 14, *) {
+        if #available(macCatalyst 16, *) {
             return UISplitViewController(style: .doubleColumn)
         } else {
             return UISplitViewController()
@@ -60,7 +60,8 @@ private extension SearchCoordinatorController {
         #else
         let resultsInSidebar = false
         #endif
-        main = SearchViewController(resultsInSidebar: resultsInSidebar, executor: executor) { [unowned self] name in
+        main = SearchViewController(resultsInSidebar: resultsInSidebar, executor: executor) { [weak self] name in
+            guard let self else { return }
             Task {
                 let object = await self.executor.get {
                     $0.simulation.findObject(from: name)
@@ -69,10 +70,12 @@ private extension SearchCoordinatorController {
                     self.showError(CelestiaString("Object not found", comment: ""))
                     return
                 }
-                let viewController = self.selection(object, false)
+                let viewController = self.selection(object, true)
                 #if targetEnvironment(macCatalyst)
-                if #available(macCatalyst 14, *) {
+                if #available(macCatalyst 16, *) {
                     self.split.setViewController(ContentNavigationController(rootViewController: viewController), for: .secondary)
+                    let scene = self.view.window?.windowScene
+                    scene?.titlebar?.titleVisibility = .visible
                 } else {
                     self.split.viewControllers = [self.split.viewControllers[0], ContentNavigationController(rootViewController: viewController)]
                 }
@@ -88,7 +91,7 @@ private extension SearchCoordinatorController {
         split.preferredPrimaryColumnWidthFraction = 0.3
         let emptyVc = UIViewController()
         emptyVc.view.backgroundColor = .systemBackground
-        if #available(macCatalyst 14.0, *) {
+        if #available(macCatalyst 16, *) {
             split.setViewController(SidebarNavigationController(rootViewController: main), for: .primary)
             split.setViewController(ContentNavigationController(rootViewController: emptyVc), for: .secondary)
         } else {
