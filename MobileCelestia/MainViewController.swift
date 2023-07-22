@@ -620,14 +620,6 @@ extension MainViewController: CelestiaControllerDelegate {
             ]
             let url = components.url!
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
-#if targetEnvironment(macCatalyst)
-        case .mirror:
-            if UIApplication.shared.connectedScenes.contains(where: { $0.delegate is DisplaySceneDelegate }) {
-                return
-            }
-            let activity = NSUserActivity(activityType: DisplaySceneDelegate.activityType)
-            UIApplication.shared.requestSceneSessionActivation(nil, userActivity: activity, options: nil) { _ in }
-#endif
         }
     }
 
@@ -1108,12 +1100,7 @@ extension MainViewController: NSToolbarDelegate {
     }
 
     private func defaultToolbarIdentifiers() -> [NSToolbarItem.Identifier] {
-        let rightActions: [AppToolbarAction]
-        if #available(macCatalyst 14, *) {
-            rightActions = [AppToolbarAction.share, .mirror, .search]
-        } else {
-            rightActions = [AppToolbarAction.share, .search]
-        }
+        let rightActions: [AppToolbarAction] = [.share, .search]
         return
             [AppToolbarAction.browse, .favorite, .home, .paperplane].map { NSToolbarItem.Identifier($0.rawValue) } +
             [.flexibleSpace] +
@@ -1121,10 +1108,7 @@ extension MainViewController: NSToolbarDelegate {
     }
 
     private func availableIdentifiers() -> [NSToolbarItem.Identifier] {
-        var actions = AppToolbarAction.persistentAction.reduce([AppToolbarAction](), { $0 + $1 })
-        if #available(macCatalyst 14.0, *) {
-            actions.append(.mirror)
-        }
+        let actions = AppToolbarAction.persistentAction.reduce([AppToolbarAction](), { $0 + $1 })
         return actions.map { NSToolbarItem.Identifier(rawValue: $0.rawValue) } + [.flexibleSpace, .space]
     }
 

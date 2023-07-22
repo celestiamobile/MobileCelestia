@@ -46,10 +46,6 @@ enum AppToolbarAction: String {
     case paperplane
     case speedometer
     case newsarchive
-    #if targetEnvironment(macCatalyst)
-    @available(macCatalyst 14.0, *)
-    case mirror
-    #endif
 
     static var persistentAction: [[AppToolbarAction]] {
         return [[.setting], [.share, .search, .home, .paperplane], [.camera, .time, .script, .speedometer], [.browse, .favorite, .event], [.addons, .download, .newsarchive], [.help]]
@@ -255,10 +251,6 @@ extension AppToolbarAction: ToolbarAction {
             return UIImage(systemName: "paperplane")
         case .speedometer:
             return UIImage(systemName: "speedometer")
-#if targetEnvironment(macCatalyst)
-        case .mirror:
-            return UIImage(systemName: "pip")
-#endif
         case .newsarchive:
             return UIImage(systemName: "newspaper") ?? UIImage(named: "toolbar_newsarchive")
         }
@@ -300,10 +292,6 @@ extension AppToolbarAction {
             return CelestiaString("Speed Control", comment: "")
         case .newsarchive:
             return CelestiaString("News Archive", comment: "")
-        #if targetEnvironment(macCatalyst)
-        case .mirror:
-            return nil
-        #endif
         }
     }
 }
