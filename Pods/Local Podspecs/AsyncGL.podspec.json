@@ -1,6 +1,6 @@
 {
   "name": "AsyncGL",
-  "version": "0.0.25",
+  "version": "0.0.27",
   "summary": "A framework that allows rendering OpenGL (ES) contents on a GCD dispatch queue.",
   "homepage": "https://github.com/levinli303/AsyncGL.git",
   "license": "MIT",
@@ -8,21 +8,42 @@
     "Levin Li": "lilinfeng303@outlook.com"
   },
   "platforms": {
-    "ios": "8.0",
-    "osx": "10.9"
+    "ios": "13.1",
+    "osx": "10.15"
   },
   "source": {
     "git": "https://github.com/levinli303/AsyncGL.git",
-    "tag": "0.0.25"
+    "tag": "0.0.27"
   },
-  "source_files": [
-    "AsyncGL/**/*.{h,m}",
-    "GL/**/*.{h,inc}"
-  ],
-  "public_header_files": "AsyncGL/include/*.h",
-  "xcconfig": {
-    "HEADER_SEARCH_PATHS": [
-      "\"$(PODS_TARGET_SRCROOT)/GL\""
-    ]
-  }
+  "subspecs": [
+    {
+      "name": "OpenGL",
+      "source_files": "AsyncGL/**/*.{h,m}",
+      "public_header_files": "AsyncGL/include/*.h"
+    },
+    {
+      "name": "libGLESv2",
+      "vendored_frameworks": "XCFrameworks/libGLESv2.xcframework"
+    },
+    {
+      "name": "libEGL",
+      "vendored_frameworks": "XCFrameworks/libEGL.xcframework"
+    },
+    {
+      "name": "ANGLE",
+      "dependencies": {
+        "AsyncGL/libGLESv2": [
+          "0.0.27"
+        ],
+        "AsyncGL/libEGL": [
+          "0.0.27"
+        ]
+      },
+      "source_files": "AsyncGL/**/*.{h,m}",
+      "public_header_files": "AsyncGL/include/*.h",
+      "xcconfig": {
+        "GCC_PREPROCESSOR_DEFINITIONS": "$(inherited) USE_EGL"
+      }
+    }
+  ]
 }

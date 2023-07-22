@@ -18,11 +18,8 @@
 #if TARGET_OS_OSX
 @import QuartzCore.CAMetalLayer;
 #endif
-#include "GLES2/gl2.h"
-#include "GLES2/gl2ext.h"
-#include "GLES3/gl3.h"
-#include "EGL/egl.h"
-#include "EGL/eglext.h"
+#include <libGLESv2/libGLESv2.h>
+#include <libEGL/libEGL.h>
 
 /* EGL rendering API */
 typedef enum EGLRenderingAPI : int
@@ -47,16 +44,9 @@ typedef enum EGLRenderingAPI : int
 @interface PassthroughGLLayer : CAOpenGLLayer
 @property (nonatomic) CGLContextObj renderContext;
 @property (nonatomic) CGLPixelFormatObj pixelFormat;
-@property (nonatomic) GLuint renderTex;
-@property (nonatomic) GLuint renderProg;
-@property (nonatomic) GLint renderProgTexLocation;
-@property (nonatomic) GLuint renderProgVboId;
-@property (nonatomic) GLuint renderProgVaoId;
-@property (nonatomic) GLint renderProgPositionLocation;
-@property (nonatomic) GLint renderProgTexPositionLocation;
+@property (nonatomic) GLuint sourceFramebuffer;
 @property (nonatomic) GLsizei width;
 @property (nonatomic) GLsizei height;
-@property (nonatomic) CGLOpenGLProfile api;
 @property (atomic) NSThread *thread;
 @end
 
@@ -79,63 +69,9 @@ typedef enum EGLRenderingAPI : int
 - (void)drawInCGLContext:(CGLContextObj)ctx pixelFormat:(CGLPixelFormatObj)pf forLayerTime:(CFTimeInterval)t displayTime:(const CVTimeStamp *)ts
 {
     CGLSetCurrentContext(ctx);
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
-
-    glDisable(GL_DEPTH_TEST);
-
-    glUseProgram(_renderProg);
-
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, _renderTex);
-    glUniform1i(_renderProgTexLocation, 0);
-
-    if (_api == kCGLOGLPVersion_GL3_Core || _api == kCGLOGLPVersion_GL4_Core) {
-        glBindVertexArray(_renderProgVaoId);
-    } else {
-        glBindBuffer(GL_ARRAY_BUFFER, _renderProgVboId);
-        glVertexAttribPointer(_renderProgPositionLocation, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
-        glVertexAttribPointer(_renderProgTexPositionLocation, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
-        glEnableVertexAttribArray(_renderProgTexPositionLocation);
-        glEnableVertexAttribArray(_renderProgPositionLocation);
-    }
-
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-
-    if (_api != kCGLOGLPVersion_GL3_Core && _api != kCGLOGLPVersion_GL4_Core) {
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-        glDisableVertexAttribArray(_renderProgTexPositionLocation);
-        glDisableVertexAttribArray(_renderProgPositionLocation);
-    }
-
-    glBindTexture(GL_TEXTURE_2D, 0);
-
+    glBindFramebuffer(GL_READ_FRAMEBUFFER, _sourceFramebuffer);
+    glBlitFramebuffer(0, 0, _width, _height, 0, 0, _width, _height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
     glFlush();
-}
-
-- (void)clear
-{
-    if (_renderTex) {
-        glDeleteTextures(1, &_renderTex);
-        _renderTex = 0;
-    }
-
-    if (_renderProgVboId != 0) {
-        glDeleteBuffers(1, &_renderProgVboId);
-        _renderProgVboId = 0;
-    }
-
-    if (_api == kCGLOGLPVersion_GL3_Core || _api == kCGLOGLPVersion_GL4_Core) {
-        if (_renderProgVaoId != 0) {
-            glDeleteVertexArrays(1, &_renderProgVaoId);
-            _renderProgVaoId = 0;
-        }
-    }
-
-    if (_renderProg != 0) {
-        glDeleteProgram(_renderProg);
-        _renderProg = 0;
-    }
 }
 @end
 #endif
@@ -159,14 +95,15 @@ typedef enum EGLRenderingAPI : int
 @property (nonatomic) GLuint depthBuffer;
 @property (nonatomic) GLuint sampleFramebuffer;
 @property (nonatomic) GLuint sampleDepthbuffer;
-@property (nonatomic) GLuint sampleRenderbuffer;
+@property (nonatomic) GLuint sampleColorbuffer;
 @property (nonatomic) CGSize savedBufferSize;
 #if !TARGET_OSX_OR_CATALYST
+@property (nonatomic) GLuint mainColorbuffer;
 @property (nonatomic) EAGLRenderingAPI internalAPI;
 @property (nonatomic, strong) EAGLContext *renderContext;
 @property (nonatomic, strong) EAGLContext *mainContext;
-@property (nonatomic) GLuint renderbuffer;
 #else
+@property (nonatomic) GLuint renderColorbuffer;
 @property (nonatomic) CGLOpenGLProfile internalAPI;
 @property (nonatomic) CGLContextObj mainContext;
 @property (nonatomic) CGLContextObj renderContext;
@@ -308,8 +245,8 @@ typedef enum EGLRenderingAPI : int
 #else
     [self flush];
 #if !TARGET_OSX_OR_CATALYST
-    glBindRenderbuffer(GL_RENDERBUFFER, _renderbuffer);
-    [_renderContext presentRenderbuffer:_renderbuffer];
+    glBindRenderbuffer(GL_RENDERBUFFER, _mainColorbuffer);
+    [_renderContext presentRenderbuffer:_mainColorbuffer];
 #else
     [_glLayer setThread:[NSThread currentThread]];
     [_glLayer display];
@@ -338,7 +275,7 @@ typedef enum EGLRenderingAPI : int
     _internalAPI = _api == AsyncGLAPIOpenGLES3 ? kEAGLRenderingAPIOpenGLES3 : kEAGLRenderingAPIOpenGLES2;
     _mainContext = nil;
     _renderContext = nil;
-    _renderbuffer = 0;
+    _mainColorbuffer = 0;
 #else
     switch (_api)
     {
@@ -354,12 +291,13 @@ typedef enum EGLRenderingAPI : int
     }
     _mainContext = NULL;
     _renderContext = NULL;
+    _renderColorbuffer = 0;
 #endif
     _framebuffer = 0;
     _depthBuffer = 0;
     _sampleFramebuffer = 0;
     _sampleDepthbuffer = 0;
-    _sampleRenderbuffer = 0;
+    _sampleColorbuffer = 0;
     _savedBufferSize = CGSizeZero;
 #endif
 
@@ -384,7 +322,6 @@ typedef enum EGLRenderingAPI : int
 #if TARGET_OSX_OR_CATALYST
     _glLayer = (PassthroughGLLayer *)self.layer;
     _glLayer.asynchronous = YES;
-    _glLayer.api = _internalAPI;
 #endif
 #endif
 }
@@ -581,197 +518,25 @@ typedef enum EGLRenderingAPI : int
         return;
     }
     [self makeRenderContextCurrent];
-    if (![self setupShaders]) return;
 
     __block CGSize size;
     dispatch_sync(dispatch_get_main_queue(), ^{
         size = self.frame.size;
     });
+    glGenRenderbuffers(1, &_renderColorbuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, _renderColorbuffer);
     [self createRenderBuffers:size];
 #endif
 #endif
 }
 
 #ifndef USE_EGL
-#pragma mark shaders
-#ifndef USE_EGL
-#if TARGET_OSX_OR_CATALYST
-- (GLuint)compileShader:(const GLchar*)shaderString shaderType:(GLenum)shaderType
-{
-    GLuint shader = glCreateShader(shaderType);
-    glShaderSource(shader, 1, &shaderString, NULL);
-    glCompileShader(shader);
-    GLint logLength, status;
-    glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &logLength);
-    glGetShaderiv(shader, GL_COMPILE_STATUS, &status);
-    if (logLength > 0) {
-        GLchar *log = (GLchar *)malloc(logLength);
-        glGetShaderInfoLog(shader, logLength, &logLength, log);
-        NSLog(@"Shader compile log:\n%s", log);
-        free(log);
-    }
-    if (status == GL_FALSE) {
-        glDeleteShader(shader);
-        shader = 0;
-    }
-    return shader;
-}
-
-- (GLuint)linkProgramWithVertexShader:(GLuint)vShader fragmentShader:(GLuint)fShader
-{
-    GLuint program = glCreateProgram();
-    glAttachShader(program, vShader);
-    glAttachShader(program, fShader);
-    glLinkProgram(program);
-
-    GLint logLength, status;
-    glGetProgramiv(program, GL_INFO_LOG_LENGTH, &logLength);
-    glGetProgramiv(program, GL_LINK_STATUS, &status);
-    if (logLength > 0)
-    {
-        GLchar *log = (GLchar *)malloc(logLength);
-        glGetProgramInfoLog(program, logLength, &logLength, log);
-        NSLog(@"Program link log:\n%s", log);
-        free(log);
-    }
-    if (status == GL_FALSE) {
-        glDeleteProgram(program);
-        program = 0;
-    }
-    return program;
-}
-
-- (BOOL)setupShaders
-{
-    const GLchar* vs = "#version 120\n\
-                        attribute vec2 in_Position;\n\
-                        attribute vec2 in_TexCoord0;\n\
-                        varying vec2 texCoord;\n\
-                        void main()\n\
-                        {\n\
-                            gl_Position = vec4(in_Position.xy, 0.0, 1.0);\n\
-                            texCoord = in_TexCoord0.st;\n\
-                        }";
-
-    const GLchar* fs = "#version 120\n\
-                        varying vec2 texCoord;\n\
-                        uniform sampler2D tex;\n\
-                        void main()\n\
-                        {\n\
-                            gl_FragColor = texture2D(tex, texCoord);\n\
-        }                ";
-    if (_internalAPI == kCGLOGLPVersion_GL3_Core)
-    {
-        vs = "#version 330 core\n\
-              layout (location = 0) in vec2 in_Position;\n\
-              layout (location = 1) in vec2 in_TexCoord0;\n\
-              out vec2 texCoord;\n\
-              void main()\n\
-              {\n\
-                  gl_Position = vec4(in_Position.xy, 0.0, 1.0);\n\
-                  texCoord = in_TexCoord0.st;\n\
-              }";
-        fs = "#version 330 core\n\
-              in vec2 texCoord;\n\
-              out vec4 fragColor;\n\
-              uniform sampler2D tex;\n\
-              void main()\n\
-              {\n\
-                  fragColor = texture(tex, texCoord);\n\
-              }";
-    }
-    else if (_internalAPI == kCGLOGLPVersion_GL4_Core)
-    {
-        vs = "#version 410 core\n\
-              layout (location = 0) in vec2 in_Position;\n\
-              layout (location = 1) in vec2 in_TexCoord0;\n\
-              out vec2 texCoord;\n\
-              void main()\n\
-              {\n\
-                  gl_Position = vec4(in_Position.xy, 0.0, 1.0);\n\
-                  texCoord = in_TexCoord0.st;\n\
-              }";
-        fs = "#version 410 core\n\
-              in vec2 texCoord;\n\
-              out vec4 fragColor;\n\
-              uniform sampler2D tex;\n\
-              void main()\n\
-              {\n\
-                  fragColor = texture(tex, texCoord);\n\
-              }";
-    }
-
-    GLuint renderVShader = [self compileShader:vs shaderType:GL_VERTEX_SHADER];
-    if (renderVShader == 0) {
-        return NO;
-    }
-    GLuint renderFShader = [self compileShader:fs shaderType:GL_FRAGMENT_SHADER];
-    if (renderFShader == 0) {
-        glDeleteShader(renderVShader);
-        return NO;
-    }
-    GLuint renderProg = [self linkProgramWithVertexShader:renderVShader fragmentShader:renderFShader];
-    glDeleteShader(renderVShader);
-    glDeleteShader(renderFShader);
-    if (renderProg == 0)
-        return NO;
-
-    GLint renderProgTexLocation = glGetUniformLocation(renderProg, "tex");
-    GLint renderProgPositionLocation = glGetAttribLocation(renderProg, "in_Position");
-    GLint renderProgTexPositionLocation = glGetAttribLocation(renderProg, "in_TexCoord0");
-
-    static float quadVertices[] = {
-        // positions   // texCoords
-        -1.0f,  1.0f,  0.0f, 1.0f,
-        -1.0f, -1.0f,  0.0f, 0.0f,
-         1.0f, -1.0f,  1.0f, 0.0f,
-
-        -1.0f,  1.0f,  0.0f, 1.0f,
-         1.0f, -1.0f,  1.0f, 0.0f,
-         1.0f,  1.0f,  1.0f, 1.0f
-    };
-
-    GLuint renderProgVboId = 0;
-    GLuint renderProgVaoId = 0;
-    if (_api == kCGLOGLPVersion_GL3_Core || _api == kCGLOGLPVersion_GL4_Core) {
-        glGenVertexArrays(1, &renderProgVaoId);
-        glBindVertexArray(renderProgVaoId);
-    }
-    glGenBuffers(1, &renderProgVboId);
-    glBindBuffer(GL_ARRAY_BUFFER, renderProgVboId);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), quadVertices, GL_STATIC_DRAW);
-
-
-    if (_api == kCGLOGLPVersion_GL3_Core || _api == kCGLOGLPVersion_GL4_Core) {
-        glVertexAttribPointer(renderProgPositionLocation, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
-        glVertexAttribPointer(renderProgTexPositionLocation, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
-        glEnableVertexAttribArray(renderProgTexPositionLocation);
-        glEnableVertexAttribArray(renderProgPositionLocation);
-    }
-    glBindBuffer(GL_ARRAY_BUFFER, 0);
-    if (_api == kCGLOGLPVersion_GL3_Core || _api == kCGLOGLPVersion_GL4_Core) {
-        glBindVertexArray(0);
-        _glLayer.renderProgVaoId = renderProgVaoId;
-    } else {
-        _glLayer.renderProgPositionLocation = renderProgPositionLocation;
-        _glLayer.renderProgTexPositionLocation = renderProgTexPositionLocation;
-    }
-
-    _glLayer.renderProg = renderProg;
-    _glLayer.renderProgVboId = renderProgVboId;
-    _glLayer.renderProgTexLocation = renderProgTexLocation;
-
-    return YES;
-}
-#endif
-#endif
-
 #pragma mark - buffer creation
 #if !TARGET_OSX_OR_CATALYST
 - (void)createMainBuffers
 {
-    glGenRenderbuffers(1, &_renderbuffer);
-    glBindRenderbuffer(GL_RENDERBUFFER, _renderbuffer);
+    glGenRenderbuffers(1, &_mainColorbuffer);
+    glBindRenderbuffer(GL_RENDERBUFFER, _mainColorbuffer);
     [_mainContext renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)self.layer];
 }
 #endif
@@ -780,19 +545,21 @@ typedef enum EGLRenderingAPI : int
 {
     glGenFramebuffers(1, &_framebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, _framebuffer);
-#if !TARGET_OSX_OR_CATALYST
-    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _renderbuffer);
+#if TARGET_OSX_OR_CATALYST
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _renderColorbuffer);
+#else
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _mainColorbuffer);
 #endif
 
     if (_msaaEnabled) {
-        glGenRenderbuffers(1, &_sampleRenderbuffer);
+        glGenRenderbuffers(1, &_sampleColorbuffer);
         glGenRenderbuffers(1, &_sampleDepthbuffer);
 
         [self updateBuffersSize:size];
 
         glGenFramebuffers(1, &_sampleFramebuffer);
         glBindFramebuffer(GL_FRAMEBUFFER, _sampleFramebuffer);
-        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _sampleRenderbuffer);
+        glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _sampleColorbuffer);
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _sampleDepthbuffer);
 
         // Check sampleFramebuffer
@@ -835,7 +602,7 @@ typedef enum EGLRenderingAPI : int
         GLint samples;
         glGetIntegerv(GL_MAX_SAMPLES, &samples);
 
-        glBindRenderbuffer(GL_RENDERBUFFER, _sampleRenderbuffer);
+        glBindRenderbuffer(GL_RENDERBUFFER, _sampleColorbuffer);
 #if !TARGET_OSX_OR_CATALYST
         glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, GL_RGBA8_OES, width, height);
 #else
@@ -850,27 +617,9 @@ typedef enum EGLRenderingAPI : int
     }
 
 #if TARGET_OSX_OR_CATALYST
-    GLuint renderTex = _glLayer.renderTex;
-    if (renderTex) {
-        glDeleteTextures(1, &renderTex);
-        _glLayer.renderTex = 0;
-    }
-    glGenTextures(1, &renderTex);
-
-    glBindTexture(GL_TEXTURE_2D, renderTex);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    // Clamp to edge
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB8, size.width, size.height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-    glBindTexture(GL_TEXTURE_2D, 0);
-
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, renderTex, 0);
-    _glLayer.renderTex = renderTex;
+    glBindRenderbuffer(GL_RENDERBUFFER, _renderColorbuffer);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8, size.width, size.height);
+    _glLayer.sourceFramebuffer = _framebuffer;
     _glLayer.width = size.width;
     _glLayer.height = size.height;
 #endif
@@ -915,7 +664,7 @@ typedef enum EGLRenderingAPI : int
     if (_msaaEnabled) {
         glBindFramebuffer(GL_FRAMEBUFFER, _sampleFramebuffer);
         glBindRenderbuffer(GL_RENDERBUFFER, _sampleDepthbuffer);
-        glBindRenderbuffer(GL_RENDERBUFFER, _sampleRenderbuffer);
+        glBindRenderbuffer(GL_RENDERBUFFER, _sampleColorbuffer);
 
 #if TARGET_OS_OSX
         glEnable(GL_MULTISAMPLE);
@@ -971,9 +720,9 @@ typedef enum EGLRenderingAPI : int
         _sampleDepthbuffer = 0;
     }
 
-    if (_sampleRenderbuffer != 0) {
-        glDeleteFramebuffers(1, &_sampleRenderbuffer);
-        _sampleRenderbuffer = 0;
+    if (_sampleColorbuffer != 0) {
+        glDeleteFramebuffers(1, &_sampleColorbuffer);
+        _sampleColorbuffer = 0;
     }
 
     if (_framebuffer != 0) {
@@ -982,7 +731,10 @@ typedef enum EGLRenderingAPI : int
     }
 
 #if TARGET_OSX_OR_CATALYST
-    [_glLayer clear];
+    if (_renderColorbuffer != 0) {
+        glDeleteRenderbuffers(1, &_renderColorbuffer);
+        _renderColorbuffer = 0;
+    }
 #endif
 #endif
 
@@ -999,9 +751,9 @@ typedef enum EGLRenderingAPI : int
 #ifndef USE_EGL
 #if !TARGET_OSX_OR_CATALYST
     [self makeMainContextCurrent];
-    if (_renderbuffer != 0) {
-        glDeleteRenderbuffers(1, &_renderbuffer);
-        _renderbuffer = 0;
+    if (_mainColorbuffer != 0) {
+        glDeleteRenderbuffers(1, &_mainColorbuffer);
+        _mainColorbuffer = 0;
     }
 #endif
     [self destroyMainContext];
@@ -1096,7 +848,7 @@ typedef enum EGLRenderingAPI : int
 #ifndef USE_EGL
 #if !TARGET_OSX_OR_CATALYST
         [self makeMainContextCurrent];
-        glBindRenderbuffer(GL_RENDERBUFFER, _renderbuffer);
+        glBindRenderbuffer(GL_RENDERBUFFER, _mainColorbuffer);
         [_mainContext renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)self.layer];
 #endif
 #endif
