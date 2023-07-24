@@ -13,6 +13,7 @@ import CelestiaCore
 import CelestiaFoundation
 import CelestiaUI
 import LinkPresentation
+import MessageUI
 import UniformTypeIdentifiers
 import UIKit
 
@@ -22,6 +23,11 @@ class MainViewController: UIViewController {
         case loading
         case loadingFailed
         case loaded
+    }
+
+    private enum Constants {
+        static let feedbackEmailAddress = "celestia.mobile@outlook.com"
+        static let feedbackGitHubLink = URL(string: "https://celestia.mobi/feedback")!
     }
 
     private(set) var celestiaController: CelestiaViewController!
@@ -417,6 +423,10 @@ extension MainViewController {
             }
         case .organizeBookmarks:
             presentFavorite(.bookmarks)
+        case .reportBug:
+            reportBug()
+        case .suggestFeature:
+            suggestFeature()
         }
     }
 
@@ -620,7 +630,125 @@ extension MainViewController: CelestiaControllerDelegate {
             ]
             let url = components.url!
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        case .feedback:
+            sendFeedback()
         }
+    }
+
+    private func sendFeedback() {
+        showSelection(nil, options: [
+            CelestiaString("Report a Bug", comment: ""),
+            CelestiaString("Suggest a Feature", comment: ""),
+        ], source: nil) { [weak self] index in
+            guard let self, let index else { return }
+            if index == 1 {
+                self.suggestFeature()
+            } else {
+                self.reportBug()
+            }
+        }
+    }
+
+    private func reportBug() {
+        guard MFMailComposeViewController.canSendMail() else {
+            reportBugSuggestFeatureFallback()
+            return
+        }
+        Task {
+            do {
+                try await reportBugAsync()
+            } catch {
+                reportBugSuggestFeatureFallback()
+            }
+        }
+    }
+
+    private func reportBugAsync() async throws {
+        let parentPath = (NSTemporaryDirectory() as NSString).appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(atPath: parentPath, withIntermediateDirectories: true)
+
+        let screenshotPath = (parentPath as NSString).appendingPathComponent("screenshot.png")
+        let executor = self.executor
+        let (renderInfo, url, screenshotSuccess) = await executor.get { core in
+            executor.makeRenderContextCurrent()
+            core.draw()
+            return (core.renderInfo, core.currentURL, core.screenshot(to: screenshotPath, type: .PNG))
+        }
+        let imageData = screenshotSuccess ? try? Data(contentsOf: URL(fileURLWithPath: screenshotPath)) : nil
+        let addonInfo = resourceManager.installedResources().map { "\($0.name)/\($0.id)" }.joined(separator: "\n")
+
+        let vc = MFMailComposeViewController()
+        vc.mailComposeDelegate = self
+        vc.setToRecipients([Constants.feedbackEmailAddress])
+        vc.setSubject(CelestiaString("Bug report for Celestia", comment: ""))
+        vc.setMessageBody(CelestiaString("Please describe the issue and repro steps, if known.", comment: ""), isHTML: false)
+        if let imageData {
+            vc.addAttachmentData(imageData, mimeType: "image/png", fileName: "screenshot.png")
+        }
+        if let urlInfoData = url.data(using: .utf8) {
+            vc.addAttachmentData(urlInfoData, mimeType: "text/plain", fileName: "urlinfo.txt")
+        }
+        if let renderInfoData = renderInfo.data(using: .utf8) {
+            vc.addAttachmentData(renderInfoData, mimeType: "text/plain", fileName: "renderinfo.txt")
+        }
+        if let addonInfoData = addonInfo.data(using: .utf8) {
+            vc.addAttachmentData(addonInfoData, mimeType: "text/plain", fileName: "addoninfo.txt")
+        }
+        let bundle = Bundle.app
+        let device = UIDevice.current
+
+        var sysName = utsname()
+        uname(&sysName)
+        let machineMirror = Mirror(reflecting: sysName.machine)
+        let model = machineMirror.children.reduce(into: String()) { identifier, element in
+          guard let value = element.value as? Int8, value != 0 else { return }
+          identifier += String(UnicodeScalar(UInt8(value)))
+        }
+
+        #if targetEnvironment(macCatalyst)
+        let os = "Mac"
+        #else
+        let os: String
+        if #available(iOS 14, *), ProcessInfo.processInfo.isiOSAppOnMac {
+            os = "Mac (iOS)"
+        } else {
+            os = "iOS"
+        }
+        #endif
+        #if arch(x86_64)
+        let arch = "x86_64"
+        #elseif arch(arm64)
+        let arch = "arm64"
+        #endif
+        let systemInfo =
+"""
+Application Version: \(bundle.shortVersion)(\(bundle.build))
+Operating System: \(os)
+Operating System Version: \(device.systemVersion)
+Operating System Architecture \(arch)
+Device Model: \(model)
+"""
+        if let systemInfoData = systemInfo.data(using: .utf8) {
+            vc.addAttachmentData(systemInfoData, mimeType: "text/plain", fileName: "systeminfo.txt")
+        }
+        presentAfterDismissCurrent(vc, animated: true)
+    }
+
+    private func suggestFeature() {
+        guard MFMailComposeViewController.canSendMail() else {
+            reportBugSuggestFeatureFallback()
+            return
+        }
+        let vc = MFMailComposeViewController()
+        vc.mailComposeDelegate = self
+        vc.setToRecipients([Constants.feedbackEmailAddress])
+        vc.setSubject(CelestiaString("Feature suggestion for Celestia", comment: ""))
+        vc.setMessageBody(CelestiaString("Please describe the feature you want to see in Celestia.", comment: ""), isHTML: false)
+        presentAfterDismissCurrent(vc, animated: true)
+    }
+
+    private func reportBugSuggestFeatureFallback() {
+        UIApplication.shared.open(Constants.feedbackGitHubLink, options: [:], completionHandler: nil)
     }
 
     private func presentShare() {
@@ -1304,5 +1432,11 @@ extension MarkerRepresentation {
         @unknown default:
             return "Unknown"
         }
+    }
+}
+
+extension MainViewController: MFMailComposeViewControllerDelegate {
+    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
+        controller.dismiss(animated: true)
     }
 }

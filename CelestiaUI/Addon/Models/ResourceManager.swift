@@ -68,7 +68,7 @@ public final class ResourceManager: @unchecked Sendable {
         return addonDirectory.appendingPathComponent(identifier)
     }
 
-    func installedResources() -> [ResourceItem] {
+    public func installedResources() -> [ResourceItem] {
         guard let addonDirectory = extraAddonDirectory else { return [] }
         var items = [ResourceItem]()
         let fm = FileManager.default

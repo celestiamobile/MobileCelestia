@@ -12,10 +12,10 @@
 import Foundation
 
 public struct ResourceItem: Codable {
-    let name: String
+    public let name: String
     let description: String
     let type: String?
-    let id: String
+    public let id: String
     let image: URL?
     let item: URL
     let authors: [String]?

@@ -51,6 +51,8 @@ enum MenuBarAction: Hashable, Equatable {
     case showInstalledAddons
     case addBookmark
     case organizeBookmarks
+    case reportBug
+    case suggestFeature
 }
 
 let newURLOpenedNotificationName = Notification.Name("NewURLOpenedNotificationName")
@@ -112,6 +114,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         .selector(#selector(showInstalledAddons)),
         .selector(#selector(addBookmark)),
         .selector(#selector(organizeBookmarks)),
+        .selector(#selector(reportBug)),
+        .selector(#selector(suggestFeature)),
     ]
 
     var window: UIWindow?
@@ -430,11 +434,16 @@ extension AppDelegate {
             MenuActionContext(title: CelestiaString("Delete Other Views", comment: ""), action: #selector(deleteOtherViews), input: "d", modifierFlags: .control),
         ]), atStartOfMenu: .view)
 
-
         let runDemoMenu = createMenuItem(identifierSuffix: "help.demo", action: MenuActionContext(title: CelestiaString("Run Demo", comment: ""), action: #selector(runDemo), input: "d"))
         builder.insertChild(runDemoMenu, atEndOfMenu: .help)
         let openGLMenu = createMenuItem(identifierSuffix: "help.opengl", action: MenuActionContext(title: CelestiaString("OpenGL Info", comment: ""), action: #selector(showOpenGLInfo)))
         builder.insertSibling(openGLMenu, afterMenu: runDemoMenu.identifier)
+
+        let feedbackActionMenu = createMenuItemGroup(identifierSuffix: "feedback", actions: [
+            MenuActionContext(title: CelestiaString("Report a Bug", comment: ""), action: #selector(reportBug)),
+            MenuActionContext(title: CelestiaString("Suggest a Feature", comment: ""), action: #selector(suggestFeature)),
+        ])
+        builder.insertSibling(feedbackActionMenu, afterMenu: openGLMenu.identifier)
     }
 
     private struct MenuActionContext {
@@ -613,6 +622,14 @@ extension AppDelegate {
 
     @objc private func organizeBookmarks() {
         NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.organizeBookmarks])
+    }
+
+    @objc private func reportBug() {
+        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.reportBug])
+    }
+
+    @objc private func suggestFeature() {
+        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.suggestFeature])
     }
 }
 

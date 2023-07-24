@@ -23,4 +23,12 @@ public extension Bundle {
         }
         return current
     }()
+
+    var shortVersion: String {
+        return infoDictionary?["CFBundleShortVersionString"] as? String ?? ""
+    }
+
+    var build: String {
+        return infoDictionary?["CFBundleVersion"] as? String ?? ""
+    }
 }
