@@ -46,9 +46,10 @@ enum AppToolbarAction: String {
     case paperplane
     case speedometer
     case newsarchive
+    case feedback
 
     static var persistentAction: [[AppToolbarAction]] {
-        return [[.setting], [.share, .search, .home, .paperplane], [.camera, .time, .script, .speedometer], [.browse, .favorite, .event], [.addons, .download, .newsarchive], [.help]]
+        return [[.setting], [.share, .search, .home, .paperplane], [.camera, .time, .script, .speedometer], [.browse, .favorite, .event], [.addons, .download, .newsarchive], [.feedback, .help]]
     }
 }
 
@@ -253,6 +254,8 @@ extension AppToolbarAction: ToolbarAction {
             return UIImage(systemName: "speedometer")
         case .newsarchive:
             return UIImage(systemName: "newspaper") ?? UIImage(named: "toolbar_newsarchive")
+        case .feedback:
+            return UIImage(systemName: "exclamationmark.bubble")
         }
     }
 }
@@ -292,6 +295,8 @@ extension AppToolbarAction {
             return CelestiaString("Speed Control", comment: "")
         case .newsarchive:
             return CelestiaString("News Archive", comment: "")
+        case .feedback:
+            return CelestiaString("Send Feedback", comment: "")
         }
     }
 }

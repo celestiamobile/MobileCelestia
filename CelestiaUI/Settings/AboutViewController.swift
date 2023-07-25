@@ -9,6 +9,7 @@
 // of the License, or (at your option) any later version.
 //
 
+import CelestiaFoundation
 import UIKit
 
 public final class AboutViewController: BaseTableViewController {
@@ -41,9 +42,7 @@ public final class AboutViewController: BaseTableViewController {
     private func loadContents() {
         var totalItems = [[TextItem]]()
 
-        let shortVersion = bundle.infoDictionary!["CFBundleShortVersionString"] as! String
-        let buildNumber = bundle.infoDictionary!["CFBundleVersion"] as! String
-        let versionItem = TextItem.short(title: CelestiaString("Version", comment: ""), detail: "\(shortVersion)(\(buildNumber))")
+        let versionItem = TextItem.short(title: CelestiaString("Version", comment: ""), detail: "\(bundle.shortVersion)(\(bundle.build))")
 
         totalItems.append([versionItem])
 
