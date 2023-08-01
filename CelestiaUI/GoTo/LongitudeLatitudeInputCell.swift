@@ -63,7 +63,7 @@ class LongitudeLatitudeInputCell: UITableViewCell {
         latitudeLabel.numberOfLines = 0
         longitudeLabel.textColor = .secondaryLabel
         latitudeLabel.textColor = .secondaryLabel
-        let labelStackView = UIStackView(arrangedSubviews: [longitudeLabel, latitudeLabel])
+        let labelStackView = UIStackView(arrangedSubviews: [latitudeLabel, longitudeLabel])
         labelStackView.translatesAutoresizingMaskIntoConstraints = false
         labelStackView.axis = .horizontal
         labelStackView.distribution = .fillEqually
@@ -74,7 +74,7 @@ class LongitudeLatitudeInputCell: UITableViewCell {
         longitudeLabel.text = CelestiaString("Longitude", comment: "")
         latitudeLabel.text = CelestiaString("Latitude", comment: "")
 
-        let stackView = UIStackView(arrangedSubviews: [longitudeTextField, latitudeTextField])
+        let stackView = UIStackView(arrangedSubviews: [latitudeTextField, longitudeTextField])
         stackView.axis = .horizontal
         stackView.spacing = GlobalConstants.listItemGapHorizontal
         stackView.translatesAutoresizingMaskIntoConstraints = false
