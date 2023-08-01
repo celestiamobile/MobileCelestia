@@ -35,7 +35,6 @@ jobs:
   - script: |
       cd Celestia
       git checkout origin/$(Build.SourceBranchName)
-      git submodule update --init thirdparty/miniaudio
       cd ../CelestiaCore
       git checkout origin/$(Build.SourceBranchName)
       cd ../CelestiaLocalization
@@ -46,7 +45,6 @@ jobs:
   - script: |
       cd Celestia
       git checkout origin/$(System.PullRequest.TargetBranch)
-      git submodule update --init thirdparty/miniaudio
       cd ../CelestiaCore
       git checkout origin/$(System.PullRequest.TargetBranch)
       cd ../CelestiaLocalization
@@ -102,7 +100,7 @@ jobs:
       feedsToUse: 'internal'
       vstsFeed: '9f9dcde1-dcba-4537-8214-71c8a03b99a0/14bb1031-e6b2-40ac-b287-73e7fcb5900e'
       vstsFeedPackage: 'ef4b9b1c-43f9-4b15-91ae-8a601ae5ef45'
-      vstsPackageVersion: '0.0.9'
+      vstsPackageVersion: '0.0.11'
     displayName: 'Download Catalyst Dependencies'
     condition: eq( variables['sdk'], 'macosx' )
 
@@ -113,7 +111,7 @@ jobs:
       feedsToUse: 'internal'
       vstsFeed: '9f9dcde1-dcba-4537-8214-71c8a03b99a0/14bb1031-e6b2-40ac-b287-73e7fcb5900e'
       vstsFeedPackage: '929aa8ac-b8eb-409b-afe7-30f2b73aebc8'
-      vstsPackageVersion: '0.0.9'
+      vstsPackageVersion: '0.0.11'
     displayName: 'Download iOS Dependencies'
     condition: eq( variables['sdk'], 'iphoneos' )
 
