@@ -106,7 +106,7 @@ class LongitudeLatitudeInputCell: UITableViewCell {
     @objc private func longitudeTextChanged() {
         ignoreModelUpdates = true
         model.longitudeString = longitudeTextField.text
-        if let text = longitudeTextField.text, let value = parseNumberFormatter.number(from: text)?.floatValue {
+        if let text = longitudeTextField.text, let value = parseNumberFormatter.number(from: text)?.floatValue, value >= -180.0, value <= 180.0 {
             model.longitude = value
         } else {
             model.longitude = nil
@@ -118,7 +118,7 @@ class LongitudeLatitudeInputCell: UITableViewCell {
     @objc private func latitudeTextChanged() {
         ignoreModelUpdates = true
         model.latitudeString = latitudeTextField.text
-        if let text = latitudeTextField.text, let value = parseNumberFormatter.number(from: text)?.floatValue {
+        if let text = latitudeTextField.text, let value = parseNumberFormatter.number(from: text)?.floatValue, value >= -90.0, value <= 90.0 {
             model.latitude = value
         } else {
             model.latitude = nil

@@ -268,7 +268,7 @@ extension GoToInputViewController {
             navigationController?.pushViewController(vc, animated: true)
         } else if let valueItem = item as? DoubleValueItem {
             Task {
-                if let text = await textInputHandler(self, item.title, item.detail, .decimalPad), let value = self.numberFormatter.number(from: text)?.doubleValue {
+                if let text = await textInputHandler(self, item.title, item.detail, .decimalPad), let value = self.numberFormatter.number(from: text)?.doubleValue, value >= 0.0 {
                     switch valueItem.type {
                     case .distance:
                         self.distance = value
