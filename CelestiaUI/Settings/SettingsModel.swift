@@ -800,6 +800,8 @@ public func rendererSettings(extraItems: [SettingItem<AnyHashable>]) -> SettingS
                                 AssociatedSelectionSingleItem(key: "starColors", options: [
                                     .init(name: CelestiaString("Classic Colors", comment: ""), value: 0),
                                     .init(name: CelestiaString("Blackbody D65", comment: ""), value: 1),
+                                    .init(name: CelestiaString("Blackbody (Solar Whitepoint)", comment: ""), value: 2),
+                                    .init(name: CelestiaString("Blackbody (Vega Whitepoint)", comment: ""), value: 3),
                                 ], defaultOption: 1)
                             )),
                             SettingItem(
@@ -809,7 +811,7 @@ public func rendererSettings(extraItems: [SettingItem<AnyHashable>]) -> SettingS
                                     AssociatedSliderItem(key: "tintSaturation", minValue: 0, maxValue: 1)
                                 )
                             ),
-                        ], footer: CelestiaString("Tinted illumination saturation setting is only effective with Blackbody D65 star colors.", comment: ""))
+                        ], footer: CelestiaString("Tinted illumination saturation setting is only effective with Blackbody star colors.", comment: ""))
                     ]
                 )
             )

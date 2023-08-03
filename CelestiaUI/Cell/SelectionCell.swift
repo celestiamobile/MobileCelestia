@@ -14,7 +14,13 @@ import UIKit
 @available(iOS 15.0, *)
 public class SelectionCell: UITableViewCell {
     private lazy var label = UILabel(textStyle: .body)
-    private lazy var button = UIButton(configuration: .plain())
+    private lazy var button: UIButton = {
+#if targetEnvironment(macCatalyst)
+        return UIButton(type: .system)
+#else
+        return UIButton(configuration: .plain())
+#endif
+    }()
 
     public var title: String? { didSet { label.text = title }  }
     public var selectionData = SelectionData(options: [], selectedIndex: -1) {
