@@ -16,7 +16,8 @@ class DistanceInputCell: UITableViewCell {
     struct Model: Hashable {
         let units: [String]
         var selectedUnitIndex: Int
-        var distance: Double
+        var distanceValue: Double?
+        var distanceString: String?
     }
 
     private var ignoreModelUpdates = false
@@ -24,16 +25,15 @@ class DistanceInputCell: UITableViewCell {
     private lazy var distanceTextField = UITextField()
     private lazy var unitButton = UIButton(configuration: UIButton.Configuration.plain())
     var unitChanged: ((Int) -> Void)?
-    var distanceChanged: ((Double) -> Void)?
+    var distanceChanged: ((Double?, String?) -> Void)?
 
-    private lazy var numberFormatter: NumberFormatter = {
+    private lazy var parseNumberFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
-        formatter.locale = Locale.current
-        formatter.maximumFractionDigits = 2
+        formatter.usesGroupingSeparator = false
         return formatter
     }()
 
-    var model = Model(units: [], selectedUnitIndex: -1, distance: 0) {
+    var model = Model(units: [], selectedUnitIndex: -1, distanceValue: nil, distanceString: nil) {
         didSet {
             guard !ignoreModelUpdates else { return }
             update()
@@ -61,7 +61,7 @@ class DistanceInputCell: UITableViewCell {
             }
         }
         unitButton.menu = UIMenu(children: items)
-        distanceTextField.text = numberFormatter.string(from: NSNumber(value: model.distance))
+        distanceTextField.text = model.distanceString
     }
 
     private func setUp() {
@@ -104,11 +104,14 @@ class DistanceInputCell: UITableViewCell {
     }
 
     @objc private func distanceTextChanged() {
-        if let text = distanceTextField.text, let value = numberFormatter.number(from: text)?.doubleValue ?? Double(text) {
-            ignoreModelUpdates = true
-            model.distance = value
-            ignoreModelUpdates = false
-            distanceChanged?(model.distance)
+        ignoreModelUpdates = true
+        model.distanceString = distanceTextField.text
+        if let text = distanceTextField.text, let value = parseNumberFormatter.number(from: text)?.doubleValue {
+            model.distanceValue = value
+        } else {
+            model.distanceValue = nil
         }
+        ignoreModelUpdates = false
+        distanceChanged?(model.distanceValue, model.distanceString)
     }
 }

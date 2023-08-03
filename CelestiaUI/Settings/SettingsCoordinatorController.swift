@@ -65,6 +65,7 @@ public class SettingsCoordinatorController: UIViewController {
 
     private let actionHandler: (SettingAction) -> Void
     private let dateInputHandler: (_ viewController: UIViewController, _ title: String, _ format: String) async -> Date?
+    private let textInputHandler: (_ viewController: UIViewController, _ title: String, _ keyboardType: UIKeyboardType) async -> String?
     private let rendererInfoProvider: () async -> String
     private let screenProvider: () -> UIScreen
 
@@ -79,6 +80,7 @@ public class SettingsCoordinatorController: UIViewController {
         dataLocationContext: DataLocationSettingContext,
         actionHandler: @escaping ((SettingAction) -> Void),
         dateInputHandler: @escaping (_ viewController: UIViewController, _ title: String, _ format: String) async -> Date?,
+        textInputHandler: @escaping (_ viewController: UIViewController, _ title: String, _ keyboardType: UIKeyboardType) async -> String?,
         rendererInfoProvider: @escaping () async -> String,
         screenProvider: @escaping () -> UIScreen
     ) {
@@ -92,6 +94,7 @@ public class SettingsCoordinatorController: UIViewController {
         self.dataLocationContext = dataLocationContext
         self.actionHandler = actionHandler
         self.dateInputHandler = dateInputHandler
+        self.textInputHandler = textInputHandler
         self.rendererInfoProvider = rendererInfoProvider
         self.screenProvider = screenProvider
         super.init(nibName: nil, bundle: nil)
@@ -138,7 +141,7 @@ private extension SettingsCoordinatorController {
             case .about:
                 viewController = AboutViewController(bundle: bundle, defaultDirectoryURL: self.defaultDataDirectory)
             case .time:
-                viewController = TimeSettingViewController(core: core, executor: executor, dateInputHandler: self.dateInputHandler)
+                viewController = TimeSettingViewController(core: core, executor: executor, dateInputHandler: self.dateInputHandler, textInputHandler: self.textInputHandler)
             case .render:
                 let renderInfo = await self.rendererInfoProvider()
                 viewController = TextViewController(title: item.name, text: renderInfo)

@@ -21,11 +21,13 @@ class LongitudeLatitudeInputCell: UITableViewCell {
     private var ignoreModelUpdates = false
 
     struct Model: Hashable {
-        var longitude: Float
-        var latitude: Float
+        var longitude: Float?
+        var latitude: Float?
+        var longitudeString: String?
+        var latitudeString: String?
     }
 
-    var coordinatesChanged: ((Float, Float) -> Void)?
+    var coordinatesChanged: ((Float?, Float?, String?, String?) -> Void)?
 
     var model = Model(longitude: 0, latitude: 0) {
         didSet {
@@ -34,10 +36,9 @@ class LongitudeLatitudeInputCell: UITableViewCell {
         }
     }
 
-    private lazy var numberFormatter: NumberFormatter = {
+    private lazy var parseNumberFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
-        formatter.locale = Locale.current
-        formatter.maximumFractionDigits = 2
+        formatter.usesGroupingSeparator = false
         return formatter
     }()
 
@@ -52,8 +53,8 @@ class LongitudeLatitudeInputCell: UITableViewCell {
     }
 
     private func update() {
-        longitudeTextField.text = numberFormatter.string(from: NSNumber(value: model.longitude))
-        latitudeTextField.text = numberFormatter.string(from: NSNumber(value: model.latitude))
+        longitudeTextField.text = model.longitudeString
+        latitudeTextField.text = model.latitudeString
     }
 
     private func setUp() {
@@ -103,20 +104,26 @@ class LongitudeLatitudeInputCell: UITableViewCell {
     }
 
     @objc private func longitudeTextChanged() {
-        if let text = longitudeTextField.text, let value = numberFormatter.number(from: text)?.floatValue ?? Float(text) {
-            ignoreModelUpdates = true
+        ignoreModelUpdates = true
+        model.longitudeString = longitudeTextField.text
+        if let text = longitudeTextField.text, let value = parseNumberFormatter.number(from: text)?.floatValue {
             model.longitude = value
-            ignoreModelUpdates = false
-            coordinatesChanged?(model.longitude, model.latitude)
+        } else {
+            model.longitude = nil
         }
+        ignoreModelUpdates = false
+        coordinatesChanged?(model.longitude, model.latitude, model.longitudeString, model.latitudeString)
     }
 
     @objc private func latitudeTextChanged() {
-        if let text = latitudeTextField.text, let value = numberFormatter.number(from: text)?.floatValue ?? Float(text) {
-            ignoreModelUpdates = true
+        ignoreModelUpdates = true
+        model.latitudeString = latitudeTextField.text
+        if let text = latitudeTextField.text, let value = parseNumberFormatter.number(from: text)?.floatValue {
             model.latitude = value
-            ignoreModelUpdates = false
-            coordinatesChanged?(model.longitude, model.latitude)
+        } else {
+            model.latitude = nil
         }
+        ignoreModelUpdates = false
+        coordinatesChanged?(model.longitude, model.latitude, model.longitudeString, model.latitudeString)
     }
 }

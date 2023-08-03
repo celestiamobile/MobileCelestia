@@ -16,6 +16,7 @@ public class TimeSettingViewController: BaseTableViewController {
     private let core: AppCore
     private let executor: AsyncProviderExecutor
     private let dateInputHandler: (_ viewController: UIViewController, _ title: String, _ format: String) async -> Date?
+    private let textInputHandler: (_ viewController: UIViewController, _ title: String, _ keyboardType: UIKeyboardType) async -> String?
 
     private lazy var displayDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
@@ -23,15 +24,23 @@ public class TimeSettingViewController: BaseTableViewController {
         formatter.timeStyle = .short
         return formatter
     }()
+    private lazy var displayNumberFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.maximumFractionDigits = 4
+        formatter.usesGroupingSeparator = false
+        return formatter
+    }()
 
     public init(
         core: AppCore,
         executor: AsyncProviderExecutor,
-        dateInputHandler: @escaping (_ viewController: UIViewController, _ title: String, _ format: String) async -> Date?
+        dateInputHandler: @escaping (_ viewController: UIViewController, _ title: String, _ format: String) async -> Date?,
+        textInputHandler: @escaping (_ viewController: UIViewController, _ title: String, _ keyboardType: UIKeyboardType) async -> String?
     ) {
         self.core = core
         self.executor = executor
         self.dateInputHandler = dateInputHandler
+        self.textInputHandler = textInputHandler
         super.init(style: .defaultGrouped)
     }
     
@@ -55,7 +64,7 @@ private extension TimeSettingViewController {
 
 extension TimeSettingViewController {
     public override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 2
+        return 3
     }
 
     public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -63,11 +72,13 @@ extension TimeSettingViewController {
         if indexPath.row == 0 {
             cell.title = CelestiaString("Select Time", comment: "")
             cell.detail = displayDateFormatter.string(from: core.simulation.time)
+        } else if indexPath.row == 1 {
+            cell.title = CelestiaString("Julian Day", comment: "")
+            cell.detail = displayNumberFormatter.string(from: (core.simulation.time as NSDate).julianDay)
         } else {
             cell.title = CelestiaString("Set to Current Time", comment: "")
             cell.detail = nil
         }
-
         return cell
     }
 
@@ -75,7 +86,7 @@ extension TimeSettingViewController {
         tableView.deselectRow(at: indexPath, animated: true)
         if indexPath.row == 0 {
             let preferredFormat = DateFormatter.dateFormat(fromTemplate: "yyyyMMddHHmmss", options: 0, locale: Locale.current) ?? "yyyy/MM/dd HH:mm:ss"
-            let title = String.localizedStringWithFormat(CelestiaString("Please enter the time in \"%s\" format.", comment: "").toLocalizationTemplate, preferredFormat)
+            let title = String.localizedStringWithFormat(CelestiaString("Please enter the time in \"%@\" format.", comment: ""), preferredFormat)
             Task {
                 guard let date = await dateInputHandler(self, title, preferredFormat) else {
                     self.showError(CelestiaString("Unrecognized time string.", comment: ""))
@@ -86,7 +97,23 @@ extension TimeSettingViewController {
                 }
                 self.tableView.reloadData()
             }
-        } else {
+        } else if indexPath.row == 1 {
+            Task {
+                guard let text = await textInputHandler(self, CelestiaString("Please enter Julian day.", comment: ""), .decimalPad) else {
+                    return
+                }
+                let numberFormatter = NumberFormatter()
+                numberFormatter.usesGroupingSeparator = false
+                guard let value = numberFormatter.number(from: text)?.doubleValue else {
+                    self.showError(CelestiaString("Invalid Julian day string.", comment: ""))
+                    return
+                }
+                await self.executor.run { core in
+                    core.simulation.time = NSDate(julian: value) as Date
+                }
+                self.tableView.reloadData()
+            }
+        } else if indexPath.row == 2 {
             Task {
                 await executor.run {
                     $0.receive(.currentTime)

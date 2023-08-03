@@ -138,6 +138,7 @@
 		EAD12AAA2A56757F007EE4D6 /* StepperCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EB41C82408F26200E6D441 /* StepperCell.swift */; };
 		EADE7FBB252B517600D4174F /* CelestiaDisplayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE7FBA252B517600D4174F /* CelestiaDisplayController.swift */; };
 		EADE7FC0252B54A400D4174F /* CelestiaInteractionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE7FBF252B54A400D4174F /* CelestiaInteractionController.swift */; };
+		EAE51CA32A7B765100D6779C /* Formatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE51CA22A7B765100D6779C /* Formatter.swift */; };
 		EAE92A5C2A558B4400BFE06E /* AsyncProviderExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE92A5B2A558B4400BFE06E /* AsyncProviderExecutor.swift */; };
 		EAE92A5F2A558B8D00BFE06E /* GameControllerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE92A5E2A558B8D00BFE06E /* GameControllerManager.swift */; };
 		EAE92A602A558B9900BFE06E /* GameControllerAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6671CD29B3947800A7846E /* GameControllerAction.swift */; };
@@ -371,6 +372,7 @@
 		EAD962992782BA2B00CDF86E /* Info-macos.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-macos.plist"; sourceTree = "<group>"; };
 		EADE7FBA252B517600D4174F /* CelestiaDisplayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaDisplayController.swift; sourceTree = "<group>"; };
 		EADE7FBF252B54A400D4174F /* CelestiaInteractionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaInteractionController.swift; sourceTree = "<group>"; };
+		EAE51CA22A7B765100D6779C /* Formatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatter.swift; sourceTree = "<group>"; };
 		EAE6AC0E27A438E400F953DF /* CommonWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonWebViewController.swift; sourceTree = "<group>"; };
 		EAE92A5B2A558B4400BFE06E /* AsyncProviderExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncProviderExecutor.swift; sourceTree = "<group>"; };
 		EAE92A5E2A558B8D00BFE06E /* GameControllerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameControllerManager.swift; sourceTree = "<group>"; };
@@ -694,6 +696,7 @@
 				EAF4851F249B5C2500E5B817 /* StandardButton.swift */,
 				EA775EB32664B63F00479295 /* ActionButton.swift */,
 				EA7662D42A692ED600C77070 /* ContainerNavigationController.swift */,
+				EAE51CA22A7B765100D6779C /* Formatter.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -1391,6 +1394,7 @@
 				EAB8F2652A56DC3200C4E777 /* FallbackWebViewController.swift in Sources */,
 				EA50E7762A505DCE005E7D7A /* BodyActionCell.swift in Sources */,
 				EAD12AAA2A56757F007EE4D6 /* StepperCell.swift in Sources */,
+				EAE51CA32A7B765100D6779C /* Formatter.swift in Sources */,
 				EA50E77A2A505DCE005E7D7A /* InfoViewController.swift in Sources */,
 				EAA79CD42A56AF6D0056DB91 /* SettingsFrameRateViewController.swift in Sources */,
 				EABC92402A57021C007E27F0 /* LoadingViewController.swift in Sources */,

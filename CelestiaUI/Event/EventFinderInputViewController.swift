@@ -139,7 +139,7 @@ extension EventFinderInputViewController {
         if let it = item as? DateItem {
             let preferredFormat = DateFormatter.dateFormat(fromTemplate: "yyyyMMddHHmmss", options: 0, locale: Locale.current) ?? "yyyy/MM/dd HH:mm:ss"
             Task {
-                let title = String.localizedStringWithFormat(CelestiaString("Please enter the time in \"%s\" format.", comment: "").toLocalizationTemplate, preferredFormat)
+                let title = String.localizedStringWithFormat(CelestiaString("Please enter the time in \"%@\" format.", comment: ""), preferredFormat)
                 guard let date = await self.dateInputHandler(self, title, preferredFormat) else {
                     self.showError(CelestiaString("Unrecognized time string.", comment: ""))
                     return

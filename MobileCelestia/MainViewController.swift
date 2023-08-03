@@ -1101,8 +1101,10 @@ Device Model: \(model)
     }
 
     private func showTimeSettings() {
-        let vc = TimeSettingViewController(core: core, executor: executor) { viewController, title, format in
+        let vc = TimeSettingViewController(core: core, executor: executor, dateInputHandler: { viewController, title, format in
             return await viewController.getDateInputDifferentiated(title, format: format)
+        }) { viewController, title, keyboardType in
+            return await viewController.getTextInputDifferentiated(title, keyboardType: keyboardType)
         }
         showViewController(UINavigationController(rootViewController: vc))
     }
@@ -1134,6 +1136,8 @@ Device Model: \(model)
                 }
             }, dateInputHandler: { viewController, title, format in
                 return await viewController.getDateInputDifferentiated(title, format: format)
+            }, textInputHandler: { viewController, title, keyboardType in
+                return await viewController.getTextInputDifferentiated(title, keyboardType: keyboardType)
             }, rendererInfoProvider: {
                 return await executor.get { core in
                     executor.makeRenderContextCurrent()

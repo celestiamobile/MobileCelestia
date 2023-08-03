@@ -28,6 +28,13 @@ class SettingsFrameRateViewController: BaseTableViewController {
     private let frameRateUpdateHandler: (Int) -> Void
     private let screen: UIScreen
 
+    private lazy var numberFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.usesGroupingSeparator = true
+        return formatter
+    }()
+
     init(screen: UIScreen, userDefaults: UserDefaults, userDefaultsKey: String, frameRateUpdateHandler: @escaping (Int) -> Void) {
         self.screen = screen
         self.userDefaults = userDefaults
@@ -84,7 +91,8 @@ extension SettingsFrameRateViewController {
         let selectedFrameRate: Int = userDefaults.value(forKey: userDefaultsKey) as? Int ?? 60
         let item = items[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
-        cell.title = String.localizedStringWithFormat(CelestiaString(item.isMaximum ? "Maximum (%d FPS)" : "%d FPS", comment: ""), item.frameRate)
+
+        cell.title = String.localizedStringWithFormat(CelestiaString(item.isMaximum ? "Maximum (%@ FPS)" : "%@ FPS", comment: ""), numberFormatter.string(from: item.frameRate))
         cell.accessoryType = item.frameRateValue == selectedFrameRate ? .checkmark : .none
         return cell
     }

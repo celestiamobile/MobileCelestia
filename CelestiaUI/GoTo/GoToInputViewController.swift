@@ -37,16 +37,23 @@ private extension DistanceUnit {
 }
 
 class GoToInputViewController: BaseTableViewController {
+    private enum Constants {
+        static let defaultLatitude: Float = 0
+        static let defaultLongitude: Float = 0
+        static let defaultDistance: Double = 8
+    }
+
     struct DoubleValueItem: GoToInputItem {
         enum ValueType {
             case distance
         }
         let title: String
-        let value: Double
+        let value: Double?
+        let valueString: String?
         let formatter: NumberFormatter
         let type: ValueType
 
-        var detail: String { return formatter.string(from: NSNumber(value: value)) ?? "" }
+        var detail: String { return valueString ?? "" }
     }
 
     struct LonLatItem: GoToInputItem {
@@ -86,10 +93,14 @@ class GoToInputViewController: BaseTableViewController {
     private let textInputHandler: (_ viewController: UIViewController, _ title: String, _ text: String, _ keyboardType: UIKeyboardType) async -> String?
 
     private var objectName: String = LocalizedString("Earth", "celestia-data")
-    private var longitude: Float = 0
-    private var latitude: Float = 0
 
-    private var distance: Double = 8
+    private var longitude: Float? = 0
+    private var longitudeString: String?
+    private var latitude: Float? = 0
+    private var latitudeString: String?
+    private var distance: Double?
+    private var distanceString: String?
+
     private var unit: DistanceUnit = .radii
 
     private var allSections: [Section] = []
@@ -98,8 +109,7 @@ class GoToInputViewController: BaseTableViewController {
 
     private lazy var numberFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
-        formatter.locale = Locale.current
-        formatter.maximumFractionDigits = 2
+        formatter.usesGroupingSeparator = false
         return formatter
     }()
 
@@ -109,11 +119,17 @@ class GoToInputViewController: BaseTableViewController {
         locationHandler: @escaping ((GoToLocation) -> Void),
         textInputHandler: @escaping (_ viewController: UIViewController, _ title: String, _ text: String, _ keyboardType: UIKeyboardType) async -> String?
     ) {
+        self.distance = Constants.defaultDistance
+        self.longitude = Constants.defaultLongitude
+        self.latitude = Constants.defaultLatitude
         self.executor = executor
         self.objectNameHandler = objectNameHandler
         self.locationHandler = locationHandler
         self.textInputHandler = textInputHandler
         super.init(style: .defaultGrouped)
+        self.distanceString = numberFormatter.string(from: Constants.defaultDistance)
+        self.longitudeString = numberFormatter.string(from: Constants.defaultLongitude)
+        self.latitudeString = numberFormatter.string(from: Constants.defaultLatitude)
     }
 
     required init?(coder: NSCoder) {
@@ -155,7 +171,7 @@ private extension GoToInputViewController {
                 showError(CelestiaString("Object not found", comment: ""))
                 return
             }
-            locationHandler(GoToLocation(selection: selection, longitude: longitude, latitude: latitude, distance: distance, unit: unit))
+            locationHandler(GoToLocation(selection: selection, longitude: longitude ?? Constants.defaultLongitude, latitude: latitude ?? Constants.defaultLatitude, distance: distance ?? Constants.defaultDistance, unit: unit))
         }
     }
 
@@ -165,7 +181,7 @@ private extension GoToInputViewController {
             distanceSection = Section(title: CelestiaString("Distance", comment: ""), items: [DistanceItem()])
         } else {
             distanceSection = Section(title: nil, items: [
-                DoubleValueItem(title: CelestiaString("Distance", comment: ""), value: distance, formatter: numberFormatter, type: .distance),
+                DoubleValueItem(title: CelestiaString("Distance", comment: ""), value: distance, valueString: distanceString, formatter: numberFormatter, type: .distance),
                 UnitItem(unit: unit)
             ])
         }
@@ -193,11 +209,14 @@ extension GoToInputViewController {
         let item = allSections[indexPath.section].items[indexPath.row]
         if item is LonLatItem {
             let cell = tableView.dequeueReusableCell(withIdentifier: "LonLat", for: indexPath) as! LongitudeLatitudeInputCell
-            cell.model = LongitudeLatitudeInputCell.Model(longitude: longitude, latitude: latitude)
-            cell.coordinatesChanged = { [weak self] longitude, latitude in
-                guard let self = self else { return }
+            cell.model = LongitudeLatitudeInputCell.Model(longitude: longitude, latitude: latitude, longitudeString: longitudeString, latitudeString: latitudeString)
+            cell.coordinatesChanged = { [weak self] longitude, latitude, longitudeString, latitudeString in
+                guard let self else { return }
                 self.longitude = longitude
                 self.latitude = latitude
+                self.longitudeString = longitudeString
+                self.latitudeString = latitudeString
+                self.validate()
             }
             return cell
         }
@@ -206,13 +225,17 @@ extension GoToInputViewController {
             cell.model = DistanceInputCell.Model(
                 units: DistanceUnit.allCases.map({ CelestiaString($0.name, comment: "") }),
                 selectedUnitIndex: DistanceUnit.allCases.firstIndex(of: unit)!,
-                distance: distance
+                distanceValue: distance,
+                distanceString: distanceString
             )
             cell.unitChanged = { [weak self] unitIndex in
                 self?.unit = DistanceUnit.allCases[unitIndex]
             }
-            cell.distanceChanged = { [weak self] distance in
-                self?.distance = distance
+            cell.distanceChanged = { [weak self] distanceValue, distanceString in
+                guard let self else { return }
+                self.distance = distanceValue
+                self.distanceString = distanceString
+                self.validate()
             }
             return cell
         }
@@ -245,15 +268,26 @@ extension GoToInputViewController {
             navigationController?.pushViewController(vc, animated: true)
         } else if let valueItem = item as? DoubleValueItem {
             Task {
-                if let text = await textInputHandler(self, item.title, item.detail, .decimalPad), let value = self.numberFormatter.number(from: text)?.doubleValue ?? Double(text) {
-
+                if let text = await textInputHandler(self, item.title, item.detail, .decimalPad), let value = self.numberFormatter.number(from: text)?.doubleValue {
                     switch valueItem.type {
                     case .distance:
                         self.distance = value
+                        self.distanceString = self.numberFormatter.string(from: value)
                     }
+                    self.validate()
                     self.reload()
                 }
             }
+        }
+    }
+}
+
+private extension GoToInputViewController {
+    func validate() {
+        if distance != nil && longitude != nil && latitude != nil {
+            navigationItem.rightBarButtonItem?.isEnabled = true
+        } else {
+            navigationItem.rightBarButtonItem?.isEnabled = false
         }
     }
 }
