@@ -40,6 +40,12 @@ public class CommonWebViewController: UIViewController {
         return UIBarButtonItem(image: UIImage(systemName: isRTL ? "chevron.right" : "chevron.left"), style: .plain, target: self, action: #selector(goBack))
     }()
 
+    #if targetEnvironment(macCatalyst)
+    private lazy var toolbarBackItem: NSToolbarItem = {
+        return NSToolbarItem(backItemIdentifier: .back, target: self, action: #selector(goBack))
+    }()
+    #endif
+
     private lazy var activityIndicator = UIActivityIndicatorView(style: .large)
 
     public override func loadView() {
@@ -101,21 +107,21 @@ public class CommonWebViewController: UIViewController {
         titleObservation = webView.observe(\.title, options: .new, changeHandler: { [weak self] webView, _ in
             guard let self else { return }
             Task.detached { @MainActor in
-                self.navigationItem.title = webView.title
+                self.title = webView.title
             }
         })
     }
 
     private func updateNavigation() {
         goBackItem.isEnabled = webView.canGoBack
-        if #available(iOS 16.0, *) {
 #if !targetEnvironment(macCatalyst)
-            // Hiding items might cause issue on Catalyst, so do not hide on Catalyst
-            goBackItem.isHidden = !goBackItem.isEnabled
-#endif
-        } else {
-            navigationItem.leftBarButtonItem = goBackItem.isEnabled ? goBackItem : nil
+        if #available(iOS 16.0, *) {
+            goBackItem.isHidden = true
         }
+#else
+        toolbarBackItem.isEnabled = goBackItem.isEnabled
+        updateToolbarIfNeeded()
+#endif
     }
 
     @objc private func goBack() {
@@ -252,3 +258,25 @@ extension Data {
         }
     }
 }
+
+#if targetEnvironment(macCatalyst)
+extension NSToolbarItem.Identifier {
+    private static let prefix = Bundle(for: GoToInputViewController.self).bundleIdentifier!
+    fileprivate static let back = NSToolbarItem.Identifier.init("\(prefix).web.back")
+}
+
+extension CommonWebViewController: ToolbarAwareViewController {
+    public func supportedToolbarItemIdentifiers(for toolbarContainerViewController: ToolbarContainerViewController) -> [NSToolbarItem.Identifier] {
+        return webView.canGoBack ? [.back] : []
+    }
+
+    public func toolbarContainerViewController(_ toolbarContainerViewController: ToolbarContainerViewController, itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier) -> NSToolbarItem? {
+        if itemIdentifier == .back {
+            return toolbarBackItem
+        }
+        return nil
+    }
+}
+#endif
+
+

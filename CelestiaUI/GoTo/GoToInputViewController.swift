@@ -107,6 +107,15 @@ class GoToInputViewController: BaseTableViewController {
 
     private let executor: AsyncProviderExecutor
 
+#if targetEnvironment(macCatalyst)
+    private lazy var goToolbarItem: NSToolbarItem = {
+        let item = NSToolbarItem(itemIdentifier: .go, buttonTitle: CelestiaString("Go", comment: ""), target: self, action: #selector(go))
+        item.label = CelestiaString("Go", comment: "")
+        item.toolTip = item.label
+        return item
+    }()
+#endif
+
     private lazy var numberFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.usesGroupingSeparator = false
@@ -147,6 +156,26 @@ class GoToInputViewController: BaseTableViewController {
         reload()
     }
 }
+
+#if targetEnvironment(macCatalyst)
+extension NSToolbarItem.Identifier {
+    private static let prefix = Bundle(for: GoToInputViewController.self).bundleIdentifier!
+    fileprivate static let go = NSToolbarItem.Identifier.init("\(prefix).go")
+}
+
+extension GoToInputViewController: ToolbarAwareViewController {
+    func supportedToolbarItemIdentifiers(for toolbarContainerViewController: ToolbarContainerViewController) -> [NSToolbarItem.Identifier] {
+        return [.go]
+    }
+
+    func toolbarContainerViewController(_ toolbarContainerViewController: ToolbarContainerViewController, itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier) -> NSToolbarItem? {
+        if itemIdentifier == .go {
+            return goToolbarItem
+        }
+        return nil
+    }
+}
+#endif
 
 private extension GoToInputViewController {
     func setUp() {
@@ -286,8 +315,14 @@ private extension GoToInputViewController {
     func validate() {
         if distance != nil && longitude != nil && latitude != nil {
             navigationItem.rightBarButtonItem?.isEnabled = true
+            #if targetEnvironment(macCatalyst)
+            goToolbarItem.isEnabled = true
+            #endif
         } else {
             navigationItem.rightBarButtonItem?.isEnabled = false
+            #if targetEnvironment(macCatalyst)
+            goToolbarItem.isEnabled = false
+            #endif
         }
     }
 }

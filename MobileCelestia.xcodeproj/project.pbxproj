@@ -32,6 +32,7 @@
 		EA1BE1572748E9DC0046074C /* DisplaySceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BE1562748E9DC0046074C /* DisplaySceneDelegate.swift */; };
 		EA28CA4E24A25FE7004B011E /* BottomControlViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA28CA4D24A25FE7004B011E /* BottomControlViewController.swift */; };
 		EA28CA5324A2F399004B011E /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = EA28CA5124A2F399004B011E /* Fonts */; };
+		EA2AF7442A7F419A00492345 /* ToolbarAwareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2AF7432A7F419A00492345 /* ToolbarAwareViewController.swift */; };
 		EA4E2D782A56B4570046D62E /* CelestiaFoundation.h in Headers */ = {isa = PBXBuildFile; fileRef = EA4E2D772A56B4570046D62E /* CelestiaFoundation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		EA4E2D7C2A56B46B0046D62E /* CelestiaFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA4E2D752A56B4570046D62E /* CelestiaFoundation.framework */; };
 		EA4E2D842A56B5B10046D62E /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA78733C296EB61B0099AB11 /* URL.swift */; };
@@ -300,6 +301,7 @@
 		EA1EF056249393BE0039F493 /* Celestia.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Celestia.entitlements; sourceTree = "<group>"; };
 		EA28CA4D24A25FE7004B011E /* BottomControlViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomControlViewController.swift; sourceTree = "<group>"; };
 		EA28CA5124A2F399004B011E /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Fonts; path = ../../CelestiaCore/Fonts; sourceTree = "<group>"; };
+		EA2AF7432A7F419A00492345 /* ToolbarAwareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarAwareViewController.swift; sourceTree = "<group>"; };
 		EA374CD1263A8B320069589C /* GoToContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoToContainerViewController.swift; sourceTree = "<group>"; };
 		EA374CD9263A8B770069589C /* GoToInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoToInputViewController.swift; sourceTree = "<group>"; };
 		EA3EC553277C8EAD00936D4F /* Celestia-macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Celestia-macOS.entitlements"; sourceTree = "<group>"; };
@@ -723,6 +725,7 @@
 				EAB08FE32780550600BB82F0 /* Font.swift */,
 				977394A22403E68800E38B82 /* Color.swift */,
 				EAA16A9728A6654600DBCE4F /* GlobalConstants.swift */,
+				EA2AF7432A7F419A00492345 /* ToolbarAwareViewController.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -1408,6 +1411,7 @@
 				EAA79CD62A56B0100056DB91 /* DataLocationSelectionViewController.swift in Sources */,
 				EAB8F25D2A56D80D00C4E777 /* CommonWebViewController.swift in Sources */,
 				EA839CB42A5696E100BF1CB4 /* SliderCell.swift in Sources */,
+				EA2AF7442A7F419A00492345 /* ToolbarAwareViewController.swift in Sources */,
 				EAA79CCE2A56AB2D0056DB91 /* SettingCommonViewController.swift in Sources */,
 				EAB8F2642A56DC3200C4E777 /* ResourceViewController.swift in Sources */,
 				EAE92A602A558B9900BFE06E /* GameControllerAction.swift in Sources */,

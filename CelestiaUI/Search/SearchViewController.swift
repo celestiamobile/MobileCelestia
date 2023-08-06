@@ -141,7 +141,7 @@ extension SearchViewController: UISearchResultsUpdating {
 
         Task {
             let results = await self.search(with: text)
-            guard text == self.searchController.searchBar.text else { return }
+            guard text == searchController.searchBar.text else { return }
             self.resultSections = results
             self.tableView.reloadData()
         }
@@ -197,3 +197,40 @@ extension SearchViewController {
         selected(selection.name)
     }
 }
+
+#if targetEnvironment(macCatalyst)
+extension NSToolbarItem.Identifier {
+    private static let prefix = Bundle(for: GoToInputViewController.self).bundleIdentifier!
+    fileprivate static let search = NSToolbarItem.Identifier.init("\(prefix).search")
+}
+
+extension SearchViewController: ToolbarAwareViewController {
+    public func supportedToolbarItemIdentifiers(for toolbarContainerViewController: ToolbarContainerViewController) -> [NSToolbarItem.Identifier] {
+        return [.search]
+    }
+
+    public func toolbarContainerViewController(_ toolbarContainerViewController: ToolbarContainerViewController, itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier) -> NSToolbarItem? {
+        if itemIdentifier == .search {
+            return NSToolbarItem(searchItemIdentifier: .search, target: self, action: #selector(executeSearch(_:)))
+        }
+        return nil
+    }
+
+    @objc private func executeSearch(_ sender: NSObject) {
+        let text = sender.value(forKey: "stringValue") as? String ?? ""
+
+        if text.isEmpty {
+            resultSections = []
+            tableView.reloadData()
+            return
+        }
+
+        Task {
+            let results = await self.search(with: text)
+            guard text == sender.value(forKey: "stringValue") as? String else { return }
+            self.resultSections = results
+            self.tableView.reloadData()
+        }
+    }
+}
+#endif

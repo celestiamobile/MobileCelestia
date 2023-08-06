@@ -12,7 +12,7 @@
 import CelestiaCore
 import UIKit
 
-public class ResourceCategoriesViewController: UINavigationController {
+public class ResourceCategoriesViewController: ToolbarNavigationContainerController {
     public init(executor: AsyncProviderExecutor, resourceManager: ResourceManager) {
         let baseURL = "https://celestia.mobi/resources/categories"
         #if targetEnvironment(macCatalyst)

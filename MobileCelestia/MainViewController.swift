@@ -412,7 +412,7 @@ extension MainViewController {
                 showViewController(UINavigationController(rootViewController: vc))
             }
         case .getAddons:
-            showViewController(ResourceCategoriesViewController(executor: executor, resourceManager: resourceManager))
+            showOnlineAddons()
         case .showInstalledAddons:
             presentInstalledAddons()
         case .addBookmark:
@@ -617,7 +617,7 @@ extension MainViewController: CelestiaControllerDelegate {
         case .addons:
             presentInstalledAddons()
         case .download:
-            showViewController(ResourceCategoriesViewController(executor: executor, resourceManager: resourceManager))
+            showOnlineAddons()
         case .paperplane:
             presentGoTo()
         case .speedometer:
@@ -633,6 +633,10 @@ extension MainViewController: CelestiaControllerDelegate {
         case .feedback:
             sendFeedback()
         }
+    }
+
+    private func showOnlineAddons() {
+        showViewController(ResourceCategoriesViewController(executor: executor, resourceManager: resourceManager), customToolbar: true)
     }
 
     private func sendFeedback() {
@@ -963,7 +967,7 @@ Device Model: \(model)
             self?.executor.runAsynchronously { $0.simulation.go(to: location) }
         }, textInputHandler: { viewController, title, text, keyboardType in
             return await viewController.getTextInputDifferentiated(title, text: text, keyboardType: keyboardType)
-        }))
+        }), macOSPreferredSize: CGSize(width: 500, height: 500), customToolbar: true)
     }
 
     private func presentSpeedControl() {
@@ -1180,9 +1184,10 @@ Device Model: \(model)
                                     key: String? = nil,
                                     iOSPreferredSize: CGSize = CGSize(width: 320, height: 320),
                                     macOSPreferredSize: CGSize = CGSize(width: 400, height: 500),
-                                    titleVisible: Bool = true) {
+                                    titleVisible: Bool = true,
+                                    customToolbar: Bool = false) {
         #if targetEnvironment(macCatalyst)
-        PanelSceneDelegate.present(viewController, key: key, preferredSize: macOSPreferredSize, titleVisible: titleVisible)
+        PanelSceneDelegate.present(viewController, key: key, preferredSize: macOSPreferredSize, titleVisible: titleVisible, customToolbar: customToolbar)
         #else
         viewController.preferredContentSize = iOSPreferredSize
         viewController.modalPresentationStyle = .custom
