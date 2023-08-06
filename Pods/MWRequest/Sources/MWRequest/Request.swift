@@ -105,13 +105,13 @@ private extension URLSession {
             return try await data(for: request, delegate: nil)
         }
         return try await withCheckedThrowingContinuation { continuation in
-            _ = dataTask(with: request) { data, response, error in
+            dataTask(with: request) { data, response, error in
                 if let error = error {
                     continuation.resume(throwing: error)
                     return
                 }
                 continuation.resume(returning: (data!, response!))
-            }
+            }.resume()
         }
     }
 }

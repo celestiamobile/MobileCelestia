@@ -1,6 +1,6 @@
 {
   "name": "MWRequest",
-  "version": "0.3.4",
+  "version": "0.3.7",
   "summary": "HTTP request wrapper.",
   "homepage": "https://github.com/levinli303/mwrequest.git",
   "license": "MIT",
@@ -16,7 +16,7 @@
   "swift_versions": "5.5",
   "source": {
     "git": "https://github.com/levinli303/mwrequest.git",
-    "tag": "0.3.4"
+    "tag": "0.3.7"
   },
   "source_files": "Sources/**/*.swift",
   "swift_version": "5.5"
