@@ -12,7 +12,7 @@
 import CelestiaCore
 import UIKit
 
-public class EventFinderCoordinatorViewController: UINavigationController {
+public class EventFinderCoordinatorViewController: ToolbarNavigationContainerController {
     public init(
         executor: AsyncProviderExecutor,
         eventHandler: @escaping ((Eclipse) -> Void),

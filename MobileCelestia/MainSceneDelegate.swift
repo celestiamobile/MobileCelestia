@@ -43,6 +43,16 @@ class MainSceneDelegate: CommonSceneDelegate {
             launchURL = UniformedURL(url: url.url, securityScoped: url.url.isFileURL && url.options.openInPlace)
         }
         let vc = MainViewController(initialURL: launchURL, screen: windowScene.screen)
+        #if targetEnvironment(macCatalyst)
+        if #available(iOS 16.0, *) {
+            let toolbar = NSToolbar(identifier: UUID().uuidString)
+            toolbar.displayMode = .iconOnly
+            toolbar.allowsUserCustomization = false
+            toolbar.autosavesConfiguration = false
+            windowScene.titlebar?.toolbar = toolbar
+            vc.nsToolbar = toolbar
+        }
+        #endif
         window.rootViewController = vc
 
         self.window = window

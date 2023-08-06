@@ -133,7 +133,6 @@ open class ToolbarNavigationContainerController: UIViewController, ToolbarContai
         }
         navigation.setNavigationBarHidden(nsToolbar != nil, animated: false)
         nsToolbar?.delegate = self
-        nsToolbar?.displayMode = .iconOnly
         updateToolbar()
     }
 
@@ -299,13 +298,28 @@ open class ToolbarSplitContainerController: UIViewController, ToolbarContainerVi
     private var secondaryNavigation: UINavigationController?
     private var titleObservation: NSKeyValueObservation?
 
+    @available(iOS 16.0, *)
+    public var preferredDisplayMode: UISplitViewController.DisplayMode {
+        get { split.preferredDisplayMode }
+        set { split.preferredDisplayMode = newValue }
+    }
+
+    @available(iOS 16.0, *)
+    public var minimumPrimaryColumnWidth: CGFloat {
+        get { split.minimumPrimaryColumnWidth }
+        set { split.minimumPrimaryColumnWidth = newValue }
+    }
+
+    @available(iOS 16.0, *)
+    public var maximumPrimaryColumnWidth: CGFloat {
+        get { split.maximumPrimaryColumnWidth }
+        set { split.maximumPrimaryColumnWidth = newValue }
+    }
+
     private lazy var backToolbarItem = NSToolbarItem(backItemIdentifier: .back, target: self, action: #selector(goBack))
     private var currentToolbarItemIdentifiers: [NSToolbarItem.Identifier] = []
 
-    private let retainSidebarStyle: Bool
-
-    init(sidebarViewController: UIViewController? = nil, secondaryViewController: UIViewController? = nil,
-         retainSidebarStyle: Bool = false) {
+    public init(sidebarViewController: UIViewController? = nil, secondaryViewController: UIViewController? = nil) {
         let sidebarNavigation: ToolbarAwareNavigationController?
         if let sidebarViewController {
             sidebarNavigation = ToolbarAwareNavigationController(rootViewController: sidebarViewController)
@@ -320,7 +334,6 @@ open class ToolbarSplitContainerController: UIViewController, ToolbarContainerVi
         }
         self.sidebarNavigation = sidebarNavigation
         self.secondaryNavigation = secondaryNavigation
-        self.retainSidebarStyle = retainSidebarStyle
         if #available(macCatalyst 16, *) {
             split = UISplitViewController(style: .doubleColumn)
         } else {
@@ -354,6 +367,7 @@ open class ToolbarSplitContainerController: UIViewController, ToolbarContainerVi
         } else {
             split.viewControllers = [newNavigation, secondaryNavigation].compactMap { $0 }
         }
+        updateToolbar()
         return newNavigation
     }
 
@@ -364,7 +378,7 @@ open class ToolbarSplitContainerController: UIViewController, ToolbarContainerVi
     @discardableResult public func setSecondaryViewController(_ secondaryViewController: UIViewController) -> UINavigationController {
         secondaryNavigation?.delegate = nil
         let newNavigation = ToolbarAwareNavigationController(rootViewController: secondaryViewController)
-        if nsToolbar != nil, !retainSidebarStyle {
+        if nsToolbar != nil {
             newNavigation.setNavigationBarHidden(true, animated: false)
         }
         newNavigation.delegate = self
@@ -425,13 +439,10 @@ open class ToolbarSplitContainerController: UIViewController, ToolbarContainerVi
             }
         }
 
-        if !retainSidebarStyle {
-            sidebarNavigation?.setNavigationBarHidden(nsToolbar != nil, animated: false)
-        }
+        sidebarNavigation?.setNavigationBarHidden(nsToolbar != nil, animated: false)
         secondaryNavigation?.setNavigationBarHidden(nsToolbar != nil, animated: false)
 
         nsToolbar?.delegate = self
-        nsToolbar?.displayMode = .iconOnly
         updateToolbar()
     }
 
@@ -480,9 +491,6 @@ extension ToolbarSplitContainerController: ToolbarAwareNavigationControllerDeleg
 
     @available(iOS 16.0, *)
     func fallbackStyleForNavigationController(_ navigationController: UINavigationController) -> ToolbarFallbackStyle {
-        if retainSidebarStyle, navigationController == sidebarNavigation {
-            return .sidebar
-        }
         return .none
     }
 }

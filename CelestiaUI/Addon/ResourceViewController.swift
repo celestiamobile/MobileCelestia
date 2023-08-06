@@ -11,7 +11,7 @@
 
 import UIKit
 
-public class ResourceViewController: UINavigationController {
+public class ResourceViewController: ToolbarNavigationContainerController {
     private let executor: AsyncProviderExecutor
     private let resourceManager: ResourceManager
 

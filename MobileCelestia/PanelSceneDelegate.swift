@@ -27,13 +27,12 @@ class PanelSceneDelegate: CommonSceneDelegate {
         guard let viewController = Self.viewControllersToPresent.removeValue(forKey: id) else { return }
         let size = CGSize(width: width, height: height)
         Self.weakSessionTable.setObject(session, forKey: sessionKey as NSString)
-        if #available(macCatalyst 16.0, *) {
-            windowScene.titlebar?.titleVisibility = titleVisible ? .visible : .hidden
-        } else {
-            windowScene.titlebar?.titleVisibility = .hidden
-        }
+        windowScene.titlebar?.titleVisibility = titleVisible ? .visible : .hidden
         if showsToolbar {
-            let toolbar = NSToolbar()
+            let toolbar = NSToolbar(identifier: UUID().uuidString)
+            toolbar.displayMode = .iconOnly
+            toolbar.allowsUserCustomization = false
+            toolbar.autosavesConfiguration = false
             windowScene.titlebar?.toolbar = toolbar
             if let toolbarAwareVC = viewController as? ToolbarContainerViewController {
                 toolbarAwareVC.nsToolbar = toolbar
@@ -90,7 +89,7 @@ class PanelSceneDelegate: CommonSceneDelegate {
         }
         let activity = NSUserActivity(activityType: Self.activityType)
         let id = UUID()
-        var info: [String: Any] = [idKey: id, widthKey: preferredSize.width, heightKey: preferredSize.height, sessionKey: sessionTableKey, titleVisibleKey: titleVisible, customToolbarKey: customToolbar]
+        let info: [String: Any] = [idKey: id, widthKey: preferredSize.width, heightKey: preferredSize.height, sessionKey: sessionTableKey, titleVisibleKey: titleVisible, customToolbarKey: customToolbar]
         activity.userInfo = info
         viewControllersToPresent[id] = viewController
         UIApplication.shared.requestSceneSessionActivation(nil, userActivity: activity, options: nil) { _ in }

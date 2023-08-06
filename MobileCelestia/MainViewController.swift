@@ -42,7 +42,7 @@ class MainViewController: UIViewController {
         return controller
     }()
     #if targetEnvironment(macCatalyst)
-    private var split: UISplitViewController?
+    private var split: ToolbarSplitContainerController?
     #endif
 
     private var status: LoadingStatus = .notLoaded
@@ -75,6 +75,17 @@ class MainViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
         celestiaController = CelestiaViewController(screen: screen, executor: executor, userDefaults: userDefaults)
 
+        #if targetEnvironment(macCatalyst)
+        if #available(iOS 16.0, *) {
+            let splitViewController = ToolbarSplitContainerController()
+            splitViewController.preferredDisplayMode = .secondaryOnly
+            splitViewController.minimumPrimaryColumnWidth = ToolbarViewController.Constants.width
+            splitViewController.maximumPrimaryColumnWidth = ToolbarViewController.Constants.width
+            splitViewController.setSecondaryViewController(celestiaController)
+            split = splitViewController
+        }
+        #endif
+
         if let url = initialURL {
             receivedURL(url)
         }
@@ -95,15 +106,8 @@ class MainViewController: UIViewController {
 
         celestiaController.delegate = self
         #if targetEnvironment(macCatalyst)
-        if #available(macCatalyst 16.0, *) {
-            let splitViewController = UISplitViewController(style: .doubleColumn)
-            splitViewController.preferredDisplayMode = .secondaryOnly
-            splitViewController.minimumPrimaryColumnWidth = ToolbarViewController.Constants.width
-            splitViewController.maximumPrimaryColumnWidth = ToolbarViewController.Constants.width
-            splitViewController.primaryBackgroundStyle = .sidebar
-            splitViewController.setViewController(ContentNavigationController(rootViewController: celestiaController), for: .secondary)
-            install(splitViewController)
-            split = splitViewController
+        if let split {
+            install(split)
         } else {
             install(celestiaController)
         }
@@ -269,8 +273,8 @@ extension MainViewController {
             Task {
                 do {
                     let item = try await ResourceItem.getMetadata(id: addon, language: locale)
-                    let nav = UINavigationController(rootViewController: ResourceItemViewController(executor: executor, resourceManager: resourceManager, item: item, needsRefetchItem: false))
-                    self.showViewController(nav, key: addon)
+                    let nav = ToolbarNavigationContainerController(rootViewController: ResourceItemViewController(executor: executor, resourceManager: resourceManager, item: item, needsRefetchItem: false))
+                    self.showViewController(nav, key: addon, customToolbar: true)
                 } catch {}
             }
             cleanup()
@@ -330,7 +334,7 @@ extension MainViewController {
             shareImage()
         case .showAbout:
             let vc = AboutViewController(bundle: .app, defaultDirectoryURL: UserDefaults.defaultDataDirectory)
-            showViewController(UINavigationController(rootViewController: vc))
+            showViewController(ToolbarNavigationContainerController(rootViewController: vc), customToolbar: true)
         case .selectSol:
             Task {
                 await executor.receive(.home)
@@ -358,7 +362,7 @@ extension MainViewController {
                 await executor.receive(.goTo)
             }
         case .showFlightMode:
-            showViewController(UINavigationController(rootViewController: ObserverModeViewController(executor: executor)))
+            showViewController(ToolbarNavigationContainerController(rootViewController: ObserverModeViewController(executor: executor)), customToolbar: true)
         case .showStarBrowser:
             showBrowser()
         case .showEclipseFinder:
@@ -409,7 +413,7 @@ extension MainViewController {
             Task {
                 let renderInfo = await self.executor.get { $0.renderInfo }
                 let vc = TextViewController(title: CelestiaString("OpenGL Info", comment: ""), text: renderInfo)
-                showViewController(UINavigationController(rootViewController: vc))
+                showViewController(ToolbarNavigationContainerController(rootViewController: vc), customToolbar: true)
             }
         case .getAddons:
             showOnlineAddons()
@@ -545,8 +549,8 @@ extension MainViewController: CelestiaControllerDelegate {
         self.status = .loaded
         self.loadingController.remove()
         #if targetEnvironment(macCatalyst)
-        if #available(macCatalyst 16, *), let split {
-            split.setViewController(SidebarNavigationController(rootViewController: actionViewController), for: .primary)
+        if let split {
+            split.setSidebarViewController(actionViewController)
         } else {
             setupToolbar()
         }
@@ -937,8 +941,8 @@ Device Model: \(model)
 
     private func presentCameraControl() {
         let vc = CameraControlViewController(executor: executor)
-        let controller = UINavigationController(rootViewController: vc)
-        showViewController(controller)
+        let controller = ToolbarNavigationContainerController(rootViewController: vc)
+        showViewController(controller, customToolbar: true)
     }
 
     @objc private func presentHelp() {
@@ -954,12 +958,12 @@ Device Model: \(model)
             return await viewController.getTextInputDifferentiated(title)
         }, dateInputHandler: { viewController, title, format in
             return await viewController.getDateInputDifferentiated(title, format: format)
-        }))
+        }), customToolbar: true)
     }
 
     private func presentInstalledAddons() {
         let controller = ResourceViewController(executor: executor, resourceManager: resourceManager)
-        showViewController(controller)
+        showViewController(controller, customToolbar: true)
     }
 
     private func presentGoTo() {
@@ -1101,7 +1105,7 @@ Device Model: \(model)
         let controller = SubsystemBrowserCoordinatorViewController(item: browserItem) { [unowned self] (selection) -> UIViewController in
             return self.createSelectionInfoViewController(with: selection, isEmbeddedInNavigation: true)
         }
-        showViewController(controller)
+        showViewController(controller, customToolbar: true)
     }
 
     private func showTimeSettings() {
@@ -1110,7 +1114,7 @@ Device Model: \(model)
         }) { viewController, title, keyboardType in
             return await viewController.getTextInputDifferentiated(title, keyboardType: keyboardType)
         }
-        showViewController(UINavigationController(rootViewController: vc))
+        showViewController(ToolbarNavigationContainerController(rootViewController: vc), customToolbar: true)
     }
 
     @objc private func showSettings() {
@@ -1449,3 +1453,17 @@ extension MainViewController: MFMailComposeViewControllerDelegate {
         controller.dismiss(animated: true)
     }
 }
+
+#if targetEnvironment(macCatalyst)
+@available(iOS 16.0, *)
+extension MainViewController: ToolbarContainerViewController {
+    var nsToolbar: NSToolbar? {
+        get { split?.nsToolbar }
+        set { split?.nsToolbar = newValue }
+    }
+
+    func updateToolbar(for viewController: UIViewController) {
+        split?.updateToolbar(for: viewController)
+    }
+}
+#endif
