@@ -13,7 +13,7 @@ import CelestiaCore
 import UIKit
 
 #if !targetEnvironment(macCatalyst)
-class BrowserCoordinatorController: ContentNavigationController {
+class BrowserCoordinatorController: UINavigationController {
     private let item: BrowserItem
 
     private let selection: (Selection) -> UIViewController

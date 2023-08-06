@@ -310,10 +310,9 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: BaseTableViewContr
         super.setEditing(editing, animated: animated)
 
         #if !targetEnvironment(macCatalyst)
+        addBarButtonItem.isEnabled = !editing
         if #available(iOS 16.0, *) {
             addBarButtonItem.isHidden = editing
-        } else {
-            addBarButtonItem.isEnabled = !editing
         }
         #else
         updateToolbarIfNeeded()

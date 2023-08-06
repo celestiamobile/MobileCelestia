@@ -155,7 +155,7 @@ private extension ToolbarViewController {
     func setUp() {
         #if targetEnvironment(macCatalyst)
         let sidebackBackground: Bool
-        if #available(macCatalyst 16.0, *) {
+        if #available(macCatalyst 14.0, *) {
             sidebackBackground = true
         } else {
             sidebackBackground = false

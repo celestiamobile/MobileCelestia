@@ -76,7 +76,7 @@ class MainViewController: UIViewController {
         celestiaController = CelestiaViewController(screen: screen, executor: executor, userDefaults: userDefaults)
 
         #if targetEnvironment(macCatalyst)
-        if #available(iOS 16.0, *) {
+        if #available(iOS 14.0, *) {
             let splitViewController = ToolbarSplitContainerController()
             splitViewController.preferredDisplayMode = .secondaryOnly
             splitViewController.minimumPrimaryColumnWidth = ToolbarViewController.Constants.width
@@ -1455,7 +1455,7 @@ extension MainViewController: MFMailComposeViewControllerDelegate {
 }
 
 #if targetEnvironment(macCatalyst)
-@available(iOS 16.0, *)
+@available(iOS 14.0, *)
 extension MainViewController: ToolbarContainerViewController {
     var nsToolbar: NSToolbar? {
         get { split?.nsToolbar }

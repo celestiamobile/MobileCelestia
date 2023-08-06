@@ -13,10 +13,22 @@ import UIKit
 
 public protocol ToolbarAwareViewController: UIViewController {
     #if targetEnvironment(macCatalyst)
+    func insertSpaceBeforeToolbarItems(for toolbarContainerViewController: ToolbarContainerViewController) -> Bool
     func supportedToolbarItemIdentifiers(for toolbarContainerViewController: ToolbarContainerViewController) -> [NSToolbarItem.Identifier]
     func toolbarContainerViewController(_ toolbarContainerViewController: ToolbarContainerViewController, itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier) -> NSToolbarItem?
     #endif
 }
+
+#if targetEnvironment(macCatalyst)
+public extension ToolbarAwareViewController {
+    func insertSpaceBeforeToolbarItems(for toolbarContainerViewController: ToolbarContainerViewController) -> Bool {
+        if #available(iOS 13, *) {
+            return true
+        }
+        return false
+    }
+}
+#endif
 
 #if targetEnvironment(macCatalyst)
 @available(iOS 16.0, *)
@@ -147,7 +159,12 @@ open class ToolbarNavigationContainerController: UIViewController, ToolbarContai
 
     public func _updateToolbar(for viewController: UIViewController) {
         if let vc = viewController as? ToolbarAwareViewController {
-            currentToolbarItemIdentifiers = vc.supportedToolbarItemIdentifiers(for: self)
+            var items = [NSToolbarItem.Identifier]()
+            if vc.insertSpaceBeforeToolbarItems(for: self) {
+                items.append(.flexibleSpace)
+            }
+            items += vc.supportedToolbarItemIdentifiers(for: self)
+            currentToolbarItemIdentifiers = items
         } else {
             currentToolbarItemIdentifiers = []
         }
@@ -214,10 +231,12 @@ extension ToolbarNavigationContainerController: NSToolbarDelegate {
     }
 
     public func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
+        var items = [NSToolbarItem.Identifier]()
         if navigation.viewControllers.count > 1 {
-            return [.back] + currentToolbarItemIdentifiers
+            items.append(.back)
         }
-        return currentToolbarItemIdentifiers
+        items += currentToolbarItemIdentifiers
+        return items
     }
 
     public func toolbar(_ toolbar: NSToolbar, itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier, willBeInsertedIntoToolbar flag: Bool) -> NSToolbarItem? {
@@ -255,6 +274,8 @@ extension NSToolbarItem {
         let method = unsafeBitCast(methodIMP, to: ButtonCreationMethod.self)
         let button = method(buttonClass, selector, buttonTitle as NSString, target, action)
         button.setValue(11, forKey: "bezelStyle") // textureRounded
+        toolTip = buttonTitle
+        label = buttonTitle
         setValue(button, forKey: "view")
     }
 
@@ -271,6 +292,7 @@ extension NSToolbarItem {
         let button = method(buttonClass, selector, image, target, action)
         button.setValue(11, forKey: "bezelStyle") // textureRounded
         setValue(button, forKey: "view")
+        toolTip = CelestiaString("Back", comment: "")
         if #available(macCatalyst 14.0, *) {
             isNavigational = true
         }
@@ -298,19 +320,19 @@ open class ToolbarSplitContainerController: UIViewController, ToolbarContainerVi
     private var secondaryNavigation: UINavigationController?
     private var titleObservation: NSKeyValueObservation?
 
-    @available(iOS 16.0, *)
+    @available(iOS 14.0, *)
     public var preferredDisplayMode: UISplitViewController.DisplayMode {
         get { split.preferredDisplayMode }
         set { split.preferredDisplayMode = newValue }
     }
 
-    @available(iOS 16.0, *)
+    @available(iOS 14.0, *)
     public var minimumPrimaryColumnWidth: CGFloat {
         get { split.minimumPrimaryColumnWidth }
         set { split.minimumPrimaryColumnWidth = newValue }
     }
 
-    @available(iOS 16.0, *)
+    @available(iOS 14.0, *)
     public var maximumPrimaryColumnWidth: CGFloat {
         get { split.maximumPrimaryColumnWidth }
         set { split.maximumPrimaryColumnWidth = newValue }
@@ -334,7 +356,7 @@ open class ToolbarSplitContainerController: UIViewController, ToolbarContainerVi
         }
         self.sidebarNavigation = sidebarNavigation
         self.secondaryNavigation = secondaryNavigation
-        if #available(macCatalyst 16, *) {
+        if #available(iOS 14, *) {
             split = UISplitViewController(style: .doubleColumn)
         } else {
             split = UISplitViewController()
@@ -344,7 +366,7 @@ open class ToolbarSplitContainerController: UIViewController, ToolbarContainerVi
         split.preferredDisplayMode = .oneBesideSecondary
         split.preferredPrimaryColumnWidthFraction = 0.3
         install(split)
-        if #available(macCatalyst 16, *) {
+        if #available(iOS 14, *) {
             split.setViewController(sidebarNavigation, for: .primary)
             split.setViewController(secondaryNavigation, for: .secondary)
         } else {
@@ -362,7 +384,7 @@ open class ToolbarSplitContainerController: UIViewController, ToolbarContainerVi
         }
         newNavigation.delegate = self
         sidebarNavigation = newNavigation
-        if #available(iOS 16.0, *) {
+        if #available(iOS 14.0, *) {
             split.setViewController(newNavigation, for: .primary)
         } else {
             split.viewControllers = [newNavigation, secondaryNavigation].compactMap { $0 }
@@ -383,7 +405,7 @@ open class ToolbarSplitContainerController: UIViewController, ToolbarContainerVi
         }
         newNavigation.delegate = self
         secondaryNavigation = newNavigation
-        if #available(iOS 16.0, *) {
+        if #available(iOS 14.0, *) {
             split.setViewController(newNavigation, for: .secondary)
         } else {
             split.viewControllers = [sidebarNavigation, newNavigation].compactMap { $0 }
@@ -409,7 +431,12 @@ open class ToolbarSplitContainerController: UIViewController, ToolbarContainerVi
 
     public func _updateToolbar(for viewController: UIViewController) {
         if let vc = viewController as? ToolbarAwareViewController {
-            currentToolbarItemIdentifiers = vc.supportedToolbarItemIdentifiers(for: self)
+            var items = [NSToolbarItem.Identifier]()
+            if vc.insertSpaceBeforeToolbarItems(for: self) {
+                items.append(.flexibleSpace)
+            }
+            items += vc.supportedToolbarItemIdentifiers(for: self)
+            currentToolbarItemIdentifiers = items
         } else {
             currentToolbarItemIdentifiers = []
         }
@@ -453,12 +480,15 @@ open class ToolbarSplitContainerController: UIViewController, ToolbarContainerVi
 
 extension ToolbarSplitContainerController: NSToolbarDelegate {
     public func toolbarAllowedItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
-        return [.toggleSidebar, .back] + currentToolbarItemIdentifiers
+        if #available(iOS 14.0, *) {
+            return [.toggleSidebar, .back] + currentToolbarItemIdentifiers
+        }
+        return [.back] + currentToolbarItemIdentifiers
     }
 
     public func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
         var items = [NSToolbarItem.Identifier]()
-        if secondaryNavigation != nil && sidebarNavigation != nil {
+        if #available(iOS 14.0, *), secondaryNavigation != nil && sidebarNavigation != nil {
             items.append(.toggleSidebar)
         }
         if let secondaryNavigation, secondaryNavigation.viewControllers.count > 1 {
@@ -471,6 +501,9 @@ extension ToolbarSplitContainerController: NSToolbarDelegate {
     public func toolbar(_ toolbar: NSToolbar, itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier, willBeInsertedIntoToolbar flag: Bool) -> NSToolbarItem? {
         if itemIdentifier == .back {
             return backToolbarItem
+        }
+        if itemIdentifier == .flexibleSpace || itemIdentifier == .toggleSidebar {
+            return nil
         }
         return (secondaryNavigation?.topViewController as? ToolbarAwareViewController)?.toolbarContainerViewController(self, itemForItemIdentifier: itemIdentifier)
     }

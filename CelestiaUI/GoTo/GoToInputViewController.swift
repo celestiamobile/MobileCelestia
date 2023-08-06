@@ -109,10 +109,7 @@ class GoToInputViewController: BaseTableViewController {
 
 #if targetEnvironment(macCatalyst)
     private lazy var goToolbarItem: NSToolbarItem = {
-        let item = NSToolbarItem(itemIdentifier: .go, buttonTitle: CelestiaString("Go", comment: ""), target: self, action: #selector(go))
-        item.label = CelestiaString("Go", comment: "")
-        item.toolTip = item.label
-        return item
+        return NSToolbarItem(itemIdentifier: .go, buttonTitle: CelestiaString("Go", comment: ""), target: self, action: #selector(go))
     }()
 #endif
 
