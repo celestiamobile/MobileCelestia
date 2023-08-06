@@ -26,8 +26,6 @@ public class SearchViewController: BaseTableViewController {
 
     private let resultsInSidebar: Bool
 
-    private var searchQueue = OperationQueue()
-
     private var resultSections: [SearchResultSection] = []
 
     private let selected: (String) -> Void
@@ -69,10 +67,6 @@ public class SearchViewController: BaseTableViewController {
 
         shouldActivate = searchController.searchBar.isFirstResponder
     }
-
-    deinit {
-        searchQueue.cancelAllOperations()
-    }
 }
 
 private extension SearchViewController {
@@ -91,8 +85,6 @@ private extension SearchViewController {
         #if !targetEnvironment(macCatalyst)
         view.backgroundColor = .systemBackground
         #endif
-
-        searchQueue.maxConcurrentOperationCount = 1
 
         // Configure search bar
         let searchBar = searchController.searchBar
@@ -147,15 +139,11 @@ extension SearchViewController: UISearchResultsUpdating {
             return
         }
 
-        searchQueue.cancelAllOperations()
-        searchQueue.addOperation { [weak self] in
-            guard let self = self else { return }
-            Task.detached { @MainActor in
-                let results = await self.search(with: text)
-                guard text == self.searchController.searchBar.text else { return }
-                self.resultSections = results
-                self.tableView.reloadData()
-            }
+        Task {
+            let results = await self.search(with: text)
+            guard text == self.searchController.searchBar.text else { return }
+            self.resultSections = results
+            self.tableView.reloadData()
         }
     }
 }
