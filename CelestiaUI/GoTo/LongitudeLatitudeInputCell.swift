@@ -96,6 +96,8 @@ class LongitudeLatitudeInputCell: UITableViewCell {
         latitudeTextField.font = UIFont.preferredFont(forTextStyle: .body)
         longitudeTextField.adjustsFontForContentSizeCategory = true
         latitudeTextField.adjustsFontForContentSizeCategory = true
+        longitudeTextField.keyboardType = .decimalPad
+        latitudeTextField.keyboardType = .decimalPad
 
         longitudeTextField.addTarget(self, action: #selector(longitudeTextChanged), for: .editingChanged)
         latitudeTextField.addTarget(self, action: #selector(latitudeTextChanged), for: .editingChanged)

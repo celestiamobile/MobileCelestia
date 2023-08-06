@@ -126,6 +126,9 @@ private extension BrowserContainerViewController {
             self.controller.setSecondaryViewController(newVC)
         }
         controller.setSidebarViewController(sidebarController)
+        let emptyViewController = UIViewController()
+        emptyViewController.view.backgroundColor = .systemBackground
+        controller.setSecondaryViewController(emptyViewController)
         #else
         var allControllers = [BrowserCoordinatorController]()
         if let solRoot = Self.solBrowserRoot {

@@ -156,6 +156,9 @@ private extension SettingsCoordinatorController {
         })
         #if targetEnvironment(macCatalyst)
         controller.setSidebarViewController(main)
+        let emptyViewController = UIViewController()
+        emptyViewController.view.backgroundColor = .systemBackground
+        controller.setSecondaryViewController(emptyViewController)
         install(controller)
         #else
         navigation = UINavigationController(rootViewController: main)

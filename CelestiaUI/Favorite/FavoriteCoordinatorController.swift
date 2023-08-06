@@ -116,6 +116,9 @@ public class FavoriteCoordinatorController: UIViewController {
 private extension FavoriteCoordinatorController {
     func setUp() {
         #if targetEnvironment(macCatalyst)
+        let emptyViewController = UIViewController()
+        emptyViewController.view.backgroundColor = .systemBackground
+        controller.setSecondaryViewController(emptyViewController)
         install(controller)
         #else
         navigation = UINavigationController(rootViewController: main)
