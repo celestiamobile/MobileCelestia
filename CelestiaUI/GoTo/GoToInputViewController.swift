@@ -56,6 +56,21 @@ class GoToInputViewController: BaseTableViewController {
         var detail: String { return valueString ?? "" }
     }
 
+    struct FloatValueItem: GoToInputItem {
+        enum ValueType {
+            case longitude
+            case latitude
+        }
+        let title: String
+        let value: Float?
+        let valueString: String?
+        let formatter: NumberFormatter
+        let type: ValueType
+
+        var detail: String { return valueString ?? "" }
+    }
+
+    @available(iOS 15.0, *)
     struct LonLatItem: GoToInputItem {
         var title: String { return "" }
         var detail: String { return "" }
@@ -107,6 +122,12 @@ class GoToInputViewController: BaseTableViewController {
 
     private let executor: AsyncProviderExecutor
 
+#if targetEnvironment(macCatalyst)
+    private lazy var goToolbarItem: NSToolbarItem = {
+        return NSToolbarItem(itemIdentifier: .go, buttonTitle: CelestiaString("Go", comment: ""), target: self, action: #selector(go))
+    }()
+#endif
+
     private lazy var numberFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
         formatter.usesGroupingSeparator = false
@@ -148,13 +169,33 @@ class GoToInputViewController: BaseTableViewController {
     }
 }
 
+#if targetEnvironment(macCatalyst)
+extension NSToolbarItem.Identifier {
+    private static let prefix = Bundle(for: GoToInputViewController.self).bundleIdentifier!
+    fileprivate static let go = NSToolbarItem.Identifier.init("\(prefix).go")
+}
+
+extension GoToInputViewController: ToolbarAwareViewController {
+    func supportedToolbarItemIdentifiers(for toolbarContainerViewController: ToolbarContainerViewController) -> [NSToolbarItem.Identifier] {
+        return [.go]
+    }
+
+    func toolbarContainerViewController(_ toolbarContainerViewController: ToolbarContainerViewController, itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier) -> NSToolbarItem? {
+        if itemIdentifier == .go {
+            return goToolbarItem
+        }
+        return nil
+    }
+}
+#endif
+
 private extension GoToInputViewController {
     func setUp() {
         title = CelestiaString("Go to Object", comment: "")
         tableView.keyboardDismissMode = .interactive
         tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
-        tableView.register(LongitudeLatitudeInputCell.self, forCellReuseIdentifier: "LonLat")
         if #available(iOS 15.0, *) {
+            tableView.register(LongitudeLatitudeInputCell.self, forCellReuseIdentifier: "LonLat")
             tableView.register(DistanceInputCell.self, forCellReuseIdentifier: "Distance")
         }
 
@@ -177,19 +218,25 @@ private extension GoToInputViewController {
 
     private func reload() {
         let distanceSection: Section
+        let coordinateSection: Section
         if #available(iOS 15.0, *) {
             distanceSection = Section(title: CelestiaString("Distance", comment: ""), items: [DistanceItem()])
+            coordinateSection = Section(title: CelestiaString("Coordinates", comment: ""), items: [
+                LonLatItem(),
+            ])
         } else {
             distanceSection = Section(title: nil, items: [
                 DoubleValueItem(title: CelestiaString("Distance", comment: ""), value: distance, valueString: distanceString, formatter: numberFormatter, type: .distance),
-                UnitItem(unit: unit)
+                UnitItem(unit: unit),
+            ])
+            coordinateSection = Section(title: CelestiaString("Coordinates", comment: ""), items: [
+                FloatValueItem(title: CelestiaString("Latitude", comment: ""), value: latitude, valueString: latitudeString, formatter: numberFormatter, type: .latitude),
+                FloatValueItem(title: CelestiaString("Longitude", comment: ""), value: longitude, valueString: longitudeString, formatter: numberFormatter, type: .longitude),
             ])
         }
         allSections = [
             Section(title: nil, items: [ObjectNameItem(name: objectName)]),
-            Section(title: CelestiaString("Coordinates", comment: ""), items: [
-                LonLatItem(),
-            ]),
+            coordinateSection,
             distanceSection,
         ]
         tableView.reloadData()
@@ -207,7 +254,7 @@ extension GoToInputViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = allSections[indexPath.section].items[indexPath.row]
-        if item is LonLatItem {
+        if #available(iOS 15.0, *), item is LonLatItem {
             let cell = tableView.dequeueReusableCell(withIdentifier: "LonLat", for: indexPath) as! LongitudeLatitudeInputCell
             cell.model = LongitudeLatitudeInputCell.Model(longitude: longitude, latitude: latitude, longitudeString: longitudeString, latitudeString: latitudeString)
             cell.coordinatesChanged = { [weak self] longitude, latitude, longitudeString, latitudeString in
@@ -242,7 +289,11 @@ extension GoToInputViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
         cell.title = item.title
         cell.detail = item.detail
-        cell.accessoryType = .disclosureIndicator
+        if item is DoubleValueItem || item is FloatValueItem {
+            cell.accessoryType = .none
+        } else {
+            cell.accessoryType = .disclosureIndicator
+        }
         return cell
     }
 
@@ -278,6 +329,25 @@ extension GoToInputViewController {
                     self.reload()
                 }
             }
+        } else if let valueItem = item as? FloatValueItem {
+            Task {
+                if let text = await textInputHandler(self, item.title, item.detail, .decimalPad), let value = self.numberFormatter.number(from: text)?.floatValue {
+                    switch valueItem.type {
+                    case .longitude:
+                        if value >= -180.0 && value <= 180.0 {
+                            self.longitude = value
+                            self.longitudeString = self.numberFormatter.string(from: value)
+                        }
+                    case .latitude:
+                        if value >= -90.0 && value <= 90.0 {
+                            self.latitude = value
+                            self.latitudeString = self.numberFormatter.string(from: value)
+                        }
+                    }
+                    self.validate()
+                    self.reload()
+                }
+            }
         }
     }
 }
@@ -286,8 +356,14 @@ private extension GoToInputViewController {
     func validate() {
         if distance != nil && longitude != nil && latitude != nil {
             navigationItem.rightBarButtonItem?.isEnabled = true
+            #if targetEnvironment(macCatalyst)
+            goToolbarItem.isEnabled = true
+            #endif
         } else {
             navigationItem.rightBarButtonItem?.isEnabled = false
+            #if targetEnvironment(macCatalyst)
+            goToolbarItem.isEnabled = false
+            #endif
         }
     }
 }

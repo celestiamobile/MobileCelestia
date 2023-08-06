@@ -81,7 +81,7 @@ class CelestiaInteractionController: UIViewController {
 
     #if targetEnvironment(macCatalyst)
     private let needAddControlView: Bool = {
-        if #available(macCatalyst 16.0, *) {
+        if #available(macCatalyst 14.0, *) {
             return false
         } else {
             return true

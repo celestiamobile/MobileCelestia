@@ -187,3 +187,23 @@ extension EclipseFinder {
         }
     }
 }
+
+#if targetEnvironment(macCatalyst)
+extension NSToolbarItem.Identifier {
+    private static let prefix = Bundle(for: GoToInputViewController.self).bundleIdentifier!
+    fileprivate static let calculate = NSToolbarItem.Identifier.init("\(prefix).calculate")
+}
+
+extension EventFinderInputViewController: ToolbarAwareViewController {
+    func supportedToolbarItemIdentifiers(for toolbarContainerViewController: ToolbarContainerViewController) -> [NSToolbarItem.Identifier] {
+        return [.calculate]
+    }
+
+    func toolbarContainerViewController(_ toolbarContainerViewController: ToolbarContainerViewController, itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier) -> NSToolbarItem? {
+        if itemIdentifier == .calculate {
+            return NSToolbarItem(itemIdentifier: itemIdentifier, buttonTitle: CelestiaString("Find", comment: ""), target: self, action: #selector(findEclipse))
+        }
+        return nil
+    }
+}
+#endif

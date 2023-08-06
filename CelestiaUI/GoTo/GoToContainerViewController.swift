@@ -12,7 +12,7 @@
 import CelestiaCore
 import UIKit
 
-public class GoToContainerViewController: UINavigationController {
+public class GoToContainerViewController: ToolbarNavigationContainerController {
     public init(
         executor: AsyncProviderExecutor,
         locationHandler: @escaping ((GoToLocation) -> Void),

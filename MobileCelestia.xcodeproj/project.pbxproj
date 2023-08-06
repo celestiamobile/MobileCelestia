@@ -32,6 +32,7 @@
 		EA1BE1572748E9DC0046074C /* DisplaySceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BE1562748E9DC0046074C /* DisplaySceneDelegate.swift */; };
 		EA28CA4E24A25FE7004B011E /* BottomControlViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA28CA4D24A25FE7004B011E /* BottomControlViewController.swift */; };
 		EA28CA5324A2F399004B011E /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = EA28CA5124A2F399004B011E /* Fonts */; };
+		EA2AF7442A7F419A00492345 /* ToolbarAwareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2AF7432A7F419A00492345 /* ToolbarAwareViewController.swift */; };
 		EA4E2D782A56B4570046D62E /* CelestiaFoundation.h in Headers */ = {isa = PBXBuildFile; fileRef = EA4E2D772A56B4570046D62E /* CelestiaFoundation.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		EA4E2D7C2A56B46B0046D62E /* CelestiaFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA4E2D752A56B4570046D62E /* CelestiaFoundation.framework */; };
 		EA4E2D842A56B5B10046D62E /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA78733C296EB61B0099AB11 /* URL.swift */; };
@@ -62,7 +63,6 @@
 		EA66BBE12A55BA88008A7AAA /* GoToInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA374CD9263A8B770069589C /* GoToInputViewController.swift */; };
 		EA66BBE22A55BA88008A7AAA /* GoToContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA374CD1263A8B320069589C /* GoToContainerViewController.swift */; };
 		EA66BBE32A564888008A7AAA /* SelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6671CA29B391B900A7846E /* SelectionViewController.swift */; };
-		EA7662D52A692ED600C77070 /* ContainerNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA7662D42A692ED600C77070 /* ContainerNavigationController.swift */; };
 		EA787309296DE50D0099AB11 /* Injecton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA787308296DE50D0099AB11 /* Injecton.swift */; };
 		EA78730F296DEA6B0099AB11 /* CelestiaExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA78730E296DEA6B0099AB11 /* CelestiaExecutor.swift */; };
 		EA78733D296EB61B0099AB11 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA78733B296EB61A0099AB11 /* UserDefaults.swift */; };
@@ -300,6 +300,7 @@
 		EA1EF056249393BE0039F493 /* Celestia.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Celestia.entitlements; sourceTree = "<group>"; };
 		EA28CA4D24A25FE7004B011E /* BottomControlViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BottomControlViewController.swift; sourceTree = "<group>"; };
 		EA28CA5124A2F399004B011E /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Fonts; path = ../../CelestiaCore/Fonts; sourceTree = "<group>"; };
+		EA2AF7432A7F419A00492345 /* ToolbarAwareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarAwareViewController.swift; sourceTree = "<group>"; };
 		EA374CD1263A8B320069589C /* GoToContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoToContainerViewController.swift; sourceTree = "<group>"; };
 		EA374CD9263A8B770069589C /* GoToInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoToInputViewController.swift; sourceTree = "<group>"; };
 		EA3EC553277C8EAD00936D4F /* Celestia-macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Celestia-macOS.entitlements"; sourceTree = "<group>"; };
@@ -320,7 +321,6 @@
 		EA6671D029B3A81200A7846E /* ObserverModeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObserverModeViewController.swift; sourceTree = "<group>"; };
 		EA6671D229B3A9AE00A7846E /* LinkFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkFooterView.swift; sourceTree = "<group>"; };
 		EA7209DF27C64270004C1400 /* UILabel+DynamicType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+DynamicType.swift"; sourceTree = "<group>"; };
-		EA7662D42A692ED600C77070 /* ContainerNavigationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContainerNavigationController.swift; sourceTree = "<group>"; };
 		EA775EB32664B63F00479295 /* ActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButton.swift; sourceTree = "<group>"; };
 		EA787308296DE50D0099AB11 /* Injecton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Injecton.swift; sourceTree = "<group>"; };
 		EA78730A296DE5CE0099AB11 /* AppCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCore.swift; sourceTree = "<group>"; };
@@ -695,7 +695,6 @@
 				EA6671CA29B391B900A7846E /* SelectionViewController.swift */,
 				EAF4851F249B5C2500E5B817 /* StandardButton.swift */,
 				EA775EB32664B63F00479295 /* ActionButton.swift */,
-				EA7662D42A692ED600C77070 /* ContainerNavigationController.swift */,
 				EAE51CA22A7B765100D6779C /* Formatter.swift */,
 			);
 			path = Common;
@@ -723,6 +722,7 @@
 				EAB08FE32780550600BB82F0 /* Font.swift */,
 				977394A22403E68800E38B82 /* Color.swift */,
 				EAA16A9728A6654600DBCE4F /* GlobalConstants.swift */,
+				EA2AF7432A7F419A00492345 /* ToolbarAwareViewController.swift */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -1408,10 +1408,10 @@
 				EAA79CD62A56B0100056DB91 /* DataLocationSelectionViewController.swift in Sources */,
 				EAB8F25D2A56D80D00C4E777 /* CommonWebViewController.swift in Sources */,
 				EA839CB42A5696E100BF1CB4 /* SliderCell.swift in Sources */,
+				EA2AF7442A7F419A00492345 /* ToolbarAwareViewController.swift in Sources */,
 				EAA79CCE2A56AB2D0056DB91 /* SettingCommonViewController.swift in Sources */,
 				EAB8F2642A56DC3200C4E777 /* ResourceViewController.swift in Sources */,
 				EAE92A602A558B9900BFE06E /* GameControllerAction.swift in Sources */,
-				EA7662D52A692ED600C77070 /* ContainerNavigationController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -12,7 +12,7 @@
 import CelestiaCore
 import UIKit
 
-public class SubsystemBrowserCoordinatorViewController: UINavigationController {
+public class SubsystemBrowserCoordinatorViewController: ToolbarNavigationContainerController {
     private let item: BrowserItem
 
     private let selection: (Selection) -> UIViewController
