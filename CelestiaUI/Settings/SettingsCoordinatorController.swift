@@ -42,13 +42,7 @@ public struct DataLocationSettingContext {
 
 public class SettingsCoordinatorController: UIViewController {
     #if targetEnvironment(macCatalyst)
-    private lazy var controller: UISplitViewController = {
-        if #available(macCatalyst 16, *) {
-            return UISplitViewController(style: .doubleColumn)
-        } else {
-            return UISplitViewController()
-        }
-    }()
+    private lazy var controller = ToolbarSplitContainerController()
     #else
     private var navigation: UINavigationController!
     #endif
@@ -155,31 +149,13 @@ private extension SettingsCoordinatorController {
                 fatalError("Use .common for slider/action setting item.")
             }
             #if targetEnvironment(macCatalyst)
-            let navigationController = ContentNavigationController(rootViewController: viewController)
-            if #available(macCatalyst 16, *) {
-                self.controller.setViewController(navigationController, for: .secondary)
-                if let windowScene = self.controller.view.window?.windowScene {
-                    windowScene.titlebar?.titleVisibility = .visible
-                }
-            } else {
-                self.controller.viewControllers = [self.controller.viewControllers[0], navigationController]
-            }
+            self.controller.setSecondaryViewController(viewController)
             #else
             self.navigation.pushViewController(viewController, animated: true)
             #endif
         })
         #if targetEnvironment(macCatalyst)
-        controller.primaryBackgroundStyle = .sidebar
-        controller.preferredDisplayMode = .oneBesideSecondary
-        controller.preferredPrimaryColumnWidthFraction = 0.3
-        let emptyVc = UIViewController()
-        emptyVc.view.backgroundColor = .systemBackground
-        if #available(macCatalyst 16, *) {
-            controller.setViewController(SidebarNavigationController(rootViewController: main), for: .primary)
-            controller.setViewController(ContentNavigationController(rootViewController: emptyVc), for: .secondary)
-        } else {
-            controller.viewControllers = [main, ContentNavigationController(rootViewController: emptyVc)]
-        }
+        controller.setSidebarViewController(main)
         install(controller)
         #else
         navigation = UINavigationController(rootViewController: main)
@@ -187,3 +163,16 @@ private extension SettingsCoordinatorController {
         #endif
     }
 }
+
+#if targetEnvironment(macCatalyst)
+extension SettingsCoordinatorController: ToolbarContainerViewController {
+    public var nsToolbar: NSToolbar? {
+        get { controller.nsToolbar }
+        set { controller.nsToolbar = newValue }
+    }
+
+    public func updateToolbar(for viewController: UIViewController) {
+        controller.updateToolbar(for: viewController)
+    }
+}
+#endif

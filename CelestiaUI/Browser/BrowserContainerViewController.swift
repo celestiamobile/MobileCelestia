@@ -14,13 +14,7 @@ import UIKit
 
 public class BrowserContainerViewController: UIViewController {
     #if targetEnvironment(macCatalyst)
-    private lazy var controller: UISplitViewController = {
-        if #available(macCatalyst 16, *) {
-            return UISplitViewController(style: .doubleColumn)
-        } else {
-            return UISplitViewController()
-        }
-    }()
+    private lazy var controller = ToolbarSplitContainerController()
     #else
     private lazy var controller = UITabBarController()
     #endif
@@ -125,28 +119,13 @@ private extension BrowserContainerViewController {
                 return nil
             }
         }
-        controller.primaryBackgroundStyle = .sidebar
-        controller.preferredDisplayMode = .oneBesideSecondary
-        controller.preferredPrimaryColumnWidthFraction = 0.3
+
         let sidebarController = BrowserSidebarController(browserRoots: browserRoot) { [weak self] item in
             guard let self else { return }
-            let newVc = BrowserCoordinatorController(item: item, image: UIImage(), selection: handler)
-            if #available(macCatalyst 16, *) {
-                self.controller.setViewController(newVc, for: .secondary)
-                let scene = self.view.window?.windowScene
-                scene?.titlebar?.titleVisibility = .visible
-            } else {
-                self.controller.viewControllers = [self.controller.viewControllers[0], newVc]
-            }
+            let newVC = self.createBrowserItemViewController(item)
+            self.controller.setSecondaryViewController(newVC)
         }
-        let emptyVc = UIViewController()
-        emptyVc.view.backgroundColor = .systemBackground
-        if #available(macCatalyst 16.0, *) {
-            controller.setViewController(SidebarNavigationController(rootViewController: sidebarController), for: .primary)
-            controller.setViewController(ContentNavigationController(rootViewController: emptyVc), for: .secondary)
-        } else {
-            controller.viewControllers = [sidebarController, ContentNavigationController(rootViewController: emptyVc)]
-        }
+        controller.setSidebarViewController(sidebarController)
         #else
         var allControllers = [BrowserCoordinatorController]()
         if let solRoot = Self.solBrowserRoot {
@@ -159,6 +138,24 @@ private extension BrowserContainerViewController {
         controller.setViewControllers(allControllers, animated: false)
         #endif
     }
+
+    #if targetEnvironment(macCatalyst)
+    private func createBrowserItemViewController(_ item: BrowserItem) -> BrowserCommonViewController {
+        return BrowserCommonViewController(item: item) { [weak self] selection, finish in
+            guard let self else { return }
+            if !finish {
+                let vc = self.createBrowserItemViewController(selection)
+                self.controller.pushSecondaryViewController(vc, animated: true)
+                return
+            }
+            guard let transformed = Selection(item: selection) else {
+                self.showError(CelestiaString("Object not found", comment: ""))
+                return
+            }
+            self.controller.pushSecondaryViewController(self.selected(transformed), animated: true)
+        }
+    }
+    #endif
 }
 
 #if targetEnvironment(macCatalyst)
@@ -306,3 +303,16 @@ private extension BrowserContainerViewController {
         return (createSolBrowserRoot(core), createDSOBrowserRoot(core), createAbsoluteBrightestStars(core), createStarsWithPlanets(core), brighter, nearest)
     }
 }
+
+#if targetEnvironment(macCatalyst)
+extension BrowserContainerViewController: ToolbarContainerViewController {
+    public var nsToolbar: NSToolbar? {
+        get { controller.nsToolbar }
+        set { controller.nsToolbar = newValue }
+    }
+
+    public func updateToolbar(for viewController: UIViewController) {
+        controller.updateToolbar(for: viewController)
+    }
+}
+#endif

@@ -211,7 +211,7 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: BaseTableViewContr
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        setup()
+        setUp()
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -309,14 +309,18 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: BaseTableViewContr
     override func setEditing(_ editing: Bool, animated: Bool) {
         super.setEditing(editing, animated: animated)
 
+        #if !targetEnvironment(macCatalyst)
         if #available(iOS 16.0, *) {
             addBarButtonItem.isHidden = editing
         } else {
             addBarButtonItem.isEnabled = !editing
         }
+        #else
+        updateToolbarIfNeeded()
+        #endif
     }
 
-    @objc private func requestAdd(_ sender: UIBarButtonItem) {
+    @objc private func requestAdd(_ sender: Any) {
         Task {
             guard let item = await add?() else {
                 showError(CelestiaString("Cannot add object", comment: ""))
@@ -349,10 +353,18 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: BaseTableViewContr
         let item = itemList[index]
         share(item, self)
     }
+
+    @objc private func startEditing() {
+        setEditing(true, animated: true)
+    }
+
+    @objc private func endEditing() {
+        setEditing(false, animated: true)
+    }
 }
 
 private extension FavoriteItemViewController {
-    func setup() {
+    func setUp() {
         tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         title = itemList.title
 
@@ -364,3 +376,37 @@ private extension FavoriteItemViewController {
         }
     }
 }
+
+#if targetEnvironment(macCatalyst)
+extension NSToolbarItem.Identifier {
+    private static let prefix = Bundle(for: GoToInputViewController.self).bundleIdentifier!
+    fileprivate static let edit = NSToolbarItem.Identifier.init("\(prefix).edit")
+    fileprivate static let done = NSToolbarItem.Identifier.init("\(prefix).done")
+    fileprivate static let add = NSToolbarItem.Identifier.init("\(prefix).add")
+}
+
+extension FavoriteItemViewController: ToolbarAwareViewController {
+    func supportedToolbarItemIdentifiers(for toolbarContainerViewController: ToolbarContainerViewController) -> [NSToolbarItem.Identifier] {
+        if itemList.canBeModified {
+            if isEditing {
+                return [.done]
+            }
+            return [.edit, .add]
+        }
+        return []
+    }
+
+    func toolbarContainerViewController(_ toolbarContainerViewController: ToolbarContainerViewController, itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier) -> NSToolbarItem? {
+        if itemIdentifier == .add {
+            return NSToolbarItem(itemIdentifier: itemIdentifier, buttonTitle: CelestiaString("Add", comment: ""), target: self, action: #selector(requestAdd(_:)))
+        }
+        if itemIdentifier == .edit {
+            return NSToolbarItem(itemIdentifier: itemIdentifier, buttonTitle: CelestiaString("Edit", comment: ""), target: self, action: #selector(startEditing))
+        }
+        if itemIdentifier == .done {
+            return NSToolbarItem(itemIdentifier: itemIdentifier, buttonTitle: CelestiaString("Done", comment: ""), target: self, action: #selector(endEditing))
+        }
+        return nil
+    }
+}
+#endif

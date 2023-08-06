@@ -12,12 +12,11 @@
 import CelestiaCore
 import UIKit
 
+#if !targetEnvironment(macCatalyst)
 class BrowserCoordinatorController: ContentNavigationController {
     private let item: BrowserItem
 
     private let selection: (Selection) -> UIViewController
-
-    var viewControllerPushed: ((UINavigationController, UIViewController) -> Void)?
 
     init(item: BrowserItem, image: UIImage, selection: @escaping (Selection) -> UIViewController) {
         self.item = item
@@ -41,7 +40,6 @@ private extension BrowserCoordinatorController {
             if !finish {
                 let vc = self.create(for: sel)
                 self.pushViewController(vc, animated: true)
-                self.viewControllerPushed?(self, vc)
                 return
             }
             guard let transformed = Selection(item: sel) else {
@@ -50,7 +48,7 @@ private extension BrowserCoordinatorController {
             }
             let vc = self.selection(transformed)
             self.pushViewController(vc, animated: true)
-            self.viewControllerPushed?(self, vc)
         })
     }
 }
+#endif

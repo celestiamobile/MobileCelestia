@@ -19,13 +19,7 @@ public enum FavoriteRoot {
 
 public class FavoriteCoordinatorController: UIViewController {
     #if targetEnvironment(macCatalyst)
-    private lazy var controller: UISplitViewController = {
-        if #available(macCatalyst 16, *) {
-            return UISplitViewController(style: .doubleColumn)
-        } else {
-            return UISplitViewController()
-        }
-    }()
+    private lazy var controller = ToolbarSplitContainerController(sidebarViewController: main)
     #endif
     private var navigation: UINavigationController!
 
@@ -122,19 +116,6 @@ public class FavoriteCoordinatorController: UIViewController {
 private extension FavoriteCoordinatorController {
     func setUp() {
         #if targetEnvironment(macCatalyst)
-        controller.primaryBackgroundStyle = .sidebar
-        controller.preferredDisplayMode = .oneBesideSecondary
-        controller.preferredPrimaryColumnWidthFraction = 0.3
-        let contentVc: UIViewController
-        let emptyVc = UIViewController()
-        emptyVc.view.backgroundColor = .systemBackground
-        contentVc = emptyVc
-        if #available(macCatalyst 16, *) {
-            controller.setViewController(SidebarNavigationController(rootViewController: main), for: .primary)
-            controller.setViewController(ContentNavigationController(rootViewController: contentVc), for: .secondary)
-        } else {
-            controller.viewControllers = [main, ContentNavigationController(rootViewController: contentVc)]
-        }
         install(controller)
         #else
         navigation = UINavigationController(rootViewController: main)
@@ -144,14 +125,8 @@ private extension FavoriteCoordinatorController {
 
     func replace<T: FavoriteItemList>(_ itemList: T) {
         #if targetEnvironment(macCatalyst)
-        navigation = ContentNavigationController(rootViewController: generateVC(itemList))
-        if #available(macCatalyst 16, *) {
-            controller.setViewController(navigation, for: .secondary)
-            let scene = view.window?.windowScene
-            scene?.titlebar?.titleVisibility = .visible
-        } else {
-            controller.viewControllers = [controller.viewControllers[0], navigation]
-        }
+        let vc = generateVC(itemList)
+        navigation = controller.setSecondaryViewController(vc)
         #else
         show(itemList)
         #endif
@@ -187,3 +162,16 @@ private extension FavoriteCoordinatorController {
         }, textInputHandler: textInputHandler)
     }
 }
+
+#if targetEnvironment(macCatalyst)
+extension FavoriteCoordinatorController: ToolbarContainerViewController {
+    public var nsToolbar: NSToolbar? {
+        get { controller.nsToolbar }
+        set { controller.nsToolbar = newValue }
+    }
+
+    public func updateToolbar(for viewController: UIViewController) {
+        controller.updateToolbar(for: viewController)
+    }
+}
+#endif

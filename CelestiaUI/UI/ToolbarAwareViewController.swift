@@ -19,6 +19,16 @@ public protocol ToolbarAwareViewController: UIViewController {
 }
 
 #if targetEnvironment(macCatalyst)
+@available(iOS 16.0, *)
+public enum ToolbarFallbackStyle {
+    case none
+    case sidebar
+    case content
+    case supplementary
+}
+#endif
+
+#if targetEnvironment(macCatalyst)
 extension UIViewController {
     func updateToolbarIfNeeded() {
         nearestToolbarContainerViewController?.updateToolbar(for: self)
@@ -98,7 +108,6 @@ open class ToolbarNavigationContainerController: UIViewController, ToolbarContai
     }
 
     #if targetEnvironment(macCatalyst)
-    private var currentToolbarHost: ToolbarAwareViewController?
     private var currentToolbarItemIdentifiers: [NSToolbarItem.Identifier] = []
 
     private lazy var backToolbarItem = NSToolbarItem(backItemIdentifier: .back, target: self, action: #selector(goBack))
@@ -110,15 +119,7 @@ open class ToolbarNavigationContainerController: UIViewController, ToolbarContai
     }
 
     @available(iOS 16.0, *)
-    public enum FallbackStyle {
-        case none
-        case sidebar
-        case content
-        case supplementary
-    }
-
-    @available(iOS 16.0, *)
-    open var fallbackStyle: FallbackStyle {
+    open var fallbackStyle: ToolbarFallbackStyle {
         return .none
     }
 
@@ -162,13 +163,7 @@ open class ToolbarNavigationContainerController: UIViewController, ToolbarContai
             nsToolbar.removeItem(at: 0)
         }
 
-        let itemsToInsert: [NSToolbarItem.Identifier]
-        if navigation.viewControllers.count > 1 {
-            itemsToInsert = [.back] + currentToolbarItemIdentifiers
-        } else {
-            itemsToInsert = currentToolbarItemIdentifiers
-        }
-
+        let itemsToInsert = toolbarDefaultItemIdentifiers(nsToolbar)
         for itemToInsert in itemsToInsert.reversed() {
             nsToolbar.insertItem(withItemIdentifier: itemToInsert, at: 0)
         }
@@ -179,7 +174,7 @@ open class ToolbarNavigationContainerController: UIViewController, ToolbarContai
 #if targetEnvironment(macCatalyst)
 protocol ToolbarAwareNavigationControllerDelegate: UINavigationControllerDelegate {
     @available(iOS 16.0, *)
-    func fallbackStyleForNavigationController(_ navigationController: UINavigationController) -> ToolbarNavigationContainerController.FallbackStyle
+    func fallbackStyleForNavigationController(_ navigationController: UINavigationController) -> ToolbarFallbackStyle
 }
 
 private class ToolbarAwareNavigationController: UINavigationController {}
@@ -202,12 +197,11 @@ extension ToolbarNavigationContainerController: ToolbarAwareNavigationController
             guard let self else { return }
             self.view.window?.windowScene?.title = viewController.title
         }
-        currentToolbarHost = viewController as? ToolbarAwareViewController
         _updateToolbar(for: viewController)
     }
 
     @available(iOS 16.0, *)
-    func fallbackStyleForNavigationController(_ navigationController: UINavigationController) -> FallbackStyle {
+    func fallbackStyleForNavigationController(_ navigationController: UINavigationController) -> ToolbarFallbackStyle {
         if nsToolbar == nil {
             return .none
         }
@@ -231,13 +225,13 @@ extension ToolbarNavigationContainerController: NSToolbarDelegate {
         if itemIdentifier == .back {
             return backToolbarItem
         }
-        return currentToolbarHost?.toolbarContainerViewController(self, itemForItemIdentifier: itemIdentifier)
+        return (topViewController as? ToolbarAwareViewController)?.toolbarContainerViewController(self, itemForItemIdentifier: itemIdentifier)
     }
 }
 
 @available(iOS 16.0, *)
 extension UINavigationBar.NSToolbarSection {
-    init(style: ToolbarNavigationContainerController.FallbackStyle) {
+    init(style: ToolbarFallbackStyle) {
         switch style {
         case .none:
             self = .none
@@ -294,6 +288,202 @@ extension NSToolbarItem {
         let method = unsafeBitCast(methodIMP, to: SetActionMethod.self)
         method(searchField, selector, action)
         setValue(searchField, forKey: "view")
+    }
+}
+#endif
+
+#if targetEnvironment(macCatalyst)
+open class ToolbarSplitContainerController: UIViewController, ToolbarContainerViewController {
+    private let split: UISplitViewController
+    private var sidebarNavigation: UINavigationController?
+    private var secondaryNavigation: UINavigationController?
+    private var titleObservation: NSKeyValueObservation?
+
+    private lazy var backToolbarItem = NSToolbarItem(backItemIdentifier: .back, target: self, action: #selector(goBack))
+    private var currentToolbarItemIdentifiers: [NSToolbarItem.Identifier] = []
+
+    private let retainSidebarStyle: Bool
+
+    init(sidebarViewController: UIViewController? = nil, secondaryViewController: UIViewController? = nil,
+         retainSidebarStyle: Bool = false) {
+        let sidebarNavigation: ToolbarAwareNavigationController?
+        if let sidebarViewController {
+            sidebarNavigation = ToolbarAwareNavigationController(rootViewController: sidebarViewController)
+        } else {
+            sidebarNavigation = nil
+        }
+        let secondaryNavigation: ToolbarAwareNavigationController?
+        if let secondaryViewController {
+            secondaryNavigation = ToolbarAwareNavigationController(rootViewController: secondaryViewController)
+        } else {
+            secondaryNavigation = nil
+        }
+        self.sidebarNavigation = sidebarNavigation
+        self.secondaryNavigation = secondaryNavigation
+        self.retainSidebarStyle = retainSidebarStyle
+        if #available(macCatalyst 16, *) {
+            split = UISplitViewController(style: .doubleColumn)
+        } else {
+            split = UISplitViewController()
+        }
+        super.init(nibName: nil, bundle: nil)
+        split.primaryBackgroundStyle = .sidebar
+        split.preferredDisplayMode = .oneBesideSecondary
+        split.preferredPrimaryColumnWidthFraction = 0.3
+        install(split)
+        if #available(macCatalyst 16, *) {
+            split.setViewController(sidebarNavigation, for: .primary)
+            split.setViewController(secondaryNavigation, for: .secondary)
+        } else {
+            split.viewControllers = [sidebarNavigation, secondaryNavigation].compactMap { $0 }
+        }
+        sidebarNavigation?.delegate = self
+        secondaryNavigation?.delegate = self
+    }
+
+    @discardableResult public func setSidebarViewController(_ sidebarViewController: UIViewController) -> UINavigationController {
+        sidebarNavigation?.delegate = nil
+        let newNavigation = ToolbarAwareNavigationController(rootViewController: sidebarViewController)
+        if nsToolbar != nil {
+            newNavigation.setNavigationBarHidden(true, animated: false)
+        }
+        newNavigation.delegate = self
+        sidebarNavigation = newNavigation
+        if #available(iOS 16.0, *) {
+            split.setViewController(newNavigation, for: .primary)
+        } else {
+            split.viewControllers = [newNavigation, secondaryNavigation].compactMap { $0 }
+        }
+        return newNavigation
+    }
+
+    public func pushSecondaryViewController(_ secondaryViewController: UIViewController, animated: Bool) {
+        secondaryNavigation?.pushViewController(secondaryViewController, animated: true)
+    }
+
+    @discardableResult public func setSecondaryViewController(_ secondaryViewController: UIViewController) -> UINavigationController {
+        secondaryNavigation?.delegate = nil
+        let newNavigation = ToolbarAwareNavigationController(rootViewController: secondaryViewController)
+        if nsToolbar != nil, !retainSidebarStyle {
+            newNavigation.setNavigationBarHidden(true, animated: false)
+        }
+        newNavigation.delegate = self
+        secondaryNavigation = newNavigation
+        if #available(iOS 16.0, *) {
+            split.setViewController(newNavigation, for: .secondary)
+        } else {
+            split.viewControllers = [sidebarNavigation, newNavigation].compactMap { $0 }
+        }
+        _updateToolbar(for: secondaryViewController)
+        return newNavigation
+    }
+
+    required public init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    public var nsToolbar: NSToolbar? {
+        didSet {
+            toolbarDidUpdate(oldValue)
+        }
+    }
+
+    public func updateToolbar(for viewController: UIViewController) {
+        guard viewController == secondaryNavigation?.topViewController else { return }
+        _updateToolbar(for: viewController)
+    }
+
+    public func _updateToolbar(for viewController: UIViewController) {
+        if let vc = viewController as? ToolbarAwareViewController {
+            currentToolbarItemIdentifiers = vc.supportedToolbarItemIdentifiers(for: self)
+        } else {
+            currentToolbarItemIdentifiers = []
+        }
+        updateToolbar()
+    }
+
+    private func updateToolbar() {
+        guard let nsToolbar else { return }
+
+        // Remove old items
+        while !nsToolbar.items.isEmpty {
+            nsToolbar.removeItem(at: 0)
+        }
+
+        let itemsToInsert = toolbarDefaultItemIdentifiers(nsToolbar)
+        for itemToInsert in itemsToInsert.reversed() {
+            nsToolbar.insertItem(withItemIdentifier: itemToInsert, at: 0)
+        }
+    }
+
+    private func toolbarDidUpdate(_ oldToolbar: NSToolbar?) {
+        guard oldToolbar != nsToolbar else { return }
+        // Remvoe the old items
+        if let oldToolbar {
+            while !oldToolbar.items.isEmpty {
+                oldToolbar.removeItem(at: 0)
+            }
+        }
+
+        if !retainSidebarStyle {
+            sidebarNavigation?.setNavigationBarHidden(nsToolbar != nil, animated: false)
+        }
+        secondaryNavigation?.setNavigationBarHidden(nsToolbar != nil, animated: false)
+
+        nsToolbar?.delegate = self
+        nsToolbar?.displayMode = .iconOnly
+        updateToolbar()
+    }
+
+    @objc private func goBack() {
+        secondaryNavigation?.popViewController(animated: true)
+    }
+}
+
+extension ToolbarSplitContainerController: NSToolbarDelegate {
+    public func toolbarAllowedItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
+        return [.toggleSidebar, .back] + currentToolbarItemIdentifiers
+    }
+
+    public func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
+        var items = [NSToolbarItem.Identifier]()
+        if secondaryNavigation != nil && sidebarNavigation != nil {
+            items.append(.toggleSidebar)
+        }
+        if let secondaryNavigation, secondaryNavigation.viewControllers.count > 1 {
+            items.append(.back)
+        }
+        items += currentToolbarItemIdentifiers
+        return items
+    }
+
+    public func toolbar(_ toolbar: NSToolbar, itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier, willBeInsertedIntoToolbar flag: Bool) -> NSToolbarItem? {
+        if itemIdentifier == .back {
+            return backToolbarItem
+        }
+        return (secondaryNavigation?.topViewController as? ToolbarAwareViewController)?.toolbarContainerViewController(self, itemForItemIdentifier: itemIdentifier)
+    }
+}
+
+extension ToolbarSplitContainerController: ToolbarAwareNavigationControllerDelegate {
+    public func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+        if navigationController == secondaryNavigation {
+            view.window?.windowScene?.title = viewController.title
+            titleObservation?.invalidate()
+            titleObservation = viewController.observe(\.title) { [weak self] viewController, _ in
+                guard let self else { return }
+                self.view.window?.windowScene?.title = viewController.title
+            }
+            _updateToolbar(for: viewController)
+        }
+    }
+
+    @available(iOS 16.0, *)
+    func fallbackStyleForNavigationController(_ navigationController: UINavigationController) -> ToolbarFallbackStyle {
+        if retainSidebarStyle, navigationController == sidebarNavigation {
+            return .sidebar
+        }
+        return .none
     }
 }
 #endif

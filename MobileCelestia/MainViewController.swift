@@ -818,7 +818,7 @@ Device Model: \(model)
             return await viewController.getTextInputDifferentiated(title, text: text)
         })
 #if targetEnvironment(macCatalyst)
-        showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600), titleVisible: false)
+        showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600), customToolbar: true)
 #else
         showViewController(controller)
 #endif
@@ -1152,18 +1152,18 @@ Device Model: \(model)
             }
         )
         #if targetEnvironment(macCatalyst)
-        showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600), titleVisible: false)
+        showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600), customToolbar: true)
         #else
         showViewController(controller)
         #endif
     }
 
     private func showSearch() {
-        let controller = SearchCoordinatorController(executor: executor) { [unowned self] info, isEmbeddedInNavigation in
-            return self.createSelectionInfoViewController(with: info, isEmbeddedInNavigation: isEmbeddedInNavigation)
+        let controller = SearchCoordinatorController(executor: executor) { [unowned self] info in
+            return self.createSelectionInfoViewController(with: info, isEmbeddedInNavigation: true)
         }
         #if targetEnvironment(macCatalyst)
-        showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600), titleVisible: false)
+        showViewController(controller, macOSPreferredSize: CGSize(width: 500, height: 500), customToolbar: true)
         #else
         showViewController(controller)
         #endif
@@ -1174,7 +1174,7 @@ Device Model: \(model)
             return self.createSelectionInfoViewController(with: info, isEmbeddedInNavigation: true)
         }, executor: executor)
         #if targetEnvironment(macCatalyst)
-        showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600), titleVisible: false)
+        showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600), customToolbar: true)
         #else
         showViewController(controller)
         #endif
