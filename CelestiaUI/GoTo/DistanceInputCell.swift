@@ -105,7 +105,6 @@ class DistanceInputCell: UITableViewCell {
             optionalConstraint.isActive = true
         }
 
-        distanceTextField.keyboardType = .decimalPad
         distanceTextField.addTarget(self, action: #selector(distanceTextChanged), for: .editingChanged)
     }
 
