@@ -116,7 +116,7 @@ public class CommonWebViewController: UIViewController {
 #if !targetEnvironment(macCatalyst)
         goBackItem.isEnabled = webView.canGoBack
         if #available(iOS 16.0, *) {
-            goBackItem.isHidden = true
+            goBackItem.isHidden = !goBackItem.isEnabled
         }
 #else
         toolbarBackItem.isEnabled = webView.canGoBack

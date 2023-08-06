@@ -390,14 +390,14 @@ extension FavoriteItemViewController: ToolbarAwareViewController {
             if isEditing {
                 return [.done]
             }
-            return [.edit, .add]
+            return [.add, .edit]
         }
         return []
     }
 
     func toolbarContainerViewController(_ toolbarContainerViewController: ToolbarContainerViewController, itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier) -> NSToolbarItem? {
         if itemIdentifier == .add {
-            return NSToolbarItem(itemIdentifier: itemIdentifier, buttonTitle: CelestiaString("Add", comment: ""), target: self, action: #selector(requestAdd(_:)))
+            return NSToolbarItem(addItemIdentifier: itemIdentifier, target: self, action: #selector(requestAdd(_:)))
         }
         if itemIdentifier == .edit {
             return NSToolbarItem(itemIdentifier: itemIdentifier, buttonTitle: CelestiaString("Edit", comment: ""), target: self, action: #selector(startEditing))

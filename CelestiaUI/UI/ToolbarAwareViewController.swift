@@ -75,7 +75,9 @@ public protocol ToolbarContainerViewController: UIViewController {
 
 open class ToolbarNavigationContainerController: UIViewController, ToolbarContainerViewController {
     private let navigation: UINavigationController
+    #if targetEnvironment(macCatalyst)
     private var titleObservation: NSKeyValueObservation?
+    #endif
 
     public var topViewController: UIViewController? {
         return navigation.topViewController
@@ -296,6 +298,22 @@ extension NSToolbarItem {
         if #available(macCatalyst 14.0, *) {
             isNavigational = true
         }
+    }
+
+    convenience init(addItemIdentifier: NSToolbarItem.Identifier, target: Any, action: Selector) {
+        self.init(itemIdentifier: addItemIdentifier)
+        let imageClass = NSClassFromString("NSImage") as! NSObject.Type
+        let image = imageClass.perform(NSSelectorFromString("imageNamed:"), with: "NSAddTemplate").takeUnretainedValue()
+        let buttonClass = NSClassFromString("NSButton") as! NSObject.Type
+        typealias ButtonCreationMethod = @convention(c)
+        (NSObject.Type, Selector, AnyObject, Any, Selector) -> NSObject
+        let selector = NSSelectorFromString("buttonWithImage:target:action:")
+        let methodIMP = buttonClass.method(for: selector)
+        let method = unsafeBitCast(methodIMP, to: ButtonCreationMethod.self)
+        let button = method(buttonClass, selector, image, target, action)
+        button.setValue(11, forKey: "bezelStyle") // textureRounded
+        setValue(button, forKey: "view")
+        toolTip = CelestiaString("Add", comment: "")
     }
 
     convenience init(searchItemIdentifier: NSToolbarItem.Identifier, target: Any, action: Selector) {
