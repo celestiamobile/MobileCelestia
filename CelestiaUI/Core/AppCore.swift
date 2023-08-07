@@ -273,10 +273,10 @@ public extension AppCore {
         let sph = AstroUtils.rect(toSpherical: eqPos)
 
         let hms = DMS(decimal: sph.dx)
-        lines.append(String.localizedStringWithFormat(CelestiaString("RA: %@h %@m %@s", comment: ""), formatter.string(from: hms.hours), formatter.string(from: abs(hms.minutes)), formatter.string(from: abs(hms.seconds))))
+        lines.append(String.localizedStringWithFormat(CelestiaString("RA: %@h %@m %@s", comment: ""), formatter.string(from: hms.hmsHours), formatter.string(from: hms.hmsMinutes), formatter.string(from: hms.hmsSeconds)))
 
         let dms = DMS(decimal: sph.dy)
-        lines.append(String.localizedStringWithFormat(CelestiaString("DEC: %@° %@′ %@″", comment: ""), formatter.string(from: dms.degrees), formatter.string(from: abs(dms.minutes)), formatter.string(from: abs(dms.seconds))))
+        lines.append(String.localizedStringWithFormat(CelestiaString("DEC: %@° %@′ %@″", comment: ""), formatter.string(from: dms.degrees), formatter.string(from: dms.minutes), formatter.string(from: dms.seconds)))
 
         return lines.joined(separator: "\n")
     }
@@ -299,19 +299,19 @@ public extension AppCore {
         var sph = AstroUtils.rect(toSpherical: eqPos)
 
         let hms = DMS(decimal: sph.dx)
-        lines.append(String.localizedStringWithFormat(CelestiaString("RA: %@h %@m %@s", comment: ""), formatter.string(from: hms.hours), formatter.string(from: abs(hms.minutes)), formatter.string(from: abs(hms.seconds))))
+        lines.append(String.localizedStringWithFormat(CelestiaString("RA: %@h %@m %@s", comment: ""), formatter.string(from: hms.hmsHours), formatter.string(from: hms.hmsMinutes), formatter.string(from: hms.hmsSeconds)))
 
         var dms = DMS(decimal: sph.dy)
-        lines.append(String.localizedStringWithFormat(CelestiaString("Dec: %@° %@′ %@″", comment: ""), formatter.string(from: dms.degrees), formatter.string(from: abs(dms.minutes)), formatter.string(from: abs(dms.seconds))))
+        lines.append(String.localizedStringWithFormat(CelestiaString("Dec: %@° %@′ %@″", comment: ""), formatter.string(from: dms.degrees), formatter.string(from: dms.minutes), formatter.string(from: dms.seconds)))
 
         let galPos = AstroUtils.equatorial(toGalactic: eqPos)
         sph = AstroUtils.rect(toSpherical: galPos)
 
         dms = DMS(decimal: sph.dx)
-        lines.append(String.localizedStringWithFormat(CelestiaString("L: %@° %@′ %@″", comment: ""), formatter.string(from: dms.degrees), formatter.string(from: abs(dms.minutes)), formatter.string(from: abs(dms.seconds))))
+        lines.append(String.localizedStringWithFormat(CelestiaString("L: %@° %@′ %@″", comment: ""), formatter.string(from: dms.degrees), formatter.string(from: dms.minutes), formatter.string(from: dms.seconds)))
 
         dms = DMS(decimal: sph.dy)
-        lines.append(String.localizedStringWithFormat(CelestiaString("B: %@° %@′ %@″", comment: ""), formatter.string(from: dms.degrees), formatter.string(from: abs(dms.minutes)), formatter.string(from: abs(dms.seconds))))
+        lines.append(String.localizedStringWithFormat(CelestiaString("B: %@° %@′ %@″", comment: ""), formatter.string(from: dms.degrees), formatter.string(from: dms.minutes), formatter.string(from: dms.seconds)))
 
         return lines.joined(separator: "\n")
     }
