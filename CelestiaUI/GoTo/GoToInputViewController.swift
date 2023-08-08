@@ -109,9 +109,9 @@ class GoToInputViewController: BaseTableViewController {
 
     private var objectName: String = LocalizedString("Earth", "celestia-data")
 
-    private var longitude: Float? = 0
+    private var longitude: Float?
     private var longitudeString: String?
-    private var latitude: Float? = 0
+    private var latitude: Float?
     private var latitudeString: String?
     private var distance: Double?
     private var distanceString: String?

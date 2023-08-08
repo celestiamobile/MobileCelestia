@@ -221,9 +221,9 @@ extension ToolbarNavigationContainerController: ToolbarAwareNavigationController
     @available(iOS 16.0, *)
     func fallbackStyleForNavigationController(_ navigationController: UINavigationController) -> ToolbarFallbackStyle {
         if nsToolbar == nil {
-            return .none
+            return fallbackStyle
         }
-        return fallbackStyle
+        return .none
     }
 }
 
@@ -262,6 +262,60 @@ extension UINavigationBar.NSToolbarSection {
         case .supplementary:
             self = .supplementary
         }
+    }
+}
+
+@objc private final class SearchToolbarItem: NSToolbarItem {
+    private static var searchItemClassPrepared = false
+    private let textChangeHandler: (String?) -> Void
+    private let returnHandler: (String?) -> Void
+
+    private let searchField: NSObject
+
+    init(itemIdentifier: NSToolbarItem.Identifier, currentText: String?, textChangeHandler: @escaping (String?) -> Void, returnHandler: @escaping (String?) -> Void) {
+        if !Self.searchItemClassPrepared {
+            if let delegateProtocol = objc_getProtocol("NSSearchFieldDelegate") {
+                class_addProtocol(SearchToolbarItem.self, delegateProtocol)
+                Self.searchItemClassPrepared = SearchToolbarItem.conforms(to: delegateProtocol)
+            }
+        }
+
+        let searchFieldClass = NSClassFromString("NSSearchField") as! NSObject.Type
+        searchField = searchFieldClass.init()
+        if let currentText {
+            searchField.setValue(currentText, forKey: "stringValue")
+        }
+        self.textChangeHandler = textChangeHandler
+        self.returnHandler = returnHandler
+        super.init(itemIdentifier: itemIdentifier)
+        searchField.perform(NSSelectorFromString("setTarget:"), with: self)
+        if Self.searchItemClassPrepared {
+            let selector = NSSelectorFromString("setDelegate:")
+            typealias SetDelegateMethod = @convention(c) (NSObject, Selector, NSObject?) -> Void
+            let methodIMP = searchFieldClass.instanceMethod(for: selector)
+            let method = unsafeBitCast(methodIMP, to: SetDelegateMethod.self)
+            method(searchField, selector, self)
+        }
+        let selector = NSSelectorFromString("setAction:")
+        typealias SetActionMethod = @convention(c) (NSObject, Selector, Selector) -> Void
+        let methodIMP = searchFieldClass.instanceMethod(for: selector)
+        let method = unsafeBitCast(methodIMP, to: SetActionMethod.self)
+        method(searchField, selector, #selector(textChanged(_:)))
+        setValue(searchField, forKey: "view")
+    }
+
+    @objc private func textChanged(_ sender: NSObject) {
+        let value = sender.value(forKey: "stringValue") as? String
+        textChangeHandler(value)
+    }
+
+    @objc(control:textView:doCommandBySelector:) func control(_ control: NSObject, textView: NSObject, doCommandBySelector selector: Selector) -> Bool {
+        if selector == NSSelectorFromString("insertNewline:") {
+            let value = searchField.value(forKey: "stringValue") as? String
+            returnHandler(value)
+            return true
+        }
+        return false
     }
 }
 
@@ -316,17 +370,11 @@ extension NSToolbarItem {
         toolTip = CelestiaString("Add", comment: "")
     }
 
-    convenience init(searchItemIdentifier: NSToolbarItem.Identifier, target: Any, action: Selector) {
-        self.init(itemIdentifier: searchItemIdentifier)
-        let searchFieldClass = NSClassFromString("NSSearchField") as! NSObject.Type
-        let searchField = searchFieldClass.init()
-        searchField.perform(NSSelectorFromString("setTarget:"), with: target)
-        let selector = NSSelectorFromString("setAction:")
-        typealias SetActionMethod = @convention(c) (NSObject, Selector, Selector) -> Void
-        let methodIMP = searchFieldClass.instanceMethod(for: selector)
-        let method = unsafeBitCast(methodIMP, to: SetActionMethod.self)
-        method(searchField, selector, action)
-        setValue(searchField, forKey: "view")
+    private static var searchItemClassPrepared = false
+
+    static func searchItem(with itemIdentifier: NSToolbarItem.Identifier, currentText: String? = nil, textChangeHandler: @escaping (String?) -> Void, returnHandler: @escaping (String?) -> Void) -> NSToolbarItem {
+        let item = SearchToolbarItem(itemIdentifier: itemIdentifier, currentText: currentText, textChangeHandler: textChangeHandler, returnHandler: returnHandler)
+        return item
     }
 }
 #endif

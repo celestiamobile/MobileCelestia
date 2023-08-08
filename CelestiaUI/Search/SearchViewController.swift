@@ -33,6 +33,7 @@ public class SearchViewController: BaseTableViewController {
     private var shouldActivate = true
 
     private let executor: AsyncProviderExecutor
+    private var currentSearchTerm: String?
 
     public init(resultsInSidebar: Bool, executor: AsyncProviderExecutor, selected: @escaping (String) -> Void) {
         self.resultsInSidebar = resultsInSidebar
@@ -101,13 +102,33 @@ private extension SearchViewController {
         tableView.keyboardDismissMode = .interactive
         tableView.register(resultsInSidebar ? UITableViewCell.self : TextCell.self, forCellReuseIdentifier: "Text")
     }
+
+    func searchTextUpdated(_ text: String?) {
+        currentSearchTerm = text
+        guard let text, !text.isEmpty else {
+            resultSections = []
+            tableView.reloadData()
+            return
+        }
+
+        Task {
+            let results = await self.search(with: text)
+            guard text == currentSearchTerm else { return }
+            self.resultSections = results
+            self.tableView.reloadData()
+        }
+    }
+
+    func searchTextReturned(_ text: String?) {
+        guard let text, !text.isEmpty, resultSections.reduce(0, { $0 + $1.results.count }) == 0 else { return }
+        itemSelected(with: text)
+    }
 }
 
 extension SearchViewController: UISearchBarDelegate {
     public func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
-        guard let text = searchBar.text, !text.isEmpty, resultSections.reduce(0, { $0 + $1.results.count }) == 0 else { return }
-        itemSelected(with: text)
+        searchTextReturned(searchBar.text)
     }
 
     private func itemSelected(with name: String) {
@@ -120,19 +141,7 @@ extension SearchViewController: UISearchBarDelegate {
 extension SearchViewController: UISearchResultsUpdating {
     public func updateSearchResults(for searchController: UISearchController) {
         guard searchController.isActive else { return }
-
-        guard let text = searchController.searchBar.text, !text.isEmpty else {
-            resultSections = []
-            tableView.reloadData()
-            return
-        }
-
-        Task {
-            let results = await self.search(with: text)
-            guard text == searchController.searchBar.text else { return }
-            self.resultSections = results
-            self.tableView.reloadData()
-        }
+        searchTextUpdated(searchController.searchBar.text)
     }
 }
 
@@ -199,26 +208,15 @@ extension SearchViewController: ToolbarAwareViewController {
 
     public func toolbarContainerViewController(_ toolbarContainerViewController: ToolbarContainerViewController, itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier) -> NSToolbarItem? {
         if itemIdentifier == .search {
-            return NSToolbarItem(searchItemIdentifier: .search, target: self, action: #selector(executeSearch(_:)))
+            return NSToolbarItem.searchItem(with: .search, currentText: currentSearchTerm) { [weak self] text in
+                guard let self else { return }
+                self.searchTextUpdated(text)
+            } returnHandler: { [weak self] text in
+                guard let self else { return }
+                self.searchTextReturned(text)
+            }
         }
         return nil
-    }
-
-    @objc private func executeSearch(_ sender: NSObject) {
-        let text = sender.value(forKey: "stringValue") as? String ?? ""
-
-        if text.isEmpty {
-            resultSections = []
-            tableView.reloadData()
-            return
-        }
-
-        Task {
-            let results = await self.search(with: text)
-            guard text == sender.value(forKey: "stringValue") as? String else { return }
-            self.resultSections = results
-            self.tableView.reloadData()
-        }
     }
 }
 #endif
