@@ -434,7 +434,7 @@ extension AppDelegate {
             MenuActionContext(title: CelestiaString("Delete Other Views", comment: ""), action: #selector(deleteOtherViews), input: "d", modifierFlags: .control),
         ]), atStartOfMenu: .view)
 
-        let runDemoMenu = createMenuItem(identifierSuffix: "help.demo", action: MenuActionContext(title: CelestiaString("Run Demo", comment: ""), action: #selector(runDemo), input: "d"))
+        let runDemoMenu = createMenuItem(identifierSuffix: "help.demo", action: MenuActionContext(title: CelestiaString("Run Demo", comment: ""), action: #selector(runDemo), input: ""))
         builder.insertChild(runDemoMenu, atEndOfMenu: .help)
         let openGLMenu = createMenuItem(identifierSuffix: "help.opengl", action: MenuActionContext(title: CelestiaString("OpenGL Info", comment: ""), action: #selector(showOpenGLInfo)))
         builder.insertSibling(openGLMenu, afterMenu: runDemoMenu.identifier)

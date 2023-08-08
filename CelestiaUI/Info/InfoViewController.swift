@@ -314,8 +314,6 @@ public extension CelestiaAction {
             return CelestiaString("Track", comment: "")
         case .follow:
             return CelestiaString("Follow", comment: "")
-        case .runDemo:
-            return CelestiaString("Run Demo", comment: "")
         case .cancelScript:
             return CelestiaString("Cancel Script", comment: "")
         case .home:

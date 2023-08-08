@@ -37,7 +37,7 @@ public final class HelpViewController: UIViewController {
                 switch tutorial {
                 case .runDemo:
                     Task {
-                        await self.executor.run { $0.receive(.runDemo) }
+                        await self.executor.run { $0.runDemo() }
                     }
                 }
             case .url(let url):

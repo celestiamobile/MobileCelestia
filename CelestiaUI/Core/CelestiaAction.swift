@@ -24,7 +24,6 @@ public enum CelestiaAction: Int8 {
     case lock = 58
     case chase = 34
     case follow = 102
-    case runDemo = 100
     case cancelScript = 27
     case home = 104
     case track = 116

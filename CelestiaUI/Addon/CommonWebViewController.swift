@@ -239,7 +239,7 @@ extension CommonWebViewController: CelestiaScriptHandlerDelegate {
 
     func runDemo() {
         Task {
-            await executor.run { $0.receive(.runDemo) }
+            await executor.run { $0.runDemo() }
         }
     }
 }

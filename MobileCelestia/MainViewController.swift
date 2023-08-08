@@ -407,7 +407,7 @@ extension MainViewController {
             }
         case .runDemo:
             Task {
-                await executor.receive(.runDemo)
+                await executor.run { $0.runDemo() }
             }
         case .showOpenGLInfo:
             Task {
