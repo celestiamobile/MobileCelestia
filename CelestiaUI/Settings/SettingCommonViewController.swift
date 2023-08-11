@@ -148,6 +148,7 @@ extension SettingCommonViewController {
                 let cell = tableView.dequeueReusableCell(withIdentifier: "Switch", for: indexPath) as! SwitchCell
                 cell.enabled = userDefaults.value(forKey: item.key) as? Bool ?? item.defaultOn
                 cell.title = row.name
+                cell.subtitle = row.subtitle
                 cell.toggleBlock = { [weak self] enabled in
                     guard let self else { return }
                     self.userDefaults.set(enabled, forKey: item.key)

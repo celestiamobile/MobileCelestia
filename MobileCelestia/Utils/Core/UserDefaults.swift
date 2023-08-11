@@ -18,11 +18,9 @@ enum UserDefaultsKey: String {
     case configFile
     case fullDPI
     case msaa
-    #if os(iOS) || os(tvOS)
     case frameRate
     case onboardMessageDisplayed
     case lastNewsID
-    #endif
     case gameControllerRemapA
     case gameControllerRemapB
     case gameControllerRemapX
@@ -37,6 +35,9 @@ enum UserDefaultsKey: String {
     case gameControllerRemapDpadDown
     case gameControllerInvertX
     case gameControllerInvertY
+    #if !targetEnvironment(macCatalyst)
+    case contextMenu
+    #endif
 }
 
 extension UserDefaults {

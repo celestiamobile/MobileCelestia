@@ -349,7 +349,14 @@ extension CelestiaInteractionController {
         tap.delegate = self
         targetInteractionView.addGestureRecognizer(tap)
 
-        targetInteractionView.addInteraction(UIContextMenuInteraction(delegate: self))
+        #if targetEnvironment(macCatalyst)
+        let isContextMenuEnabled = true
+        #else
+        let isContextMenuEnabled: Bool = userDefaults[UserDefaultsKey.contextMenu] ?? true
+        #endif
+        if isContextMenuEnabled {
+            targetInteractionView.addInteraction(UIContextMenuInteraction(delegate: self))
+        }
 
         if let clickGesture = targetInteractionView.gestureRecognizers?.filter({ String(cString: object_getClassName($0)) == "_UISecondaryClickDriverGestureRecognizer" }).first {
             clickGesture.require(toFail: pan1)

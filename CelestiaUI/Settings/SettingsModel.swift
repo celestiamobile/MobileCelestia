@@ -31,11 +31,13 @@ public enum SettingType: Hashable {
 
 public struct SettingItem<T: Hashable>: Hashable {
     public let name: String
+    public let subtitle: String?
     public let type: SettingType
     public let associatedItem: T
 
-    public init(name: String, type: SettingType, associatedItem: T) {
+    public init(name: String, subtitle: String? = nil, type: SettingType, associatedItem: T) {
         self.name = name
+        self.subtitle = subtitle
         self.type = type
         self.associatedItem = associatedItem
     }
