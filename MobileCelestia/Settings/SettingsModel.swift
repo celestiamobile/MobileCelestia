@@ -25,6 +25,12 @@ extension SettingPreferenceSelectionItem {
     }
 }
 
+extension SettingPreferenceSliderItem {
+    init(userDefaultsKey: UserDefaultsKey, minValue: Double, maxValue: Double, defaultValue: Double) {
+        self.init(key: userDefaultsKey.rawValue, minValue: minValue, maxValue: maxValue, defaultValue: defaultValue)
+    }
+}
+
 private let gamepadActions = GameControllerAction.allCases.map { action in
     SettingPreferenceSelectionItem.Option(name: action.name, value: action.rawValue)
 }
@@ -144,8 +150,37 @@ private let gameControllerItem = SettingItem<AnyHashable>(
 )
 
 #if targetEnvironment(macCatalyst)
-private let advanceSettingExtraItems = [gameControllerItem]
+private let defaultSensitivity: Double = 4.0
 #else
+private let defaultSensitivity: Double = 10.0
+#endif
+private let sensitivityItem = SettingItem<AnyHashable>(
+    name: CelestiaString("Sensitivity", comment: ""),
+    subtitle: CelestiaString("Sensitivity for object selection", comment: ""),
+    type: .prefSlider,
+    associatedItem: .init(
+        AssociatedPreferenceSliderItem(userDefaultsKey: .pickSensitivity, minValue: 1.0, maxValue: 20.0, defaultValue: defaultSensitivity)
+    )
+)
+
+#if targetEnvironment(macCatalyst)
+private let interactionItems = [
+    sensitivityItem
+]
+#else
+private let interactionItems = [
+    sensitivityItem,
+    SettingItem(
+        name: CelestiaString("Context Menu", comment: ""),
+        subtitle: CelestiaString("Context menu by long press or context click", comment: ""),
+        type: .prefSwitch,
+        associatedItem: .init(
+            AssociatedPreferenceSwitchItem(userDefaultsKey: .contextMenu, defaultOn: true)
+        )
+    )
+]
+#endif
+
 private let advanceSettingExtraItems = [
     SettingItem(
         name: CelestiaString("Interaction", comment: ""),
@@ -156,23 +191,15 @@ private let advanceSettingExtraItems = [
                 sections: [
                     .init(
                         header: nil,
-                        rows: [
-                        SettingItem(
-                            name: CelestiaString("Context Menu", comment: ""),
-                            subtitle: CelestiaString("Long press or context click triggers context menu display", comment: ""),
-                            type: .prefSwitch,
-                            associatedItem: .init(
-                                AssociatedPreferenceSwitchItem(userDefaultsKey: .contextMenu, defaultOn: true)
-                            )
-                        ),
-                    ], footer: CelestiaString("Configuration will take effect after a restart.", comment: "")),
+                        rows: interactionItems,
+                        footer: CelestiaString("Configuration will take effect after a restart.", comment: "")
+                    ),
                 ]
             )
         )
     ),
     gameControllerItem,
 ]
-#endif
 
 let mainSetting = [
     displaySettings(),

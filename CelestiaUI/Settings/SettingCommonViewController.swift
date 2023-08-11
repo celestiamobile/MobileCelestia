@@ -184,6 +184,7 @@ extension SettingCommonViewController {
                 if #available(iOS 15, *) {
                     let cell = tableView.dequeueReusableCell(withIdentifier: "Selection15", for: indexPath) as! SelectionCell
                     cell.title = row.name
+                    cell.subtitle = row.subtitle
                     cell.selectionData = SelectionCell.SelectionData(options: item.options.map { $0.name }, selectedIndex: item.options.firstIndex(where: { $0.value == currentValue }) ?? -1)
                     cell.selectionChange = { [weak self] index in
                         guard let self else { return }
@@ -197,8 +198,28 @@ extension SettingCommonViewController {
                 }
                 let cell = tableView.dequeueReusableCell(withIdentifier: "Selection", for: indexPath) as! TextCell
                 cell.title = row.name
+                cell.subtitle = row.subtitle
                 cell.detail = item.options.first(where: { $0.value == currentValue })?.name ?? ""
                 cell.accessoryType = .disclosureIndicator
+                return cell
+            } else {
+                logWrongAssociatedItemType(row.associatedItem)
+            }
+        case .prefSlider:
+            if let item = row.associatedItem.base as? AssociatedPreferenceSliderItem {
+                let maxValue = item.maxValue
+                let minValue = item.minValue
+                let cell = tableView.dequeueReusableCell(withIdentifier: "Slider", for: indexPath) as! SliderCell
+                cell.title = row.name
+                let currentValue: Double = self.userDefaults.value(forKey: item.key) as? Double ?? item.defaultValue
+                let transformedValue = (currentValue - minValue) / (maxValue - minValue)
+                cell.value = transformedValue
+                cell.subtitle = row.subtitle
+                cell.valueChangeBlock = { [weak self] (value) in
+                    guard let self = self else { return }
+                    let transformed = value * (maxValue - minValue) + minValue
+                    self.userDefaults.set(transformed, forKey: item.key)
+                }
                 return cell
             } else {
                 logWrongAssociatedItemType(row.associatedItem)

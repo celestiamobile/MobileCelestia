@@ -38,6 +38,7 @@ enum UserDefaultsKey: String {
     #if !targetEnvironment(macCatalyst)
     case contextMenu
     #endif
+    case pickSensitivity
 }
 
 extension UserDefaults {

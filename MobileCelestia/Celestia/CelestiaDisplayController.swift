@@ -51,6 +51,12 @@ class CelestiaDisplayController: AsyncGLViewController {
     private var isRTL = false
 
     #if targetEnvironment(macCatalyst)
+    private var sensitivity: Double = 4.0
+    #else
+    private var sensitivity: Double = 10.0
+    #endif
+
+    #if targetEnvironment(macCatalyst)
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -94,8 +100,9 @@ class CelestiaDisplayController: AsyncGLViewController {
             let (viewSafeAreaInsets, viewScale, applicationScalingFactor) = getViewSpec()
             let core = self.core
             let executor = self.executor
+            let sensitivity = self.sensitivity
             executor.runAsynchronously { _ in
-                self.updateContentScale(viewSafeAreaInsets: viewSafeAreaInsets, viewScale: viewScale, applicationScalingFactor: applicationScalingFactor, core: core, executor: executor)
+                self.updateContentScale(viewSafeAreaInsets: viewSafeAreaInsets, viewScale: viewScale, applicationScalingFactor: applicationScalingFactor, sensitivity: sensitivity, core: core, executor: executor)
             }
         }
     }
@@ -182,8 +189,11 @@ extension CelestiaDisplayController {
         let (viewSafeAreaInsets, viewScale, applicationScalingFactor) = DispatchQueue.main.sync {
             return self.getViewSpec()
         }
-
-        updateContentScale(viewSafeAreaInsets: viewSafeAreaInsets, viewScale: viewScale, applicationScalingFactor: applicationScalingFactor, core: core, executor: executor)
+        if let sensitivityValue: Double = userDefaults[UserDefaultsKey.pickSensitivity] {
+            self.sensitivity = sensitivityValue
+        }
+        let sensitivity = self.sensitivity
+        updateContentScale(viewSafeAreaInsets: viewSafeAreaInsets, viewScale: viewScale, applicationScalingFactor: applicationScalingFactor, sensitivity: sensitivity, core: core, executor: executor)
         start()
 
         isLoaded = true
@@ -228,14 +238,10 @@ extension CelestiaDisplayController {
         return (viewSafeAreaInsets, viewScale, applicationScalingFactor)
     }
 
-    nonisolated private func updateContentScale(viewSafeAreaInsets: UIEdgeInsets, viewScale: CGFloat, applicationScalingFactor: CGFloat, core: AppCore, executor: CelestiaExecutor) {
+    nonisolated private func updateContentScale(viewSafeAreaInsets: UIEdgeInsets, viewScale: CGFloat, applicationScalingFactor: CGFloat, sensitivity: Double, core: AppCore, executor: CelestiaExecutor) {
         core.setDPI(Int(96.0 * viewScale / applicationScalingFactor))
         core.setSafeAreaInsets(viewSafeAreaInsets.scale(by: viewScale))
-        #if targetEnvironment(macCatalyst)
-        core.setPickTolerance(4 * viewScale / applicationScalingFactor)
-        #else
-        core.setPickTolerance(10 * viewScale / applicationScalingFactor)
-        #endif
+        core.setPickTolerance(sensitivity * viewScale / applicationScalingFactor)
 
         executor.makeRenderContextCurrent()
 

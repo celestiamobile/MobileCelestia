@@ -15,9 +15,17 @@ public class SliderCell: UITableViewCell {
     private lazy var topContainer = UIView()
     private lazy var bottomContainer = UIView()
     private lazy var label = UILabel(textStyle: .body)
+    private lazy var subtitleLabel = UILabel(textStyle: .footnote)
     private lazy var slider = UISlider()
 
     public var title: String? { didSet { label.text = title }  }
+    public var subtitle: String? {
+        didSet {
+            subtitleLabel.text = subtitle
+            subtitleLabel.isHidden = subtitle == nil
+        }
+    }
+
     public var value: Double = 0 { didSet { slider.value = Float(value) * 100 } }
 
     public var valueChangeBlock: ((Double) -> Void)?
@@ -53,16 +61,23 @@ private extension SliderCell {
             bottomContainer.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
         ])
 
-        label.translatesAutoresizingMaskIntoConstraints = false
-        topContainer.addSubview(label)
+        subtitleLabel.textColor = .secondaryLabel
+        subtitleLabel.numberOfLines = 0
+        subtitleLabel.isHidden = true
         label.textColor = .label
         label.numberOfLines = 0
+        let stackView = UIStackView(arrangedSubviews: [label, subtitleLabel])
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .vertical
+        stackView.spacing = GlobalConstants.listTextGapVertical
+
+        topContainer.addSubview(stackView)
 
         NSLayoutConstraint.activate([
-            label.leadingAnchor.constraint(equalTo: topContainer.leadingAnchor, constant: GlobalConstants.listItemMediumMarginHorizontal),
-            label.trailingAnchor.constraint(equalTo: topContainer.trailingAnchor, constant: -GlobalConstants.listItemMediumMarginHorizontal),
-            label.centerYAnchor.constraint(equalTo: topContainer.centerYAnchor),
-            label.topAnchor.constraint(equalTo: topContainer.topAnchor, constant: GlobalConstants.listItemMediumMarginVertical),
+            stackView.leadingAnchor.constraint(equalTo: topContainer.leadingAnchor, constant: GlobalConstants.listItemMediumMarginHorizontal),
+            stackView.trailingAnchor.constraint(equalTo: topContainer.trailingAnchor, constant: -GlobalConstants.listItemMediumMarginHorizontal),
+            stackView.centerYAnchor.constraint(equalTo: topContainer.centerYAnchor),
+            stackView.topAnchor.constraint(equalTo: topContainer.topAnchor, constant: GlobalConstants.listItemMediumMarginVertical),
         ])
 
         slider.minimumValue = 0

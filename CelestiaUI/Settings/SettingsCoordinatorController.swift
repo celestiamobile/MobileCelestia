@@ -145,7 +145,7 @@ private extension SettingsCoordinatorController {
                 viewController = SettingsFrameRateViewController(screen: self.screenProvider(), userDefaults: userDefaults, userDefaultsKey: frameRateContext.frameRateUserDefaultsKey, frameRateUpdateHandler: { [weak self] newFrameRate in
                     self?.actionHandler(.refreshFrameRate(newFrameRate: newFrameRate))
                 })
-            case .slider, .prefSwitch, .checkmark, .action, .custom, .keyedSelection, .prefSelection, .selection:
+            case .slider, .prefSwitch, .checkmark, .action, .custom, .keyedSelection, .prefSelection, .selection, .prefSlider:
                 fatalError("Use .common for slider/action setting item.")
             }
             #if targetEnvironment(macCatalyst)

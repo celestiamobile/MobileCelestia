@@ -27,6 +27,7 @@ public enum SettingType: Hashable {
     case keyedSelection
     case prefSelection
     case selection
+    case prefSlider
 }
 
 public struct SettingItem<T: Hashable>: Hashable {
@@ -193,20 +194,23 @@ public extension Array where Element == SettingCheckmarkItem {
 
 public struct AssociatedSelectionItem: Hashable {
     public let key: String
+    public let subtitle: String?
     public let items: [SettingSelectionItem]
 
     public func toSection(header: String? = nil, footer: String? = nil) -> SettingCommonItem.Section {
         return SettingCommonItem.Section(header: header, rows: items.map { item in
             return SettingItem(
                 name: item.name,
+                subtitle: subtitle,
                 type: .keyedSelection,
                 associatedItem: SettingKeyedSelectionItem(name: item.name, key: key, index: item.index)
             )
         }, footer: footer)
     }
 
-    public init(key: String, items: [SettingSelectionItem]) {
+    public init(key: String, subtitle: String? = nil, items: [SettingSelectionItem]) {
         self.key = key
+        self.subtitle = subtitle
         self.items = items
     }
 }
@@ -243,6 +247,20 @@ public struct SettingPreferenceSelectionItem: Hashable {
     }
 }
 
+public struct SettingPreferenceSliderItem: Hashable {
+    public let key: String
+    public let minValue: Double
+    public let maxValue: Double
+    public let defaultValue: Double
+
+    public init(key: String, minValue: Double, maxValue: Double, defaultValue: Double) {
+        self.key = key
+        self.minValue = minValue
+        self.maxValue = maxValue
+        self.defaultValue = defaultValue
+    }
+}
+
 public class BlockHolder<T: Sendable>: NSObject {
     public let block: @Sendable (T) -> Void
 
@@ -260,6 +278,7 @@ public typealias AssociatedKeyedSelectionItem = SettingKeyedSelectionItem
 public typealias AssociatedSelectionSingleItem = SettingSelectionSingleItem
 public typealias AssociatedPreferenceSwitchItem = SettingPreferenceSwitchItem
 public typealias AssociatedPreferenceSelectionItem = SettingPreferenceSelectionItem
+public typealias AssociatedPreferenceSliderItem = SettingPreferenceSliderItem
 public typealias AssociatedCustomItem = BlockHolder<AppCore>
 
 public func displaySettings() -> SettingSection {
@@ -887,14 +906,19 @@ public func advancedSettings(extraItems: [SettingItem<AnyHashable>]) -> SettingS
                 AssociatedCommonItem(
                     title: CelestiaString("Security", comment: ""),
                     sections: [
-                        AssociatedSelectionItem(
-                            key: "scriptSystemAccessPolicy",
-                            items: [
-                                SettingSelectionItem(name: CelestiaString("Ask", comment: ""), index: 0),
-                                SettingSelectionItem(name: CelestiaString("Allow", comment: ""), index: 1),
-                                SettingSelectionItem(name: CelestiaString("Deny", comment: ""), index: 2),
-                            ]
-                        ).toSection(header: CelestiaString("Script System Access Policy", comment: ""), footer: CelestiaString("This policy decides whether Lua scripts have access to the files on the system or not.", comment: ""))
+                        .init(
+                            header: nil,
+                            rows: [
+                                SettingItem(name: CelestiaString("Script System Access Policy", comment: ""), subtitle: CelestiaString("Lua scripts' access to the file system", comment: ""), type: .selection, associatedItem: .init(
+                                    AssociatedSelectionSingleItem(key: "scriptSystemAccessPolicy", options: [
+                                        .init(name: CelestiaString("Ask", comment: ""), value: 0),
+                                        .init(name: CelestiaString("Allow", comment: ""), value: 1),
+                                        .init(name: CelestiaString("Deny", comment: ""), value: 2),
+                                    ], defaultOption: 1)
+                                ))
+                            ],
+                            footer: nil
+                        )
                     ]
                 )
             )

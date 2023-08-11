@@ -14,6 +14,7 @@ import UIKit
 @available(iOS 15.0, *)
 public class SelectionCell: UITableViewCell {
     private lazy var label = UILabel(textStyle: .body)
+    private lazy var subtitleLabel = UILabel(textStyle: .footnote)
     private lazy var button: UIButton = {
 #if targetEnvironment(macCatalyst)
         return UIButton(type: .system)
@@ -23,6 +24,13 @@ public class SelectionCell: UITableViewCell {
     }()
 
     public var title: String? { didSet { label.text = title }  }
+    public var subtitle: String? {
+        didSet {
+            subtitleLabel.text = subtitle
+            subtitleLabel.isHidden = subtitle == nil
+        }
+    }
+
     public var selectionData = SelectionData(options: [], selectedIndex: -1) {
         didSet {
             reloadMenu()
@@ -57,15 +65,23 @@ private extension SelectionCell {
     func setUp() {
         selectionStyle = .none
 
-        label.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(label)
         label.textColor = .label
         label.numberOfLines = 0
+        subtitleLabel.textColor = .secondaryLabel
+        subtitleLabel.numberOfLines = 0
+        subtitleLabel.isHidden = true
+
+        let stackView = UIStackView(arrangedSubviews: [label, subtitleLabel])
+        stackView.axis = .vertical
+        stackView.spacing = GlobalConstants.listTextGapVertical
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+
+        contentView.addSubview(stackView)
 
         NSLayoutConstraint.activate([
-            label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: GlobalConstants.listItemMediumMarginHorizontal),
-            label.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            label.topAnchor.constraint(greaterThanOrEqualTo: contentView.topAnchor, constant: GlobalConstants.listItemMediumMarginVertical),
+            stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: GlobalConstants.listItemMediumMarginHorizontal),
+            stackView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            stackView.topAnchor.constraint(greaterThanOrEqualTo: contentView.topAnchor, constant: GlobalConstants.listItemMediumMarginVertical),
         ])
 
         button.showsMenuAsPrimaryAction = true
@@ -73,7 +89,7 @@ private extension SelectionCell {
         button.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(button)
         NSLayoutConstraint.activate([
-            button.leadingAnchor.constraint(equalTo: label.trailingAnchor, constant: GlobalConstants.listItemGapHorizontal),
+            button.leadingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: GlobalConstants.listItemGapHorizontal),
             button.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -GlobalConstants.listItemMediumMarginHorizontal),
             button.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             button.topAnchor.constraint(greaterThanOrEqualTo: contentView.topAnchor, constant: GlobalConstants.listItemAccessoryMinMarginVertical),
