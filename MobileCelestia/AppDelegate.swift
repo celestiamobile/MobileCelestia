@@ -18,9 +18,11 @@ import CelestiaHelper
 #endif
 import CelestiaUI
 
+#if !DEBUG
 import AppCenter
 import AppCenterAnalytics
 import AppCenterCrashes
+#endif
 
 enum MenuBarAction: Hashable, Equatable {
     case captureImage
