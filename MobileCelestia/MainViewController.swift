@@ -75,6 +75,27 @@ class MainViewController: UIViewController {
     private var bottomToolbar: BottomControlViewController?
     private var bottomToolbarSizeConstraints = [NSLayoutConstraint]()
 
+    private let subscriptionManager = SubscriptionManager()
+    private var subscriptionUpdateTask: Task<Void, Error>?
+
+    private lazy var commonWebActionHandler = { [weak self] (action: CommonWebViewController.WebAction, viewController: UIViewController) in
+        guard let self else { return }
+        switch action {
+        case .showSubscription:
+            if #available(iOS 15, *) {
+                #if targetEnvironment(macCatalyst)
+                // Manually close current because refreshing is not supported
+                if let windowScene = viewController.view.window?.windowScene {
+                    UIApplication.shared.requestSceneSessionDestruction(windowScene.session, options: nil)
+                }
+                #endif
+                self.showSubscription()
+            }
+        case .ack:
+            break
+        }
+    }
+
     init(initialURL: UniformedURL?, screen: UIScreen) {
         super.init(nibName: nil, bundle: nil)
         celestiaController = CelestiaViewController(screen: screen, executor: executor, userDefaults: userDefaults)
@@ -105,6 +126,13 @@ class MainViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        if #available(iOS 15, *) {
+            Task {
+                await subscriptionManager.checkSubscriptionStatus()
+            }
+            subscriptionUpdateTask = subscriptionManager.checkPurchaseUpdates()
+        }
 
         view.backgroundColor = .systemBackground
 
@@ -266,7 +294,8 @@ extension MainViewController {
         if let guide = guideToOpen {
             // Need to wrap it in a NavVC without NavBar to make sure
             // the scrolling behavior is correct on macCatalyst
-            let nav = UINavigationController(rootViewController: CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromGuide(guideItemID: guide, language: locale), matchingQueryKeys: ["guide"]))
+            let vc = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromGuide(guideItemID: guide, language: locale), actionHandler: commonWebActionHandler, matchingQueryKeys: ["guide"])
+            let nav = UINavigationController(rootViewController: vc)
             nav.setNavigationBarHidden(true, animated: false)
             showViewController(nav, key: guide, titleVisible: false)
             cleanup()
@@ -277,7 +306,7 @@ extension MainViewController {
             Task {
                 do {
                     let item = try await ResourceItem.getMetadata(id: addon, language: locale)
-                    let nav = ToolbarNavigationContainerController(rootViewController: ResourceItemViewController(executor: executor, resourceManager: resourceManager, item: item, needsRefetchItem: false))
+                    let nav = ToolbarNavigationContainerController(rootViewController: ResourceItemViewController(executor: executor, resourceManager: resourceManager, item: item, needsRefetchItem: false, actionHandler: commonWebActionHandler))
                     self.showViewController(nav, key: addon, customToolbar: true)
                 } catch {}
             }
@@ -290,12 +319,14 @@ extension MainViewController {
             do {
                 let item = try await GuideItem.getLatestMetadata(language: locale)
                 if userDefaults[.lastNewsID] == item.id { return }
-                let vc = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromGuide(guideItemID: item.id, language: locale), matchingQueryKeys: ["guide"])
-                vc.ackHandler = { [weak self] id in
-                    if let self, id == item.id {
-                        self.userDefaults[.lastNewsID] = item.id
+                let vc = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromGuide(guideItemID: item.id, language: locale), actionHandler: { [weak self] action, viewController in
+                    guard let self else { return }
+                    if case let CommonWebViewController.WebAction.ack(id) = action, id == item.id {
+                        self.userDefaults[.lastNewsID] = id
+                    } else {
+                        self.commonWebActionHandler(action, viewController)
                     }
-                }
+                }, matchingQueryKeys: ["guide"])
                 let nav = UINavigationController(rootViewController: vc)
                 nav.setNavigationBarHidden(true, animated: false)
                 self.showViewController(nav, key: item.id, titleVisible: false)
@@ -644,11 +675,41 @@ extension MainViewController: CelestiaControllerDelegate {
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
         case .feedback:
             sendFeedback()
+        case .plus:
+            if #available(iOS 15, *) {
+                showSubscription()
+            }
         }
     }
 
+    @available(iOS 15, *)
+    private func showSubscription() {
+        let vc = SubscriptionManagerViewController(subscriptionManager: subscriptionManager)
+        let nav = UINavigationController(rootViewController: vc)
+        nav.setNavigationBarHidden(true, animated: false)
+        showViewController(nav, titleVisible: false)
+    }
+
     private func showOnlineAddons() {
-        showViewController(ResourceCategoriesViewController(executor: executor, resourceManager: resourceManager), customToolbar: true)
+        if #available(iOS 15, *) {
+            Task {
+                var queryItems = [URLQueryItem]()
+                if let (transactionID, isSandbox) = await subscriptionManager.transactionInfo() {
+                    queryItems.append(URLQueryItem(name: "transactionIdApple", value: "\(transactionID)"))
+                    queryItems.append(URLQueryItem(name: "isSandboxApple", value: isSandbox ? "1" : "0"))
+                } else {
+                    queryItems.append(URLQueryItem(name: "transactionIdApple", value: ""))
+                    queryItems.append(URLQueryItem(name: "isSandboxApple", value: "1"))
+                }
+                self.showOnlineAddons(extraURLQueryItems: queryItems)
+            }
+        } else {
+            showOnlineAddons(extraURLQueryItems: [])
+        }
+    }
+
+    private func showOnlineAddons(extraURLQueryItems: [URLQueryItem]) {
+        showViewController(ResourceCategoriesViewController(executor: executor, resourceManager: resourceManager, actionHandler: commonWebActionHandler, extraURLQueryItems: extraURLQueryItems), customToolbar: true)
     }
 
     private func sendFeedback() {
@@ -710,6 +771,16 @@ extension MainViewController: CelestiaControllerDelegate {
         if let addonInfoData = addonInfo.data(using: .utf8) {
             vc.addAttachmentData(addonInfoData, mimeType: "text/plain", fileName: "addoninfo.txt")
         }
+
+        if #available(iOS 15, *) {
+            if let (transactionID, isSandbox) = await subscriptionManager.transactionInfo() {
+                let info = "\(transactionID) \(isSandbox)"
+                if let infoData = info.data(using: .utf8) {
+                    vc.addAttachmentData(infoData, mimeType: "text/plain", fileName: "transactionid.txt")
+                }
+            }
+        }
+
         #if !DEBUG
         if let crashReport = Crashes.lastSessionCrashReport, let data = crashReport.incidentIdentifier?.data(using: .utf8) {
             vc.addAttachmentData(data, mimeType: "text/plain", fileName: "crashinfo.txt")
@@ -760,11 +831,25 @@ Device Model: \(model)
             reportBugSuggestFeatureFallback()
             return
         }
+        Task {
+            await suggestFeatureAsync()
+        }
+    }
+
+    private func suggestFeatureAsync() async {
         let vc = MFMailComposeViewController()
         vc.mailComposeDelegate = self
         vc.setToRecipients([Constants.feedbackEmailAddress])
         vc.setSubject(CelestiaString("Feature suggestion for Celestia", comment: ""))
         vc.setMessageBody(CelestiaString("Please describe the feature you want to see in Celestia.", comment: ""), isHTML: false)
+        if #available(iOS 15, *) {
+            if let (transactionID, isSandbox) = await subscriptionManager.transactionInfo() {
+                let info = "\(transactionID) \(isSandbox)"
+                if let infoData = info.data(using: .utf8) {
+                    vc.addAttachmentData(infoData, mimeType: "text/plain", fileName: "transactionid.txt")
+                }
+            }
+        }
         presentAfterDismissCurrent(vc, animated: true)
     }
 
@@ -959,7 +1044,7 @@ Device Model: \(model)
     }
 
     @objc private func presentHelp() {
-        let vc = HelpViewController(executor: executor, resourceManager: resourceManager)
+        let vc = HelpViewController(executor: executor, resourceManager: resourceManager, actionHandler: commonWebActionHandler)
         showViewController(vc, titleVisible: false)
     }
 
@@ -975,7 +1060,7 @@ Device Model: \(model)
     }
 
     private func presentInstalledAddons() {
-        let controller = ResourceViewController(executor: executor, resourceManager: resourceManager)
+        let controller = ResourceViewController(executor: executor, resourceManager: resourceManager, actionHandler: commonWebActionHandler)
         showViewController(controller, customToolbar: true)
     }
 

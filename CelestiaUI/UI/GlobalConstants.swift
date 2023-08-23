@@ -26,6 +26,11 @@ public enum GlobalConstants {
     public static let pageMediumMarginVertical: CGFloat = 12
     public static let pageMediumGapHorizontal: CGFloat = 12
     public static let pageMediumGapVertical: CGFloat = 8
+    public static let pageSmallMarginHorizontal: CGFloat = 12
+    public static let pageSmallMarginVertical: CGFloat = 8
+    public static let pageLargeGapHorizontal: CGFloat = 16
+    public static let pageSmallGapHorizontal: CGFloat = 6
+    public static let pageSmallGapVertical: CGFloat = 4
 
     public static let pageLargeGapVertical: CGFloat = 12
 

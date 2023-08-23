@@ -50,8 +50,10 @@ public class ResourceItemViewController: UIViewController {
 
     private let resourceManager: ResourceManager
 
+    private let actionHandler: ((CommonWebViewController.WebAction, UIViewController) -> Void)?
+
     private lazy var itemInfoController: CommonWebViewController = {
-        return CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromAddon(addonItemID: itemID, language: AppCore.language), matchingQueryKeys: ["item"], contextDirectory: resourceManager.contextDirectory(forAddonWithIdentifier: itemID))
+        return CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromAddon(addonItemID: itemID, language: AppCore.language), actionHandler: actionHandler, matchingQueryKeys: ["item"], contextDirectory: resourceManager.contextDirectory(forAddonWithIdentifier: itemID))
     }()
 
     private var scrollViewTopToViewTopConstrant: NSLayoutConstraint?
@@ -63,10 +65,11 @@ public class ResourceItemViewController: UIViewController {
 
     private let executor: AsyncProviderExecutor
 
-    public init(executor: AsyncProviderExecutor, resourceManager: ResourceManager, item: ResourceItem, needsRefetchItem: Bool) {
+    public init(executor: AsyncProviderExecutor, resourceManager: ResourceManager, item: ResourceItem, needsRefetchItem: Bool, actionHandler: ((CommonWebViewController.WebAction, UIViewController) -> Void)?) {
         self.executor = executor
         self.resourceManager = resourceManager
         self.itemID = item.id
+        self.actionHandler = actionHandler
         self.item = item
         self.needsRefetchItem = needsRefetchItem
         let userActivity = NSUserActivity(activityType: "space.celestia.celestia.addon-user-activity")

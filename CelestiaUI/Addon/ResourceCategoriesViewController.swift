@@ -13,7 +13,9 @@ import CelestiaCore
 import UIKit
 
 public class ResourceCategoriesViewController: ToolbarNavigationContainerController {
-    public init(executor: AsyncProviderExecutor, resourceManager: ResourceManager) {
+    private let webViewController: CommonWebViewController
+
+    public init(executor: AsyncProviderExecutor, resourceManager: ResourceManager, actionHandler: ((CommonWebViewController.WebAction, UIViewController) -> Void)?, extraURLQueryItems: [URLQueryItem] = []) {
         let baseURL = "https://celestia.mobi/resources/categories"
         #if targetEnvironment(macCatalyst)
         let platform = "catalyst"
@@ -21,14 +23,17 @@ public class ResourceCategoriesViewController: ToolbarNavigationContainerControl
         let platform = "ios"
         #endif
         var components = URLComponents(string: baseURL)!
-        components.queryItems = [
+        var queryItems = [
             URLQueryItem(name: "lang", value: AppCore.language),
             URLQueryItem(name: "theme", value: "dark"),
             URLQueryItem(name: "platform", value: platform),
             URLQueryItem(name: "api", value: "1"),
         ]
+        queryItems.append(contentsOf: extraURLQueryItems)
+        components.queryItems = queryItems
         let url = components.url!
-        super.init(rootViewController: CommonWebViewController(executor: executor, resourceManager: resourceManager, url: url, filterURL: false))
+        self.webViewController = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: url, actionHandler: actionHandler, filterURL: false)
+        super.init(rootViewController: webViewController)
     }
 
     public required init?(coder: NSCoder) {

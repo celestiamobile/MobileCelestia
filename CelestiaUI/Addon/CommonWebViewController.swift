@@ -20,6 +20,11 @@ protocol CommonWebViewControllerDelegate: AnyObject {
 }
 
 public class CommonWebViewController: UIViewController {
+    public enum WebAction: Sendable {
+        case showSubscription
+        case ack(id: String)
+    }
+
     private let url: URL
     private let matchingQueryKeys: [String]
     private let contextDirectory: URL?
@@ -29,9 +34,9 @@ public class CommonWebViewController: UIViewController {
     private let executor: AsyncProviderExecutor
     private let resourceManager: ResourceManager
 
-    weak var delegate: CommonWebViewControllerDelegate?
+    private let actionHandler: ((WebAction, UIViewController) -> Void)?
 
-    public var ackHandler: ((String) -> Void)?
+    weak var delegate: CommonWebViewControllerDelegate?
 
     private let webView: WKWebView
 
@@ -65,10 +70,11 @@ public class CommonWebViewController: UIViewController {
         view = containerView
     }
 
-    public init(executor: AsyncProviderExecutor, resourceManager: ResourceManager, url: URL, matchingQueryKeys: [String] = [], contextDirectory: URL? = nil, filterURL: Bool = true) {
+    public init(executor: AsyncProviderExecutor, resourceManager: ResourceManager, url: URL, actionHandler: ((WebAction, UIViewController) -> Void)?, matchingQueryKeys: [String] = [], contextDirectory: URL? = nil, filterURL: Bool = true) {
         self.executor = executor
         self.resourceManager = resourceManager
         self.url = url
+        self.actionHandler = actionHandler
         self.matchingQueryKeys = matchingQueryKeys
         self.contextDirectory = contextDirectory
         self.filterURL = filterURL
@@ -225,7 +231,7 @@ extension CommonWebViewController: CelestiaScriptHandlerDelegate {
     }
 
     func receivedACK(id: String) {
-        ackHandler?(id)
+        actionHandler?(.ack(id: id), self)
     }
 
     func openAddonNext(id: String) {
@@ -235,7 +241,7 @@ extension CommonWebViewController: CelestiaScriptHandlerDelegate {
                 guard let navigationController else { return }
                 // Do not push another ResourceItemFragment if it is the top
                 if !(navigationController.topViewController is ResourceItemViewController) {
-                    navigationController.pushViewController(ResourceItemViewController(executor: self.executor, resourceManager: self.resourceManager, item: item, needsRefetchItem: false), animated: true)
+                    navigationController.pushViewController(ResourceItemViewController(executor: self.executor, resourceManager: self.resourceManager, item: item, needsRefetchItem: false, actionHandler: self.actionHandler), animated: true)
                 }
             } catch {}
         }
@@ -245,6 +251,10 @@ extension CommonWebViewController: CelestiaScriptHandlerDelegate {
         Task {
             await executor.run { $0.runDemo() }
         }
+    }
+
+    func openSubscriptionPage() {
+        actionHandler?(.showSubscription, self)
     }
 }
 

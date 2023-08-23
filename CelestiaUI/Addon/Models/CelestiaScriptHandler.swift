@@ -40,6 +40,9 @@ struct OpenAddonNextContext: Decodable {
 struct RunDemoContext: Decodable {
 }
 
+struct OpenSubscriptionPageContext: Decodable {
+}
+
 protocol BaseJavascriptHandler {
     var operation: String { get }
     func executeWithContent(content: String, delegate: CelestiaScriptHandlerDelegate)
@@ -104,6 +107,15 @@ class RunDemoHandler: JavascriptHandler<RunDemoContext> {
     }
 }
 
+
+class OpenSubscriptionPageHandler: JavascriptHandler<OpenSubscriptionPageContext> {
+    override var operation: String { return "openSubscriptionPage" }
+
+    override func execute(context: OpenSubscriptionPageContext, delegate: CelestiaScriptHandlerDelegate) {
+        delegate.openSubscriptionPage()
+    }
+}
+
 @MainActor
 protocol CelestiaScriptHandlerDelegate: AnyObject, Sendable {
     func runScript(type: String, content: String, name: String?, location: String?)
@@ -111,6 +123,7 @@ protocol CelestiaScriptHandlerDelegate: AnyObject, Sendable {
     func receivedACK(id: String)
     func openAddonNext(id: String)
     func runDemo()
+    func openSubscriptionPage()
 }
 
 class CelestiaScriptHandler: NSObject, WKScriptMessageHandler {
@@ -124,6 +137,7 @@ class CelestiaScriptHandler: NSObject, WKScriptMessageHandler {
         SendACKHandler(),
         OpenAddonNextHandler(),
         RunDemoHandler(),
+        OpenSubscriptionPageHandler(),
     ]
 
     func userContentController(_ userContentController: WKUserContentController, didReceive message: WKScriptMessage) {
