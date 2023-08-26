@@ -190,6 +190,7 @@ extension SearchViewController {
     }
 
     public override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
         let selection = resultSections[indexPath.section].results[indexPath.row]
         selected(selection.name)
     }
