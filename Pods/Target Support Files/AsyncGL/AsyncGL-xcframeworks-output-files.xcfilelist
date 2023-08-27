@@ -1,0 +1,2 @@
+${PODS_XCFRAMEWORKS_BUILD_DIR}/AsyncGL/libEGL/libEGL.framework
+${PODS_XCFRAMEWORKS_BUILD_DIR}/AsyncGL/libGLESv2/libGLESv2.framework

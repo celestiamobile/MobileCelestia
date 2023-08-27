@@ -1,0 +1,3 @@
+${PODS_ROOT}/Target Support Files/AsyncGL/AsyncGL-xcframeworks.sh
+${PODS_ROOT}/AsyncGL/XCFrameworks/libEGL.xcframework
+${PODS_ROOT}/AsyncGL/XCFrameworks/libGLESv2.xcframework
