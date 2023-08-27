@@ -28,7 +28,7 @@ public class SearchViewController: BaseTableViewController {
 
     private var resultSections: [SearchResultSection] = []
 
-    private let selected: (String) -> Void
+    private let selected: (_ display: String, _ path: String) -> Void
 
     private var shouldActivate = true
 
@@ -36,7 +36,7 @@ public class SearchViewController: BaseTableViewController {
     private var currentSearchTerm: String?
     private var validSearchTerm: String?
 
-    public init(resultsInSidebar: Bool, executor: AsyncProviderExecutor, selected: @escaping (String) -> Void) {
+    public init(resultsInSidebar: Bool, executor: AsyncProviderExecutor, selected: @escaping (_ display: String, _ path: String) -> Void) {
         self.resultsInSidebar = resultsInSidebar
         self.selected = selected
         self.executor = executor
@@ -137,7 +137,7 @@ extension SearchViewController: UISearchBarDelegate {
     private func itemSelected(with name: String) {
         view.endEditing(true)
 
-        selected(name)
+        selected(name, name)
     }
 }
 
@@ -204,7 +204,7 @@ extension SearchViewController {
         } else {
             name = selection.name
         }
-        selected(name)
+        selected(selection.name, name)
     }
 }
 

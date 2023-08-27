@@ -107,7 +107,8 @@ class GoToInputViewController: BaseTableViewController {
     private let objectNameHandler: ((GoToInputViewController) -> Void)
     private let textInputHandler: (_ viewController: UIViewController, _ title: String, _ text: String, _ keyboardType: UIKeyboardType) async -> String?
 
-    private var objectName: String = LocalizedString("Earth", "celestia-data")
+    private lazy var displayName = LocalizedString("Earth", "celestia-data")
+    private lazy var objectPath = "Sol/Earth"
 
     private var longitude: Float?
     private var longitudeString: String?
@@ -163,8 +164,9 @@ class GoToInputViewController: BaseTableViewController {
         setUp()
     }
 
-    func updateObjectName(_ name: String) {
-        objectName = name
+    func updateObject(displayName: String, objectPath: String) {
+        self.displayName = displayName
+        self.objectPath = objectPath
         reload()
     }
 }
@@ -206,7 +208,7 @@ private extension GoToInputViewController {
 
     @objc private func go() {
         Task {
-            let objectName = self.objectName
+            let objectName = self.objectPath
             let selection = await executor.get { $0.simulation.findObject(from: objectName) }
             guard !selection.isEmpty else {
                 showError(CelestiaString("Object not found", comment: ""))
@@ -235,7 +237,7 @@ private extension GoToInputViewController {
             ])
         }
         allSections = [
-            Section(title: nil, items: [ObjectNameItem(name: objectName)]),
+            Section(title: nil, items: [ObjectNameItem(name: displayName)]),
             coordinateSection,
             distanceSection,
         ]

@@ -32,12 +32,13 @@ class EventFinderInputViewController: BaseTableViewController {
                 [ObjectItem()],
     ]
 
-    private let selectableObjects = [LocalizedString("Earth", "celestia-data"), LocalizedString("Jupiter", "celestia-data")]
+    private let selectableObjects: [(displayName: String, objectPath: String)] = [(LocalizedString("Earth", "celestia-data"), "Sol/Earth"), (LocalizedString("Jupiter", "celestia-data"), "Sol/Jupiter")]
 
     private let defaultSearchingInterval: TimeInterval = 365 * 24 * 60 * 60
     private lazy var startTime = endTime.addingTimeInterval(-defaultSearchingInterval)
     private lazy var endTime = Date()
     private var objectName = LocalizedString("Earth", "celestia-data")
+    private var objectPath = "Sol/Earth"
 
     private let executor: AsyncProviderExecutor
 
@@ -87,8 +88,8 @@ private extension EventFinderInputViewController {
 
     @objc private func findEclipse() {
         Task {
-            let objectName = self.objectName
-            guard let body = await executor.get({ core in return core.simulation.findObject(from: objectName).body }) else {
+            let objectPath = self.objectPath
+            guard let body = await executor.get({ core in return core.simulation.findObject(from: objectPath).body }) else {
                 showError(CelestiaString("Object not found", comment: ""))
                 return
             }
@@ -154,7 +155,7 @@ extension EventFinderInputViewController {
         } else if item is ObjectItem {
             if let cell = tableView.cellForRow(at: indexPath) {
                 showSelection(CelestiaString("Please choose an object.", comment: ""),
-                              options: selectableObjects.map { LocalizedString($0, "celestia-data") } + [CelestiaString("Other", comment: "")],
+                              options: selectableObjects.map { $0.displayName } + [CelestiaString("Other", comment: "")],
                               source: .view(view: cell, sourceRect: nil)) { [weak self] index in
                     guard let self = self, let index = index else { return }
                     if index >= self.selectableObjects.count {
@@ -162,12 +163,14 @@ extension EventFinderInputViewController {
                         Task {
                             if let text = await self.textInputHandler(self, CelestiaString("Please enter an object name.", comment: "")) {
                                 self.objectName = text
+                                self.objectPath = text
                                 tableView.reloadData()
                             }
                         }
                         return
                     }
-                    self.objectName = self.selectableObjects[index]
+                    self.objectName = self.selectableObjects[index].displayName
+                    self.objectPath = self.selectableObjects[index].objectPath
                     tableView.reloadData()
                 }
             }

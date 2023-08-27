@@ -26,6 +26,8 @@ public class ObserverModeViewController: BaseTableViewController {
     private var coordinateSystem: CoordinateSystem = .universal
     private var referenceObjectName = ""
     private var targetObjectName = ""
+    private var referenceObjectPath = ""
+    private var targetObjectPath = ""
 
     private enum Row {
         case coordinateSystem
@@ -52,13 +54,13 @@ public class ObserverModeViewController: BaseTableViewController {
 
     @objc private func applyObserverMode() {
         let system = coordinateSystem
-        let refName = referenceObjectName
-        let targetName = targetObjectName
+        let refPath = referenceObjectPath
+        let targetPath = targetObjectPath
 
         Task {
             await executor.run { appCore in
-                let ref = refName.isEmpty ? Selection() : appCore.simulation.findObject(from: refName)
-                let target = targetName.isEmpty ? Selection() : appCore.simulation.findObject(from: targetName)
+                let ref = refPath.isEmpty ? Selection() : appCore.simulation.findObject(from: refPath)
+                let target = targetPath.isEmpty ? Selection() : appCore.simulation.findObject(from: targetPath)
                 appCore.simulation.activeObserver.setFrame(coordinate: system, target: target, reference: ref)
             }
         }
@@ -171,18 +173,20 @@ extension ObserverModeViewController {
                 navigationController?.pushViewController(vc, animated: true)
             }
         case .referenceObjectName:
-            let searchController = SearchViewController(resultsInSidebar: false, executor: executor) { [weak self] name in
+            let searchController = SearchViewController(resultsInSidebar: false, executor: executor) { [weak self] displayName, objectPath in
                 guard let self else { return }
                 self.navigationController?.popViewController(animated: true)
-                self.referenceObjectName = name
+                self.referenceObjectName = displayName
+                self.referenceObjectPath = objectPath
                 self.tableView.reloadData()
             }
             navigationController?.pushViewController(searchController, animated: true)
         case .targetObjectName:
-            let searchController = SearchViewController(resultsInSidebar: false, executor: executor) { [weak self] name in
+            let searchController = SearchViewController(resultsInSidebar: false, executor: executor) { [weak self] displayName, objectPath in
                 guard let self else { return }
                 self.navigationController?.popViewController(animated: true)
-                self.targetObjectName = name
+                self.targetObjectName = displayName
+                self.targetObjectPath = objectPath
                 self.tableView.reloadData()
             }
             navigationController?.pushViewController(searchController, animated: true)
