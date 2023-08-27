@@ -34,6 +34,7 @@ public class SearchViewController: BaseTableViewController {
 
     private let executor: AsyncProviderExecutor
     private var currentSearchTerm: String?
+    private var validSearchTerm: String?
 
     public init(resultsInSidebar: Bool, executor: AsyncProviderExecutor, selected: @escaping (String) -> Void) {
         self.resultsInSidebar = resultsInSidebar
@@ -106,6 +107,7 @@ private extension SearchViewController {
     func searchTextUpdated(_ text: String?) {
         currentSearchTerm = text
         guard let text, !text.isEmpty else {
+            validSearchTerm = ""
             resultSections = []
             tableView.reloadData()
             return
@@ -114,6 +116,7 @@ private extension SearchViewController {
         Task {
             let results = await self.search(with: text)
             guard text == currentSearchTerm else { return }
+            validSearchTerm = text
             self.resultSections = results
             self.tableView.reloadData()
         }
@@ -191,8 +194,17 @@ extension SearchViewController {
 
     public override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+
+        guard let validSearchTerm else { return }
+
         let selection = resultSections[indexPath.section].results[indexPath.row]
-        selected(selection.name)
+        let name: String
+        if let lastSeparatorIndex = validSearchTerm.lastIndex(of: "/") {
+            name = String(validSearchTerm[validSearchTerm.startIndex...lastSeparatorIndex] + selection.name)
+        } else {
+            name = selection.name
+        }
+        selected(name)
     }
 }
 
