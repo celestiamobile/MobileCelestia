@@ -305,7 +305,7 @@ extension UINavigationBar.NSToolbarSection {
     }
 
     @objc private func textChanged(_ sender: NSObject) {
-        let value = sender.value(forKey: "stringValue") as? String
+        let value = searchField.value(forKey: "stringValue") as? String
         textChangeHandler(value)
     }
 
