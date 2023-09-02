@@ -232,7 +232,11 @@ extension CommonWebViewController: CelestiaScriptHandlerDelegate {
         Task {
             do {
                 let item: ResourceItem = try await ResourceItem.getMetadata(id: id, language: AppCore.language)
-                self.navigationController?.pushViewController(ResourceItemViewController(executor: self.executor, resourceManager: self.resourceManager, item: item, needsRefetchItem: false), animated: true)
+                guard let navigationController else { return }
+                // Do not push another ResourceItemFragment if it is the top
+                if !(navigationController.topViewController is ResourceItemViewController) {
+                    navigationController.pushViewController(ResourceItemViewController(executor: self.executor, resourceManager: self.resourceManager, item: item, needsRefetchItem: false), animated: true)
+                }
             } catch {}
         }
     }
