@@ -131,8 +131,13 @@ jobs:
     displayName: 'Reintegrate CocoaPods'
 
   - script: |
-      brew install gettext
-    displayName: 'Install Gettext'
+      brew install gettext gperf
+    displayName: 'Install Dependencies'
+
+  - script: |
+      cd Celestia/src/celscript/legacy
+      $(brew --prefix)/bin/gperf commands.gperf -m4 --output-file=commands.inc
+    displayName: 'Running gperf'
 
   - task: NodeTool@0
     inputs:
