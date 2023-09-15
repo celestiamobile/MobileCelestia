@@ -19,6 +19,7 @@ enum CelestiaControlAction {
     case info
     case hide
     case show
+    case search
 }
 
 enum CelestiaControlButton {
