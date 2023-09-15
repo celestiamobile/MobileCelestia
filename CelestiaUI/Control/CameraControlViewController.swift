@@ -13,18 +13,26 @@ import CelestiaCore
 import UIKit
 
 public final class CameraControlViewController: BaseTableViewController {
-    private let singleRowBaseIndex = 1
-
     private struct Item {
         let title: String
         let minusKey: Int
         let plusKey: Int
     }
 
-    private var controlItems: [Item] = [
-        Item(title: CelestiaString("Pitch", comment: ""), minusKey: 32, plusKey: 26),
-        Item(title: CelestiaString("Yaw", comment: ""), minusKey: 28, plusKey: 30),
-        Item(title: CelestiaString("Roll", comment: ""), minusKey: 31, plusKey: 33),
+    private struct Section {
+        let items: [Item]
+        let footer: String
+    }
+
+    private var controlItems: [Section] = [
+        Section(items: [
+            Item(title: CelestiaString("Pitch", comment: ""), minusKey: 32, plusKey: 26),
+            Item(title: CelestiaString("Yaw", comment: ""), minusKey: 28, plusKey: 30),
+            Item(title: CelestiaString("Roll", comment: ""), minusKey: 31, plusKey: 33)
+        ], footer: CelestiaString("Long press on stepper to change orientation.", comment: "")),
+        Section(items: [
+            Item(title: CelestiaString("Zoom (Distance)", comment: ""), minusKey: 6, plusKey: 5),
+        ], footer: CelestiaString("Long press on stepper to zoom in/out.", comment: "")),
     ]
 
     private var lastKey: Int?
@@ -57,33 +65,33 @@ private extension CameraControlViewController {
 
 extension CameraControlViewController {
     public override func numberOfSections(in tableView: UITableView) -> Int {
-        return 3
+        return controlItems.count + 2
     }
 
     public override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section >= singleRowBaseIndex { return 1 }
-        return controlItems.count
+        if section >= controlItems.count { return 1 }
+        return controlItems[section].items.count
     }
 
     public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.section == singleRowBaseIndex {
+        if indexPath.section == controlItems.count {
             let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
             cell.title = CelestiaString("Flight Mode", comment: "")
             cell.accessoryType = .disclosureIndicator
             return cell
         }
-        if indexPath.section == singleRowBaseIndex + 1 {
+        if indexPath.section == controlItems.count + 1 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
             cell.title = CelestiaString("Reverse Direction", comment: "")
             cell.accessoryType = .none
             return cell
         }
-        let item = controlItems[indexPath.row]
+        let item = controlItems[indexPath.section].items[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "Stepper", for: indexPath) as! StepperCell
         cell.title = item.title
         cell.selectionStyle = .none
         cell.changeBlock = { [unowned self] (plus) in
-            self.handleItemChange(index: indexPath.row, plus: plus)
+            self.handleItemChange(indexPath: indexPath, plus: plus)
         }
         cell.stopBlock = { [unowned self] in
             self.handleStop()
@@ -92,8 +100,8 @@ extension CameraControlViewController {
     }
 
     public override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        if section == 0 {
-            return CelestiaString("Long press on stepper to change orientation.", comment: "")
+        if section < controlItems.count {
+            return controlItems[section].footer
         }
         return nil
     }
@@ -105,11 +113,11 @@ extension CameraControlViewController {
     public override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        if indexPath.section == singleRowBaseIndex {
+        if indexPath.section == controlItems.count {
             navigationController?.pushViewController(ObserverModeViewController(executor: executor), animated: true)
             return
         }
-        if indexPath.section == singleRowBaseIndex + 1 {
+        if indexPath.section == controlItems.count + 1 {
             Task {
                 await executor.run { $0.simulation.reverseObserverOrientation() }
             }
@@ -119,8 +127,9 @@ extension CameraControlViewController {
 }
 
 private extension CameraControlViewController {
-    func handleItemChange(index: Int, plus: Bool) {
-        let key = plus ? controlItems[index].plusKey : controlItems[index].minusKey
+    func handleItemChange(indexPath: IndexPath, plus: Bool) {
+        let item = controlItems[indexPath.section].items[indexPath.row]
+        let key = plus ? item.plusKey : item.minusKey
         if let prev = lastKey {
             if key == prev { return }
             Task {
