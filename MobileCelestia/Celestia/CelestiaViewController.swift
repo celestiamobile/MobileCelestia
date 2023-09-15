@@ -33,6 +33,7 @@ protocol CelestiaControllerDelegate: AnyObject {
     func celestiaControllerLoadingFailed(_ celestiaController: CelestiaViewController)
     func celestiaControllerLoadingSucceeded(_ celestiaController: CelestiaViewController)
     func celestiaControllerRequestShowActionMenu(_ celestiaController: CelestiaViewController)
+    func celestiaControllerRequestShowSearch(_ celestiaController: CelestiaViewController)
     func celestiaController(_ celestiaController: CelestiaViewController, requestShowInfoWithSelection selection: Selection)
     func celestiaController(_ celestiaController: CelestiaViewController, requestWebInfo webURL: URL)
     func celestiaControllerCanAcceptKeyEvents(_ celestiaController: CelestiaViewController) -> Bool
@@ -141,6 +142,10 @@ extension CelestiaViewController {
 extension CelestiaViewController: CelestiaInteractionControllerDelegate {
     func celestiaInteractionControllerRequestShowActionMenu(_ celestiaInteractionController: CelestiaInteractionController) {
         delegate?.celestiaControllerRequestShowActionMenu(self)
+    }
+
+    func celestiaInteractionControllerRequestShowSearch(_ celestiaInteractionController: CelestiaInteractionController) {
+        delegate?.celestiaControllerRequestShowSearch(self)
     }
 
     func celestiaInteractionController(_ celestiaInteractionController: CelestiaInteractionController, requestShowInfoWithSelection selection: Selection) {

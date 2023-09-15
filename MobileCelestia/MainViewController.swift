@@ -572,6 +572,10 @@ extension MainViewController: CelestiaControllerDelegate {
         presentAfterDismissCurrent(actionViewController, animated: true)
     }
 
+    func celestiaControllerRequestShowSearch(_ celestiaController: CelestiaViewController) {
+        showSearch()
+    }
+
     func celestiaController(_ celestiaController: CelestiaViewController, requestShowInfoWithSelection selection: Selection) {
         guard !selection.isEmpty else { return }
         showSelectionInfo(with: selection)
