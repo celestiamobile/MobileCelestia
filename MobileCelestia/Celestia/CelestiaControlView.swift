@@ -13,8 +13,6 @@ import CelestiaUI
 import UIKit
 
 enum CelestiaControlAction {
-    case zoomIn
-    case zoomOut
     case showMenu
     case switchToObject
     case switchToCamera
