@@ -140,6 +140,8 @@ jobs:
       cd $(System.DefaultWorkingDirectory)/Celestia/src/celephem
       $(brew --prefix)/bin/gperf customrotation.gperf -m4 --output-file=customrotation.inc
       $(brew --prefix)/bin/gperf customorbit.gperf -m4 --output-file=customorbit.inc
+      cd $(System.DefaultWorkingDirectory)/Celestia/src/celengine
+      $(brew --prefix)/bin/gperf location.gperf -m4 --output-file=location.inc
     displayName: 'Running gperf'
 
   - task: NodeTool@0
