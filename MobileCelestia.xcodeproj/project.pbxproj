@@ -1548,6 +1548,10 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-Wl,-ld_classic",
+				);
 				SDKROOT = iphoneos;
 				SHARED_BUILD_NUMBER = 359;
 				SHARED_BUILD_VERSION = 1.5.28;
@@ -1605,6 +1609,10 @@
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright (C) 2001-2023, the Celestia Development Team";
 				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				OTHER_LDFLAGS = (
+					"$(inherited)",
+					"-Wl,-ld_classic",
+				);
 				SDKROOT = iphoneos;
 				SHARED_BUILD_NUMBER = 359;
 				SHARED_BUILD_VERSION = 1.5.28;
