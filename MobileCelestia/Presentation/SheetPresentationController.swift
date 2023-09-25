@@ -145,12 +145,13 @@ class SheetPresentationController: UIPresentationController {
     override func size(forChildContentContainer container: UIContentContainer,
                        withParentContainerSize parentSize: CGSize) -> CGSize {
         var size: CGSize = .zero
-        let height = min(parentSize.height - containerView!.safeAreaInsets.top, parentSize.height * Constants.sheetMaxHeightRatio) - sheetHandleContainerHeight
+        let safeAreaInsets = containerView?.safeAreaInsets ?? .zero
+        let height = min(parentSize.height - safeAreaInsets.top, parentSize.height * Constants.sheetMaxHeightRatio) - sheetHandleContainerHeight
         if presentingViewController.traitCollection.horizontalSizeClass == .compact && presentingViewController.traitCollection.verticalSizeClass == .regular {
             size = CGSize(width: parentSize.width, height: height)
         } else {
             let containerWidth = parentSize.width
-            var widthUpperBound = containerWidth - containerView!.safeAreaInsets.left - containerView!.safeAreaInsets.right - 2 * GlobalConstants.pageMediumMarginHorizontal
+            var widthUpperBound = containerWidth - safeAreaInsets.left - safeAreaInsets.right - 2 * GlobalConstants.pageMediumMarginHorizontal
             widthUpperBound = min(widthUpperBound, containerWidth * Constants.sheetMaxWidthRatio)
             let widthLowerBound = min(widthUpperBound, containerWidth * Constants.sheetMinWidthRatio)
             let width = max(widthLowerBound, min(widthUpperBound, presentedViewController.preferredContentSize.width))
