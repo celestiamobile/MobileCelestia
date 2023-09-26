@@ -122,6 +122,7 @@ jobs:
 
   - script: |
       sudo xcode-select -s /Applications/Xcode_$XC_VERSION.app
+      xcodebuild -version
     displayName: 'Select Latest Xcode'
 
   - script: |
