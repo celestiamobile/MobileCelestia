@@ -1557,7 +1557,7 @@
 					"-Wl,-ld_classic",
 				);
 				SDKROOT = iphoneos;
-				SHARED_BUILD_NUMBER = 362;
+				SHARED_BUILD_NUMBER = 363;
 				SHARED_BUILD_VERSION = 1.5.28;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1618,7 +1618,7 @@
 					"-Wl,-ld_classic",
 				);
 				SDKROOT = iphoneos;
-				SHARED_BUILD_NUMBER = 362;
+				SHARED_BUILD_NUMBER = 363;
 				SHARED_BUILD_VERSION = 1.5.28;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
