@@ -547,6 +547,9 @@ open class ToolbarSplitContainerController: UIViewController, ToolbarContainerVi
 extension ToolbarSplitContainerController: NSToolbarDelegate {
     public func toolbarAllowedItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
         if #available(iOS 14.0, *) {
+            if #available(iOS 17, *) {
+                return [.toggleSidebar, .primarySidebarTrackingSeparatorItemIdentifier, .back] + currentToolbarItemIdentifiers
+            }
             return [.toggleSidebar, .back] + currentToolbarItemIdentifiers
         }
         return [.back] + currentToolbarItemIdentifiers
@@ -556,6 +559,9 @@ extension ToolbarSplitContainerController: NSToolbarDelegate {
         var items = [NSToolbarItem.Identifier]()
         if #available(iOS 14.0, *), secondaryNavigation != nil && sidebarNavigation != nil {
             items.append(.toggleSidebar)
+            if #available(iOS 17, *) {
+                items.append(.primarySidebarTrackingSeparatorItemIdentifier)
+            }
         }
         if let secondaryNavigation, secondaryNavigation.viewControllers.count > 1 {
             items.append(.back)
@@ -569,6 +575,9 @@ extension ToolbarSplitContainerController: NSToolbarDelegate {
             return backToolbarItem
         }
         if itemIdentifier == .flexibleSpace || itemIdentifier == .toggleSidebar {
+            return nil
+        }
+        if #available(iOS 17, *), itemIdentifier == .primarySidebarTrackingSeparatorItemIdentifier {
             return nil
         }
         return (secondaryNavigation?.topViewController as? ToolbarAwareViewController)?.toolbarContainerViewController(self, itemForItemIdentifier: itemIdentifier)
