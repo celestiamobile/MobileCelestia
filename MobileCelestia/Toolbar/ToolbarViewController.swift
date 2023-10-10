@@ -47,9 +47,14 @@ enum AppToolbarAction: String {
     case speedometer
     case newsarchive
     case feedback
+    case plus
 
     static var persistentAction: [[AppToolbarAction]] {
-        return [[.setting], [.share, .search, .home, .paperplane], [.camera, .time, .script, .speedometer], [.browse, .favorite, .event], [.addons, .download, .newsarchive], [.feedback, .help]]
+        var actions: [[AppToolbarAction]] = [[.setting], [.share, .search, .home, .paperplane], [.camera, .time, .script, .speedometer], [.browse, .favorite, .event], [.addons, .download, .newsarchive], [.feedback, .help]]
+        if #available(iOS 15, *) {
+            actions.insert([.plus], at: 0)
+        }
+        return actions
     }
 }
 
@@ -256,6 +261,8 @@ extension AppToolbarAction: ToolbarAction {
             return UIImage(systemName: "newspaper") ?? UIImage(named: "toolbar_newsarchive")
         case .feedback:
             return UIImage(systemName: "exclamationmark.bubble")
+        case .plus:
+            return UIImage(systemName: "crown")
         }
     }
 }
@@ -297,6 +304,8 @@ extension AppToolbarAction {
             return CelestiaString("News Archive", comment: "")
         case .feedback:
             return CelestiaString("Send Feedback", comment: "")
+        case .plus:
+            return CelestiaString("Celestia PLUS", comment: "")
         }
     }
 }

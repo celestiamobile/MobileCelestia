@@ -66,6 +66,10 @@
 		EA787309296DE50D0099AB11 /* Injecton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA787308296DE50D0099AB11 /* Injecton.swift */; };
 		EA78730F296DEA6B0099AB11 /* CelestiaExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA78730E296DEA6B0099AB11 /* CelestiaExecutor.swift */; };
 		EA78733D296EB61B0099AB11 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA78733B296EB61A0099AB11 /* UserDefaults.swift */; };
+		EA7BACEF2A959A760014D1FF /* FeatureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5AA1682A947AA50061764D /* FeatureView.swift */; };
+		EA7BACF02A959A760014D1FF /* PlanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA89AE152A94AE5C004B99BA /* PlanView.swift */; };
+		EA7BACF12A959A760014D1FF /* SubscriptionManagerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5AA1642A94715D0061764D /* SubscriptionManagerViewController.swift */; };
+		EA7BACF22A959A760014D1FF /* SubscriptionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA89AE132A948DE1004B99BA /* SubscriptionManager.swift */; };
 		EA7BF37C27033AE40058F704 /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA7BF37B27033AE40058F704 /* GameController.framework */; };
 		EA839CB32A5696E100BF1CB4 /* MultiLineTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA839CB02A5696E100BF1CB4 /* MultiLineTextCell.swift */; };
 		EA839CB42A5696E100BF1CB4 /* SliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA839CB12A5696E100BF1CB4 /* SliderCell.swift */; };
@@ -314,6 +318,8 @@
 		EA50E7862A50609C005E7D7A /* AppCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCore.swift; sourceTree = "<group>"; };
 		EA50E7882A506406005E7D7A /* GlobalConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalConstants.swift; sourceTree = "<group>"; };
 		EA544E5E2566BC50003F351D /* DestinationDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DestinationDetailViewController.swift; sourceTree = "<group>"; };
+		EA5AA1642A94715D0061764D /* SubscriptionManagerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionManagerViewController.swift; sourceTree = "<group>"; };
+		EA5AA1682A947AA50061764D /* FeatureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureView.swift; sourceTree = "<group>"; };
 		EA5D32E6266F9518005D5931 /* SheetPresentationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SheetPresentationController.swift; sourceTree = "<group>"; };
 		EA5E185B2477C78E00F5374B /* Toast.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Toast.swift; sourceTree = "<group>"; };
 		EA6671C829B3919C00A7846E /* SelectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectionCell.swift; sourceTree = "<group>"; };
@@ -341,6 +347,8 @@
 		EA85C91A289F5811009ADB1C /* ButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonView.swift; sourceTree = "<group>"; };
 		EA86E38326FE20C000FF2278 /* SettingsFrameRateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsFrameRateViewController.swift; sourceTree = "<group>"; };
 		EA872F022A5ACC65009E6A20 /* HelpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpViewController.swift; sourceTree = "<group>"; };
+		EA89AE132A948DE1004B99BA /* SubscriptionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionManager.swift; sourceTree = "<group>"; };
+		EA89AE152A94AE5C004B99BA /* PlanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanView.swift; sourceTree = "<group>"; };
 		EA934C8F251D90C500DD284C /* MainSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSceneDelegate.swift; sourceTree = "<group>"; };
 		EA934C99251D92A700DD284C /* PanelSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelSceneDelegate.swift; sourceTree = "<group>"; };
 		EA982BFE25496B6D00CDC642 /* BaseTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTableViewController.swift; sourceTree = "<group>"; };
@@ -549,6 +557,7 @@
 		979D2F7C23FEB1A6005D2592 /* MobileCelestia */ = {
 			isa = PBXGroup;
 			children = (
+				EA5AA1632A94714D0061764D /* Subscription */,
 				97C3A9EF2445FAA100EB365A /* Celestia */,
 				97DB1FD424067757001F222F /* Presentation */,
 				977394A92403F05100E38B82 /* Settings */,
@@ -667,6 +676,7 @@
 		EA50E75F2A505627005E7D7A /* CelestiaUI */ = {
 			isa = PBXGroup;
 			children = (
+				EA7BACEE2A959A5C0014D1FF /* Subscription */,
 				EA872F012A5ACBFF009E6A20 /* Help */,
 				978406E124029DA900876FD1 /* Loading */,
 				EAB8F2532A56D70600C4E777 /* Addon */,
@@ -731,6 +741,13 @@
 			path = UI;
 			sourceTree = "<group>";
 		};
+		EA5AA1632A94714D0061764D /* Subscription */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Subscription;
+			sourceTree = "<group>";
+		};
 		EA66BBC52A55AAA5008A7AAA /* Search */ = {
 			isa = PBXGroup;
 			children = (
@@ -770,6 +787,17 @@
 				EA50E7882A506406005E7D7A /* GlobalConstants.swift */,
 			);
 			path = UI;
+			sourceTree = "<group>";
+		};
+		EA7BACEE2A959A5C0014D1FF /* Subscription */ = {
+			isa = PBXGroup;
+			children = (
+				EA5AA1642A94715D0061764D /* SubscriptionManagerViewController.swift */,
+				EA5AA1682A947AA50061764D /* FeatureView.swift */,
+				EA89AE152A94AE5C004B99BA /* PlanView.swift */,
+				EA89AE132A948DE1004B99BA /* SubscriptionManager.swift */,
+			);
+			path = Subscription;
 			sourceTree = "<group>";
 		};
 		EA872F012A5ACBFF009E6A20 /* Help */ = {
@@ -1373,8 +1401,10 @@
 				EAB8F2632A56DC3200C4E777 /* InstalledResourceViewController.swift in Sources */,
 				EAD12AA62A566DE7007EE4D6 /* FavoriteCoordinatorController.swift in Sources */,
 				EAB8F25A2A56D71600C4E777 /* CelestiaScriptHandler.swift in Sources */,
+				EA7BACF12A959A760014D1FF /* SubscriptionManagerViewController.swift in Sources */,
 				EA66BBC72A55AABF008A7AAA /* SearchCoordinatorController.swift in Sources */,
 				EA872F052A5ACC9C009E6A20 /* TutorialViewController.swift in Sources */,
+				EA7BACF22A959A760014D1FF /* SubscriptionManager.swift in Sources */,
 				EAB623B72A51AC2C00063D1B /* UILabel+DynamicType.swift in Sources */,
 				EAD12AA32A566DE7007EE4D6 /* FavoriteViewController.swift in Sources */,
 				EA50E7782A505DCE005E7D7A /* BodyDescriptionCell.swift in Sources */,
@@ -1383,9 +1413,11 @@
 				EA66BBE22A55BA88008A7AAA /* GoToContainerViewController.swift in Sources */,
 				EAD12A8F2A5656FF007EE4D6 /* EventFinderResultViewController.swift in Sources */,
 				EA66BBE02A55BA88008A7AAA /* LongitudeLatitudeInputCell.swift in Sources */,
+				EA7BACEF2A959A760014D1FF /* FeatureView.swift in Sources */,
 				EAB8F2662A56DC3200C4E777 /* AsyncListViewController.swift in Sources */,
 				EAD12AA42A566DE7007EE4D6 /* DestinationDetailViewController.swift in Sources */,
 				EAB8F25F2A56D99B00C4E777 /* BaseResultHandler.swift in Sources */,
+				EA7BACF02A959A760014D1FF /* PlanView.swift in Sources */,
 				EAE92A642A558E8000BFE06E /* GameControllerThumbstickAxis.swift in Sources */,
 				EAB623B62A51AC0F00063D1B /* TextCell.swift in Sources */,
 				EAD12A902A5656FF007EE4D6 /* EventFinderCoordinatorViewController.swift in Sources */,
