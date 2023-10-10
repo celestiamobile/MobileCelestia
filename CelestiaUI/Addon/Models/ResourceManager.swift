@@ -91,8 +91,10 @@ public final class ResourceManager: @unchecked Sendable {
 
     func download(item: ResourceItem) {
         let downloadTask = URLSession.shared.downloadTask(with: item.item) { [unowned self] url, response, error in
-            self.tasks.removeValue(forKey: item.id)
-            self.observations.removeValue(forKey: item.id)?.invalidate()
+            DispatchQueue.main.sync {
+                self.tasks.removeValue(forKey: item.id)
+                self.observations.removeValue(forKey: item.id)?.invalidate()
+            }
 
             if let e = error {
                 if (e as? URLError)?.errorCode == URLError.cancelled.rawValue {
