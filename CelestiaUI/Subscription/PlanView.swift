@@ -30,8 +30,8 @@ final class PlanView: UIView {
     private let product: Product
     private let handler: () -> Void
 
-    init(product: Product, action: Action, state: State, handler: @escaping () -> Void) {
-        self.product = product
+    init(plan: SubscriptionManager.Plan, action: Action, state: State, handler: @escaping () -> Void) {
+        self.product = plan.product
         self.handler = handler
 
         super.init(frame: .zero)
@@ -45,7 +45,7 @@ final class PlanView: UIView {
         priceLabel.textColor = .secondaryLabel
         priceLabel.numberOfLines = 0
 
-        nameLabel.text = product.displayName
+        nameLabel.text = plan.name
         priceLabel.text = product.displayPrice
 
         let stack = UIStackView(arrangedSubviews: [nameLabel, priceLabel])

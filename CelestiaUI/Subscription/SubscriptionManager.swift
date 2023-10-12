@@ -26,6 +26,12 @@ public actor SubscriptionManager {
         case xcode
     }
 
+    @available(iOS 15, *)
+    public struct Plan {
+        let product: Product
+        let name: String
+    }
+
     private(set) var status: SubscriptionStatus = .unknown
 
     private let monthlySubscriptionId = "space.celestia.mobilecelestia.plus.monthly"
@@ -84,8 +90,17 @@ public actor SubscriptionManager {
     }
 
     @available(iOS 15.0, *)
-    func fetchSubscriptionProducts() async throws -> [Product] {
-        return try await Product.products(for: [yearlySubscriptionId, monthlySubscriptionId])
+    func fetchSubscriptionProducts() async throws -> [Plan] {
+        let products = try await Product.products(for: [yearlySubscriptionId, monthlySubscriptionId])
+        return products.compactMap { product in
+            if product.id == yearlySubscriptionId {
+                return Plan(product: product, name: CelestiaString("Yearly", comment: ""))
+            } else if product.id == monthlySubscriptionId {
+                return Plan(product: product, name: CelestiaString("Monthly", comment: ""))
+            } else {
+                return nil
+            }
+        }
     }
 
     @available(iOS 15.0, *)

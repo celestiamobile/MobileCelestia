@@ -24,8 +24,8 @@ public class SubscriptionManagerViewController: UIViewController {
     enum Status {
         case empty
         case error
-        case inProgress(status: SubscriptionManager.SubscriptionStatus, products: [Product], pendingProduct: Product)
-        case status(status: SubscriptionManager.SubscriptionStatus, products: [Product])
+        case inProgress(status: SubscriptionManager.SubscriptionStatus, plans: [SubscriptionManager.Plan], pendingProduct: Product)
+        case status(status: SubscriptionManager.SubscriptionStatus, plans: [SubscriptionManager.Plan])
     }
 
     private var status = Status.empty
@@ -158,9 +158,9 @@ private extension SubscriptionManagerViewController {
 
         Task {
             do {
-                let products = try await subscriptionManager.fetchSubscriptionProducts().sorted(by: { $0.price > $1.price })
+                let plans = try await subscriptionManager.fetchSubscriptionProducts().sorted(by: { $0.product.price > $1.product.price })
                 let status = await self.subscriptionManager.checkSubscriptionStatus()
-                self.status = .status(status: status, products: products)
+                self.status = .status(status: status, plans: plans)
                 reloadViews()
             } catch {
                 status = .error
@@ -181,7 +181,7 @@ private extension SubscriptionManagerViewController {
             view = errorView
             loadingView.stopAnimating()
             stretch = false
-        case .status(let subscriptionStatus, let products), .inProgress(let subscriptionStatus, let products, _):
+        case .status(let subscriptionStatus, let plans), .inProgress(let subscriptionStatus, let plans, _):
             view = scrollContainer
             loadingView.stopAnimating()
             let pendingProduct: Product?
@@ -190,7 +190,7 @@ private extension SubscriptionManagerViewController {
             } else {
                 pendingProduct = nil
             }
-            setUpPlanList(subscriptionStatus: subscriptionStatus, products: products, pendingProduct: pendingProduct)
+            setUpPlanList(subscriptionStatus: subscriptionStatus, plans: plans, pendingProduct: pendingProduct)
             stretch = true
         }
 
@@ -223,7 +223,7 @@ private extension SubscriptionManagerViewController {
         }
     }
 
-    private func setUpPlanList(subscriptionStatus: SubscriptionManager.SubscriptionStatus, products: [Product], pendingProduct: Product?) {
+    private func setUpPlanList(subscriptionStatus: SubscriptionManager.SubscriptionStatus, plans: [SubscriptionManager.Plan], pendingProduct: Product?) {
         for planView in planStack.arrangedSubviews {
             planStack.removeArrangedSubview(planView)
             planView.removeFromSuperview()
@@ -232,7 +232,7 @@ private extension SubscriptionManagerViewController {
         let allDisabled: Bool
         switch subscriptionStatus {
         case .verified(_, let productID, _, _):
-            currentPlanIndex = products.firstIndex(where: { $0.id == productID })
+            currentPlanIndex = plans.firstIndex(where: { $0.product.id == productID })
             statusLabel.text = CelestiaString("Congratulations, you are a Celestia PLUS user", comment: "")
             allDisabled = false
         case .pending:
@@ -244,7 +244,8 @@ private extension SubscriptionManagerViewController {
             statusLabel.text = CelestiaString("Choose one of the plans below to get Celestia PLUS", comment: "")
             allDisabled = false
         }
-        for (index, product) in products.enumerated() {
+        for (index, plan) in plans.enumerated() {
+            let product = plan.product
             let action: PlanView.Action
             if let currentPlanIndex {
                 if index == currentPlanIndex {
@@ -269,15 +270,15 @@ private extension SubscriptionManagerViewController {
             } else {
                 state = .normal
             }
-            let planView = PlanView(product: product, action: action, state: state) { [weak self] in
+            let planView = PlanView(plan: plan, action: action, state: state) { [weak self] in
                 guard let self else { return }
                 Task {
                     do {
                         self.status = .empty
-                         self.status = .inProgress(status: subscriptionStatus, products: products, pendingProduct: product)
+                         self.status = .inProgress(status: subscriptionStatus, plans: plans, pendingProduct: product)
                         self.reloadViews()
                         let newStatus = try await self.subscriptionManager.purchase(product)
-                        self.status = .status(status: newStatus, products: products)
+                        self.status = .status(status: newStatus, plans: plans)
                         self.reloadViews()
                     } catch {
                         self.status = .error
