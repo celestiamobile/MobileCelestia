@@ -102,7 +102,7 @@ public class SubscriptionManagerViewController: UIViewController {
         featureView.layer.cornerRadius = Constants.boxCornerRadius
 
         let button = ActionButtonHelper.newButton()
-        button.setTitle(CelestiaString("Restore Purchases", comment: ""), for: .normal)
+        button.setTitle(CelestiaString("Restore Purchase", comment: ""), for: .normal)
         button.addTarget(self, action: #selector(restorePurchases), for: .touchUpInside)
 
         let contents = [(appIconView, false), (titleLabel, false), (featureView, true), (statusLabel, true), (planStack, true), (button, true)]
