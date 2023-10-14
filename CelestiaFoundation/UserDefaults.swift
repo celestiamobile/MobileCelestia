@@ -32,3 +32,5 @@ public extension UserDefaults {
         }
     }
 }
+
+extension UserDefaults: @unchecked Sendable {}

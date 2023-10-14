@@ -33,20 +33,32 @@ public actor SubscriptionManager {
     }
 
     private(set) var status: SubscriptionStatus = .unknown
+    private let userDefaults: UserDefaults
+
+    private var transactionInfoCache: CacheTransactionInfo?
+
+    private struct CacheTransactionInfo: Codable {
+        let originalTransactionID: UInt64
+        let isSandbox: Bool
+    }
 
     private let monthlySubscriptionId = "space.celestia.mobilecelestia.plus.monthly"
     private let yearlySubscriptionId = "space.celestia.mobilecelestia.plus.yearly"
+    private let cacheKey = "celestia-plus"
 
-    public init() {}
+    public init(userDefaults: UserDefaults) {
+        self.userDefaults = userDefaults
+        if let data: Data = userDefaults.data(forKey: cacheKey), let decoded = try? JSONDecoder().decode(CacheTransactionInfo.self, from: data) {
+            transactionInfoCache = decoded
+        }
+    }
 
     @available(iOS 15, *)
     public func transactionInfo() -> (originalTransactionID: UInt64, isSandbox: Bool)? {
-        switch status {
-        case .verified(let originalTransactionID, _, _, let environment):
-            return (originalTransactionID, environment != .production)
-        default:
-            return nil
+        if let transactionInfoCache {
+            return (transactionInfoCache.originalTransactionID, transactionInfoCache.isSandbox)
         }
+        return nil
     }
 
     @available(iOS 15.0, *)
@@ -86,6 +98,21 @@ public actor SubscriptionManager {
 
     @available(iOS 15.0, *)
     private func updateStatus(_ status: SubscriptionStatus) {
+        let newTransactionInfo: CacheTransactionInfo?
+        switch status {
+        case .verified(let originalTransactionID, _, _, let environment):
+            newTransactionInfo = CacheTransactionInfo(originalTransactionID: originalTransactionID, isSandbox: environment != .production)
+        default:
+            newTransactionInfo = nil
+        }
+        if newTransactionInfo?.isSandbox != transactionInfoCache?.isSandbox || newTransactionInfo?.originalTransactionID != transactionInfoCache?.originalTransactionID {
+            transactionInfoCache = newTransactionInfo
+            if let newTransactionInfo {
+                userDefaults.setValue(try? JSONEncoder().encode(newTransactionInfo), forKey: cacheKey)
+            } else {
+                userDefaults.setValue(nil, forKey: cacheKey)
+            }
+        }
         self.status = status
     }
 

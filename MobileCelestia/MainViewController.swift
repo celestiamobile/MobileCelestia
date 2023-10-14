@@ -75,7 +75,7 @@ class MainViewController: UIViewController {
     private var bottomToolbar: BottomControlViewController?
     private var bottomToolbarSizeConstraints = [NSLayoutConstraint]()
 
-    private let subscriptionManager = SubscriptionManager()
+    private lazy var subscriptionManager = SubscriptionManager(userDefaults: userDefaults)
     private var subscriptionUpdateTask: Task<Void, Error>?
 
     private lazy var commonWebActionHandler = { [weak self] (action: CommonWebViewController.WebAction, viewController: UIViewController) in
