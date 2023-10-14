@@ -12,7 +12,8 @@
 import Foundation
 import StoreKit
 
-public actor SubscriptionManager {
+@MainActor
+public class SubscriptionManager {
     public enum SubscriptionStatus: Sendable {
         case unknown
         case empty

@@ -83,13 +83,7 @@ class MainViewController: UIViewController {
         switch action {
         case .showSubscription:
             if #available(iOS 15, *) {
-                #if targetEnvironment(macCatalyst)
-                // Manually close current because refreshing is not supported
-                if let windowScene = viewController.view.window?.windowScene {
-                    UIApplication.shared.requestSceneSessionDestruction(windowScene.session, options: nil)
-                }
-                #endif
-                self.showSubscription()
+                self.showSubscription(for: viewController)
             }
         case .ack:
             break
@@ -98,7 +92,7 @@ class MainViewController: UIViewController {
 
     init(initialURL: UniformedURL?, screen: UIScreen) {
         super.init(nibName: nil, bundle: nil)
-        celestiaController = CelestiaViewController(screen: screen, executor: executor, userDefaults: userDefaults)
+        celestiaController = CelestiaViewController(screen: screen, executor: executor, userDefaults: userDefaults, subscriptionManager: subscriptionManager)
 
         #if targetEnvironment(macCatalyst)
         if #available(iOS 14.0, *) {
@@ -683,7 +677,15 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     @available(iOS 15, *)
-    private func showSubscription() {
+    private func showSubscription(for viewController: UIViewController? = nil) {
+#if targetEnvironment(macCatalyst)
+        if let viewController {
+            // Manually close current because refreshing is not supported
+            if let windowScene = viewController.view.window?.windowScene {
+                UIApplication.shared.requestSceneSessionDestruction(windowScene.session, options: nil)
+            }
+        }
+#endif
         let vc = SubscriptionManagerViewController(subscriptionManager: subscriptionManager)
         let nav = UINavigationController(rootViewController: vc)
         nav.setNavigationBarHidden(true, animated: false)
@@ -694,7 +696,7 @@ extension MainViewController: CelestiaControllerDelegate {
         if #available(iOS 15, *) {
             Task {
                 var queryItems = [URLQueryItem]()
-                if let (transactionID, isSandbox) = await subscriptionManager.transactionInfo() {
+                if let (transactionID, isSandbox) = subscriptionManager.transactionInfo() {
                     queryItems.append(URLQueryItem(name: "transactionIdApple", value: "\(transactionID)"))
                     queryItems.append(URLQueryItem(name: "isSandboxApple", value: isSandbox ? "1" : "0"))
                 } else {
@@ -773,7 +775,7 @@ extension MainViewController: CelestiaControllerDelegate {
         }
 
         if #available(iOS 15, *) {
-            if let (transactionID, isSandbox) = await subscriptionManager.transactionInfo() {
+            if let (transactionID, isSandbox) = subscriptionManager.transactionInfo() {
                 let info = "\(transactionID) \(isSandbox)"
                 if let infoData = info.data(using: .utf8) {
                     vc.addAttachmentData(infoData, mimeType: "text/plain", fileName: "transactionid.txt")
@@ -843,7 +845,7 @@ Device Model: \(model)
         vc.setSubject(CelestiaString("Feature suggestion for Celestia", comment: ""))
         vc.setMessageBody(CelestiaString("Please describe the feature you want to see in Celestia.", comment: ""), isHTML: false)
         if #available(iOS 15, *) {
-            if let (transactionID, isSandbox) = await subscriptionManager.transactionInfo() {
+            if let (transactionID, isSandbox) = subscriptionManager.transactionInfo() {
                 let info = "\(transactionID) \(isSandbox)"
                 if let infoData = info.data(using: .utf8) {
                     vc.addAttachmentData(infoData, mimeType: "text/plain", fileName: "transactionid.txt")
@@ -1232,7 +1234,12 @@ Device Model: \(model)
                 defaultDataDirectoryURL: UserDefaults.defaultDataDirectory,
                 defaultConfigFileURL: UserDefaults.defaultConfigFile
             ),
-            actionHandler: { [weak self]
+            fontContext: FontSettingContext(
+                normalFontPathKey: UserDefaultsKey.normalFontPath.rawValue,
+                normalFontIndexKey: UserDefaultsKey.normalFontIndex.rawValue,
+                boldFontPathKey: UserDefaultsKey.boldFontPath.rawValue,
+                boldFontIndexKey: UserDefaultsKey.boldFontIndex.rawValue
+            ), actionHandler: { [weak self]
                 settingsAction in
                 guard let self else { return }
                 switch settingsAction {
@@ -1251,6 +1258,11 @@ Device Model: \(model)
                 }
             }, screenProvider: { [unowned self] in
                 return self.celestiaController.displayScreen
+            }, subscriptionManager: subscriptionManager, openSubscriptionManagement: { [weak self] viewController in
+                guard let self else { return }
+                if #available(iOS 15, *) {
+                    self.showSubscription(for: viewController)
+                }
             }
         )
         #if targetEnvironment(macCatalyst)

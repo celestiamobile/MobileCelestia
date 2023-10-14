@@ -56,12 +56,15 @@ public class SettingsCoordinatorController: UIViewController {
     private let settings: [SettingSection]
     private let frameRateContext: FrameRateSettingContext
     private let dataLocationContext: DataLocationSettingContext
+    private let fontContext: FontSettingContext
 
     private let actionHandler: (SettingAction) -> Void
     private let dateInputHandler: (_ viewController: UIViewController, _ title: String, _ format: String) async -> Date?
     private let textInputHandler: (_ viewController: UIViewController, _ title: String, _ keyboardType: UIKeyboardType) async -> String?
     private let rendererInfoProvider: () async -> String
     private let screenProvider: () -> UIScreen
+    private let subscriptionManager: SubscriptionManager
+    private let openSubscriptionManagement: (UIViewController) -> Void
 
     public init(
         core: AppCore,
@@ -72,11 +75,14 @@ public class SettingsCoordinatorController: UIViewController {
         settings: [SettingSection],
         frameRateContext: FrameRateSettingContext,
         dataLocationContext: DataLocationSettingContext,
+        fontContext: FontSettingContext,
         actionHandler: @escaping ((SettingAction) -> Void),
         dateInputHandler: @escaping (_ viewController: UIViewController, _ title: String, _ format: String) async -> Date?,
         textInputHandler: @escaping (_ viewController: UIViewController, _ title: String, _ keyboardType: UIKeyboardType) async -> String?,
         rendererInfoProvider: @escaping () async -> String,
-        screenProvider: @escaping () -> UIScreen
+        screenProvider: @escaping () -> UIScreen,
+        subscriptionManager: SubscriptionManager,
+        openSubscriptionManagement: @escaping (UIViewController) -> Void
     ) {
         self.core = core
         self.executor = executor
@@ -86,11 +92,14 @@ public class SettingsCoordinatorController: UIViewController {
         self.settings = settings
         self.frameRateContext = frameRateContext
         self.dataLocationContext = dataLocationContext
+        self.fontContext = fontContext
         self.actionHandler = actionHandler
         self.dateInputHandler = dateInputHandler
         self.textInputHandler = textInputHandler
         self.rendererInfoProvider = rendererInfoProvider
         self.screenProvider = screenProvider
+        self.subscriptionManager = subscriptionManager
+        self.openSubscriptionManagement = openSubscriptionManagement
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -145,6 +154,15 @@ private extension SettingsCoordinatorController {
                 viewController = SettingsFrameRateViewController(screen: self.screenProvider(), userDefaults: userDefaults, userDefaultsKey: frameRateContext.frameRateUserDefaultsKey, frameRateUpdateHandler: { [weak self] newFrameRate in
                     self?.actionHandler(.refreshFrameRate(newFrameRate: newFrameRate))
                 })
+            case .font:
+                if #available(iOS 15, *) {
+                    viewController = FontSettingMainViewController(context: fontContext, userDefaults: userDefaults, subscriptionManager: subscriptionManager, openSubscriptionManagement: { [weak self] in
+                        guard let self else { return }
+                        self.openSubscriptionManagement(self)
+                    })
+                } else {
+                    fatalError()
+                }
             case .slider, .prefSwitch, .checkmark, .action, .custom, .keyedSelection, .prefSelection, .selection, .prefSlider:
                 fatalError("Use .common for slider/action setting item.")
             }
