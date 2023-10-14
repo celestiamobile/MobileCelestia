@@ -12,6 +12,7 @@
 import AsyncGL
 import CelestiaCore
 import CelestiaFoundation
+import CelestiaUI
 import UIKit
 
 protocol CelestiaDisplayControllerDelegate: AnyObject {
@@ -25,6 +26,7 @@ class CelestiaDisplayController: AsyncGLViewController {
     @Injected(\.appCore) private var core
     @Injected(\.executor) private var executor
     @Injected(\.userDefaults) private var userDefaults
+    private let subscriptionManager: SubscriptionManager
 
     // MARK: rendering
     private var currentSize: CGSize = .zero
@@ -55,6 +57,16 @@ class CelestiaDisplayController: AsyncGLViewController {
     #else
     private var sensitivity: Double = 10.0
     #endif
+
+    init(msaaEnabled: Bool, screen: UIScreen, initialFrameRate frameRate: Int, executor: AsyncGLExecutor, subscriptionManager: SubscriptionManager) {
+#if targetEnvironment(macCatalyst)
+        let api = AsyncGLAPI.openGLLegacy
+#else
+        let api = AsyncGLAPI.openGLES2
+#endif
+        self.subscriptionManager = subscriptionManager
+        super.init(msaaEnabled: msaaEnabled, screen: screen, initialFrameRate: frameRate, api: api, executor: executor)
+    }
 
     #if targetEnvironment(macCatalyst)
     override func viewDidLoad() {
@@ -97,12 +109,12 @@ class CelestiaDisplayController: AsyncGLViewController {
         guard isLoaded else { return }
 
         if previousTraitCollection?.displayScale != traitCollection.displayScale {
-            let (viewSafeAreaInsets, viewScale, applicationScalingFactor) = getViewSpec()
+            let (viewSafeAreaInsets, viewScale, applicationScalingFactor, customNormalFont, customBoldFont) = getViewSpec()
             let core = self.core
             let executor = self.executor
             let sensitivity = self.sensitivity
             executor.runAsynchronously { _ in
-                self.updateContentScale(viewSafeAreaInsets: viewSafeAreaInsets, viewScale: viewScale, applicationScalingFactor: applicationScalingFactor, sensitivity: sensitivity, core: core, executor: executor)
+                self.updateContentScale(viewSafeAreaInsets: viewSafeAreaInsets, viewScale: viewScale, applicationScalingFactor: applicationScalingFactor, sensitivity: sensitivity, customNormalFont: customNormalFont, customBoldFont: customBoldFont, core: core, executor: executor)
             }
         }
     }
@@ -186,14 +198,14 @@ extension CelestiaDisplayController {
         }
 
         core.layoutDirection = isRTL ? .RTL : .LTR
-        let (viewSafeAreaInsets, viewScale, applicationScalingFactor) = DispatchQueue.main.sync {
+        let (viewSafeAreaInsets, viewScale, applicationScalingFactor, customNormalFont, customBoldFont) = DispatchQueue.main.sync {
             return self.getViewSpec()
         }
         if let sensitivityValue: Double = userDefaults[UserDefaultsKey.pickSensitivity] {
             self.sensitivity = sensitivityValue
         }
         let sensitivity = self.sensitivity
-        updateContentScale(viewSafeAreaInsets: viewSafeAreaInsets, viewScale: viewScale, applicationScalingFactor: applicationScalingFactor, sensitivity: sensitivity, core: core, executor: executor)
+        updateContentScale(viewSafeAreaInsets: viewSafeAreaInsets, viewScale: viewScale, applicationScalingFactor: applicationScalingFactor, sensitivity: sensitivity, customNormalFont: customNormalFont, customBoldFont: customBoldFont, core: core, executor: executor)
         start()
 
         isLoaded = true
@@ -219,7 +231,7 @@ private extension AppCore {
 }
 
 extension CelestiaDisplayController {
-    private func getViewSpec() -> (viewSafeAreaInsets: UIEdgeInsets, viewScale: CGFloat, applicationScalingFactor: CGFloat) {
+    private func getViewSpec() -> (viewSafeAreaInsets: UIEdgeInsets, viewScale: CGFloat, applicationScalingFactor: CGFloat, customNormalFont: CustomFont?, customBoldFont: CustomFont?) {
         let viewScale = userDefaults[.fullDPI] != false ? self.traitCollection.displayScale : 1
         self.view.contentScaleFactor = viewScale
         var applicationScalingFactor: CGFloat = 1.0
@@ -235,22 +247,46 @@ extension CelestiaDisplayController {
         #endif
 
         let viewSafeAreaInsets = self.view.safeAreaInsets
-        return (viewSafeAreaInsets, viewScale, applicationScalingFactor)
+        let hasCelestiaPlus: Bool
+        if #available(iOS 15, *) {
+            hasCelestiaPlus = subscriptionManager.transactionInfo() != nil
+        } else {
+            hasCelestiaPlus = false
+        }
+        var customNormalFont: CustomFont?
+        var customBoldFont: CustomFont?
+        if hasCelestiaPlus {
+            if let customNormalFontPath: String = userDefaults[UserDefaultsKey.normalFontPath] {
+                let fontIndex: Int = userDefaults[UserDefaultsKey.normalFontIndex] ?? 0
+                customNormalFont = CustomFont(path: customNormalFontPath, ttcIndex: fontIndex)
+            }
+            if let customBoldFontPath: String = userDefaults[UserDefaultsKey.boldFontPath] {
+                let fontIndex: Int = userDefaults[UserDefaultsKey.boldFontIndex] ?? 0
+                customBoldFont = CustomFont(path: customBoldFontPath, ttcIndex: fontIndex)
+            }
+        }
+        return (viewSafeAreaInsets, viewScale, applicationScalingFactor, customNormalFont, customBoldFont)
     }
 
-    nonisolated private func updateContentScale(viewSafeAreaInsets: UIEdgeInsets, viewScale: CGFloat, applicationScalingFactor: CGFloat, sensitivity: Double, core: AppCore, executor: CelestiaExecutor) {
+    nonisolated private func updateContentScale(viewSafeAreaInsets: UIEdgeInsets, viewScale: CGFloat, applicationScalingFactor: CGFloat, sensitivity: Double, customNormalFont: CustomFont?, customBoldFont: CustomFont?, core: AppCore, executor: CelestiaExecutor) {
         core.setDPI(Int(96.0 * viewScale / applicationScalingFactor))
         core.setSafeAreaInsets(viewSafeAreaInsets.scale(by: viewScale))
         core.setPickTolerance(sensitivity * viewScale / applicationScalingFactor)
 
         executor.makeRenderContextCurrent()
 
-        let (font, boldFont) = getInstalledFontFor(locale: AppCore.language)
+        var (normalFont, boldFont) = getInstalledFontFor(locale: AppCore.language)
+        if let customNormalFont {
+            normalFont = customNormalFont
+        }
+        if let customBoldFont {
+            boldFont = customBoldFont
+        }
         core.clearFonts()
-        core.setFont(font.filePath, collectionIndex: font.collectionIndex, fontSize: 9)
-        core.setTitleFont(boldFont.filePath, collectionIndex: boldFont.collectionIndex, fontSize: 15)
-        core.setRendererFont(font.filePath, collectionIndex: font.collectionIndex, fontSize: 9, fontStyle: .normal)
-        core.setRendererFont(boldFont.filePath, collectionIndex: boldFont.collectionIndex, fontSize: 15, fontStyle: .large)
+        core.setFont(normalFont.path, collectionIndex: normalFont.ttcIndex, fontSize: 9)
+        core.setTitleFont(boldFont.path, collectionIndex: boldFont.ttcIndex, fontSize: 15)
+        core.setRendererFont(normalFont.path, collectionIndex: normalFont.ttcIndex, fontSize: 9, fontStyle: .normal)
+        core.setRendererFont(boldFont.path, collectionIndex: boldFont.ttcIndex, fontSize: 15, fontStyle: .large)
     }
 }
 
@@ -267,33 +303,33 @@ extension CelestiaDisplayController {
 
 typealias FallbackFont = (filePath: String, collectionIndex: Int)
 
-private func getInstalledFontFor(locale: String) -> (font: FallbackFont, boldFont: FallbackFont) {
+private func getInstalledFontFor(locale: String) -> (font: CustomFont, boldFont: CustomFont) {
     let fontDir = Bundle.app.path(forResource: "Fonts", ofType: nil)!
     let fontFallback = [
         "ja": (
-            font: FallbackFont(filePath: "\(fontDir)/NotoSansCJK-Regular.ttc", collectionIndex: 0),
-            boldFont: FallbackFont(filePath: "\(fontDir)/NotoSansCJK-Bold.ttc", collectionIndex: 0)
+            font: CustomFont(path: "\(fontDir)/NotoSansCJK-Regular.ttc", ttcIndex: 0),
+            boldFont: CustomFont(path: "\(fontDir)/NotoSansCJK-Bold.ttc", ttcIndex: 0)
         ),
         "ko": (
-            font: FallbackFont(filePath: "\(fontDir)/NotoSansCJK-Regular.ttc", collectionIndex: 1),
-            boldFont: FallbackFont(filePath: "\(fontDir)/NotoSansCJK-Bold.ttc", collectionIndex: 1)
+            font: CustomFont(path: "\(fontDir)/NotoSansCJK-Regular.ttc", ttcIndex: 1),
+            boldFont: CustomFont(path: "\(fontDir)/NotoSansCJK-Bold.ttc", ttcIndex: 1)
         ),
         "zh_CN": (
-            font: FallbackFont(filePath: "\(fontDir)/NotoSansCJK-Regular.ttc", collectionIndex: 2),
-            boldFont: FallbackFont(filePath: "\(fontDir)/NotoSansCJK-Bold.ttc", collectionIndex: 2)
+            font: CustomFont(path: "\(fontDir)/NotoSansCJK-Regular.ttc", ttcIndex: 2),
+            boldFont: CustomFont(path: "\(fontDir)/NotoSansCJK-Bold.ttc", ttcIndex: 2)
         ),
         "zh_TW": (
-            font: FallbackFont(filePath: "\(fontDir)/NotoSansCJK-Regular.ttc", collectionIndex: 3),
-            boldFont: FallbackFont(filePath: "\(fontDir)/NotoSansCJK-Bold.ttc", collectionIndex: 3)
+            font: CustomFont(path: "\(fontDir)/NotoSansCJK-Regular.ttc", ttcIndex: 3),
+            boldFont: CustomFont(path: "\(fontDir)/NotoSansCJK-Bold.ttc", ttcIndex: 3)
         ),
         "ar": (
-            font: FallbackFont(filePath: "\(fontDir)/NotoSansArabic-Regular.ttf", collectionIndex: 0),
-            boldFont: FallbackFont(filePath: "\(fontDir)/NotoSansArabic-Bold.ttf", collectionIndex: 0)
+            font: CustomFont(path: "\(fontDir)/NotoSansArabic-Regular.ttf", ttcIndex: 0),
+            boldFont: CustomFont(path: "\(fontDir)/NotoSansArabic-Bold.ttf", ttcIndex: 0)
         )
     ]
     let def = (
-        font: FallbackFont(filePath: "\(fontDir)/NotoSans-Regular.ttf", collectionIndex: 0),
-        boldFont: FallbackFont(filePath: "\(fontDir)/NotoSans-Bold.ttf", collectionIndex: 0)
+        font: CustomFont(path: "\(fontDir)/NotoSans-Regular.ttf", ttcIndex: 0),
+        boldFont: CustomFont(path: "\(fontDir)/NotoSans-Bold.ttf", ttcIndex: 0)
     )
     return fontFallback[locale] ?? def
 }

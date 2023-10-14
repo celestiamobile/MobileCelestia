@@ -39,6 +39,10 @@ enum UserDefaultsKey: String {
     case contextMenu
     #endif
     case pickSensitivity
+    case normalFontPath
+    case normalFontIndex
+    case boldFontPath
+    case boldFontIndex
 }
 
 extension UserDefaults {

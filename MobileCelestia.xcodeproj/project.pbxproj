@@ -63,6 +63,9 @@
 		EA66BBE12A55BA88008A7AAA /* GoToInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA374CD9263A8B770069589C /* GoToInputViewController.swift */; };
 		EA66BBE22A55BA88008A7AAA /* GoToContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA374CD1263A8B320069589C /* GoToContainerViewController.swift */; };
 		EA66BBE32A564888008A7AAA /* SelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6671CA29B391B900A7846E /* SelectionViewController.swift */; };
+		EA741A6A2ADA6B5E00C7F1DC /* FontSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA741A692ADA6B5E00C7F1DC /* FontSettingViewController.swift */; };
+		EA741A6C2ADA6C8A00C7F1DC /* SubscriptionBackingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA741A6B2ADA6C8A00C7F1DC /* SubscriptionBackingViewController.swift */; };
+		EA741A6E2ADA6FD000C7F1DC /* FontSettingMainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA741A6D2ADA6FD000C7F1DC /* FontSettingMainViewController.swift */; };
 		EA787309296DE50D0099AB11 /* Injecton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA787308296DE50D0099AB11 /* Injecton.swift */; };
 		EA78730F296DEA6B0099AB11 /* CelestiaExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA78730E296DEA6B0099AB11 /* CelestiaExecutor.swift */; };
 		EA78733D296EB61B0099AB11 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA78733B296EB61A0099AB11 /* UserDefaults.swift */; };
@@ -328,6 +331,9 @@
 		EA6671D029B3A81200A7846E /* ObserverModeViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObserverModeViewController.swift; sourceTree = "<group>"; };
 		EA6671D229B3A9AE00A7846E /* LinkFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkFooterView.swift; sourceTree = "<group>"; };
 		EA7209DF27C64270004C1400 /* UILabel+DynamicType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+DynamicType.swift"; sourceTree = "<group>"; };
+		EA741A692ADA6B5E00C7F1DC /* FontSettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontSettingViewController.swift; sourceTree = "<group>"; };
+		EA741A6B2ADA6C8A00C7F1DC /* SubscriptionBackingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionBackingViewController.swift; sourceTree = "<group>"; };
+		EA741A6D2ADA6FD000C7F1DC /* FontSettingMainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontSettingMainViewController.swift; sourceTree = "<group>"; };
 		EA775EB32664B63F00479295 /* ActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButton.swift; sourceTree = "<group>"; };
 		EA787308296DE50D0099AB11 /* Injecton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Injecton.swift; sourceTree = "<group>"; };
 		EA78730A296DE5CE0099AB11 /* AppCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCore.swift; sourceTree = "<group>"; };
@@ -557,7 +563,6 @@
 		979D2F7C23FEB1A6005D2592 /* MobileCelestia */ = {
 			isa = PBXGroup;
 			children = (
-				EA5AA1632A94714D0061764D /* Subscription */,
 				97C3A9EF2445FAA100EB365A /* Celestia */,
 				97DB1FD424067757001F222F /* Presentation */,
 				977394A92403F05100E38B82 /* Settings */,
@@ -741,13 +746,6 @@
 			path = UI;
 			sourceTree = "<group>";
 		};
-		EA5AA1632A94714D0061764D /* Subscription */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Subscription;
-			sourceTree = "<group>";
-		};
 		EA66BBC52A55AAA5008A7AAA /* Search */ = {
 			isa = PBXGroup;
 			children = (
@@ -796,6 +794,7 @@
 				EA5AA1682A947AA50061764D /* FeatureView.swift */,
 				EA89AE152A94AE5C004B99BA /* PlanView.swift */,
 				EA89AE132A948DE1004B99BA /* SubscriptionManager.swift */,
+				EA741A6B2ADA6C8A00C7F1DC /* SubscriptionBackingViewController.swift */,
 			);
 			path = Subscription;
 			sourceTree = "<group>";
@@ -824,6 +823,8 @@
 				EA86E38326FE20C000FF2278 /* SettingsFrameRateViewController.swift */,
 				EABDE3A82473DAA300E0A5FA /* SettingCommonViewController.swift */,
 				EAA79CCB2A56A01F0056DB91 /* SettingsModel.swift */,
+				EA741A692ADA6B5E00C7F1DC /* FontSettingViewController.swift */,
+				EA741A6D2ADA6FD000C7F1DC /* FontSettingMainViewController.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -1382,6 +1383,7 @@
 				EAB8F25B2A56D71600C4E777 /* GuideItem.swift in Sources */,
 				EAB623B02A51AA7B00063D1B /* Selection.swift in Sources */,
 				EAE92A622A558D2900BFE06E /* GameControllerButton.swift in Sources */,
+				EA741A6E2ADA6FD000C7F1DC /* FontSettingMainViewController.swift in Sources */,
 				EAD12AA92A567514007EE4D6 /* CameraControlViewController.swift in Sources */,
 				EA50E7832A505EDF005E7D7A /* CelestiaAction.swift in Sources */,
 				EAB8F2592A56D71600C4E777 /* ResourceManager.swift in Sources */,
@@ -1407,6 +1409,7 @@
 				EA7BACF22A959A760014D1FF /* SubscriptionManager.swift in Sources */,
 				EAB623B72A51AC2C00063D1B /* UILabel+DynamicType.swift in Sources */,
 				EAD12AA32A566DE7007EE4D6 /* FavoriteViewController.swift in Sources */,
+				EA741A6C2ADA6C8A00C7F1DC /* SubscriptionBackingViewController.swift in Sources */,
 				EA50E7782A505DCE005E7D7A /* BodyDescriptionCell.swift in Sources */,
 				EA872F062A5ACC9C009E6A20 /* TutorialDescriptionCell.swift in Sources */,
 				EAB623B22A51AAB600063D1B /* UITableView+Extensions.swift in Sources */,
@@ -1416,6 +1419,7 @@
 				EA7BACEF2A959A760014D1FF /* FeatureView.swift in Sources */,
 				EAB8F2662A56DC3200C4E777 /* AsyncListViewController.swift in Sources */,
 				EAD12AA42A566DE7007EE4D6 /* DestinationDetailViewController.swift in Sources */,
+				EA741A6A2ADA6B5E00C7F1DC /* FontSettingViewController.swift in Sources */,
 				EAB8F25F2A56D99B00C4E777 /* BaseResultHandler.swift in Sources */,
 				EA7BACF02A959A760014D1FF /* PlanView.swift in Sources */,
 				EAE92A642A558E8000BFE06E /* GameControllerThumbstickAxis.swift in Sources */,

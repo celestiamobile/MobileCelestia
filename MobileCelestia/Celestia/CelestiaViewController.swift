@@ -12,6 +12,7 @@
 import AsyncGL
 import CelestiaCore
 import CelestiaFoundation
+import CelestiaUI
 import UIKit
 
 enum CelestiaLoadingError: Error {
@@ -64,16 +65,11 @@ class CelestiaViewController: UIViewController {
     }()
     #endif
 
-    init(screen: UIScreen, executor: CelestiaExecutor, userDefaults: UserDefaults) {
+    init(screen: UIScreen, executor: CelestiaExecutor, userDefaults: UserDefaults, subscriptionManager: SubscriptionManager) {
         appScreen = screen
         displayScreen = screen
         isMirroring = false
-        #if targetEnvironment(macCatalyst)
-        let api = AsyncGLAPI.openGLLegacy
-        #else
-        let api = AsyncGLAPI.openGLES2
-        #endif
-        displayController = CelestiaDisplayController(msaaEnabled: userDefaults[.msaa] == true, screen: screen, initialFrameRate: userDefaults[.frameRate] ?? 60, api: api, executor: executor)
+        displayController = CelestiaDisplayController(msaaEnabled: userDefaults[.msaa] == true, screen: screen, initialFrameRate: userDefaults[.frameRate] ?? 60, executor: executor, subscriptionManager: subscriptionManager)
         super.init(nibName: nil, bundle: nil)
     }
 

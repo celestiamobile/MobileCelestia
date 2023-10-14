@@ -201,38 +201,44 @@ private let advanceSettingExtraItems = [
     gameControllerItem,
 ]
 
-let mainSetting = [
-    displaySettings(),
-    timeAndRegionSettings(),
-    rendererSettings(extraItems: [
-        SettingItem(
-            name: CelestiaString("Advanced", comment: ""),
-            type: .common,
-            associatedItem: .init(
-                AssociatedCommonItem(
-                    title: CelestiaString("Advanced", comment: ""),
-                    sections: [
-                        .init(header: nil, rows: [
-                            SettingItem(
-                                name: CelestiaString("HiDPI", comment: ""),
-                                type: .prefSwitch,
-                                associatedItem: .init(
-                                    AssociatedPreferenceSwitchItem(userDefaultsKey: .fullDPI, defaultOn: true)
+let mainSetting: [SettingSection] = {
+    var items = [
+        displaySettings(),
+        timeAndRegionSettings(),
+        rendererSettings(extraItems: [
+            SettingItem(
+                name: CelestiaString("Advanced", comment: ""),
+                type: .common,
+                associatedItem: .init(
+                    AssociatedCommonItem(
+                        title: CelestiaString("Advanced", comment: ""),
+                        sections: [
+                            .init(header: nil, rows: [
+                                SettingItem(
+                                    name: CelestiaString("HiDPI", comment: ""),
+                                    type: .prefSwitch,
+                                    associatedItem: .init(
+                                        AssociatedPreferenceSwitchItem(userDefaultsKey: .fullDPI, defaultOn: true)
+                                    )
+                                ),
+                                SettingItem(
+                                    name: CelestiaString("Anti-aliasing", comment: ""),
+                                    type: .prefSwitch,
+                                    associatedItem: .init(
+                                        AssociatedPreferenceSwitchItem(userDefaultsKey: .msaa, defaultOn: false)
+                                    )
                                 )
-                            ),
-                            SettingItem(
-                                name: CelestiaString("Anti-aliasing", comment: ""),
-                                type: .prefSwitch,
-                                associatedItem: .init(
-                                    AssociatedPreferenceSwitchItem(userDefaultsKey: .msaa, defaultOn: false)
-                                )
-                            )
-                        ], footer: CelestiaString("Configuration will take effect after a restart.", comment: "")),
-                    ]
+                            ], footer: CelestiaString("Configuration will take effect after a restart.", comment: "")),
+                        ]
+                    )
                 )
-            )
-        ),
-    ]),
-    advancedSettings(extraItems: advanceSettingExtraItems),
-    miscSettings()
-]
+            ),
+        ]),
+        advancedSettings(extraItems: advanceSettingExtraItems),
+    ]
+    if #available(iOS 15, *) {
+        items.append(celestiaPlusSettings())
+    }
+    items.append(miscSettings())
+    return items
+}()

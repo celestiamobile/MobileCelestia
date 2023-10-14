@@ -34,6 +34,7 @@ public class SubscriptionManagerViewController: UIViewController {
         let view = UIView()
         view.backgroundColor = .systemFill
         let features = [
+            FeatureView(image: UIImage(systemName: "paintpalette"), description: CelestiaString("Customize the visual appearance of Celestia.", comment: "")),
             FeatureView(image: UIImage(systemName: "clock.arrow.circlepath"), description: CelestiaString("Get latest add-ons, updates, and trending add-ons.", comment: "")),
             FeatureView(image: UIImage(systemName: "checkmark.bubble"), description: CelestiaString("Receive timely feedback on feature requests and bug reports.", comment: "")),
             FeatureView(image: UIImage(systemName: "heart"), description: CelestiaString("Support the developer community and keep the project going.", comment: "")),
