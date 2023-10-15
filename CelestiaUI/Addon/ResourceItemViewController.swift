@@ -340,7 +340,7 @@ private extension ResourceItemViewController {
 }
 
 private extension ResourceItemViewController {
-    @objc nonisolated private func downloadProgress(_ notification: Notification) {
+    @objc private func downloadProgress(_ notification: Notification) {
         guard let identifier = notification.userInfo?[ResourceManager.downloadIdentifierKey] as? String, identifier == itemID else {
             return
         }
@@ -349,43 +349,35 @@ private extension ResourceItemViewController {
             return
         }
 
-        Task.detached { @MainActor in
-            self.progressView.progress = Float(progress)
-            self.updateUI()
-        }
+        self.progressView.progress = Float(progress)
+        self.updateUI()
     }
 
-    @objc nonisolated private func downloadSuccess(_ notification: Notification) {
+    @objc private func downloadSuccess(_ notification: Notification) {
         guard let identifier = notification.userInfo?[ResourceManager.downloadIdentifierKey] as? String, identifier == itemID else {
             return
         }
 
-        Task.detached { @MainActor in
-            self.updateUI()
-        }
+        self.updateUI()
     }
 
-    @objc nonisolated private func resourceFetchError(_ notification: Notification) {
+    @objc private func resourceFetchError(_ notification: Notification) {
         guard let identifier = notification.userInfo?[ResourceManager.downloadIdentifierKey] as? String, identifier == itemID else {
             return
         }
         guard let error = notification.userInfo?[ResourceManager.resourceErrorKey] as? Error else {
             return
         }
-        Task.detached { @MainActor in
-            self.currentState = .none
-            self.updateUI()
-            self.showError(error.localizedDescription)
-        }
+        self.currentState = .none
+        self.updateUI()
+        self.showError(error.localizedDescription)
     }
 
-    @objc nonisolated private func unzipSuccess(_ notification: Notification) {
+    @objc private func unzipSuccess(_ notification: Notification) {
         guard let identifier = notification.userInfo?[ResourceManager.downloadIdentifierKey] as? String, identifier == itemID else {
             return
         }
-        Task.detached { @MainActor in
-            self.currentState = .installed
-            self.updateUI()
-        }
+        self.currentState = .installed
+        self.updateUI()
     }
 }

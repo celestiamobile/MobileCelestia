@@ -25,6 +25,7 @@ extension ResourceManagerError: LocalizedError {
     }
 }
 
+@MainActor
 public final class ResourceManager: @unchecked Sendable {
     private let extraAddonDirectory: URL?
 
@@ -68,7 +69,7 @@ public final class ResourceManager: @unchecked Sendable {
         return addonDirectory.appendingPathComponent(identifier)
     }
 
-    public func installedResources() -> [ResourceItem] {
+    public nonisolated func installedResources() -> [ResourceItem] {
         guard let addonDirectory = extraAddonDirectory else { return [] }
         var items = [ResourceItem]()
         let fm = FileManager.default
@@ -90,39 +91,17 @@ public final class ResourceManager: @unchecked Sendable {
     }
 
     func download(item: ResourceItem) {
-        let downloadTask = URLSession.shared.downloadTask(with: item.item) { [unowned self] url, response, error in
-            DispatchQueue.main.sync {
-                self.tasks.removeValue(forKey: item.id)
-                self.observations.removeValue(forKey: item.id)?.invalidate()
-            }
-
-            if let e = error {
-                if (e as? URLError)?.errorCode == URLError.cancelled.rawValue {
-                    // Canceled, do nothing
-                } else {
-                    // Download error
-                    NotificationCenter.default.post(name: Self.resourceError, object: nil, userInfo: [Self.downloadIdentifierKey: item.id, Self.resourceErrorKey: e])
-                }
-            } else {
-                // Download success
-                NotificationCenter.default.post(name: Self.downloadSuccess, object: nil, userInfo: [Self.downloadIdentifierKey: item.id])
-                do {
-                    let destination = try unzip(identifier: item.id, zipFilePath: url!)
-                    NotificationCenter.default.post(name: Self.unzipSuccess, object: nil, userInfo: [Self.downloadIdentifierKey: item.id])
-                    // Store a json file in the same folder
-                    do {
-                        let json = try JSONEncoder().encode(item)
-                        try json.write(to: destination.appendingPathComponent("description.json"))
-                    } catch {}
-                } catch let error {
-                    // unzip error
-                    NotificationCenter.default.post(name: Self.resourceError, object: nil, userInfo: [Self.downloadIdentifierKey: item.id, Self.resourceErrorKey: error])
-                }
+        let downloadTask = URLSession.shared.downloadTask(with: item.item) { [weak self] url, response, error in
+            guard let self else { return }
+            Task.detached { @MainActor in
+                await self.handleDownloadResult(item: item, url: url, response: response, error: error)
             }
         }
         let observation = downloadTask.progress.observe(\.fractionCompleted) { progress, _ in
             // Download progress
-            NotificationCenter.default.post(name: Self.downloadProgress, object: nil, userInfo: [Self.downloadIdentifierKey: item.id, Self.downloadProgressKey: progress.fractionCompleted])
+            Task.detached { @MainActor in
+                NotificationCenter.default.post(name: Self.downloadProgress, object: nil, userInfo: [Self.downloadIdentifierKey: item.id, Self.downloadProgressKey: progress.fractionCompleted])
+            }
         }
         observations[item.id] = observation
         tasks[item.id] = downloadTask
@@ -134,18 +113,55 @@ public final class ResourceManager: @unchecked Sendable {
         observations.removeValue(forKey: identifier)?.invalidate()
     }
 
-    func unzip(identifier: String, zipFilePath: URL) throws -> URL {
-        guard let destinationURL = contextDirectory(forAddonWithIdentifier: identifier) else {
-            throw ResourceManagerError.addonDirectoryNotExists
+    func handleDownloadResult(item: ResourceItem, url: URL?, response: URLResponse?, error: Error?) async {
+        tasks.removeValue(forKey: item.id)
+        observations.removeValue(forKey: item.id)?.invalidate()
+
+        if let e = error {
+            if (e as? URLError)?.errorCode == URLError.cancelled.rawValue {
+                // Canceled, do nothing
+            } else {
+                // Download error
+                NotificationCenter.default.post(name: Self.resourceError, object: nil, userInfo: [Self.downloadIdentifierKey: item.id, Self.resourceErrorKey: e])
+            }
+        } else {
+            // Download success
+            NotificationCenter.default.post(name: Self.downloadSuccess, object: nil, userInfo: [Self.downloadIdentifierKey: item.id])
+            do {
+                guard let destinationURL = contextDirectory(forAddonWithIdentifier: item.id) else {
+                    throw ResourceManagerError.addonDirectoryNotExists
+                }
+                try await unzip(zipFileURL: url!, destinationURL: destinationURL)
+                NotificationCenter.default.post(name: Self.unzipSuccess, object: nil, userInfo: [Self.downloadIdentifierKey: item.id])
+                // Store a json file in the same folder
+                do {
+                    let json = try JSONEncoder().encode(item)
+                    try await json.write(to: destinationURL.appendingPathComponent("description.json"))
+                } catch {}
+            } catch let error {
+                // unzip error
+                NotificationCenter.default.post(name: Self.resourceError, object: nil, userInfo: [Self.downloadIdentifierKey: item.id, Self.resourceErrorKey: error])
+            }
         }
+    }
+
+    nonisolated func unzip(zipFileURL: URL, destinationURL: URL) async throws {
         let fm = FileManager.default
         // We need to first move to a .zip path
         let movedPath = URL(fileURLWithPath: NSTemporaryDirectory() + "/\(UUID().uuidString).zip")
-        try fm.moveItem(at: zipFilePath, to: movedPath)
+        try fm.moveItem(at: zipFileURL, to: movedPath)
         if !fm.fileExists(atPath: destinationURL.path) {
             try fm.createDirectory(at: destinationURL, withIntermediateDirectories: true, attributes: nil)
         }
-        try fm.unzipItem(at: movedPath, to: destinationURL)
-        return destinationURL
+        try await withCheckedThrowingContinuation { continuation in
+            DispatchQueue.global().async {
+                do {
+                    try FileManager.default.unzipItem(at: movedPath, to: destinationURL)
+                    continuation.resume(returning: ())
+                } catch {
+                    continuation.resume(throwing: error)
+                }
+            }
+        }
     }
 }
