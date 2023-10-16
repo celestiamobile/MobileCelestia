@@ -19,6 +19,8 @@ public class SubscriptionManager {
         case empty
         case pending
         case verified(originalTransactionID: UInt64, productID: String, expirationDate: Date?, environment: SubscriptionEnvironment)
+        case expired
+        case revoked
     }
 
     public enum SubscriptionEnvironment: Sendable {
@@ -67,7 +69,7 @@ public class SubscriptionManager {
         let monthlyStatus = subscriptionStatus(for: await Transaction.currentEntitlement(for: monthlySubscriptionId))
         let yearlyStatus = subscriptionStatus(for: await Transaction.currentEntitlement(for: yearlySubscriptionId))
         let newStatus: SubscriptionStatus
-        if case SubscriptionStatus.verified(_, _, let yearlyExpiration, _) = yearlyStatus, case SubscriptionStatus.verified(_, _, let monthlylyExpiration, _) = monthlyStatus, let yearlyExpiration, let monthlylyExpiration, monthlylyExpiration > yearlyExpiration {
+        if case SubscriptionStatus.verified(_, _, let yearlyExpiration, _) = yearlyStatus, case SubscriptionStatus.verified(_, _, let monthlyExpiration, _) = monthlyStatus, let yearlyExpiration, let monthlyExpiration, monthlyExpiration > yearlyExpiration {
             newStatus = monthlyStatus
         } else if case SubscriptionStatus.verified(_, _, _, _) = monthlyStatus {
             newStatus = monthlyStatus
@@ -160,6 +162,12 @@ public class SubscriptionManager {
         case .unverified:
             return .empty
         case .verified(let transaction):
+            if transaction.revocationDate != nil {
+                return .revoked
+            }
+            if let expirationDate = transaction.expirationDate, expirationDate < Date() {
+                return .expired
+            }
             return .verified(originalTransactionID: transaction.originalID, productID: transaction.productID, expirationDate: transaction.expirationDate, environment: SubscriptionEnvironment(transaction: transaction))
         case .none:
             return .empty
