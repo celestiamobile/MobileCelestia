@@ -23,6 +23,7 @@ open class SubscriptionBackingViewController: UIViewController {
         let label = UILabel(textStyle: .body)
         label.text = CelestiaString("This feature is only available to Celestia PLUS users.", comment: "")
         label.numberOfLines = 0
+        label.textAlignment = .center
         let button = ActionButtonHelper.newButton()
         button.setTitle(CelestiaString("Get Celestia PLUS", comment: ""), for: .normal)
         button.addTarget(self, action: #selector(requestOpenSubscriptionManagement), for: .touchUpInside)
