@@ -60,7 +60,7 @@ class MainViewController: UIViewController {
     @Injected(\.executor) private var executor
     @Injected(\.userDefaults) private var userDefaults
 
-    private let resourceManager = ResourceManager(extraAddonDirectory: UserDefaults.extraDirectory?.appendingPathComponent("extras"))
+    private let resourceManager = ResourceManager(extraAddonDirectory: UserDefaults.extraDirectory?.appendingPathComponent("extras"), extraScriptDirectory: UserDefaults.extraDirectory?.appendingPathComponent("scripts"))
 
     private var viewControllerStack: [UIViewController] = []
 

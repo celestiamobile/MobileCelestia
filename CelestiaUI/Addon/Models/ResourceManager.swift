@@ -28,6 +28,7 @@ extension ResourceManagerError: LocalizedError {
 @MainActor
 public final class ResourceManager: @unchecked Sendable {
     private let extraAddonDirectory: URL?
+    private let extraScriptDirectory: URL?
 
     // Notification names
     static let downloadProgress = Notification.Name("ResourceDownloadManagerDownloadProgress")
@@ -44,50 +45,70 @@ public final class ResourceManager: @unchecked Sendable {
 
     private var observations: [String: NSKeyValueObservation] = [:]
 
-    public init(extraAddonDirectory: URL?) {
+    public init(extraAddonDirectory: URL?, extraScriptDirectory: URL?) {
         self.extraAddonDirectory = extraAddonDirectory
+        self.extraScriptDirectory = extraScriptDirectory
     }
 
     func isDownloading(identifier: String) -> Bool {
         return tasks[identifier] != nil
     }
 
-    func canInstallPlugins() -> Bool {
-        guard let addonDirectory = extraAddonDirectory else { return false }
-        let fm = FileManager.default
-        var isDir: ObjCBool = false
-        return fm.fileExists(atPath: addonDirectory.path, isDirectory: &isDir) && isDir.boolValue
-    }
-
-    func isInstalled(identifier: String) -> Bool {
-        guard let directory = contextDirectory(forAddonWithIdentifier: identifier) else { return false }
+    func isInstalled(item: ResourceItem) -> Bool {
+        guard let directory = contextDirectory(forAddon: item) else { return false }
         return FileManager.default.fileExists(atPath: directory.path)
     }
 
-    func contextDirectory(forAddonWithIdentifier identifier: String) -> URL? {
-        guard let addonDirectory = extraAddonDirectory else { return nil }
-        return addonDirectory.appendingPathComponent(identifier)
+    func contextDirectory(forAddon item: ResourceItem) -> URL? {
+        if item.type == "script" {
+            return extraScriptDirectory?.appendingPathComponent(item.id)
+        }
+        return extraAddonDirectory?.appendingPathComponent(item.id)
     }
 
     public nonisolated func installedResources() -> [ResourceItem] {
-        guard let addonDirectory = extraAddonDirectory else { return [] }
         var items = [ResourceItem]()
         let fm = FileManager.default
-        guard let folders = try? fm.contentsOfDirectory(atPath: addonDirectory.path) else { return [] }
-        for folder in folders {
-            let descriptionFile = addonDirectory.appendingPathComponent(folder).appendingPathComponent("description.json")
-            if let data = try? Data(contentsOf: descriptionFile),
-               let content = try? JSONDecoder().decode(ResourceItem.self, from: data),
-               content.id == folder {
-                items.append(content)
+        var trackedIds = Set<String>()
+        // Parse script folder first, because add-on folder might need migration
+        if let addonDirectory = extraScriptDirectory {
+            guard let folders = try? fm.contentsOfDirectory(atPath: addonDirectory.path) else { return [] }
+            for folder in folders {
+                let descriptionFile = addonDirectory.appendingPathComponent(folder).appendingPathComponent("description.json")
+                if let data = try? Data(contentsOf: descriptionFile),
+                   let content = try? JSONDecoder().decode(ResourceItem.self, from: data),
+                   content.id == folder, content.type == "script" {
+                    items.append(content)
+                    trackedIds.insert(content.id)
+                }
+            }
+        }
+        if let scriptDirectory = extraScriptDirectory {
+            guard let folders = try? fm.contentsOfDirectory(atPath: scriptDirectory.path) else { return [] }
+            for folder in folders {
+                let folderURL = scriptDirectory.appendingPathComponent(folder)
+                let descriptionFile = folderURL.appendingPathComponent("description.json")
+                if let data = try? Data(contentsOf: descriptionFile),
+                   let content = try? JSONDecoder().decode(ResourceItem.self, from: data),
+                   content.id == folder, !trackedIds.contains(content.id) {
+                    if content.type == "script" {
+                        // Perform migration by moving folder to scripts folder
+                        do {
+                            try fm.moveItem(at: folderURL, to: scriptDirectory.appendingPathComponent(content.id))
+                            items.append(content)
+                        } catch {}
+                    } else {
+                        items.append(content)
+                    }
+                }
             }
         }
         return items
     }
 
-    func uninstall(identifier: String) throws {
-        guard let addonDirectory = extraAddonDirectory else { return }
-        try FileManager.default.removeItem(at: addonDirectory.appendingPathComponent(identifier))
+    func uninstall(item: ResourceItem) throws {
+        guard let folder = contextDirectory(forAddon: item) else { return }
+        try FileManager.default.removeItem(at: folder)
     }
 
     func download(item: ResourceItem) {
@@ -128,7 +149,7 @@ public final class ResourceManager: @unchecked Sendable {
             // Download success
             NotificationCenter.default.post(name: Self.downloadSuccess, object: nil, userInfo: [Self.downloadIdentifierKey: item.id])
             do {
-                guard let destinationURL = contextDirectory(forAddonWithIdentifier: item.id) else {
+                guard let destinationURL = contextDirectory(forAddon: item) else {
                     throw ResourceManagerError.addonDirectoryNotExists
                 }
                 try await unzip(zipFileURL: url!, destinationURL: destinationURL)

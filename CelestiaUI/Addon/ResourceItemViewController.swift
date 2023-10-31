@@ -53,7 +53,7 @@ public class ResourceItemViewController: UIViewController {
     private let actionHandler: ((CommonWebViewController.WebAction, UIViewController) -> Void)?
 
     private lazy var itemInfoController: CommonWebViewController = {
-        return CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromAddon(addonItemID: itemID, language: AppCore.language), actionHandler: actionHandler, matchingQueryKeys: ["item"], contextDirectory: resourceManager.contextDirectory(forAddonWithIdentifier: itemID))
+        return CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromAddon(addonItemID: itemID, language: AppCore.language), actionHandler: actionHandler, matchingQueryKeys: ["item"], contextDirectory: resourceManager.contextDirectory(forAddon: item))
     }()
 
     private var scrollViewTopToViewTopConstrant: NSLayoutConstraint?
@@ -154,7 +154,7 @@ public class ResourceItemViewController: UIViewController {
         if item.type == "script" {
             guard let mainScriptName = item.mainScriptName else { return }
             var isDir: ObjCBool = false
-            guard let path = resourceManager.contextDirectory(forAddonWithIdentifier: itemID)?.appendingPathComponent(mainScriptName).path,
+            guard let path = resourceManager.contextDirectory(forAddon: item)?.appendingPathComponent(mainScriptName).path,
                   FileManager.default.fileExists(atPath: path, isDirectory: &isDir),
                   !isDir.boolValue else {
                 return
@@ -183,12 +183,12 @@ public class ResourceItemViewController: UIViewController {
     }
 
     @objc private func statusButtonClicked() {
-        if resourceManager.isInstalled(identifier: itemID) {
+        if resourceManager.isInstalled(item: item) {
             // Already installed, offer option for uninstalling
             showOption(CelestiaString("Do you want to uninstall this add-on?", comment: "")) { [weak self] confirm in
                 guard confirm, let self = self else { return }
                 do {
-                    try self.resourceManager.uninstall(identifier: self.itemID)
+                    try self.resourceManager.uninstall(item: self.item)
                     self.currentState = .none
                 } catch {
                     self.showError(CelestiaString("Unable to uninstall add-on.", comment: ""))
@@ -275,7 +275,7 @@ private extension ResourceItemViewController {
     }
 
     private func updateUI() {
-        if resourceManager.isInstalled(identifier: itemID) {
+        if resourceManager.isInstalled(item: item) {
             currentState = .installed
         }
         if resourceManager.isDownloading(identifier: itemID) {
@@ -316,7 +316,7 @@ private extension ResourceItemViewController {
         if item.type == "script" {
             if currentState == .installed, let mainScriptName = item.mainScriptName {
                 var isDir: ObjCBool = false
-                if let path = resourceManager.contextDirectory(forAddonWithIdentifier: itemID)?.appendingPathComponent(mainScriptName).path,
+                if let path = resourceManager.contextDirectory(forAddon: item)?.appendingPathComponent(mainScriptName).path,
                    FileManager.default.fileExists(atPath: path, isDirectory: &isDir),
                    !isDir.boolValue {
                     goToButton.isHidden = false
