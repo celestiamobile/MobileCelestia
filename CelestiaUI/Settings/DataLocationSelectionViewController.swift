@@ -66,7 +66,7 @@ class DataLocationSelectionViewController: BaseTableViewController {
         ])
 
         totalItems.append([
-            TextItem.short(title: CelestiaString("Reset to Default", comment: ""), detail: nil),
+            TextItem.action(title: CelestiaString("Reset to Default", comment: "")),
         ])
 
         items = totalItems
@@ -99,6 +99,16 @@ extension DataLocationSelectionViewController {
             cell.detail = detail
             cell.selectionStyle = .default
             cell.accessoryType = indexPath.section == 0 ? .disclosureIndicator : .none
+            return cell
+        case .action(let title):
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
+            cell.title = title
+            #if targetEnvironment(macCatalyst)
+            cell.titleColor = cell.tintColor
+            #else
+            cell.titleColor = UIColor.themeLabel
+            #endif
+            cell.selectionStyle = .default
             return cell
         default:
             fatalError()

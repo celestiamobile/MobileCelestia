@@ -119,6 +119,8 @@ extension AboutViewController {
             #endif
             cell.selectionStyle = .default
             return cell
+        case .action:
+            fatalError()
         }
     }
 

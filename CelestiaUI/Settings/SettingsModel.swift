@@ -152,6 +152,7 @@ public struct SettingSliderItem: Hashable {
 
 public enum TextItem {
     case short(title: String, detail: String?)
+    case action(title: String)
     case long(content: String)
     case link(title: String, url: URL)
 }
