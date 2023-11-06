@@ -310,6 +310,10 @@ private func getInstalledFontFor(locale: String) -> (font: CustomFont, boldFont:
             font: CustomFont(path: "\(fontDir)/NotoSansCJK-Regular.ttc", ttcIndex: 0),
             boldFont: CustomFont(path: "\(fontDir)/NotoSansCJK-Bold.ttc", ttcIndex: 0)
         ),
+        "ka": (
+            font: CustomFont(path: "\(fontDir)/NotoSansGeorgian-Regular.ttf", ttcIndex: 0),
+            boldFont: CustomFont(path: "\(fontDir)/NotoSansGeorgian-Bold.ttf", ttcIndex: 0)
+        ),
         "ko": (
             font: CustomFont(path: "\(fontDir)/NotoSansCJK-Regular.ttc", ttcIndex: 1),
             boldFont: CustomFont(path: "\(fontDir)/NotoSansCJK-Bold.ttc", ttcIndex: 1)
