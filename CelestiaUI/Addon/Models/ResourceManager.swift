@@ -71,10 +71,10 @@ public final class ResourceManager: @unchecked Sendable {
         let fm = FileManager.default
         var trackedIds = Set<String>()
         // Parse script folder first, because add-on folder might need migration
-        if let addonDirectory = extraScriptDirectory {
-            guard let folders = try? fm.contentsOfDirectory(atPath: addonDirectory.path) else { return [] }
+        if let scriptDirectory = extraScriptDirectory {
+            guard let folders = try? fm.contentsOfDirectory(atPath: scriptDirectory.path) else { return [] }
             for folder in folders {
-                let descriptionFile = addonDirectory.appendingPathComponent(folder).appendingPathComponent("description.json")
+                let descriptionFile = scriptDirectory.appendingPathComponent(folder).appendingPathComponent("description.json")
                 if let data = try? Data(contentsOf: descriptionFile),
                    let content = try? JSONDecoder().decode(ResourceItem.self, from: data),
                    content.id == folder, content.type == "script" {
@@ -83,10 +83,10 @@ public final class ResourceManager: @unchecked Sendable {
                 }
             }
         }
-        if let scriptDirectory = extraScriptDirectory {
-            guard let folders = try? fm.contentsOfDirectory(atPath: scriptDirectory.path) else { return [] }
+        if let addonDirectory = extraAddonDirectory {
+            guard let folders = try? fm.contentsOfDirectory(atPath: addonDirectory.path) else { return [] }
             for folder in folders {
-                let folderURL = scriptDirectory.appendingPathComponent(folder)
+                let folderURL = addonDirectory.appendingPathComponent(folder)
                 let descriptionFile = folderURL.appendingPathComponent("description.json")
                 if let data = try? Data(contentsOf: descriptionFile),
                    let content = try? JSONDecoder().decode(ResourceItem.self, from: data),
@@ -94,7 +94,7 @@ public final class ResourceManager: @unchecked Sendable {
                     if content.type == "script" {
                         // Perform migration by moving folder to scripts folder
                         do {
-                            try fm.moveItem(at: folderURL, to: scriptDirectory.appendingPathComponent(content.id))
+                            try fm.moveItem(at: folderURL, to: addonDirectory.appendingPathComponent(content.id))
                             items.append(content)
                         } catch {}
                     } else {
