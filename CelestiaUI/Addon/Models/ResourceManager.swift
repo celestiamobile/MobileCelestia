@@ -92,11 +92,13 @@ public final class ResourceManager: @unchecked Sendable {
                    let content = try? JSONDecoder().decode(ResourceItem.self, from: data),
                    content.id == folder, !trackedIds.contains(content.id) {
                     if content.type == "script" {
-                        // Perform migration by moving folder to scripts folder
-                        do {
-                            try fm.moveItem(at: folderURL, to: addonDirectory.appendingPathComponent(content.id))
-                            items.append(content)
-                        } catch {}
+                        if let extraScriptDirectory {
+                            // Perform migration by moving folder to scripts folder
+                            do {
+                                try fm.moveItem(at: folderURL, to: extraScriptDirectory.appendingPathComponent(content.id))
+                                items.append(content)
+                            } catch {}
+                        }
                     } else {
                         items.append(content)
                     }
