@@ -69,7 +69,6 @@ public final class ResourceManager: @unchecked Sendable {
     public nonisolated func installedResources() -> [ResourceItem] {
         var items = [ResourceItem]()
         let fm = FileManager.default
-        var trackedIds = Set<String>()
         // Parse script folder first, because add-on folder might need migration
         if let scriptDirectory = extraScriptDirectory {
             guard let folders = try? fm.contentsOfDirectory(atPath: scriptDirectory.path) else { return [] }
@@ -79,7 +78,6 @@ public final class ResourceManager: @unchecked Sendable {
                    let content = try? JSONDecoder().decode(ResourceItem.self, from: data),
                    content.id == folder, content.type == "script" {
                     items.append(content)
-                    trackedIds.insert(content.id)
                 }
             }
         }
@@ -90,18 +88,8 @@ public final class ResourceManager: @unchecked Sendable {
                 let descriptionFile = folderURL.appendingPathComponent("description.json")
                 if let data = try? Data(contentsOf: descriptionFile),
                    let content = try? JSONDecoder().decode(ResourceItem.self, from: data),
-                   content.id == folder, !trackedIds.contains(content.id) {
-                    if content.type == "script" {
-                        if let extraScriptDirectory {
-                            // Perform migration by moving folder to scripts folder
-                            do {
-                                try fm.moveItem(at: folderURL, to: extraScriptDirectory.appendingPathComponent(content.id))
-                                items.append(content)
-                            } catch {}
-                        }
-                    } else {
-                        items.append(content)
-                    }
+                   content.id == folder, content.type != "script" {
+                    items.append(content)
                 }
             }
         }
