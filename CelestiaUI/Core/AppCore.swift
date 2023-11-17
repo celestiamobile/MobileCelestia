@@ -10,6 +10,7 @@
 //
 
 import CelestiaCore
+import CelestiaFoundation
 import Foundation
 
 extension AppCore: @unchecked Sendable {}
@@ -122,12 +123,11 @@ public extension AppCore {
 
 @MainActor
 public func readBookmarks() -> [BookmarkNode] {
-    guard let path = NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .userDomainMask, true).first else {
+    guard let supportDirectory = URL.applicationSupport() else {
         return []
     }
-    let bookmarkFilePath = "\(path)/bookmark.json"
     do {
-        let data = try Data(contentsOf: URL(fileURLWithPath: bookmarkFilePath))
+        let data = try Data(contentsOf: supportDirectory.appendingPathComponent("bookmark.json"))
         return try JSONDecoder().decode([BookmarkNode].self, from: data)
     } catch let error {
         print("Bookmark reading error: \(error.localizedDescription)")
@@ -137,12 +137,11 @@ public func readBookmarks() -> [BookmarkNode] {
 
 @MainActor
 public func storeBookmarks(_ bookmarks: [BookmarkNode]) {
-    guard let path = NSSearchPathForDirectoriesInDomains(.applicationSupportDirectory, .userDomainMask, true).first else {
+    guard let supportDirectory = URL.applicationSupport() else {
         return
     }
-    let bookmarkFilePath = "\(path)/bookmark.json"
     do {
-        try JSONEncoder().encode(bookmarks).write(to: URL(fileURLWithPath: bookmarkFilePath))
+        try JSONEncoder().encode(bookmarks).write(to: supportDirectory.appendingPathComponent("bookmark.json"))
     } catch let error {
         print("Bookmark writing error: \(error.localizedDescription)")
     }

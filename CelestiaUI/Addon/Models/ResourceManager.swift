@@ -159,15 +159,15 @@ public final class ResourceManager: @unchecked Sendable {
     nonisolated func unzip(zipFileURL: URL, destinationURL: URL) async throws {
         let fm = FileManager.default
         // We need to first move to a .zip path
-        let movedPath = URL(fileURLWithPath: NSTemporaryDirectory() + "/\(UUID().uuidString).zip")
-        try fm.moveItem(at: zipFileURL, to: movedPath)
+        let movedURL = try URL.temp(for: zipFileURL).appendingPathComponent("\(UUID().uuidString).zip")
+        try fm.moveItem(at: zipFileURL, to: movedURL)
         if !fm.fileExists(atPath: destinationURL.path) {
             try fm.createDirectory(at: destinationURL, withIntermediateDirectories: true, attributes: nil)
         }
         try await withCheckedThrowingContinuation { continuation in
             DispatchQueue.global().async {
                 do {
-                    try FileManager.default.unzipItem(at: movedPath, to: destinationURL)
+                    try FileManager.default.unzipItem(at: movedURL, to: destinationURL)
                     continuation.resume(returning: ())
                 } catch {
                     continuation.resume(throwing: error)

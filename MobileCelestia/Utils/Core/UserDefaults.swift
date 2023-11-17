@@ -91,7 +91,7 @@ extension UserDefaults {
     }()
 
     static let extraDirectory: URL? = {
-        let supportDirectory = URL(fileURLWithPath: NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true)[0])
+        guard let supportDirectory = URL.documents() else { return nil }
         let parentDirectory = supportDirectory.appendingPathComponent("CelestiaResources")
         do {
             try FileManager.default.createDirectory(at: parentDirectory, withIntermediateDirectories: true, attributes: nil)

@@ -10,6 +10,7 @@
 //
 
 import CelestiaCore
+import CelestiaFoundation
 import MWRequest
 import UIKit
 import WebKit
@@ -200,7 +201,7 @@ extension CommonWebViewController: CelestiaScriptHandlerDelegate {
 
         let scriptURL: URL
         let scriptFileName = (name ?? UUID().uuidString) + "." + type
-        let tempURL = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(scriptFileName)
+        guard let tempURL = try? URL.temp().appendingPathComponent(scriptFileName) else { return }
         if let location = location {
             guard ["temp", "context"].contains(location) else { return }
             if location == "context" {

@@ -743,17 +743,17 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     private func reportBugAsync() async throws {
-        let parentPath = (NSTemporaryDirectory() as NSString).appendingPathComponent(UUID().uuidString)
-        try FileManager.default.createDirectory(atPath: parentPath, withIntermediateDirectories: true)
+        let parentURL = try URL.temp().appendingPathComponent(UUID().uuidString)
+        try FileManager.default.createDirectory(at: parentURL, withIntermediateDirectories: true)
 
-        let screenshotPath = (parentPath as NSString).appendingPathComponent("screenshot.png")
+        let screenshotURL = parentURL.appendingPathComponent("screenshot.png")
         let executor = self.executor
         let (renderInfo, url, screenshotSuccess) = await executor.get { core in
             executor.makeRenderContextCurrent()
             core.draw()
-            return (core.renderInfo, core.currentURL, core.screenshot(to: screenshotPath, type: .PNG))
+            return (core.renderInfo, core.currentURL, core.screenshot(to: screenshotURL.path, type: .PNG))
         }
-        let imageData = screenshotSuccess ? try? Data(contentsOf: URL(fileURLWithPath: screenshotPath)) : nil
+        let imageData = screenshotSuccess ? try? Data(contentsOf: screenshotURL) : nil
         let addonInfo = resourceManager.installedResources().map { "\($0.name)/\($0.id)" }.joined(separator: "\n")
 
         let vc = MFMailComposeViewController()
@@ -871,21 +871,27 @@ Device Model: \(model)
     }
 
     private func shareImage() {
-        let path = (NSTemporaryDirectory() as NSString).appendingPathComponent("CelestiaScreenshot.png")
+        let url: URL
+        do {
+            url = try URL.temp().appendingPathComponent("CelestiaScreenshot.png")
+        } catch {
+            showError(error.localizedDescription)
+            return
+        }
         let executor = self.executor
         Task {
             let success = await executor.get { core in
                 executor.makeRenderContextCurrent()
                 core.draw()
-                return core.screenshot(to: path, type: .PNG)
+                return core.screenshot(to: url.path, type: .PNG)
             }
 
             if success {
                 #if targetEnvironment(macCatalyst)
-                self.saveFile(path)
+                self.saveFile(url)
                 #else
-                if let data = try? Data(contentsOf: URL(fileURLWithPath: path)), let image = UIImage(data: data) {
-                    try? FileManager.default.removeItem(atPath: path)
+                if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
+                    try? FileManager.default.removeItem(at: url)
                     self.showShareSheet(for: image)
                 }
                 #endif
@@ -1322,12 +1328,12 @@ extension UIViewController {
 
 #if targetEnvironment(macCatalyst)
 extension MainViewController {
-    private func saveFile(_ path: String) {
+    private func saveFile(_ url: URL) {
         let picker: UIDocumentPickerViewController
         if #available(iOS 14.0, *) {
-            picker = UIDocumentPickerViewController(forExporting: [URL(fileURLWithPath: path)], asCopy: false)
+            picker = UIDocumentPickerViewController(forExporting: [url], asCopy: false)
         } else {
-            picker = UIDocumentPickerViewController(url: URL(fileURLWithPath: path), in: .moveToService)
+            picker = UIDocumentPickerViewController(url: url, in: .moveToService)
         }
         picker.shouldShowFileExtensions = true
         picker.allowsMultipleSelection = false

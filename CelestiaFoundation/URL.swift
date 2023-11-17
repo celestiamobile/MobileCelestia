@@ -53,3 +53,50 @@ public class UniformedURL {
         }
     }
 }
+
+public extension URL {
+    static func documents() -> URL? {
+        return try? createDirectoryIfNeeded(for: .documentDirectory, appropriateFor: nil)
+    }
+
+    static func applicationSupport() -> URL? {
+        return try? createDirectoryIfNeeded(for: .applicationSupportDirectory, appropriateFor: nil)
+    }
+
+    static func library() -> URL? {
+        return try? createDirectoryIfNeeded(for: .libraryDirectory, appropriateFor: nil)
+    }
+
+    static func temp(for url: URL? = nil) throws -> URL {
+        do {
+            return try createDirectoryIfNeeded(for: .itemReplacementDirectory, appropriateFor: url)
+        } catch {
+            let fallback: URL
+            if #available(iOS 16, *) {
+                fallback = .temporaryDirectory
+            } else {
+                fallback = URL(fileURLWithPath: NSTemporaryDirectory())
+            }
+            return try createDirectoryIfNeeded(url: fallback)
+        }
+    }
+
+    private static func createDirectoryIfNeeded(for directory: FileManager.SearchPathDirectory, appropriateFor url: URL?) throws -> URL {
+        let fm = FileManager.default
+        return try fm.url(for: directory, in: .userDomainMask, appropriateFor: url, create: true)
+    }
+
+    private static func createDirectoryIfNeeded(url: URL) throws -> URL {
+        let fm = FileManager.default
+        var isDir: ObjCBool = false
+        if fm.fileExists(atPath: url.path, isDirectory: &isDir), isDir.boolValue {
+            return url
+        }
+        do {
+            try fm.createDirectory(at: url, withIntermediateDirectories: true)
+            return url
+        } catch {
+            throw error
+        }
+    }
+}

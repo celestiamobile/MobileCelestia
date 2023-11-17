@@ -162,10 +162,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         MacBridge.disableTabbingForAllWindows()
 
         // Avoid reading saved state
-        if let libraryPath = NSSearchPathForDirectoriesInDomains(.libraryDirectory, .userDomainMask, true).first {
-            let savedStatePath = "\(libraryPath)/Saved Application State"
-            if FileManager.default.fileExists(atPath: savedStatePath) {
-                try? FileManager.default.removeItem(atPath: savedStatePath)
+        if let libraryURL = URL.library() {
+            let savedStateURL = libraryURL.appendingPathComponent("Saved Application State")
+            if FileManager.default.fileExists(atPath: savedStateURL.path) {
+                try? FileManager.default.removeItem(at: savedStateURL)
             }
         }
         #else
