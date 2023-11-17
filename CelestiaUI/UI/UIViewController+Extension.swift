@@ -138,7 +138,7 @@ public extension UIViewController {
     func present(_ viewController: UIViewController, source: PopoverSource?, completion: (() -> Void)? = nil) {
         // Present from the top view controller to ensure that it can get presented correctly
         var presentingController = self
-        while let viewController = presentingController.presentedViewController {
+        while let viewController = presentingController.presentedViewController, !viewController.isBeingDismissed {
             presentingController = viewController
         }
         switch source {
