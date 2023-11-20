@@ -87,6 +87,7 @@
 		EA872F052A5ACC9C009E6A20 /* TutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CDD29240BC50A00137127 /* TutorialViewController.swift */; };
 		EA872F062A5ACC9C009E6A20 /* TutorialDescriptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CDD2D240BC6A900137127 /* TutorialDescriptionCell.swift */; };
 		EA872F072A5ACC9C009E6A20 /* TutorialActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CDD2F240BD78F00137127 /* TutorialActionCell.swift */; };
+		EA9166972B0AF20A00AF48B1 /* LinkTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9166962B0AF20A00AF48B1 /* LinkTextView.swift */; };
 		EA934C90251D90C500DD284C /* MainSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA934C8F251D90C500DD284C /* MainSceneDelegate.swift */; };
 		EA934C9A251D92AD00DD284C /* PanelSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA934C99251D92A700DD284C /* PanelSceneDelegate.swift */; };
 		EA9A426D288CD7FE00AF3BD6 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA9A426C288CD7FE00AF3BD6 /* AVFoundation.framework */; };
@@ -355,6 +356,7 @@
 		EA872F022A5ACC65009E6A20 /* HelpViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpViewController.swift; sourceTree = "<group>"; };
 		EA89AE132A948DE1004B99BA /* SubscriptionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionManager.swift; sourceTree = "<group>"; };
 		EA89AE152A94AE5C004B99BA /* PlanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanView.swift; sourceTree = "<group>"; };
+		EA9166962B0AF20A00AF48B1 /* LinkTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkTextView.swift; sourceTree = "<group>"; };
 		EA934C8F251D90C500DD284C /* MainSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSceneDelegate.swift; sourceTree = "<group>"; };
 		EA934C99251D92A700DD284C /* PanelSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelSceneDelegate.swift; sourceTree = "<group>"; };
 		EA982BFE25496B6D00CDC642 /* BaseTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTableViewController.swift; sourceTree = "<group>"; };
@@ -715,6 +717,7 @@
 				EAF4851F249B5C2500E5B817 /* StandardButton.swift */,
 				EA775EB32664B63F00479295 /* ActionButton.swift */,
 				EAE51CA22A7B765100D6779C /* Formatter.swift */,
+				EA9166962B0AF20A00AF48B1 /* LinkTextView.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -1372,6 +1375,7 @@
 				EAB623AF2A51AA4400063D1B /* BaseTableViewController.swift in Sources */,
 				EAA79CCC2A56A01F0056DB91 /* SettingsModel.swift in Sources */,
 				EAE92A5C2A558B4400BFE06E /* AsyncProviderExecutor.swift in Sources */,
+				EA9166972B0AF20A00AF48B1 /* LinkTextView.swift in Sources */,
 				EAD12AA72A566E4F007EE4D6 /* SelectionCell.swift in Sources */,
 				EA50E7812A505EA4005E7D7A /* Color.swift in Sources */,
 				EAB8F2602A56D9B500C4E777 /* ResourceItemViewController.swift in Sources */,
@@ -1593,7 +1597,7 @@
 					"-Wl,-ld_classic",
 				);
 				SDKROOT = iphoneos;
-				SHARED_BUILD_NUMBER = 381;
+				SHARED_BUILD_NUMBER = 382;
 				SHARED_BUILD_VERSION = 1.6.1;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1654,7 +1658,7 @@
 					"-Wl,-ld_classic",
 				);
 				SDKROOT = iphoneos;
-				SHARED_BUILD_NUMBER = 381;
+				SHARED_BUILD_NUMBER = 382;
 				SHARED_BUILD_VERSION = 1.6.1;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";

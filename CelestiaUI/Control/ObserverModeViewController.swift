@@ -150,7 +150,7 @@ extension ObserverModeViewController {
 
     public override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         let footer = tableView.dequeueReusableHeaderFooterView(withIdentifier: "Footer") as! LinkFooterView
-        footer.info = LinkFooterView.LinkInfo(text: CelestiaString("Flight mode decides how you move around in Celestia. Learn more…", comment: ""), linkText: CelestiaString("Learn more…", comment: ""), link: "https://celestia.mobi/help/flight-mode?lang=\(AppCore.language)")
+        footer.info = LinkTextView.LinkInfo(text: CelestiaString("Flight mode decides how you move around in Celestia. Learn more…", comment: ""), links: [LinkTextView.Link(text: CelestiaString("Learn more…", comment: ""), link: "https://celestia.mobi/help/flight-mode?lang=\(AppCore.language)")])
         return footer
     }
 

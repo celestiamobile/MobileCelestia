@@ -106,7 +106,16 @@ public class SubscriptionManagerViewController: UIViewController {
         button.setTitle(CelestiaString("Restore Purchase", comment: ""), for: .normal)
         button.addTarget(self, action: #selector(restorePurchases), for: .touchUpInside)
 
-        let contents = [(appIconView, false), (titleLabel, false), (featureView, true), (statusLabel, true), (planStack, true), (button, true)]
+        let eulaText = "EULA"
+        let privacyText = CelestiaString("Privacy Policy and Service Agreement", comment: "")
+
+        let linkView = LinkTextView()
+        linkView.info = LinkTextView.LinkInfo(text: ListFormatter.localizedString(byJoining: [eulaText, privacyText]), links: [
+            LinkTextView.Link(text: eulaText, link: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/"),
+            LinkTextView.Link(text: privacyText, link: "https://celestia.mobi/privacy"),
+        ])
+
+        let contents = [(appIconView, false), (titleLabel, false), (featureView, true), (statusLabel, true), (planStack, true), (linkView, true), (button, true)]
         var previousView: UIView?
         for (content, stretch) in contents {
             let topAnchor: NSLayoutYAxisAnchor

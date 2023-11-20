@@ -12,17 +12,11 @@
 import UIKit
 
 public class LinkFooterView: UITableViewHeaderFooterView {
-    private var textView = UITextView()
+    private var textView = LinkTextView()
 
-    public struct LinkInfo {
-        let text: String
-        let linkText: String
-        let link: String
-    }
-
-    public var info: LinkInfo? {
+    public var info: LinkTextView.LinkInfo? {
         didSet {
-            updateTextView()
+            textView.info = info
         }
     }
 
@@ -30,7 +24,6 @@ public class LinkFooterView: UITableViewHeaderFooterView {
         super.init(reuseIdentifier: reuseIdentifier)
 
         setUp()
-        updateTextView()
     }
 
     public required init?(coder: NSCoder) {
@@ -38,17 +31,6 @@ public class LinkFooterView: UITableViewHeaderFooterView {
     }
 
     private func setUp() {
-        textView.backgroundColor = .clear
-        textView.textContainer.maximumNumberOfLines = 0
-        textView.textContainerInset = UIEdgeInsets(top: 0, left: -textView.textContainer.lineFragmentPadding, bottom: 0, right: -textView.textContainer.lineFragmentPadding)
-        textView.isScrollEnabled = false
-        textView.isEditable = false
-        textView.adjustsFontForContentSizeCategory = true
-        textView.textContainer.lineBreakMode = .byWordWrapping
-        #if !targetEnvironment(macCatalyst)
-        textView.linkTextAttributes[.foregroundColor] = UIColor.themeLabel
-        #endif
-
         contentView.addSubview(textView)
         textView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -57,23 +39,5 @@ public class LinkFooterView: UITableViewHeaderFooterView {
             textView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: GlobalConstants.listItemMediumMarginHorizontal),
             textView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -GlobalConstants.listItemMediumMarginHorizontal)
         ])
-    }
-
-    private func updateTextView() {
-        guard let info else {
-            textView.text = nil
-            textView.attributedText = nil
-            return
-        }
-        let linkTextRange = (info.text as NSString).range(of: info.linkText)
-        guard linkTextRange.location != NSNotFound else {
-            textView.text = nil
-            textView.attributedText = nil
-            return
-        }
-        let attributedString = NSMutableAttributedString(string: info.text)
-        attributedString.addAttributes([.foregroundColor: UIColor.label, .font: UIFont.preferredFont(forTextStyle: .footnote)], range: NSMakeRange(0, info.text.count))
-        attributedString.addAttributes([.link: info.link], range: linkTextRange)
-        textView.attributedText = attributedString
     }
 }
