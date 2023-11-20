@@ -26,7 +26,7 @@ public class CommonWebViewController: UIViewController {
         case ack(id: String)
     }
 
-    private let url: URL
+    private var url: URL
     private let matchingQueryKeys: [String]
     private let contextDirectory: URL?
     private let filterURL: Bool
@@ -134,12 +134,17 @@ public class CommonWebViewController: UIViewController {
     @objc private func goBack() {
         webView.goBack()
     }
+
+    public func reload(_ url: URL) {
+        self.url = url
+        webView.load(URLRequest(url: url))
+    }
 }
 
 extension CommonWebViewController: WKNavigationDelegate {
-    nonisolated private func isURLAllowed(_ url: URL) -> Bool {
+    nonisolated private func isURLAllowed(_ url: URL) async -> Bool {
         let comp1 = URLComponents(url: url, resolvingAgainstBaseURL: false)!
-        let comp2 = URLComponents(url: self.url, resolvingAgainstBaseURL: false)!
+        let comp2 = URLComponents(url: await self.url, resolvingAgainstBaseURL: false)!
         if comp1.host != comp2.host || comp1.path != comp2.path {
             return false
         }
@@ -151,7 +156,7 @@ extension CommonWebViewController: WKNavigationDelegate {
         return true
     }
 
-    public nonisolated func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+    public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         if !filterURL {
             decisionHandler(.allow)
             return
@@ -164,17 +169,17 @@ extension CommonWebViewController: WKNavigationDelegate {
             decisionHandler(.cancel)
             return
         }
-        if isURLAllowed(url) {
-            decisionHandler(.allow)
-        } else {
-            decisionHandler(.cancel)
-            Task.detached { @MainActor in
+        Task.detached { @MainActor [weak self] in
+            guard let self else { return }
+            if await self.isURLAllowed(url) {
+                decisionHandler(.allow)
+            } else {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
             }
         }
     }
 
-    public nonisolated func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
+    public func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
         Task.detached { @MainActor in
             self.activityIndicator.stopAnimating()
             self.activityIndicator.isHidden = true

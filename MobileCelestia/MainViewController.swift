@@ -678,14 +678,6 @@ extension MainViewController: CelestiaControllerDelegate {
 
     @available(iOS 15, *)
     private func showSubscription(for viewController: UIViewController? = nil) {
-#if targetEnvironment(macCatalyst)
-        if let viewController {
-            // Manually close current because refreshing is not supported
-            if let windowScene = viewController.view.window?.windowScene {
-                UIApplication.shared.requestSceneSessionDestruction(windowScene.session, options: nil)
-            }
-        }
-#endif
         let vc = SubscriptionManagerViewController(subscriptionManager: subscriptionManager)
         let nav = UINavigationController(rootViewController: vc)
         nav.setNavigationBarHidden(true, animated: false)
@@ -693,25 +685,7 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     private func showOnlineAddons() {
-        if #available(iOS 15, *) {
-            Task {
-                var queryItems = [URLQueryItem]()
-                if let (transactionID, isSandbox) = subscriptionManager.transactionInfo() {
-                    queryItems.append(URLQueryItem(name: "transactionIdApple", value: "\(transactionID)"))
-                    queryItems.append(URLQueryItem(name: "isSandboxApple", value: isSandbox ? "1" : "0"))
-                } else {
-                    queryItems.append(URLQueryItem(name: "transactionIdApple", value: ""))
-                    queryItems.append(URLQueryItem(name: "isSandboxApple", value: "1"))
-                }
-                self.showOnlineAddons(extraURLQueryItems: queryItems)
-            }
-        } else {
-            showOnlineAddons(extraURLQueryItems: [])
-        }
-    }
-
-    private func showOnlineAddons(extraURLQueryItems: [URLQueryItem]) {
-        showViewController(ResourceCategoriesViewController(executor: executor, resourceManager: resourceManager, actionHandler: commonWebActionHandler, extraURLQueryItems: extraURLQueryItems), customToolbar: true)
+        showViewController(ResourceCategoriesViewController(executor: executor, resourceManager: resourceManager, subscriptionManager: subscriptionManager, actionHandler: commonWebActionHandler), customToolbar: true)
     }
 
     private func sendFeedback() {

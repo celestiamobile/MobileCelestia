@@ -12,9 +12,13 @@
 import Foundation
 import StoreKit
 
+public extension Notification.Name {
+    static let subscriptionStatusChanged = Notification.Name("SubscriptionStatusChanged")
+}
+
 @MainActor
 public class SubscriptionManager {
-    public enum SubscriptionStatus: Sendable {
+    public enum SubscriptionStatus: Hashable, Sendable {
         case unknown
         case empty
         case pending
@@ -101,6 +105,8 @@ public class SubscriptionManager {
 
     @available(iOS 15.0, *)
     private func updateStatus(_ status: SubscriptionStatus) {
+        guard status != self.status else { return }
+
         let newTransactionInfo: CacheTransactionInfo?
         switch status {
         case .verified(let originalTransactionID, _, _, let environment):
@@ -117,6 +123,7 @@ public class SubscriptionManager {
             }
         }
         self.status = status
+        NotificationCenter.default.post(name: .subscriptionStatusChanged, object: self)
     }
 
     @available(iOS 15.0, *)

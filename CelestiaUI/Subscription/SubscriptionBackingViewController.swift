@@ -17,6 +17,8 @@ open class SubscriptionBackingViewController: UIViewController {
     let viewControllerBuilder: () async -> UIViewController
     let openSubscriptionManagement: () -> Void
 
+    private var currentViewController: UIViewController?
+
     private lazy var loadingView = UIActivityIndicatorView(style: .large)
 
     private lazy var emptyHintView: UIView = {
@@ -60,6 +62,7 @@ open class SubscriptionBackingViewController: UIViewController {
         self.subscriptionManager = subscriptionManager
         self.openSubscriptionManagement = openSubscriptionManagement
         self.viewControllerBuilder = viewControllerBuilder
+        self.currentViewController = nil
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -89,21 +92,10 @@ open class SubscriptionBackingViewController: UIViewController {
     open override func viewDidLoad() {
         super.viewDidLoad()
 
-        loadingView.startAnimating()
-
         Task {
-            let transactionInfo = subscriptionManager.transactionInfo()
-            if transactionInfo == nil {
-                loadingView.stopAnimating()
-                loadingView.isHidden = true
-                emptyHintView.isHidden = false
-            } else {
-                let viewController = await viewControllerBuilder()
-                loadingView.stopAnimating()
-                loadingView.isHidden = true
-                install(viewController)
-                view.sendSubviewToBack(viewController.view)
-            }
+            await reload()
+
+            NotificationCenter.default.addObserver(self, selector: #selector(handleSubscriptionStatusChanged), name: .subscriptionStatusChanged, object: nil)
         }
     }
 
@@ -113,5 +105,40 @@ open class SubscriptionBackingViewController: UIViewController {
 
     @objc private func requestOpenSubscriptionManagement() {
         openSubscriptionManagement()
+    }
+
+    @objc private func handleSubscriptionStatusChanged() {
+        switch subscriptionManager.status {
+        case .verified:
+            // We only handle not subscribed -> subscribed here
+            break
+        default:
+            return
+        }
+
+        Task {
+            await reload()
+        }
+    }
+
+    private func reload() async {
+        currentViewController?.remove()
+        loadingView.isHidden = false
+        emptyHintView.isHidden = true
+        loadingView.startAnimating()
+
+        let transactionInfo = subscriptionManager.transactionInfo()
+        if transactionInfo == nil {
+            loadingView.stopAnimating()
+            loadingView.isHidden = true
+            emptyHintView.isHidden = false
+        } else {
+            let viewController = await viewControllerBuilder()
+            loadingView.stopAnimating()
+            loadingView.isHidden = true
+            install(viewController)
+            view.sendSubviewToBack(viewController.view)
+            currentViewController = viewController
+        }
     }
 }
