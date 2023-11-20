@@ -123,6 +123,7 @@ open class SubscriptionBackingViewController: UIViewController {
 
     private func reload() async {
         currentViewController?.remove()
+        currentViewController = nil
         loadingView.isHidden = false
         emptyHintView.isHidden = true
         loadingView.startAnimating()

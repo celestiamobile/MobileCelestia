@@ -156,7 +156,7 @@ extension CommonWebViewController: WKNavigationDelegate {
         return true
     }
 
-    public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+    public nonisolated func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
         if !filterURL {
             decisionHandler(.allow)
             return
@@ -174,12 +174,13 @@ extension CommonWebViewController: WKNavigationDelegate {
             if await self.isURLAllowed(url) {
                 decisionHandler(.allow)
             } else {
+                decisionHandler(.cancel)
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
             }
         }
     }
 
-    public func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
+    public nonisolated func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
         Task.detached { @MainActor in
             self.activityIndicator.stopAnimating()
             self.activityIndicator.isHidden = true
