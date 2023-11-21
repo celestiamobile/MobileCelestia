@@ -101,6 +101,15 @@ public extension QuickAction {
             return UIImage(systemName: "minus.circle")
         }
     }
+
+    var deletable: Bool {
+        switch self {
+        case .menu:
+            return false
+        default:
+            return true
+        }
+    }
 }
 
 public extension QuickAction {

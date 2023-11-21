@@ -67,7 +67,7 @@ class ToolbarSettingViewController: SubscriptionBackingViewController {
         override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
             guard indexPath.section == 0 else { return .none }
             if indexPath.row < addedActions.count {
-                return .delete
+                return addedActions[indexPath.row].deletable ? .delete : .none
             }
             return .insert
         }
@@ -134,7 +134,11 @@ class ToolbarSettingViewController: SubscriptionBackingViewController {
             }
             if indexPath.section == 1 {
                 var configuration = UIListContentConfiguration.cell()
+                #if targetEnvironment(macCatalyst)
+                configuration.textProperties.color = cell.tintColor
+                #else
                 configuration.textProperties.color = .themeLabel
+                #endif
                 configuration.text = CelestiaString("Reset to Default", comment: "")
                 cell.contentConfiguration = configuration
                 cell.selectionStyle = .default
@@ -149,6 +153,7 @@ class ToolbarSettingViewController: SubscriptionBackingViewController {
             var configuration = UIListContentConfiguration.cell()
             configuration.text = action.title
             configuration.image = action.image
+            configuration.imageProperties.tintColor = .label
             configuration.imageProperties.maximumSize = CGSize(width: GlobalConstants.listItemIconSize, height: GlobalConstants.listItemIconSize)
             cell.contentConfiguration = configuration
             cell.selectionStyle = .none
