@@ -104,9 +104,7 @@ public final class ResourceManager: @unchecked Sendable {
     func download(item: ResourceItem) {
         let downloadTask = URLSession.shared.downloadTask(with: item.item) { [weak self] url, response, error in
             guard let self else { return }
-            Task.detached { @MainActor in
-                await self.handleDownloadResult(item: item, url: url, response: response, error: error)
-            }
+            self.handleDownloadResult(item: item, url: url, response: response, error: error)
         }
         let observation = downloadTask.progress.observe(\.fractionCompleted) { progress, _ in
             // Download progress
@@ -124,25 +122,44 @@ public final class ResourceManager: @unchecked Sendable {
         observations.removeValue(forKey: identifier)?.invalidate()
     }
 
-    func handleDownloadResult(item: ResourceItem, url: URL?, response: URLResponse?, error: Error?) async {
-        tasks.removeValue(forKey: item.id)
-        observations.removeValue(forKey: item.id)?.invalidate()
-
+    private nonisolated func handleDownloadResult(url: URL?, response: URLResponse?, error: Error?) throws -> URL {
         if let e = error {
-            if (e as? URLError)?.errorCode == URLError.cancelled.rawValue {
-                // Canceled, do nothing
-            } else {
-                // Download error
-                NotificationCenter.default.post(name: Self.resourceError, object: nil, userInfo: [Self.downloadIdentifierKey: item.id, Self.resourceErrorKey: e])
+            throw e
+        }
+        // We have to move immediately after the download task
+        return try moveTemporaryFile(url: url!)
+    }
+
+    private nonisolated func handleDownloadResult(item: ResourceItem, url: URL?, response: URLResponse?, error: Error?) {
+        let tempURL: URL
+        do {
+            tempURL = try handleDownloadResult(url: url, response: response, error: error)
+        } catch {
+            Task.detached { @MainActor in
+                self.tasks.removeValue(forKey: item.id)
+                self.observations.removeValue(forKey: item.id)?.invalidate()
+
+                if (error as? URLError)?.errorCode == URLError.cancelled.rawValue {
+                    // Canceled, do nothing
+                } else {
+                    // Download error or moving to temp location error
+                    NotificationCenter.default.post(name: Self.resourceError, object: nil, userInfo: [Self.downloadIdentifierKey: item.id, Self.resourceErrorKey: error])
+                }
             }
-        } else {
-            // Download success
+            return
+        }
+
+        // Download and move success
+        Task.detached { @MainActor in
+            self.tasks.removeValue(forKey: item.id)
+            self.observations.removeValue(forKey: item.id)?.invalidate()
+
             NotificationCenter.default.post(name: Self.downloadSuccess, object: nil, userInfo: [Self.downloadIdentifierKey: item.id])
             do {
-                guard let destinationURL = contextDirectory(forAddon: item) else {
+                guard let destinationURL = self.contextDirectory(forAddon: item) else {
                     throw ResourceManagerError.addonDirectoryNotExists
                 }
-                try await unzip(zipFileURL: url!, destinationURL: destinationURL)
+                try await self.unzip(zipFileURL: tempURL, destinationURL: destinationURL)
                 NotificationCenter.default.post(name: Self.unzipSuccess, object: nil, userInfo: [Self.downloadIdentifierKey: item.id])
                 // Store a json file in the same folder
                 do {
@@ -156,18 +173,22 @@ public final class ResourceManager: @unchecked Sendable {
         }
     }
 
-    nonisolated func unzip(zipFileURL: URL, destinationURL: URL) async throws {
+    private nonisolated func moveTemporaryFile(url: URL) throws -> URL {
         let fm = FileManager.default
-        // We need to first move to a .zip path
-        let movedURL = try URL.temp(for: zipFileURL).appendingPathComponent("\(UUID().uuidString).zip")
-        try fm.moveItem(at: zipFileURL, to: movedURL)
+        let movedURL = try URL.temp(for: url).appendingPathComponent("\(UUID().uuidString).zip")
+        try fm.moveItem(at: url, to: movedURL)
+        return movedURL
+    }
+
+    private nonisolated func unzip(zipFileURL: URL, destinationURL: URL) async throws {
+        let fm = FileManager.default
         if !fm.fileExists(atPath: destinationURL.path) {
             try fm.createDirectory(at: destinationURL, withIntermediateDirectories: true, attributes: nil)
         }
         try await withCheckedThrowingContinuation { continuation in
             DispatchQueue.global().async {
                 do {
-                    try FileManager.default.unzipItem(at: movedURL, to: destinationURL)
+                    try FileManager.default.unzipItem(at: zipFileURL, to: destinationURL)
                     continuation.resume(returning: ())
                 } catch {
                     continuation.resume(throwing: error)
