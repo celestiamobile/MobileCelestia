@@ -106,7 +106,7 @@ public class SubscriptionManagerViewController: UIViewController {
         button.setTitle(CelestiaString("Restore Purchase", comment: ""), for: .normal)
         button.addTarget(self, action: #selector(restorePurchases), for: .touchUpInside)
 
-        let eulaText = "EULA"
+        let eulaText = CelestiaString("End User License Agreements (EULA)", comment: "")
         let privacyText = CelestiaString("Privacy Policy and Service Agreement", comment: "")
 
         let linkView = LinkTextView()
