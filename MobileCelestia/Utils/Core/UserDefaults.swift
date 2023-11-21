@@ -43,6 +43,7 @@ enum UserDefaultsKey: String {
     case normalFontIndex
     case boldFontPath
     case boldFontIndex
+    case toolbarItems
 }
 
 extension UserDefaults {

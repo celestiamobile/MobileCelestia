@@ -13,11 +13,11 @@ import UIKit
 
 @available(iOS 15, *)
 open class SubscriptionBackingViewController: UIViewController {
-    let subscriptionManager: SubscriptionManager
-    let viewControllerBuilder: () async -> UIViewController
-    let openSubscriptionManagement: () -> Void
+    private let subscriptionManager: SubscriptionManager
+    private let viewControllerBuilder: (SubscriptionBackingViewController) async -> UIViewController
+    private let openSubscriptionManagement: () -> Void
 
-    private var currentViewController: UIViewController?
+    var currentViewController: UIViewController?
 
     private lazy var loadingView = UIActivityIndicatorView(style: .large)
 
@@ -57,7 +57,7 @@ open class SubscriptionBackingViewController: UIViewController {
     init(
         subscriptionManager: SubscriptionManager,
         openSubscriptionManagement: @escaping () -> Void,
-        viewControllerBuilder: @escaping () async -> UIViewController
+        viewControllerBuilder: @escaping (SubscriptionBackingViewController) async -> UIViewController
     ) {
         self.subscriptionManager = subscriptionManager
         self.openSubscriptionManagement = openSubscriptionManagement
@@ -134,7 +134,7 @@ open class SubscriptionBackingViewController: UIViewController {
             loadingView.isHidden = true
             emptyHintView.isHidden = false
         } else {
-            let viewController = await viewControllerBuilder()
+            let viewController = await viewControllerBuilder(self)
             loadingView.stopAnimating()
             loadingView.isHidden = true
             install(viewController)

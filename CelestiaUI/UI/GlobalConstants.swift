@@ -32,6 +32,8 @@ public enum GlobalConstants {
     public static let pageSmallGapHorizontal: CGFloat = 6
     public static let pageSmallGapVertical: CGFloat = 4
 
+    public static let listItemIconSize: CGFloat = 24
+
     public static let pageLargeGapVertical: CGFloat = 12
 
     public static let baseCellHeight: CGFloat = 44

@@ -32,7 +32,7 @@ final class FontSettingMainViewController: SubscriptionBackingViewController {
         super.init(
             subscriptionManager: subscriptionManager,
             openSubscriptionManagement: openSubscriptionManagement,
-            viewControllerBuilder: {
+            viewControllerBuilder: { _ in
                 let fonts = await Task(priority: .background) {
                     return readSystemFonts()
                 }.value

@@ -88,6 +88,9 @@
 		EA872F062A5ACC9C009E6A20 /* TutorialDescriptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CDD2D240BC6A900137127 /* TutorialDescriptionCell.swift */; };
 		EA872F072A5ACC9C009E6A20 /* TutorialActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CDD2F240BD78F00137127 /* TutorialActionCell.swift */; };
 		EA9166972B0AF20A00AF48B1 /* LinkTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9166962B0AF20A00AF48B1 /* LinkTextView.swift */; };
+		EA9166BE2B0C722000AF48B1 /* ToolbarSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9166BD2B0C722000AF48B1 /* ToolbarSettingViewController.swift */; };
+		EA9166C02B0C725100AF48B1 /* QuickAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9166BF2B0C725100AF48B1 /* QuickAction.swift */; };
+		EA9166C22B0C734900AF48B1 /* ToolbarSettingContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9166C12B0C734900AF48B1 /* ToolbarSettingContext.swift */; };
 		EA934C90251D90C500DD284C /* MainSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA934C8F251D90C500DD284C /* MainSceneDelegate.swift */; };
 		EA934C9A251D92AD00DD284C /* PanelSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA934C99251D92A700DD284C /* PanelSceneDelegate.swift */; };
 		EA9A426D288CD7FE00AF3BD6 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA9A426C288CD7FE00AF3BD6 /* AVFoundation.framework */; };
@@ -357,6 +360,9 @@
 		EA89AE132A948DE1004B99BA /* SubscriptionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionManager.swift; sourceTree = "<group>"; };
 		EA89AE152A94AE5C004B99BA /* PlanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanView.swift; sourceTree = "<group>"; };
 		EA9166962B0AF20A00AF48B1 /* LinkTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkTextView.swift; sourceTree = "<group>"; };
+		EA9166BD2B0C722000AF48B1 /* ToolbarSettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarSettingViewController.swift; sourceTree = "<group>"; };
+		EA9166BF2B0C725100AF48B1 /* QuickAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAction.swift; sourceTree = "<group>"; };
+		EA9166C12B0C734900AF48B1 /* ToolbarSettingContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarSettingContext.swift; sourceTree = "<group>"; };
 		EA934C8F251D90C500DD284C /* MainSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSceneDelegate.swift; sourceTree = "<group>"; };
 		EA934C99251D92A700DD284C /* PanelSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelSceneDelegate.swift; sourceTree = "<group>"; };
 		EA982BFE25496B6D00CDC642 /* BaseTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTableViewController.swift; sourceTree = "<group>"; };
@@ -828,6 +834,9 @@
 				EAA79CCB2A56A01F0056DB91 /* SettingsModel.swift */,
 				EA741A692ADA6B5E00C7F1DC /* FontSettingViewController.swift */,
 				EA741A6D2ADA6FD000C7F1DC /* FontSettingMainViewController.swift */,
+				EA9166BD2B0C722000AF48B1 /* ToolbarSettingViewController.swift */,
+				EA9166BF2B0C725100AF48B1 /* QuickAction.swift */,
+				EA9166C12B0C734900AF48B1 /* ToolbarSettingContext.swift */,
 			);
 			path = Settings;
 			sourceTree = "<group>";
@@ -1365,6 +1374,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EA66BBE12A55BA88008A7AAA /* GoToInputViewController.swift in Sources */,
+				EA9166C02B0C725100AF48B1 /* QuickAction.swift in Sources */,
 				EABC92412A570220007E27F0 /* LoadingFailureViewController.swift in Sources */,
 				EA50E7772A505DCE005E7D7A /* LinkPreviewCell.swift in Sources */,
 				EAB623AC2A51AA0A00063D1B /* BrowserContainerViewController.swift in Sources */,
@@ -1396,6 +1406,7 @@
 				EA839CB32A5696E100BF1CB4 /* MultiLineTextCell.swift in Sources */,
 				EA872EFD2A5ACA53009E6A20 /* AutoSizingView.swift in Sources */,
 				EAB8F2252A56BD6100C4E777 /* SettingsMainViewController.swift in Sources */,
+				EA9166C22B0C734900AF48B1 /* ToolbarSettingContext.swift in Sources */,
 				EA872EFC2A5ACA1F009E6A20 /* UIContentSizeCategory+Extension.swift in Sources */,
 				EA50E77F2A505E5C005E7D7A /* StandardButton.swift in Sources */,
 				EAB623AE2A51AA0A00063D1B /* BrowserCommonViewController.swift in Sources */,
@@ -1435,6 +1446,7 @@
 				EA66BBC62A55AABF008A7AAA /* SearchViewController.swift in Sources */,
 				EA872F072A5ACC9C009E6A20 /* TutorialActionCell.swift in Sources */,
 				EAD12AA82A566EE1007EE4D6 /* LinkFooterView.swift in Sources */,
+				EA9166BE2B0C722000AF48B1 /* ToolbarSettingViewController.swift in Sources */,
 				EAB8F2652A56DC3200C4E777 /* FallbackWebViewController.swift in Sources */,
 				EA50E7762A505DCE005E7D7A /* BodyActionCell.swift in Sources */,
 				EAD12AAA2A56757F007EE4D6 /* StepperCell.swift in Sources */,

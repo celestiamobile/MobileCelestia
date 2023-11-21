@@ -55,6 +55,15 @@ class CelestiaInteractionController: UIViewController {
         }
     }
 
+    private enum ZoomMode {
+        case `in`
+        case out
+
+        var distance: CGFloat {
+            return self == .out ? 1.5 : -1.5
+        }
+    }
+
     struct Constants {
         static let controlViewMarginTrailing: CGFloat = 8
         static let controlViewHideAnimationDuration: TimeInterval = 0.2
@@ -68,6 +77,8 @@ class CelestiaInteractionController: UIViewController {
     #else
     private var interactionMode: InteractionMode = .object
     #endif
+
+    private var zoomMode: ZoomMode? = nil
 
     #if targetEnvironment(macCatalyst)
     private let needAddControlView: Bool = {
@@ -85,16 +96,35 @@ class CelestiaInteractionController: UIViewController {
     ])
     #else
     private let needAddControlView = true
-    private lazy var activeControlView = CelestiaControlView(items: [
-        CelestiaControlButton.toggle(accessibilityLabel:  CelestiaString("Toggle Interaction Mode", comment: ""), offImage: UIImage(systemName: "cube"), offAction: .switchToObject, offAccessibilityValue: CelestiaString("Camera Mode", comment: ""), onImage: UIImage(systemName: "video"), onAction: .switchToCamera, onAccessibilityValue: CelestiaString("Object Mode", comment: "")),
-        CelestiaControlButton.tap(image: UIImage(systemName: "info.circle"), action: .info, accessibilityLabel: CelestiaString("Get Info", comment: "")),
-        CelestiaControlButton.tap(image: UIImage(systemName: "magnifyingglass.circle"), action: .search, accessibilityLabel: CelestiaString("Search", comment: "")),
-        CelestiaControlButton.tap(image: UIImage(systemName: "line.3.horizontal.circle") ?? UIImage(systemName: "line.horizontal.3.circle") ?? UIImage(named: "control_action_menu"), action: .showMenu, accessibilityLabel: CelestiaString("Menu", comment: "")),
-        CelestiaControlButton.tap(image: UIImage(systemName: "xmark.circle"), action: .hide, accessibilityLabel: CelestiaString("Hide", comment: "")),
-    ])
+    private lazy var controlViewActions: [QuickAction] = {
+        if #available(iOS 15, *), subscriptionManager.transactionInfo() != nil, let stringValue: String = userDefaults[UserDefaultsKey.toolbarItems] {
+            var actions = QuickAction.from(stringValue) ?? QuickAction.defaultItems
+            if !actions.contains(.menu) {
+                actions.append(.menu)
+            }
+            return actions
+        }
+        return QuickAction.defaultItems
+    }()
+    private lazy var activeControlView = CelestiaControlView(items: controlViewActions.compactMap { action in
+        switch action {
+        case .mode:
+            CelestiaControlButton.toggle(accessibilityLabel:  CelestiaString("Toggle Interaction Mode", comment: ""), offImage: UIImage(systemName: "cube"), offAction: .switchToObject, offAccessibilityValue: CelestiaString("Camera Mode", comment: ""), onImage: UIImage(systemName: "video"), onAction: .switchToCamera, onAccessibilityValue: CelestiaString("Object Mode", comment: ""))
+        case .info:
+            CelestiaControlButton.tap(image: UIImage(systemName: "info.circle"), action: .info, accessibilityLabel: CelestiaString("Get Info", comment: ""))
+        case .search:
+            CelestiaControlButton.tap(image: UIImage(systemName: "magnifyingglass.circle"), action: .search, accessibilityLabel: CelestiaString("Search", comment: ""))
+        case .menu:
+            CelestiaControlButton.tap(image: UIImage(systemName: "line.3.horizontal.circle") ?? UIImage(systemName: "line.horizontal.3.circle") ?? UIImage(named: "control_action_menu"), action: .showMenu, accessibilityLabel: CelestiaString("Menu", comment: ""))
+        case .hide:
+            CelestiaControlButton.tap(image: UIImage(systemName: "xmark.circle"), action: .hide, accessibilityLabel: CelestiaString("Hide", comment: ""))
+        case .zoomIn:
+            CelestiaControlButton.pressAndHold(image: UIImage(systemName: "plus.circle"), action: .zoomIn, accessibilityLabel: CelestiaString("Zoom In", comment: ""))
+        case .zoomOut:
+            CelestiaControlButton.pressAndHold(image: UIImage(systemName: "minus.circle"), action: .zoomOut, accessibilityLabel: CelestiaString("Zoom Out", comment: ""))
+        }
+    })
     #endif
-
-    private var currentControlView: CelestiaControlView?
 
     // MARK: gesture
     private var currentPanPoint: CGPoint?
@@ -106,9 +136,12 @@ class CelestiaInteractionController: UIViewController {
     @Injected(\.appCore) private var core
     @Injected(\.executor) private var executor
     @Injected(\.userDefaults) private var userDefaults
+    private let subscriptionManager: SubscriptionManager
 
     weak var delegate: CelestiaInteractionControllerDelegate?
     weak var targetProvider: RenderingTargetInformationProvider?
+
+    private var zoomTimer: Timer?
 
     private var renderingTargetGeometry: RenderingTargetGeometry {
         return targetProvider?.targetGeometry ?? RenderingTargetGeometry(size: view.frame.size, scale: view.contentScaleFactor)
@@ -142,6 +175,15 @@ class CelestiaInteractionController: UIViewController {
 
     private var gameControllerManager: GameControllerManager?
 
+    init(subscriptionManager: SubscriptionManager) {
+        self.subscriptionManager = subscriptionManager
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
     override func loadView() {
         let container = UIView()
 
@@ -167,7 +209,6 @@ class CelestiaInteractionController: UIViewController {
                 activeControlView.centerYAnchor.constraint(equalTo: container.centerYAnchor),
                 activeControlView.trailingAnchor.constraint(equalTo: container.safeAreaLayoutGuide.trailingAnchor, constant: -Constants.controlViewMarginTrailing),
             ])
-            currentControlView = activeControlView
         }
 
         auxillaryContextMenuPreviewView.backgroundColor = .clear
@@ -189,9 +230,16 @@ class CelestiaInteractionController: UIViewController {
 
 extension CelestiaInteractionController: CelestiaControlViewDelegate {
     func celestiaControlView(_ celestiaControlView: CelestiaControlView, pressDidStartWith action: CelestiaControlAction) {
+        zoomMode = action == .zoomIn ? .in : .out
+        zoomTimer?.invalidate()
+        zoomTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(callZoom), userInfo: nil, repeats: true)
+        callZoom()
     }
 
     func celestiaControlView(_ celestiaControlView: CelestiaControlView, pressDidEndWith action: CelestiaControlAction) {
+        zoomMode = nil
+        zoomTimer?.invalidate()
+        zoomTimer = nil
     }
 
     func celestiaControlView(_ celestiaControlView: CelestiaControlView, didTapWith action: CelestiaControlAction) {
@@ -681,6 +729,12 @@ extension CelestiaInteractionController {
 }
 
 extension CelestiaInteractionController {
+    @objc private func callZoom() {
+        if let mode = zoomMode {
+            zoom(deltaY: mode.distance)
+        }
+    }
+
     func keyDown(with input: String?, modifiers: UInt) {
         guard delegate?.celestiaInteractionControllerCanAcceptKeyEvents(self) == true else {
             return

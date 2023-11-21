@@ -57,6 +57,7 @@ public class SettingsCoordinatorController: UIViewController {
     private let frameRateContext: FrameRateSettingContext
     private let dataLocationContext: DataLocationSettingContext
     private let fontContext: FontSettingContext
+    private let toolbarContext: ToolbarSettingContext
 
     private let actionHandler: (SettingAction) -> Void
     private let dateInputHandler: (_ viewController: UIViewController, _ title: String, _ format: String) async -> Date?
@@ -76,6 +77,7 @@ public class SettingsCoordinatorController: UIViewController {
         frameRateContext: FrameRateSettingContext,
         dataLocationContext: DataLocationSettingContext,
         fontContext: FontSettingContext,
+        toolbarContext: ToolbarSettingContext,
         actionHandler: @escaping ((SettingAction) -> Void),
         dateInputHandler: @escaping (_ viewController: UIViewController, _ title: String, _ format: String) async -> Date?,
         textInputHandler: @escaping (_ viewController: UIViewController, _ title: String, _ keyboardType: UIKeyboardType) async -> String?,
@@ -92,6 +94,7 @@ public class SettingsCoordinatorController: UIViewController {
         self.settings = settings
         self.frameRateContext = frameRateContext
         self.dataLocationContext = dataLocationContext
+        self.toolbarContext = toolbarContext
         self.fontContext = fontContext
         self.actionHandler = actionHandler
         self.dateInputHandler = dateInputHandler
@@ -157,6 +160,15 @@ private extension SettingsCoordinatorController {
             case .font:
                 if #available(iOS 15, *) {
                     viewController = FontSettingMainViewController(context: fontContext, userDefaults: userDefaults, subscriptionManager: subscriptionManager, openSubscriptionManagement: { [weak self] in
+                        guard let self else { return }
+                        self.openSubscriptionManagement(self)
+                    })
+                } else {
+                    fatalError()
+                }
+            case .toolbar:
+                if #available(iOS 15, *) {
+                    viewController = ToolbarSettingViewController(context: toolbarContext, userDefaults: userDefaults, subscriptionManager: subscriptionManager, openSubscriptionManagement: { [weak self] in
                         guard let self else { return }
                         self.openSubscriptionManagement(self)
                     })

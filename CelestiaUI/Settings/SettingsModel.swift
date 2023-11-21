@@ -29,6 +29,7 @@ public enum SettingType: Hashable {
     case selection
     case prefSlider
     case font
+    case toolbar
 }
 
 public struct SettingItem<T: Hashable>: Hashable {
@@ -899,9 +900,13 @@ public func rendererSettings(extraItems: [SettingItem<AnyHashable>]) -> SettingS
 
 @available(iOS 15, *)
 public func celestiaPlusSettings() -> SettingSection {
-    return SettingSection(title: CelestiaString("Celestia PLUS", comment: ""), items: [
-        SettingItem(name: CelestiaString("Font", comment: ""), type: .font, associatedItem: .init(0))
-    ])
+    var items = [
+        SettingItem<AnyHashable>(name: CelestiaString("Font", comment: ""), type: .font, associatedItem: .init(0)),
+    ]
+    #if !targetEnvironment(macCatalyst)
+    items.insert(SettingItem<AnyHashable>(name: CelestiaString("Toolbar", comment: ""), type: .toolbar, associatedItem: .init(0)), at: 0)
+    #endif
+    return SettingSection(title: CelestiaString("Celestia PLUS", comment: ""), items: items)
 }
 
 public func advancedSettings(extraItems: [SettingItem<AnyHashable>]) -> SettingSection {

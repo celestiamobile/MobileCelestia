@@ -51,6 +51,7 @@ class CelestiaViewController: UIViewController {
     private(set) var appScreen: UIScreen
     private(set) var displayScreen: UIScreen
     private(set) var isMirroring: Bool
+    private let subscriptionManager: SubscriptionManager
 
     // On Mac, we have top title bar/toolbar, which covers
     // part of the view, we do not to extend to below the bars
@@ -69,6 +70,7 @@ class CelestiaViewController: UIViewController {
         appScreen = screen
         displayScreen = screen
         isMirroring = false
+        self.subscriptionManager = subscriptionManager
         displayController = CelestiaDisplayController(msaaEnabled: userDefaults[.msaa] == true, screen: screen, initialFrameRate: userDefaults[.frameRate] ?? 60, executor: executor, subscriptionManager: subscriptionManager)
         super.init(nibName: nil, bundle: nil)
     }
@@ -160,7 +162,7 @@ extension CelestiaViewController: CelestiaInteractionControllerDelegate {
 extension CelestiaViewController: CelestiaDisplayControllerDelegate {
     nonisolated func celestiaDisplayControllerLoadingSucceeded(_ celestiaDisplayController: CelestiaDisplayController) {
         Task.detached { @MainActor in
-            let interactionController = CelestiaInteractionController()
+            let interactionController = CelestiaInteractionController(subscriptionManager: self.subscriptionManager)
             interactionController.delegate = self
             interactionController.targetProvider = self
             self.install(interactionController, safeAreaEdges: self.safeAreaEdges)

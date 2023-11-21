@@ -1219,7 +1219,9 @@ Device Model: \(model)
                 normalFontIndexKey: UserDefaultsKey.normalFontIndex.rawValue,
                 boldFontPathKey: UserDefaultsKey.boldFontPath.rawValue,
                 boldFontIndexKey: UserDefaultsKey.boldFontIndex.rawValue
-            ), actionHandler: { [weak self]
+            ),
+            toolbarContext: ToolbarSettingContext(toolbarActionsKey: UserDefaultsKey.toolbarItems.rawValue),
+            actionHandler: { [weak self]
                 settingsAction in
                 guard let self else { return }
                 switch settingsAction {
