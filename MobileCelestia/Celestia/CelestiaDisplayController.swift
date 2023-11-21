@@ -282,9 +282,8 @@ extension CelestiaDisplayController {
         if let customBoldFont {
             boldFont = customBoldFont
         }
-        core.clearFonts()
-        core.setFont(normalFont.path, collectionIndex: normalFont.ttcIndex, fontSize: 9)
-        core.setTitleFont(boldFont.path, collectionIndex: boldFont.ttcIndex, fontSize: 15)
+        core.setHudFont(normalFont.path, collectionIndex: normalFont.ttcIndex, fontSize: 9)
+        core.setHudTitleFont(boldFont.path, collectionIndex: boldFont.ttcIndex, fontSize: 15)
         core.setRendererFont(normalFont.path, collectionIndex: normalFont.ttcIndex, fontSize: 9, fontStyle: .normal)
         core.setRendererFont(boldFont.path, collectionIndex: boldFont.ttcIndex, fontSize: 15, fontStyle: .large)
     }
