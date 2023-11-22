@@ -22,6 +22,7 @@ enum CelestiaControlAction {
     case hide
     case show
     case search
+    case go
 }
 
 enum CelestiaControlButton {

@@ -625,6 +625,12 @@ extension MainViewController: CelestiaControllerDelegate {
         return presentedViewController == nil
     }
 
+    func celestiaControllerRequestGo(_ celestiaController: CelestiaViewController) {
+        Task {
+            await executor.receive(.goTo)
+        }
+    }
+
     private func toolbarActionSelected(_ action: AppToolbarAction) {
         switch action {
         case .setting:
@@ -857,7 +863,7 @@ Device Model: \(model)
             let success = await executor.get { core in
                 executor.makeRenderContextCurrent()
                 core.draw()
-                return core.screenshot(to: url.path, type: .PNG)
+                return core.screenshot(to: url.path, type: .JPEG)
             }
 
             if success {

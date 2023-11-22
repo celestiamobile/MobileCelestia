@@ -32,6 +32,7 @@ protocol CelestiaInteractionControllerDelegate: AnyObject {
     func celestiaInteractionControllerRequestShowSearch(_ celestiaInteractionController: CelestiaInteractionController)
     func celestiaInteractionController(_ celestiaInteractionController: CelestiaInteractionController, requestShowInfoWithSelection selection: Selection)
     func celestiaInteractionController(_ celestiaInteractionController: CelestiaInteractionController, requestWebInfo webURL: URL)
+    func celestiaInteractionControllerRequestGo(_ celestiaInteractionController: CelestiaInteractionController)
     func celestiaInteractionControllerCanAcceptKeyEvents(_ celestiaInteractionController: CelestiaInteractionController) -> Bool
 }
 
@@ -122,6 +123,8 @@ class CelestiaInteractionController: UIViewController {
             CelestiaControlButton.pressAndHold(image: UIImage(systemName: "plus.circle"), action: .zoomIn, accessibilityLabel: CelestiaString("Zoom In", comment: ""))
         case .zoomOut:
             CelestiaControlButton.pressAndHold(image: UIImage(systemName: "minus.circle"), action: .zoomOut, accessibilityLabel: CelestiaString("Zoom Out", comment: ""))
+        case .go:
+            CelestiaControlButton.tap(image: UIImage(systemName: "paperplane.circle") ?? UIImage(named: "control_go"), action: .go, accessibilityLabel: CelestiaString("Go", comment: ""))
         }
     })
     #endif
@@ -244,11 +247,11 @@ extension CelestiaInteractionController: CelestiaControlViewDelegate {
 
     func celestiaControlView(_ celestiaControlView: CelestiaControlView, didTapWith action: CelestiaControlAction) {
         if action == .hide {
-            self.hideControlView()
+            hideControlView()
         } else if action == .show {
-            self.showControlView()
+            showControlView()
         } else if action == .showMenu {
-            self.delegate?.celestiaInteractionControllerRequestShowActionMenu(self)
+            delegate?.celestiaInteractionControllerRequestShowActionMenu(self)
         } else if action == .info {
             Task {
                 let selection = await executor.selection
@@ -256,6 +259,8 @@ extension CelestiaInteractionController: CelestiaControlViewDelegate {
             }
         } else if action == .search {
             delegate?.celestiaInteractionControllerRequestShowSearch(self)
+        } else if action == .go {
+            delegate?.celestiaInteractionControllerRequestGo(self)
         }
     }
 

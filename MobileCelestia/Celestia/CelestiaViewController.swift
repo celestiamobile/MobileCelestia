@@ -38,6 +38,7 @@ protocol CelestiaControllerDelegate: AnyObject {
     func celestiaController(_ celestiaController: CelestiaViewController, requestShowInfoWithSelection selection: Selection)
     func celestiaController(_ celestiaController: CelestiaViewController, requestWebInfo webURL: URL)
     func celestiaControllerCanAcceptKeyEvents(_ celestiaController: CelestiaViewController) -> Bool
+    func celestiaControllerRequestGo(_ celestiaController: CelestiaViewController)
 }
 
 class CelestiaViewController: UIViewController {
@@ -156,6 +157,10 @@ extension CelestiaViewController: CelestiaInteractionControllerDelegate {
 
     func celestiaInteractionControllerCanAcceptKeyEvents(_ celestiaInteractionController: CelestiaInteractionController) -> Bool {
         return delegate?.celestiaControllerCanAcceptKeyEvents(self) ?? false
+    }
+
+    func celestiaInteractionControllerRequestGo(_ celestiaInteractionController: CelestiaInteractionController) {
+        delegate?.celestiaControllerRequestGo(self)
     }
 }
 

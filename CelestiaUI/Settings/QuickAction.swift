@@ -20,6 +20,7 @@ public enum QuickAction: Int, CaseIterable {
     case hide
     case zoomIn
     case zoomOut
+    case go
 
     init?(id: String) {
         switch id {
@@ -37,6 +38,8 @@ public enum QuickAction: Int, CaseIterable {
             self = .zoomIn
         case "zoom_out":
             self = .zoomOut
+        case "go":
+            self = .go
         default:
             return nil
         }
@@ -58,6 +61,8 @@ public enum QuickAction: Int, CaseIterable {
             "zoom_in"
         case .zoomOut:
             "zoom_out"
+        case .go:
+            "go"
         }
     }
 }
@@ -80,6 +85,8 @@ public extension QuickAction {
             return CelestiaString("Zoom In", comment: "")
         case .zoomOut:
             return CelestiaString("Zoom Out", comment: "")
+        case .go:
+            return CelestiaString("Go", comment: "")
         }
     }
 
@@ -99,6 +106,8 @@ public extension QuickAction {
             return UIImage(systemName: "plus.circle")
         case .zoomOut:
             return UIImage(systemName: "minus.circle")
+        case .go:
+            return UIImage(systemName: "paperplane.circle")
         }
     }
 
