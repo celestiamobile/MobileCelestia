@@ -170,7 +170,7 @@ extension DataLocationSelectionViewController: UIDocumentPickerDelegate {
             if currentPicker == .dataDirectory {
                 userDefaults.setValue(bookmark, forKey: dataDirectoryUserDefaultsKey)
             } else if currentPicker == .configFile {
-                userDefaults.setValue(bookmark, forKey: dataDirectoryUserDefaultsKey)
+                userDefaults.setValue(bookmark, forKey: configFileUserDefaultsKey)
             }
         } catch let error {
             showError(error.localizedDescription)
