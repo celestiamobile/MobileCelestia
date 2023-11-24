@@ -460,6 +460,10 @@ extension MainViewController {
             reportBug()
         case .suggestFeature:
             suggestFeature()
+        case .celestiaPlus:
+            if #available(iOS 15, *) {
+                showSubscription()
+            }
         }
     }
 

@@ -55,6 +55,7 @@ enum MenuBarAction: Hashable, Equatable {
     case organizeBookmarks
     case reportBug
     case suggestFeature
+    case celestiaPlus
 }
 
 let newURLOpenedNotificationName = Notification.Name("NewURLOpenedNotificationName")
@@ -118,6 +119,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         .selector(#selector(organizeBookmarks)),
         .selector(#selector(reportBug)),
         .selector(#selector(suggestFeature)),
+        .selector(#selector(showCelestiaPlus)),
     ]
 
     var window: UIWindow?
@@ -327,7 +329,18 @@ extension AppDelegate {
             action: MenuActionContext(title: CelestiaString("About Celestia", comment: ""), action: #selector(showAbout))
         )
         builder.insertChild(aboutMenu, atStartOfMenu: .application)
-        builder.insertSibling(createMenuItem(identifierSuffix: "preferences", action: MenuActionContext(title: settingsTitle, action: #selector(showPreferences), input: ",", modifierFlags: .command)), afterMenu: aboutMenu.identifier)
+
+        let menuBeforeSetting: UIMenu
+        if #available(iOS 15, *) {
+            let celestiaPlusMenu = createMenuItem(identifierSuffix: "celestiaplus", action: MenuActionContext(title: CelestiaString("Celestia PLUS", comment: ""), action: #selector(showCelestiaPlus)))
+            builder.insertSibling(celestiaPlusMenu, afterMenu: aboutMenu.identifier)
+            menuBeforeSetting = celestiaPlusMenu
+        } else {
+            menuBeforeSetting = aboutMenu
+        }
+
+        let settingsMenu = createMenuItem(identifierSuffix: "preferences", action: MenuActionContext(title: settingsTitle, action: #selector(showPreferences), input: ",", modifierFlags: .command))
+        builder.insertSibling(settingsMenu, afterMenu: menuBeforeSetting.identifier)
 
         let runScriptMenu = createMenuItem(identifierSuffix: "open", action: MenuActionContext(title: CelestiaString("Run Script…", comment: ""), action: #selector(openScriptFile), input: "O", modifierFlags: .command))
         builder.insertChild(runScriptMenu, atStartOfMenu: .file)
@@ -632,6 +645,10 @@ extension AppDelegate {
 
     @objc private func suggestFeature() {
         NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.suggestFeature])
+    }
+
+    @objc private func showCelestiaPlus() {
+        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.celestiaPlus])
     }
 }
 
