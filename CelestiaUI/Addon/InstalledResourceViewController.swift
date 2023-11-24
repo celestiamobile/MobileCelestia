@@ -23,11 +23,24 @@ extension ResourceItem: AsyncListItem, @unchecked Sendable {
 
 class InstalledResourceViewController: AsyncListViewController<ResourceItem> {
     private let resourceManager: ResourceManager
+    private let getAddonsHandler: () -> Void
+
+    private lazy var emptyView: UIView = {
+        let view = EmptyHintView()
+        view.title = CelestiaString("Enhance Celestia with online add-ons", comment: "")
+        view.actionText = CelestiaString("Get Add-ons", comment: "")
+        view.action = { [weak self] in
+            guard let self else { return }
+            self.getAddonsHandler()
+        }
+        return view
+    }()
 
     override class var alwaysRefreshOnAppear: Bool { return true }
 
-    init(resourceManager: ResourceManager, selection: @escaping (ResourceItem) -> Void) {
+    init(resourceManager: ResourceManager, selection: @escaping (ResourceItem) -> Void, getAddonsHandler: @escaping () -> Void) {
         self.resourceManager = resourceManager
+        self.getAddonsHandler = getAddonsHandler
         super.init(selection: selection)
     }
     
@@ -53,5 +66,9 @@ class InstalledResourceViewController: AsyncListViewController<ResourceItem> {
                 }
             }
         }
+    }
+
+    override func emptyHintView() -> UIView? {
+        return emptyView
     }
 }

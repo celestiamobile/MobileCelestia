@@ -1052,7 +1052,10 @@ Device Model: \(model)
     }
 
     private func presentInstalledAddons() {
-        let controller = ResourceViewController(executor: executor, resourceManager: resourceManager, actionHandler: commonWebActionHandler)
+        let controller = ResourceViewController(executor: executor, resourceManager: resourceManager, actionHandler: commonWebActionHandler) { [weak self] in
+            guard let self else { return }
+            self.showOnlineAddons()
+        }
         showViewController(controller, customToolbar: true)
     }
 

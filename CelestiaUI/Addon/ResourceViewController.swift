@@ -16,15 +16,15 @@ public class ResourceViewController: ToolbarNavigationContainerController {
     private let resourceManager: ResourceManager
     private let actionHandler: ((CommonWebViewController.WebAction, UIViewController) -> Void)?
 
-    public init(executor: AsyncProviderExecutor, resourceManager: ResourceManager, actionHandler: ((CommonWebViewController.WebAction, UIViewController) -> Void)?) {
+    public init(executor: AsyncProviderExecutor, resourceManager: ResourceManager, actionHandler: ((CommonWebViewController.WebAction, UIViewController) -> Void)?, getAddonHandler: @escaping () -> Void) {
         self.executor = executor
         self.resourceManager = resourceManager
         self.actionHandler = actionHandler
         super.init(rootViewController: UIViewController())
         setViewControllers([
-            InstalledResourceViewController(resourceManager: resourceManager) { [weak self] item in
+            InstalledResourceViewController(resourceManager: resourceManager, selection: { [weak self] item in
                 self?.viewItem(item)
-            }
+            }, getAddonsHandler: getAddonHandler)
         ], animated: false)
     }
 

@@ -93,7 +93,7 @@ public final class ResourceManager: @unchecked Sendable {
                 }
             }
         }
-        return items
+        return items.sorted(by: { $0.name.localizedStandardCompare($1.name) == .orderedAscending })
     }
 
     func uninstall(item: ResourceItem) throws {

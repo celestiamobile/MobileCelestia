@@ -22,14 +22,7 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
     class var alwaysRefreshOnAppear: Bool { return false }
 
     private lazy var activityIndicator = UIActivityIndicatorView(style: .large)
-
-    private lazy var refreshButton: UIButton = {
-        if #available(iOS 15.0, *) {
-            return UIButton(configuration: .plain())
-        } else {
-            return UIButton(type: .system)
-        }
-    }()
+    private lazy var refreshButton = ActionButtonHelper.newButton()
 
     var additionalItem: T?
 
@@ -76,6 +69,10 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
         fatalError()
     }
 
+    func emptyHintView() -> UIView? {
+        return nil
+    }
+
     @objc private func callRefresh() {
         Task {
             await loadNewItems()
@@ -95,6 +92,7 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
         let requestID = UUID()
         currentRequestID = requestID
         do {
+            tableView.backgroundView = nil
             let newItems = try await loadItems(pageStart: pageStart, pageSize: pageSize)
             guard self.currentRequestID == requestID else { return }
             if freshLoad {
@@ -108,6 +106,7 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
             } else {
                 self.tableView.insertRows(at: (pageStart..<(pageStart + newItems.count)).map{ IndexPath(row: $0, section: 0) }, with: .automatic)
             }
+            self.tableView.backgroundView = self.items.isEmpty ? self.emptyHintView() : nil
         } catch {
             guard self.currentRequestID == requestID else { return }
             if freshLoad {

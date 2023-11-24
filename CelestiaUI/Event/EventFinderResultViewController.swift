@@ -36,14 +36,20 @@ class EventFinderResultViewController: BaseTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        setup()
+        setUp()
     }
 }
 
 private extension EventFinderResultViewController {
-    func setup() {
+    func setUp() {
         tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         title = CelestiaString("Eclipse Finder", comment: "")
+
+        if events.isEmpty {
+            let view = EmptyHintView()
+            view.title = CelestiaString("No eclipse is found for the given object in the time range", comment: "")
+            tableView.backgroundView = view
+        }
     }
 }
 
