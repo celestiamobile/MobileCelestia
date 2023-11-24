@@ -24,6 +24,12 @@ protocol FavoriteItemList {
     func append(_ item: Item)
     func remove(at index: Int)
     func move(from source: Int, to dest: Int)
+
+    var emptyHint: String? { get }
+}
+
+extension FavoriteItemList {
+    var emptyHint: String? { nil }
 }
 
 class AnyFavoriteItemList<T: FavoriteItem>: FavoriteItemList {
@@ -81,6 +87,10 @@ extension BookmarkNode: FavoriteItemList {
 
     func move(from source: Int, to dest: Int) {
         children.insert(children.remove(at: source), at: dest)
+    }
+
+    var emptyHint: String? {
+        return CelestiaString("Create a new bookmark with \"+\" button", comment: "")
     }
 }
 
@@ -366,6 +376,12 @@ private extension FavoriteItemViewController {
     func setUp() {
         tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         title = itemList.title
+
+        if itemList.count == 0, let emptyHint = itemList.emptyHint {
+            let view = EmptyHintView()
+            view.title = emptyHint
+            tableView.backgroundView = view
+        }
 
         if itemList.canBeModified {
             navigationItem.rightBarButtonItems = [

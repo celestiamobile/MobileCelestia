@@ -25,6 +25,8 @@
 		979D2FAD23FEB2B4005D2592 /* libbz2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 979D2FAC23FEB2AE005D2592 /* libbz2.tbd */; };
 		979D2FAF23FEB2BD005D2592 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 979D2FAE23FEB2B9005D2592 /* libz.tbd */; };
 		97C3A9F22445FACF00EB365A /* CelestiaControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C3A9F12445FACF00EB365A /* CelestiaControlView.swift */; };
+		EA09B0732B10E76E00222229 /* EmptyHintView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA09B0722B10E76E00222229 /* EmptyHintView.swift */; };
+		EA09B0752B10FB2A00222229 /* SafeAreaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA09B0742B10FB2A00222229 /* SafeAreaView.swift */; };
 		EA1823ED27C08D3D00E0F5E4 /* CelestiaHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = EA1823EC27C08D3D00E0F5E4 /* CelestiaHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		EA1823F027C08D3D00E0F5E4 /* CelestiaHelper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA1823EA27C08D3D00E0F5E4 /* CelestiaHelper.framework */; platformFilter = maccatalyst; };
 		EA1823F727C08E3500E0F5E4 /* CEHExceptionCatching.h in Headers */ = {isa = PBXBuildFile; fileRef = EA1823F527C08E3500E0F5E4 /* CEHExceptionCatching.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -297,6 +299,8 @@
 		97F1141D2408AE06003A06D7 /* DataLocationSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataLocationSelectionViewController.swift; sourceTree = "<group>"; };
 		97FF95A4240A340300E9F44F /* BaseResultHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseResultHandler.swift; sourceTree = "<group>"; };
 		E9806FA24ECD67FB00824D4F /* Pods-CelestiaUI.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CelestiaUI.release.xcconfig"; path = "Target Support Files/Pods-CelestiaUI/Pods-CelestiaUI.release.xcconfig"; sourceTree = "<group>"; };
+		EA09B0722B10E76E00222229 /* EmptyHintView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyHintView.swift; sourceTree = "<group>"; };
+		EA09B0742B10FB2A00222229 /* SafeAreaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeAreaView.swift; sourceTree = "<group>"; };
 		EA113708262C72AA002E49DA /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EA113709262C72B2002E49DA /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EA17951A27B1510500D47397 /* CelestiaScriptHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaScriptHandler.swift; sourceTree = "<group>"; };
@@ -724,6 +728,8 @@
 				EA775EB32664B63F00479295 /* ActionButton.swift */,
 				EAE51CA22A7B765100D6779C /* Formatter.swift */,
 				EA9166962B0AF20A00AF48B1 /* LinkTextView.swift */,
+				EA09B0722B10E76E00222229 /* EmptyHintView.swift */,
+				EA09B0742B10FB2A00222229 /* SafeAreaView.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -1417,6 +1423,7 @@
 				EA66BBDF2A55BA88008A7AAA /* DistanceInputCell.swift in Sources */,
 				EAB8F2632A56DC3200C4E777 /* InstalledResourceViewController.swift in Sources */,
 				EAD12AA62A566DE7007EE4D6 /* FavoriteCoordinatorController.swift in Sources */,
+				EA09B0732B10E76E00222229 /* EmptyHintView.swift in Sources */,
 				EAB8F25A2A56D71600C4E777 /* CelestiaScriptHandler.swift in Sources */,
 				EA7BACF12A959A760014D1FF /* SubscriptionManagerViewController.swift in Sources */,
 				EA66BBC72A55AABF008A7AAA /* SearchCoordinatorController.swift in Sources */,
@@ -1432,6 +1439,7 @@
 				EAD12A8F2A5656FF007EE4D6 /* EventFinderResultViewController.swift in Sources */,
 				EA66BBE02A55BA88008A7AAA /* LongitudeLatitudeInputCell.swift in Sources */,
 				EA7BACEF2A959A760014D1FF /* FeatureView.swift in Sources */,
+				EA09B0752B10FB2A00222229 /* SafeAreaView.swift in Sources */,
 				EAB8F2662A56DC3200C4E777 /* AsyncListViewController.swift in Sources */,
 				EAD12AA42A566DE7007EE4D6 /* DestinationDetailViewController.swift in Sources */,
 				EA741A6A2ADA6B5E00C7F1DC /* FontSettingViewController.swift in Sources */,
@@ -1609,7 +1617,7 @@
 					"-Wl,-ld_classic",
 				);
 				SDKROOT = iphoneos;
-				SHARED_BUILD_NUMBER = 389;
+				SHARED_BUILD_NUMBER = 390;
 				SHARED_BUILD_VERSION = 1.6.3;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1670,7 +1678,7 @@
 					"-Wl,-ld_classic",
 				);
 				SDKROOT = iphoneos;
-				SHARED_BUILD_NUMBER = 389;
+				SHARED_BUILD_NUMBER = 390;
 				SHARED_BUILD_VERSION = 1.6.3;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";

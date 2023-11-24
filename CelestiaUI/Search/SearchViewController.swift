@@ -36,6 +36,11 @@ public class SearchViewController: BaseTableViewController {
     private var currentSearchTerm: String?
     private var validSearchTerm: String?
 
+    private lazy var emptyView = EmptyHintView()
+    private lazy var loadingView = UIActivityIndicatorView(style: .large)
+    private lazy var emptyViewContainer = SafeAreaView(view: self.emptyView)
+    private lazy var loadingViewContainer = SafeAreaView(view: self.loadingView)
+
     public init(resultsInSidebar: Bool, executor: AsyncProviderExecutor, selected: @escaping (_ display: String, _ path: String) -> Void) {
         self.resultsInSidebar = resultsInSidebar
         self.selected = selected
@@ -69,11 +74,21 @@ public class SearchViewController: BaseTableViewController {
 
         shouldActivate = searchController.searchBar.isFirstResponder
     }
+
+    public override func viewSafeAreaInsetsDidChange() {
+        super.viewSafeAreaInsetsDidChange()
+
+        emptyViewContainer.manualSafeAreaInsets = view.safeAreaInsets
+        loadingViewContainer.manualSafeAreaInsets = view.safeAreaInsets
+    }
 }
 
 private extension SearchViewController {
     func setUp() {
         title = CelestiaString("Search", comment: "")
+
+        emptyViewContainer.manualSafeAreaInsets = view.safeAreaInsets
+        loadingViewContainer.manualSafeAreaInsets = view.safeAreaInsets
 
         let appearance = UINavigationBarAppearance()
         appearance.configureWithDefaultBackground()
@@ -102,23 +117,40 @@ private extension SearchViewController {
 
         tableView.keyboardDismissMode = .interactive
         tableView.register(resultsInSidebar ? UITableViewCell.self : TextCell.self, forCellReuseIdentifier: "Text")
+
+        emptyView.title = CelestiaString("Find stars, DSOs, and nearby objects", comment: "")
+        tableView.backgroundView = emptyViewContainer
     }
 
     func searchTextUpdated(_ text: String?) {
         currentSearchTerm = text
         guard let text, !text.isEmpty else {
+            emptyView.title = CelestiaString("Find stars, DSOs, and nearby objects", comment: "")
             validSearchTerm = ""
             resultSections = []
             tableView.reloadData()
+            loadingView.stopAnimating()
+            tableView.backgroundView = emptyViewContainer
             return
         }
 
         Task {
+            if resultSections.reduce(0, { $0 + $1.results.count }) == 0 {
+                tableView.backgroundView = loadingViewContainer
+                loadingView.startAnimating()
+            }
             let results = await self.search(with: text)
             guard text == currentSearchTerm else { return }
             validSearchTerm = text
             self.resultSections = results
             self.tableView.reloadData()
+            self.loadingView.stopAnimating()
+            if results.reduce(0, { $0 + $1.results.count }) == 0 {
+                self.emptyView.title = CelestiaString("No result found", comment: "")
+                self.tableView.backgroundView = self.emptyViewContainer
+            } else {
+                self.tableView.backgroundView = nil
+            }
         }
     }
 
@@ -196,6 +228,7 @@ extension SearchViewController {
         tableView.deselectRow(at: indexPath, animated: true)
 
         guard let validSearchTerm else { return }
+        guard indexPath.section < resultSections.count, indexPath.row < resultSections[indexPath.section].results.count else { return }
 
         let selection = resultSections[indexPath.section].results[indexPath.row]
         let name: String
