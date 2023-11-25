@@ -27,6 +27,7 @@
 		97C3A9F22445FACF00EB365A /* CelestiaControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C3A9F12445FACF00EB365A /* CelestiaControlView.swift */; };
 		EA09B0732B10E76E00222229 /* EmptyHintView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA09B0722B10E76E00222229 /* EmptyHintView.swift */; };
 		EA09B0752B10FB2A00222229 /* SafeAreaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA09B0742B10FB2A00222229 /* SafeAreaView.swift */; };
+		EA09B0862B118C0E00222229 /* ICPCFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA09B0852B118C0E00222229 /* ICPCFooter.swift */; };
 		EA1823ED27C08D3D00E0F5E4 /* CelestiaHelper.h in Headers */ = {isa = PBXBuildFile; fileRef = EA1823EC27C08D3D00E0F5E4 /* CelestiaHelper.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		EA1823F027C08D3D00E0F5E4 /* CelestiaHelper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA1823EA27C08D3D00E0F5E4 /* CelestiaHelper.framework */; platformFilter = maccatalyst; };
 		EA1823F727C08E3500E0F5E4 /* CEHExceptionCatching.h in Headers */ = {isa = PBXBuildFile; fileRef = EA1823F527C08E3500E0F5E4 /* CEHExceptionCatching.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -301,6 +302,7 @@
 		E9806FA24ECD67FB00824D4F /* Pods-CelestiaUI.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-CelestiaUI.release.xcconfig"; path = "Target Support Files/Pods-CelestiaUI/Pods-CelestiaUI.release.xcconfig"; sourceTree = "<group>"; };
 		EA09B0722B10E76E00222229 /* EmptyHintView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyHintView.swift; sourceTree = "<group>"; };
 		EA09B0742B10FB2A00222229 /* SafeAreaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeAreaView.swift; sourceTree = "<group>"; };
+		EA09B0852B118C0E00222229 /* ICPCFooter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ICPCFooter.swift; sourceTree = "<group>"; };
 		EA113708262C72AA002E49DA /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EA113709262C72B2002E49DA /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EA17951A27B1510500D47397 /* CelestiaScriptHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaScriptHandler.swift; sourceTree = "<group>"; };
@@ -829,6 +831,7 @@
 		EAA79CCA2A56A0000056DB91 /* Settings */ = {
 			isa = PBXGroup;
 			children = (
+				EA09B0852B118C0E00222229 /* ICPCFooter.swift */,
 				977394AB2403F07C00E38B82 /* SettingsCoordinatorController.swift */,
 				977394AD2403F08800E38B82 /* SettingsMainViewController.swift */,
 				97F1141D2408AE06003A06D7 /* DataLocationSelectionViewController.swift */,
@@ -1384,6 +1387,7 @@
 				EABC92412A570220007E27F0 /* LoadingFailureViewController.swift in Sources */,
 				EA50E7772A505DCE005E7D7A /* LinkPreviewCell.swift in Sources */,
 				EAB623AC2A51AA0A00063D1B /* BrowserContainerViewController.swift in Sources */,
+				EA09B0862B118C0E00222229 /* ICPCFooter.swift in Sources */,
 				EAB8F2272A56BDA600C4E777 /* SettingsCoordinatorController.swift in Sources */,
 				EAB623AD2A51AA0A00063D1B /* BrowserCoordinatorController.swift in Sources */,
 				EA872EFF2A5ACB6E009E6A20 /* ButtonView.swift in Sources */,

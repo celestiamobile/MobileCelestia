@@ -82,6 +82,7 @@ private extension AboutViewController {
     func setUp() {
         tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         tableView.register(MultiLineTextCell.self, forCellReuseIdentifier: "MultiLine")
+        tableView.register(ICPCFooter.self, forHeaderFooterViewReuseIdentifier: "ICPC")
         title = CelestiaString("About", comment: "")
     }
 }
@@ -137,5 +138,19 @@ extension AboutViewController {
         default:
             break
         }
+    }
+
+    public override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        let showFooter: Bool
+        if section == items.count - 1 {
+            if #available(iOS 16, *) {
+                showFooter = Locale.current.region == .chinaMainland
+            } else {
+                showFooter = Locale.current.regionCode == "CN"
+            }
+        } else {
+            showFooter = false
+        }
+        return showFooter ? tableView.dequeueReusableHeaderFooterView(withIdentifier: "ICPC") : nil
     }
 }
