@@ -90,7 +90,7 @@ private extension SelectionCell {
         contentView.addSubview(button)
         NSLayoutConstraint.activate([
             button.leadingAnchor.constraint(equalTo: stackView.trailingAnchor, constant: GlobalConstants.listItemGapHorizontal),
-            button.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -GlobalConstants.listItemMediumMarginHorizontal),
+            button.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -GlobalConstants.listItemPopUpButtonMarginHorizontal),
             button.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             button.topAnchor.constraint(greaterThanOrEqualTo: contentView.topAnchor, constant: GlobalConstants.listItemAccessoryMinMarginVertical),
         ])

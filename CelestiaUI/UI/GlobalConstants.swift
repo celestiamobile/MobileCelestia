@@ -17,6 +17,14 @@ public enum GlobalConstants {
     public static let listItemMediumMarginVertical: CGFloat = 12
     public static let listItemGapHorizontal: CGFloat = 8
     public static let listItemGapVertical: CGFloat = 8
+    @available(iOS 15, *)
+    static let listItemPopUpButtonMarginHorizontal: CGFloat = {
+        #if targetEnvironment(macCatalyst)
+        return listItemMediumMarginHorizontal
+        #else
+        return 4
+        #endif
+    }()
 
     public static let listItemAccessoryMinMarginVertical: CGFloat = 6
 

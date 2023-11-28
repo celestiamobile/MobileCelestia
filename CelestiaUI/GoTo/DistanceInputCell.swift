@@ -90,7 +90,7 @@ class DistanceInputCell: UITableViewCell {
             distanceTextField.topAnchor.constraint(greaterThanOrEqualTo: contentView.topAnchor, constant: GlobalConstants.listItemMediumMarginVertical),
             distanceTextField.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
             unitButton.leadingAnchor.constraint(equalTo: distanceTextField.trailingAnchor, constant: GlobalConstants.listItemGapHorizontal),
-            unitButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -GlobalConstants.listItemMediumMarginHorizontal),
+            unitButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -GlobalConstants.listItemPopUpButtonMarginHorizontal),
             unitButton.topAnchor.constraint(greaterThanOrEqualTo: contentView.topAnchor, constant: GlobalConstants.listItemMediumMarginVertical),
             unitButton.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
         ])
