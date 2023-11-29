@@ -96,6 +96,7 @@ extension FavoriteViewController {
         #else
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
         cell.title = type?.description
+        cell.accessoryType = .disclosureIndicator
         #endif
         return cell
     }
