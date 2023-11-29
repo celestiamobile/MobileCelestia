@@ -440,7 +440,11 @@ extension MainViewController {
             }
         case .showOpenGLInfo:
             Task {
-                let renderInfo = await self.executor.get { $0.renderInfo }
+                let executor = self.executor
+                let renderInfo = await executor.get {
+                    executor.makeRenderContextCurrent()
+                    return $0.renderInfo
+                }
                 let vc = TextViewController(title: CelestiaString("OpenGL Info", comment: ""), text: renderInfo)
                 showViewController(ToolbarNavigationContainerController(rootViewController: vc), customToolbar: true)
             }
