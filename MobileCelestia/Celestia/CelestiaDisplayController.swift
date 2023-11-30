@@ -273,8 +273,6 @@ extension CelestiaDisplayController {
         core.setSafeAreaInsets(viewSafeAreaInsets.scale(by: viewScale))
         core.setPickTolerance(sensitivity * viewScale / applicationScalingFactor)
 
-        executor.makeRenderContextCurrent()
-
         var (normalFont, boldFont) = getInstalledFontFor(locale: AppCore.language)
         if let customNormalFont {
             normalFont = customNormalFont

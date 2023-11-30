@@ -733,7 +733,6 @@ extension MainViewController: CelestiaControllerDelegate {
         let screenshotURL = parentURL.appendingPathComponent("screenshot.png")
         let executor = self.executor
         let (renderInfo, url, screenshotSuccess) = await executor.get { core in
-            executor.makeRenderContextCurrent()
             core.draw()
             return (core.renderInfo, core.currentURL, core.screenshot(to: screenshotURL.path, type: .PNG))
         }
@@ -865,7 +864,6 @@ Device Model: \(model)
         let executor = self.executor
         Task {
             let success = await executor.get { core in
-                executor.makeRenderContextCurrent()
                 core.draw()
                 return core.screenshot(to: url.path, type: .JPEG)
             }
@@ -1248,7 +1246,6 @@ Device Model: \(model)
                 return await viewController.getTextInputDifferentiated(title, keyboardType: keyboardType)
             }, rendererInfoProvider: {
                 return await executor.get { core in
-                    executor.makeRenderContextCurrent()
                     return core.renderInfo
                 }
             }, screenProvider: { [unowned self] in

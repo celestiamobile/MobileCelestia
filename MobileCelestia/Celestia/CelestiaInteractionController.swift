@@ -545,92 +545,138 @@ extension CelestiaInteractionController: UIGestureRecognizerDelegate {
 }
 
 extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
+    private class ContextMenuHandler: NSObject, AppCoreContextMenuHandler, @unchecked Sendable {
+        func celestiaAppCoreCursorDidRequestContextMenu(at location: CGPoint, with selection: Selection) {
+            pendingSelection = selection
+        }
+
+        var pendingSelection: Selection?
+    }
+
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
         let location = interaction.location(with: renderingTargetGeometry)
 
-        class ContextMenuHandler: NSObject, AppCoreContextMenuHandler, @unchecked Sendable {
-            func celestiaAppCoreCursorDidRequestContextMenu(at location: CGPoint, with selection: Selection) {
-                pendingSelection = selection
+        if #available(iOS 14, *) {
+            return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { [weak self] _ in
+                guard let self else { return nil }
+                return UIMenu(options: .displayInline, children: [contextMenuForLocation(location: location)])
+            }
+        } else {
+            guard let (selection, displaySurface) = executor.getSynchronously({ core in
+                let handler = ContextMenuHandler()
+                core.contextMenuHandler = handler
+                core.mouseButtonDown(at: location, modifiers: 0, with: .right)
+                core.mouseButtonUp(at: location, modifiers: 0, with: .right)
+                core.contextMenuHandler = nil
+                if let selection = handler.pendingSelection {
+                    return (selection, core.simulation.activeObserver.displayedSurface)
+                } else {
+                    return nil
+                }
+            }) else {
+                return nil
             }
 
-            var pendingSelection: Selection?
+            return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { [weak self] _ in
+                guard let self else { return nil }
+                return UIMenu(children: self.contextMenuForSelection(selection: selection, displaySurface: displaySurface))
+            }
         }
+    }
 
-        let handler = ContextMenuHandler()
-        let selection = executor.getSynchronously { core in
-            core.contextMenuHandler = handler
-            core.mouseButtonDown(at: location, modifiers: 0, with: .right)
-            core.mouseButtonUp(at: location, modifiers: 0, with: .right)
-            core.contextMenuHandler = nil
-            return handler.pendingSelection
-        }
-
-        guard let selection else { return nil }
-
-        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { [weak self] _ -> UIMenu? in
-            guard let self else { return nil }
-            let titleAction = UIAction(title: self.core.simulation.universe.name(for: selection)) { _ in }
-            titleAction.attributes = [.disabled]
-            var actions: [UIMenuElement] = [titleAction]
-
-            actions.append(UIMenu(options: .displayInline, children: [
-                UIAction(title: CelestiaString("Get Info", comment: "")) { _ in
-                    self.delegate?.celestiaInteractionController(self, requestShowInfoWithSelection: selection)
-                }
-            ]))
-
-            actions.append(UIMenu(title: "", options: .displayInline, children: CelestiaAction.allCases.map { action in
-                return UIAction(title: action.description) { _ in
-                    Task {
-                        await self.executor.selectAndReceive(selection, action: action)
-                    }
-                }
-            }))
-
-            if let entry = selection.object {
-                let browserItem = BrowserItem(name: self.core.simulation.universe.name(for: selection), catEntry: entry, provider: self.core.simulation.universe)
-                actions.append(UIMenu(title: "", options: .displayInline, children: browserItem.children.compactMap { $0.createMenuItems(additionalItemName: CelestiaString("Go", comment: "")) { selection in
-                    Task {
-                        await self.executor.selectAndReceive(selection, action: .goTo)
-                    }
-                }
-                }))
+    @available(iOS 14.0, *)
+    private func contextMenuForLocation(location: CGPoint) -> UIDeferredMenuElement {
+        return UIDeferredMenuElement { [weak self] completion in
+            guard let self else {
+                completion([])
+                return
             }
-
-            if let alternativeSurfaces = selection.body?.alternateSurfaceNames, alternativeSurfaces.count > 0 {
-                let displaySurface = self.executor.getSynchronously { $0.simulation.activeObserver.displayedSurface }
-                let defaultSurfaceItem = UIAction(title: CelestiaString("Default", comment: "")) { _ in
-                    self.executor.runAsynchronously { $0.simulation.activeObserver.displayedSurface = "" }
-                }
-                defaultSurfaceItem.state = displaySurface == "" ? .on : .off
-                let otherSurfaces = alternativeSurfaces.map { name -> UIAction in
-                    let action = UIAction(title: name) { _ in
-                        self.executor.runAsynchronously { $0.simulation.activeObserver.displayedSurface = name }
-                    }
-                    action.state = displaySurface == name ? .on : .off
-                    return action
-                }
-                let menu = UIMenu(title: CelestiaString("Alternate Surfaces", comment: ""), children: [defaultSurfaceItem] + otherSurfaces)
-                actions.append(menu)
-            }
-
-            let markerOptions = (0...MarkerRepresentation.crosshair.rawValue).map { MarkerRepresentation(rawValue: $0)?.localizedTitle ?? "" } + [CelestiaString("Unmark", comment: "")]
-            let markerMenu = UIMenu(title: CelestiaString("Mark", comment: ""), children: markerOptions.enumerated().map() { index, name -> UIAction in
-                return UIAction(title: name) { [weak self] _ in
-                    guard let self = self else { return }
-                    if let marker = MarkerRepresentation(rawValue: UInt(index)) {
-                        Task {
-                            await self.executor.mark(selection, markerType: marker)
-                        }
+            Task {
+                guard let (selection, displaySurface) = await self.executor.get({ core in
+                    let handler = ContextMenuHandler()
+                    core.contextMenuHandler = handler
+                    core.mouseButtonDown(at: location, modifiers: 0, with: .right)
+                    core.mouseButtonUp(at: location, modifiers: 0, with: .right)
+                    core.contextMenuHandler = nil
+                    if let selection = handler.pendingSelection {
+                        return (selection, core.simulation.activeObserver.displayedSurface)
                     } else {
-                        self.executor.runAsynchronously { $0.simulation.universe.unmark(selection) }
+                        return nil
                     }
+                }) else {
+                    completion([])
+                    return
+                }
+
+                completion(self.contextMenuForSelection(selection: selection, displaySurface: displaySurface))
+            }
+        }
+    }
+
+    private func contextMenuForSelection(selection: Selection, displaySurface: String) -> [UIMenuElement] {
+        let titleAction = UIAction(title: core.simulation.universe.name(for: selection)) { _ in }
+        titleAction.attributes = [.disabled]
+        var actions: [UIMenuElement] = [titleAction]
+
+        actions.append(UIMenu(options: .displayInline, children: [
+            UIAction(title: CelestiaString("Get Info", comment: "")) { [weak self] _ in
+                guard let self else { return }
+                self.delegate?.celestiaInteractionController(self, requestShowInfoWithSelection: selection)
+            }
+        ]))
+
+        actions.append(UIMenu(title: "", options: .displayInline, children: CelestiaAction.allCases.map { action in
+            return UIAction(title: action.description) { [weak self] _ in
+                guard let self else { return }
+                Task {
+                    await self.executor.selectAndReceive(selection, action: action)
                 }
             }
-            )
-            actions.append(UIMenu(title: "", options: .displayInline, children: [markerMenu]))
-            return UIMenu(title: "", children: actions)
+        }))
+
+        if let entry = selection.object {
+            let browserItem = BrowserItem(name: core.simulation.universe.name(for: selection), catEntry: entry, provider: core.simulation.universe)
+            actions.append(UIMenu(title: "", options: .displayInline, children: browserItem.children.compactMap { $0.createMenuItems(additionalItemName: CelestiaString("Go", comment: "")) { [weak self] selection in
+                guard let self else { return }
+                Task {
+                    await self.executor.selectAndReceive(selection, action: .goTo)
+                }
+            }}))
         }
+
+        if let alternativeSurfaces = selection.body?.alternateSurfaceNames, alternativeSurfaces.count > 0 {
+            let defaultSurfaceItem = UIAction(title: CelestiaString("Default", comment: "")) { [weak self] _ in
+                guard let self else { return }
+                self.executor.runAsynchronously { $0.simulation.activeObserver.displayedSurface = "" }
+            }
+            defaultSurfaceItem.state = displaySurface == "" ? .on : .off
+            let otherSurfaces = alternativeSurfaces.map { name -> UIAction in
+                let action = UIAction(title: name) { [weak self] _ in
+                    guard let self else { return }
+                    self.executor.runAsynchronously { $0.simulation.activeObserver.displayedSurface = name }
+                }
+                action.state = displaySurface == name ? .on : .off
+                return action
+            }
+            let menu = UIMenu(title: CelestiaString("Alternate Surfaces", comment: ""), children: [defaultSurfaceItem] + otherSurfaces)
+            actions.append(menu)
+        }
+
+        let markerOptions = (0...MarkerRepresentation.crosshair.rawValue).map { MarkerRepresentation(rawValue: $0)?.localizedTitle ?? "" } + [CelestiaString("Unmark", comment: "")]
+        let markerMenu = UIMenu(title: CelestiaString("Mark", comment: ""), children: markerOptions.enumerated().map() { index, name -> UIAction in
+            return UIAction(title: name) { [weak self] _ in
+                guard let self else { return }
+                if let marker = MarkerRepresentation(rawValue: UInt(index)) {
+                    Task {
+                        await self.executor.mark(selection, markerType: marker)
+                    }
+                } else {
+                    self.executor.runAsynchronously { $0.simulation.universe.unmark(selection) }
+                }
+            }
+        })
+        actions.append(UIMenu(title: "", options: .displayInline, children: [markerMenu]))
+        return actions
     }
 
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, previewForHighlightingMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
@@ -667,7 +713,7 @@ extension BrowserItem {
         var childItems = [UIMenuElement]()
         for i in 0..<children.count {
             let subItemName = childName(at: Int(i))!
-            let child = self.child(with: subItemName)!
+            let child = child(with: subItemName)!
             if let childMenu = child.createMenuItems(additionalItemName: additionalItemName, with: callback) {
                 childItems.append(childMenu)
             }

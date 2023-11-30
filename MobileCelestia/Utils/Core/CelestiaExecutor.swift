@@ -33,8 +33,9 @@ final class CelestiaExecutor: AsyncGLExecutor, AsyncProviderExecutor, @unchecked
         }
     }
 
-    func getSynchronously<T>(_ task: (AppCore) -> T) -> T {
+    func getSynchronously<T>(_ task: @escaping @Sendable (AppCore) -> T) -> T {
         var item: T?
+        let core = self.core
         runTaskSynchronously {
             item = task(core)
         }

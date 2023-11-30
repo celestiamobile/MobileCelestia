@@ -4,6 +4,14 @@
 //
 
 #import "AsyncGLView+Private.h"
+#include <pthread.h>
+
+typedef NS_OPTIONS(NSUInteger, AsyncGLViewEvent) {
+    AsyncGLViewEventNone                = 0,
+    AsyncGLViewEventCreateRenderContext = 1 << 0,
+    AsyncGLViewEventDraw                = 1 << 1,
+    AsyncGLViewEventQuit                = 1 << 2,
+};
 
 #if TARGET_OS_MACCATALYST
 #define TARGET_OSX_OR_CATALYST          1
@@ -51,23 +59,19 @@ typedef enum EGLRenderingAPI : int
 @end
 
 @implementation PassthroughGLLayer
-- (CGLPixelFormatObj)copyCGLPixelFormatForDisplayMask:(uint32_t)mask
-{
+- (CGLPixelFormatObj)copyCGLPixelFormatForDisplayMask:(uint32_t)mask {
     return _pixelFormat;
 }
 
-- (CGLContextObj)copyCGLContextForPixelFormat:(CGLPixelFormatObj)pf
-{
+- (CGLContextObj)copyCGLContextForPixelFormat:(CGLPixelFormatObj)pf {
     return _renderContext;
 }
 
-- (BOOL)canDrawInCGLContext:(CGLContextObj)ctx pixelFormat:(CGLPixelFormatObj)pf forLayerTime:(CFTimeInterval)t displayTime:(const CVTimeStamp *)ts
-{
+- (BOOL)canDrawInCGLContext:(CGLContextObj)ctx pixelFormat:(CGLPixelFormatObj)pf forLayerTime:(CFTimeInterval)t displayTime:(const CVTimeStamp *)ts {
     return [[NSThread currentThread] isEqual:_thread];
 }
 
-- (void)drawInCGLContext:(CGLContextObj)ctx pixelFormat:(CGLPixelFormatObj)pf forLayerTime:(CFTimeInterval)t displayTime:(const CVTimeStamp *)ts
-{
+- (void)drawInCGLContext:(CGLContextObj)ctx pixelFormat:(CGLPixelFormatObj)pf forLayerTime:(CFTimeInterval)t displayTime:(const CVTimeStamp *)ts {
     CGLSetCurrentContext(ctx);
     glBindFramebuffer(GL_READ_FRAMEBUFFER, _sourceFramebuffer);
     glBlitFramebuffer(0, 0, _width, _height, 0, 0, _width, _height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
@@ -77,12 +81,18 @@ typedef enum EGLRenderingAPI : int
 #endif
 #endif
 
-@interface AsyncGLView ()
-{
+@interface AsyncGLView () {
     BOOL _msaaEnabled;
 }
 
+@property (nonatomic, readonly) pthread_mutex_t messageMutex;
+@property (nonatomic, readonly) pthread_cond_t resumeCond;
+@property (nonatomic) BOOL suspendedFlag;
+@property (nonatomic) AsyncGLViewEvent event;
 @property (nonatomic) BOOL contextsCreated;
+@property (nonatomic) NSMutableArray *tasks;
+
+@property (nonatomic) BOOL contextsCreationRequested;
 #ifdef USE_EGL
 @property (nonatomic) CAMetalLayer *metalLayer;
 @property (nonatomic) EGLRenderingAPI internalAPI;
@@ -111,23 +121,14 @@ typedef enum EGLRenderingAPI : int
 #endif
 #endif
 
-#if TARGET_OS_IOS
-@property (nonatomic) CADisplayLink *viewStateChecker;
-#else
-@property (nonatomic) CVDisplayLinkRef viewStateChecker;
-#endif
-@property (nonatomic) BOOL canRender;
-@property (atomic) CGSize drawableSize;
-@property (atomic) BOOL isUpdatingSize;
-@property (atomic, getter=isPaused) BOOL paused;
-@property (atomic) BOOL shouldRender;
+@property (nonatomic) CGSize drawableSize;
+@property (nonatomic) BOOL shouldRender;
 @end
 
 @implementation AsyncGLView
 
 #if TARGET_OS_IOS
-+ (Class)layerClass
-{
++ (Class)layerClass {
 #ifdef USE_EGL
     return [CAMetalLayer class];
 #else
@@ -139,8 +140,7 @@ typedef enum EGLRenderingAPI : int
 #endif
 }
 #else
-- (CALayer *)makeBackingLayer
-{
+- (CALayer *)makeBackingLayer {
 #ifdef USE_EGL
     return [CAMetalLayer layer];
 #else
@@ -151,51 +151,37 @@ typedef enum EGLRenderingAPI : int
 
 #pragma mark - lifecycle/ui
 
-- (void)dealloc
-{
+- (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
-- (instancetype)initWithFrame:(CGRect)frame
-{
+- (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     return self;
 }
 
-- (instancetype)initWithCoder:(NSCoder *)coder
-{
+- (instancetype)initWithCoder:(NSCoder *)coder {
     self = [super initWithCoder:coder];
     return self;
 }
 
-- (void)pause
-{
-    [self setPaused:YES];
-    [self setShouldRender:NO];
+- (void)pause {
+    [self pauseThread];
 #ifndef USE_EGL
 #if !TARGET_OSX_OR_CATALYST
     [self makeMainContextCurrent];
-    [self flush];
+    glFlush();
 #endif
 #endif
-
-    dispatch_sync(_renderQueue, ^{
-        [self makeRenderContextCurrent];
-        [self flush];
-    });
 }
 
-- (void)resume
-{
-    [self setPaused:NO];
-
-    [self _checkViewState];
+- (void)resume {
+    [self resumeThread];
 }
 
 #pragma mark - properties
-- (void)setMsaaEnabled:(BOOL)msaaEnabled
-{
-    if (!_contextsCreated)
+- (void)setMsaaEnabled:(BOOL)msaaEnabled {
+    if (!_contextsCreationRequested)
         _msaaEnabled = msaaEnabled;
 }
 
@@ -203,10 +189,8 @@ typedef enum EGLRenderingAPI : int
     return _msaaEnabled;
 }
 
-
 #pragma mark - interfaces
-- (void)makeRenderContextCurrent
-{
+- (void)makeRenderContextCurrent {
 #ifdef USE_EGL
     eglMakeCurrent(_display, _renderSurface, _renderSurface, _renderContext);
 #else
@@ -220,30 +204,36 @@ typedef enum EGLRenderingAPI : int
 #endif
 }
 
-- (void)flush
-{
-    glFlush();
+- (void)clear {
+    [self lockThread];
+    _event |= AsyncGLViewEventQuit;
+    pthread_cond_broadcast(&_resumeCond);
+    [self unlockThread];
 }
 
-- (void)clear
-{
-    [self clearGL];
+- (void)requestRender {
+    [self lockThread];
+    _event |= AsyncGLViewEventDraw;
+    pthread_cond_broadcast(&_resumeCond);
+    [self unlockThread];
 }
 
-- (void)render
-{
-    if ([self isPaused] || ![self shouldRender] || [self isUpdatingSize]) return;
+- (void)enqueueTask:(void (^)(void))task {
+    [self lockThread];
+    [_tasks addObject:task];
+    [self unlockThread];
+}
 
-    CGSize size = [self drawableSize];
+- (void)render {
+    CGSize size = _drawableSize;
     CGFloat width = size.width;
     CGFloat height = size.height;
 
-    [self makeRenderContextCurrent];
     [self _drawGL:CGSizeMake(width, height)];
 #ifdef USE_EGL
     eglSwapBuffers(_display, _renderSurface);
 #else
-    [self flush];
+    glFlush();
 #if !TARGET_OSX_OR_CATALYST
     glBindRenderbuffer(GL_RENDERBUFFER, _mainColorbuffer);
     [_renderContext presentRenderbuffer:_mainColorbuffer];
@@ -256,15 +246,13 @@ typedef enum EGLRenderingAPI : int
 }
 
 #pragma mark - private methods
-- (void)commonSetup
-{
+- (void)commonSetup {
     _drawableSize = CGSizeZero;
-    _paused = YES;
-    _canRender = NO;
-    _shouldRender = NO;
+    _shouldRender = YES;
     _contextsCreated = NO;
+    _contextsCreationRequested = NO;
     _msaaEnabled = NO;
-    _isUpdatingSize = NO;
+    _tasks = [NSMutableArray array];
 #ifdef USE_EGL
     _internalAPI = _api == AsyncGLAPIOpenGLES3 ? kEGLRenderingAPIOpenGLES3 : kEGLRenderingAPIOpenGLES2;
     _display = EGL_NO_DISPLAY;
@@ -301,9 +289,6 @@ typedef enum EGLRenderingAPI : int
     _savedBufferSize = CGSizeZero;
 #endif
 
-    _renderQueue = dispatch_queue_create([[[NSUUID UUID] UUIDString] UTF8String], DISPATCH_QUEUE_SERIAL);
-    dispatch_set_target_queue(_renderQueue, dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_HIGH, 0));
-
 #if TARGET_OS_OSX
     self.wantsLayer = YES;
 #endif
@@ -324,12 +309,92 @@ typedef enum EGLRenderingAPI : int
     _glLayer.asynchronous = YES;
 #endif
 #endif
+
+    _event = AsyncGLViewEventNone;
+    pthread_mutex_init(&_messageMutex, NULL);
+    pthread_cond_init(&_resumeCond, NULL);
+    _renderThread = [[NSThread alloc] initWithTarget:self selector:@selector(renderThreadMain) object:nil];
+    [_renderThread setThreadPriority:1.0];
+    [_renderThread start];
+}
+
+- (void)lockThread __attribute__((objc_direct)) {
+    pthread_mutex_lock(&_messageMutex);
+}
+
+- (void)unlockThread __attribute__((objc_direct)) {
+    pthread_mutex_unlock(&_messageMutex);
+}
+
+- (void)pauseThread __attribute__((objc_direct)) {
+    [self lockThread];
+    _suspendedFlag = YES;
+    [self unlockThread];
+}
+
+- (void)resumeThread __attribute__((objc_direct)) {
+    [self lockThread];
+    _suspendedFlag = NO;
+    pthread_cond_broadcast(&_resumeCond);
+    [self unlockThread];
+}
+
+- (void)waitThread __attribute__((objc_direct)) {
+    while (_suspendedFlag || _event == AsyncGLViewEventNone)
+        pthread_cond_wait(&_resumeCond, &_messageMutex);
+}
+
+- (void)renderThreadMain {
+    BOOL renderingEnabled = YES;
+
+    while (renderingEnabled) {
+        AsyncGLViewEvent event = AsyncGLViewEventNone;
+        BOOL needsDrawn = NO;
+
+        [self lockThread];
+        [self waitThread];
+
+        event = _event;
+        _event = AsyncGLViewEventNone;
+
+        NSArray *tasks = nil;
+        if ([_tasks count] > 0) {
+            tasks = [_tasks copy];
+            [_tasks removeAllObjects];
+        }
+
+        [self unlockThread];
+
+        if ((event & AsyncGLViewEventQuit) != 0) {
+            if (_contextsCreated)
+                [self clearGL];
+            break;
+        }
+
+        if ((event & AsyncGLViewEventCreateRenderContext) != 0) {
+            if ([self createRenderContext]) {
+                _contextsCreated = YES;
+            } else {
+                renderingEnabled = NO;
+            }
+        }
+
+        if (_contextsCreated) {
+            if ((event & AsyncGLViewEventDraw) != 0)
+                needsDrawn = YES;
+
+            for (void (^task)(void) in tasks)
+                task();
+        }
+
+        if (needsDrawn)
+            [self render];
+    }
 }
 
 #pragma mark - context creation
 #ifdef USE_EGL
-- (EGLContext)createEGLContextWithDisplay:(EGLDisplay)display api:(EGLRenderingAPI)api sharedContext:(EGLContext)sharedContext config:(EGLConfig*)config depthSize:(EGLint)depthSize msaa:(BOOL*)msaa
-{
+- (EGLContext)createEGLContextWithDisplay:(EGLDisplay)display api:(EGLRenderingAPI)api sharedContext:(EGLContext)sharedContext config:(EGLConfig*)config depthSize:(EGLint)depthSize msaa:(BOOL*)msaa {
     EGLint multisampleAttribs[] = {
             EGL_BLUE_SIZE, 8,
             EGL_GREEN_SIZE, 8,
@@ -397,21 +462,22 @@ typedef enum EGLRenderingAPI : int
 }
 #endif
 
-- (void)createContexts
-{
+- (void)createContexts {
 #ifdef USE_EGL
-    dispatch_async(_renderQueue, ^{
-        [self createRenderContext];
-    });
+    [self lockThread];
+    _event |= AsyncGLViewEventCreateRenderContext;
+    pthread_cond_broadcast(&_resumeCond);
+    [self unlockThread];
 #else
 #if !TARGET_OSX_OR_CATALYST
     _mainContext = [[EAGLContext alloc] initWithAPI:_internalAPI];
-    if (_mainContext == nil) {
+    if (_mainContext == nil)
         return;
-    }
-    dispatch_async(_renderQueue, ^{
-        [self createRenderContext];
-    });
+
+    [self lockThread];
+    _event = AsyncGLViewEventCreateRenderContext;
+    pthread_cond_broadcast(&_resumeCond);
+    [self unlockThread];
 #else
     const CGLPixelFormatAttribute attr[] = {
         kCGLPFAOpenGLProfile, (CGLPixelFormatAttribute)_internalAPI,
@@ -422,62 +488,63 @@ typedef enum EGLRenderingAPI : int
     CGLError error = CGLChoosePixelFormat(attr, &pixelFormat, &npix);
     if (pixelFormat == NULL)
         return;
+
     error = CGLCreateContext(pixelFormat, NULL, &_mainContext);
     CGLReleasePixelFormat(pixelFormat);
     _glLayer.pixelFormat = pixelFormat;
     _glLayer.renderContext = _mainContext;
-    if (!_mainContext) {
+    if (!_mainContext)
         return;
-    }
-    dispatch_async(_renderQueue, ^{
-        [self createRenderContext];
-    });
+
+    [self lockThread];
+    _event = AsyncGLViewEventCreateRenderContext;
+    pthread_cond_broadcast(&_resumeCond);
+    [self unlockThread];
 #endif
 #endif
 }
 
-- (void)createRenderContext
-{
+- (BOOL)createRenderContext {
 #ifdef USE_EGL
     EGLAttrib displayAttribs[] = { EGL_NONE };
     _display = eglGetPlatformDisplay(EGL_PLATFORM_ANGLE_ANGLE, NULL, displayAttribs);
     if (_display == EGL_NO_DISPLAY) {
         NSLog(@"eglGetPlatformDisplay() returned error %d", eglGetError());
-        return;
+        return NO;
     }
 
     if (!eglInitialize(_display, NULL, NULL)) {
         NSLog(@"eglInitialize() returned error %d", eglGetError());
-        return;
+        return NO;
     }
-
-    eglSwapInterval(_display, 0);
 
     _renderContext = [self createEGLContextWithDisplay:_display api:_internalAPI sharedContext:EGL_NO_CONTEXT config:&_renderConfig depthSize:24 msaa:&_msaaEnabled];
 
-    if (_renderContext == EGL_NO_CONTEXT) {
-        return;
-    }
+    if (_renderContext == EGL_NO_CONTEXT)
+        return NO;
 
     _renderSurface = eglCreateWindowSurface(_display, _renderConfig, (__bridge EGLNativeWindowType)(_metalLayer), NULL);
 
     if (_renderSurface == EGL_NO_SURFACE) {
         NSLog(@"eglCreateWindowSurface() returned error %d", eglGetError());
-        return;
+        return NO;
     }
 
     __block CGSize size;
     dispatch_sync(dispatch_get_main_queue(), ^{
         size = self.frame.size;
     });
+
     [self makeRenderContextCurrent];
-    [self setupGL:size];
+    eglSwapInterval(_display, 0);
+
+    return [self setupGL:size];
 #else
 #if !TARGET_OSX_OR_CATALYST
     _renderContext = [[EAGLContext alloc] initWithAPI:_mainContext.API sharegroup:_mainContext.sharegroup];
-    if (_renderContext == nil) {
-        return;
-    }
+    if (_renderContext == nil)
+        return NO;
+
     __block CGSize size;
     dispatch_sync(dispatch_get_main_queue(), ^{
         size = self.frame.size;
@@ -485,7 +552,7 @@ typedef enum EGLRenderingAPI : int
         [self createMainBuffers];
     });
     [self makeRenderContextCurrent];
-    [self createRenderBuffers:size];
+    return [self createRenderBuffers:size];
 #else
     const CGLPixelFormatAttribute attr[] = {
         kCGLPFAOpenGLProfile, (CGLPixelFormatAttribute)_internalAPI,
@@ -510,13 +577,13 @@ typedef enum EGLRenderingAPI : int
             error = CGLChoosePixelFormat(attr, &pixelFormat, &npix);
         }
         if (!pixelFormat)
-            return;
+            return NO;
     }
     error = CGLCreateContext(pixelFormat, _mainContext, &_renderContext);
     CGLReleasePixelFormat(pixelFormat);
-    if (!_renderContext) {
-        return;
-    }
+    if (!_renderContext)
+        return NO;
+
     [self makeRenderContextCurrent];
 
     __block CGSize size;
@@ -525,7 +592,7 @@ typedef enum EGLRenderingAPI : int
     });
     glGenRenderbuffers(1, &_renderColorbuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, _renderColorbuffer);
-    [self createRenderBuffers:size];
+    return [self createRenderBuffers:size];
 #endif
 #endif
 }
@@ -533,16 +600,14 @@ typedef enum EGLRenderingAPI : int
 #ifndef USE_EGL
 #pragma mark - buffer creation
 #if !TARGET_OSX_OR_CATALYST
-- (void)createMainBuffers
-{
+- (void)createMainBuffers {
     glGenRenderbuffers(1, &_mainColorbuffer);
     glBindRenderbuffer(GL_RENDERBUFFER, _mainColorbuffer);
     [_mainContext renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)self.layer];
 }
 #endif
 
-- (void)createRenderBuffers:(CGSize)size
-{
+- (BOOL)createRenderBuffers:(CGSize)size {
     glGenFramebuffers(1, &_framebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, _framebuffer);
 #if TARGET_OSX_OR_CATALYST
@@ -566,7 +631,7 @@ typedef enum EGLRenderingAPI : int
         GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
         if (status != GL_FRAMEBUFFER_COMPLETE) {
             NSLog(@"framebuffer not complete %d", status);
-            return;
+            return NO;
         }
 
         // Bind back
@@ -582,14 +647,13 @@ typedef enum EGLRenderingAPI : int
     GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     if (status != GL_FRAMEBUFFER_COMPLETE) {
         NSLog(@"framebuffer not complete %d", status);
-        return;
+        return NO;
     }
 
-    [self setupGL:size];
+    return [self setupGL:size];
 }
 
-- (void)updateBuffersSize:(CGSize)size
-{
+- (void)updateBuffersSize:(CGSize)size {
     if (CGSizeEqualToSize(_savedBufferSize, size))
         return;
 
@@ -626,32 +690,27 @@ typedef enum EGLRenderingAPI : int
 }
 
 #if !TARGET_OSX_OR_CATALYST
-- (void)makeMainContextCurrent
-{
+- (void)makeMainContextCurrent {
     [EAGLContext setCurrentContext:_mainContext];
 }
 #endif
 #endif
 
 #pragma mark - internal implementation
-- (void)setupGL:(CGSize)size
-{
-    if ([_delegate respondsToSelector:@selector(_prepareGL:)])
-    {
+- (BOOL)setupGL:(CGSize)size {
+    if ([_delegate respondsToSelector:@selector(_prepareGL:)]) {
         BOOL prepareSuccess = [_delegate _prepareGL:size];
-        if (!prepareSuccess)
-        {
+        if (!prepareSuccess) {
             [self clear];
-            return;
+            return NO;
         }
     }
 
     dispatch_sync(dispatch_get_main_queue(), ^{
-        [self setPaused:NO];
-        [self setCanRender:YES];
         [self _startObservingViewStateNotifications];
         [self _checkViewState];
     });
+    return YES;
 }
 
 - (void)_drawGL:(CGSize)size
@@ -700,9 +759,11 @@ typedef enum EGLRenderingAPI : int
 }
 
 #pragma mark - clear
-- (void)clearGL
-{
-    [self setCanRender:NO];
+- (void)clearGL {
+    glFlush();
+
+    if ([_delegate respondsToSelector:@selector(_clearGL)])
+        [_delegate _clearGL];
 
 #ifndef USE_EGL
     if (_depthBuffer != 0) {
@@ -743,10 +804,11 @@ typedef enum EGLRenderingAPI : int
     dispatch_async(dispatch_get_main_queue(), ^{
         [self destroyMain];
     });
+
+    _contextsCreated = NO;
 }
 
-- (void)destroyMain
-{
+- (void)destroyMain {
     [self _stopObservingViewStateNotifications];
 #ifndef USE_EGL
 #if !TARGET_OSX_OR_CATALYST
@@ -761,8 +823,7 @@ typedef enum EGLRenderingAPI : int
 }
 
 #ifndef USE_EGL
-- (void)destroyMainContext
-{
+- (void)destroyMainContext {
 #if TARGET_OSX_OR_CATALYST
     CGLReleaseContext(_mainContext);
     _mainContext = NULL;
@@ -772,8 +833,7 @@ typedef enum EGLRenderingAPI : int
 }
 #endif
 
-- (void)destroyRenderContext
-{
+- (void)destroyRenderContext {
 #ifdef USE_EGL
     if (_renderSurface != EGL_NO_SURFACE) {
         eglDestroySurface(_display, _renderSurface);
@@ -801,8 +861,7 @@ typedef enum EGLRenderingAPI : int
 }
 
 #pragma mark - view checker
-- (void)_startObservingViewStateNotifications
-{
+- (void)_startObservingViewStateNotifications {
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
 #if TARGET_OS_OSX
     [center addObserver:self selector:@selector(_checkViewState) name:NSViewFrameDidChangeNotification object:self];
@@ -813,8 +872,7 @@ typedef enum EGLRenderingAPI : int
 #endif
 }
 
-- (void)_stopObservingViewStateNotifications
-{
+- (void)_stopObservingViewStateNotifications {
     NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
 #if TARGET_OS_OSX
     [center removeObserver:self name:NSViewFrameDidChangeNotification object:self];
@@ -825,11 +883,12 @@ typedef enum EGLRenderingAPI : int
 #endif
 }
 
-- (void)_checkViewState
-{
-    if ([self isPaused] || ![self canRender]) return;
+- (void)_checkViewState {
+    if (!_contextsCreationRequested)
+        return;
 
-    BOOL shouldRender = self.frame.size.width > 0.0f && self.frame.size.height > 0.0f && !self.isHidden && self.window;
+    CGSize frameSize = self.frame.size;
+    BOOL shouldRender = frameSize.width > 0.0f && frameSize.height > 0.0f && !self.isHidden && self.window;
 #if TARGET_OS_IOS
     shouldRender = shouldRender && ([[UIApplication sharedApplication] applicationState] != UIApplicationStateBackground);
 #else
@@ -838,13 +897,10 @@ typedef enum EGLRenderingAPI : int
     [self setShouldRender:shouldRender];
 
     CGFloat scale = self.layer.contentsScale;
+    CGSize newSize = CGSizeMake(frameSize.width * scale, frameSize.height * scale);
 
-    CGSize newSize = CGSizeMake(self.frame.size.width * scale, self.frame.size.height * scale);
-
-    if (!CGSizeEqualToSize([self drawableSize], newSize))
-    {
-        [self setIsUpdatingSize:YES];
-        _isUpdatingSize = YES;
+    [self lockThread];
+    if (!CGSizeEqualToSize(_drawableSize, newSize)) {
 #ifndef USE_EGL
 #if !TARGET_OSX_OR_CATALYST
         [self makeMainContextCurrent];
@@ -852,22 +908,28 @@ typedef enum EGLRenderingAPI : int
         [_mainContext renderbufferStorage:GL_RENDERBUFFER fromDrawable:(CAEAGLLayer *)self.layer];
 #endif
 #endif
-        [self setDrawableSize:newSize];
-        [self setIsUpdatingSize:NO];
+        _drawableSize = newSize;
+    }
+    [self unlockThread];
+
+    if (!_shouldRender && shouldRender) {
+        [self resume];
+        _shouldRender = shouldRender;
+    } else if (_shouldRender && !shouldRender) {
+        [self pause];
+        _shouldRender = shouldRender;
     }
 }
 
 #if TARGET_OS_IOS
-- (void)layoutSubviews
-{
+- (void)layoutSubviews {
     [super layoutSubviews];
 
     [self _checkViewState];
 }
 #endif
 
-- (void)setContentScaleFactor:(CGFloat)contentScaleFactor
-{
+- (void)setContentScaleFactor:(CGFloat)contentScaleFactor {
 #if TARGET_OS_OSX
     self.layer.contentsScale = contentScaleFactor;
 #else
@@ -886,31 +948,28 @@ typedef enum EGLRenderingAPI : int
 }
 #endif
 
-- (void)setHidden:(BOOL)hidden
-{
+- (void)setHidden:(BOOL)hidden {
     [super setHidden:hidden];
 
     [self _checkViewState];
 }
 
 #if TARGET_OS_IOS
-- (void)willMoveToWindow:(UIWindow *)newWindow
-{
+- (void)willMoveToWindow:(UIWindow *)newWindow {
     [super willMoveToWindow:newWindow];
-    if (newWindow && !_contextsCreated) {
-        _contextsCreated = YES;
+    if (newWindow && !_contextsCreationRequested) {
+        _contextsCreationRequested = YES;
         [self createContexts];
     }
 
     [self _checkViewState];
 }
 #else
-- (void)viewWillMoveToWindow:(NSWindow *)newWindow
-{
+- (void)viewWillMoveToWindow:(NSWindow *)newWindow {
     [super viewWillMoveToWindow:newWindow];
 
-    if (newWindow && !_contextsCreated) {
-        _contextsCreated = YES;
+    if (newWindow && !_contextsCreationRequested) {
+        _contextsCreationRequested = YES;
         [self createContexts];
     }
 

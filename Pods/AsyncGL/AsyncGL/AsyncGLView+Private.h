@@ -12,6 +12,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (BOOL)_prepareGL:(CGSize)size;
 - (void)_drawGL:(CGSize)size;
+- (void)_clearGL;
 
 @end
 
@@ -21,10 +22,13 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) AsyncGLAPI api;
 @property (nonatomic, weak) id<AsyncGLViewDelegate> delegate;
 
+@property (nonatomic, readonly) NSThread *renderThread;
+
 - (void)commonSetup;
+- (void)requestRender;
+- (void)enqueueTask:(void(^)(void))task;
 - (void)render;
 - (void)clear;
-- (void)flush;
 - (void)pause;
 - (void)resume;
 - (void)makeRenderContextCurrent;
