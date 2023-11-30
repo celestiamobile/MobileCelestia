@@ -616,7 +616,7 @@ extension AppDelegate {
     }
 
     @objc private func runDemo() {
-        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.showAbout])
+        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.runDemo])
     }
 
     @objc private func showOpenGLInfo() {
