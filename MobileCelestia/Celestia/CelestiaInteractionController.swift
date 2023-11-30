@@ -562,24 +562,20 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
                 return UIMenu(options: .displayInline, children: [contextMenuForLocation(location: location)])
             }
         } else {
-            guard let (selection, displaySurface) = executor.getSynchronously({ core in
+            guard let selection = executor.getSynchronously({ core in
                 let handler = ContextMenuHandler()
                 core.contextMenuHandler = handler
                 core.mouseButtonDown(at: location, modifiers: 0, with: .right)
                 core.mouseButtonUp(at: location, modifiers: 0, with: .right)
                 core.contextMenuHandler = nil
-                if let selection = handler.pendingSelection {
-                    return (selection, core.simulation.activeObserver.displayedSurface)
-                } else {
-                    return nil
-                }
+                return handler.pendingSelection
             }) else {
                 return nil
             }
 
             return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { [weak self] _ in
                 guard let self else { return nil }
-                return UIMenu(children: self.contextMenuForSelection(selection: selection, displaySurface: displaySurface))
+                return UIMenu(children: self.contextMenuForSelection(selection: selection))
             }
         }
     }
@@ -592,28 +588,24 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
                 return
             }
             Task {
-                guard let (selection, displaySurface) = await self.executor.get({ core in
+                guard let selection = await self.executor.get({ core in
                     let handler = ContextMenuHandler()
                     core.contextMenuHandler = handler
                     core.mouseButtonDown(at: location, modifiers: 0, with: .right)
                     core.mouseButtonUp(at: location, modifiers: 0, with: .right)
                     core.contextMenuHandler = nil
-                    if let selection = handler.pendingSelection {
-                        return (selection, core.simulation.activeObserver.displayedSurface)
-                    } else {
-                        return nil
-                    }
+                    return handler.pendingSelection
                 }) else {
                     completion([])
                     return
                 }
 
-                completion(self.contextMenuForSelection(selection: selection, displaySurface: displaySurface))
+                completion(self.contextMenuForSelection(selection: selection))
             }
         }
     }
 
-    private func contextMenuForSelection(selection: Selection, displaySurface: String) -> [UIMenuElement] {
+    private func contextMenuForSelection(selection: Selection) -> [UIMenuElement] {
         let titleAction = UIAction(title: core.simulation.universe.name(for: selection)) { _ in }
         titleAction.attributes = [.disabled]
         var actions: [UIMenuElement] = [titleAction]
@@ -649,13 +641,11 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
                 guard let self else { return }
                 self.executor.runAsynchronously { $0.simulation.activeObserver.displayedSurface = "" }
             }
-            defaultSurfaceItem.state = displaySurface == "" ? .on : .off
             let otherSurfaces = alternativeSurfaces.map { name -> UIAction in
                 let action = UIAction(title: name) { [weak self] _ in
                     guard let self else { return }
                     self.executor.runAsynchronously { $0.simulation.activeObserver.displayedSurface = name }
                 }
-                action.state = displaySurface == name ? .on : .off
                 return action
             }
             let menu = UIMenu(title: CelestiaString("Alternate Surfaces", comment: ""), children: [defaultSurfaceItem] + otherSurfaces)
