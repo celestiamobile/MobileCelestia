@@ -21,7 +21,7 @@ public class SearchCoordinatorController: ToolbarNavigationContainerController {
         self.selection = selected
         self.executor = executor
         super.init(rootViewController: UIViewController())
-        setViewControllers([SearchViewController(resultsInSidebar: false, executor: executor) { [weak self] _, name in
+        setViewControllers([SearchViewController(resultsInSidebar: false, executor: executor) { [weak self] parent, _, name in
             guard let self else { return }
             Task {
                 let object = await self.executor.get {
@@ -32,7 +32,7 @@ public class SearchCoordinatorController: ToolbarNavigationContainerController {
                     return
                 }
                 let viewController = self.selection(object)
-                self.pushViewController(viewController, animated: true)
+                parent.installContentViewController(viewController)
             }
         }], animated: false)
     }

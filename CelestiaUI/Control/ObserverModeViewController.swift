@@ -173,7 +173,7 @@ extension ObserverModeViewController {
                 navigationController?.pushViewController(vc, animated: true)
             }
         case .referenceObjectName:
-            let searchController = SearchViewController(resultsInSidebar: false, executor: executor) { [weak self] displayName, objectPath in
+            let searchController = SearchViewController(resultsInSidebar: false, executor: executor) { [weak self] _, displayName, objectPath in
                 guard let self else { return }
                 self.navigationController?.popViewController(animated: true)
                 self.referenceObjectName = displayName
@@ -182,7 +182,7 @@ extension ObserverModeViewController {
             }
             navigationController?.pushViewController(searchController, animated: true)
         case .targetObjectName:
-            let searchController = SearchViewController(resultsInSidebar: false, executor: executor) { [weak self] displayName, objectPath in
+            let searchController = SearchViewController(resultsInSidebar: false, executor: executor) { [weak self] _, displayName, objectPath in
                 guard let self else { return }
                 self.navigationController?.popViewController(animated: true)
                 self.targetObjectName = displayName

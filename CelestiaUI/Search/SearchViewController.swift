@@ -21,16 +21,18 @@ struct SearchResultSection {
     let results: [SearchResult]
 }
 
-public class SearchViewController: BaseTableViewController {
+public class SearchViewController: UIViewController {
+    #if !targetEnvironment(macCatalyst)
     private lazy var searchController = UISearchController(searchResultsController: nil)
+    private var shouldActivate = true
+    #endif
 
     private let resultsInSidebar: Bool
 
     private var resultSections: [SearchResultSection] = []
+    private var rawResults: [String] = []
 
-    private let selected: (_ display: String, _ path: String) -> Void
-
-    private var shouldActivate = true
+    private let selected: (_ viewController: SearchViewController, _ display: String, _ path: String) -> Void
 
     private let executor: AsyncProviderExecutor
     private var currentSearchTerm: String?
@@ -38,18 +40,43 @@ public class SearchViewController: BaseTableViewController {
 
     private lazy var emptyView = EmptyHintView()
     private lazy var loadingView = UIActivityIndicatorView(style: .large)
-    private lazy var emptyViewContainer = SafeAreaView(view: self.emptyView)
-    private lazy var loadingViewContainer = SafeAreaView(view: self.loadingView)
+    private lazy var emptyViewContainer = SafeAreaView(view: emptyView)
+    private lazy var loadingViewContainer = SafeAreaView(view: loadingView)
 
-    public init(resultsInSidebar: Bool, executor: AsyncProviderExecutor, selected: @escaping (_ display: String, _ path: String) -> Void) {
+    private var contentViewController: UIViewController?
+
+    private lazy var resultViewController: BaseTableViewController = {
+        return BaseTableViewController(style: resultsInSidebar ? .defaultGrouped : .plain)
+    }()
+
+    private var tableView: UITableView {
+        return resultViewController.tableView
+    }
+
+    private enum State: Hashable {
+        case empty
+        case loading
+        case results(empty: Bool)
+    }
+
+    private var state: State = .empty
+    private var isSearchActive: Bool = false
+
+    public init(resultsInSidebar: Bool, executor: AsyncProviderExecutor, selected: @escaping (_ viewController: SearchViewController, _ display: String, _ path: String) -> Void) {
         self.resultsInSidebar = resultsInSidebar
         self.selected = selected
         self.executor = executor
-        super.init(style: resultsInSidebar ? .defaultGrouped : .plain)
+        super.init(nibName: nil, bundle: nil)
     }
 
     public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    public override func loadView() {
+        let containerView = UIView()
+        containerView.backgroundColor = .systemBackground
+        view = containerView
     }
 
     public override func viewDidLoad() {
@@ -58,6 +85,7 @@ public class SearchViewController: BaseTableViewController {
         setUp()
     }
 
+    #if !targetEnvironment(macCatalyst)
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
@@ -74,12 +102,74 @@ public class SearchViewController: BaseTableViewController {
 
         shouldActivate = searchController.searchBar.isFirstResponder
     }
+    #endif
 
-    public override func viewSafeAreaInsetsDidChange() {
-        super.viewSafeAreaInsetsDidChange()
+    private func updateState(_ newState: State) {
+        guard newState != state else { return }
+        state = newState
 
-        emptyViewContainer.manualSafeAreaInsets = view.safeAreaInsets
-        loadingViewContainer.manualSafeAreaInsets = view.safeAreaInsets
+        reload()
+    }
+
+    private func updateSearchState(_ isActive: Bool) {
+        guard isActive != isSearchActive else { return }
+        isSearchActive = isActive
+
+        reload()
+    }
+
+    private func reload() {
+        switch state {
+        case .empty:
+            resultViewController.view.isHidden = true
+            loadingView.stopAnimating()
+            loadingViewContainer.isHidden = true
+            emptyView.title = CelestiaString("Find stars, DSOs, and nearby objects", comment: "")
+            emptyViewContainer.isHidden = false
+        case .loading:
+            resultViewController.view.isHidden = true
+            emptyViewContainer.isHidden = true
+            loadingViewContainer.isHidden = false
+            loadingView.startAnimating()
+        case .results(let empty):
+            resultViewController.view.isHidden = empty
+            emptyView.title = empty ? CelestiaString("No result found", comment: "") : nil
+            emptyViewContainer.isHidden = !empty
+            loadingView.stopAnimating()
+            loadingViewContainer.isHidden = true
+        }
+
+        if let contentViewController {
+            if !isSearchActive {
+                loadingView.stopAnimating()
+                resultViewController.view.isHidden = true
+                emptyViewContainer.isHidden = true
+                loadingViewContainer.isHidden = true
+
+                contentViewController.view.isHidden = false
+                view.sendSubviewToBack(contentViewController.view)
+            } else {
+                contentViewController.view.isHidden = true
+            }
+        }
+    }
+
+    func installContentViewController(_ viewController: UIViewController) {
+        if let contentViewController {
+            contentViewController.remove()
+            self.contentViewController = nil
+        }
+
+        install(viewController)
+        contentViewController = viewController
+
+        #if !targetEnvironment(macCatalyst)
+        view.endEditing(true)
+        #endif
+
+        isSearchActive = false
+
+        reload()
     }
 }
 
@@ -87,8 +177,20 @@ private extension SearchViewController {
     func setUp() {
         title = CelestiaString("Search", comment: "")
 
-        emptyViewContainer.manualSafeAreaInsets = view.safeAreaInsets
-        loadingViewContainer.manualSafeAreaInsets = view.safeAreaInsets
+        install(resultViewController)
+
+        for emptyView in [emptyViewContainer, loadingViewContainer] {
+            emptyView.backgroundColor = .systemBackground
+            emptyView.translatesAutoresizingMaskIntoConstraints = false
+            view.addSubview(emptyView)
+
+            NSLayoutConstraint.activate([
+                emptyView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                emptyView.topAnchor.constraint(equalTo: view.topAnchor),
+                emptyView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                emptyView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            ])
+        }
 
         let appearance = UINavigationBarAppearance()
         appearance.configureWithDefaultBackground()
@@ -101,7 +203,6 @@ private extension SearchViewController {
 
         #if !targetEnvironment(macCatalyst)
         view.backgroundColor = .systemBackground
-        #endif
 
         // Configure search bar
         let searchBar = searchController.searchBar
@@ -116,41 +217,43 @@ private extension SearchViewController {
         searchBar.delegate = self
 
         tableView.keyboardDismissMode = .interactive
+        #endif
+
         tableView.register(resultsInSidebar ? UITableViewCell.self : TextCell.self, forCellReuseIdentifier: "Text")
 
-        emptyView.title = CelestiaString("Find stars, DSOs, and nearby objects", comment: "")
-        tableView.backgroundView = emptyViewContainer
+        tableView.dataSource = self
+        tableView.delegate = self
+
+        reload()
     }
 
     func searchTextUpdated(_ text: String?) {
+        guard currentSearchTerm != text else { return }
+
         currentSearchTerm = text
         guard let text, !text.isEmpty else {
-            emptyView.title = CelestiaString("Find stars, DSOs, and nearby objects", comment: "")
             validSearchTerm = ""
+            rawResults = []
             resultSections = []
             tableView.reloadData()
             loadingView.stopAnimating()
-            tableView.backgroundView = emptyViewContainer
+            updateState(.empty)
+            updateSearchState(false)
             return
         }
 
         Task {
-            if resultSections.reduce(0, { $0 + $1.results.count }) == 0 {
-                tableView.backgroundView = loadingViewContainer
-                loadingView.startAnimating()
+            updateSearchState(true)
+            if rawResults.isEmpty {
+                updateState(.loading)
             }
-            let results = await self.search(with: text)
+            let (sections, rawResults) = await self.search(with: text)
             guard text == currentSearchTerm else { return }
             validSearchTerm = text
-            self.resultSections = results
+            self.resultSections = sections
+            self.rawResults = rawResults
             self.tableView.reloadData()
-            self.loadingView.stopAnimating()
-            if results.reduce(0, { $0 + $1.results.count }) == 0 {
-                self.emptyView.title = CelestiaString("No result found", comment: "")
-                self.tableView.backgroundView = self.emptyViewContainer
-            } else {
-                self.tableView.backgroundView = nil
-            }
+            self.updateState(.results(empty: rawResults.isEmpty))
         }
     }
 
@@ -158,47 +261,46 @@ private extension SearchViewController {
         guard let text, !text.isEmpty, resultSections.reduce(0, { $0 + $1.results.count }) == 0 else { return }
         itemSelected(with: text)
     }
+
+    private func itemSelected(with name: String) {
+        selected(self, name, name)
+    }
 }
 
+#if !targetEnvironment(macCatalyst)
 extension SearchViewController: UISearchBarDelegate {
     public func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
         searchTextReturned(searchBar.text)
     }
-
-    private func itemSelected(with name: String) {
-        view.endEditing(true)
-
-        selected(name, name)
-    }
 }
 
 extension SearchViewController: UISearchResultsUpdating {
     public func updateSearchResults(for searchController: UISearchController) {
-        guard searchController.isActive else { return }
         searchTextUpdated(searchController.searchBar.text)
     }
 }
+#endif
 
 extension SearchViewController {
-    private func search(with text: String) async -> [SearchResultSection] {
+    private func search(with text: String) async -> ([SearchResultSection], [String]) {
         let completions = await executor.get {
             $0.simulation.completion(for: text)
         }
-        return [SearchResultSection(title: nil, results: completions.map { SearchResult(name: $0) })]
+        return ([SearchResultSection(title: nil, results: completions.map { SearchResult(name: $0) })], completions)
     }
 }
 
-extension SearchViewController {
-    public override func numberOfSections(in tableView: UITableView) -> Int {
+extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
+    public func numberOfSections(in tableView: UITableView) -> Int {
         return resultSections.count
     }
 
-    public override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return resultSections[section].results.count
     }
 
-    public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let result = resultSections[indexPath.section].results[indexPath.row]
         if resultsInSidebar {
             let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath)
@@ -216,15 +318,15 @@ extension SearchViewController {
         return cell
     }
 
-    public override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+    public func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         return resultSections[section].title
     }
 
-    public override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return UITableView.automaticDimension
     }
 
-    public override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
         guard let validSearchTerm else { return }
@@ -237,7 +339,10 @@ extension SearchViewController {
         } else {
             name = selection.name
         }
-        selected(selection.name, name)
+        #if !targetEnvironment(macCatalyst)
+        searchController.searchBar.resignFirstResponder()
+        #endif
+        selected(self, selection.name, name)
     }
 }
 
@@ -260,7 +365,7 @@ extension SearchViewController: ToolbarAwareViewController {
             } returnHandler: { [weak self] text in
                 guard let self else { return }
                 self.searchTextReturned(text)
-            }
+            } searchStartHandler: {} searchEndHandler: {}
         }
         return nil
     }

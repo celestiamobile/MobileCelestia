@@ -23,7 +23,7 @@ public class GoToContainerViewController: ToolbarNavigationContainerController {
         setViewControllers([
             GoToInputViewController(executor: executor, objectNameHandler: { [weak self] controller in
                 guard let self else { return }
-                let searchController = SearchViewController(resultsInSidebar: false, executor: executor) { [weak self, weak controller] displayName, objectPath in
+                let searchController = SearchViewController(resultsInSidebar: false, executor: executor) { [weak self, weak controller] _, displayName, objectPath in
                     guard let self else { return }
                     guard let controller = controller else { return }
                     self.popViewController(animated: true)

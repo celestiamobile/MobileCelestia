@@ -1102,12 +1102,12 @@ Device Model: \(model)
     }
 
     private func showSelectionInfo(with selection: Selection) {
-        let viewController = createSelectionInfoViewController(with: selection, isEmbeddedInNavigation: false)
+        let viewController = createSelectionInfoViewController(with: selection, showNavigationTitle: false, backgroundColor: .secondarySystemBackground)
         showViewController(viewController, titleVisible: false)
     }
 
-    private func createSelectionInfoViewController(with selection: Selection, isEmbeddedInNavigation: Bool) -> InfoViewController {
-        let controller = InfoViewController(info: selection, core: core, isEmbeddedInNavigationController: isEmbeddedInNavigation)
+    private func createSelectionInfoViewController(with selection: Selection, showNavigationTitle: Bool, backgroundColor: UIColor) -> InfoViewController {
+        let controller = InfoViewController(info: selection, core: core, showNavigationTitle: showNavigationTitle, backgroundColor: backgroundColor)
         controller.selectionHandler = { [unowned self] (viewController, selection, action, sender) in
             switch action {
             case .select:
@@ -1200,7 +1200,7 @@ Device Model: \(model)
         guard let entry = selection.object else { return }
         let browserItem = BrowserItem(name: core.simulation.universe.name(for: selection), alternativeName: nil, catEntry: entry, provider: core.simulation.universe)
         let controller = SubsystemBrowserCoordinatorViewController(item: browserItem) { [unowned self] (selection) -> UIViewController in
-            return self.createSelectionInfoViewController(with: selection, isEmbeddedInNavigation: true)
+            return self.createSelectionInfoViewController(with: selection, showNavigationTitle: true, backgroundColor: .systemBackground)
         }
         showViewController(controller, customToolbar: true)
     }
@@ -1273,7 +1273,7 @@ Device Model: \(model)
 
     private func showSearch() {
         let controller = SearchCoordinatorController(executor: executor) { [unowned self] info in
-            return self.createSelectionInfoViewController(with: info, isEmbeddedInNavigation: true)
+            return self.createSelectionInfoViewController(with: info, showNavigationTitle: false, backgroundColor: .systemBackground)
         }
         #if targetEnvironment(macCatalyst)
         showViewController(controller, macOSPreferredSize: CGSize(width: 500, height: 500), customToolbar: true)
@@ -1284,7 +1284,7 @@ Device Model: \(model)
 
     private func showBrowser() {
         let controller = BrowserContainerViewController(selected: { [unowned self] (info) in
-            return self.createSelectionInfoViewController(with: info, isEmbeddedInNavigation: true)
+            return self.createSelectionInfoViewController(with: info, showNavigationTitle: true, backgroundColor: .systemBackground)
         }, executor: executor)
         #if targetEnvironment(macCatalyst)
         showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600), customToolbar: true)
