@@ -28,16 +28,14 @@ private extension ObjectAction {
     }
 }
 
-final public class InfoViewController: UIViewController {
+final public class InfoViewController: UICollectionViewController {
     private enum Constants {
         static let buttonSpacing: CGFloat = GlobalConstants.pageMediumGapHorizontal
     }
 
-    private lazy var layout = InfoCollectionLayout()
-    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: self.layout)
-
     private let core: AppCore
-    private let isEmbeddedInNavigationController: Bool
+    private let showNavigationTitle: Bool
+    private let backgroundColor: UIColor
     private var info: Selection
     private var bodyInfo: BodyInfo
     private var bodyInfoNeedsUpdating = false
@@ -49,25 +47,21 @@ final public class InfoViewController: UIViewController {
 
     private var linkMetaData: LPLinkMetadata?
 
-    public init(info: Selection, core: AppCore, isEmbeddedInNavigationController: Bool) {
+    public init(info: Selection, core: AppCore, showNavigationTitle: Bool, backgroundColor: UIColor) {
         self.core = core
         self.info = info
-        self.isEmbeddedInNavigationController = isEmbeddedInNavigationController
+        self.showNavigationTitle = showNavigationTitle
+        self.backgroundColor = backgroundColor
         self.bodyInfo = BodyInfo(selection: info, core: core)
-        super.init(nibName: nil, bundle: nil)
+        super.init(collectionViewLayout: InfoCollectionLayout())
 
-        if isEmbeddedInNavigationController {
+        if showNavigationTitle {
             title = bodyInfo.name
         }
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    public override func loadView() {
-        view = UIView()
-        view.backgroundColor = isEmbeddedInNavigationController ? .systemBackground : .secondarySystemBackground
     }
 
     public override func viewDidLoad() {
@@ -90,7 +84,7 @@ final public class InfoViewController: UIViewController {
     private func reload() {
         if bodyInfoNeedsUpdating {
             bodyInfo = BodyInfo(selection: info, core: core)
-            if isEmbeddedInNavigationController {
+            if showNavigationTitle {
                 title = bodyInfo.name
             }
             bodyInfoNeedsUpdating = false
@@ -143,36 +137,20 @@ final public class InfoViewController: UIViewController {
 
 private extension InfoViewController {
     func setup() {
-        view.addSubview(collectionView)
-        collectionView.translatesAutoresizingMaskIntoConstraints = false
-
-        NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: view.topAnchor),
-            collectionView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
-
-        NSLayoutConstraint.activate([
-            collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
-        ])
-
-        collectionView.backgroundColor = .clear
+        view.backgroundColor = backgroundColor
         (collectionView.collectionViewLayout as! UICollectionViewFlowLayout).estimatedItemSize = CGSize(width: 1, height: 1)
         collectionView.register(BodyDescriptionCell.self, forCellWithReuseIdentifier: "Description")
         collectionView.register(BodyActionCell.self, forCellWithReuseIdentifier: "Action")
         collectionView.register(LinkPreviewCell.self, forCellWithReuseIdentifier: "LinkPreview")
-
-        collectionView.dataSource = self
-        collectionView.delegate = self
     }
 }
 
-extension InfoViewController: UICollectionViewDataSource {
-    public func numberOfSections(in collectionView: UICollectionView) -> Int {
+extension InfoViewController {
+    public override func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 2
     }
 
-    public func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    public override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if section == 0 {
             if linkMetaData != nil {
                 return 2
@@ -182,11 +160,11 @@ extension InfoViewController: UICollectionViewDataSource {
         return actions.count
     }
 
-    public func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+    public override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if indexPath.section == 0 {
             if indexPath.item == 0 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Description", for: indexPath) as! BodyDescriptionCell
-                cell.update(with: bodyInfo, showTitle: !isEmbeddedInNavigationController)
+                cell.update(with: bodyInfo, showTitle: !showNavigationTitle)
                 return cell
             }
             if let linkMetaData {

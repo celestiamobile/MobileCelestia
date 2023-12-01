@@ -269,10 +269,12 @@ extension UINavigationBar.NSToolbarSection {
     private static var searchItemClassPrepared = false
     private let textChangeHandler: (String?) -> Void
     private let returnHandler: (String?) -> Void
+    private let searchStartHandler: () -> Void
+    private let searchEndHandler: () -> Void
 
     private let searchField: NSObject
 
-    init(itemIdentifier: NSToolbarItem.Identifier, currentText: String?, textChangeHandler: @escaping (String?) -> Void, returnHandler: @escaping (String?) -> Void) {
+    init(itemIdentifier: NSToolbarItem.Identifier, currentText: String?, textChangeHandler: @escaping (String?) -> Void, returnHandler: @escaping (String?) -> Void, searchStartHandler: @escaping () -> Void, searchEndHandler: @escaping () -> Void) {
         if !Self.searchItemClassPrepared {
             if let delegateProtocol = objc_getProtocol("NSSearchFieldDelegate") {
                 class_addProtocol(SearchToolbarItem.self, delegateProtocol)
@@ -287,6 +289,8 @@ extension UINavigationBar.NSToolbarSection {
         }
         self.textChangeHandler = textChangeHandler
         self.returnHandler = returnHandler
+        self.searchStartHandler = searchStartHandler
+        self.searchEndHandler = searchEndHandler
         super.init(itemIdentifier: itemIdentifier)
         searchField.perform(NSSelectorFromString("setTarget:"), with: self)
         if Self.searchItemClassPrepared {
@@ -316,6 +320,14 @@ extension UINavigationBar.NSToolbarSection {
             return true
         }
         return false
+    }
+
+    @objc(searchFieldDidStartSearching:) func searchFieldDidStartSearching(_ sender: NSObject) {
+        searchStartHandler()
+    }
+
+    @objc(searchFieldDidEndSearching:) func searchFieldDidEndSearching(_ sender: NSObject) {
+        searchEndHandler()
     }
 }
 
@@ -372,8 +384,8 @@ extension NSToolbarItem {
 
     private static var searchItemClassPrepared = false
 
-    static func searchItem(with itemIdentifier: NSToolbarItem.Identifier, currentText: String? = nil, textChangeHandler: @escaping (String?) -> Void, returnHandler: @escaping (String?) -> Void) -> NSToolbarItem {
-        let item = SearchToolbarItem(itemIdentifier: itemIdentifier, currentText: currentText, textChangeHandler: textChangeHandler, returnHandler: returnHandler)
+    static func searchItem(with itemIdentifier: NSToolbarItem.Identifier, currentText: String? = nil, textChangeHandler: @escaping (String?) -> Void, returnHandler: @escaping (String?) -> Void, searchStartHandler: @escaping () -> Void, searchEndHandler: @escaping () -> Void) -> NSToolbarItem {
+        let item = SearchToolbarItem(itemIdentifier: itemIdentifier, currentText: currentText, textChangeHandler: textChangeHandler, returnHandler: returnHandler, searchStartHandler: searchStartHandler, searchEndHandler: searchEndHandler)
         return item
     }
 }

@@ -12,8 +12,8 @@
 import UIKit
 
 class EmptyHintView: UIView {
-    var title: String {
-        get { textLabel.text ?? "" }
+    var title: String? {
+        get { textLabel.text }
         set { textLabel.text = newValue }
     }
 
