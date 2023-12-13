@@ -43,7 +43,7 @@ private extension BrowserCommonViewController {
 
 extension BrowserCommonViewController {
     override func numberOfSections(in tableView: UITableView) -> Int {
-        if item.entry != nil { return 2 }
+        if item.entry != nil { return item.children.isEmpty ? 1 : 2 }
         return 1
     }
 
