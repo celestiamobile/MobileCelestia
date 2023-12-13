@@ -299,10 +299,11 @@ private extension BrowserContainerViewController {
     nonisolated func createAllItems(shouldGenerateStaticItems: Bool, core: AppCore) -> (solBrowserRoot: BrowserItem?, dsoBrowserRoot: BrowserItem?, brightestStars: BrowserItem?, starsWithPlanets: BrowserItem?, brighterStars: BrowserItem, nearestStars: BrowserItem) {
         let brighter = createBrightestStars(core)
         let nearest = createNearestStars(core)
+        let hasPlanets = createStarsWithPlanets(core)
         if !shouldGenerateStaticItems {
-            return (nil, nil, nil, nil, brighter, nearest)
+            return (nil, nil, nil, hasPlanets, brighter, nearest)
         }
-        return (createSolBrowserRoot(core), createDSOBrowserRoot(core), createAbsoluteBrightestStars(core), createStarsWithPlanets(core), brighter, nearest)
+        return (createSolBrowserRoot(core), createDSOBrowserRoot(core), createAbsoluteBrightestStars(core), hasPlanets, brighter, nearest)
     }
 }
 
