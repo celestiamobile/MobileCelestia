@@ -6,6 +6,7 @@
 //  Copyright © 2023 Astroweather. All rights reserved.
 //
 
+#if !targetEnvironment(macCatalyst)
 import UIKit
 
 final class ICPCFooter: UITableViewHeaderFooterView {
@@ -42,3 +43,4 @@ final class ICPCFooter: UITableViewHeaderFooterView {
         UIApplication.shared.open(url)
     }
 }
+#endif

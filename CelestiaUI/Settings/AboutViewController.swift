@@ -82,7 +82,9 @@ private extension AboutViewController {
     func setUp() {
         tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         tableView.register(MultiLineTextCell.self, forCellReuseIdentifier: "MultiLine")
+        #if !targetEnvironment(macCatalyst)
         tableView.register(ICPCFooter.self, forHeaderFooterViewReuseIdentifier: "ICPC")
+        #endif
         title = CelestiaString("About", comment: "")
     }
 }
@@ -140,6 +142,7 @@ extension AboutViewController {
         }
     }
 
+    #if !targetEnvironment(macCatalyst)
     public override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         let showFooter: Bool
         if section == items.count - 1 {
@@ -153,4 +156,5 @@ extension AboutViewController {
         }
         return showFooter ? tableView.dequeueReusableHeaderFooterView(withIdentifier: "ICPC") : nil
     }
+    #endif
 }
