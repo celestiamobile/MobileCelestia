@@ -7,14 +7,13 @@
 
 #import "AsyncGLExecutor.h"
 
-@class AsyncGLViewController;
+@class AsyncGLView;
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface AsyncGLExecutor ()
 
-@property (nonatomic) dispatch_queue_t queue;
-@property (nonatomic, weak) AsyncGLViewController *viewController;
+@property (nonatomic, weak) AsyncGLView *view;
 
 @end
 

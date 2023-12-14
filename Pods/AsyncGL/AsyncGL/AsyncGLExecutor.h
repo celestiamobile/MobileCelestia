@@ -14,8 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)init;
 
 - (void)runTaskAsynchronously:(void(^)(void))task;
-- (void)runTaskSynchronously:(void(NS_NOESCAPE ^)(void))task;
-
+- (void)runTaskSynchronously:(void(^)(void))task;
 - (void)makeRenderContextCurrent;
 
 @end

@@ -52,7 +52,6 @@
         _viewIsVisible = NO;
         _ready = NO;
         _internalExecutor = executor;
-        _internalExecutor.viewController = self;
         _api = api;
         [self _configureNotifications];
     }
@@ -67,7 +66,7 @@
     [_glView commonSetup];
     _glView.delegate = self;
     self.view = _glView;
-    _internalExecutor.queue = _glView.renderQueue;
+    _internalExecutor.view = _glView;
 }
 
 - (void)dealloc
@@ -84,14 +83,7 @@
     }
 #endif
 
-    AsyncGLView *glView = _glView;
-    dispatch_sync(glView.renderQueue, ^{
-        [glView makeRenderContextCurrent];
-        [glView flush];
-
-        [self clearGL];
-        [glView clear];
-    });
+    [_glView clear];
 }
 
 #if TARGET_OS_IOS
@@ -131,14 +123,9 @@
 
 #pragma mark - private methods
 
-- (void)render
-{
-    [_glView render];
-}
-
 - (void)requestRender
 {
-    dispatch_source_merge_data(_displaySource, 1);
+    [_glView requestRender];
 }
 
 #if TARGET_OS_OSX
@@ -176,13 +163,6 @@ static CVReturn displayCallback(CVDisplayLinkRef displayLink,
         return NO;
 
     dispatch_sync(dispatch_get_main_queue(), ^{
-        self.displaySource = dispatch_source_create(DISPATCH_SOURCE_TYPE_DATA_ADD, 0, 0, self.glView.renderQueue);
-        __typeof__(self) __weak wself = self;
-        dispatch_source_set_event_handler(self.displaySource, ^{
-            __typeof__(wself) __strong sself = wself;
-            [sself render];
-        });
-        dispatch_resume(self.displaySource);
 #if TARGET_OS_IOS
         self.displayLink = [self.internalScreen displayLinkWithTarget:self selector:@selector(requestRender)];
         [self setPreferredFramesPerSecond:self.internalPreferredFramesPerSecond displayLink:self.displayLink];

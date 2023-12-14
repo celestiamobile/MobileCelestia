@@ -23,8 +23,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic) CGFloat contentScaleFactor;
 #endif
 
-@property (nonatomic, readonly) dispatch_queue_t renderQueue;
-
 @end
 
 NS_ASSUME_NONNULL_END
