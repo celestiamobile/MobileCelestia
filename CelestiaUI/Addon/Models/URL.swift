@@ -84,6 +84,6 @@ public extension URL {
         return components.url!
     }
 
-    static var addonMetadata = URL(string: apiPrefix + "/resource/item")!
-    static var latestGuideMetadata = URL(string: apiPrefix + "/resource/latest")!
+    static var addonMetadata = URL(string: apiPrefix)!.appendingPathComponent("resource/item")
+    static var latestGuideMetadata = URL(string: apiPrefix)!.appendingPathComponent("resource/latest")
 }
