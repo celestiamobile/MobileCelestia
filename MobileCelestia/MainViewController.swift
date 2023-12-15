@@ -169,15 +169,6 @@ class MainViewController: UIViewController {
         return true
     }
 
-    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
-        super.traitCollectionDidChange(previousTraitCollection)
-
-        if traitCollection.preferredContentSizeCategory != previousTraitCollection?.preferredContentSizeCategory {
-            view.setNeedsUpdateConstraints()
-            view.updateConstraintsIfNeeded()
-        }
-    }
-
     override func updateViewConstraints() {
         if let bottomToolbar {
             let size = bottomToolbar.preferredContentSize
@@ -193,6 +184,17 @@ class MainViewController: UIViewController {
             }
         }
         super.updateViewConstraints()
+    }
+
+    override func preferredContentSizeDidChange(forChildContentContainer container: UIContentContainer) {
+        super.preferredContentSizeDidChange(forChildContentContainer: container)
+
+        guard container === bottomToolbar else {
+            return
+        }
+
+        view.setNeedsUpdateConstraints()
+        view.updateConstraintsIfNeeded()
     }
 }
 

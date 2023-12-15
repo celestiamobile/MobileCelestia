@@ -17,7 +17,7 @@ public extension UIContentSizeCategory {
     }
 }
 
-private extension UITraitCollection {
+public extension UITraitCollection {
     var textScaling: CGFloat {
         return UIFont.preferredFont(forTextStyle: .body, compatibleWith: self).pointSize / UIFont.preferredFont(forTextStyle: .body, compatibleWith: UITraitCollection(preferredContentSizeCategory: .medium)).pointSize
     }

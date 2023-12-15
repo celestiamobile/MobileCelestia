@@ -97,18 +97,24 @@ class BottomControlViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        setup()
+        setUp()
+        preferredContentSize = calculatePreferredContentSize(traitCollection: view.traitCollection)
     }
 
-    override var preferredContentSize: CGSize {
-        get {
-            let scaling = view.textScaling * GlobalConstants.preferredUIElementScaling(for: view.traitCollection)
-            return CGSize(
-                width: GlobalConstants.bottomControlViewDimension * CGFloat(actions.count) * scaling + GlobalConstants.bottomControlViewMarginHorizontal * 2 + GlobalConstants.pageMediumMarginHorizontal,
-                height: (GlobalConstants.bottomControlViewDimension * scaling + GlobalConstants.bottomControlViewMarginVertical * 2 + GlobalConstants.pageMediumMarginVertical).rounded(.up)
-            )
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+
+        if traitCollection.preferredContentSizeCategory != previousTraitCollection?.preferredContentSizeCategory {
+            preferredContentSize = calculatePreferredContentSize(traitCollection: traitCollection)
         }
-        set {}
+    }
+
+    private func calculatePreferredContentSize(traitCollection: UITraitCollection) -> CGSize {
+        let scaling = traitCollection.textScaling * GlobalConstants.preferredUIElementScaling(for: traitCollection)
+        return CGSize(
+            width: GlobalConstants.bottomControlViewDimension * CGFloat(actions.count) * scaling + GlobalConstants.bottomControlViewMarginHorizontal * 2 + GlobalConstants.pageMediumMarginHorizontal,
+            height: (GlobalConstants.bottomControlViewDimension * scaling + GlobalConstants.bottomControlViewMarginVertical * 2 + GlobalConstants.pageMediumMarginVertical).rounded(.up)
+        )
     }
 }
 
@@ -168,7 +174,7 @@ extension BottomControlViewController: UICollectionViewDataSource {
 }
 
 private extension BottomControlViewController {
-    func setup() {
+    func setUp() {
         if #available(iOS 15, *) {
             view.maximumContentSizeCategory = .extraExtraExtraLarge
         }

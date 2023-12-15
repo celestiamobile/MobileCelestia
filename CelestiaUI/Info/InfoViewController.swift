@@ -133,6 +133,12 @@ final public class InfoViewController: UICollectionViewController {
             collectionView.collectionViewLayout.invalidateLayout()
         }
     }
+
+    public override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+
+        collectionView.collectionViewLayout.invalidateLayout()
+    }
 }
 
 private extension InfoViewController {
