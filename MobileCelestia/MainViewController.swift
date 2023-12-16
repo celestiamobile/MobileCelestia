@@ -1070,7 +1070,7 @@ Device Model: \(model)
             self?.executor.runAsynchronously { $0.simulation.go(to: location) }
         }, textInputHandler: { viewController, title, text, keyboardType in
             return await viewController.getTextInputDifferentiated(title, text: text, keyboardType: keyboardType)
-        }), macOSPreferredSize: CGSize(width: 500, height: 500), customToolbar: true)
+        }), customToolbar: true)
     }
 
     private func presentSpeedControl() {
@@ -1278,7 +1278,7 @@ Device Model: \(model)
             return self.createSelectionInfoViewController(with: info, showNavigationTitle: false, backgroundColor: .systemBackground)
         }
         #if targetEnvironment(macCatalyst)
-        showViewController(controller, macOSPreferredSize: CGSize(width: 500, height: 500), customToolbar: true)
+        showViewController(controller, customToolbar: true)
         #else
         showViewController(controller)
         #endif
@@ -1298,7 +1298,7 @@ Device Model: \(model)
     private func showViewController(_ viewController: UIViewController,
                                     key: String? = nil,
                                     iOSPreferredSize: CGSize = CGSize(width: 320, height: 320),
-                                    macOSPreferredSize: CGSize = CGSize(width: 400, height: 500),
+                                    macOSPreferredSize: CGSize = CGSize(width: 500, height: 600),
                                     titleVisible: Bool = true,
                                     customToolbar: Bool = false) {
         #if targetEnvironment(macCatalyst)
