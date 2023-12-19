@@ -133,6 +133,16 @@ class SheetPresentationController: UIPresentationController {
         return Constants.sheetHandleContainerBaseHeight * sheetHandle.textScaling
     }
 
+    override init(presentedViewController: UIViewController, presenting presentingViewController: UIViewController?) {
+        super.init(presentedViewController: presentedViewController, presenting: presentingViewController)
+
+        if #available(iOS 17, *) {
+            registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { (self: Self, _) in
+                self.preferredContentSizeCategoryChanged()
+            }
+        }
+    }
+
     override func containerViewWillLayoutSubviews() {
         guard let presented = presentedView else { return }
 
@@ -202,14 +212,10 @@ class SheetPresentationController: UIPresentationController {
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
 
-        if traitCollection.preferredContentSizeCategory != previousTraitCollection?.preferredContentSizeCategory {
-            sheetHandleContainerHeightConstraint?.constant = sheetHandleContainerHeight
-
-            if containerView != nil, let presented = presentedView {
-                let viewFrame = frameOfPresentedViewInContainerView
-                presented.frame = viewFrame
-
-                sheetContainer.frame = CGRect(origin: CGPoint(x: viewFrame.minX, y: viewFrame.minY - sheetHandleContainerHeight), size: CGSize(width: viewFrame.width, height: viewFrame.height + sheetHandleContainerHeight))
+        if #available(iOS 17, *) {
+        } else {
+            if traitCollection.preferredContentSizeCategory != previousTraitCollection?.preferredContentSizeCategory {
+                preferredContentSizeCategoryChanged()
             }
         }
     }
@@ -230,6 +236,17 @@ class SheetPresentationController: UIPresentationController {
 }
 
 private extension SheetPresentationController {
+    private func preferredContentSizeCategoryChanged() {
+        sheetHandleContainerHeightConstraint?.constant = sheetHandleContainerHeight
+
+        if containerView != nil, let presented = presentedView {
+            let viewFrame = frameOfPresentedViewInContainerView
+            presented.frame = viewFrame
+
+            sheetContainer.frame = CGRect(origin: CGPoint(x: viewFrame.minX, y: viewFrame.minY - sheetHandleContainerHeight), size: CGSize(width: viewFrame.width, height: viewFrame.height + sheetHandleContainerHeight))
+        }
+    }
+
     @objc private func handlePan(_ gesture: UIPanGestureRecognizer) {
         guard let presented = presentedView else { return }
         guard let containerView = containerView else { return }

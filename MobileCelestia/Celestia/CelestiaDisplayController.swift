@@ -66,6 +66,12 @@ class CelestiaDisplayController: AsyncGLViewController {
 #endif
         self.subscriptionManager = subscriptionManager
         super.init(msaaEnabled: msaaEnabled, screen: screen, initialFrameRate: frameRate, api: api, executor: executor)
+
+        if #available(iOS 17, *) {
+            registerForTraitChanges([UITraitDisplayScale.self]) { (self: Self, _) in
+                self.displayScaleChanged()
+            }
+        }
     }
 
     #if targetEnvironment(macCatalyst)
@@ -106,15 +112,10 @@ class CelestiaDisplayController: AsyncGLViewController {
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
 
-        guard isLoaded else { return }
-
-        if previousTraitCollection?.displayScale != traitCollection.displayScale {
-            let (viewSafeAreaInsets, viewScale, applicationScalingFactor, customNormalFont, customBoldFont) = getViewSpec()
-            let core = self.core
-            let executor = self.executor
-            let sensitivity = self.sensitivity
-            executor.runAsynchronously { _ in
-                self.updateContentScale(viewSafeAreaInsets: viewSafeAreaInsets, viewScale: viewScale, applicationScalingFactor: applicationScalingFactor, sensitivity: sensitivity, customNormalFont: customNormalFont, customBoldFont: customBoldFont, core: core, executor: executor)
+        if #available(iOS 17, *) {
+        } else {
+            if previousTraitCollection?.displayScale != traitCollection.displayScale {
+                displayScaleChanged()
             }
         }
     }
@@ -231,6 +232,18 @@ private extension AppCore {
 }
 
 extension CelestiaDisplayController {
+    private func displayScaleChanged() {
+        guard isLoaded else { return }
+
+        let (viewSafeAreaInsets, viewScale, applicationScalingFactor, customNormalFont, customBoldFont) = getViewSpec()
+        let core = self.core
+        let executor = self.executor
+        let sensitivity = self.sensitivity
+        executor.runAsynchronously { _ in
+            self.updateContentScale(viewSafeAreaInsets: viewSafeAreaInsets, viewScale: viewScale, applicationScalingFactor: applicationScalingFactor, sensitivity: sensitivity, customNormalFont: customNormalFont, customBoldFont: customBoldFont, core: core, executor: executor)
+        }
+    }
+
     private func getViewSpec() -> (viewSafeAreaInsets: UIEdgeInsets, viewScale: CGFloat, applicationScalingFactor: CGFloat, customNormalFont: CustomFont?, customBoldFont: CustomFont?) {
         let viewScale = userDefaults[.fullDPI] != false ? self.traitCollection.displayScale : 1
         self.view.contentScaleFactor = viewScale

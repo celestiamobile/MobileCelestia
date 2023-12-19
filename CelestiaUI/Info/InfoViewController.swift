@@ -58,6 +58,12 @@ final public class InfoViewController: UICollectionViewController {
         if showNavigationTitle {
             title = bodyInfo.name
         }
+
+        if #available(iOS 17, *) {
+            registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { (self: Self, _) in
+                self.collectionView.collectionViewLayout.invalidateLayout()
+            }
+        }
     }
 
     required init?(coder: NSCoder) {
@@ -129,8 +135,11 @@ final public class InfoViewController: UICollectionViewController {
     public override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
 
-        if traitCollection.preferredContentSizeCategory != previousTraitCollection?.preferredContentSizeCategory {
-            collectionView.collectionViewLayout.invalidateLayout()
+        if #available(iOS 17, *) {
+        } else {
+            if traitCollection.preferredContentSizeCategory != previousTraitCollection?.preferredContentSizeCategory {
+                collectionView.collectionViewLayout.invalidateLayout()
+            }
         }
     }
 

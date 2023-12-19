@@ -43,13 +43,22 @@ open class AutoSizingView<View: UIView, Configuration: AutoSizingViewConfigurati
         setContentHuggingPriority(.required, for: .vertical)
         setContentCompressionResistancePriority(.required, for: .vertical)
         apply(configuration, view: view)
+
+        if #available(iOS 17, *) {
+            registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { (self: Self, _) in
+                self.invalidateIntrinsicContentSize()
+            }
+        }
     }
 
     public override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
 
-        if traitCollection.preferredContentSizeCategory != previousTraitCollection?.preferredContentSizeCategory {
-            invalidateIntrinsicContentSize()
+        if #available(iOS 17, *) {
+        } else {
+            if traitCollection.preferredContentSizeCategory != previousTraitCollection?.preferredContentSizeCategory {
+                invalidateIntrinsicContentSize()
+            }
         }
     }
 

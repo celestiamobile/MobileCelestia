@@ -99,13 +99,22 @@ class BottomControlViewController: UIViewController {
 
         setUp()
         preferredContentSize = calculatePreferredContentSize(traitCollection: view.traitCollection)
+
+        if #available(iOS 17, *) {
+            registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { (self: Self, _) in
+                self.preferredContentSize = self.calculatePreferredContentSize(traitCollection: self.traitCollection)
+            }
+        }
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
 
-        if traitCollection.preferredContentSizeCategory != previousTraitCollection?.preferredContentSizeCategory {
-            preferredContentSize = calculatePreferredContentSize(traitCollection: traitCollection)
+        if #available(iOS 17, *) {
+        } else {
+            if traitCollection.preferredContentSizeCategory != previousTraitCollection?.preferredContentSizeCategory {
+                preferredContentSize = calculatePreferredContentSize(traitCollection: traitCollection)
+            }
         }
     }
 
