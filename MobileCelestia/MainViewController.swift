@@ -740,7 +740,6 @@ extension MainViewController: CelestiaControllerDelegate {
         let executor = self.executor
         let (renderInfo, url, screenshotSuccess) = await executor.get { core in
             executor.makeRenderContextCurrent()
-            core.draw()
             return (core.renderInfo, core.currentURL, core.screenshot(to: screenshotURL.path, type: .PNG))
         }
         let imageData = screenshotSuccess ? try? Data(contentsOf: screenshotURL) : nil
@@ -872,7 +871,6 @@ Device Model: \(model)
         Task {
             let success = await executor.get { core in
                 executor.makeRenderContextCurrent()
-                core.draw()
                 return core.screenshot(to: url.path, type: .JPEG)
             }
 
