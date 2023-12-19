@@ -4,14 +4,14 @@ PODS:
   - AppCenter/Core (5.0.4)
   - AppCenter/Crashes (5.0.4):
     - AppCenter/Core
-  - AsyncGL/OpenGL (0.1.1)
+  - AsyncGL/OpenGL (0.1.2)
   - MWRequest (0.3.7)
   - ZIPFoundation (0.9.16)
 
 DEPENDENCIES:
   - AppCenter/Analytics (~> 5.0.4)
   - AppCenter/Crashes (~> 5.0.4)
-  - AsyncGL/OpenGL (from `https://github.com/levinli303/AsyncGL.git`, tag `0.1.1`)
+  - AsyncGL/OpenGL (from `https://github.com/levinli303/AsyncGL.git`, tag `0.1.2`)
   - MWRequest (from `https://github.com/levinli303/mwrequest.git`, tag `0.3.7`)
   - ZIPFoundation (~> 0.9.16)
 
@@ -23,7 +23,7 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   AsyncGL:
     :git: https://github.com/levinli303/AsyncGL.git
-    :tag: 0.1.1
+    :tag: 0.1.2
   MWRequest:
     :git: https://github.com/levinli303/mwrequest.git
     :tag: 0.3.7
@@ -31,17 +31,17 @@ EXTERNAL SOURCES:
 CHECKOUT OPTIONS:
   AsyncGL:
     :git: https://github.com/levinli303/AsyncGL.git
-    :tag: 0.1.1
+    :tag: 0.1.2
   MWRequest:
     :git: https://github.com/levinli303/mwrequest.git
     :tag: 0.3.7
 
 SPEC CHECKSUMS:
   AppCenter: 85c92db0759d2792a65eb61d6842d2e86611a49a
-  AsyncGL: bd067d3e5aac6886090c0efcda092086e7b355d7
+  AsyncGL: 0f75d1243530bc174f96df37ac6afe51c12fe4e9
   MWRequest: fdc808bc60cdaab77e7a4d9c93e59db49f026cc4
   ZIPFoundation: d170fa8e270b2a32bef9dcdcabff5b8f1a5deced
 
-PODFILE CHECKSUM: 47d509a2401a284a46efb2c823a768842e0843b6
+PODFILE CHECKSUM: ffd10500e2ca3a6adf4638b52577b183c570b9c1
 
 COCOAPODS: 1.14.3

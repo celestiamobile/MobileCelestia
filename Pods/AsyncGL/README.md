@@ -1,6 +1,6 @@
 ## AsyncGL
 
-A framework that allows rendering OpenGL (ES) contents on a GCD dispatch queue.
+A framework that allows rendering OpenGL (ES) contents on an NSThread.
 
 ## License
 

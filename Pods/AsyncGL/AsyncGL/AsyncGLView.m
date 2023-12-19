@@ -255,7 +255,6 @@ typedef enum EGLRenderingAPI : int
     _contextsCreated = NO;
     _contextState = AsyncGLViewContextStateNone;
     _requestExitThread = NO;
-    _msaaEnabled = NO;
     _tasks = [NSMutableArray array];
     _isObservingNotifications = NO;
 #ifdef USE_EGL
@@ -567,29 +566,14 @@ typedef enum EGLRenderingAPI : int
 #else
     const CGLPixelFormatAttribute attr[] = {
         kCGLPFAOpenGLProfile, (CGLPixelFormatAttribute)_internalAPI,
-        kCGLPFADepthSize, 32,
-        0
-    };
-    const CGLPixelFormatAttribute msaaAttr[] = {
-        kCGLPFAOpenGLProfile, (CGLPixelFormatAttribute)_internalAPI,
-        kCGLPFADepthSize, 32,
-        kCGLPFAMultisample,
-        kCGLPFASampleBuffers, 1,
-        kCGLPFASamples, 4,
         0
     };
     CGLPixelFormatObj pixelFormat = NULL;
     GLint npix;
-    CGLError error = CGLChoosePixelFormat(_msaaEnabled ? msaaAttr : attr, &pixelFormat, &npix);
-    if (!pixelFormat) {
-        if (_msaaEnabled) {
-            // Fallback to non-MSAA
-            _msaaEnabled = NO;
-            error = CGLChoosePixelFormat(attr, &pixelFormat, &npix);
-        }
-        if (!pixelFormat)
-            return NO;
-    }
+    CGLError error = CGLChoosePixelFormat(attr, &pixelFormat, &npix);
+    if (!pixelFormat)
+        return NO;
+
     error = CGLCreateContext(pixelFormat, _glLayer.renderContext, &_renderContext);
     CGLReleasePixelFormat(pixelFormat);
     if (!_renderContext)
