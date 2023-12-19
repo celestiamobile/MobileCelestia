@@ -232,11 +232,9 @@ typedef enum EGLRenderingAPI : int
 
 - (void)render {
     CGSize size = _drawableSize;
-    CGFloat width = size.width;
-    CGFloat height = size.height;
 
     [self makeRenderContextCurrent];
-    [self _drawGL:CGSizeMake(width, height)];
+    [self _drawGL:size];
 #ifdef USE_EGL
     eglSwapBuffers(_display, _renderSurface);
 #else
@@ -673,8 +671,8 @@ typedef enum EGLRenderingAPI : int
 
     _savedBufferSize = size;
 
-    CGFloat width = size.width;
-    CGFloat height = size.height;
+    GLsizei width = (GLsizei)size.width;
+    GLsizei height = (GLsizei)size.height;
 
     if (_msaaEnabled) {
         GLint samples;
@@ -696,10 +694,10 @@ typedef enum EGLRenderingAPI : int
 
 #if TARGET_OSX_OR_CATALYST
     glBindRenderbuffer(GL_RENDERBUFFER, _renderColorbuffer);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8, size.width, size.height);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8, width, height);
     _glLayer.sourceFramebuffer = _framebuffer;
-    _glLayer.width = size.width;
-    _glLayer.height = size.height;
+    _glLayer.width = width;
+    _glLayer.height = height;
 #endif
 }
 
@@ -712,29 +710,26 @@ typedef enum EGLRenderingAPI : int
 
 #pragma mark - internal implementation
 - (BOOL)setupGL:(CGSize)size {
-    if ([_delegate respondsToSelector:@selector(_prepareGL:)])
-        return [_delegate _prepareGL:size];
-
-    return YES;
+    return [_delegate _prepareGL:size];
 }
 
 - (void)_drawGL:(CGSize)size
 {
 #ifdef USE_EGL
-    if ([_delegate respondsToSelector:@selector(_drawGL:)])
-        [_delegate _drawGL:size];
+    [_delegate _drawGL:size];
 #else
     [self updateBuffersSize:size];
+
+    GLsizei width = (GLsizei)size.width;
+    GLsizei height = (GLsizei)size.height;
+
     if (_msaaEnabled) {
         glBindFramebuffer(GL_FRAMEBUFFER, _sampleFramebuffer);
-        glBindRenderbuffer(GL_RENDERBUFFER, _sampleDepthbuffer);
-        glBindRenderbuffer(GL_RENDERBUFFER, _sampleColorbuffer);
 
 #if TARGET_OS_OSX
         glEnable(GL_MULTISAMPLE);
 #endif
-        if ([_delegate respondsToSelector:@selector(_drawGL:)])
-            [_delegate _drawGL:size];
+        [_delegate _drawGL:size];
 #if TARGET_OS_OSX
         glDisable(GL_MULTISAMPLE);
 #endif
@@ -749,24 +744,21 @@ typedef enum EGLRenderingAPI : int
             glDiscardFramebufferEXT(GL_READ_FRAMEBUFFER, 1, (GLenum[]){GL_COLOR_ATTACHMENT0});
         } else {
             glInvalidateFramebuffer(GL_READ_FRAMEBUFFER, 1, (GLenum[]){GL_DEPTH_ATTACHMENT});
-            glBlitFramebuffer(0, 0, size.width, size.height, 0, 0, size.width, size.height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+            glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
             glInvalidateFramebuffer(GL_READ_FRAMEBUFFER, 1, (GLenum[]){GL_COLOR_ATTACHMENT0});
         }
 #else
-        glBlitFramebuffer(0, 0, size.width, size.height, 0, 0, size.width, size.height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
+        glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
 #endif
     } else {
-        glBindRenderbuffer(GL_RENDERBUFFER, _depthBuffer);
-        if ([_delegate respondsToSelector:@selector(_drawGL:)])
-            [_delegate _drawGL:size];
+        [_delegate _drawGL:size];
     }
 #endif
 }
 
 #pragma mark - clear
 - (void)clearGL {
-    if ([_delegate respondsToSelector:@selector(_clearGL)])
-        [_delegate _clearGL];
+    [_delegate _clearGL];
 
     [self _clearGL];
 }
