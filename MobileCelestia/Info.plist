@@ -202,5 +202,7 @@
 	<array>
 		<string>space.celestia.celestia.addon-user-activity</string>
 	</array>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
 </dict>
 </plist>

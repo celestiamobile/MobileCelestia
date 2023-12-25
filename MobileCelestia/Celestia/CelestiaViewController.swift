@@ -96,7 +96,7 @@ class CelestiaViewController: UIViewController {
     }
 
     override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-        if #available(iOS 13.4, *), let key = presses.first?.key, key.characters.count > 0 {
+        if #available(iOS 13.4, *), let key = presses.first?.key {
             interactionController?.keyDown(with: key.input, modifiers: UInt(key.modifierFlags.rawValue))
         } else {
             super.pressesBegan(presses, with: event)
