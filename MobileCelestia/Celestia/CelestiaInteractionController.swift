@@ -134,7 +134,7 @@ class CelestiaInteractionController: UIViewController {
     #if targetEnvironment(macCatalyst)
     private var currentPanStartPoint: CGPoint?
     #endif
-    private var currentPinchDistance: CGFloat?
+    private var currentPinchScale: CGFloat?
 
     @Injected(\.appCore) private var core
     @Injected(\.executor) private var executor
@@ -375,11 +375,9 @@ extension CelestiaInteractionController {
             pan2.require(toFail: pan1)
         }
 
-        #if !targetEnvironment(macCatalyst)
         let pinch = UIPinchGestureRecognizer(target: self, action: #selector(handlePinch(_:)))
         pinch.delegate = self
         targetInteractionView.addGestureRecognizer(pinch)
-        #endif
 
         let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
         tap.delegate = self
@@ -410,7 +408,8 @@ extension CelestiaInteractionController {
         }
         switch pan.state {
         case .changed:
-            zoom(deltaY: pan.translation(with: renderingTargetGeometry).y / 400, modifiers: UInt(modifiers.rawValue), scrolling: true)
+            let delta = pan.translation(with: renderingTargetGeometry).y / 400
+            executor.runAsynchronously { $0.mouseWheel(by: delta, modifiers: UInt(modifiers.rawValue)) }
         case .possible, .began, .ended, .cancelled, .failed:
             fallthrough
         @unknown default:
@@ -462,7 +461,6 @@ extension CelestiaInteractionController {
         }
     }
 
-    #if !targetEnvironment(macCatalyst)
     @objc private func handlePinch(_ gesture: UIPinchGestureRecognizer) {
         showControlViewIfNeeded()
 
@@ -470,40 +468,22 @@ extension CelestiaInteractionController {
         case .possible:
             break
         case .began:
-            if gesture.numberOfTouches < 2 {
-                // cancel the gesture recognizer
-                gesture.isEnabled = false
-                gesture.isEnabled = true
-                break
-            }
-            let point1 = gesture.location(ofTouch: 0, with: renderingTargetGeometry)
-            let point2 = gesture.location(ofTouch: 1, with: renderingTargetGeometry)
-            let length = hypot(abs(point1.x - point2.x), abs(point1.y - point2.y))
-            let center = CGPoint(x: (point1.x + point2.x) / 2, y: (point1.y + point2.y) / 2)
-            currentPinchDistance = length
-            executor.runAsynchronously { $0.mouseButtonDown(at: center, modifiers: 0, with: .left) }
+            currentPinchScale = gesture.scale
         case .changed:
-            if gesture.numberOfTouches < 2 {
-                // cancel the gesture recognizer
-                gesture.isEnabled = false
-                gesture.isEnabled = true
-                break
+            let scale = gesture.scale
+            if let currentPinchScale {
+                let focus = gesture.location(with: renderingTargetGeometry)
+                executor.runAsynchronously {
+                    $0.pinchUpdate(focus, scale: scale / currentPinchScale)
+                }
             }
-            let point1 = gesture.location(ofTouch: 0, with: renderingTargetGeometry)
-            let point2 = gesture.location(ofTouch: 1, with: renderingTargetGeometry)
-            let length = hypot(abs(point1.x - point2.x), abs(point1.y - point2.y))
-            let delta = length / currentPinchDistance!
-            // FIXME: 8 is a magic number
-            let y = (1 - delta) * currentPinchDistance! / 8
-            zoom(deltaY: y)
-            currentPinchDistance = length
+            currentPinchScale = scale
         case .ended, .cancelled, .failed:
             fallthrough
         @unknown default:
-            currentPinchDistance = nil
+            currentPinchScale = nil
         }
     }
-    #endif
 
     @objc private func handleTap(_ tap: UITapGestureRecognizer) {
         showControlViewIfNeeded()
@@ -536,9 +516,6 @@ extension CelestiaInteractionController: UIGestureRecognizerDelegate {
         area = area.insetBy(dx: 16, dy: 16)
         if !area.contains(gestureRecognizer.location(in: gestureRecognizer.view)) {
             return false
-        }
-        if gestureRecognizer is UIPinchGestureRecognizer {
-            return gestureRecognizer.numberOfTouches == 2
         }
         return true
     }

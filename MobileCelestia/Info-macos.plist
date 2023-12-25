@@ -216,5 +216,7 @@
 	<false/>
 	<key>NSSupportsAutomaticTermination</key>
 	<false/>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
 </dict>
 </plist>
