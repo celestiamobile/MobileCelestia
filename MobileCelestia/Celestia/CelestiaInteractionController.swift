@@ -445,7 +445,12 @@ extension CelestiaInteractionController {
             let current = currentPanPoint!
             let offset = CGPoint(x: location.x - current.x, y: location.y - current.y)
             currentPanPoint = location
-            executor.runAsynchronously { $0.mouseMove(by: offset, modifiers: UInt(modifiers.rawValue), with: button) }
+            #if targetEnvironment(macCatalyst)
+            let baseModifier: UInt = 0
+            #else
+            let baseModifier: UInt = EventModifier.touch.rawValue
+            #endif
+            executor.runAsynchronously { $0.mouseMove(by: offset, modifiers: UInt(modifiers.rawValue) | baseModifier, with: button) }
         case .ended, .cancelled, .failed:
             fallthrough
         @unknown default:
