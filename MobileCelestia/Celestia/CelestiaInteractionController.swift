@@ -476,10 +476,11 @@ extension CelestiaInteractionController {
             currentPinchScale = gesture.scale
         case .changed:
             let scale = gesture.scale
+            let zoomFOV = interactionMode == .camera
             if let currentPinchScale {
                 let focus = gesture.location(with: renderingTargetGeometry)
                 executor.runAsynchronously {
-                    $0.pinchUpdate(focus, scale: scale / currentPinchScale)
+                    $0.pinchUpdate(focus, scale: scale / currentPinchScale, zoomFOV: zoomFOV)
                 }
             }
             currentPinchScale = scale
