@@ -542,7 +542,7 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
         if #available(iOS 14, *) {
             return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { [weak self] _ in
                 guard let self else { return nil }
-                return UIMenu(options: .displayInline, children: [contextMenuForLocation(location: location)])
+                return UIMenu(options: .displayInline, children: [contextMenuForLocation(location: location, interaction: interaction)])
             }
         } else {
             guard let selection = executor.getSynchronously({ core in
@@ -564,10 +564,11 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
     }
 
     @available(iOS 14.0, *)
-    private func contextMenuForLocation(location: CGPoint) -> UIDeferredMenuElement {
-        return UIDeferredMenuElement { [weak self] completion in
+    private func contextMenuForLocation(location: CGPoint, interaction: UIContextMenuInteraction) -> UIDeferredMenuElement {
+        return UIDeferredMenuElement { [weak self, weak interaction] completion in
             guard let self else {
                 completion([])
+                interaction?.dismissMenu()
                 return
             }
             Task {
@@ -580,6 +581,7 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
                     return handler.pendingSelection
                 }) else {
                     completion([])
+                    interaction?.dismissMenu()
                     return
                 }
 
