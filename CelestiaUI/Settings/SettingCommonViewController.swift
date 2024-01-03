@@ -114,6 +114,7 @@ extension SettingCommonViewController {
                 if item.representation == .switch {
                     let cell = tableView.dequeueReusableCell(withIdentifier: "Switch", for: indexPath) as! SwitchCell
                     cell.title = row.name
+                    cell.subtitle = row.subtitle
                     cell.enabled = enabled
                     cell.toggleBlock = { [weak self] newValue in
                         guard let self else { return }
@@ -127,6 +128,7 @@ extension SettingCommonViewController {
                 } else {
                     let cell = tableView.dequeueReusableCell(withIdentifier: "Checkmark", for: indexPath) as! TextCell
                     cell.title = row.name
+                    cell.subtitle = row.subtitle
                     cell.accessoryType = enabled ? .checkmark : .none
                     return cell
                 }

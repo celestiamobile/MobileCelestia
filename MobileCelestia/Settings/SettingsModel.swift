@@ -154,22 +154,44 @@ private let defaultSensitivity: Double = 4.0
 #else
 private let defaultSensitivity: Double = 10.0
 #endif
-private let sensitivityItem = SettingItem<AnyHashable>(
-    name: CelestiaString("Sensitivity", comment: ""),
-    subtitle: CelestiaString("Sensitivity for object selection", comment: ""),
-    type: .prefSlider,
-    associatedItem: .init(
-        AssociatedPreferenceSliderItem(userDefaultsKey: .pickSensitivity, minValue: 1.0, maxValue: 20.0, defaultValue: defaultSensitivity)
+private let sharedInteractionItems: [SettingItem<AnyHashable>] = [
+    SettingItem(
+        name: CelestiaString("Reverse Mouse Wheel", comment: ""),
+        type: .checkmark,
+        associatedItem: .init(
+            AssociatedCheckmarkItem(name: CelestiaString("Reverse Mouse Wheel", comment: ""), key: "enableReverseWheel", representation: .switch)
+        )
+    ),
+    SettingItem(
+        name: CelestiaString("Ray-Based Dragging", comment: ""),
+        subtitle: CelestiaString("Dragging behavior based on change of pick rays instead of screen coordinates", comment: ""),
+        type: .checkmark,
+        associatedItem: .init(
+            AssociatedCheckmarkItem(name: CelestiaString("Ray-Based Dragging", comment: ""), key: "enableRayBasedDragging", representation: .switch)
+        )
+    ),
+    SettingItem(
+        name: CelestiaString("Focus Zooming", comment: ""),
+        subtitle: CelestiaString("Zooming behavior keeping the original focus location on screen", comment: ""),
+        type: .checkmark,
+        associatedItem: .init(
+            AssociatedCheckmarkItem(name: CelestiaString("Focus Zooming", comment: ""), key: "enableFocusZooming", representation: .switch)
+        )
+    ),
+    SettingItem(
+        name: CelestiaString("Sensitivity", comment: ""),
+        subtitle: CelestiaString("Sensitivity for object selection", comment: ""),
+        type: .prefSlider,
+        associatedItem: .init(
+            AssociatedPreferenceSliderItem(userDefaultsKey: .pickSensitivity, minValue: 1.0, maxValue: 20.0, defaultValue: defaultSensitivity)
+        )
     )
-)
+]
 
 #if targetEnvironment(macCatalyst)
-private let interactionItems = [
-    sensitivityItem
-]
+private let interactionItems = sharedInteractionItems
 #else
-private let interactionItems = [
-    sensitivityItem,
+private let interactionItems = sharedInteractionItems + [
     SettingItem(
         name: CelestiaString("Context Menu", comment: ""),
         subtitle: CelestiaString("Context menu by long press or context click", comment: ""),
@@ -192,7 +214,7 @@ private let advanceSettingExtraItems = [
                     .init(
                         header: nil,
                         rows: interactionItems,
-                        footer: CelestiaString("Configuration will take effect after a restart.", comment: "")
+                        footer: CelestiaString("Some configurations will take effect after a restart.", comment: "")
                     ),
                 ]
             )

@@ -508,7 +508,9 @@ extension CelestiaInteractionController {
 
     private func zoom(deltaY: CGFloat, modifiers: UInt = 0, scrolling: Bool = false) {
         if scrolling || interactionMode == .object {
-            executor.runAsynchronously { $0.mouseWheel(by: deltaY, modifiers: modifiers) }
+            executor.runAsynchronously { core in
+                core.mouseWheel(by: core.enableReverseWheel ? -deltaY : deltaY, modifiers: modifiers)
+            }
         } else {
             executor.runAsynchronously { $0.mouseMove(by: CGPoint(x: 0, y: deltaY), modifiers: UInt(UIKeyModifierFlags.shift.rawValue), with: .left) }
         }
