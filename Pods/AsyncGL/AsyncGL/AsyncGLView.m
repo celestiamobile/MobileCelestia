@@ -3,12 +3,15 @@
 //  Licensed under the MIT License.
 //
 
+#include <os/lock.h>
+
 #import "AsyncGLView+Private.h"
 
 typedef NS_OPTIONS(NSUInteger, AsyncGLViewEvent) {
     AsyncGLViewEventNone                = 0,
     AsyncGLViewEventCreateRenderContext = 1 << 0,
     AsyncGLViewEventDraw                = 1 << 1,
+    AsyncGLViewEventPause               = 1 << 2,
 };
 
 typedef NS_ENUM(NSUInteger, AsyncGLViewContextState) {
@@ -93,6 +96,7 @@ typedef enum EGLRenderingAPI : int
 }
 
 @property (nonatomic) NSCondition *condition;
+@property (nonatomic) os_unfair_lock renderLock;
 @property (nonatomic) BOOL suspendedFlag;
 @property (nonatomic) AsyncGLViewEvent event;
 @property (nonatomic) BOOL contextsCreated;
@@ -169,30 +173,45 @@ typedef enum EGLRenderingAPI : int
 }
 
 - (void)pause {
-    [_condition lock];
-    _suspendedFlag = YES;
-    [_condition unlock];
-
 #ifndef USE_EGL
 #if !TARGET_OSX_OR_CATALYST
     [self makeMainContextCurrent];
     glFlush();
 #endif
 #endif
+
+    dispatch_semaphore_t semaphore = nil;
+
+    [_condition lock];
+    if (!_suspendedFlag) {
+        _event = AsyncGLViewEventPause;
+        semaphore = dispatch_semaphore_create(0);
+        __weak typeof(self) weakSelf = self;
+        [_tasks addObject:^{
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            if (strongSelf != nil) {
+                [strongSelf makeRenderContextCurrent];
+                glFlush();
+            }
+            dispatch_semaphore_signal(semaphore);
+        }];
+        [_condition signal];
+    }
+    [_condition unlock];
+
+    if (semaphore != nil) {
+        dispatch_semaphore_wait(semaphore, dispatch_time(DISPATCH_TIME_NOW, 1 * NSEC_PER_SEC));
+    }
 }
 
 - (void)resume {
-    [self resumeCheckViewState:YES];
-}
-
-- (void)resumeCheckViewState:(BOOL)checkViewState {
     [_condition lock];
     _suspendedFlag = NO;
     [_condition signal];
     [_condition unlock];
 
-    if (_contextState == AsyncGLViewContextStateRenderContextCreated && checkViewState)
-        [self _checkViewStateChangeStateIfNeeded:NO];
+    if (_contextState == AsyncGLViewContextStateRenderContextCreated)
+        [self _checkViewState];
 }
 
 #pragma mark - interfaces
@@ -231,21 +250,27 @@ typedef enum EGLRenderingAPI : int
 }
 
 - (void)render {
-    CGSize size = _drawableSize;
+    os_unfair_lock_lock(&_renderLock);
 
-    [self makeRenderContextCurrent];
-    [self _drawGL:size];
-#ifdef USE_EGL
-    eglSwapBuffers(_display, _renderSurface);
-#else
-    glFlush();
-#if !TARGET_OSX_OR_CATALYST
-    glBindRenderbuffer(GL_RENDERBUFFER, _mainColorbuffer);
-    [_renderContext presentRenderbuffer:_mainColorbuffer];
-#else
-    [_glLayer display];
-#endif
-#endif
+    if (_shouldRender) {
+        CGSize size = _drawableSize;
+
+        [self makeRenderContextCurrent];
+        [self _drawGL:size];
+    #ifdef USE_EGL
+        eglSwapBuffers(_display, _renderSurface);
+    #else
+        glFlush();
+    #if !TARGET_OSX_OR_CATALYST
+        glBindRenderbuffer(GL_RENDERBUFFER, _mainColorbuffer);
+        [_renderContext presentRenderbuffer:_mainColorbuffer];
+    #else
+        [_glLayer display];
+    #endif
+    #endif
+    }
+
+    os_unfair_lock_unlock(&_renderLock);
 }
 
 #pragma mark - private methods
@@ -315,6 +340,7 @@ typedef enum EGLRenderingAPI : int
 
     _event = AsyncGLViewEventNone;
     _condition = [[NSCondition alloc] init];
+    _renderLock = OS_UNFAIR_LOCK_INIT;
     _renderThread = [[NSThread alloc] initWithTarget:self selector:@selector(renderThreadMain) object:nil];
 #ifndef USE_EGL
 #if TARGET_OSX_OR_CATALYST
@@ -381,8 +407,13 @@ typedef enum EGLRenderingAPI : int
                 task();
         }
 
-        if (needsDrawn)
+        if ((event & AsyncGLViewEventPause) != 0) {
+            [_condition lock];
+            _suspendedFlag = YES;
+            [_condition unlock];
+        } else if (needsDrawn) {
             [self render];
+        }
     }
 }
 
@@ -722,14 +753,13 @@ typedef enum EGLRenderingAPI : int
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _framebuffer);
 
 #if !TARGET_OSX_OR_CATALYST
+        GLenum attachments[] = { GL_COLOR_ATTACHMENT0, GL_DEPTH_ATTACHMENT };
         if (_internalAPI == kEAGLRenderingAPIOpenGLES2) {
-            glDiscardFramebufferEXT(GL_READ_FRAMEBUFFER, 1, (GLenum[]){GL_DEPTH_ATTACHMENT});
             glResolveMultisampleFramebufferAPPLE();
-            glDiscardFramebufferEXT(GL_READ_FRAMEBUFFER, 1, (GLenum[]){GL_COLOR_ATTACHMENT0});
+            glDiscardFramebufferEXT(GL_READ_FRAMEBUFFER, 2, attachments);
         } else {
-            glInvalidateFramebuffer(GL_READ_FRAMEBUFFER, 1, (GLenum[]){GL_DEPTH_ATTACHMENT});
             glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-            glInvalidateFramebuffer(GL_READ_FRAMEBUFFER, 1, (GLenum[]){GL_COLOR_ATTACHMENT0});
+            glInvalidateFramebuffer(GL_READ_FRAMEBUFFER, 2, attachments);
         }
 #else
         glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
@@ -870,10 +900,6 @@ typedef enum EGLRenderingAPI : int
 }
 
 - (void)_checkViewState {
-    [self _checkViewStateChangeStateIfNeeded:YES];
-}
-
-- (void)_checkViewStateChangeStateIfNeeded:(BOOL)changeStateIfNeeded {
     if (_contextState != AsyncGLViewContextStateRenderContextCreated)
         return;
 
@@ -888,7 +914,7 @@ typedef enum EGLRenderingAPI : int
     CGFloat scale = self.layer.contentsScale;
     CGSize newSize = CGSizeMake(frameSize.width * scale, frameSize.height * scale);
 
-    [_condition lock];
+    os_unfair_lock_lock(&_renderLock);
     if (!CGSizeEqualToSize(_drawableSize, newSize)) {
 #ifndef USE_EGL
 #if !TARGET_OSX_OR_CATALYST
@@ -899,17 +925,8 @@ typedef enum EGLRenderingAPI : int
 #endif
         _drawableSize = newSize;
     }
-    [_condition unlock];
-
-    if (changeStateIfNeeded) {
-        if (!_shouldRender && shouldRender) {
-            [self resumeCheckViewState:NO];
-            _shouldRender = shouldRender;
-        } else if (_shouldRender && !shouldRender) {
-            [self pause];
-            _shouldRender = shouldRender;
-        }
-    }
+    _shouldRender = shouldRender;
+    os_unfair_lock_unlock(&_renderLock);
 }
 
 #if TARGET_OS_IOS
