@@ -6,7 +6,6 @@
 //
 
 @import Foundation;
-#import <TargetConditionals.h>
 
 typedef NS_ENUM(NSUInteger, AsyncGLAPI) {
     AsyncGLAPIOpenGLES2     = 1,

@@ -1,6 +1,6 @@
 {
   "name": "AsyncGL",
-  "version": "0.1.11",
+  "version": "0.1.13",
   "summary": "A framework that allows rendering OpenGL (ES) contents on an NSThread.",
   "homepage": "https://github.com/levinli303/AsyncGL.git",
   "license": "MIT",
@@ -13,7 +13,7 @@
   },
   "source": {
     "git": "https://github.com/levinli303/AsyncGL.git",
-    "tag": "0.1.11"
+    "tag": "0.1.13"
   },
   "subspecs": [
     {
@@ -33,10 +33,10 @@
       "name": "ANGLE",
       "dependencies": {
         "AsyncGL/libGLESv2": [
-          "0.1.11"
+          "0.1.13"
         ],
         "AsyncGL/libEGL": [
-          "0.1.11"
+          "0.1.13"
         ]
       },
       "source_files": "AsyncGL/**/*.{h,m}",

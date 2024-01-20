@@ -2,13 +2,15 @@ platform :ios, '13.1'
 
 use_frameworks! :linkage => :static
 
+asyncgl_version_tag = "0.1.13"
+
 target 'MobileCelestia' do
   pod 'AppCenter/Analytics', '~> 5.0.4'
   pod 'AppCenter/Crashes', '~> 5.0.4'
   pod 'ZIPFoundation', '~> 0.9.16'
 
   pod "MWRequest", :git => "https://github.com/levinli303/mwrequest.git", :tag => "0.3.7"
-  pod "AsyncGL/OpenGL", :git => "https://github.com/levinli303/AsyncGL.git", :tag => "0.1.11"
+  pod "AsyncGL/OpenGL", :git => "https://github.com/levinli303/AsyncGL.git", :tag => asyncgl_version_tag
 end
 
 target 'CelestiaUI' do
