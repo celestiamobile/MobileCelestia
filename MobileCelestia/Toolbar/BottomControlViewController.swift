@@ -101,7 +101,8 @@ class BottomControlViewController: UIViewController {
         preferredContentSize = calculatePreferredContentSize(traitCollection: view.traitCollection)
 
         if #available(iOS 17, *) {
-            registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { (self: Self, _) in
+            collectionView.registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { [weak self] (_: UICollectionView, _) in
+                guard let self else { return }
                 self.preferredContentSize = self.calculatePreferredContentSize(traitCollection: self.traitCollection)
             }
         }
@@ -119,10 +120,10 @@ class BottomControlViewController: UIViewController {
     }
 
     private func calculatePreferredContentSize(traitCollection: UITraitCollection) -> CGSize {
-        let scaling = traitCollection.textScaling * GlobalConstants.preferredUIElementScaling(for: traitCollection)
+        let viewDimension = collectionView.scaledValue(for: GlobalConstants.bottomControlViewDimension * GlobalConstants.preferredUIElementScaling(for: traitCollection))
         return CGSize(
-            width: GlobalConstants.bottomControlViewDimension * CGFloat(actions.count) * scaling + GlobalConstants.bottomControlViewMarginHorizontal * 2 + GlobalConstants.pageMediumMarginHorizontal,
-            height: (GlobalConstants.bottomControlViewDimension * scaling + GlobalConstants.bottomControlViewMarginVertical * 2 + GlobalConstants.pageMediumMarginVertical).rounded(.up)
+            width: CGFloat(actions.count) * viewDimension + GlobalConstants.bottomControlViewMarginHorizontal * 2 + GlobalConstants.pageMediumMarginHorizontal,
+            height: viewDimension + GlobalConstants.bottomControlViewMarginVertical * 2 + GlobalConstants.pageMediumMarginVertical
         )
     }
 }
@@ -269,8 +270,8 @@ class BottomActionLayout: UICollectionViewFlowLayout {
     override func prepare() {
         defer { super.prepare() }
         guard let collectionView = self.collectionView else { return }
-        let scaling = GlobalConstants.preferredUIElementScaling(for: collectionView.traitCollection) * collectionView.textScaling
-        itemSize = baseItemSize.applying(CGAffineTransform(scaleX: scaling, y: scaling))
+        let scaling = GlobalConstants.preferredUIElementScaling(for: collectionView.traitCollection)
+        itemSize = CGSize(width: collectionView.scaledValue(for: baseItemSize.width * scaling), height: collectionView.scaledValue(for: baseItemSize.height * scaling))
         minimumLineSpacing = 0
         minimumInteritemSpacing = 0
         sectionInset = UIEdgeInsets(

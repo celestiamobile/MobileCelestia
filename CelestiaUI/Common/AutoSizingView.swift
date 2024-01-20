@@ -16,7 +16,9 @@ public protocol AutoSizingViewConfiguration {
     func baseSizeForView(_ view: UIView) -> CGSize
 }
 
-open class AutoSizingView<View: UIView, Configuration: AutoSizingViewConfiguration>: UIView {
+open class AutoSizingView<View: UIView, Configuration: AutoSizingViewConfiguration>: UIView, UIContentSizeCategoryAdjusting {
+    public var adjustsFontForContentSizeCategory = true
+
     private let view: View
 
     public var configuration: Configuration {
@@ -46,7 +48,9 @@ open class AutoSizingView<View: UIView, Configuration: AutoSizingViewConfigurati
 
         if #available(iOS 17, *) {
             registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { (self: Self, _) in
-                self.invalidateIntrinsicContentSize()
+                if self.adjustsFontForContentSizeCategory {
+                    self.invalidateIntrinsicContentSize()
+                }
             }
         }
     }
@@ -56,7 +60,7 @@ open class AutoSizingView<View: UIView, Configuration: AutoSizingViewConfigurati
 
         if #available(iOS 17, *) {
         } else {
-            if traitCollection.preferredContentSizeCategory != previousTraitCollection?.preferredContentSizeCategory {
+            if adjustsFontForContentSizeCategory, traitCollection.preferredContentSizeCategory != previousTraitCollection?.preferredContentSizeCategory {
                 invalidateIntrinsicContentSize()
             }
         }
@@ -72,8 +76,11 @@ open class AutoSizingView<View: UIView, Configuration: AutoSizingViewConfigurati
     }
 
     public override var intrinsicContentSize: CGSize {
-        let scaling = textScaling
-        return configuration.baseSizeForView(view).applying(CGAffineTransform(scaleX: scaling, y: scaling))
+        let baseSize = configuration.baseSizeForView(view)
+        if !adjustsFontForContentSizeCategory {
+            return roundUpToPixel(baseSize)
+        }
+        return scaledValue(for: baseSize)
     }
 }
 

@@ -323,8 +323,10 @@ extension InfoViewController: UICollectionViewDelegateFlowLayout {
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         let width = max(collectionView.bounds.width - 2 * GlobalConstants.pageMediumMarginHorizontal, 1)
         let height = collectionView.bounds.height
-        if indexPath.section == 0 { return CGSize(width: width.rounded(.towardZero), height: max(height, 1)) }
-        return CGSize(width: max(((width - Constants.buttonSpacing) / 2).rounded(.towardZero), 1), height: 1)
+        if indexPath.section == 0 {
+            return CGSize(width: width, height: max(height, 1))
+        }
+        return CGSize(width: max(collectionView.roundDownToPixel((width - Constants.buttonSpacing) / 2), 1), height: 1)
     }
 
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {

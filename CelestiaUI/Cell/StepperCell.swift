@@ -203,8 +203,8 @@ class FallbackStepper: UIControl {
 
         NSLayoutConstraint.activate([
             leadingBackgroundView.widthAnchor.constraint(equalTo: trailingBackgroundView.widthAnchor),
-            leadingBackgroundView.widthAnchor.constraint(equalToConstant: Constants.stepperSingleWidth * GlobalConstants.preferredUIElementScaling(for: traitCollection)),
-            leadingBackgroundView.heightAnchor.constraint(equalToConstant: Constants.stepperHeight * GlobalConstants.preferredUIElementScaling(for: traitCollection))
+            leadingBackgroundView.widthAnchor.constraint(equalToConstant: roundUpToPixel(Constants.stepperSingleWidth * GlobalConstants.preferredUIElementScaling(for: traitCollection))),
+            leadingBackgroundView.heightAnchor.constraint(equalToConstant: roundUpToPixel(Constants.stepperHeight * GlobalConstants.preferredUIElementScaling(for: traitCollection)))
         ])
 
         for view in [leadingSelectedView, trailingSelectedView, leadingBackgroundView, trailingBackgroundView, separatorBackgroundView, separatorView] {

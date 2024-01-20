@@ -137,7 +137,6 @@
 		EABC921F2A56FBAA007E27F0 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA787340296EB68A0099AB11 /* Bundle.swift */; };
 		EABC92342A56FF80007E27F0 /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EABC92332A56FF80007E27F0 /* SharedAssets.xcassets */; };
 		EABC92402A57021C007E27F0 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978406DB240294D000876FD1 /* LoadingViewController.swift */; };
-		EABC92412A570220007E27F0 /* LoadingFailureViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978406DE24029D9100876FD1 /* LoadingFailureViewController.swift */; };
 		EAC8435F252C818700691943 /* CELMacBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = EAC8435E252C818700691943 /* CELMacBridge.m */; };
 		EAC84364252C84B600691943 /* CelestiaMacBridge.bundle in Embed PlugIns */ = {isa = PBXBuildFile; fileRef = EAC84354252C816500691943 /* CelestiaMacBridge.bundle */; platformFilter = maccatalyst; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EAD12A8E2A5656FF007EE4D6 /* EventFinderInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E424A0E93D00F3F51B /* EventFinderInputViewController.swift */; };
@@ -280,7 +279,6 @@
 		978406D624028F0000876FD1 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		978406D92402906C00876FD1 /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		978406DB240294D000876FD1 /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
-		978406DE24029D9100876FD1 /* LoadingFailureViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingFailureViewController.swift; sourceTree = "<group>"; };
 		979D2F7A23FEB1A6005D2592 /* Celestia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Celestia.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		979D2F7D23FEB1A6005D2592 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		979D2F8123FEB1A6005D2592 /* CelestiaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaViewController.swift; sourceTree = "<group>"; };
@@ -539,7 +537,6 @@
 			isa = PBXGroup;
 			children = (
 				978406DB240294D000876FD1 /* LoadingViewController.swift */,
-				978406DE24029D9100876FD1 /* LoadingFailureViewController.swift */,
 			);
 			path = Loading;
 			sourceTree = "<group>";
@@ -1384,7 +1381,6 @@
 			files = (
 				EA66BBE12A55BA88008A7AAA /* GoToInputViewController.swift in Sources */,
 				EA9166C02B0C725100AF48B1 /* QuickAction.swift in Sources */,
-				EABC92412A570220007E27F0 /* LoadingFailureViewController.swift in Sources */,
 				EA50E7772A505DCE005E7D7A /* LinkPreviewCell.swift in Sources */,
 				EAB623AC2A51AA0A00063D1B /* BrowserContainerViewController.swift in Sources */,
 				EA09B0862B118C0E00222229 /* ICPCFooter.swift in Sources */,

@@ -68,7 +68,7 @@ final class BodyActionCell: UICollectionViewCell {
         } else {
             height = max(fittingSize.height, layoutAttributes.size.height)
         }
-        attributes.size = CGSize(width: fittingSize.width.rounded(.down), height: height)
+        attributes.size = CGSize(width: fittingSize.width, height: height)
         return attributes
     }
 }

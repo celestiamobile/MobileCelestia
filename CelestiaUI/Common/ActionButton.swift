@@ -15,11 +15,12 @@ public class ActionButton: StandardButton {
     public enum Constants {
         static func contentEdgeInsets(for traitCollection: UITraitCollection) -> UIEdgeInsets {
             let scale = GlobalConstants.preferredUIElementScaling(for: traitCollection)
-            return UIEdgeInsets(top: 10 * scale, left: 0, bottom: 10 * scale, right: 0)
+            let vertical = traitCollection.roundUpToPixel(10 * scale)
+            return UIEdgeInsets(top: vertical, left: 0, bottom: vertical, right: 0)
         }
 
         static func cornerRadius(for traitCollection: UITraitCollection) -> CGFloat {
-            return 6 * GlobalConstants.preferredUIElementScaling(for: traitCollection)
+            return traitCollection.roundUpToPixel(6 * GlobalConstants.preferredUIElementScaling(for: traitCollection))
         }
     }
 

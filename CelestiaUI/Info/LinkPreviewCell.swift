@@ -34,7 +34,7 @@ final class LinkPreviewCell: UICollectionViewCell {
             CGSize(width: layoutAttributes.size.width, height: 0),
             withHorizontalFittingPriority: UILayoutPriority.required,
             verticalFittingPriority: UILayoutPriority.defaultLow)
-        attributes.size = CGSize(width: fittingSize.width.rounded(.down), height: fittingSize.height)
+        attributes.size = fittingSize
         return attributes
     }
 }

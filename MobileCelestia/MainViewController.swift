@@ -558,7 +558,7 @@ extension MainViewController: UIDocumentPickerDelegate {
 
 extension MainViewController: CelestiaControllerDelegate {
     func celestiaController(_ celestiaController: CelestiaViewController, loadingStatusUpdated status: String) {
-        loadingController.update(with: status)
+        loadingController.update(with: String.localizedStringWithFormat(CelestiaString("Loading: %@", comment: ""), status))
     }
 
     func celestiaController(_ celestiaController: CelestiaViewController, loadingFailedShouldRetry shouldRetry: @escaping (Bool) -> Void) {
@@ -577,9 +577,7 @@ extension MainViewController: CelestiaControllerDelegate {
         print("loading failed")
 
         self.status = .loadingFailed
-        self.loadingController.remove()
-        let failure = LoadingFailureViewController()
-        self.install(failure)
+        self.loadingController.update(with: CelestiaString("Loading Celestia failed…", comment: ""))
     }
 
     func celestiaControllerLoadingSucceeded(_ celestiaController: CelestiaViewController) {

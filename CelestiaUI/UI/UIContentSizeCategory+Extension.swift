@@ -11,20 +11,54 @@
 
 import UIKit
 
-public extension UIContentSizeCategory {
-    var textScaling: CGFloat {
-        return UIFont.preferredFont(forTextStyle: .body, compatibleWith: UITraitCollection(preferredContentSizeCategory: self)).pointSize / UIFont.preferredFont(forTextStyle: .body, compatibleWith: UITraitCollection(preferredContentSizeCategory: .medium)).pointSize
-    }
-}
-
 public extension UITraitCollection {
-    var textScaling: CGFloat {
-        return UIFont.preferredFont(forTextStyle: .body, compatibleWith: self).pointSize / UIFont.preferredFont(forTextStyle: .body, compatibleWith: UITraitCollection(preferredContentSizeCategory: .medium)).pointSize
+    func scaledValue(for value: CGFloat) -> CGFloat {
+        return UIFontMetrics.default.scaledValue(for: value, compatibleWith: self)
+    }
+
+    func scaledValue(for value: CGSize) -> CGSize {
+        return CGSize(width: scaledValue(for: value.width), height: scaledValue(for: value.height))
+    }
+
+    func roundUpToPixel(_ value: CGFloat) -> CGFloat {
+      return ceil(value * displayScale) / displayScale
+    }
+
+    func roundDownToPixel(_ value: CGFloat) -> CGFloat {
+      return floor(value * displayScale) / displayScale
+    }
+
+    func roundUpToPixel(_ value: CGSize) -> CGSize {
+        return CGSize(width: roundUpToPixel(value.width), height: roundUpToPixel(value.height))
+    }
+
+    func roundDownToPixel(_ value: CGSize) -> CGSize {
+        return CGSize(width: roundDownToPixel(value.width), height: roundDownToPixel(value.height))
     }
 }
 
-public extension UIView {
-    var textScaling: CGFloat {
-        return traitCollection.textScaling
+public extension UITraitEnvironment {
+    func scaledValue(for value: CGFloat) -> CGFloat {
+        return traitCollection.scaledValue(for: value)
+    }
+
+    func scaledValue(for value: CGSize) -> CGSize {
+        return traitCollection.scaledValue(for: value)
+    }
+
+    func roundUpToPixel(_ value: CGFloat) -> CGFloat {
+        return traitCollection.roundUpToPixel(value)
+    }
+
+    func roundDownToPixel(_ value: CGFloat) -> CGFloat {
+        return traitCollection.roundDownToPixel(value)
+    }
+
+    func roundUpToPixel(_ value: CGSize) -> CGSize {
+        return traitCollection.roundUpToPixel(value)
+    }
+
+    func roundDownToPixel(_ value: CGSize) -> CGSize {
+        return traitCollection.roundDownToPixel(value)
     }
 }

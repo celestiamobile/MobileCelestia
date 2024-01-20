@@ -32,7 +32,7 @@ public class LoadingViewController: UIViewController {
 
 extension LoadingViewController {
     public func update(with status: String) {
-        statusLabel.text = String.localizedStringWithFormat(CelestiaString("Loading: %@", comment: ""), status)
+        statusLabel.text = status
     }
 }
 
@@ -55,12 +55,15 @@ private extension LoadingViewController {
 
         // status label
         container.addSubview(statusLabel)
+        statusLabel.numberOfLines = 0
+        statusLabel.textAlignment = .center
         statusLabel.translatesAutoresizingMaskIntoConstraints = false
         statusLabel.textColor = .label
         NSLayoutConstraint.activate([
             statusLabel.topAnchor.constraint(equalTo: iconImageView.bottomAnchor, constant: Constants.loadingGapVertical),
             statusLabel.centerXAnchor.constraint(equalTo: container.centerXAnchor),
             statusLabel.bottomAnchor.constraint(equalTo: container.bottomAnchor),
+            statusLabel.leadingAnchor.constraint(greaterThanOrEqualTo: container.leadingAnchor),
         ])
 
         let labelWidthConstraints = [
@@ -73,6 +76,11 @@ private extension LoadingViewController {
         NSLayoutConstraint.activate([
             container.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             container.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+            container.leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor, constant: GlobalConstants.pageMediumMarginHorizontal),
         ])
+
+        let optionalConstraint = container.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: GlobalConstants.pageMediumGapHorizontal)
+        optionalConstraint.priority = .defaultLow
+        optionalConstraint.isActive = true
     }
 }

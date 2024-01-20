@@ -130,14 +130,15 @@ class SheetPresentationController: UIPresentationController {
     }()
 
     private var sheetHandleContainerHeight: CGFloat {
-        return Constants.sheetHandleContainerBaseHeight * sheetHandle.textScaling
+        return sheetHandle.scaledValue(for: Constants.sheetHandleContainerBaseHeight)
     }
 
     override init(presentedViewController: UIViewController, presenting presentingViewController: UIViewController?) {
         super.init(presentedViewController: presentedViewController, presenting: presentingViewController)
 
         if #available(iOS 17, *) {
-            registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { (self: Self, _) in
+            sheetHandle.registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { [weak self] (_: UIView, _) in
+                guard let self else { return }
                 self.preferredContentSizeCategoryChanged()
             }
         }
