@@ -98,10 +98,10 @@ public extension URLSession {
 }
 
 #if compiler(>=5.5) && canImport(_Concurrency)
-@available(iOS 13.0, macOS 10.15, watchOS 6.0, tvOS 13.0, *)
+@available(iOS 13.0, macOS 10.15, watchOS 6.0, tvOS 13.0, visionOS 1.0, *)
 private extension URLSession {
     func _dataCompat(for request: URLRequest) async throws -> (Data, URLResponse) {
-        if #available(iOS 15.0, macOS 12.0, watchOS 8.0, tvOS 15.0, *) {
+        if #available(iOS 15.0, macOS 12.0, watchOS 8.0, tvOS 15.0, visionOS 1.0, *) {
             return try await data(for: request, delegate: nil)
         }
         return try await withCheckedThrowingContinuation { continuation in
@@ -116,7 +116,7 @@ private extension URLSession {
     }
 }
 
-@available(iOS 13.0, macOS 10.15, watchOS 6.0, tvOS 13.0, *)
+@available(iOS 13.0, macOS 10.15, watchOS 6.0, tvOS 13.0, visionOS 1.0, *)
 public extension URLSession {
     func post(to url: String, parameters: [String: String], headers: [String: String]?) async throws -> (Data, URLResponse) {
         let newURL = try URL.from(url: url)

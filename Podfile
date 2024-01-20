@@ -9,14 +9,14 @@ target 'MobileCelestia' do
   pod 'AppCenter/Crashes', '~> 5.0.4'
   pod 'ZIPFoundation', '~> 0.9.16'
 
-  pod "MWRequest", :git => "https://github.com/levinli303/mwrequest.git", :tag => "0.3.7"
+  pod "MWRequest", :git => "https://github.com/levinli303/mwrequest.git", :tag => "1.0.0"
   pod "AsyncGL/OpenGL", :git => "https://github.com/levinli303/AsyncGL.git", :tag => asyncgl_version_tag
 end
 
 target 'CelestiaUI' do
   pod 'ZIPFoundation', '~> 0.9.16'
 
-  pod "MWRequest", :git => "https://github.com/levinli303/mwrequest.git", :tag => "0.3.7"
+  pod "MWRequest", :git => "https://github.com/levinli303/mwrequest.git", :tag => "1.0.0"
 end
 
 post_install do |installer|
