@@ -21,15 +21,19 @@ public enum SettingType: Hashable {
     case render
     case time
     case dataLocation
+    #if !os(visionOS)
     case frameRate
+    #endif
     case checkmark
     case custom
     case keyedSelection
     case prefSelection
     case selection
     case prefSlider
+    #if !os(visionOS)
     case font
     case toolbar
+    #endif
 }
 
 public struct SettingItem<T: Hashable>: Hashable {
@@ -891,13 +895,16 @@ public func rendererSettings(extraItems: [SettingItem<AnyHashable>]) -> SettingS
             )
         ),
     ]
+    #if !os(visionOS)
     items.append(SettingItem(name: CelestiaString("Frame Rate", comment: ""), type: .frameRate, associatedItem: .init(0)))
+    #endif
     items.append(contentsOf: extraItems)
     items.append(SettingItem(name: CelestiaString("Render Info", comment: ""), type: .render, associatedItem: .init(0)))
 
     return SettingSection(title: CelestiaString("Renderer", comment: ""), items: items)
 }
 
+#if !os(visionOS)
 @available(iOS 15, *)
 public func celestiaPlusSettings() -> SettingSection {
     var items = [
@@ -908,10 +915,13 @@ public func celestiaPlusSettings() -> SettingSection {
     #endif
     return SettingSection(title: CelestiaString("Celestia PLUS", comment: ""), items: items)
 }
+#endif
 
 public func advancedSettings(extraItems: [SettingItem<AnyHashable>]) -> SettingSection {
     var items = extraItems
+    #if !os(visionOS)
     items.append(SettingItem(name: CelestiaString("Data Location", comment: ""), type: .dataLocation, associatedItem: .init(0)))
+    #endif
     items.append(contentsOf: [
         SettingItem(
             name: CelestiaString("Security", comment: ""),

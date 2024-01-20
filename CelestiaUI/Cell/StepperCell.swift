@@ -11,7 +11,7 @@
 
 import UIKit
 
-#if targetEnvironment(macCatalyst)
+#if targetEnvironment(macCatalyst) || os(visionOS)
 // Recreate the iOS 13 stepper
 class FallbackStepper: UIControl {
     private enum Constants {
@@ -239,7 +239,7 @@ class FallbackStepper: UIControl {
 
 class StepperCell: UITableViewCell {
     private lazy var label = UILabel(textStyle: .body)
-    #if targetEnvironment(macCatalyst)
+    #if targetEnvironment(macCatalyst) || os(visionOS)
     private lazy var stepper = FallbackStepper()
     #else
     private lazy var stepper = UIStepper()
@@ -291,7 +291,7 @@ private extension StepperCell {
             stepper.topAnchor.constraint(greaterThanOrEqualTo: contentView.topAnchor, constant: GlobalConstants.listItemAccessoryMinMarginVertical),
         ])
 
-        #if !targetEnvironment(macCatalyst)
+        #if !targetEnvironment(macCatalyst) && !os(visionOS)
         stepper.wraps = true
         stepperValue = stepper.value
         stepper.addTarget(self, action: #selector(handleTouchUp(_:)), for: .touchUpInside)
@@ -301,7 +301,7 @@ private extension StepperCell {
         stepper.addTarget(self, action: #selector(handleChange(_:)), for: .valueChanged)
     }
 
-    #if targetEnvironment(macCatalyst)
+    #if targetEnvironment(macCatalyst) || os(visionOS)
     @objc private func handleChange(_ sender: FallbackStepper) {
         let state = sender.stepperState
         switch state {
@@ -333,7 +333,7 @@ private extension StepperCell {
     }
     #endif
 
-    #if !targetEnvironment(macCatalyst)
+    #if !targetEnvironment(macCatalyst) && !os(visionOS)
     @objc private func handleTouchUp(_ sender: UIStepper) {
         stopBlock?()
     }

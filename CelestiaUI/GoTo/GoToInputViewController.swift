@@ -194,7 +194,9 @@ extension GoToInputViewController: ToolbarAwareViewController {
 private extension GoToInputViewController {
     func setUp() {
         title = CelestiaString("Go to Object", comment: "")
+        #if !os(visionOS)
         tableView.keyboardDismissMode = .interactive
+        #endif
         tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         if #available(iOS 15.0, *) {
             tableView.register(LongitudeLatitudeInputCell.self, forCellReuseIdentifier: "LonLat")

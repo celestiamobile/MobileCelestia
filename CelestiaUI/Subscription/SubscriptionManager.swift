@@ -142,6 +142,7 @@ public class SubscriptionManager {
 
     @available(iOS 15.0, *)
     func purchase(_ product: Product) async throws -> SubscriptionStatus {
+        #if !os(visionOS)
         let result = try await product.purchase()
         switch result {
         case .success(let verificationResult):
@@ -160,6 +161,7 @@ public class SubscriptionManager {
         @unknown default:
             break
         }
+        #endif
         return status
     }
 

@@ -13,9 +13,12 @@ import CelestiaCore
 import UIKit
 
 public enum SettingAction {
+    #if !os(visionOS)
     case refreshFrameRate(newFrameRate: Int)
+    #endif
 }
 
+#if !os(visionOS)
 public struct FrameRateSettingContext {
     let frameRateUserDefaultsKey: String
 
@@ -23,6 +26,7 @@ public struct FrameRateSettingContext {
         self.frameRateUserDefaultsKey = frameRateUserDefaultsKey
     }
 }
+#endif
 
 public struct DataLocationSettingContext {
     let userDefaults: UserDefaults
@@ -54,19 +58,53 @@ public class SettingsCoordinatorController: UIViewController {
     private let bundle: Bundle
     private let defaultDataDirectory: URL
     private let settings: [SettingSection]
+    #if !os(visionOS)
     private let frameRateContext: FrameRateSettingContext
+    #endif
     private let dataLocationContext: DataLocationSettingContext
+    #if !os(visionOS)
     private let fontContext: FontSettingContext
     private let toolbarContext: ToolbarSettingContext
+    #endif
 
     private let actionHandler: (SettingAction) -> Void
     private let dateInputHandler: (_ viewController: UIViewController, _ title: String, _ format: String) async -> Date?
     private let textInputHandler: (_ viewController: UIViewController, _ title: String, _ keyboardType: UIKeyboardType) async -> String?
     private let rendererInfoProvider: () async -> String
+    #if !os(visionOS)
     private let screenProvider: () -> UIScreen
     private let subscriptionManager: SubscriptionManager
     private let openSubscriptionManagement: (UIViewController) -> Void
+    #endif
 
+    #if os(visionOS)
+    public init(
+        core: AppCore,
+        executor: AsyncProviderExecutor,
+        userDefaults: UserDefaults,
+        bundle: Bundle,
+        defaultDataDirectory: URL,
+        settings: [SettingSection],
+        dataLocationContext: DataLocationSettingContext,
+        actionHandler: @escaping ((SettingAction) -> Void),
+        dateInputHandler: @escaping (_ viewController: UIViewController, _ title: String, _ format: String) async -> Date?,
+        textInputHandler: @escaping (_ viewController: UIViewController, _ title: String, _ keyboardType: UIKeyboardType) async -> String?,
+        rendererInfoProvider: @escaping () async -> String
+    ) {
+        self.core = core
+        self.executor = executor
+        self.userDefaults = userDefaults
+        self.bundle = bundle
+        self.defaultDataDirectory = defaultDataDirectory
+        self.settings = settings
+        self.dataLocationContext = dataLocationContext
+        self.actionHandler = actionHandler
+        self.dateInputHandler = dateInputHandler
+        self.textInputHandler = textInputHandler
+        self.rendererInfoProvider = rendererInfoProvider
+        super.init(nibName: nil, bundle: nil)
+    }
+    #else
     public init(
         core: AppCore,
         executor: AsyncProviderExecutor,
@@ -105,6 +143,7 @@ public class SettingsCoordinatorController: UIViewController {
         self.openSubscriptionManagement = openSubscriptionManagement
         super.init(nibName: nil, bundle: nil)
     }
+    #endif
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -153,6 +192,7 @@ private extension SettingsCoordinatorController {
                 viewController = TextViewController(title: item.name, text: renderInfo)
             case .dataLocation:
                 viewController = DataLocationSelectionViewController(userDefaults: dataLocationContext.userDefaults, dataDirectoryUserDefaultsKey: dataLocationContext.dataDirectoryUserDefaultsKey, configFileUserDefaultsKey: dataLocationContext.configFileUserDefaultsKey, defaultDataDirectoryURL: dataLocationContext.defaultDataDirectoryURL, defaultConfigFileURL: dataLocationContext.defaultConfigFileURL)
+            #if !os(visionOS)
             case .frameRate:
                 viewController = SettingsFrameRateViewController(screen: self.screenProvider(), userDefaults: userDefaults, userDefaultsKey: frameRateContext.frameRateUserDefaultsKey, frameRateUpdateHandler: { [weak self] newFrameRate in
                     self?.actionHandler(.refreshFrameRate(newFrameRate: newFrameRate))
@@ -175,6 +215,7 @@ private extension SettingsCoordinatorController {
                 } else {
                     fatalError()
                 }
+            #endif
             case .slider, .prefSwitch, .checkmark, .action, .custom, .keyedSelection, .prefSelection, .selection, .prefSlider:
                 fatalError("Use .common for slider/action setting item.")
             }

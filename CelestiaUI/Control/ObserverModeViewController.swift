@@ -91,7 +91,9 @@ private extension ObserverModeViewController {
         }
         tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         tableView.register(LinkFooterView.self, forHeaderFooterViewReuseIdentifier: "Footer")
+        #if !os(visionOS)
         tableView.keyboardDismissMode = .interactive
+        #endif
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: CelestiaString("OK", comment: ""), style: .plain, target: self, action: #selector(applyObserverMode))
     }
