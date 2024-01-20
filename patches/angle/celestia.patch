@@ -1,0 +1,247 @@
+diff --git a/src/celengine/glsupport.cpp b/src/celengine/glsupport.cpp
+index 17a9ca6e..e990eacb 100644
+--- a/src/celengine/glsupport.cpp
++++ b/src/celengine/glsupport.cpp
+@@ -4,6 +4,10 @@
+ 
+ namespace celestia::gl
+ {
++static int
++epoxy_gl_version(void);
++static bool
++epoxy_has_gl_extension(const char *ext);
+ 
+ #ifdef GL_ES
+ CELAPI bool OES_vertex_array_object        = false;
+@@ -137,4 +141,100 @@ void disableGeomShaders() noexcept
+     EnableGeomShaders = false;
+ }
+ 
++// Taken from libepoxy
++static int
++epoxy_internal_gl_version(GLenum version_string, int error_version, int factor);
++static bool
++epoxy_internal_has_gl_extension(const char *ext, bool invalid_op_mode);
++
++static int
++epoxy_gl_version(void)
++{
++    return epoxy_internal_gl_version(GL_VERSION, 0, 10);
++}
++
++bool
++epoxy_has_gl_extension(const char *ext)
++{
++    return epoxy_internal_has_gl_extension(ext, false);
++}
++
++static int
++epoxy_internal_gl_version(GLenum version_string, int error_version, int factor)
++{
++    const char *version = (const char *)glGetString(version_string);
++    GLint major, minor;
++    int scanf_count;
++
++    if (!version)
++        return error_version;
++
++    /* skip to version number */
++    while (!isdigit(*version) && *version != '\0')
++        version++;
++
++    /* Interpret version number */
++    scanf_count = sscanf(version, "%i.%i", &major, &minor);
++    if (scanf_count != 2) {
++        fprintf(stderr, "Unable to interpret GL_VERSION string: %s\n",
++                version);
++        abort();
++    }
++
++    return factor * major + minor;
++}
++
++static bool
++epoxy_extension_in_string(const char *extension_list, const char *ext)
++{
++    const char *ptr = extension_list;
++    int len;
++
++    if (!ext)
++        return false;
++
++    len = strlen(ext);
++
++    if (extension_list == NULL || *extension_list == '\0')
++        return false;
++
++    /* Make sure that don't just find an extension with our name as a prefix. */
++    while (true) {
++        ptr = strstr(ptr, ext);
++        if (!ptr)
++            return false;
++
++        if (ptr[len] == ' ' || ptr[len] == 0)
++            return true;
++        ptr += len;
++    }
++}
++
++static bool
++epoxy_internal_has_gl_extension(const char *ext, bool invalid_op_mode)
++{
++    if (epoxy_gl_version() < 30) {
++        const char *exts = (const char *)glGetString(GL_EXTENSIONS);
++        if (!exts)
++            return invalid_op_mode;
++        return epoxy_extension_in_string(exts, ext);
++    } else {
++        int num_extensions;
++        int i;
++
++        glGetIntegerv(GL_NUM_EXTENSIONS, &num_extensions);
++        if (num_extensions == 0)
++            return invalid_op_mode;
++
++        for (i = 0; i < num_extensions; i++) {
++            const char *gl_ext = (const char *)glGetStringi(GL_EXTENSIONS, i);
++            if (!gl_ext)
++                return false;
++            if (strcmp(ext, gl_ext) == 0)
++                return true;
++        }
++
++        return false;
++    }
++}
+ } // end namespace celestia::gl
+diff --git a/src/celengine/glsupport.h b/src/celengine/glsupport.h
+index dce2d254..5ed614ce 100644
+--- a/src/celengine/glsupport.h
++++ b/src/celengine/glsupport.h
+@@ -12,7 +12,14 @@
+ #else
+ #define CELAPI
+ #endif
+-#include <epoxy/gl.h>
++#ifdef GL_ES
++#define GL_GLEXT_PROTOTYPES
++#include <GLES2/gl2.h>
++#include <GLES2/gl2ext.h>
++#include <GLES3/gl3.h>
++#include <GLES3/gl31.h>
++#include <GLES3/gl32.h>
++#endif
+ 
+ #ifdef GL_ES
+ #ifdef glDepthRange
+diff --git a/src/celscript/lua/celx_gl.cpp b/src/celscript/lua/celx_gl.cpp
+index cc166b93..bd615de7 100644
+--- a/src/celscript/lua/celx_gl.cpp
++++ b/src/celscript/lua/celx_gl.cpp
+@@ -186,7 +186,7 @@ static int gl_Enable(lua_State* l)
+     CelxLua celx(l);
+     celx.checkArgs(1, 1, "One argument expected for gl.Enable()");
+     int i = (int)celx.safeGetNumber(1, WrongType, "argument 1 to gl.Enable must be a number", 0.0);
+-    glEnable(i);
++    fpcEnable(i);
+     return 0;
+ }
+ 
+@@ -195,7 +195,7 @@ static int gl_Disable(lua_State* l)
+     CelxLua celx(l);
+     celx.checkArgs(1, 1, "One argument expected for gl.Disable()");
+     int i = (int)celx.safeGetNumber(1, WrongType, "argument 1 to gl.Disable must be a number", 0.0);
+-    glDisable(i);
++    fpcDisable(i);
+     return 0;
+ }
+ 
+diff --git a/src/celscript/lua/celx_misc.cpp b/src/celscript/lua/celx_misc.cpp
+index 010992fd..01836ed8 100644
+--- a/src/celscript/lua/celx_misc.cpp
++++ b/src/celscript/lua/celx_misc.cpp
+@@ -214,8 +214,8 @@ static int font_render(lua_State* l)
+     const char* s = celx.safeGetString(2, AllErrors, "First argument to font:render must be a string");
+     const auto* font = celx.getThis<std::shared_ptr<TextureFont>>();
+     Eigen::Matrix4f p, m;
+-    glGetFloatv(GL_PROJECTION_MATRIX, p.data());
+-    glGetFloatv(GL_MODELVIEW_MATRIX, m.data());
++    fpcGetFloatv(GL_PROJECTION_MATRIX, p.data());
++    fpcGetFloatv(GL_MODELVIEW_MATRIX, m.data());
+     TextLayout layout;
+     layout.setFont(*font);
+     layout.begin(p, m);
+diff --git a/src/celscript/lua/glcompat.cpp b/src/celscript/lua/glcompat.cpp
+index bf8cc4f0..a7af11b8 100644
+--- a/src/celscript/lua/glcompat.cpp
++++ b/src/celscript/lua/glcompat.cpp
+@@ -482,7 +482,7 @@ void fpcGetFloatv(GLenum pname, GLfloat *params) noexcept
+         memcpy(params, g_projectionStack[g_projectionPosition].data(), 16*sizeof(float));
+         break;
+     default:
+-        orig_glGetFloatv(pname, params);
++        glGetFloatv(pname, params);
+         break;
+     }
+ }
+@@ -495,7 +495,7 @@ void fpcEnable(GLenum param) noexcept
+     case GL_LINE_SMOOTH:
+ #endif
+     case GL_BLEND:
+-        orig_glEnable(param);
++        glEnable(param);
+     default:
+         break;
+     }
+@@ -509,7 +509,7 @@ void fpcDisable(GLenum param) noexcept
+     case GL_LINE_SMOOTH:
+ #endif
+     case GL_BLEND:
+-        orig_glDisable(param);
++        glDisable(param);
+     default:
+         break;
+     }
+diff --git a/src/celscript/lua/glcompat.h b/src/celscript/lua/glcompat.h
+index 387f0b90..d6e0785d 100644
+--- a/src/celscript/lua/glcompat.h
++++ b/src/celscript/lua/glcompat.h
+@@ -11,10 +11,6 @@
+ 
+ #pragma once
+ 
+-#ifndef EPOXY_GL_H
+-#error "glcompat.h must be included after epoxy/gl.h"
+-#endif
+-
+ #ifndef GL_PROJECTION
+ #define GL_PROJECTION 0x1701
+ #endif
+@@ -88,27 +84,6 @@
+ #endif
+ #define glOrtho(l,r,b,t,n,f) fpcOrtho(l,r,b,t,n,f)
+ 
+-#define orig_glGetFloatv(n,m) epoxy_glGetFloatv(n,m)
+-
+-#ifdef glGetFloatv
+-#undef glGetFloatv
+-#endif
+-#define glGetFloatv(n,m) fpcGetFloatv(n,m)
+-
+-#define orig_glEnable(i) epoxy_glEnable(i)
+-
+-#ifdef glEnable
+-#undef glEnable
+-#endif
+-#define glEnable(i) fpcEnable(i)
+-
+-#define orig_glDisable(i) epoxy_glDisable(i)
+-
+-#ifdef glDisable
+-#undef glDisable
+-#endif
+-#define glDisable(i) fpcDisable(i)
+-
+ #ifdef glBegin
+ #undef glBegin
+ #endif

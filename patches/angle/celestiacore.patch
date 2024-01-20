@@ -1,0 +1,42 @@
+diff --git a/Configurations/Common.xcconfig b/Configurations/Common.xcconfig
+index 083f0b5..4ff4cb9 100644
+--- a/Configurations/Common.xcconfig
++++ b/Configurations/Common.xcconfig
+@@ -31,6 +31,6 @@ THIRD_PARTY_LIB_PATH[sdk=macosx*] = $(THIRD_PARTY_LIB_PATH_MACCATALYST_$(IS_MACC
+ THIRD_PARTY_LIB_PATH[sdk=iphoneos*] = $(PROJECT_DIR)/libs/dependency/ios
+ THIRD_PARTY_LIB_PATH[sdk=iphonesimulator*] = $(PROJECT_DIR)/libs/dependency/iossim
+ 
+-SYSTEM_HEADER_SEARCH_PATHS = $(PROJECT_DIR) $(PROJECT_DIR)/../Celestia/src $(THIRD_PARTY_LIB_PATH)/include $(THIRD_PARTY_LIB_PATH)/include/miniaudio $(THIRD_PARTY_LIB_PATH)/include/meshoptimizer $(THIRD_PARTY_LIB_PATH)/include/eigen3 $(THIRD_PARTY_LIB_PATH)/include/lua $(THIRD_PARTY_LIB_PATH)/include/gettext $(THIRD_PARTY_LIB_PATH)/include/jpeg $(THIRD_PARTY_LIB_PATH)/include/libpng $(THIRD_PARTY_LIB_PATH)/include/cspice $(THIRD_PARTY_LIB_PATH)/include/freetype/freetype2 $(THIRD_PARTY_LIB_PATH)/include/icu $(THIRD_PARTY_LIB_PATH)/include/libepoxy
++SYSTEM_HEADER_SEARCH_PATHS = $(PROJECT_DIR) $(PROJECT_DIR)/../Celestia/src $(THIRD_PARTY_LIB_PATH)/include $(THIRD_PARTY_LIB_PATH)/include/miniaudio $(THIRD_PARTY_LIB_PATH)/include/meshoptimizer $(THIRD_PARTY_LIB_PATH)/include/eigen3 $(THIRD_PARTY_LIB_PATH)/include/lua $(THIRD_PARTY_LIB_PATH)/include/gettext $(THIRD_PARTY_LIB_PATH)/include/jpeg $(THIRD_PARTY_LIB_PATH)/include/libpng $(THIRD_PARTY_LIB_PATH)/include/cspice $(THIRD_PARTY_LIB_PATH)/include/freetype/freetype2 $(THIRD_PARTY_LIB_PATH)/include/icu $(THIRD_PARTY_LIB_PATH)/include/angle
+ 
+ STRIP_INSTALLED_PRODUCT = NO
+diff --git a/Configurations/Debug.xcconfig b/Configurations/Debug.xcconfig
+index d057783..446bd4a 100644
+--- a/Configurations/Debug.xcconfig
++++ b/Configurations/Debug.xcconfig
+@@ -11,9 +11,6 @@
+ 
+ #include "Common.xcconfig"
+ 
+-PREPROCESSOR_BASE = DEBUG=1 ENABLE_NLS USE_SPICE USE_MINIAUDIO CELX USE_ICU HAVE_MESHOPTIMIZER
++PREPROCESSOR_BASE = DEBUG=1 ENABLE_NLS USE_SPICE USE_MINIAUDIO CELX USE_ICU HAVE_MESHOPTIMIZER GL_ES
+ 
+ GCC_PREPROCESSOR_DEFINITIONS = $(PREPROCESSOR_BASE)
+-GCC_PREPROCESSOR_DEFINITIONS[sdk=macosx*] = $(PREPROCESSOR_BASE)
+-GCC_PREPROCESSOR_DEFINITIONS[sdk=iphoneos*] = $(PREPROCESSOR_BASE) GL_ES
+-GCC_PREPROCESSOR_DEFINITIONS[sdk=iphonesimulator*] = $(PREPROCESSOR_BASE) GL_ES
+diff --git a/Configurations/Release.xcconfig b/Configurations/Release.xcconfig
+index 1abc2ed..9ae8780 100644
+--- a/Configurations/Release.xcconfig
++++ b/Configurations/Release.xcconfig
+@@ -11,9 +11,6 @@
+ 
+ #include "Common.xcconfig"
+ 
+-PREPROCESSOR_BASE = NDEBUG NO_DEBUG EIGEN_NO_DEBUG ENABLE_NLS USE_SPICE USE_MINIAUDIO CELX USE_ICU HAVE_MESHOPTIMIZER
++PREPROCESSOR_BASE = NDEBUG NO_DEBUG EIGEN_NO_DEBUG ENABLE_NLS USE_SPICE USE_MINIAUDIO CELX USE_ICU HAVE_MESHOPTIMIZER GL_ES
+ 
+ GCC_PREPROCESSOR_DEFINITIONS = $(PREPROCESSOR_BASE)
+-GCC_PREPROCESSOR_DEFINITIONS[sdk=macosx*] = $(PREPROCESSOR_BASE)
+-GCC_PREPROCESSOR_DEFINITIONS[sdk=iphoneos*] = $(PREPROCESSOR_BASE) GL_ES
+-GCC_PREPROCESSOR_DEFINITIONS[sdk=iphonesimulator*] = $(PREPROCESSOR_BASE) GL_ES

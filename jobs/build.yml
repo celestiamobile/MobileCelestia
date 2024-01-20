@@ -54,44 +54,26 @@ jobs:
 
   - script: |
       cd Celestia
-      git cherry-pick origin/angle-$(Build.SourceBranchName)
-    displayName: 'Cherry-Pick ANGLE Commit'
-    condition: and(eq( variables['backend'], 'angle' ), ne( variables['Build.Reason'], 'PullRequest' ))
-
-  - script: |
-      cd Celestia
-      git cherry-pick origin/angle-$(System.PullRequest.TargetBranch)
-    displayName: 'Cherry-Pick ANGLE Commit (PR)'
-    condition: and(eq( variables['backend'], 'angle' ), eq( variables['Build.Reason'], 'PullRequest' ))
+      git apply ../MobileCelestia/patches/angle/celestia.patch --ignore-whitespace --whitespace=nowarn
+    displayName: 'Apply ANGLE Patches (1)'
+    condition: eq( variables['backend'], 'angle' )
 
   - script: |
       cd CelestiaCore
-      git cherry-pick origin/angle-$(Build.SourceBranchName)
-    displayName: 'Cherry-Pick ANGLE Commit (1)'
-    condition: and( eq( variables['backend'], 'angle' ), ne( variables['Build.Reason'], 'PullRequest' ))
+      git apply ../MobileCelestia/patches/angle/celestiacore.patch --ignore-whitespace --whitespace=nowarn
+    displayName: 'Apply ANGLE Patches (2)'
+    condition: eq( variables['backend'], 'angle' )
 
   - script: |
-      cd CelestiaCore
-      git cherry-pick origin/angle-$(System.PullRequest.TargetBranch)
-    displayName: 'Cherry-Pick ANGLE Commit (1) (PR)'
-    condition: and(eq( variables['backend'], 'angle' ), eq( variables['Build.Reason'], 'PullRequest' ))
+      cd MobileCelestia
+      git apply patches/angle/mobilecelestia.patch --ignore-whitespace --whitespace=nowarn
+    displayName: 'Apply ANGLE Patches (3)'
+    condition: eq( variables['backend'], 'angle' )
 
   - script: |
       cd CelestiaContent
       git checkout 27d9de37632a384f0d6395aecbdd0c39f38e847f
     displayName: 'Checkout Content'
-
-  - script: |
-      cd MobileCelestia
-      git cherry-pick origin/angle-$(Build.SourceBranchName)
-    displayName: 'Cherry-Pick ANGLE Commit (2)'
-    condition: and(eq( variables['backend'], 'angle' ), ne( variables['Build.Reason'], 'PullRequest' ))
-
-  - script: |
-      cd MobileCelestia
-      git cherry-pick origin/angle-$(System.PullRequest.TargetBranch)
-    displayName: 'Cherry-Pick ANGLE Commit (2) (PR)'
-    condition: and(eq( variables['backend'], 'angle' ), eq( variables['Build.Reason'], 'PullRequest' ))
 
   - script: |
       mkdir -p CelestiaCore/libs/dependency/ios

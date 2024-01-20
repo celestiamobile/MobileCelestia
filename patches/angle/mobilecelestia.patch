@@ -1,0 +1,46 @@
+diff --git a/MobileCelestia.xcodeproj/project.pbxproj b/MobileCelestia.xcodeproj/project.pbxproj
+index 79f6486..d1f3882 100644
+--- a/MobileCelestia.xcodeproj/project.pbxproj
++++ b/MobileCelestia.xcodeproj/project.pbxproj
+@@ -1725,7 +1725,6 @@
+ 					"-ljpeg",
+ 					"-lfreetype",
+ 					"-lintl",
+-					"-lGL",
+ 					"$(THIRD_PARTY_LIB_PATH)/libs/cspice.a",
+ 				);
+ 				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.MobileCelestia;
+@@ -1775,7 +1774,6 @@
+ 					"-ljpeg",
+ 					"-lfreetype",
+ 					"-lintl",
+-					"-lGL",
+ 					"$(THIRD_PARTY_LIB_PATH)/libs/cspice.a",
+ 				);
+ 				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.MobileCelestia;
+diff --git a/MobileCelestia/Celestia/CelestiaDisplayController.swift b/MobileCelestia/Celestia/CelestiaDisplayController.swift
+index a2d1637..be599f7 100644
+--- a/MobileCelestia/Celestia/CelestiaDisplayController.swift
++++ b/MobileCelestia/Celestia/CelestiaDisplayController.swift
+@@ -60,7 +60,7 @@ class CelestiaDisplayController: AsyncGLViewController {
+ 
+     init(msaaEnabled: Bool, screen: UIScreen, initialFrameRate frameRate: Int, executor: AsyncGLExecutor, subscriptionManager: SubscriptionManager) {
+ #if targetEnvironment(macCatalyst)
+-        let api = AsyncGLAPI.openGLLegacy
++        let api = AsyncGLAPI.openGLES2
+ #else
+         let api = AsyncGLAPI.openGLES2
+ #endif
+diff --git a/Podfile b/Podfile
+index b9f4bcc..c45294b 100644
+--- a/Podfile
++++ b/Podfile
+@@ -10,7 +10,7 @@ target 'MobileCelestia' do
+   pod 'ZIPFoundation', '~> 0.9.16'
+ 
+   pod "MWRequest", :git => "https://github.com/levinli303/mwrequest.git", :tag => "0.3.7"
+-  pod "AsyncGL/OpenGL", :git => "https://github.com/levinli303/AsyncGL.git", :tag => asyncgl_version_tag
++  pod "AsyncGL/ANGLE", :git => "https://github.com/levinli303/AsyncGL.git", :tag => asyncgl_version_tag
+ end
+ 
+ target 'CelestiaUI' do
