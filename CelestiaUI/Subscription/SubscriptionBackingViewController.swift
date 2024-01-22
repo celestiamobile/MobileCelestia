@@ -68,7 +68,9 @@ open class SubscriptionBackingViewController: UIViewController {
 
     open override func loadView() {
         let containerView = UIView()
+        #if !os(visionOS)
         containerView.backgroundColor = .systemBackground
+        #endif
 
         containerView.addSubview(emptyHintView)
         containerView.addSubview(loadingView)

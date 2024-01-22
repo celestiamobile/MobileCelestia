@@ -128,7 +128,7 @@ extension DataLocationSelectionViewController {
             loadContents()
         } else {
             let browser: UIDocumentPickerViewController
-            if #available(iOS 14, *) {
+            if #available(iOS 14, visionOS 1, *) {
                 let types = [UTType.folder, UTType.data]
                 browser = UIDocumentPickerViewController(forOpeningContentTypes: [types[indexPath.row]])
             } else {

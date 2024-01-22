@@ -26,7 +26,9 @@ public final class TextViewController: UIViewController {
 
     public override func loadView() {
         view = UIView()
+        #if !os(visionOS)
         view.backgroundColor = .systemBackground
+        #endif
     }
 
     public override func viewDidLoad() {

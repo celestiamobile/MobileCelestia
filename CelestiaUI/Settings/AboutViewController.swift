@@ -146,7 +146,7 @@ extension AboutViewController {
     public override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         let showFooter: Bool
         if section == items.count - 1 {
-            if #available(iOS 16, *) {
+            if #available(iOS 16, visionOS 1, *) {
                 showFooter = Locale.current.region == .chinaMainland
             } else {
                 showFooter = Locale.current.regionCode == "CN"

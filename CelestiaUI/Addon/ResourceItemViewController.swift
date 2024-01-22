@@ -27,7 +27,7 @@ public class ResourceItemViewController: UIViewController {
     private let needsRefetchItem: Bool
 
     private lazy var progressView: UIProgressView = {
-        if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
+        if #available(iOS 14, *), traitCollection.userInterfaceIdiom == .mac {
             return UIProgressView(progressViewStyle: .default)
         } else {
             return UIProgressView(progressViewStyle: .bar)
@@ -35,7 +35,7 @@ public class ResourceItemViewController: UIViewController {
     }()
     private lazy var statusButton = ActionButtonHelper.newButton()
     private lazy var statusButtonContainer: UIView = {
-        if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
+        if #available(iOS 14, *), traitCollection.userInterfaceIdiom == .mac {
             let stackView = UIStackView(arrangedSubviews: [progressView, statusButton])
             stackView.axis = .horizontal
             stackView.spacing = GlobalConstants.pageMediumGapHorizontal
@@ -80,7 +80,7 @@ public class ResourceItemViewController: UIViewController {
         userActivity.isEligibleForPrediction = true
         userActivity.isEligibleForPublicIndexing = true
         let contentAttributeSet: CSSearchableItemAttributeSet
-        if #available(iOS 14.0, *) {
+        if #available(iOS 14, visionOS 1, *) {
             contentAttributeSet = CSSearchableItemAttributeSet(contentType: .url)
         } else {
             contentAttributeSet = CSSearchableItemAttributeSet(itemContentType: kUTTypeURL as String)
@@ -232,7 +232,7 @@ private extension ResourceItemViewController {
             itemInfoController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
 
-        if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
+        if #available(iOS 14, *), traitCollection.userInterfaceIdiom == .mac {
             NSLayoutConstraint.activate([
                 itemInfoController.view.topAnchor.constraint(equalTo: view.topAnchor),
             ])
@@ -289,7 +289,7 @@ private extension ResourceItemViewController {
             progressView.isHidden = true
             progressView.progress = 0
             statusButton.setTitle(CelestiaString("Install", comment: ""), for: .normal)
-            if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
+            if #available(iOS 14, *), traitCollection.userInterfaceIdiom == .mac {
             } else {
                 scrollViewTopToProgressViewBottomConstrant?.isActive = false
                 scrollViewTopToViewTopConstrant?.isActive = true
@@ -297,7 +297,7 @@ private extension ResourceItemViewController {
         case .downloading:
             progressView.isHidden = false
             statusButton.setTitle(CelestiaString("Cancel", comment: ""), for: .normal)
-            if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
+            if #available(iOS 14, *), traitCollection.userInterfaceIdiom == .mac {
             } else {
                 scrollViewTopToViewTopConstrant?.isActive = false
                 scrollViewTopToProgressViewBottomConstrant?.isActive = true
@@ -306,7 +306,7 @@ private extension ResourceItemViewController {
             progressView.isHidden = true
             progressView.progress = 0
             statusButton.setTitle(CelestiaString("Uninstall", comment: ""), for: .normal)
-            if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
+            if #available(iOS 14, *), traitCollection.userInterfaceIdiom == .mac {
             } else {
                 scrollViewTopToProgressViewBottomConstrant?.isActive = false
                 scrollViewTopToViewTopConstrant?.isActive = true

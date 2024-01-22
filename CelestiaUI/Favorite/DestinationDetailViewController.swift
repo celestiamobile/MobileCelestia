@@ -37,7 +37,9 @@ class DestinationDetailViewController: UIViewController {
 
     override func loadView() {
         view = UIView()
+        #if !os(visionOS)
         view.backgroundColor = .systemBackground
+        #endif
 
         setup()
     }

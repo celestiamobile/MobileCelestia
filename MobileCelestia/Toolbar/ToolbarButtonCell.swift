@@ -193,7 +193,7 @@ class ToolbarImageTextButtonCell: UITableViewCell, ToolbarCell {
     }
 
     private func setUp() {
-        if #available(iOS 15.0, *) {
+        if #available(iOS 15, *) {
             background.focusEffect = UIFocusEffect()
         }
         background.translatesAutoresizingMaskIntoConstraints = false

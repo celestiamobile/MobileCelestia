@@ -51,7 +51,7 @@ class FallbackStepper: UIControl {
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
 
-        if #available(iOS 17, *) {
+        if #available(iOS 17, visionOS 1, *) {
         } else {
             if traitCollection.layoutDirection != previousTraitCollection?.layoutDirection {
                 updateViewCorners()
@@ -228,7 +228,7 @@ class FallbackStepper: UIControl {
             plusSignImageView.centerYAnchor.constraint(equalTo: trailingBackgroundView.centerYAnchor),
         ])
 
-        if #available(iOS 17, *) {
+        if #available(iOS 17, visionOS 1, *) {
             registerForTraitChanges([UITraitLayoutDirection.self]) { (self: Self, _) in
                 self.updateViewCorners()
             }

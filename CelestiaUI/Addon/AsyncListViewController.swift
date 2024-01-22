@@ -138,7 +138,7 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
         let item = indexPath.section == 0 ? items[indexPath.row] : additionalItem!
         if Self.useStandardUITableViewCell {
             let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath)
-            if #available(iOS 14, *) {
+            if #available(iOS 14, visionOS 1, *) {
                 var configuration = UIListContentConfiguration.sidebarCell()
                 configuration.text = item.name
                 cell.contentConfiguration = configuration

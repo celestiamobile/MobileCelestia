@@ -22,16 +22,13 @@ public protocol ToolbarAwareViewController: UIViewController {
 #if targetEnvironment(macCatalyst)
 public extension ToolbarAwareViewController {
     func insertSpaceBeforeToolbarItems(for toolbarContainerViewController: ToolbarContainerViewController) -> Bool {
-        if #available(iOS 13, *) {
-            return true
-        }
-        return false
+        return true
     }
 }
 #endif
 
 #if targetEnvironment(macCatalyst)
-@available(iOS 16.0, *)
+@available(iOS 16, *)
 public enum ToolbarFallbackStyle {
     case none
     case sidebar
@@ -132,7 +129,7 @@ open class ToolbarNavigationContainerController: UIViewController, ToolbarContai
         }
     }
 
-    @available(iOS 16.0, *)
+    @available(iOS 16, *)
     open var fallbackStyle: ToolbarFallbackStyle {
         return .none
     }
@@ -191,13 +188,13 @@ open class ToolbarNavigationContainerController: UIViewController, ToolbarContai
 
 #if targetEnvironment(macCatalyst)
 protocol ToolbarAwareNavigationControllerDelegate: UINavigationControllerDelegate {
-    @available(iOS 16.0, *)
+    @available(iOS 16, *)
     func fallbackStyleForNavigationController(_ navigationController: UINavigationController) -> ToolbarFallbackStyle
 }
 
 private class ToolbarAwareNavigationController: UINavigationController {}
 
-@available(iOS 16.0, *)
+@available(iOS 16, *)
 extension ToolbarAwareNavigationController: UINavigationBarDelegate {
     public func navigationBarNSToolbarSection(_ navigationBar: UINavigationBar) -> UINavigationBar.NSToolbarSection {
         if let delegate = self.delegate as? ToolbarAwareNavigationControllerDelegate {
@@ -218,7 +215,7 @@ extension ToolbarNavigationContainerController: ToolbarAwareNavigationController
         _updateToolbar(for: viewController)
     }
 
-    @available(iOS 16.0, *)
+    @available(iOS 16, *)
     func fallbackStyleForNavigationController(_ navigationController: UINavigationController) -> ToolbarFallbackStyle {
         if nsToolbar == nil {
             return fallbackStyle
@@ -249,7 +246,7 @@ extension ToolbarNavigationContainerController: NSToolbarDelegate {
     }
 }
 
-@available(iOS 16.0, *)
+@available(iOS 16, *)
 extension UINavigationBar.NSToolbarSection {
     init(style: ToolbarFallbackStyle) {
         switch style {
@@ -398,19 +395,19 @@ open class ToolbarSplitContainerController: UIViewController, ToolbarContainerVi
     private var secondaryNavigation: UINavigationController?
     private var titleObservation: NSKeyValueObservation?
 
-    @available(iOS 14.0, *)
+    @available(iOS 14, *)
     public var preferredDisplayMode: UISplitViewController.DisplayMode {
         get { split.preferredDisplayMode }
         set { split.preferredDisplayMode = newValue }
     }
 
-    @available(iOS 14.0, *)
+    @available(iOS 14, *)
     public var minimumPrimaryColumnWidth: CGFloat {
         get { split.minimumPrimaryColumnWidth }
         set { split.minimumPrimaryColumnWidth = newValue }
     }
 
-    @available(iOS 14.0, *)
+    @available(iOS 14, *)
     public var maximumPrimaryColumnWidth: CGFloat {
         get { split.maximumPrimaryColumnWidth }
         set { split.maximumPrimaryColumnWidth = newValue }
@@ -462,7 +459,7 @@ open class ToolbarSplitContainerController: UIViewController, ToolbarContainerVi
         }
         newNavigation.delegate = self
         sidebarNavigation = newNavigation
-        if #available(iOS 14.0, *) {
+        if #available(iOS 14, *) {
             split.setViewController(newNavigation, for: .primary)
         } else {
             split.viewControllers = [newNavigation, secondaryNavigation].compactMap { $0 }
@@ -483,7 +480,7 @@ open class ToolbarSplitContainerController: UIViewController, ToolbarContainerVi
         }
         newNavigation.delegate = self
         secondaryNavigation = newNavigation
-        if #available(iOS 14.0, *) {
+        if #available(iOS 14, *) {
             split.setViewController(newNavigation, for: .secondary)
         } else {
             split.viewControllers = [sidebarNavigation, newNavigation].compactMap { $0 }
@@ -558,7 +555,7 @@ open class ToolbarSplitContainerController: UIViewController, ToolbarContainerVi
 
 extension ToolbarSplitContainerController: NSToolbarDelegate {
     public func toolbarAllowedItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
-        if #available(iOS 14.0, *) {
+        if #available(iOS 14, *) {
             if #available(iOS 17, *) {
                 return [.toggleSidebar, .primarySidebarTrackingSeparatorItemIdentifier, .back] + currentToolbarItemIdentifiers
             }
@@ -569,7 +566,7 @@ extension ToolbarSplitContainerController: NSToolbarDelegate {
 
     public func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
         var items = [NSToolbarItem.Identifier]()
-        if #available(iOS 14.0, *), secondaryNavigation != nil && sidebarNavigation != nil {
+        if #available(iOS 14, *), secondaryNavigation != nil && sidebarNavigation != nil {
             items.append(.toggleSidebar)
             if #available(iOS 17, *) {
                 items.append(.primarySidebarTrackingSeparatorItemIdentifier)
@@ -609,7 +606,7 @@ extension ToolbarSplitContainerController: ToolbarAwareNavigationControllerDeleg
         }
     }
 
-    @available(iOS 16.0, *)
+    @available(iOS 16, *)
     func fallbackStyleForNavigationController(_ navigationController: UINavigationController) -> ToolbarFallbackStyle {
         return .none
     }

@@ -22,6 +22,10 @@ public enum ObjectAction {
     case mark
 }
 
+public enum ExternalObjectAction {
+    case subsystem
+}
+
 private extension ObjectAction {
     static var allCases: [ObjectAction] {
         return [.select] + CelestiaAction.allCases.map { ObjectAction.wrapped(action: $0) }
@@ -34,21 +38,22 @@ final public class InfoViewController: UICollectionViewController {
     }
 
     private let core: AppCore
+    private let executor: AsyncProviderExecutor
     private let showNavigationTitle: Bool
-    private let backgroundColor: UIColor
+    private let backgroundColor: UIColor?
     private var info: Selection
     private var bodyInfo: BodyInfo
     private var bodyInfoNeedsUpdating = false
 
-    public var selectionHandler: ((UIViewController, Selection, ObjectAction, UIView) -> Void)?
-    public var menuProvider: ((ObjectAction) -> UIMenu?)?
+    public var selectionHandler: ((Selection, ExternalObjectAction) -> Void)?
 
     private var actions: [ObjectAction] = []
 
     private var linkMetaData: LPLinkMetadata?
 
-    public init(info: Selection, core: AppCore, showNavigationTitle: Bool, backgroundColor: UIColor) {
+    public init(info: Selection, core: AppCore, executor: AsyncProviderExecutor, showNavigationTitle: Bool, backgroundColor: UIColor?) {
         self.core = core
+        self.executor = executor
         self.info = info
         self.showNavigationTitle = showNavigationTitle
         self.backgroundColor = backgroundColor
@@ -59,7 +64,7 @@ final public class InfoViewController: UICollectionViewController {
             title = bodyInfo.name
         }
 
-        if #available(iOS 17, *) {
+        if #available(iOS 17, visionOS 1, *) {
             registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { (self: Self, _) in
                 self.collectionView.collectionViewLayout.invalidateLayout()
             }
@@ -135,7 +140,7 @@ final public class InfoViewController: UICollectionViewController {
     public override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
 
-        if #available(iOS 17, *) {
+        if #available(iOS 17, visionOS 1, *) {
         } else {
             if traitCollection.preferredContentSizeCategory != previousTraitCollection?.preferredContentSizeCategory {
                 collectionView.collectionViewLayout.invalidateLayout()
@@ -152,7 +157,9 @@ final public class InfoViewController: UICollectionViewController {
 
 private extension InfoViewController {
     func setup() {
-        view.backgroundColor = backgroundColor
+        if let backgroundColor {
+            view.backgroundColor = backgroundColor
+        }
         (collectionView.collectionViewLayout as! UICollectionViewFlowLayout).estimatedItemSize = CGSize(width: 1, height: 1)
         collectionView.register(BodyDescriptionCell.self, forCellWithReuseIdentifier: "Description")
         collectionView.register(BodyActionCell.self, forCellWithReuseIdentifier: "Action")
@@ -192,11 +199,111 @@ extension InfoViewController {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Action", for: indexPath) as! BodyActionCell
         let action = actions[indexPath.item]
         cell.title = action.description
-        cell.menu = menuProvider?(action)
-        cell.actionHandler = { [unowned self] view in
-            self.selectionHandler?(self, self.info, action, view)
+        switch action {
+        case .alternateSurfaces:
+            cell.menu = menuForActions(alternativeSurfaceActions(selection: info))
+        case .mark:
+            cell.menu = menuForActions(markActions(selection: info))
+        default:
+            break
+        }
+        cell.actionHandler = { [weak self] sourceView in
+            guard let self else { return }
+            self.handleAction(selection: self.info, action: action, sourceView: view)
         }
         return cell
+    }
+
+    private struct Action {
+        let title: String
+        let action: () -> Void
+    }
+
+    private func menuForActions(_ actions: [Action]) -> UIMenu? {
+        guard !actions.isEmpty else { return nil }
+        return UIMenu(children: actions.map({ action in
+            return UIAction(title: action.title) { _ in
+                action.action()
+            }
+        }))
+    }
+
+    private func markActions(selection: Selection) -> [Action] {
+        let options = (0...MarkerRepresentation.crosshair.rawValue).map{ MarkerRepresentation(rawValue: $0)?.localizedTitle ?? "" } + [CelestiaString("Unmark", comment: "")]
+        return options.enumerated().map { index, option in
+            return Action(title: option) { [weak self] in
+                guard let self else { return }
+                if let marker = MarkerRepresentation(rawValue: UInt(index)) {
+                    Task {
+                        await self.executor.run { core in
+                            core.simulation.universe.mark(selection, with: marker)
+                            core.showMarkers = true
+                        }
+                    }
+                } else {
+                    Task {
+                        await self.executor.run { core in
+                            core.simulation.universe.unmark(selection)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private func alternativeSurfaceActions(selection: Selection) -> [Action] {
+        let alternativeSurfaces = selection.body?.alternateSurfaceNames ?? []
+        return if alternativeSurfaces.isEmpty {
+            []
+        } else {
+            ([CelestiaString("Default", comment: "")] + alternativeSurfaces).enumerated().map { index, option in
+                return Action(title: option) { [weak self] in
+                    guard let self else { return }
+                    if index == 0 {
+                        Task {
+                            await self.executor.run { $0.simulation.activeObserver.displayedSurface = "" }
+                        }
+                        return
+                    }
+                    Task {
+                        await self.executor.run { $0.simulation.activeObserver.displayedSurface = alternativeSurfaces[index - 1] }
+                    }
+                }
+            }
+        }
+    }
+
+    private func handleAction(selection: Selection, action: ObjectAction, sourceView: UIView) {
+        switch action {
+        case .select:
+            Task {
+                await self.executor.run { $0.simulation.selection = selection }
+            }
+        case .wrapped(let cac):
+            Task {
+                await self.executor.run { core in
+                    core.simulation.selection = selection
+                    core.receive(cac)
+                }
+            }
+        case .web(let url):
+            UIApplication.shared.open(url)
+        case .subsystem:
+            selectionHandler?(selection, .subsystem)
+        case .alternateSurfaces:
+            showActionSheet(title: CelestiaString("Alternate Surfaces", comment: ""), actions: alternativeSurfaceActions(selection: selection), from: sourceView)
+        case .mark:
+            showActionSheet(title: CelestiaString("Mark", comment: ""), actions: markActions(selection: selection), from: sourceView)
+        }
+    }
+
+    private func showActionSheet(title: String, actions: [Action], from sourceView: UIView) {
+        guard !actions.isEmpty else { return }
+
+        showSelection(title, options: actions.map({ $0.title }), source: .view(view: sourceView, sourceRect: nil)) { index in
+            guard let index, index >= 0, index < actions.count else { return }
+            actions[index].action()
+        }
     }
 }
 
@@ -349,5 +456,44 @@ extension InfoViewController: UICollectionViewDelegateFlowLayout {
             return UIEdgeInsets(top: GlobalConstants.pageMediumMarginVertical, left: horizontal, bottom: GlobalConstants.pageMediumGapVertical, right: horizontal)
         }
         return UIEdgeInsets(top: 0, left: horizontal, bottom: GlobalConstants.pageMediumMarginVertical, right: horizontal)
+    }
+}
+
+extension MarkerRepresentation {
+    var localizedTitle: String {
+        return CelestiaString(unlocalizedTitle, comment: "")
+    }
+
+    private var unlocalizedTitle: String {
+        switch self {
+        case .circle:
+            return "Circle"
+        case .triangle:
+            return "Triangle"
+        case .plus:
+            return "Plus"
+        case .X:
+            return "X"
+        case .crosshair:
+            return "Crosshair"
+        case .diamond:
+            return "Diamond"
+        case .disk:
+            return "Disk"
+        case .filledSquare:
+            return "Filled Square"
+        case .leftArrow:
+            return "Left Arrow"
+        case .upArrow:
+            return "Up Arrow"
+        case .rightArrow:
+            return "Right Arrow"
+        case .downArrow:
+            return "Down Arrow"
+        case .square:
+            return "Square"
+        @unknown default:
+            return "Unknown"
+        }
     }
 }

@@ -14,7 +14,7 @@ import UIKit
 open class BaseTableViewController: UITableViewController {
     public override func loadView() {
         super.loadView()
-
+        #if !os(visionOS)
         if tableView.style == .plain {
             tableView.backgroundColor = .systemBackground
         } else if tableView.style == .grouped {
@@ -22,6 +22,7 @@ open class BaseTableViewController: UITableViewController {
         } else if tableView.style == .insetGrouped {
             tableView.backgroundColor = .systemGroupedBackground
         }
+        #endif
         tableView.separatorColor = .separator
         tableView.estimatedRowHeight = GlobalConstants.baseCellHeight
     }

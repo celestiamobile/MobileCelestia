@@ -321,7 +321,7 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: BaseTableViewContr
 
         #if !targetEnvironment(macCatalyst)
         addBarButtonItem.isEnabled = !editing
-        if #available(iOS 16.0, *) {
+        if #available(iOS 16, visionOS 1, *) {
             addBarButtonItem.isHidden = editing
         }
         #else

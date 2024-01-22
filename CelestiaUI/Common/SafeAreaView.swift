@@ -69,7 +69,7 @@ class SafeAreaView: UIView {
         ]
 
         let bottomConstraint = containerView.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor)
-        if #available(iOS 15, *) {
+        if #available(iOS 15, visionOS 1, *) {
             let keyboardTopConstraint = containerView.bottomAnchor.constraint(equalTo: keyboardLayoutGuide.topAnchor)
             keyboardTopConstraint.priority = .defaultHigh
             keyboardTopConstraint.isActive = true

@@ -122,7 +122,7 @@ public class CommonWebViewController: UIViewController {
     private func updateNavigation() {
 #if !targetEnvironment(macCatalyst)
         goBackItem.isEnabled = webView.canGoBack
-        if #available(iOS 16.0, *) {
+        if #available(iOS 16, visionOS 1, *) {
             goBackItem.isHidden = !goBackItem.isEnabled
         }
 #else

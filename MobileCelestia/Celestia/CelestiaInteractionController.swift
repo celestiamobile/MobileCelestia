@@ -565,7 +565,7 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
         }
     }
 
-    @available(iOS 14.0, *)
+    @available(iOS 14, *)
     private func contextMenuForLocation(location: CGPoint, interaction: UIContextMenuInteraction) -> UIDeferredMenuElement {
         return UIDeferredMenuElement { [weak self, weak interaction] completion in
             guard let self else {

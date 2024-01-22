@@ -11,7 +11,7 @@
 
 import UIKit
 
-@available(iOS 15.0, *)
+@available(iOS 15, visionOS 1, *)
 class DistanceInputCell: UITableViewCell {
     struct Model: Hashable {
         let units: [String]

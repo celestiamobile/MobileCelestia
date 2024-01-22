@@ -75,7 +75,9 @@ public class SearchViewController: UIViewController {
 
     public override func loadView() {
         let containerView = UIView()
+        #if !os(visionOS)
         containerView.backgroundColor = .systemBackground
+        #endif
         view = containerView
     }
 
@@ -180,7 +182,9 @@ private extension SearchViewController {
         install(resultViewController)
 
         for emptyView in [emptyViewContainer, loadingViewContainer] {
+            #if !os(visionOS)
             emptyView.backgroundColor = .systemBackground
+            #endif
             emptyView.translatesAutoresizingMaskIntoConstraints = false
             view.addSubview(emptyView)
 
@@ -197,12 +201,14 @@ private extension SearchViewController {
         navigationItem.standardAppearance = appearance
         navigationItem.compactAppearance = appearance
         navigationItem.scrollEdgeAppearance = appearance
-        if #available(iOS 15, *) {
+        if #available(iOS 15, visionOS 1, *) {
             navigationItem.compactScrollEdgeAppearance = appearance
         }
 
         #if !targetEnvironment(macCatalyst)
+        #if !os(visionOS)
         view.backgroundColor = .systemBackground
+        #endif
 
         // Configure search bar
         let searchBar = searchController.searchBar
@@ -306,7 +312,7 @@ extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
         let result = resultSections[indexPath.section].results[indexPath.row]
         if resultsInSidebar {
             let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath)
-            if #available(iOS 14.0, *) {
+            if #available(iOS 14, visionOS 1, *) {
                 var configuration = UIListContentConfiguration.sidebarCell()
                 configuration.text = result.name
                 cell.contentConfiguration = configuration

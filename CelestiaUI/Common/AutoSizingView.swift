@@ -46,7 +46,7 @@ open class AutoSizingView<View: UIView, Configuration: AutoSizingViewConfigurati
         setContentCompressionResistancePriority(.required, for: .vertical)
         apply(configuration, view: view)
 
-        if #available(iOS 17, *) {
+        if #available(iOS 17, visionOS 1, *) {
             registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { (self: Self, _) in
                 if self.adjustsFontForContentSizeCategory {
                     self.invalidateIntrinsicContentSize()
@@ -58,7 +58,7 @@ open class AutoSizingView<View: UIView, Configuration: AutoSizingViewConfigurati
     public override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
 
-        if #available(iOS 17, *) {
+        if #available(iOS 17, visionOS 1, *) {
         } else {
             if adjustsFontForContentSizeCategory, traitCollection.preferredContentSizeCategory != previousTraitCollection?.preferredContentSizeCategory {
                 invalidateIntrinsicContentSize()

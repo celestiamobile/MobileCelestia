@@ -70,13 +70,13 @@ class GoToInputViewController: BaseTableViewController {
         var detail: String { return valueString ?? "" }
     }
 
-    @available(iOS 15.0, *)
+    @available(iOS 15, visionOS 1, *)
     struct LonLatItem: GoToInputItem {
         var title: String { return "" }
         var detail: String { return "" }
     }
 
-    @available(iOS 15.0, *)
+    @available(iOS 15, visionOS 1, *)
     struct DistanceItem: GoToInputItem {
         var title: String { return "" }
         var detail: String { return "" }
@@ -198,7 +198,7 @@ private extension GoToInputViewController {
         tableView.keyboardDismissMode = .interactive
         #endif
         tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
-        if #available(iOS 15.0, *) {
+        if #available(iOS 15, visionOS 1, *) {
             tableView.register(LongitudeLatitudeInputCell.self, forCellReuseIdentifier: "LonLat")
             tableView.register(DistanceInputCell.self, forCellReuseIdentifier: "Distance")
         }
@@ -223,7 +223,7 @@ private extension GoToInputViewController {
     private func reload() {
         let distanceSection: Section
         let coordinateSection: Section
-        if #available(iOS 15.0, *) {
+        if #available(iOS 15, visionOS 1, *) {
             distanceSection = Section(title: CelestiaString("Distance", comment: ""), items: [DistanceItem()])
             coordinateSection = Section(title: CelestiaString("Coordinates", comment: ""), items: [
                 LonLatItem(),
@@ -258,7 +258,7 @@ extension GoToInputViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = allSections[indexPath.section].items[indexPath.row]
-        if #available(iOS 15.0, *), item is LonLatItem {
+        if #available(iOS 15, visionOS 1, *), item is LonLatItem {
             let cell = tableView.dequeueReusableCell(withIdentifier: "LonLat", for: indexPath) as! LongitudeLatitudeInputCell
             cell.model = LongitudeLatitudeInputCell.Model(longitude: longitude, latitude: latitude, longitudeString: longitudeString, latitudeString: latitudeString)
             cell.coordinatesChanged = { [weak self] longitude, latitude, longitudeString, latitudeString in
@@ -271,7 +271,7 @@ extension GoToInputViewController {
             }
             return cell
         }
-        if #available(iOS 15.0, *), item is DistanceItem {
+        if #available(iOS 15, visionOS 1, *), item is DistanceItem {
             let cell = tableView.dequeueReusableCell(withIdentifier: "Distance", for: indexPath) as! DistanceInputCell
             cell.model = DistanceInputCell.Model(
                 units: DistanceUnit.allCases.map({ CelestiaString($0.name, comment: "") }),

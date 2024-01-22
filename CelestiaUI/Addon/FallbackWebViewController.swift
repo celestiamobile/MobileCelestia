@@ -23,7 +23,9 @@ public class FallbackWebViewController: UIViewController {
 
     public override func loadView() {
         let container = UIView()
+        #if !os(visionOS)
         container.backgroundColor = .systemBackground
+        #endif
         view = container
     }
 

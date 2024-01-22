@@ -46,7 +46,7 @@ private extension SettingCommonViewController {
         tableView.register(TextCell.self, forCellReuseIdentifier: "Custom")
         tableView.register(SwitchCell.self, forCellReuseIdentifier: "Switch")
         tableView.register(TextCell.self, forCellReuseIdentifier: "Selection")
-        if #available(iOS 15, *) {
+        if #available(iOS 15, visionOS 1, *) {
             tableView.register(SelectionCell.self, forCellReuseIdentifier: "Selection15")
         }
         title = item.title
@@ -162,7 +162,7 @@ extension SettingCommonViewController {
         case .prefSelection:
             if let item = row.associatedItem.base as? AssociatedPreferenceSelectionItem {
                 let currentValue: Int = self.userDefaults.value(forKey: item.key) as? Int ?? item.defaultOption
-                if #available(iOS 15, *) {
+                if #available(iOS 15, visionOS 1, *) {
                     let cell = tableView.dequeueReusableCell(withIdentifier: "Selection15", for: indexPath) as! SelectionCell
                     cell.title = row.name
                     cell.selectionData = SelectionCell.SelectionData(options: item.options.map { $0.name }, selectedIndex: item.options.firstIndex(where: { $0.value == currentValue }) ?? -1)
@@ -183,7 +183,7 @@ extension SettingCommonViewController {
         case .selection:
             if let item = row.associatedItem.base as? AssociatedSelectionSingleItem {
                 let currentValue = core.value(forKey: item.key) as? Int ?? item.defaultOption
-                if #available(iOS 15, *) {
+                if #available(iOS 15, visionOS 1, *) {
                     let cell = tableView.dequeueReusableCell(withIdentifier: "Selection15", for: indexPath) as! SelectionCell
                     cell.title = row.name
                     cell.subtitle = row.subtitle
@@ -265,7 +265,7 @@ extension SettingCommonViewController {
                 }
             }
         case .prefSelection:
-            if #available(iOS 15, *) {
+            if #available(iOS 15, visionOS 1, *) {
                 break
             }
             guard let item = row.associatedItem.base as? AssociatedPreferenceSelectionItem else { break }
@@ -277,7 +277,7 @@ extension SettingCommonViewController {
             }
             navigationController?.pushViewController(vc, animated: true)
         case .selection:
-            if #available(iOS 15, *) {
+            if #available(iOS 15, visionOS 1, *) {
                 break
             }
             guard let item = row.associatedItem.base as? AssociatedSelectionSingleItem else { break }

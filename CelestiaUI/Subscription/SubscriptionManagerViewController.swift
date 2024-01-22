@@ -81,7 +81,9 @@ public class SubscriptionManagerViewController: UIViewController {
     }
     
     public override func loadView() {
+        #if !os(visionOS)
         containerView.backgroundColor = .systemBackground
+        #endif
 
         NSLayoutConstraint.activate([
             scrollContainer.contentLayoutGuide.widthAnchor.constraint(equalTo: scrollContainer.widthAnchor)
@@ -160,7 +162,7 @@ public class SubscriptionManagerViewController: UIViewController {
     }
 }
 
-@available(iOS 15.0, *)
+@available(iOS 15, *)
 private extension SubscriptionManagerViewController {
     @objc func reloadData() {
         status = .empty

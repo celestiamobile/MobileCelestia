@@ -95,7 +95,7 @@ class MainViewController: UIViewController {
         celestiaController = CelestiaViewController(screen: screen, executor: executor, userDefaults: userDefaults, subscriptionManager: subscriptionManager)
 
         #if targetEnvironment(macCatalyst)
-        if #available(iOS 14.0, *) {
+        if #available(iOS 14, *) {
             let splitViewController = ToolbarSplitContainerController()
             splitViewController.preferredDisplayMode = .secondaryOnly
             splitViewController.minimumPrimaryColumnWidth = ToolbarViewController.Constants.width
@@ -1105,60 +1105,13 @@ Device Model: \(model)
     }
 
     private func createSelectionInfoViewController(with selection: Selection, showNavigationTitle: Bool, backgroundColor: UIColor) -> InfoViewController {
-        let controller = InfoViewController(info: selection, core: core, showNavigationTitle: showNavigationTitle, backgroundColor: backgroundColor)
-        controller.selectionHandler = { [unowned self] (viewController, selection, action, sender) in
+        let controller = InfoViewController(info: selection, core: core, executor: executor, showNavigationTitle: showNavigationTitle, backgroundColor: backgroundColor)
+        controller.selectionHandler = { [weak self] selection, action in
+            guard let self else { return }
             switch action {
-            case .select:
-                self.executor.runAsynchronously { $0.simulation.selection = selection }
-            case .wrapped(let cac):
-                Task {
-                    await self.executor.selectAndReceive(selection, action: cac)
-                }
-            case .web(let url):
-                self.showWeb(url)
             case .subsystem:
                 self.showSubsystem(with: selection)
-            case .alternateSurfaces:
-                self.showAlternateSurfaces(of: selection, with: sender, viewController: viewController)
-            case .mark:
-                self.showMarkMenu(with: selection, with: sender, viewController: viewController)
             }
-        }
-        controller.menuProvider = { [unowned self] action in
-            let children: [UIAction]
-            switch action {
-            case .mark:
-                let options = (0...MarkerRepresentation.crosshair.rawValue).map{ MarkerRepresentation(rawValue: $0)?.localizedTitle ?? "" } + [CelestiaString("Unmark", comment: "")]
-                children = options.enumerated().map { index, option in
-                    return UIAction(title: option) { _ in
-                        if let marker = MarkerRepresentation(rawValue: UInt(index)) {
-                            Task {
-                                await self.executor.mark(selection, markerType: marker)
-                            }
-                        } else {
-                            self.executor.runAsynchronously { $0.simulation.universe.unmark(selection) }
-                        }
-                    }
-                }
-            case .alternateSurfaces:
-                let alternativeSurfaces = selection.body?.alternateSurfaceNames ?? []
-                if alternativeSurfaces.isEmpty {
-                    children = []
-                } else {
-                    children = ([CelestiaString("Default", comment: "")] + alternativeSurfaces).enumerated().map { index, option in
-                        return UIAction(title: option) { _ in
-                            if index == 0 {
-                                self.executor.runAsynchronously { $0.simulation.activeObserver.displayedSurface = "" }
-                                return
-                            }
-                            self.executor.runAsynchronously { $0.simulation.activeObserver.displayedSurface = alternativeSurfaces[index - 1] }
-                        }
-                    }
-                }
-            default:
-                children = []
-            }
-            return children.isEmpty ? nil : UIMenu(children: children)
         }
         return controller
     }
@@ -1321,7 +1274,7 @@ extension UIViewController {
 extension MainViewController {
     private func saveFile(_ url: URL) {
         let picker: UIDocumentPickerViewController
-        if #available(iOS 14.0, *) {
+        if #available(iOS 14, *) {
             picker = UIDocumentPickerViewController(forExporting: [url], asCopy: false)
         } else {
             picker = UIDocumentPickerViewController(url: url, in: .moveToService)
@@ -1562,7 +1515,7 @@ extension MainViewController: MFMailComposeViewControllerDelegate {
 }
 
 #if targetEnvironment(macCatalyst)
-@available(iOS 14.0, *)
+@available(iOS 14, *)
 extension MainViewController: ToolbarContainerViewController {
     var nsToolbar: NSToolbar? {
         get { split?.nsToolbar }

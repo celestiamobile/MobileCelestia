@@ -37,13 +37,13 @@ open class StandardButton: UIButton {
     }
 
     private func setup() {
-        if #available(iOS 13.4, *) {
+        if #available(iOS 13.4, visionOS 1, *) {
             addInteraction(UIPointerInteraction(delegate: self))
         }
     }
 }
 
-@available(iOS 13.4, *)
+@available(iOS 13.4, visionOS 1, *)
 extension StandardButton: UIPointerInteractionDelegate {
     public func pointerInteraction(_ interaction: UIPointerInteraction, regionFor request: UIPointerRegionRequest, defaultRegion: UIPointerRegion) -> UIPointerRegion? {
         return defaultRegion

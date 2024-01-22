@@ -37,7 +37,7 @@ public class ActionButton: StandardButton {
     }
 
     private func setup() {
-        if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
+        if #available(iOS 14, *), traitCollection.userInterfaceIdiom == .mac {
         } else {
             titleLabel?.lineBreakMode = .byWordWrapping
             titleLabel?.textAlignment = .center
@@ -58,7 +58,7 @@ public class ActionButton: StandardButton {
     public override func tintColorDidChange() {
         super.tintColorDidChange()
 
-        if #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac {
+        if #available(iOS 14, *), traitCollection.userInterfaceIdiom == .mac {
         } else {
             backgroundColor = tintColor
         }
@@ -68,7 +68,7 @@ public class ActionButton: StandardButton {
     public override func didAddSubview(_ subview: UIView) {
         super.didAddSubview(subview)
 
-        guard #available(iOS 14.0, *), traitCollection.userInterfaceIdiom == .mac else { return }
+        guard #available(iOS 14, *), traitCollection.userInterfaceIdiom == .mac else { return }
 
         if let uiNSView = subview.subviews.first,
            String(describing: type(of: uiNSView)) == "_UINSView",
@@ -85,7 +85,7 @@ public class ActionButton: StandardButton {
 public class ActionButtonHelper {
     public static func newButton() -> UIButton {
         #if !targetEnvironment(macCatalyst)
-        if #available(iOS 15.0, *) {
+        if #available(iOS 15, visionOS 1, *) {
             var configuration = UIButton.Configuration.filled()
             configuration.baseBackgroundColor = .buttonBackground
             configuration.baseForegroundColor = .buttonForeground

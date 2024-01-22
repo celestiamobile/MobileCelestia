@@ -17,7 +17,7 @@ public enum GlobalConstants {
     public static let listItemMediumMarginVertical: CGFloat = 12
     public static let listItemGapHorizontal: CGFloat = 8
     public static let listItemGapVertical: CGFloat = 8
-    @available(iOS 15, *)
+    @available(iOS 15, visionOS 1, *)
     static let listItemPopUpButtonMarginHorizontal: CGFloat = {
         #if targetEnvironment(macCatalyst)
         return listItemMediumMarginHorizontal
@@ -48,7 +48,7 @@ public enum GlobalConstants {
 
     public static func preferredUIElementScaling(for traitCollection: UITraitCollection) -> CGFloat {
         #if targetEnvironment(macCatalyst)
-        if #available(iOS 14.0, *) {
+        if #available(iOS 14, *) {
             // Mac idiom, needs scaling
             if traitCollection.userInterfaceIdiom == .mac {
                 return 0.77
