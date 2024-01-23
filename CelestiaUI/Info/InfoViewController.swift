@@ -205,6 +205,7 @@ extension InfoViewController {
         case .mark:
             cell.menu = menuForActions(markActions(selection: info))
         default:
+            cell.menu = nil
             break
         }
         cell.actionHandler = { [weak self] sourceView in
@@ -381,47 +382,6 @@ private extension ObjectAction {
             return CelestiaString("Alternate Surfaces", comment: "")
         case .mark:
             return CelestiaString("Mark", comment: "")
-        }
-    }
-}
-
-public extension CelestiaAction {
-    var description: String {
-        switch self {
-        case .goTo:
-            return CelestiaString("Go", comment: "")
-        case .goToSurface:
-            return CelestiaString("Land", comment: "")
-        case .center:
-            return CelestiaString("Center", comment: "")
-        case .playpause:
-            return CelestiaString("Resume/Pause", comment: "")
-        case .slower:
-            return CelestiaString("Slower", comment: "")
-        case .faster:
-            return CelestiaString("Faster", comment: "")
-        case .reverse:
-            return CelestiaString("Reverse Time", comment: "")
-        case .currentTime:
-            return CelestiaString("Current Time", comment: "")
-        case .syncOrbit:
-            return CelestiaString("Sync Orbit", comment: "")
-        case .lock:
-            return CelestiaString("Lock", comment: "")
-        case .chase:
-            return CelestiaString("Chase", comment: "")
-        case .track:
-            return CelestiaString("Track", comment: "")
-        case .follow:
-            return CelestiaString("Follow", comment: "")
-        case .cancelScript:
-            return CelestiaString("Cancel Script", comment: "")
-        case .home:
-            return CelestiaString("Home (Sol)", comment: "")
-        case .stop:
-            return CelestiaString("Stop", comment: "")
-        case .reverseSpeed:
-            return CelestiaString("Reverse Direction", comment: "")
         }
     }
 }

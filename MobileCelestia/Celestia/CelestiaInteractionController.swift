@@ -14,18 +14,6 @@ import CelestiaFoundation
 import CelestiaUI
 import UIKit
 
-enum CelestiaContinuousAction: Int {
-    case travelFaster = 97
-    case travelSlower = 122
-    case f1 = 11
-    case f2 = 12
-    case f3 = 13
-    case f4 = 14
-    case f5 = 15
-    case f6 = 16
-    case f7 = 17
-}
-
 @MainActor
 protocol CelestiaInteractionControllerDelegate: AnyObject {
     func celestiaInteractionControllerRequestShowActionMenu(_ celestiaInteractionController: CelestiaInteractionController)
@@ -821,36 +809,5 @@ private extension CelestiaInteractionController {
 private extension CGPoint {
     func scale(by factor: CGFloat) -> CGPoint {
         return applying(CGAffineTransform(scaleX: factor, y: factor))
-    }
-}
-
-private extension GameControllerButton {
-    var userDefaultsKey: UserDefaultsKey {
-        switch self {
-        case .A:
-            return .gameControllerRemapA
-        case .B:
-            return .gameControllerRemapB
-        case .X:
-            return .gameControllerRemapX
-        case .Y:
-            return .gameControllerRemapY
-        case .LT:
-            return .gameControllerRemapLT
-        case .RT:
-            return .gameControllerRemapRT
-        case .LB:
-            return .gameControllerRemapLB
-        case .RB:
-            return .gameControllerRemapRB
-        case .dpadLeft:
-            return .gameControllerRemapDpadLeft
-        case .dpadRight:
-            return .gameControllerRemapDpadRight
-        case .dpadUp:
-            return .gameControllerRemapDpadUp
-        case .dpadDown:
-            return .gameControllerRemapDpadDown
-        }
     }
 }

@@ -11,6 +11,58 @@
 
 import Foundation
 
+public enum UserDefaultsKey: String {
+    case databaseVersion
+
+    case onboardMessageDisplayed
+    case lastNewsID
+
+    case gameControllerRemapA
+    case gameControllerRemapB
+    case gameControllerRemapX
+    case gameControllerRemapY
+    case gameControllerRemapLT
+    case gameControllerRemapRT
+    case gameControllerRemapLB
+    case gameControllerRemapRB
+    case gameControllerRemapDpadLeft
+    case gameControllerRemapDpadRight
+    case gameControllerRemapDpadUp
+    case gameControllerRemapDpadDown
+    case gameControllerInvertX
+    case gameControllerInvertY
+
+    case normalFontPath
+    case normalFontIndex
+    case boldFontPath
+    case boldFontIndex
+
+    case pickSensitivity
+
+    #if !os(visionOS)
+    case fullDPI
+    case msaa
+    case toolbarItems
+    case frameRate
+    case dataDirPath
+    case configFile
+    #if !targetEnvironment(macCatalyst)
+    case contextMenu
+    #endif
+    #endif
+}
+
+public extension UserDefaults {
+    subscript<T>(key: UserDefaultsKey) -> T? {
+        get {
+            return value(forKey: key.rawValue) as? T
+        }
+        set {
+            setValue(newValue, forKey: key.rawValue)
+        }
+    }
+}
+
 public extension UserDefaults {
     func url(for key: String, defaultValue: URL) -> UniformedURL {
         if let bookmark = self.value(forKey: key) as? Data {

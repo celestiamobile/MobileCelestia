@@ -10,6 +10,7 @@
 //
 
 import CelestiaCore
+import CelestiaFoundation
 import Foundation
 
 public enum SettingType: Hashable {
@@ -223,10 +224,10 @@ public struct AssociatedSelectionItem: Hashable {
 }
 
 public struct SettingPreferenceSwitchItem: Hashable {
-    public let key: String
+    public let key: UserDefaultsKey
     public let defaultOn: Bool
 
-    public init(key: String, defaultOn: Bool) {
+    public init(key: UserDefaultsKey, defaultOn: Bool) {
         self.key = key
         self.defaultOn = defaultOn
     }
@@ -243,11 +244,11 @@ public struct SettingPreferenceSelectionItem: Hashable {
         }
     }
 
-    public let key: String
+    public let key: UserDefaultsKey
     public let options: [Option]
     public let defaultOption: Int
 
-    public init(key: String, options: [Option], defaultOption: Int) {
+    public init(key: UserDefaultsKey, options: [Option], defaultOption: Int) {
         self.key = key
         self.options = options
         self.defaultOption = defaultOption
@@ -255,12 +256,12 @@ public struct SettingPreferenceSelectionItem: Hashable {
 }
 
 public struct SettingPreferenceSliderItem: Hashable {
-    public let key: String
+    public let key: UserDefaultsKey
     public let minValue: Double
     public let maxValue: Double
     public let defaultValue: Double
 
-    public init(key: String, minValue: Double, maxValue: Double, defaultValue: Double) {
+    public init(key: UserDefaultsKey, minValue: Double, maxValue: Double, defaultValue: Double) {
         self.key = key
         self.minValue = minValue
         self.maxValue = maxValue
@@ -933,84 +934,84 @@ public let gameControllerItem = SettingItem<AnyHashable>(
                         name: CelestiaString("A / X", comment: ""),
                         type: .prefSelection,
                         associatedItem: .init(
-                            AssociatedPreferenceSelectionItem(key: "gameControllerRemapA", options: gamepadActions, defaultOption: GameControllerAction.moveSlower.rawValue)
+                            AssociatedPreferenceSelectionItem(key: .gameControllerRemapA, options: gamepadActions, defaultOption: GameControllerAction.moveSlower.rawValue)
                         )
                     ),
                     SettingItem(
                         name: CelestiaString("B / Circle", comment: ""),
                         type: .prefSelection,
                         associatedItem: .init(
-                            AssociatedPreferenceSelectionItem(key: "gameControllerRemapB", options: gamepadActions, defaultOption: GameControllerAction.noop.rawValue)
+                            AssociatedPreferenceSelectionItem(key: .gameControllerRemapB, options: gamepadActions, defaultOption: GameControllerAction.noop.rawValue)
                         )
                     ),
                     SettingItem(
                         name: CelestiaString("X / Square", comment: ""),
                         type: .prefSelection,
                         associatedItem: .init(
-                            AssociatedPreferenceSelectionItem(key: "gameControllerRemapX", options: gamepadActions, defaultOption: GameControllerAction.moveFaster.rawValue)
+                            AssociatedPreferenceSelectionItem(key: .gameControllerRemapX, options: gamepadActions, defaultOption: GameControllerAction.moveFaster.rawValue)
                         )
                     ),
                     SettingItem(
                         name: CelestiaString("Y / Triangle", comment: ""),
                         type: .prefSelection,
                         associatedItem: .init(
-                            AssociatedPreferenceSelectionItem(key: "gameControllerRemapY", options: gamepadActions, defaultOption: GameControllerAction.noop.rawValue)
+                            AssociatedPreferenceSelectionItem(key: .gameControllerRemapY, options: gamepadActions, defaultOption: GameControllerAction.noop.rawValue)
                         )
                     ),
                     SettingItem(
                         name: CelestiaString("LB / L1", comment: ""),
                         type: .prefSelection,
                         associatedItem: .init(
-                            AssociatedPreferenceSelectionItem(key: "gameControllerRemapLB", options: gamepadActions, defaultOption: GameControllerAction.noop.rawValue)
+                            AssociatedPreferenceSelectionItem(key: .gameControllerRemapLB, options: gamepadActions, defaultOption: GameControllerAction.noop.rawValue)
                         )
                     ),
                     SettingItem(
                         name: CelestiaString("LT / L2", comment: ""),
                         type: .prefSelection,
                         associatedItem: .init(
-                            AssociatedPreferenceSelectionItem(key: "gameControllerRemapLT", options: gamepadActions, defaultOption: GameControllerAction.rollLeft.rawValue)
+                            AssociatedPreferenceSelectionItem(key: .gameControllerRemapLT, options: gamepadActions, defaultOption: GameControllerAction.rollLeft.rawValue)
                         )
                     ),
                     SettingItem(
                         name: CelestiaString("RB / R1", comment: ""),
                         type: .prefSelection,
                         associatedItem: .init(
-                            AssociatedPreferenceSelectionItem(key: "gameControllerRemapRB", options: gamepadActions, defaultOption: GameControllerAction.noop.rawValue)
+                            AssociatedPreferenceSelectionItem(key: .gameControllerRemapRB, options: gamepadActions, defaultOption: GameControllerAction.noop.rawValue)
                         )
                     ),
                     SettingItem(
                         name: CelestiaString("RT / R2", comment: ""),
                         type: .prefSelection,
                         associatedItem: .init(
-                            AssociatedPreferenceSelectionItem(key: "gameControllerRemapRT", options: gamepadActions, defaultOption: GameControllerAction.rollRight.rawValue)
+                            AssociatedPreferenceSelectionItem(key: .gameControllerRemapRT, options: gamepadActions, defaultOption: GameControllerAction.rollRight.rawValue)
                         )
                     ),
                     SettingItem(
                         name: CelestiaString("D-pad Up", comment: ""),
                         type: .prefSelection,
                         associatedItem: .init(
-                            AssociatedPreferenceSelectionItem(key: "gameControllerRemapDpadUp", options: gamepadActions, defaultOption: GameControllerAction.pitchUp.rawValue)
+                            AssociatedPreferenceSelectionItem(key: .gameControllerRemapDpadUp, options: gamepadActions, defaultOption: GameControllerAction.pitchUp.rawValue)
                         )
                     ),
                     SettingItem(
                         name: CelestiaString("D-pad Down", comment: ""),
                         type: .prefSelection,
                         associatedItem: .init(
-                            AssociatedPreferenceSelectionItem(key: "gameControllerRemapDpadDown", options: gamepadActions, defaultOption: GameControllerAction.pitchDown.rawValue)
+                            AssociatedPreferenceSelectionItem(key: .gameControllerRemapDpadDown, options: gamepadActions, defaultOption: GameControllerAction.pitchDown.rawValue)
                         )
                     ),
                     SettingItem(
                         name: CelestiaString("D-pad Left", comment: ""),
                         type: .prefSelection,
                         associatedItem: .init(
-                            AssociatedPreferenceSelectionItem(key: "gameControllerRemapDpadLeft", options: gamepadActions, defaultOption: GameControllerAction.rollLeft.rawValue)
+                            AssociatedPreferenceSelectionItem(key: .gameControllerRemapDpadLeft, options: gamepadActions, defaultOption: GameControllerAction.rollLeft.rawValue)
                         )
                     ),
                     SettingItem(
                         name: CelestiaString("D-pad Right", comment: ""),
                         type: .prefSelection,
                         associatedItem: .init(
-                            AssociatedPreferenceSelectionItem(key: "gameControllerRemapDpadRight", options: gamepadActions, defaultOption: GameControllerAction.rollRight.rawValue)
+                            AssociatedPreferenceSelectionItem(key: .gameControllerRemapDpadRight, options: gamepadActions, defaultOption: GameControllerAction.rollRight.rawValue)
                         )
                     ),
                 ], footer: nil),
@@ -1019,14 +1020,14 @@ public let gameControllerItem = SettingItem<AnyHashable>(
                         name: CelestiaString("Invert Horizontally", comment: ""),
                         type: .prefSwitch,
                         associatedItem: .init(
-                            AssociatedPreferenceSwitchItem(key: "gameControllerInvertX", defaultOn: false)
+                            AssociatedPreferenceSwitchItem(key: .gameControllerInvertX, defaultOn: false)
                         )
                     ),
                     SettingItem(
                         name: CelestiaString("Invert Vertically", comment: ""),
                         type: .prefSwitch,
                         associatedItem: .init(
-                            AssociatedPreferenceSwitchItem(key: "gameControllerInvertY", defaultOn: false)
+                            AssociatedPreferenceSwitchItem(key: .gameControllerInvertY, defaultOn: false)
                         )
                     ),
                 ], footer: nil),

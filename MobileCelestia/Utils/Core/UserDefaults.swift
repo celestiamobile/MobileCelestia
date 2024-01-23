@@ -12,40 +12,6 @@
 import CelestiaFoundation
 import Foundation
 
-enum UserDefaultsKey: String {
-    case databaseVersion
-    case dataDirPath
-    case configFile
-    case fullDPI
-    case msaa
-    case frameRate
-    case onboardMessageDisplayed
-    case lastNewsID
-    case gameControllerRemapA
-    case gameControllerRemapB
-    case gameControllerRemapX
-    case gameControllerRemapY
-    case gameControllerRemapLT
-    case gameControllerRemapRT
-    case gameControllerRemapLB
-    case gameControllerRemapRB
-    case gameControllerRemapDpadLeft
-    case gameControllerRemapDpadRight
-    case gameControllerRemapDpadUp
-    case gameControllerRemapDpadDown
-    case gameControllerInvertX
-    case gameControllerInvertY
-    #if !targetEnvironment(macCatalyst)
-    case contextMenu
-    #endif
-    case pickSensitivity
-    case normalFontPath
-    case normalFontIndex
-    case boldFontPath
-    case boldFontIndex
-    case toolbarItems
-}
-
 extension UserDefaults {
     private var databaseVersion: Int { return 1 }
 
@@ -55,15 +21,6 @@ extension UserDefaults {
 
     fileprivate func initialize() {
         upgrade()
-    }
-
-    subscript<T>(key: UserDefaultsKey) -> T? {
-        get {
-            return value(forKey: key.rawValue) as? T
-        }
-        set {
-            setValue(newValue, forKey: key.rawValue)
-        }
     }
 }
 

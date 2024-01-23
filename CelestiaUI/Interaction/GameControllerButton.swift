@@ -9,6 +9,7 @@
 // of the License, or (at your option) any later version.
 //
 
+import CelestiaFoundation
 import Foundation
 
 public enum GameControllerButton {
@@ -24,4 +25,35 @@ public enum GameControllerButton {
     case dpadRight
     case dpadUp
     case dpadDown
+}
+
+public extension GameControllerButton {
+    var userDefaultsKey: UserDefaultsKey {
+        switch self {
+        case .A:
+            return .gameControllerRemapA
+        case .B:
+            return .gameControllerRemapB
+        case .X:
+            return .gameControllerRemapX
+        case .Y:
+            return .gameControllerRemapY
+        case .LT:
+            return .gameControllerRemapLT
+        case .RT:
+            return .gameControllerRemapRT
+        case .LB:
+            return .gameControllerRemapLB
+        case .RB:
+            return .gameControllerRemapRB
+        case .dpadLeft:
+            return .gameControllerRemapDpadLeft
+        case .dpadRight:
+            return .gameControllerRemapDpadRight
+        case .dpadUp:
+            return .gameControllerRemapDpadUp
+        case .dpadDown:
+            return .gameControllerRemapDpadDown
+        }
+    }
 }

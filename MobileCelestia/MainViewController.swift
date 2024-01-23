@@ -1385,72 +1385,12 @@ extension AppToolbarAction {
 #endif
 
 extension CelestiaAction: ToolbarAction {
-    var image: UIImage? {
-        switch self {
-        case .playpause:
-            return UIImage(systemName: "playpause.fill")
-        case .faster:
-            return UIImage(systemName: "forward.fill")
-        case .slower:
-            return UIImage(systemName: "backward.fill")
-        case .reverse, .reverseSpeed:
-            return UIImage(systemName: "repeat")?.withConfiguration(UIImage.SymbolConfiguration(weight: .black))
-        case .cancelScript, .stop:
-            return UIImage(systemName: "stop.fill")
-        default:
-            return nil
-        }
-    }
-
     var title: String? {
-        switch self {
-        case .playpause:
-            return CelestiaString("Resume or Pause", comment: "")
-        case .faster:
-            return CelestiaString("Faster", comment: "")
-        case .slower:
-            return CelestiaString("Slower", comment: "")
-        case .reverse, .reverseSpeed:
-            return CelestiaString("Reverse", comment: "")
-        case .cancelScript, .stop:
-            return CelestiaString("Stop", comment: "")
-        default:
-            return nil
-        }
+        return description
     }
 }
 
-extension CelestiaContinuousAction: ToolbarAction {
-    var image: UIImage? {
-        switch self {
-        case .travelFaster:
-            return UIImage(systemName: "forward.fill")
-        case .travelSlower:
-            return UIImage(systemName: "backward.fill")
-        default:
-            return nil
-        }
-    }
-
-    var title: String? {
-        switch self {
-        case .f2:
-            return CelestiaString("1 km/s", comment: "")
-        case .f3:
-            return CelestiaString("1000 km/s", comment: "")
-        case .f4:
-            return CelestiaString("c (lightspeed)", comment: "")
-        case .f5:
-            return CelestiaString("10c", comment: "")
-        case .f6:
-            return CelestiaString("1 AU/s", comment: "")
-        case .f7:
-            return CelestiaString("1 ly/s", comment: "")
-        default:
-            return nil
-        }
-    }
-}
+extension CelestiaContinuousAction: ToolbarAction {}
 
 #if targetEnvironment(macCatalyst)
 extension CelestiaAction: ToolbarTouchBarAction {

@@ -10,6 +10,7 @@
 //
 
 import CelestiaCore
+import CelestiaFoundation
 import UIKit
 
 class SettingCommonViewController: BaseTableViewController {
@@ -148,12 +149,12 @@ extension SettingCommonViewController {
         case .prefSwitch:
             if let item = row.associatedItem.base as? AssociatedPreferenceSwitchItem {
                 let cell = tableView.dequeueReusableCell(withIdentifier: "Switch", for: indexPath) as! SwitchCell
-                cell.enabled = userDefaults.value(forKey: item.key) as? Bool ?? item.defaultOn
+                cell.enabled = userDefaults[item.key] ?? item.defaultOn
                 cell.title = row.name
                 cell.subtitle = row.subtitle
                 cell.toggleBlock = { [weak self] enabled in
                     guard let self else { return }
-                    self.userDefaults.set(enabled, forKey: item.key)
+                    self.userDefaults[item.key] = enabled
                 }
                 return cell
             } else {
@@ -161,14 +162,14 @@ extension SettingCommonViewController {
             }
         case .prefSelection:
             if let item = row.associatedItem.base as? AssociatedPreferenceSelectionItem {
-                let currentValue: Int = self.userDefaults.value(forKey: item.key) as? Int ?? item.defaultOption
+                let currentValue = self.userDefaults[item.key] ?? item.defaultOption
                 if #available(iOS 15, visionOS 1, *) {
                     let cell = tableView.dequeueReusableCell(withIdentifier: "Selection15", for: indexPath) as! SelectionCell
                     cell.title = row.name
                     cell.selectionData = SelectionCell.SelectionData(options: item.options.map { $0.name }, selectedIndex: item.options.firstIndex(where: { $0.value == currentValue }) ?? -1)
                     cell.selectionChange = { [weak self] index in
                         guard let self else { return }
-                        self.userDefaults.set(item.options[index].value, forKey: item.key)
+                        self.userDefaults[item.key] = item.options[index].value
                     }
                     return cell
                 }
@@ -213,14 +214,14 @@ extension SettingCommonViewController {
                 let minValue = item.minValue
                 let cell = tableView.dequeueReusableCell(withIdentifier: "Slider", for: indexPath) as! SliderCell
                 cell.title = row.name
-                let currentValue: Double = self.userDefaults.value(forKey: item.key) as? Double ?? item.defaultValue
+                let currentValue = self.userDefaults[item.key] ?? item.defaultValue
                 let transformedValue = (currentValue - minValue) / (maxValue - minValue)
                 cell.value = transformedValue
                 cell.subtitle = row.subtitle
                 cell.valueChangeBlock = { [weak self] (value) in
                     guard let self = self else { return }
                     let transformed = value * (maxValue - minValue) + minValue
-                    self.userDefaults.set(transformed, forKey: item.key)
+                    self.userDefaults[item.key] = transformed
                 }
                 return cell
             } else {
@@ -269,10 +270,10 @@ extension SettingCommonViewController {
                 break
             }
             guard let item = row.associatedItem.base as? AssociatedPreferenceSelectionItem else { break }
-            let currentValue: Int = userDefaults.value(forKey: item.key) as? Int ?? item.defaultOption
+            let currentValue = userDefaults[item.key] ?? item.defaultOption
             let vc = SelectionViewController(title: row.name, options: item.options.map { $0.name }, selectedIndex: item.options.firstIndex(where: { $0.value == currentValue })) { [weak self] newIndex in
                 guard let self else { return }
-                self.userDefaults.set(item.options[newIndex].value, forKey: item.key)
+                self.userDefaults[item.key] = item.options[newIndex].value
                 self.tableView.reloadData()
             }
             navigationController?.pushViewController(vc, animated: true)
