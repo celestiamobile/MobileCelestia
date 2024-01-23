@@ -17,10 +17,14 @@ public extension URL {
     static func fromGuide(guideItemID: String, language: String, shareable: Bool? = nil) -> URL {
         let baseURL = "https://celestia.mobi/resources/guide"
         var components = URLComponents(string: baseURL)!
+        #if os(visionOS)
+        let platform = "visionos"
+        #else
         #if targetEnvironment(macCatalyst)
         let platform = "catalyst"
         #else
         let platform = "ios"
+        #endif
         #endif
         var queryItems = [
             URLQueryItem(name: "guide", value: guideItemID),
@@ -39,10 +43,14 @@ public extension URL {
         let baseURL = "https://celestia.mobi"
         var components = URLComponents(string: baseURL)!
         components.path = path
+        #if os(visionOS)
+        let platform = "visionos"
+        #else
         #if targetEnvironment(macCatalyst)
         let platform = "catalyst"
         #else
         let platform = "ios"
+        #endif
         #endif
         var queryItems = [
             URLQueryItem(name: "lang", value: language),
@@ -59,10 +67,14 @@ public extension URL {
     static func fromAddon(addonItemID: String, language: String) -> URL {
         let baseURL = "https://celestia.mobi/resources/item"
         var components = URLComponents(string: baseURL)!
+        #if os(visionOS)
+        let platform = "visionos"
+        #else
         #if targetEnvironment(macCatalyst)
         let platform = "catalyst"
         #else
         let platform = "ios"
+        #endif
         #endif
         components.queryItems = [
             URLQueryItem(name: "item", value: addonItemID),

@@ -18,6 +18,7 @@ public class GameControllerManager {
     private let actionRemapper: ((GameControllerButton) -> GameControllerAction?)?
     private let axisInversion: ((GameControllerThumbstickAxis) -> Bool)?
     private let menuButtonHandler: (() -> Void)?
+    private let connectedGameControllerChanged: ((GCController?) -> Void)?
 
     private var connectedGameController: GCController?
 
@@ -26,13 +27,15 @@ public class GameControllerManager {
         canAcceptEvents: @escaping () -> Bool,
         actionRemapper: ((GameControllerButton) -> GameControllerAction?)? = nil,
         axisInversion: ((GameControllerThumbstickAxis) -> Bool)? = nil,
-        menuButtonHandler: (() -> Void)? = nil
+        menuButtonHandler: (() -> Void)? = nil,
+        connectedGameControllerChanged: ((GCController?) -> Void)? = nil
     ) {
         self.executor = executor
         self.canAcceptEvents = canAcceptEvents
         self.actionRemapper = actionRemapper
         self.axisInversion = axisInversion
         self.menuButtonHandler = menuButtonHandler
+        self.connectedGameControllerChanged = connectedGameControllerChanged
 
         startObservingGameControllerConnection()
     }
@@ -51,14 +54,18 @@ public class GameControllerManager {
     @objc func gameControllerConnected(_ notification: Notification) {
         guard let controller = notification.object as? GCController else { return }
 
-        gameControllerChanged(controller)
+        Task { @MainActor in
+            gameControllerChanged(controller)
+        }
     }
 
     @objc func gameControllerDisconnected(_ notification: Notification) {
         guard let controller = notification.object as? GCController else { return }
-
-        if connectedGameController == controller {
-            connectedGameController = nil
+        Task { @MainActor in
+            if connectedGameController == controller {
+                connectedGameController = nil
+                connectedGameControllerChanged?(nil)
+            }
         }
     }
 
@@ -229,5 +236,6 @@ public class GameControllerManager {
         }
 
         connectedGameController = controller
+        connectedGameControllerChanged?(controller)
     }
 }

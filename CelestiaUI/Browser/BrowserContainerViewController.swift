@@ -261,7 +261,9 @@ private extension BrowserContainerViewController {
     }
 
     nonisolated func createStarBrowserRootItem(kind: StarBrowserKind, title: String, ordered: Bool, core: AppCore) -> BrowserItem {
-        let universe = core.simulation.universe
+        let simulation = core.simulation
+        let universe = simulation.universe
+        let observer = simulation.activeObserver
 
         func updateAccumulation(result: inout [String : BrowserItem], star: Star) {
             let name = universe.starCatalog.starName(star)
@@ -274,10 +276,10 @@ private extension BrowserContainerViewController {
         }
 
         if ordered {
-            let items = StarBrowser(kind: kind, universe: universe).stars().reduce(into: [BrowserItemKeyValuePair](), updateAccumulationOrdered)
+            let items = StarBrowser(kind: kind, observer: observer, universe: universe).stars().reduce(into: [BrowserItemKeyValuePair](), updateAccumulationOrdered)
             return BrowserItem(name: title, orderedChildren: items)
         } else {
-            let items = StarBrowser(kind: kind, universe: universe).stars().reduce(into: [String : BrowserItem](), updateAccumulation)
+            let items = StarBrowser(kind: kind, observer: observer, universe: universe).stars().reduce(into: [String : BrowserItem](), updateAccumulation)
             return BrowserItem(name: title, children: items)
         }
     }

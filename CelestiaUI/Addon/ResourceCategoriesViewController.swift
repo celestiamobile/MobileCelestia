@@ -59,10 +59,14 @@ private extension URL {
             }
         }
         let baseURL = "https://celestia.mobi/resources/categories"
+        #if os(visionOS)
+        let platform = "visionos"
+        #else
         #if targetEnvironment(macCatalyst)
         let platform = "catalyst"
         #else
         let platform = "ios"
+        #endif
         #endif
         var components = URLComponents(string: baseURL)!
         queryItems.append(contentsOf: [
