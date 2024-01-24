@@ -142,15 +142,16 @@ private extension FavoriteCoordinatorController {
     }
 
     func generateVC<T: FavoriteItemList>(_ itemList: T) -> UIViewController {
-        FavoriteItemViewController(item: itemList, selection: { [unowned self] (item) in
+        FavoriteItemViewController(item: itemList, selection: { [weak self] item in
+            guard let self else { return }
             if item.isLeaf {
                 if let destination = item.associatedObject as? Destination {
                     let vc = DestinationDetailViewController(destination: destination) {
                         self.selected(destination)
                     }
                     self.navigation.pushViewController(vc, animated: true)
-                } else {
-                    self.selected(item.associatedObject!)
+                } else if let object = item.associatedObject {
+                    self.selected(object)
                 }
             } else if let itemList = item.itemList {
                 self.show(itemList)
