@@ -10,6 +10,7 @@
 //
 
 import Foundation
+import MWRequest
 import StoreKit
 
 public extension Notification.Name {
@@ -72,7 +73,7 @@ public class SubscriptionManager {
     @discardableResult public func checkSubscriptionStatus() async -> SubscriptionStatus {
         let monthlyStatus = subscriptionStatus(for: await Transaction.currentEntitlement(for: monthlySubscriptionId))
         let yearlyStatus = subscriptionStatus(for: await Transaction.currentEntitlement(for: yearlySubscriptionId))
-        let newStatus: SubscriptionStatus
+        var newStatus: SubscriptionStatus
         if case SubscriptionStatus.verified(_, _, let yearlyExpiration, _) = yearlyStatus, case SubscriptionStatus.verified(_, _, let monthlyExpiration, _) = monthlyStatus, let yearlyExpiration, let monthlyExpiration, monthlyExpiration > yearlyExpiration {
             newStatus = monthlyStatus
         } else if case SubscriptionStatus.verified(_, _, _, _) = monthlyStatus {
@@ -80,6 +81,16 @@ public class SubscriptionManager {
         } else {
             // Prefer yearly status when only one status exists
             newStatus = yearlyStatus
+        }
+        if case SubscriptionStatus.verified(let originalTransactionID, _, _, let environment) = newStatus {
+            do {
+                if try await !performServerVerification(originalTransactionID: originalTransactionID, environment: environment) {
+                    // Server verification failure, reset to empty
+                    newStatus = .empty
+                }
+            } catch {
+                // Ignore the errors that might occur due to server issues
+            }
         }
         updateStatus(newStatus)
         return newStatus
@@ -141,9 +152,17 @@ public class SubscriptionManager {
     }
 
     @available(iOS 15, *)
-    func purchase(_ product: Product) async throws -> SubscriptionStatus {
-        #if !os(visionOS)
-        let result = try await product.purchase()
+    func purchase(_ product: Product, scene: UIWindowScene) async throws -> SubscriptionStatus {
+        #if os(visionOS)
+        let result = try await product.purchase(confirmIn: scene)
+        #else
+        let result: Product.PurchaseResult
+        if #available(iOS 17, *) {
+            result = try await product.purchase(confirmIn: scene)
+        } else {
+            result = try await product.purchase()
+        }
+        #endif
         switch result {
         case .success(let verificationResult):
             switch verificationResult {
@@ -161,8 +180,20 @@ public class SubscriptionManager {
         @unknown default:
             break
         }
-        #endif
         return status
+    }
+
+    @available(iOS 15, *)
+    private func performServerVerification(originalTransactionID: UInt64, environment: SubscriptionEnvironment) async throws -> Bool {
+        struct ValidationResult: Decodable {
+            let valid: Bool
+        }
+
+        let result: ValidationResult = try await AsyncJSONRequestHandler.getDecoded(url: "https://celestia.mobi/api/subscription/apple", parameters: [
+            "originalTransactionId": "\(originalTransactionID)",
+            "sandbox": environment == .production ? "0" : "1"
+        ])
+        return result.valid
     }
 
     @available(iOS 15, *)

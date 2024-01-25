@@ -284,12 +284,13 @@ private extension SubscriptionManagerViewController {
             }
             let planView = PlanView(plan: plan, action: action, state: state) { [weak self] in
                 guard let self else { return }
+                guard let scene = self.view.window?.windowScene else { return }
                 Task {
                     do {
                         self.status = .empty
                          self.status = .inProgress(status: subscriptionStatus, plans: plans, pendingProduct: product)
                         self.reloadViews()
-                        let newStatus = try await self.subscriptionManager.purchase(product)
+                        let newStatus = try await self.subscriptionManager.purchase(product, scene: scene)
                         self.status = .status(status: newStatus, plans: plans)
                         self.reloadViews()
                     } catch {
