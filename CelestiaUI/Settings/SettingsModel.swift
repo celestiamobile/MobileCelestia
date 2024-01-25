@@ -699,6 +699,7 @@ public func displaySettings() -> SettingSection {
         ])
 }
 
+#if !os(visionOS)
 public func timeAndRegionSettings() -> SettingSection {
     return SettingSection(
         title: CelestiaString("Time & Region", comment: ""),
@@ -788,6 +789,7 @@ public func timeAndRegionSettings() -> SettingSection {
             ),
         ])
 }
+#endif
 
 public func rendererSettings(extraItems: [SettingItem<AnyHashable>]) -> SettingSection {
     var items: [SettingItem<AnyHashable>] = [
