@@ -70,8 +70,7 @@ public final class ResourceManager: @unchecked Sendable {
         var items = [ResourceItem]()
         let fm = FileManager.default
         // Parse script folder first, because add-on folder might need migration
-        if let scriptDirectory = extraScriptDirectory {
-            guard let folders = try? fm.contentsOfDirectory(atPath: scriptDirectory.path) else { return [] }
+        if let scriptDirectory = extraScriptDirectory, let folders = try? fm.contentsOfDirectory(atPath: scriptDirectory.path) {
             for folder in folders {
                 let descriptionFile = scriptDirectory.appendingPathComponent(folder).appendingPathComponent("description.json")
                 if let data = try? Data(contentsOf: descriptionFile),
@@ -81,8 +80,7 @@ public final class ResourceManager: @unchecked Sendable {
                 }
             }
         }
-        if let addonDirectory = extraAddonDirectory {
-            guard let folders = try? fm.contentsOfDirectory(atPath: addonDirectory.path) else { return [] }
+        if let addonDirectory = extraAddonDirectory, let folders = try? fm.contentsOfDirectory(atPath: addonDirectory.path) {
             for folder in folders {
                 let folderURL = addonDirectory.appendingPathComponent(folder)
                 let descriptionFile = folderURL.appendingPathComponent("description.json")
