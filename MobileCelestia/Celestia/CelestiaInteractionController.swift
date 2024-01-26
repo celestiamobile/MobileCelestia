@@ -721,7 +721,7 @@ extension CelestiaInteractionController: AppCoreDelegate {
         }
     }
     nonisolated func celestiaAppCoreCursorShapeChanged(_ shape: CursorShape) {}
-    nonisolated func celestiaAppCoreWatchedFlagDidChange(_ changedFlag: WatcherFlag) {}
+    nonisolated func celestiaAppCoreWatchedFlagsDidChange(_ changedFlags: WatcherFlags) {}
 }
 
 extension CelestiaInteractionController {
