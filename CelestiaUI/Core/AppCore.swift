@@ -60,12 +60,17 @@ extension DSOCatalog: Sequence {
 }
 
 // MARK: Localization
-public func CelestiaString(_ key: StaticString, comment: String, domain: String = "celestia_ui") -> String {
+public func CelestiaString(_ key: StaticString, context: StaticString? = nil, comment: String) -> String {
     let string = key.withUTF8Buffer {
         String(decoding: $0, as: UTF8.self)
     }
-    if string.isEmpty { return string }
-    return LocalizedString(string, domain)
+    if let context {
+        let contextString = context.withUTF8Buffer {
+            String(decoding: $0, as: UTF8.self)
+        }
+        return LocalizedStringContext(string, contextString, "celestia_ui")
+    }
+    return LocalizedString(string, "celestia_ui")
 }
 
 public func CelestiaFilename(_ key: String) -> String {
