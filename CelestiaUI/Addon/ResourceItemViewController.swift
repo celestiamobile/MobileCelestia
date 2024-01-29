@@ -282,7 +282,7 @@ private extension ResourceItemViewController {
             currentState = .downloading
         }
 
-        goToButton.setTitle(CelestiaString(item.type == "script" ? "Run" : "Go", comment: ""), for: .normal)
+        goToButton.setTitle(item.type == "script" ? CelestiaString("Run", comment: "") : CelestiaString("Go", comment: ""), for: .normal)
 
         switch currentState {
         case .none:

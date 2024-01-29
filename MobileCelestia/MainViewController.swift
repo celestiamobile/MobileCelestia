@@ -1409,45 +1409,6 @@ extension CelestiaAction: ToolbarTouchBarAction {
 }
 #endif
 
-extension MarkerRepresentation {
-    var localizedTitle: String {
-        return CelestiaString(unlocalizedTitle, comment: "")
-    }
-
-    private var unlocalizedTitle: String {
-        switch self {
-        case .circle:
-            return "Circle"
-        case .triangle:
-            return "Triangle"
-        case .plus:
-            return "Plus"
-        case .X:
-            return "X"
-        case .crosshair:
-            return "Crosshair"
-        case .diamond:
-            return "Diamond"
-        case .disk:
-            return "Disk"
-        case .filledSquare:
-            return "Filled Square"
-        case .leftArrow:
-            return "Left Arrow"
-        case .upArrow:
-            return "Up Arrow"
-        case .rightArrow:
-            return "Right Arrow"
-        case .downArrow:
-            return "Down Arrow"
-        case .square:
-            return "Square"
-        @unknown default:
-            return "Unknown"
-        }
-    }
-}
-
 extension MainViewController: MFMailComposeViewControllerDelegate {
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
         controller.dismiss(animated: true)

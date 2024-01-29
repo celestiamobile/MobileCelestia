@@ -668,7 +668,7 @@ extension BrowserItem {
         var items = [UIMenuElement]()
 
         if let ent = entry {
-            items.append(UIAction(title: CelestiaString(additionalItemName, comment: ""), handler: { (_) in
+            items.append(UIAction(title: additionalItemName, handler: { (_) in
                 let selection = Selection(object: ent)
                 guard selection.isEmpty else { return }
                 callback(selection)

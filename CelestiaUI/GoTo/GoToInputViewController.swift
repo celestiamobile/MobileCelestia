@@ -25,11 +25,11 @@ private extension DistanceUnit {
     var name: String {
         switch self {
         case .AU:
-            return "au"
+            return CelestiaString("au", comment: "")
         case .KM:
-            return "km"
+            return CelestiaString("km", comment: "")
         case .radii:
-            return "radii"
+            return CelestiaString("radii", comment: "")
         @unknown default:
             fatalError()
         }
@@ -85,7 +85,7 @@ class GoToInputViewController: BaseTableViewController {
     struct UnitItem: GoToInputItem {
         var title: String { "" }
 
-        var detail: String { CelestiaString(unit.name, comment: "") }
+        var detail: String { unit.name }
 
         let unit: DistanceUnit
     }
@@ -274,7 +274,7 @@ extension GoToInputViewController {
         if #available(iOS 15, visionOS 1, *), item is DistanceItem {
             let cell = tableView.dequeueReusableCell(withIdentifier: "Distance", for: indexPath) as! DistanceInputCell
             cell.model = DistanceInputCell.Model(
-                units: DistanceUnit.allCases.map({ CelestiaString($0.name, comment: "") }),
+                units: DistanceUnit.allCases.map({ $0.name }),
                 selectedUnitIndex: DistanceUnit.allCases.firstIndex(of: unit)!,
                 distanceValue: distance,
                 distanceString: distanceString
@@ -315,7 +315,7 @@ extension GoToInputViewController {
         if item is ObjectNameItem {
             objectNameHandler(self)
         } else if item is UnitItem {
-            let vc = SelectionViewController(title: CelestiaString("Distance Unit", comment: ""), options: DistanceUnit.allCases.map { CelestiaString($0.name, comment: "") }, selectedIndex: DistanceUnit.allCases.firstIndex(of: unit), selectionChange: { [weak self] index in
+            let vc = SelectionViewController(title: CelestiaString("Distance Unit", comment: ""), options: DistanceUnit.allCases.map { $0.name }, selectedIndex: DistanceUnit.allCases.firstIndex(of: unit), selectionChange: { [weak self] index in
                 guard let self = self else { return }
                 self.unit = DistanceUnit.allCases[index]
                 self.reload()

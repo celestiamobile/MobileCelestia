@@ -93,7 +93,7 @@ extension SettingsFrameRateViewController {
         let item = items[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
 
-        cell.title = String.localizedStringWithFormat(CelestiaString(item.isMaximum ? "Maximum (%@ FPS)" : "%@ FPS", comment: ""), numberFormatter.string(from: item.frameRate))
+        cell.title = String.localizedStringWithFormat(item.isMaximum ? CelestiaString("Maximum (%@ FPS)", comment: "") : CelestiaString("%@ FPS", comment: ""), numberFormatter.string(from: item.frameRate))
         cell.accessoryType = item.frameRateValue == selectedFrameRate ? .checkmark : .none
         return cell
     }

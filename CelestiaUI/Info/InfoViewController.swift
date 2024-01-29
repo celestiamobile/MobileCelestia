@@ -419,41 +419,37 @@ extension InfoViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-extension MarkerRepresentation {
+public extension MarkerRepresentation {
     var localizedTitle: String {
-        return CelestiaString(unlocalizedTitle, comment: "")
-    }
-
-    private var unlocalizedTitle: String {
         switch self {
         case .circle:
-            return "Circle"
+            return CelestiaString("Circle", comment: "")
         case .triangle:
-            return "Triangle"
+            return CelestiaString("Triangle", comment: "")
         case .plus:
-            return "Plus"
+            return CelestiaString("Plus", comment: "")
         case .X:
-            return "X"
+            return CelestiaString("X", comment: "")
         case .crosshair:
-            return "Crosshair"
+            return CelestiaString("Crosshair", comment: "")
         case .diamond:
-            return "Diamond"
+            return CelestiaString("Diamond", comment: "")
         case .disk:
-            return "Disk"
+            return CelestiaString("Disk", comment: "")
         case .filledSquare:
-            return "Filled Square"
+            return CelestiaString("Filled Square", comment: "")
         case .leftArrow:
-            return "Left Arrow"
+            return CelestiaString("Left Arrow", comment: "")
         case .upArrow:
-            return "Up Arrow"
+            return CelestiaString("Up Arrow", comment: "")
         case .rightArrow:
-            return "Right Arrow"
+            return CelestiaString("Right Arrow", comment: "")
         case .downArrow:
-            return "Down Arrow"
+            return CelestiaString("Down Arrow", comment: "")
         case .square:
-            return "Square"
+            return CelestiaString("Square", comment: "")
         @unknown default:
-            return "Unknown"
+            return CelestiaString("Unknown", comment: "")
         }
     }
 }

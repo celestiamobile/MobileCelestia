@@ -60,9 +60,12 @@ extension DSOCatalog: Sequence {
 }
 
 // MARK: Localization
-public func CelestiaString(_ key: String, comment: String, domain: String = "celestia_ui") -> String {
-    if key.isEmpty { return key }
-    return LocalizedString(key, domain)
+public func CelestiaString(_ key: StaticString, comment: String, domain: String = "celestia_ui") -> String {
+    let string = key.withUTF8Buffer {
+        String(decoding: $0, as: UTF8.self)
+    }
+    if string.isEmpty { return string }
+    return LocalizedString(string, domain)
 }
 
 public func CelestiaFilename(_ key: String) -> String {
@@ -222,9 +225,9 @@ public extension AppCore {
             } else {
                 unitTemplate = CelestiaString("%@ days", comment: "")
             }
-            lines.append(String.localizedStringWithFormat(CelestiaString("Sidereal rotation period: %@", comment: ""), String.localizedStringWithFormat(CelestiaString(unitTemplate, comment: ""), formatter.string(from: rotPeriod))))
+            lines.append(String.localizedStringWithFormat(CelestiaString("Sidereal rotation period: %@", comment: ""), String.localizedStringWithFormat(unitTemplate, formatter.string(from: rotPeriod))))
             if dayLength != 0 {
-                lines.append(String.localizedStringWithFormat(CelestiaString("Length of day: %@", comment: ""), String.localizedStringWithFormat(CelestiaString(unitTemplate, comment: ""), formatter.string(from: dayLength))))
+                lines.append(String.localizedStringWithFormat(CelestiaString("Length of day: %@", comment: ""), String.localizedStringWithFormat(unitTemplate, formatter.string(from: dayLength))))
             }
         }
 
