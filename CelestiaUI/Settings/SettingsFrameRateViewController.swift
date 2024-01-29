@@ -79,7 +79,7 @@ class SettingsFrameRateViewController: BaseTableViewController {
 private extension SettingsFrameRateViewController {
     func setUp() {
         tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
-        title = CelestiaString("Frame Rate", comment: "")
+        title = CelestiaString("Frame Rate", comment: "Frame rate of simulation")
     }
 }
 

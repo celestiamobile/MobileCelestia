@@ -106,7 +106,7 @@ private extension BrowserContainerViewController {
                 starChildren[item.name] = item
             }
         }
-        let starBrowserRoot = BrowserItem(name: CelestiaString("Stars", comment: ""), children: starChildren)
+        let starBrowserRoot = BrowserItem(name: CelestiaString("Stars", comment: "Tab for stars in Star Browser"), children: starChildren)
 
         #if targetEnvironment(macCatalyst)
         let rawBrowserRoots: [(item: BrowserItem?, image: UIImage)] = [
@@ -219,7 +219,7 @@ private extension BrowserContainerViewController {
     nonisolated func createSolBrowserRoot(_ core: AppCore) -> BrowserItem? {
         let universe = core.simulation.universe
         if let sol = universe.find("Sol").star {
-            return BrowserItem(name: universe.starCatalog.starName(sol), alternativeName: CelestiaString("Solar System", comment: ""), catEntry: sol, provider: universe)
+            return BrowserItem(name: universe.starCatalog.starName(sol), alternativeName: CelestiaString("Solar System", comment: "Tab for solar system in Star Browser"), catEntry: sol, provider: universe)
         }
         return nil
     }
@@ -257,7 +257,7 @@ private extension BrowserContainerViewController {
         })
 
         let results = tempDict.reduce(into: [String : BrowserItem](), updateAccumulation)
-        return BrowserItem(name: CelestiaString("Deep Sky Objects", comment: ""), alternativeName: CelestiaString("DSOs", comment: ""), children: results)
+        return BrowserItem(name: CelestiaString("Deep Sky Objects", comment: ""), alternativeName: CelestiaString("DSOs", comment: "Tab for deep sky objects in Star Browser"), children: results)
     }
 
     nonisolated func createStarBrowserRootItem(kind: StarBrowserKind, title: String, ordered: Bool, core: AppCore) -> BrowserItem {

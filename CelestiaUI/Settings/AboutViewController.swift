@@ -49,7 +49,7 @@ public final class AboutViewController: BaseTableViewController {
         let authorsPath = defaultDirectoryURL.appendingPathComponent("AUTHORS").path
         if let text = try? String(contentsOfFile: authorsPath) {
             totalItems.append([
-                TextItem.short(title: CelestiaString("Authors", comment: ""), detail: ""),
+                TextItem.short(title: CelestiaString("Authors", comment: "Authors for Celestia"), detail: ""),
                 TextItem.long(content: text)
             ])
         }
@@ -57,20 +57,20 @@ public final class AboutViewController: BaseTableViewController {
         let translatorsPath = defaultDirectoryURL.appendingPathComponent("TRANSLATORS").path
         if let text = try? String(contentsOfFile: translatorsPath) {
             totalItems.append([
-                TextItem.short(title: CelestiaString("Translators", comment: ""), detail: ""),
+                TextItem.short(title: CelestiaString("Translators", comment: "Translators for Celestia"), detail: ""),
                 TextItem.long(content: text)
             ])
         }
 
         totalItems.append([
-            TextItem.link(title: CelestiaString("Development", comment: ""), url: URL(string: "https://celestia.mobi/help/development")!),
-            TextItem.link(title: CelestiaString("Third Party Dependencies", comment: ""), url: URL(string: "https://celestia.mobi/help/dependencies")!),
-            TextItem.link(title: CelestiaString("Privacy Policy and Service Agreement", comment: ""), url: URL(string: "https://celestia.mobi/privacy")!)
+            TextItem.link(title: CelestiaString("Development", comment: "URL for Development wiki"), url: URL(string: "https://celestia.mobi/help/development")!),
+            TextItem.link(title: CelestiaString("Third Party Dependencies", comment: "URL for Third Party Dependencies wiki"), url: URL(string: "https://celestia.mobi/help/dependencies")!),
+            TextItem.link(title: CelestiaString("Privacy Policy and Service Agreement", comment: "Privacy Policy and Service Agreement"), url: URL(string: "https://celestia.mobi/privacy")!)
         ])
 
         totalItems.append([
             TextItem.link(title: CelestiaString("Official Website", comment: ""), url: officialWebsiteURL),
-            TextItem.link(title: CelestiaString("About Celestia", comment: ""), url: aboutCelestiaURL),
+            TextItem.link(title: CelestiaString("About Celestia", comment: "System menu item"), url: aboutCelestiaURL),
         ])
 
         items = totalItems
@@ -85,7 +85,7 @@ private extension AboutViewController {
         #if !targetEnvironment(macCatalyst)
         tableView.register(ICPCFooter.self, forHeaderFooterViewReuseIdentifier: "ICPC")
         #endif
-        title = CelestiaString("About", comment: "")
+        title = CelestiaString("About", comment: "About Celstia...")
     }
 }
 

@@ -273,7 +273,7 @@ extension AppToolbarAction {
         case .browse:
             return CelestiaString("Star Browser", comment: "")
         case .favorite:
-            return CelestiaString("Favorites", comment: "")
+            return CelestiaString("Favorites", comment: "Favorites (currently bookmarks and scripts)")
         case .search:
             return CelestiaString("Search", comment: "")
         case .setting:
@@ -285,27 +285,27 @@ extension AppToolbarAction {
         case .script:
             return CelestiaString("Script Control", comment: "")
         case .camera:
-            return CelestiaString("Camera Control", comment: "")
+            return CelestiaString("Camera Control", comment: "Observer control")
         case .help:
             return CelestiaString("Help", comment: "")
         case .home:
-            return CelestiaString("Home (Sol)", comment: "")
+            return CelestiaString("Home (Sol)", comment: "Home object, sun.")
         case .event:
             return CelestiaString("Eclipse Finder", comment: "")
         case .addons:
-            return CelestiaString("Installed Add-ons", comment: "")
+            return CelestiaString("Installed Add-ons", comment: "Open a page for managing installed add-ons")
         case .download:
-            return CelestiaString("Get Add-ons", comment: "")
+            return CelestiaString("Get Add-ons", comment: "Open webpage for downloading add-ons")
         case .paperplane:
             return CelestiaString("Go to Object", comment: "")
         case .speedometer:
-            return CelestiaString("Speed Control", comment: "")
+            return CelestiaString("Speed Control", comment: "Speed control")
         case .newsarchive:
-            return CelestiaString("News Archive", comment: "")
+            return CelestiaString("News Archive", comment: "Archive for updates and featured content")
         case .feedback:
             return CelestiaString("Send Feedback", comment: "")
         case .plus:
-            return CelestiaString("Celestia PLUS", comment: "")
+            return CelestiaString("Celestia PLUS", comment: "Name for the subscription service")
         }
     }
 }

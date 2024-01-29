@@ -261,7 +261,7 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: BaseTableViewContr
         let item = itemList[indexPath.row]
         if item.canBeRenamed {
             actions.append(
-                UIContextualAction(style: .normal, title: CelestiaString("Edit", comment: "")) { [unowned self] (_, _, completionHandler) in
+                UIContextualAction(style: .normal, title: CelestiaString("Edit", comment: "Enter edit mode for favorite items")) { [unowned self] (_, _, completionHandler) in
                     self.requestRenameObject(at: indexPath.row, completionHandler: completionHandler)
                 }
             )
@@ -298,7 +298,7 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: BaseTableViewContr
             let item = self.itemList[indexPath.row]
             if item.canBeRenamed {
                 actions.append(
-                    UIAction(title: CelestiaString("Edit", comment: ""), image: UIImage(systemName: "square.and.pencil"), identifier: nil) { (_) in
+                    UIAction(title: CelestiaString("Edit", comment: "Enter edit mode for favorite items"), image: UIImage(systemName: "square.and.pencil"), identifier: nil) { (_) in
                         self.requestRenameObject(at: indexPath.row)
                     }
                 )
@@ -332,7 +332,7 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: BaseTableViewContr
     @objc private func requestAdd(_ sender: Any) {
         Task {
             guard let item = await add?() else {
-                showError(CelestiaString("Cannot add object", comment: ""))
+                showError(CelestiaString("Cannot add object", comment: "Failed to add a favorite item (currently a bookmark)"))
                 return
             }
             itemList.append(item)
@@ -348,7 +348,7 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: BaseTableViewContr
     private func requestRenameObject(at index: Int, completionHandler: ((Bool) -> Void)? = nil) {
         let item = itemList[index]
         Task {
-            guard let text = await textInputHandler(self, CelestiaString("Please enter a new name.", comment: ""), item.title) else {
+            guard let text = await textInputHandler(self, CelestiaString("Please enter a new name.", comment: "Message for renaming a favorite item (currently bookmark)"), item.title) else {
                 completionHandler?(false)
                 return
             }
@@ -416,10 +416,10 @@ extension FavoriteItemViewController: ToolbarAwareViewController {
             return NSToolbarItem(addItemIdentifier: itemIdentifier, target: self, action: #selector(requestAdd(_:)))
         }
         if itemIdentifier == .edit {
-            return NSToolbarItem(itemIdentifier: itemIdentifier, buttonTitle: CelestiaString("Edit", comment: ""), target: self, action: #selector(startEditing))
+            return NSToolbarItem(itemIdentifier: itemIdentifier, buttonTitle: CelestiaString("Edit", comment: "Enter edit mode for favorite items"), target: self, action: #selector(startEditing))
         }
         if itemIdentifier == .done {
-            return NSToolbarItem(itemIdentifier: itemIdentifier, buttonTitle: CelestiaString("Done", comment: ""), target: self, action: #selector(endEditing))
+            return NSToolbarItem(itemIdentifier: itemIdentifier, buttonTitle: CelestiaString("Done", comment: "Exit edit mode"), target: self, action: #selector(endEditing))
         }
         return nil
     }

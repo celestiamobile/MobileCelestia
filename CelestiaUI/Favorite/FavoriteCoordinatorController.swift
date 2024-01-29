@@ -44,7 +44,7 @@ public class FavoriteCoordinatorController: UIViewController {
             case .destination:
                 Task {
                     let destinations = await self.executor.get { $0.destinations }
-                    self.replace(AnyFavoriteItemList(title: CelestiaString("Destinations", comment: ""), items: destinations))
+                    self.replace(AnyFavoriteItemList(title: CelestiaString("Destinations", comment: "A list of destinations in guide"), items: destinations))
                 }
             }
         })
@@ -60,7 +60,7 @@ public class FavoriteCoordinatorController: UIViewController {
 
     private lazy var bookmarkRoot: BookmarkNode = {
         let node = BookmarkNode(
-            name: CelestiaString("Bookmarks", comment: ""),
+            name: CelestiaString("Bookmarks", comment: "URL bookmarks"),
             url: "",
             isFolder: true,
             children: readBookmarks()

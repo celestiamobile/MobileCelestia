@@ -72,21 +72,21 @@ public extension QuickAction {
     var title: String {
         switch self {
         case .mode:
-            return CelestiaString("Toggle Interaction Mode", comment: "")
+            return CelestiaString("Toggle Interaction Mode", comment: "Touch interaction mode")
         case .info:
-            return CelestiaString("Get Info", comment: "")
+            return CelestiaString("Get Info", comment: "Action for getting info about current selected object")
         case .search:
             return CelestiaString("Search", comment: "")
         case .menu:
-            return CelestiaString("Menu", comment: "")
+            return CelestiaString("Menu", comment: "Menu button")
         case .hide:
-            return CelestiaString("Hide", comment: "")
+            return CelestiaString("Hide", comment: "Action to hide the tool overlay")
         case .zoomIn:
             return CelestiaString("Zoom In", comment: "")
         case .zoomOut:
             return CelestiaString("Zoom Out", comment: "")
         case .go:
-            return CelestiaString("Go", comment: "")
+            return CelestiaString("Go", comment: "Go to an object")
         }
     }
 

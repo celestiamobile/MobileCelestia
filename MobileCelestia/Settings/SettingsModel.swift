@@ -44,8 +44,8 @@ private let sharedInteractionItems: [SettingItem<AnyHashable>] = [
         )
     ),
     SettingItem(
-        name: CelestiaString("Sensitivity", comment: ""),
-        subtitle: CelestiaString("Sensitivity for object selection", comment: ""),
+        name: CelestiaString("Sensitivity", comment: "Setting for sensitivity for selecting an object"),
+        subtitle: CelestiaString("Sensitivity for object selection", comment: "Notes for the sensitivity setting"),
         type: .prefSlider,
         associatedItem: .init(
             AssociatedPreferenceSliderItem(key: .pickSensitivity, minValue: 1.0, maxValue: 20.0, defaultValue: defaultSensitivity)
@@ -58,8 +58,8 @@ private let interactionItems = sharedInteractionItems
 #else
 private let interactionItems = sharedInteractionItems + [
     SettingItem(
-        name: CelestiaString("Context Menu", comment: ""),
-        subtitle: CelestiaString("Context menu by long press or context click", comment: ""),
+        name: CelestiaString("Context Menu", comment: "Settings for whether context menu is enabled"),
+        subtitle: CelestiaString("Context menu by long press or context click", comment: "Description for how a context menu is triggered"),
         type: .prefSwitch,
         associatedItem: .init(
             AssociatedPreferenceSwitchItem(key: .contextMenu, defaultOn: true)
@@ -70,11 +70,11 @@ private let interactionItems = sharedInteractionItems + [
 
 private let advanceSettingExtraItems = [
     SettingItem(
-        name: CelestiaString("Interaction", comment: ""),
+        name: CelestiaString("Interaction", comment: "Settings for interaction"),
         type: .common,
         associatedItem: .init(
             AssociatedCommonItem(
-                title: CelestiaString("Interaction", comment: ""),
+                title: CelestiaString("Interaction", comment: "Settings for interaction"),
                 sections: [
                     .init(
                         header: nil,
@@ -94,15 +94,15 @@ let mainSetting: [SettingSection] = {
         timeAndRegionSettings(),
         rendererSettings(extraItems: [
             SettingItem(
-                name: CelestiaString("Advanced", comment: ""),
+                name: CelestiaString("Advanced", comment: "Advanced setting items"),
                 type: .common,
                 associatedItem: .init(
                     AssociatedCommonItem(
-                        title: CelestiaString("Advanced", comment: ""),
+                        title: CelestiaString("Advanced", comment: "Advanced setting items"),
                         sections: [
                             .init(header: nil, rows: [
                                 SettingItem(
-                                    name: CelestiaString("HiDPI", comment: ""),
+                                    name: CelestiaString("HiDPI", comment: "HiDPI support in display"),
                                     type: .prefSwitch,
                                     associatedItem: .init(
                                         AssociatedPreferenceSwitchItem(key: .fullDPI, defaultOn: true)
@@ -115,7 +115,7 @@ let mainSetting: [SettingSection] = {
                                         AssociatedPreferenceSwitchItem(key: .msaa, defaultOn: false)
                                     )
                                 )
-                            ], footer: CelestiaString("Configuration will take effect after a restart.", comment: "")),
+                            ], footer: CelestiaString("Configuration will take effect after a restart.", comment: "Change requires a restart")),
                         ]
                     )
                 )

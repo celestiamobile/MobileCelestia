@@ -23,12 +23,12 @@ class EventFinderInputViewController: BaseTableViewController {
     }
 
     struct ObjectItem: EventFinderInputItem {
-        let title = CelestiaString("Object", comment: "")
+        let title = CelestiaString("Object", comment: "In eclipse finder, object to find eclipse with, or in go to")
     }
 
     private let allSections: [[EventFinderInputItem]] = [
-                [DateItem(title: CelestiaString("Start Time", comment: ""), isStartTime: true),
-                DateItem(title: CelestiaString("End Time", comment: ""), isStartTime: false)],
+                [DateItem(title: CelestiaString("Start Time", comment: "In eclipse finder, range of time to find eclipse in"), isStartTime: true),
+                DateItem(title: CelestiaString("End Time", comment: "In eclipse finder, range of time to find eclipse in"), isStartTime: false)],
                 [ObjectItem()],
     ]
 
@@ -83,7 +83,7 @@ private extension EventFinderInputViewController {
         title = CelestiaString("Eclipse Finder", comment: "")
         tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: CelestiaString("Find", comment: ""), style: .plain, target: self, action: #selector(findEclipse))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: CelestiaString("Find", comment: "Find (eclipses)"), style: .plain, target: self, action: #selector(findEclipse))
     }
 
     @objc private func findEclipse() {
@@ -95,7 +95,7 @@ private extension EventFinderInputViewController {
             }
 
             let finder = EclipseFinder(body: body)
-            let alert = showLoading(CelestiaString("Calculating…", comment: "")) {
+            let alert = showLoading(CelestiaString("Calculating…", comment: "Calculating for eclipses")) {
                 finder.abort()
             }
 
@@ -142,7 +142,7 @@ extension EventFinderInputViewController {
             Task {
                 let title = String.localizedStringWithFormat(CelestiaString("Please enter the time in \"%@\" format.", comment: ""), preferredFormat)
                 guard let date = await self.dateInputHandler(self, title, preferredFormat) else {
-                    self.showError(CelestiaString("Unrecognized time string.", comment: ""))
+                    self.showError(CelestiaString("Unrecognized time string.", comment: "String not in correct format"))
                     return
                 }
                 if it.isStartTime {
@@ -154,14 +154,14 @@ extension EventFinderInputViewController {
             }
         } else if item is ObjectItem {
             if let cell = tableView.cellForRow(at: indexPath) {
-                showSelection(CelestiaString("Please choose an object.", comment: ""),
-                              options: selectableObjects.map { $0.displayName } + [CelestiaString("Other", comment: "")],
+                showSelection(CelestiaString("Please choose an object.", comment: "In eclipse finder, choose an object to find eclipse wth"),
+                              options: selectableObjects.map { $0.displayName } + [CelestiaString("Other", comment: "Other location labels; Android/iOS, Other objects to choose from in Eclipse Finder")],
                               source: .view(view: cell, sourceRect: nil)) { [weak self] index in
                     guard let self = self, let index = index else { return }
                     if index >= self.selectableObjects.count {
                         // User choose other, show text input for the object name
                         Task {
-                            if let text = await self.textInputHandler(self, CelestiaString("Please enter an object name.", comment: "")) {
+                            if let text = await self.textInputHandler(self, CelestiaString("Please enter an object name.", comment: "In Go to; Android/iOS, Enter the name of an object in Eclipse Finder")) {
                                 self.objectName = text
                                 self.objectPath = text
                                 tableView.reloadData()
@@ -204,7 +204,7 @@ extension EventFinderInputViewController: ToolbarAwareViewController {
 
     func toolbarContainerViewController(_ toolbarContainerViewController: ToolbarContainerViewController, itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier) -> NSToolbarItem? {
         if itemIdentifier == .calculate {
-            return NSToolbarItem(itemIdentifier: itemIdentifier, buttonTitle: CelestiaString("Find", comment: ""), target: self, action: #selector(findEclipse))
+            return NSToolbarItem(itemIdentifier: itemIdentifier, buttonTitle: CelestiaString("Find", comment: "Find (eclipses)"), target: self, action: #selector(findEclipse))
         }
         return nil
     }

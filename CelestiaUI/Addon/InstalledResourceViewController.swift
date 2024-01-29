@@ -28,7 +28,7 @@ class InstalledResourceViewController: AsyncListViewController<ResourceItem> {
     private lazy var emptyView: UIView = {
         let view = EmptyHintView()
         view.title = CelestiaString("Enhance Celestia with online add-ons", comment: "")
-        view.actionText = CelestiaString("Get Add-ons", comment: "")
+        view.actionText = CelestiaString("Get Add-ons", comment: "Open webpage for downloading add-ons")
         view.action = { [weak self] in
             guard let self else { return }
             self.getAddonsHandler()
@@ -51,7 +51,7 @@ class InstalledResourceViewController: AsyncListViewController<ResourceItem> {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = CelestiaString("Installed", comment: "")
+        title = CelestiaString("Installed", comment: "Title for the list of installed add-ons")
     }
 
     override func loadItems(pageStart: Int, pageSize: Int) async throws -> [ResourceItem] {

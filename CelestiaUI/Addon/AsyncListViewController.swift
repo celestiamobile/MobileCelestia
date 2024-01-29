@@ -183,7 +183,7 @@ private extension AsyncListViewController {
             tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         }
 
-        refreshButton.setTitle(CelestiaString("Refresh", comment: ""), for: .normal)
+        refreshButton.setTitle(CelestiaString("Refresh", comment: "Button to refresh this list"), for: .normal)
         refreshButton.addTarget(self, action: #selector(callRefresh), for: .touchUpInside)
     }
 }

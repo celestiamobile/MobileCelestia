@@ -34,10 +34,10 @@ public class SubscriptionManagerViewController: UIViewController {
         let view = UIView()
         view.backgroundColor = .systemFill
         let features = [
-            FeatureView(image: UIImage(systemName: "paintpalette"), description: CelestiaString("Customize the visual appearance of Celestia.", comment: "")),
-            FeatureView(image: UIImage(systemName: "clock.arrow.circlepath"), description: CelestiaString("Get latest add-ons, updates, and trending add-ons.", comment: "")),
-            FeatureView(image: UIImage(systemName: "checkmark.bubble"), description: CelestiaString("Receive timely feedback on feature requests and bug reports.", comment: "")),
-            FeatureView(image: UIImage(systemName: "heart"), description: CelestiaString("Support the developer community and keep the project going.", comment: "")),
+            FeatureView(image: UIImage(systemName: "paintpalette"), description: CelestiaString("Customize the visual appearance of Celestia.", comment: "Benefits of Celestia PLUS")),
+            FeatureView(image: UIImage(systemName: "clock.arrow.circlepath"), description: CelestiaString("Get latest add-ons, updates, and trending add-ons.", comment: "Benefits of Celestia PLUS")),
+            FeatureView(image: UIImage(systemName: "checkmark.bubble"), description: CelestiaString("Receive timely feedback on feature requests and bug reports.", comment: "Benefits of Celestia PLUS")),
+            FeatureView(image: UIImage(systemName: "heart"), description: CelestiaString("Support the developer community and keep the project going.", comment: "Benefits of Celestia PLUS")),
         ]
         let stackView = UIStackView(arrangedSubviews: features)
         stackView.axis = .vertical
@@ -57,9 +57,9 @@ public class SubscriptionManagerViewController: UIViewController {
     private lazy var loadingView = UIActivityIndicatorView(style: .large)
     private lazy var errorView: UIView = {
         let hintLabel = UILabel(textStyle: .body)
-        hintLabel.text = CelestiaString("We encountered an error.", comment: "")
+        hintLabel.text = CelestiaString("We encountered an error.", comment: "Error loading the subscription page")
         let button = ActionButtonHelper.newButton()
-        button.setTitle(CelestiaString("Refresh", comment: ""), for: .normal)
+        button.setTitle(CelestiaString("Refresh", comment: "Button to refresh this list"), for: .normal)
         let stackView = UIStackView(arrangedSubviews: [hintLabel, button])
         stackView.axis = .vertical
         stackView.spacing = GlobalConstants.pageSmallGapVertical
@@ -96,7 +96,7 @@ public class SubscriptionManagerViewController: UIViewController {
 
         let titleLabel = UILabel(textStyle: .title1, weight: .semibold)
         titleLabel.numberOfLines = 0
-        titleLabel.text = CelestiaString("Celestia PLUS", comment: "")
+        titleLabel.text = CelestiaString("Celestia PLUS", comment: "Name for the subscription service")
         statusLabel.numberOfLines = 0
 
         planStack.axis = .vertical
@@ -105,11 +105,11 @@ public class SubscriptionManagerViewController: UIViewController {
         featureView.layer.cornerRadius = Constants.boxCornerRadius
 
         let button = ActionButtonHelper.newButton()
-        button.setTitle(CelestiaString("Restore Purchase", comment: ""), for: .normal)
+        button.setTitle(CelestiaString("Restore Purchase", comment: "Refresh purchase status"), for: .normal)
         button.addTarget(self, action: #selector(restorePurchases), for: .touchUpInside)
 
         let eulaText = CelestiaString("End User License Agreements (EULA)", comment: "")
-        let privacyText = CelestiaString("Privacy Policy and Service Agreement", comment: "")
+        let privacyText = CelestiaString("Privacy Policy and Service Agreement", comment: "Privacy Policy and Service Agreement")
 
         let linkView = LinkTextView()
         linkView.info = LinkTextView.LinkInfo(text: ListFormatter.localizedString(byJoining: [eulaText, privacyText]), links: [

@@ -49,7 +49,7 @@ extension BrowserCommonViewController {
 
     override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         if section == 0 { return nil }
-        return CelestiaString("Subsystem", comment: "")
+        return CelestiaString("Subsystem", comment: "Subsystem of an object (e.g. planetarium system)")
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

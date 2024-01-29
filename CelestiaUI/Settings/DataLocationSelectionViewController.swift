@@ -59,14 +59,14 @@ class DataLocationSelectionViewController: BaseTableViewController {
         var totalItems = [[TextItem]]()
 
         totalItems.append([
-            TextItem.short(title: CelestiaString("Data Directory", comment: ""),
+            TextItem.short(title: CelestiaString("Data Directory", comment: "Directory to load data from"),
                            detail: userDefaults.url(for: dataDirectoryUserDefaultsKey, defaultValue: defaultDataDirectoryURL).url == defaultDataDirectoryURL ? CelestiaString("Default", comment: "") : CelestiaString("Custom", comment: "")),
-            TextItem.short(title: CelestiaString("Config File", comment: ""),
+            TextItem.short(title: CelestiaString("Config File", comment: "celestia.cfg"),
                            detail: userDefaults.url(for: configFileUserDefaultsKey, defaultValue: defaultConfigFileURL).url == defaultConfigFileURL ? CelestiaString("Default", comment: "") : CelestiaString("Custom", comment: "")),
         ])
 
         totalItems.append([
-            TextItem.action(title: CelestiaString("Reset to Default", comment: "")),
+            TextItem.action(title: CelestiaString("Reset to Default", comment: "Reset celestia.cfg, data directory location")),
         ])
 
         items = totalItems
@@ -77,7 +77,7 @@ class DataLocationSelectionViewController: BaseTableViewController {
 private extension DataLocationSelectionViewController {
     func setUp() {
         tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
-        title = CelestiaString("Data Location", comment: "")
+        title = CelestiaString("Data Location", comment: "Title for celestia.cfg, data location setting")
     }
 }
 
@@ -144,7 +144,7 @@ extension DataLocationSelectionViewController {
 
     override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         if section == 0 {
-            return CelestiaString("Configuration will take effect after a restart.", comment: "")
+            return CelestiaString("Configuration will take effect after a restart.", comment: "Change requires a restart")
         }
         return nil
     }

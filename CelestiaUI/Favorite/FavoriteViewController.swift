@@ -22,11 +22,11 @@ private extension FavoriteItemType {
     var description: String {
         switch self {
         case .bookmark:
-            return CelestiaString("Bookmarks", comment: "")
+            return CelestiaString("Bookmarks", comment: "URL bookmarks")
         case .script:
             return CelestiaString("Scripts", comment: "")
         case .destination:
-            return CelestiaString("Destinations", comment: "")
+            return CelestiaString("Destinations", comment: "A list of destinations in guide")
         }
     }
 }
@@ -73,7 +73,7 @@ private extension FavoriteViewController {
         #else
         tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         #endif
-        title = CelestiaString("Favorites", comment: "")
+        title = CelestiaString("Favorites", comment: "Favorites (currently bookmarks and scripts)")
     }
 }
 

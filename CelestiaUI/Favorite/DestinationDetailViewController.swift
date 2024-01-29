@@ -108,6 +108,6 @@ private extension DestinationDetailViewController {
         goToButton.addTarget(self, action: #selector(goToButtonClicked), for: .touchUpInside)
 
         descriptionLabel.text = destination.content
-        goToButton.setTitle(CelestiaString("Go", comment: ""), for: .normal)
+        goToButton.setTitle(CelestiaString("Go", comment: "Go to an object"), for: .normal)
     }
 }

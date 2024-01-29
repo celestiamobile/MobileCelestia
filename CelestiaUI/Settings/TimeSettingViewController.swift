@@ -70,13 +70,13 @@ extension TimeSettingViewController {
     public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
         if indexPath.row == 0 {
-            cell.title = CelestiaString("Select Time", comment: "")
+            cell.title = CelestiaString("Select Time", comment: "Select simulation time")
             cell.detail = displayDateFormatter.string(from: core.simulation.time)
         } else if indexPath.row == 1 {
-            cell.title = CelestiaString("Julian Day", comment: "")
+            cell.title = CelestiaString("Julian Day", comment: "Select time via entering Julian day")
             cell.detail = displayNumberFormatter.string(from: (core.simulation.time as NSDate).julianDay)
         } else {
-            cell.title = CelestiaString("Set to Current Time", comment: "")
+            cell.title = CelestiaString("Set to Current Time", comment: "Set simulation time to device")
             cell.detail = nil
         }
         return cell
@@ -89,7 +89,7 @@ extension TimeSettingViewController {
             let title = String.localizedStringWithFormat(CelestiaString("Please enter the time in \"%@\" format.", comment: ""), preferredFormat)
             Task {
                 guard let date = await dateInputHandler(self, title, preferredFormat) else {
-                    self.showError(CelestiaString("Unrecognized time string.", comment: ""))
+                    self.showError(CelestiaString("Unrecognized time string.", comment: "String not in correct format"))
                     return
                 }
                 await self.executor.run { core in
@@ -99,13 +99,13 @@ extension TimeSettingViewController {
             }
         } else if indexPath.row == 1 {
             Task {
-                guard let text = await textInputHandler(self, CelestiaString("Please enter Julian day.", comment: ""), .decimalPad) else {
+                guard let text = await textInputHandler(self, CelestiaString("Please enter Julian day.", comment: "In time settings, enter Julian day for the simulation"), .decimalPad) else {
                     return
                 }
                 let numberFormatter = NumberFormatter()
                 numberFormatter.usesGroupingSeparator = false
                 guard let value = numberFormatter.number(from: text)?.doubleValue else {
-                    self.showError(CelestiaString("Invalid Julian day string.", comment: ""))
+                    self.showError(CelestiaString("Invalid Julian day string.", comment: "The input of julian day is not valid"))
                     return
                 }
                 await self.executor.run { core in

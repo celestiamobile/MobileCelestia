@@ -230,7 +230,7 @@ extension InfoViewController {
     }
 
     private func markActions(selection: Selection) -> [Action] {
-        let options = (0...MarkerRepresentation.crosshair.rawValue).map{ MarkerRepresentation(rawValue: $0)?.localizedTitle ?? "" } + [CelestiaString("Unmark", comment: "")]
+        let options = (0...MarkerRepresentation.crosshair.rawValue).map{ MarkerRepresentation(rawValue: $0)?.localizedTitle ?? "" } + [CelestiaString("Unmark", comment: "Unmark an object")]
         return options.enumerated().map { index, option in
             return Action(title: option) { [weak self] in
                 guard let self else { return }
@@ -292,9 +292,9 @@ extension InfoViewController {
         case .subsystem:
             selectionHandler?(selection, .subsystem)
         case .alternateSurfaces:
-            showActionSheet(title: CelestiaString("Alternate Surfaces", comment: ""), actions: alternativeSurfaceActions(selection: selection), from: sourceView)
+            showActionSheet(title: CelestiaString("Alternate Surfaces", comment: "Alternative textures to display"), actions: alternativeSurfaceActions(selection: selection), from: sourceView)
         case .mark:
-            showActionSheet(title: CelestiaString("Mark", comment: ""), actions: markActions(selection: selection), from: sourceView)
+            showActionSheet(title: CelestiaString("Mark", comment: "Mark an object"), actions: markActions(selection: selection), from: sourceView)
         }
     }
 
@@ -371,17 +371,17 @@ private extension ObjectAction {
     var description: String {
         switch self {
         case .select:
-            return CelestiaString("Select", comment: "")
+            return CelestiaString("Select", comment: "Select an object")
         case .web(_):
-            return CelestiaString("Web Info", comment: "")
+            return CelestiaString("Web Info", comment: "Web info for an object")
         case .wrapped(let action):
             return action.description
         case .subsystem:
-            return CelestiaString("Subsystem", comment: "")
+            return CelestiaString("Subsystem", comment: "Subsystem of an object (e.g. planetarium system)")
         case .alternateSurfaces:
-            return CelestiaString("Alternate Surfaces", comment: "")
+            return CelestiaString("Alternate Surfaces", comment: "Alternative textures to display")
         case .mark:
-            return CelestiaString("Mark", comment: "")
+            return CelestiaString("Mark", comment: "Mark an object")
         }
     }
 }
@@ -423,31 +423,31 @@ public extension MarkerRepresentation {
     var localizedTitle: String {
         switch self {
         case .circle:
-            return CelestiaString("Circle", comment: "")
+            return CelestiaString("Circle", comment: "Marker")
         case .triangle:
-            return CelestiaString("Triangle", comment: "")
+            return CelestiaString("Triangle", comment: "Marker")
         case .plus:
-            return CelestiaString("Plus", comment: "")
+            return CelestiaString("Plus", comment: "Marker")
         case .X:
-            return CelestiaString("X", comment: "")
+            return CelestiaString("X", comment: "Marker")
         case .crosshair:
-            return CelestiaString("Crosshair", comment: "")
+            return CelestiaString("Crosshair", comment: "Marker")
         case .diamond:
-            return CelestiaString("Diamond", comment: "")
+            return CelestiaString("Diamond", comment: "Marker")
         case .disk:
-            return CelestiaString("Disk", comment: "")
+            return CelestiaString("Disk", comment: "Marker")
         case .filledSquare:
-            return CelestiaString("Filled Square", comment: "")
+            return CelestiaString("Filled Square", comment: "Marker")
         case .leftArrow:
-            return CelestiaString("Left Arrow", comment: "")
+            return CelestiaString("Left Arrow", comment: "Marker")
         case .upArrow:
-            return CelestiaString("Up Arrow", comment: "")
+            return CelestiaString("Up Arrow", comment: "Marker")
         case .rightArrow:
-            return CelestiaString("Right Arrow", comment: "")
+            return CelestiaString("Right Arrow", comment: "Marker")
         case .downArrow:
-            return CelestiaString("Down Arrow", comment: "")
+            return CelestiaString("Down Arrow", comment: "Marker")
         case .square:
-            return CelestiaString("Square", comment: "")
+            return CelestiaString("Square", comment: "Marker")
         @unknown default:
             return CelestiaString("Unknown", comment: "")
         }

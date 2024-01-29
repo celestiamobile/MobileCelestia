@@ -200,7 +200,7 @@ public class ResourceItemViewController: UIViewController {
 
         // Cancel if already downloading
         if resourceManager.isDownloading(identifier: itemID) {
-            showOption(CelestiaString("Do you want to cancel this task?", comment: "")) { [weak self] confirm in
+            showOption(CelestiaString("Do you want to cancel this task?", comment: "Prompt to ask to cancel downloading an add-on")) { [weak self] confirm in
                 guard confirm, let self = self, self.resourceManager.isDownloading(identifier: self.itemID) else { return }
                 self.resourceManager.cancel(identifier: self.itemID)
                 self.currentState = .none
@@ -258,7 +258,7 @@ private extension ResourceItemViewController {
         progressView.isHidden = true
 
         goToButton.isHidden = true
-        goToButton.setTitle(CelestiaString("Go", comment: ""), for: .normal)
+        goToButton.setTitle(CelestiaString("Go", comment: "Go to an object"), for: .normal)
 
         buttonStack.axis = .vertical
         buttonStack.spacing = GlobalConstants.pageLargeGapVertical
@@ -282,13 +282,13 @@ private extension ResourceItemViewController {
             currentState = .downloading
         }
 
-        goToButton.setTitle(item.type == "script" ? CelestiaString("Run", comment: "") : CelestiaString("Go", comment: ""), for: .normal)
+        goToButton.setTitle(item.type == "script" ? CelestiaString("Run", comment: "Run a script") : CelestiaString("Go", comment: "Go to an object"), for: .normal)
 
         switch currentState {
         case .none:
             progressView.isHidden = true
             progressView.progress = 0
-            statusButton.setTitle(CelestiaString("Install", comment: ""), for: .normal)
+            statusButton.setTitle(CelestiaString("Install", comment: "Install an add-on"), for: .normal)
             if #available(iOS 14, *), traitCollection.userInterfaceIdiom == .mac {
             } else {
                 scrollViewTopToProgressViewBottomConstrant?.isActive = false
@@ -305,7 +305,7 @@ private extension ResourceItemViewController {
         case .installed:
             progressView.isHidden = true
             progressView.progress = 0
-            statusButton.setTitle(CelestiaString("Uninstall", comment: ""), for: .normal)
+            statusButton.setTitle(CelestiaString("Uninstall", comment: "Uninstall an add-on"), for: .normal)
             if #available(iOS 14, *), traitCollection.userInterfaceIdiom == .mac {
             } else {
                 scrollViewTopToProgressViewBottomConstrant?.isActive = false

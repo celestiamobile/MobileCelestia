@@ -234,7 +234,7 @@ public extension UIViewController {
 
     func shareURL(_ url: String, placeholder: String) {
         let showShareFail: (String?) -> Void = { [unowned self] message in
-            self.showError(CelestiaString("Cannot share URL", comment: ""), detail: message)
+            self.showError(CelestiaString("Cannot share URL", comment: "Failed to share a URL"), detail: message)
         }
         guard let url = URL(string: url) else {
             showShareFail(nil)

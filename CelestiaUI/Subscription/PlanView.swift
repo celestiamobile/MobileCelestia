@@ -72,13 +72,13 @@ final class PlanView: UIView {
             let hidden: Bool
             switch action {
             case .upgrade:
-                text = CelestiaString("Upgrade", comment: "")
+                text = CelestiaString("Upgrade", comment: "Upgrade subscription service")
                 hidden = false
             case .downgrade:
-                text = CelestiaString("Downgrade", comment: "")
+                text = CelestiaString("Downgrade", comment: "Downgrade subscription service")
                 hidden = false
             case .get:
-                text = CelestiaString("Get", comment: "")
+                text = CelestiaString("Get", comment: "Purchase subscription service")
                 hidden = false
             case .empty:
                 text = ""

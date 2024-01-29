@@ -165,7 +165,7 @@ public extension AppCore {
         } else if let dso = selection.dso {
             return overviewForDSO(dso)
         } else {
-            return CelestiaString("No overview available.", comment: "")
+            return CelestiaString("No overview available.", comment: "No overview for an object")
         }
     }
 
@@ -183,22 +183,22 @@ public extension AppCore {
         let oneFtInKm: Float = 0.0003048
         if (measurementSystem == .imperial) {
             if (radius >= oneMiInKm) {
-                radiusString = String.localizedStringWithFormat(CelestiaString("%@ mi", comment: ""), formatter.string(from: Int(radius / oneMiInKm)))
+                radiusString = String.localizedStringWithFormat(CelestiaString("%@ mi", comment: "Unit mile"), formatter.string(from: Int(radius / oneMiInKm)))
             } else {
-                radiusString = String.localizedStringWithFormat(CelestiaString("%@ ft", comment: ""), formatter.string(from: Int(radius / oneFtInKm)))
+                radiusString = String.localizedStringWithFormat(CelestiaString("%@ ft", comment: "Unit foot"), formatter.string(from: Int(radius / oneFtInKm)))
             }
         } else {
             if (radius >= 1) {
-                radiusString = String.localizedStringWithFormat(CelestiaString("%@ km", comment: ""), formatter.string(from: Int(radius)))
+                radiusString = String.localizedStringWithFormat(CelestiaString("%@ km", comment: "Unit kilometer"), formatter.string(from: Int(radius)))
             } else {
-                radiusString = String.localizedStringWithFormat(CelestiaString("%@ m", comment: ""), formatter.string(from: Int(radius * 1000)))
+                radiusString = String.localizedStringWithFormat(CelestiaString("%@ m", comment: "Unit meter"), formatter.string(from: Int(radius * 1000)))
             }
         }
 
         if body.isEllipsoid {
             lines.append(String.localizedStringWithFormat(CelestiaString("Equatorial radius: %@", comment: ""), radiusString))
         } else {
-            lines.append(String.localizedStringWithFormat(CelestiaString("Size: %@", comment: ""), radiusString))
+            lines.append(String.localizedStringWithFormat(CelestiaString("Size: %@", comment: "Size of an object"), radiusString))
         }
 
         let orbit = body.orbit(at: simulation.time)
@@ -237,10 +237,10 @@ public extension AppCore {
         }
 
         if body.hasRings {
-            lines.append(CelestiaString("Has rings", comment: ""))
+            lines.append(CelestiaString("Has rings", comment: "Indicate that an object has rings"))
         }
         if body.hasAtmosphere {
-            lines.append(CelestiaString("Has atmosphere", comment: ""))
+            lines.append(CelestiaString("Has atmosphere", comment: "Indicate that an object has atmosphere"))
         }
 
         let timeline = body.timeline
@@ -253,10 +253,10 @@ public extension AppCore {
             dateFormatter.timeStyle = .short
 
             if let startTime {
-                lines.append(String.localizedStringWithFormat(CelestiaString("Start time: %@", comment: ""), dateFormatter.string(from: startTime)))
+                lines.append(String.localizedStringWithFormat(CelestiaString("Start time: %@", comment: "Template for the start time of a body, usually a spacecraft"), dateFormatter.string(from: startTime)))
             }
             if let endTime {
-                lines.append(String.localizedStringWithFormat(CelestiaString("End time: %@", comment: ""), dateFormatter.string(from: endTime)))
+                lines.append(String.localizedStringWithFormat(CelestiaString("End time: %@", comment: "Template for the end time of a body, usually a spacecraft"), dateFormatter.string(from: endTime)))
             }
         }
 
@@ -280,10 +280,10 @@ public extension AppCore {
         let sph = AstroUtils.rect(toSpherical: eqPos)
 
         let hms = DMS(decimal: sph.dx)
-        lines.append(String.localizedStringWithFormat(CelestiaString("RA: %@h %@m %@s", comment: ""), formatter.string(from: hms.hmsHours), formatter.string(from: hms.hmsMinutes), formatter.string(from: hms.hmsSeconds)))
+        lines.append(String.localizedStringWithFormat(CelestiaString("RA: %@h %@m %@s", comment: "Equatorial coordinate"), formatter.string(from: hms.hmsHours), formatter.string(from: hms.hmsMinutes), formatter.string(from: hms.hmsSeconds)))
 
         let dms = DMS(decimal: sph.dy)
-        lines.append(String.localizedStringWithFormat(CelestiaString("DEC: %@° %@′ %@″", comment: ""), formatter.string(from: dms.degrees), formatter.string(from: dms.minutes), formatter.string(from: dms.seconds)))
+        lines.append(String.localizedStringWithFormat(CelestiaString("DEC: %@° %@′ %@″", comment: "Equatorial coordinate"), formatter.string(from: dms.degrees), formatter.string(from: dms.minutes), formatter.string(from: dms.seconds)))
 
         return lines.joined(separator: "\n")
     }
@@ -306,19 +306,19 @@ public extension AppCore {
         var sph = AstroUtils.rect(toSpherical: eqPos)
 
         let hms = DMS(decimal: sph.dx)
-        lines.append(String.localizedStringWithFormat(CelestiaString("RA: %@h %@m %@s", comment: ""), formatter.string(from: hms.hmsHours), formatter.string(from: hms.hmsMinutes), formatter.string(from: hms.hmsSeconds)))
+        lines.append(String.localizedStringWithFormat(CelestiaString("RA: %@h %@m %@s", comment: "Equatorial coordinate"), formatter.string(from: hms.hmsHours), formatter.string(from: hms.hmsMinutes), formatter.string(from: hms.hmsSeconds)))
 
         var dms = DMS(decimal: sph.dy)
-        lines.append(String.localizedStringWithFormat(CelestiaString("Dec: %@° %@′ %@″", comment: ""), formatter.string(from: dms.degrees), formatter.string(from: dms.minutes), formatter.string(from: dms.seconds)))
+        lines.append(String.localizedStringWithFormat(CelestiaString("DEC: %@° %@′ %@″", comment: "Equatorial coordinate"), formatter.string(from: dms.degrees), formatter.string(from: dms.minutes), formatter.string(from: dms.seconds)))
 
         let galPos = AstroUtils.equatorial(toGalactic: eqPos)
         sph = AstroUtils.rect(toSpherical: galPos)
 
         dms = DMS(decimal: sph.dx)
-        lines.append(String.localizedStringWithFormat(CelestiaString("L: %@° %@′ %@″", comment: ""), formatter.string(from: dms.degrees), formatter.string(from: dms.minutes), formatter.string(from: dms.seconds)))
+        lines.append(String.localizedStringWithFormat(CelestiaString("L: %@° %@′ %@″", comment: "Galactic coordinates"), formatter.string(from: dms.degrees), formatter.string(from: dms.minutes), formatter.string(from: dms.seconds)))
 
         dms = DMS(decimal: sph.dy)
-        lines.append(String.localizedStringWithFormat(CelestiaString("B: %@° %@′ %@″", comment: ""), formatter.string(from: dms.degrees), formatter.string(from: dms.minutes), formatter.string(from: dms.seconds)))
+        lines.append(String.localizedStringWithFormat(CelestiaString("B: %@° %@′ %@″", comment: "Galactic coordinates"), formatter.string(from: dms.degrees), formatter.string(from: dms.minutes), formatter.string(from: dms.seconds)))
 
         return lines.joined(separator: "\n")
     }

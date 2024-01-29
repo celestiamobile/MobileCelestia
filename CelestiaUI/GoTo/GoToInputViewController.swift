@@ -25,11 +25,11 @@ private extension DistanceUnit {
     var name: String {
         switch self {
         case .AU:
-            return CelestiaString("au", comment: "")
+            return CelestiaString("au", comment: "Astronomical unit")
         case .KM:
-            return CelestiaString("km", comment: "")
+            return CelestiaString("km", comment: "Unit")
         case .radii:
-            return CelestiaString("radii", comment: "")
+            return CelestiaString("radii", comment: "In Go to, specify the distance based on the object radius")
         @unknown default:
             fatalError()
         }
@@ -91,7 +91,7 @@ class GoToInputViewController: BaseTableViewController {
     }
 
     struct ObjectNameItem: GoToInputItem {
-        var title: String { CelestiaString("Object", comment: "") }
+        var title: String { CelestiaString("Object", comment: "In eclipse finder, object to find eclipse with, or in go to") }
 
         var detail: String { name }
 
@@ -125,7 +125,7 @@ class GoToInputViewController: BaseTableViewController {
 
 #if targetEnvironment(macCatalyst)
     private lazy var goToolbarItem: NSToolbarItem = {
-        return NSToolbarItem(itemIdentifier: .go, buttonTitle: CelestiaString("Go", comment: ""), target: self, action: #selector(go))
+        return NSToolbarItem(itemIdentifier: .go, buttonTitle: CelestiaString("Go", comment: "Go to an object"), target: self, action: #selector(go))
     }()
 #endif
 
@@ -203,7 +203,7 @@ private extension GoToInputViewController {
             tableView.register(DistanceInputCell.self, forCellReuseIdentifier: "Distance")
         }
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: CelestiaString("Go", comment: ""), style: .plain, target: self, action: #selector(go))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: CelestiaString("Go", comment: "Go to an object"), style: .plain, target: self, action: #selector(go))
 
         reload()
     }
@@ -224,18 +224,18 @@ private extension GoToInputViewController {
         let distanceSection: Section
         let coordinateSection: Section
         if #available(iOS 15, visionOS 1, *) {
-            distanceSection = Section(title: CelestiaString("Distance", comment: ""), items: [DistanceItem()])
-            coordinateSection = Section(title: CelestiaString("Coordinates", comment: ""), items: [
+            distanceSection = Section(title: CelestiaString("Distance", comment: "Distance to the object (in Go to)"), items: [DistanceItem()])
+            coordinateSection = Section(title: CelestiaString("Coordinates", comment: "Longitude and latitude (in Go to)"), items: [
                 LonLatItem(),
             ])
         } else {
             distanceSection = Section(title: nil, items: [
-                DoubleValueItem(title: CelestiaString("Distance", comment: ""), value: distance, valueString: distanceString, formatter: numberFormatter, type: .distance),
+                DoubleValueItem(title: CelestiaString("Distance", comment: "Distance to the object (in Go to)"), value: distance, valueString: distanceString, formatter: numberFormatter, type: .distance),
                 UnitItem(unit: unit),
             ])
-            coordinateSection = Section(title: CelestiaString("Coordinates", comment: ""), items: [
-                FloatValueItem(title: CelestiaString("Latitude", comment: ""), value: latitude, valueString: latitudeString, formatter: numberFormatter, type: .latitude),
-                FloatValueItem(title: CelestiaString("Longitude", comment: ""), value: longitude, valueString: longitudeString, formatter: numberFormatter, type: .longitude),
+            coordinateSection = Section(title: CelestiaString("Coordinates", comment: "Longitude and latitude (in Go to)"), items: [
+                FloatValueItem(title: CelestiaString("Latitude", comment: "Coordinates"), value: latitude, valueString: latitudeString, formatter: numberFormatter, type: .latitude),
+                FloatValueItem(title: CelestiaString("Longitude", comment: "Coordinates"), value: longitude, valueString: longitudeString, formatter: numberFormatter, type: .longitude),
             ])
         }
         allSections = [

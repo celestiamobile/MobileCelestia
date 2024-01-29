@@ -112,7 +112,7 @@ extension ObserverModeViewController {
         let row = rows[indexPath.row]
         if #available(iOS 15, visionOS 1, *), row == .coordinateSystem {
             let cell = tableView.dequeueReusableCell(withIdentifier: "Selection", for: indexPath) as! SelectionCell
-            cell.title = CelestiaString("Coordinate System", comment: "")
+            cell.title = CelestiaString("Coordinate System", comment: "Used in Flight Mode")
             cell.selectionData = SelectionCell.SelectionData(options: supportedCoordinateSystems.map { $0.name }, selectedIndex: supportedCoordinateSystems.firstIndex(of: coordinateSystem) ?? -1)
             cell.selectionChange = { [weak self] index in
                 guard let self else { return }
@@ -128,15 +128,15 @@ extension ObserverModeViewController {
         let type: UITableViewCell.AccessoryType
         switch row {
         case .coordinateSystem:
-            title = CelestiaString("Coordinate System", comment: "")
+            title = CelestiaString("Coordinate System", comment: "Used in Flight Mode")
             detail = coordinateSystem.name
             type = .none
         case .referenceObjectName:
-            title = CelestiaString("Reference Object", comment: "")
+            title = CelestiaString("Reference Object", comment: "Used in Flight Mode")
             detail = referenceObjectName
             type = .disclosureIndicator
         case .targetObjectName:
-            title = CelestiaString("Target Object", comment: "")
+            title = CelestiaString("Target Object", comment: "Used in Flight Mode")
             detail = targetObjectName
             type = .disclosureIndicator
         }
@@ -152,7 +152,7 @@ extension ObserverModeViewController {
 
     public override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
         let footer = tableView.dequeueReusableHeaderFooterView(withIdentifier: "Footer") as! LinkFooterView
-        footer.info = LinkTextView.LinkInfo(text: CelestiaString("Flight mode decides how you move around in Celestia. Learn more…", comment: ""), links: [LinkTextView.Link(text: CelestiaString("Learn more…", comment: ""), link: "https://celestia.mobi/help/flight-mode?lang=\(AppCore.language)")])
+        footer.info = LinkTextView.LinkInfo(text: CelestiaString("Flight mode decides how you move around in Celestia. Learn more…", comment: ""), links: [LinkTextView.Link(text: CelestiaString("Learn more…", comment: "Text for the link in Flight mode decides how you move around in Celestia. Learn more…"), link: "https://celestia.mobi/help/flight-mode?lang=\(AppCore.language)")])
         return footer
     }
 
@@ -166,7 +166,7 @@ extension ObserverModeViewController {
         case .coordinateSystem:
             if #available(iOS 15, visionOS 1, *) {
             } else {
-                let vc = SelectionViewController(title: CelestiaString("Coordinate System", comment: ""), options: supportedCoordinateSystems.map { $0.name }, selectedIndex: supportedCoordinateSystems.firstIndex(of: coordinateSystem), selectionChange: { [weak self] index in
+                let vc = SelectionViewController(title: CelestiaString("Coordinate System", comment: "Used in Flight Mode"), options: supportedCoordinateSystems.map { $0.name }, selectedIndex: supportedCoordinateSystems.firstIndex(of: coordinateSystem), selectionChange: { [weak self] index in
                     guard let self = self else { return }
                     self.coordinateSystem = self.supportedCoordinateSystems[index]
                     self.updateRows()
@@ -200,13 +200,13 @@ private extension CoordinateSystem {
     var name: String {
         switch self {
         case .universal:
-            return CelestiaString("Free Flight", comment: "")
+            return CelestiaString("Free Flight", comment: "Flight mode, coordinate system")
         case .ecliptical:
             return CelestiaString("Follow", comment: "")
         case .bodyFixed:
             return CelestiaString("Sync Orbit", comment: "")
         case .phaseLock:
-            return CelestiaString("Phase Lock", comment: "")
+            return CelestiaString("Phase Lock", comment: "Flight mode, coordinate system")
         case .chase:
             return CelestiaString("Chase", comment: "")
         default:

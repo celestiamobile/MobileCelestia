@@ -56,9 +56,9 @@ class TutorialViewController: BaseTableViewController {
     ]
 
     private lazy var urlItems = [
-        TutorialURLItem(title: CelestiaString("Mouse/Keyboard Controls", comment: ""), url: URL(string: "celguide://guide?guide=BE1B5023-46B6-1F10-F15F-3B3F02F30300")!),
-        TutorialURLItem(title: CelestiaString("Use Add-ons and Scripts", comment: ""), url: URL(string: "celguide://guide?guide=D1A96BFA-00BB-0089-F361-10DD886C8A4F")!),
-        TutorialURLItem(title: CelestiaString("Scripts and URLs", comment: ""), url: URL(string: "celguide://guide?guide=A0AB3F01-E616-3C49-0934-0583D803E9D0")!),
+        TutorialURLItem(title: CelestiaString("Mouse/Keyboard Controls", comment: "Guide to control Celestia with a mouse/keyboard"), url: URL(string: "celguide://guide?guide=BE1B5023-46B6-1F10-F15F-3B3F02F30300")!),
+        TutorialURLItem(title: CelestiaString("Use Add-ons and Scripts", comment: "URL for Use Add-ons and Scripts wiki"), url: URL(string: "celguide://guide?guide=D1A96BFA-00BB-0089-F361-10DD886C8A4F")!),
+        TutorialURLItem(title: CelestiaString("Scripts and URLs", comment: "URL for Scripts and URLs wiki"), url: URL(string: "celguide://guide?guide=A0AB3F01-E616-3C49-0934-0583D803E9D0")!),
     ]
 
     private lazy var tutorialItems: [[TutorialItem]] = [

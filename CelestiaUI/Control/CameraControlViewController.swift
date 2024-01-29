@@ -26,12 +26,12 @@ public final class CameraControlViewController: BaseTableViewController {
 
     private var controlItems: [Section] = [
         Section(items: [
-            Item(title: CelestiaString("Pitch", comment: ""), minusKey: 32, plusKey: 26),
-            Item(title: CelestiaString("Yaw", comment: ""), minusKey: 28, plusKey: 30),
-            Item(title: CelestiaString("Roll", comment: ""), minusKey: 31, plusKey: 33)
+            Item(title: CelestiaString("Pitch", comment: "Camera control"), minusKey: 32, plusKey: 26),
+            Item(title: CelestiaString("Yaw", comment: "Camera control"), minusKey: 28, plusKey: 30),
+            Item(title: CelestiaString("Roll", comment: "Camera control"), minusKey: 31, plusKey: 33)
         ], footer: CelestiaString("Long press on stepper to change orientation.", comment: "")),
         Section(items: [
-            Item(title: CelestiaString("Zoom (Distance)", comment: ""), minusKey: 6, plusKey: 5),
+            Item(title: CelestiaString("Zoom (Distance)", comment: "Zoom in/out in Camera Control, this changes the relative distance to the object"), minusKey: 6, plusKey: 5),
         ], footer: CelestiaString("Long press on stepper to zoom in/out.", comment: "")),
     ]
 
@@ -59,7 +59,7 @@ private extension CameraControlViewController {
     func setUp() {
         tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         tableView.register(StepperCell.self, forCellReuseIdentifier: "Stepper")
-        title = CelestiaString("Camera Control", comment: "")
+        title = CelestiaString("Camera Control", comment: "Observer control")
     }
 }
 
@@ -82,7 +82,7 @@ extension CameraControlViewController {
         }
         if indexPath.section == controlItems.count + 1 {
             let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
-            cell.title = CelestiaString("Reverse Direction", comment: "")
+            cell.title = CelestiaString("Reverse Direction", comment: "Reverse camera direction, reverse travel direction")
             cell.accessoryType = .none
             return cell
         }

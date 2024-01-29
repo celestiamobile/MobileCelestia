@@ -72,8 +72,8 @@ class LongitudeLatitudeInputCell: UITableViewCell {
         labelStackView.spacing = GlobalConstants.listItemGapHorizontal
         contentView.addSubview(labelStackView)
 
-        longitudeLabel.text = CelestiaString("Longitude", comment: "")
-        latitudeLabel.text = CelestiaString("Latitude", comment: "")
+        longitudeLabel.text = CelestiaString("Longitude", comment: "Coordinates")
+        latitudeLabel.text = CelestiaString("Latitude", comment: "Coordinates")
 
         let stackView = UIStackView(arrangedSubviews: [latitudeTextField, longitudeTextField])
         stackView.axis = .horizontal

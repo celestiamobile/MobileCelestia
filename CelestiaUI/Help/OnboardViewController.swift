@@ -45,7 +45,7 @@ private extension OnboardViewController {
         view.backgroundColor = .secondarySystemBackground
 
         let welcomeView = UILabel(textStyle: .largeTitle)
-        welcomeView.text = CelestiaString("Welcome to Celestia", comment: "")
+        welcomeView.text = CelestiaString("Welcome to Celestia", comment: "Welcome message")
         welcomeView.textColor = .label
         welcomeView.numberOfLines = 0
         welcomeView.translatesAutoresizingMaskIntoConstraints = false

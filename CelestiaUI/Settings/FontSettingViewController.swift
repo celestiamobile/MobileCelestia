@@ -59,8 +59,8 @@ final class FontSettingViewController: BaseTableViewController {
         }
 
         private func setUp() {
-            segmentedControl.insertSegment(withTitle: CelestiaString("Normal", comment: ""), at: segmentedControl.numberOfSegments, animated: false)
-            segmentedControl.insertSegment(withTitle: CelestiaString("Bold", comment: ""), at: segmentedControl.numberOfSegments, animated: false)
+            segmentedControl.insertSegment(withTitle: CelestiaString("Normal", comment: "Normal font style"), at: segmentedControl.numberOfSegments, animated: false)
+            segmentedControl.insertSegment(withTitle: CelestiaString("Bold", comment: "Bold font style"), at: segmentedControl.numberOfSegments, animated: false)
             contentView.addSubview(segmentedControl)
             segmentedControl.translatesAutoresizingMaskIntoConstraints = false
             segmentedControl.selectedSegmentIndex = isBold ? 1 : 0
@@ -159,7 +159,7 @@ extension FontSettingViewController {
 
     override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
         if section == 1 {
-            return CelestiaString("Configuration will take effect after a restart.", comment: "")
+            return CelestiaString("Configuration will take effect after a restart.", comment: "Change requires a restart")
         }
         return nil
     }

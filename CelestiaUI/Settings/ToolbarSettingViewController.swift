@@ -139,7 +139,7 @@ class ToolbarSettingViewController: SubscriptionBackingViewController {
                 #else
                 configuration.textProperties.color = .themeLabel
                 #endif
-                configuration.text = CelestiaString("Reset to Default", comment: "")
+                configuration.text = CelestiaString("Reset to Default", comment: "Reset celestia.cfg, data directory location")
                 cell.contentConfiguration = configuration
                 cell.selectionStyle = .default
                 return cell
@@ -172,7 +172,7 @@ class ToolbarSettingViewController: SubscriptionBackingViewController {
 
         override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
             if section == 1 {
-                return CelestiaString("Configuration will take effect after a restart.", comment: "")
+                return CelestiaString("Configuration will take effect after a restart.", comment: "Change requires a restart")
             }
             return nil
         }
@@ -183,7 +183,7 @@ class ToolbarSettingViewController: SubscriptionBackingViewController {
             containerViewController.navigationItem.rightBarButtonItem = containerViewController.editButtonItem
             return ContentViewController(userDefaults: userDefaults, toolbarActionsKey: context.toolbarActionsKey)
         }
-        title = CelestiaString("Toolbar", comment: "")
+        title = CelestiaString("Toolbar", comment: "Toolbar customization entry in Settings")
     }
 
     override func setEditing(_ editing: Bool, animated: Bool) {

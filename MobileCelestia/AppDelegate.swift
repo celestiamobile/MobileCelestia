@@ -319,20 +319,20 @@ extension AppDelegate {
         if #available(macCatalyst 16.0, *) {
             settingsTitle = CelestiaString("Settings…", comment: "")
         } else {
-            settingsTitle = CelestiaString("Preferences…", comment: "")
+            settingsTitle = CelestiaString("Preferences…", comment: "Settings")
         }
         #else
         let settingsTitle = CelestiaString("Settings…", comment: "")
         #endif
         let aboutMenu = createMenuItem(
             identifierSuffix: "about",
-            action: MenuActionContext(title: CelestiaString("About Celestia", comment: ""), action: #selector(showAbout))
+            action: MenuActionContext(title: CelestiaString("About Celestia", comment: "System menu item"), action: #selector(showAbout))
         )
         builder.insertChild(aboutMenu, atStartOfMenu: .application)
 
         let menuBeforeSetting: UIMenu
         if #available(iOS 15, *) {
-            let celestiaPlusMenu = createMenuItem(identifierSuffix: "celestiaplus", action: MenuActionContext(title: CelestiaString("Celestia PLUS", comment: ""), action: #selector(showCelestiaPlus)))
+            let celestiaPlusMenu = createMenuItem(identifierSuffix: "celestiaplus", action: MenuActionContext(title: CelestiaString("Celestia PLUS", comment: "Name for the subscription service"), action: #selector(showCelestiaPlus)))
             builder.insertSibling(celestiaPlusMenu, afterMenu: aboutMenu.identifier)
             menuBeforeSetting = celestiaPlusMenu
         } else {
@@ -348,7 +348,7 @@ extension AppDelegate {
         if #available(iOS 13.4, *) {
             captureImageKey = UIKeyCommand.f10
         }
-        let captureImageMenu = createMenuItem(identifierSuffix: "capture", action: MenuActionContext(title: CelestiaString("Capture Image", comment: ""), action: #selector(captureImage), input: captureImageKey))
+        let captureImageMenu = createMenuItem(identifierSuffix: "capture", action: MenuActionContext(title: CelestiaString("Capture Image", comment: "Take a screenshot in Celestia"), action: #selector(captureImage), input: captureImageKey))
 
         if #available(iOS 14, *) {
             let scriptsMenu = createMenuItemGroupDeferred(title: CelestiaString("Scripts", comment: ""), identifierSuffix: "scripts") { [weak self] in
@@ -370,12 +370,12 @@ extension AppDelegate {
             builder.insertSibling(captureImageMenu, beforeMenu: .close)
         }
         let copyPasteMenu = createMenuItemGroup(identifierSuffix: "copypaste", actions: [
-            MenuActionContext(title: CelestiaString("Copy URL", comment: ""), action: #selector(copy(_:)), input: "c", modifierFlags: .command),
-            MenuActionContext(title: CelestiaString("Paste URL", comment: ""), action: #selector(paste(_:)), input: "v", modifierFlags: .command),
+            MenuActionContext(title: CelestiaString("Copy URL", comment: "Copy current URL to pasteboard"), action: #selector(copy(_:)), input: "c", modifierFlags: .command),
+            MenuActionContext(title: CelestiaString("Paste URL", comment: "Paste URL from pasteboard"), action: #selector(paste(_:)), input: "v", modifierFlags: .command),
         ])
         builder.insertSibling(copyPasteMenu, afterMenu: captureImageMenu.identifier)
 
-        let navigationMenu = createMenuItemGroup(title: CelestiaString("Navigation", comment: ""), identifierSuffix: "navigation", actions: [], options: [])
+        let navigationMenu = createMenuItemGroup(title: CelestiaString("Navigation", comment: "Navigation menu"), identifierSuffix: "navigation", actions: [], options: [])
         builder.insertSibling(navigationMenu, afterMenu: .file)
 
         let selectMenu = createMenuItemGroup(identifierSuffix: "select", actions: [
@@ -385,16 +385,16 @@ extension AppDelegate {
         builder.insertChild(selectMenu, atStartOfMenu: navigationMenu.identifier)
 
         let selectionActionMenu = createMenuItemGroup(identifierSuffix: "selection.actions", actions: [
-            MenuActionContext(title: CelestiaString("Center Selection", comment: ""), action: #selector(centerSelection), input: "c"),
-            MenuActionContext(title: CelestiaString("Go to Selection", comment: ""), action: #selector(gotoSelection), input: "g"),
+            MenuActionContext(title: CelestiaString("Center Selection", comment: "Center selected object"), action: #selector(centerSelection), input: "c"),
+            MenuActionContext(title: CelestiaString("Go to Selection", comment: "Go to selected object"), action: #selector(gotoSelection), input: "g"),
             MenuActionContext(title: CelestiaString("Follow Selection", comment: ""), action: #selector(followSelection), input: "f"),
             MenuActionContext(title: CelestiaString("Sync Orbit Selection", comment: ""), action: #selector(syncOrbitSelection), input: "y"),
-            MenuActionContext(title: CelestiaString("Track Selection", comment: ""), action: #selector(trackSelection), input: "t"),
+            MenuActionContext(title: CelestiaString("Track Selection", comment: "Track selected object"), action: #selector(trackSelection), input: "t"),
         ])
         builder.insertSibling(selectionActionMenu, afterMenu: selectMenu.identifier)
         builder.insertSibling(createMenuItem(identifierSuffix: "flightmode", action: MenuActionContext(title: CelestiaString("Flight Mode", comment: ""), action: #selector(showFlightMode))), afterMenu: selectionActionMenu.identifier)
 
-        let toolsMenu = createMenuItemGroup(title: CelestiaString("Tools", comment: ""), identifierSuffix: "tools", actions: [], options: [])
+        let toolsMenu = createMenuItemGroup(title: CelestiaString("Tools", comment: "Tools menu title"), identifierSuffix: "tools", actions: [], options: [])
         builder.insertSibling(toolsMenu, afterMenu: navigationMenu.identifier)
         let mainToolsMenu = createMenuItemGroup(identifierSuffix: "tools.main", actions: [
             MenuActionContext(title: CelestiaString("Star Browser", comment: ""), action: #selector(showStarBrowser)),
@@ -402,27 +402,27 @@ extension AppDelegate {
         ])
         builder.insertChild(mainToolsMenu, atStartOfMenu: toolsMenu.identifier)
         let addonToolsMenu = createMenuItemGroup(identifierSuffix: "tools.addon", actions: [
-            MenuActionContext(title: CelestiaString("Get Add-ons", comment: ""), action: #selector(getAddons)),
-            MenuActionContext(title: CelestiaString("Installed Add-ons", comment: ""), action: #selector(showInstalledAddons)),
+            MenuActionContext(title: CelestiaString("Get Add-ons", comment: "Open webpage for downloading add-ons"), action: #selector(getAddons)),
+            MenuActionContext(title: CelestiaString("Installed Add-ons", comment: "Open a page for managing installed add-ons"), action: #selector(showInstalledAddons)),
         ])
         builder.insertSibling(addonToolsMenu, afterMenu: mainToolsMenu.identifier)
 
         let timeMenu = createMenuItemGroup(title: CelestiaString("Time", comment: ""), identifierSuffix: "time", actions: [], options: [])
         builder.insertSibling(timeMenu, afterMenu: toolsMenu.identifier)
         let quickTimeSettingMenu = createMenuItemGroup(identifierSuffix: "time.quick", actions: [
-            MenuActionContext(title: CelestiaString("10x Faster", comment: ""), action: #selector(tenTimesFaster), input: "l"),
-            MenuActionContext(title: CelestiaString("10x Slower", comment: ""), action: #selector(tenTimesSlower), input: "k"),
-            MenuActionContext(title: CelestiaString("Freeze", comment: ""), action: #selector(freezeTime), input: " "),
-            MenuActionContext(title: CelestiaString("Real Time", comment: ""), action: #selector(realTime)),
+            MenuActionContext(title: CelestiaString("10x Faster", comment: "10x time speed"), action: #selector(tenTimesFaster), input: "l"),
+            MenuActionContext(title: CelestiaString("10x Slower", comment: "0.1x time speed"), action: #selector(tenTimesSlower), input: "k"),
+            MenuActionContext(title: CelestiaString("Freeze", comment: "Freeze time"), action: #selector(freezeTime), input: " "),
+            MenuActionContext(title: CelestiaString("Real Time", comment: "Reset time speed to 1x"), action: #selector(realTime)),
             MenuActionContext(title: CelestiaString("Reverse Time", comment: ""), action: #selector(reverseTime), input: "j"),
         ])
         builder.insertChild(quickTimeSettingMenu, atStartOfMenu: timeMenu.identifier)
-        builder.insertSibling(createMenuItem(identifierSuffix: "time.select", action: MenuActionContext(title: CelestiaString("Set Time…", comment: ""), action: #selector(showTimeSetting))), afterMenu: quickTimeSettingMenu.identifier)
+        builder.insertSibling(createMenuItem(identifierSuffix: "time.select", action: MenuActionContext(title: CelestiaString("Set Time…", comment: "Select simulation time"), action: #selector(showTimeSetting))), afterMenu: quickTimeSettingMenu.identifier)
 
-        let bookmarkMenu = createMenuItemGroup(title: CelestiaString("Bookmarks", comment: ""), identifierSuffix: "bookmarks", actions: [], options: [])
+        let bookmarkMenu = createMenuItemGroup(title: CelestiaString("Bookmarks", comment: "URL bookmarks"), identifierSuffix: "bookmarks", actions: [], options: [])
         builder.insertSibling(bookmarkMenu, afterMenu: timeMenu.identifier)
         let bookmarkActionMenu = createMenuItemGroup(identifierSuffix: "bookmark.actions", actions: [
-            MenuActionContext(title: CelestiaString("Add Bookmark", comment: ""), action: #selector(addBookmark)),
+            MenuActionContext(title: CelestiaString("Add Bookmark", comment: "Add a new bookmark"), action: #selector(addBookmark)),
             MenuActionContext(title: CelestiaString("Organize Bookmarks…", comment: ""), action: #selector(organizeBookmarks)),
         ])
         builder.insertChild(bookmarkActionMenu, atStartOfMenu: bookmarkMenu.identifier)
@@ -443,10 +443,10 @@ extension AppDelegate {
 
         let deleteActiveViewKey = String(Character(UnicodeScalar(0x7f)))
         builder.insertChild(createMenuItemGroup(identifierSuffix: "views", actions: [
-            MenuActionContext(title: CelestiaString("Split Horizontally", comment: ""), action: #selector(splitHorizontally), input: "r", modifierFlags: .control),
-            MenuActionContext(title: CelestiaString("Split Vertically", comment: ""), action: #selector(splitVertically), input: "u", modifierFlags: .control),
-            MenuActionContext(title: CelestiaString("Delete Active View", comment: ""), action: #selector(deleteActiveView), input: deleteActiveViewKey),
-            MenuActionContext(title: CelestiaString("Delete Other Views", comment: ""), action: #selector(deleteOtherViews), input: "d", modifierFlags: .control),
+            MenuActionContext(title: CelestiaString("Split Horizontally", comment: "Split view"), action: #selector(splitHorizontally), input: "r", modifierFlags: .control),
+            MenuActionContext(title: CelestiaString("Split Vertically", comment: "Split view"), action: #selector(splitVertically), input: "u", modifierFlags: .control),
+            MenuActionContext(title: CelestiaString("Delete Active View", comment: "Delete current view (in split view mode)"), action: #selector(deleteActiveView), input: deleteActiveViewKey),
+            MenuActionContext(title: CelestiaString("Delete Other Views", comment: "Delete views other than current view (in split view mode)"), action: #selector(deleteOtherViews), input: "d", modifierFlags: .control),
         ]), atStartOfMenu: .view)
 
         let runDemoMenu = createMenuItem(identifierSuffix: "help.demo", action: MenuActionContext(title: CelestiaString("Run Demo", comment: ""), action: #selector(runDemo), input: ""))

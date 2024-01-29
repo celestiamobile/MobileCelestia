@@ -357,7 +357,7 @@ extension NSToolbarItem {
         let button = method(buttonClass, selector, image, target, action)
         button.setValue(11, forKey: "bezelStyle") // textureRounded
         setValue(button, forKey: "view")
-        toolTip = CelestiaString("Back", comment: "")
+        toolTip = CelestiaString("Back", comment: "Undo an operation")
         if #available(macCatalyst 14.0, *) {
             isNavigational = true
         }
@@ -376,7 +376,7 @@ extension NSToolbarItem {
         let button = method(buttonClass, selector, image, target, action)
         button.setValue(11, forKey: "bezelStyle") // textureRounded
         setValue(button, forKey: "view")
-        toolTip = CelestiaString("Add", comment: "")
+        toolTip = CelestiaString("Add", comment: "Add a new item (bookmark)")
     }
 
     private static var searchItemClassPrepared = false

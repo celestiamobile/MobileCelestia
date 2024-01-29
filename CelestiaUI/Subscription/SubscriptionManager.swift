@@ -142,9 +142,9 @@ public class SubscriptionManager {
         let products = try await Product.products(for: [yearlySubscriptionId, monthlySubscriptionId])
         return products.compactMap { product in
             if product.id == yearlySubscriptionId {
-                return Plan(product: product, name: CelestiaString("Yearly", comment: ""))
+                return Plan(product: product, name: CelestiaString("Yearly", comment: "Yearly subscription"))
             } else if product.id == monthlySubscriptionId {
-                return Plan(product: product, name: CelestiaString("Monthly", comment: ""))
+                return Plan(product: product, name: CelestiaString("Monthly", comment: "Monthly subscription"))
             } else {
                 return nil
             }

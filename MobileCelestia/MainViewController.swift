@@ -272,12 +272,12 @@ extension MainViewController {
 
         if let url = scriptOrCelURL {
             if url.url.isFileURL {
-                front?.showOption(CelestiaString("Run script?", comment: "")) { [unowned self] (confirmed) in
+                front?.showOption(CelestiaString("Run script?", comment: "Request user consent to run a script")) { [unowned self] (confirmed) in
                     guard confirmed else { return }
                     self.celestiaController.openURL(url)
                 }
             } else if url.url.scheme == "cel" {
-                front?.showOption(CelestiaString("Open URL?", comment: "")) { [unowned self] (confirmed) in
+                front?.showOption(CelestiaString("Open URL?", comment: "Request user consent to open a URL")) { [unowned self] (confirmed) in
                     guard confirmed else { return }
                     self.celestiaController.openURL(url)
                 }
@@ -558,7 +558,7 @@ extension MainViewController: UIDocumentPickerDelegate {
 
 extension MainViewController: CelestiaControllerDelegate {
     func celestiaController(_ celestiaController: CelestiaViewController, loadingStatusUpdated status: String) {
-        loadingController.update(with: String.localizedStringWithFormat(CelestiaString("Loading: %@", comment: ""), status))
+        loadingController.update(with: String.localizedStringWithFormat(CelestiaString("Loading: %@", comment: "Celestia initialization, loading file"), status))
     }
 
     func celestiaController(_ celestiaController: CelestiaViewController, loadingFailedShouldRetry shouldRetry: @escaping (Bool) -> Void) {
@@ -577,7 +577,7 @@ extension MainViewController: CelestiaControllerDelegate {
         print("loading failed")
 
         self.status = .loadingFailed
-        self.loadingController.update(with: CelestiaString("Loading Celestia failed…", comment: ""))
+        self.loadingController.update(with: CelestiaString("Loading Celestia failed…", comment: "Celestia loading failed"))
     }
 
     func celestiaControllerLoadingSucceeded(_ celestiaController: CelestiaViewController) {
@@ -746,8 +746,8 @@ extension MainViewController: CelestiaControllerDelegate {
         let vc = MFMailComposeViewController()
         vc.mailComposeDelegate = self
         vc.setToRecipients([Constants.feedbackEmailAddress])
-        vc.setSubject(CelestiaString("Bug report for Celestia", comment: ""))
-        vc.setMessageBody(CelestiaString("Please describe the issue and repro steps, if known.", comment: ""), isHTML: false)
+        vc.setSubject(CelestiaString("Bug report for Celestia", comment: "Default email title for bug report"))
+        vc.setMessageBody(CelestiaString("Please describe the issue and repro steps, if known.", comment: "Default email body for bug report"), isHTML: false)
         if let imageData {
             vc.addAttachmentData(imageData, mimeType: "image/png", fileName: "screenshot.png")
         }
@@ -829,8 +829,8 @@ Device Model: \(model)
         let vc = MFMailComposeViewController()
         vc.mailComposeDelegate = self
         vc.setToRecipients([Constants.feedbackEmailAddress])
-        vc.setSubject(CelestiaString("Feature suggestion for Celestia", comment: ""))
-        vc.setMessageBody(CelestiaString("Please describe the feature you want to see in Celestia.", comment: ""), isHTML: false)
+        vc.setSubject(CelestiaString("Feature suggestion for Celestia", comment: "Default email title for feature suggestion"))
+        vc.setMessageBody(CelestiaString("Please describe the feature you want to see in Celestia.", comment: "Default email body for feature suggestion"), isHTML: false)
         if #available(iOS 15, *) {
             if let (transactionID, isSandbox) = subscriptionManager.transactionInfo() {
                 let info = "\(transactionID) \(isSandbox)"
@@ -847,7 +847,7 @@ Device Model: \(model)
     }
 
     private func presentShare() {
-        showSelection(nil, options: [CelestiaString("Image", comment: ""), CelestiaString("URL", comment: "")], source: nil) { [weak self] index in
+        showSelection(nil, options: [CelestiaString("Image", comment: "Sharing option, image"), CelestiaString("URL", comment: "Sharing option, URL")], source: nil) { [weak self] index in
             guard let self = self, let index = index else { return }
             if index == 0 {
                 self.shareImage()
@@ -1087,7 +1087,7 @@ Device Model: \(model)
             await presentActionToolbar(for: layoutDirectionDependentActions.map { .toolbarAction($0) } + [
                 .toolbarAction(CelestiaAction.stop),
                 .toolbarAction(CelestiaAction.reverseSpeed),
-                .groupedActions(accessibilityLabel: CelestiaString("Speed Presets", comment: ""), actions: [
+                .groupedActions(accessibilityLabel: CelestiaString("Speed Presets", comment: "Action to show a list of presets in speed"), actions: [
                     CelestiaContinuousAction.f2,
                     CelestiaContinuousAction.f3,
                     CelestiaContinuousAction.f4,
@@ -1117,8 +1117,8 @@ Device Model: \(model)
     }
 
     private func showMarkMenu(with selection: Selection, with sender: UIView, viewController: UIViewController) {
-        let options = (0...MarkerRepresentation.crosshair.rawValue).map{ MarkerRepresentation(rawValue: $0)?.localizedTitle ?? "" } + [CelestiaString("Unmark", comment: "")]
-        viewController.showSelection(CelestiaString("Mark", comment: ""), options: options, source: .view(view: sender, sourceRect: nil)) { [weak self] index in
+        let options = (0...MarkerRepresentation.crosshair.rawValue).map{ MarkerRepresentation(rawValue: $0)?.localizedTitle ?? "" } + [CelestiaString("Unmark", comment: "Unmark an object")]
+        viewController.showSelection(CelestiaString("Mark", comment: "Mark an object"), options: options, source: .view(view: sender, sourceRect: nil)) { [weak self] index in
             guard let self = self, let index = index else { return }
             if let marker = MarkerRepresentation(rawValue: UInt(index)) {
                 Task {
@@ -1132,7 +1132,7 @@ Device Model: \(model)
 
     private func showAlternateSurfaces(of selection: Selection, with sender: UIView, viewController: UIViewController) {
         guard let alternativeSurfaces = selection.body?.alternateSurfaceNames, alternativeSurfaces.count > 0 else { return }
-        viewController.showSelection(CelestiaString("Alternate Surfaces", comment: ""), options: [CelestiaString("Default", comment: "")] + alternativeSurfaces, source: .view(view: sender, sourceRect: nil)) { [weak self] index in
+        viewController.showSelection(CelestiaString("Alternate Surfaces", comment: "Alternative textures to display"), options: [CelestiaString("Default", comment: "")] + alternativeSurfaces, source: .view(view: sender, sourceRect: nil)) { [weak self] index in
             guard let self = self, let index = index else { return }
 
             if index == 0 {

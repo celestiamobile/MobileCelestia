@@ -78,10 +78,10 @@ class CelestiaInteractionController: UIViewController {
         }
     }()
     private lazy var activeControlView = CelestiaControlView(items: [
-        CelestiaControlButton.tap(image: UIImage(systemName: "info.circle"), action: .info, accessibilityLabel: CelestiaString("Get Info", comment: "")),
+        CelestiaControlButton.tap(image: UIImage(systemName: "info.circle"), action: .info, accessibilityLabel: CelestiaString("Get Info", comment: "Action for getting info about current selected object")),
         CelestiaControlButton.tap(image: UIImage(systemName: "magnifyingglass.circle"), action: .search, accessibilityLabel: CelestiaString("Search", comment: "")),
-        CelestiaControlButton.tap(image: UIImage(systemName: "line.3.horizontal.circle") ?? UIImage(systemName: "line.horizontal.3.circle") ?? UIImage(named: "control_action_menu"), action: .showMenu, accessibilityLabel: CelestiaString("Menu", comment: "")),
-        CelestiaControlButton.tap(image: UIImage(systemName: "xmark.circle"), action: .hide, accessibilityLabel: CelestiaString("Hide", comment: "")),
+        CelestiaControlButton.tap(image: UIImage(systemName: "line.3.horizontal.circle") ?? UIImage(systemName: "line.horizontal.3.circle") ?? UIImage(named: "control_action_menu"), action: .showMenu, accessibilityLabel: CelestiaString("Menu", comment: "Menu button")),
+        CelestiaControlButton.tap(image: UIImage(systemName: "xmark.circle"), action: .hide, accessibilityLabel: CelestiaString("Hide", comment: "Action to hide the tool overlay")),
     ])
     #else
     private let needAddControlView = true
@@ -98,21 +98,21 @@ class CelestiaInteractionController: UIViewController {
     private lazy var activeControlView = CelestiaControlView(items: controlViewActions.compactMap { action in
         switch action {
         case .mode:
-            CelestiaControlButton.toggle(accessibilityLabel:  CelestiaString("Toggle Interaction Mode", comment: ""), offImage: UIImage(systemName: "cube"), offAction: .switchToObject, offAccessibilityValue: CelestiaString("Camera Mode", comment: ""), onImage: UIImage(systemName: "video"), onAction: .switchToCamera, onAccessibilityValue: CelestiaString("Object Mode", comment: ""))
+            CelestiaControlButton.toggle(accessibilityLabel:  CelestiaString("Toggle Interaction Mode", comment: "Touch interaction mode"), offImage: UIImage(systemName: "cube"), offAction: .switchToObject, offAccessibilityValue: CelestiaString("Camera Mode", comment: "Interaction mode for touch"), onImage: UIImage(systemName: "video"), onAction: .switchToCamera, onAccessibilityValue: CelestiaString("Object Mode", comment: "Interaction mode for touch"))
         case .info:
-            CelestiaControlButton.tap(image: UIImage(systemName: "info.circle"), action: .info, accessibilityLabel: CelestiaString("Get Info", comment: ""))
+            CelestiaControlButton.tap(image: UIImage(systemName: "info.circle"), action: .info, accessibilityLabel: CelestiaString("Get Info", comment: "Action for getting info about current selected object"))
         case .search:
             CelestiaControlButton.tap(image: UIImage(systemName: "magnifyingglass.circle"), action: .search, accessibilityLabel: CelestiaString("Search", comment: ""))
         case .menu:
-            CelestiaControlButton.tap(image: UIImage(systemName: "line.3.horizontal.circle") ?? UIImage(systemName: "line.horizontal.3.circle") ?? UIImage(named: "control_action_menu"), action: .showMenu, accessibilityLabel: CelestiaString("Menu", comment: ""))
+            CelestiaControlButton.tap(image: UIImage(systemName: "line.3.horizontal.circle") ?? UIImage(systemName: "line.horizontal.3.circle") ?? UIImage(named: "control_action_menu"), action: .showMenu, accessibilityLabel: CelestiaString("Menu", comment: "Menu button"))
         case .hide:
-            CelestiaControlButton.tap(image: UIImage(systemName: "xmark.circle"), action: .hide, accessibilityLabel: CelestiaString("Hide", comment: ""))
+            CelestiaControlButton.tap(image: UIImage(systemName: "xmark.circle"), action: .hide, accessibilityLabel: CelestiaString("Hide", comment: "Action to hide the tool overlay"))
         case .zoomIn:
             CelestiaControlButton.pressAndHold(image: UIImage(systemName: "plus.circle"), action: .zoomIn, accessibilityLabel: CelestiaString("Zoom In", comment: ""))
         case .zoomOut:
             CelestiaControlButton.pressAndHold(image: UIImage(systemName: "minus.circle"), action: .zoomOut, accessibilityLabel: CelestiaString("Zoom Out", comment: ""))
         case .go:
-            CelestiaControlButton.tap(image: UIImage(systemName: "paperplane.circle") ?? UIImage(named: "control_go"), action: .go, accessibilityLabel: CelestiaString("Go", comment: ""))
+            CelestiaControlButton.tap(image: UIImage(systemName: "paperplane.circle") ?? UIImage(named: "control_go"), action: .go, accessibilityLabel: CelestiaString("Go", comment: "Go to an object"))
         }
     })
     #endif
@@ -310,12 +310,12 @@ extension CelestiaInteractionController: CelestiaControlViewDelegate {
         case .switchToObject:
             interactionMode = .object
             if let window = view.window {
-                Toast.show(text: CelestiaString("Switched to object mode", comment: ""), in: window, duration: toastDuration)
+                Toast.show(text: CelestiaString("Switched to object mode", comment: "Move/zoom on an object"), in: window, duration: toastDuration)
             }
         case .switchToCamera:
             interactionMode = .camera
             if let window = view.window {
-                Toast.show(text: CelestiaString("Switched to camera mode", comment: ""), in: window, duration: toastDuration)
+                Toast.show(text: CelestiaString("Switched to camera mode", comment: "Move/zoom camera FOV"), in: window, duration: toastDuration)
             }
         default:
             fatalError("Unknown mode found: \(action)")
@@ -586,7 +586,7 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
         var actions: [UIMenuElement] = [titleAction]
 
         actions.append(UIMenu(options: .displayInline, children: [
-            UIAction(title: CelestiaString("Get Info", comment: "")) { [weak self] _ in
+            UIAction(title: CelestiaString("Get Info", comment: "Action for getting info about current selected object")) { [weak self] _ in
                 guard let self else { return }
                 self.delegate?.celestiaInteractionController(self, requestShowInfoWithSelection: selection)
             }
@@ -603,7 +603,7 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
 
         if let entry = selection.object {
             let browserItem = BrowserItem(name: core.simulation.universe.name(for: selection), catEntry: entry, provider: core.simulation.universe)
-            actions.append(UIMenu(title: "", options: .displayInline, children: browserItem.children.compactMap { $0.createMenuItems(additionalItemName: CelestiaString("Go", comment: "")) { [weak self] selection in
+            actions.append(UIMenu(title: "", options: .displayInline, children: browserItem.children.compactMap { $0.createMenuItems(additionalItemName: CelestiaString("Go", comment: "Go to an object")) { [weak self] selection in
                 guard let self else { return }
                 Task {
                     await self.executor.selectAndReceive(selection, action: .goTo)
@@ -623,12 +623,12 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
                 }
                 return action
             }
-            let menu = UIMenu(title: CelestiaString("Alternate Surfaces", comment: ""), children: [defaultSurfaceItem] + otherSurfaces)
+            let menu = UIMenu(title: CelestiaString("Alternate Surfaces", comment: "Alternative textures to display"), children: [defaultSurfaceItem] + otherSurfaces)
             actions.append(menu)
         }
 
-        let markerOptions = (0...MarkerRepresentation.crosshair.rawValue).map { MarkerRepresentation(rawValue: $0)?.localizedTitle ?? "" } + [CelestiaString("Unmark", comment: "")]
-        let markerMenu = UIMenu(title: CelestiaString("Mark", comment: ""), children: markerOptions.enumerated().map() { index, name -> UIAction in
+        let markerOptions = (0...MarkerRepresentation.crosshair.rawValue).map { MarkerRepresentation(rawValue: $0)?.localizedTitle ?? "" } + [CelestiaString("Unmark", comment: "Unmark an object")]
+        let markerMenu = UIMenu(title: CelestiaString("Mark", comment: "Mark an object"), children: markerOptions.enumerated().map() { index, name -> UIAction in
             return UIAction(title: name) { [weak self] _ in
                 guard let self else { return }
                 if let marker = MarkerRepresentation(rawValue: UInt(index)) {

@@ -71,17 +71,17 @@ public extension CelestiaAction {
     var description: String {
         switch self {
         case .goTo:
-            return CelestiaString("Go", comment: "")
+            return CelestiaString("Go", comment: "Go to an object")
         case .goToSurface:
-            return CelestiaString("Land", comment: "")
+            return CelestiaString("Land", comment: "Go to surface of an object")
         case .center:
-            return CelestiaString("Center", comment: "")
+            return CelestiaString("Center", comment: "Center an object")
         case .playpause:
             return CelestiaString("Resume/Pause", comment: "")
         case .slower:
-            return CelestiaString("Slower", comment: "")
+            return CelestiaString("Slower", comment: "Make time go more slowly")
         case .faster:
-            return CelestiaString("Faster", comment: "")
+            return CelestiaString("Faster", comment: "Make time go faster")
         case .reverse:
             return CelestiaString("Reverse Time", comment: "")
         case .currentTime:
@@ -93,17 +93,17 @@ public extension CelestiaAction {
         case .chase:
             return CelestiaString("Chase", comment: "")
         case .track:
-            return CelestiaString("Track", comment: "")
+            return CelestiaString("Track", comment: "Track an object")
         case .follow:
             return CelestiaString("Follow", comment: "")
         case .cancelScript:
             return CelestiaString("Cancel Script", comment: "")
         case .home:
-            return CelestiaString("Home (Sol)", comment: "")
+            return CelestiaString("Home (Sol)", comment: "Home object, sun.")
         case .stop:
-            return CelestiaString("Stop", comment: "")
+            return CelestiaString("Stop", comment: "Interupt the process of finding eclipse/Set traveling speed to 0")
         case .reverseSpeed:
-            return CelestiaString("Reverse Direction", comment: "")
+            return CelestiaString("Reverse Direction", comment: "Reverse camera direction, reverse travel direction")
         }
     }
 }
@@ -123,17 +123,17 @@ public extension CelestiaContinuousAction {
     var title: String? {
         switch self {
         case .f2:
-            return CelestiaString("1 km/s", comment: "")
+            return CelestiaString("1 km/s", comment: "Speed unit")
         case .f3:
-            return CelestiaString("1000 km/s", comment: "")
+            return CelestiaString("1000 km/s", comment: "Speed unit")
         case .f4:
             return CelestiaString("c (lightspeed)", comment: "")
         case .f5:
-            return CelestiaString("10c", comment: "")
+            return CelestiaString("10c", comment: "Speed unit")
         case .f6:
-            return CelestiaString("1 AU/s", comment: "")
+            return CelestiaString("1 AU/s", comment: "Speed unit")
         case .f7:
-            return CelestiaString("1 ly/s", comment: "")
+            return CelestiaString("1 ly/s", comment: "Speed unit")
         default:
             return nil
         }
