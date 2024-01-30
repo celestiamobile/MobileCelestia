@@ -2,21 +2,24 @@ platform :ios, '13.1'
 
 use_frameworks! :linkage => :static
 
-asyncgl_version_tag = "0.1.13"
+asyncgl_version_tag = "0.1.14"
+mwrequest_version_tag = "1.0.1"
+zipfoundation_version = "~> 0.9.16"
+appcenter_version = "~> 5.0.4"
 
 target 'MobileCelestia' do
-  pod 'AppCenter/Analytics', '~> 5.0.4'
-  pod 'AppCenter/Crashes', '~> 5.0.4'
-  pod 'ZIPFoundation', '~> 0.9.16'
+  pod 'AppCenter/Analytics', appcenter_version
+  pod 'AppCenter/Crashes', appcenter_version
+  pod 'ZIPFoundation', zipfoundation_version
 
-  pod "MWRequest", :git => "https://github.com/levinli303/mwrequest.git", :tag => "1.0.0"
+  pod "MWRequest", :git => "https://github.com/levinli303/mwrequest.git", :tag => mwrequest_version_tag
   pod "AsyncGL/OpenGL", :git => "https://github.com/levinli303/AsyncGL.git", :tag => asyncgl_version_tag
 end
 
 target 'CelestiaUI' do
-  pod 'ZIPFoundation', '~> 0.9.16'
+  pod 'ZIPFoundation', zipfoundation_version
 
-  pod "MWRequest", :git => "https://github.com/levinli303/mwrequest.git", :tag => "1.0.0"
+  pod "MWRequest", :git => "https://github.com/levinli303/mwrequest.git", :tag => mwrequest_version_tag
 end
 
 post_install do |installer|
