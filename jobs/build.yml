@@ -209,15 +209,20 @@ jobs:
     displayName: 'Export Archive'
 
   - script: |
+      mkdir -p $(Build.ArtifactStagingDirectory)/archive
+      mkdir -p $(Build.ArtifactStagingDirectory)/product
+    displayName: 'Create Artifact Folders'
+
+  - script: |
       cd $(XC_ARCHIVE_PARENT_PATH)
-      zip -r -v -y $(Build.ArtifactStagingDirectory)/Archive.zip *.xcarchive
+      zip -r -v -y $(Build.ArtifactStagingDirectory)/archive/Archive.zip *.xcarchive
     displayName: 'Create .zip for .xcarchive'
 
   - task: CopyFiles@2
     inputs:
       sourceFolder: '$(XC_EXPORT_PATH)'
       contents: '**/*.ipa'
-      targetFolder: '$(build.artifactStagingDirectory)'
+      targetFolder: '$(build.artifactStagingDirectory)/product'
     displayName: 'Copy .ipa'
     condition: eq( variables['sdk'], 'iphoneos' )
 
@@ -225,22 +230,29 @@ jobs:
     inputs:
       sourceFolder: '$(XC_EXPORT_PATH)'
       contents: '**/*.pkg'
-      targetFolder: '$(build.artifactStagingDirectory)'
+      targetFolder: '$(build.artifactStagingDirectory)/product'
     displayName: 'Copy .pkg'
     condition: and(eq( variables['sdk'], 'macosx' ), eq( variables['signing'], 'appStore' ))
 
   - script: |
       cd $(XC_EXPORT_PATH)
-      zip -r -v -y $(Build.ArtifactStagingDirectory)/App.zip *.app
+      zip -r -v -y $(Build.ArtifactStagingDirectory)/product/App.zip *.app
     displayName: 'Create .zip Archive for .app'
     condition: and(eq( variables['sdk'], 'macosx' ), eq( variables['signing'], 'developerID' ))
 
   - task: PublishBuildArtifacts@1
     inputs:
-      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-      ArtifactName: '$(sdk)-$(signing)-$(backend)'
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)/product'
+      ArtifactName: '$(sdk)-$(signing)-$(backend)-product'
       publishLocation: 'Container'
-    displayName: 'Publish Build Artifacts'
+    displayName: 'Publish Product Artifacts'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)/archive'
+      ArtifactName: '$(sdk)-$(signing)-$(backend)-archive'
+      publishLocation: 'Container'
+    displayName: 'Publish Archive Artifacts'
 
   - script: |
       cd $XC_ARCHIVE_PATH/dSYMs
@@ -258,6 +270,6 @@ jobs:
 
   - script: |
       xcrun notarytool store-credentials "AC_PASSWORD" --apple-id $(AC_ACCOUNT_NAME) --team-id 22NR5428TD --password $(AC_ACCOUNT_PASSWORD)
-      xcrun notarytool submit "$(Build.ArtifactStagingDirectory)/App.zip" --keychain-profile "AC_PASSWORD" --wait
+      xcrun notarytool submit "$(Build.ArtifactStagingDirectory)/product/App.zip" --keychain-profile "AC_PASSWORD" --wait
     displayName: "Notarize App"
     condition: and(eq( variables['sdk'], 'macosx' ), eq( variables['signing'], 'developerID' ))
