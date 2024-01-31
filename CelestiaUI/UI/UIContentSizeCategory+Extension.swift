@@ -21,11 +21,13 @@ public extension UITraitCollection {
     }
 
     func roundUpToPixel(_ value: CGFloat) -> CGFloat {
-      return ceil(value * displayScale) / displayScale
+        let scale = max(1.0, displayScale)
+        return ceil(value * scale) / scale
     }
 
     func roundDownToPixel(_ value: CGFloat) -> CGFloat {
-      return floor(value * displayScale) / displayScale
+        let scale = max(1.0, displayScale)
+        return floor(value * scale) / scale
     }
 
     func roundUpToPixel(_ value: CGSize) -> CGSize {
