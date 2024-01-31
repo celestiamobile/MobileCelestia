@@ -161,12 +161,6 @@ public class SettingsCoordinatorController: UIViewController {
 
         setup()
     }
-
-    public override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-
-        core.store(userDefaults)
-    }
 }
 
 private extension SettingsCoordinatorController {

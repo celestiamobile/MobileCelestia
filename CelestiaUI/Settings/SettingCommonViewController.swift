@@ -86,6 +86,7 @@ extension SettingCommonViewController {
                         await self.executor.run {
                             $0.setValue(transformed, forKey: key)
                         }
+                        self.userDefaults.set(transformed, forKey: key)
                         self.tableView.reloadData()
                     }
                 }
@@ -123,6 +124,7 @@ extension SettingCommonViewController {
                             await self.executor.run {
                                 $0.setValue(newValue, forKey: item.key)
                             }
+                            self.userDefaults.setValue(newValue, forKey: item.key)
                         }
                     }
                     return cell
@@ -192,9 +194,11 @@ extension SettingCommonViewController {
                     cell.selectionChange = { [weak self] index in
                         guard let self else { return }
                         Task {
+                            let value = item.options[index].value
                             await self.executor.run {
-                                $0.setValue(item.options[index].value, forKey: item.key)
+                                $0.setValue(value, forKey: item.key)
                             }
+                            self.userDefaults.setValue(value, forKey: item.key)
                         }
                     }
                     return cell
@@ -248,6 +252,7 @@ extension SettingCommonViewController {
                 await executor.run {
                     $0.setValue(!checked, forKey: item.key)
                 }
+                self.userDefaults.set(!checked, forKey: item.key)
                 self.tableView.reloadData()
             }
         case .keyedSelection:
@@ -256,6 +261,7 @@ extension SettingCommonViewController {
                 await executor.run {
                     $0.setValue(item.index, forKey: item.key)
                 }
+                self.userDefaults.set(item.index, forKey: item.key)
                 self.tableView.reloadData()
             }
         case .custom:
@@ -286,9 +292,11 @@ extension SettingCommonViewController {
             let vc = SelectionViewController(title: row.name, options: item.options.map { $0.name }, selectedIndex: item.options.firstIndex(where: { $0.value == currentValue })) { [weak self] newIndex in
                 guard let self else { return }
                 Task {
+                    let value = item.options[newIndex].value
                     await self.executor.run {
-                        $0.setValue(item.options[newIndex].value, forKey: item.key)
+                        $0.setValue(value, forKey: item.key)
                     }
+                    self.userDefaults.set(value, forKey: item.key)
                     self.tableView.reloadData()
                 }
             }

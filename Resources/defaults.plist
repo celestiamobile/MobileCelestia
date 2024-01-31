@@ -180,6 +180,36 @@
 		<integer>1</integer>
 		<key>enableFocusZooming</key>
 		<integer>1</integer>
+		<key>showDwarfPlanets</key>
+		<integer>1</integer>
+		<key>showAsteroids</key>
+		<integer>1</integer>
+		<key>showMinorMoons</key>
+		<integer>1</integer>
+		<key>showComets</key>
+		<integer>1</integer>
+		<key>showGlobulars</key>
+		<integer>1</integer>
+		<key>showPlanetRings</key>
+		<integer>1</integer>
+		<key>showDwarfPlanetLabels</key>
+		<integer>0</integer>
+		<key>showMinorMoonOrbits</key>
+		<integer>0</integer>
+		<key>showPartialTrajectories</key>
+		<integer>0</integer>
+		<key>showGlobularLabels</key>
+		<integer>0</integer>
+		<key>showDwarfPlanetOrbits</key>
+		<integer>0</integer>
+		<key>showMinorMoonLabels</key>
+		<integer>0</integer>
+		<key>showEruptiveCenterLabels</key>
+		<integer>1</integer>
+		<key>showMoons</key>
+		<integer>1</integer>
+		<key>showSpacecrafts</key>
+		<integer>1</integer>
 	</dict>
 </dict>
 </plist>
