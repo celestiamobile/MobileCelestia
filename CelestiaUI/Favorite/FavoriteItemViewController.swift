@@ -278,7 +278,7 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: BaseTableViewContr
     }
 
     override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        defer { tableView.reloadData() }
+        defer { reload() }
         itemList.move(from: sourceIndexPath.row, to: destinationIndexPath.row)
     }
 
@@ -336,13 +336,13 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: BaseTableViewContr
                 return
             }
             itemList.append(item)
-            tableView.reloadData()
+            reload()
         }
     }
 
     private func requestRemoveObject(at index: Int) {
         itemList.remove(at: index)
-        tableView.reloadData()
+        reload()
     }
 
     private func requestRenameObject(at index: Int, completionHandler: ((Bool) -> Void)? = nil) {
@@ -353,7 +353,7 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: BaseTableViewContr
                 return
             }
             item.rename(to: text)
-            tableView.reloadData()
+            reload()
             completionHandler?(true)
         }
     }
@@ -377,18 +377,25 @@ private extension FavoriteItemViewController {
         tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         title = itemList.title
 
-        if itemList.count == 0, let emptyHint = itemList.emptyHint {
-            let view = EmptyHintView()
-            view.title = emptyHint
-            tableView.backgroundView = view
-        }
-
         if itemList.canBeModified {
             navigationItem.rightBarButtonItems = [
                 editButtonItem,
                 addBarButtonItem,
             ]
         }
+
+        reload()
+    }
+
+    func reload() {
+        if itemList.count == 0, let emptyHint = itemList.emptyHint {
+            let view = EmptyHintView()
+            view.title = emptyHint
+            tableView.backgroundView = view
+        } else {
+            tableView.backgroundView = nil
+        }
+        tableView.reloadData()
     }
 }
 
