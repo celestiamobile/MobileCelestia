@@ -20,190 +20,207 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		0CCCB9CA183EC763C3608C21B4D3395C /* AsyncGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 59BAA4A0456F3D45BDCBFB6BDA533ACD /* AsyncGLView.m */; };
-		1B21CC6C4FA89B94FB145FC91B38CF56 /* Archive+Reading.swift in Sources */ = {isa = PBXBuildFile; fileRef = B02EF7443D334EB3CB4EB7E625B036A3 /* Archive+Reading.swift */; };
-		2045F40645C914F4DEA862F1A887E30E /* AsyncRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCD150FE75E11DABDDE02D216A708D04 /* AsyncRequestHandler.swift */; };
-		21C7B5AC493FE7028F17518024118948 /* AsyncGLView+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 69965BF78FA5C2E2D990CC0D19666136 /* AsyncGLView+Private.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		22A2424EBC0514FABED7EC5E6EEB9C27 /* AsyncGLAPI.h in Headers */ = {isa = PBXBuildFile; fileRef = 21D0BBE357619E1B2519F9BD867DB66A /* AsyncGLAPI.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		23064FDC26EE0A9A7875345F030F096C /* Pods-MobileCelestia-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = C8308C5A8B4914EB954EA04CC68C955B /* Pods-MobileCelestia-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		2493E421494910E41217C5FE1FC014D6 /* RequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E35EF373E3E0C189291A134DF4275B8 /* RequestHandler.swift */; };
-		2674895739EF26F14775E11D5C07432E /* Archive+MemoryFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9AB2CBC6310954A1BC47B75810020EC0 /* Archive+MemoryFile.swift */; };
-		2BE058F2E8C92D4AD3D3B3800A3A5CF6 /* FileManager+ZIP.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6EBAEE61E5370DF952450F68144B58DF /* FileManager+ZIP.swift */; };
-		349A670054E67E7E8AF4258591F450FD /* ZIPFoundation-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 96522E263A56BD2BF4D61317E95C21D3 /* ZIPFoundation-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		39B9B9C7256673CD9850DE703F10B22C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
-		3A34837077C00B7B764CBB981A748E31 /* AsyncGLAPI.h in Headers */ = {isa = PBXBuildFile; fileRef = EAA0D7103519A616A362A5DA3F09AA49 /* AsyncGLAPI.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		3B46A9AAA00DCCFB1AAB3702BED53E32 /* Archive+Progress.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACA1BE4D66E1DFCD36479AD5E5F4F69C /* Archive+Progress.swift */; };
-		3C56D258FE0E9BEA5ED44FEA4DFFA4D0 /* ZIPFoundation-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 5C56C4D8A88BE015A5A117C867B18CF6 /* ZIPFoundation-dummy.m */; };
-		3CF6EDAAB8EE08C716E0A6801CE9395F /* Archive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E0D883ECE85FE8085B3C28C99DEFC71 /* Archive.swift */; };
-		3D2785438FE0FD28BB60F1B8BDC2F6E0 /* Archive+Writing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4547C3B46BB37A6D4AB2739D439B7451 /* Archive+Writing.swift */; };
-		3DE6DD0E3245287202764DB28ADACE2E /* AsyncGLView.h in Headers */ = {isa = PBXBuildFile; fileRef = 973A2A39153E793CC33ECE3C7B94F7DA /* AsyncGLView.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		40DA118987C9A82CF4E661BA2864E944 /* Archive+ZIP64.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC5AB98C051351864EDD5B64062A2009 /* Archive+ZIP64.swift */; };
-		4827D3C72C20545943D9121FEBBFEC55 /* Pods-CelestiaUI-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = F4552739B6F66B0167F9C1201813EFBB /* Pods-CelestiaUI-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		4C6F3AFC24048401F84DE879CEE1939B /* AsyncGL-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 58497B27F7D7C8AE97252D562F2EC8C8 /* AsyncGL-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		4F06E0CEFACCE86850504CAA18532856 /* URL+ZIP.swift in Sources */ = {isa = PBXBuildFile; fileRef = FFFDADF58B1A1D810D018AE5EE4ADF5F /* URL+ZIP.swift */; };
-		5D295E88C9B6712E733AAE84DB46D305 /* Archive+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C7EFBCD598A9B564744632450CB128 /* Archive+Helpers.swift */; };
-		61C5D1B6D9BA1AABD16310B354D27DC8 /* MWRequest-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 231B693FD66A89FB3A5EBBF8CF0A063C /* MWRequest-dummy.m */; };
-		63A6AB696E855A6C7DF309C22BEAA6CC /* AsyncGLViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 23BAD928EC811C4585A8B83F3142100A /* AsyncGLViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		6520BAC5F52CC2FFFA866237B9669A32 /* Entry+Serialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = C6BCE015C477A5FB4C5352033BCFEA9B /* Entry+Serialization.swift */; };
-		6E3336589C0D163EAAD6732D1F638BB7 /* AsyncGLExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = CC5AE438AD110FDA1EF87CEEC6A8F785 /* AsyncGLExecutor.m */; };
-		6F504A542A64BDAE01824F8ED33B0F95 /* AsyncGLViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 9F417314A49E91ECA81946F69201F5FD /* AsyncGLViewController.m */; };
-		75031CCC571CE04B6095DE5BD70FCBF2 /* Data+Serialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 058705BB98F704673152BDEFF9B1BAE1 /* Data+Serialization.swift */; };
-		88136B743F2F3E255523AA38B249F8C5 /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E89177E4BE50CA7FD9FED4ECA898A57 /* Request.swift */; };
+		0CCCB9CA183EC763C3608C21B4D3395C /* AsyncGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 7B752434326F04583EF53F07EB395968 /* AsyncGLView.m */; };
+		2045F40645C914F4DEA862F1A887E30E /* AsyncRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = B71C2178EB70FC81F816552EF6B5035F /* AsyncRequestHandler.swift */; };
+		21C7B5AC493FE7028F17518024118948 /* AsyncGLView+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = D71DDAA5E1425C2EBB624CDE5675697C /* AsyncGLView+Private.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		22A2424EBC0514FABED7EC5E6EEB9C27 /* AsyncGLAPI.h in Headers */ = {isa = PBXBuildFile; fileRef = 0C54A0FE2D720E822D37CAA2C2367A43 /* AsyncGLAPI.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		23064FDC26EE0A9A7875345F030F096C /* Pods-MobileCelestia-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = E6EA20CB739063BBA94C33602CD349A9 /* Pods-MobileCelestia-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		2493E421494910E41217C5FE1FC014D6 /* RequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5406B52F31F41DFA7BD1DFCFA6C9C72D /* RequestHandler.swift */; };
+		269A27DF205C6654B6DD2A85303C5817 /* URL+ZIP.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC5C8863F46406BC74AA337CA8550065 /* URL+ZIP.swift */; };
+		29F922FACBA3FE6A7ADED7C3CD22ED4C /* Archive+MemoryFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8D480AA665E31686B969100990B64231 /* Archive+MemoryFile.swift */; };
+		2FAC2F9A94B4596B6CD730E8CF877E7C /* Data+CompressionDeprecated.swift in Sources */ = {isa = PBXBuildFile; fileRef = F3C9775993FCD56350F5B484AD3A5EEE /* Data+CompressionDeprecated.swift */; };
+		3983F543999945FF65DE5F1A20A560A7 /* Data+Serialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FB4613214096BE2BB8A8451BC76C380 /* Data+Serialization.swift */; };
+		3A34837077C00B7B764CBB981A748E31 /* AsyncGLAPI.h in Headers */ = {isa = PBXBuildFile; fileRef = 045BE0A498381373FBDB5C6998D26976 /* AsyncGLAPI.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		3DE6DD0E3245287202764DB28ADACE2E /* AsyncGLView.h in Headers */ = {isa = PBXBuildFile; fileRef = 0E97031F761BA6324C938E16B7402910 /* AsyncGLView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		459C2BDFC514F07DB63E7173170BB3E1 /* ZIPFoundation-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 909B09DFC691255F4B867DF53A28C484 /* ZIPFoundation-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4827D3C72C20545943D9121FEBBFEC55 /* Pods-CelestiaUI-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 3AA134EC0775FF838DC2A581D4628393 /* Pods-CelestiaUI-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		4C6F3AFC24048401F84DE879CEE1939B /* AsyncGL-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 1CF90F4A0690659C6DB8BE2C50C31FC1 /* AsyncGL-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		5F762412B3F30153758D990C808EAC59 /* Entry+Serialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8EEBD06A3B0452BE3ACF3750EA6198BF /* Entry+Serialization.swift */; };
+		603291D0DF7B9DFB453454D914B63F6A /* Archive+Progress.swift in Sources */ = {isa = PBXBuildFile; fileRef = CFAA4CD09F24EF269055211E3A8F1723 /* Archive+Progress.swift */; };
+		61C5D1B6D9BA1AABD16310B354D27DC8 /* MWRequest-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EFF627A8A3A962BCA36D48B9EA4A889 /* MWRequest-dummy.m */; };
+		63A6AB696E855A6C7DF309C22BEAA6CC /* AsyncGLViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B8EC9986156AB9ADF1EB73756F82B9E /* AsyncGLViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		6E3336589C0D163EAAD6732D1F638BB7 /* AsyncGLExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = FA7404DA93448B603ABA3DA212339BEA /* AsyncGLExecutor.m */; };
+		6F504A542A64BDAE01824F8ED33B0F95 /* AsyncGLViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 1A79674DA13B135AFB01767E6A5C3FD4 /* AsyncGLViewController.m */; };
+		6F77CC8C9E014E6EF0DA50E2D311FAE0 /* Archive+ReadingDeprecated.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD18C1F5F942ECE68612AB406010A73 /* Archive+ReadingDeprecated.swift */; };
+		70736CFD8D82F468430573297DA55F51 /* Entry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 116FF6F17542F4C6D5DD7DDA5828C4B2 /* Entry.swift */; };
+		79364187F389DAA5C68BFC961404F17B /* Data+Compression.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3A6C7185E42B77AE08D13508FBB0B0C /* Data+Compression.swift */; };
+		7B55194C888E323167548542DAAD7E79 /* Archive.swift in Sources */ = {isa = PBXBuildFile; fileRef = F65731E153DF68DD8734A4F0705E195B /* Archive.swift */; };
+		8297BAEF5B1A145A022E9271C5ED5294 /* Archive+ZIP64.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF69D41B572B2FD53766D1645AC90AFB /* Archive+ZIP64.swift */; };
+		87D17C7090C03CC13C6B287814951B3F /* ZIPFoundation-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 34565B0EAE053244C2781690B635ADF5 /* ZIPFoundation-dummy.m */; };
+		88136B743F2F3E255523AA38B249F8C5 /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = E211C1A5F9843A8DCA0B7B28DF183A7A /* Request.swift */; };
+		886364F79543A7FA36CC3EAEB4C4FFDF /* FileManager+ZIPDeprecated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7E7DD76A1A62A13A095CCF6E0250F0E4 /* FileManager+ZIPDeprecated.swift */; };
 		88FCD7AA42AE3B6AD839F671AF054A30 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
-		9250EB0520E1CF91309931A23726DEC1 /* Entry+ZIP64.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12F75B5C98058EA4E9C06EA6E61F676F /* Entry+ZIP64.swift */; };
-		957429C50510964F49F149436B04669D /* Archive+BackingConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B0195F55BC9743C8ECB923CF73E14BF /* Archive+BackingConfiguration.swift */; };
-		974B41D2F35202F4E88002D230A074C1 /* Archive+ReadingDeprecated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 194ABAB931E8D9C90EE40FF14BC18D64 /* Archive+ReadingDeprecated.swift */; };
-		98A088EA16EE9BA578202963D213D802 /* Pods-MobileCelestia-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = BF539B444E20ED6E66F37D7557F8CCA7 /* Pods-MobileCelestia-dummy.m */; };
-		9E844B944DD29FCD83846CA59875C752 /* AsyncGLExecutor.h in Headers */ = {isa = PBXBuildFile; fileRef = 77DD8D5B92AEF1A43691056A6D14981F /* AsyncGLExecutor.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		A273993E3862CCD37CFDF09D19817A65 /* Pods-CelestiaUI-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 35CBFD2BC1209687193A4AB841A5B8CE /* Pods-CelestiaUI-dummy.m */; };
+		98A088EA16EE9BA578202963D213D802 /* Pods-MobileCelestia-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 59AEB9128381B1A6087E80EE66E46DD6 /* Pods-MobileCelestia-dummy.m */; };
+		9ADF6587306EFAE8311809727C844C37 /* FileManager+ZIP.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4AF2F6DB42C0EC99E89641B56D68D72 /* FileManager+ZIP.swift */; };
+		9E844B944DD29FCD83846CA59875C752 /* AsyncGLExecutor.h in Headers */ = {isa = PBXBuildFile; fileRef = 17FCF96E4449B6D563FE359DBB0C00CF /* AsyncGLExecutor.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A273993E3862CCD37CFDF09D19817A65 /* Pods-CelestiaUI-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 247D8F48C111CA58700AA36B4660FCF4 /* Pods-CelestiaUI-dummy.m */; };
 		AD4CC3A1BA58C7930BBE03CDFE43A4A4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
-		B45762494A1966DECDA40D47C8338FD2 /* Archive+WritingDeprecated.swift in Sources */ = {isa = PBXBuildFile; fileRef = C0449A19DC9D6390EFC6E7D725459817 /* Archive+WritingDeprecated.swift */; };
-		C6463B7B122DC1CEAC82DA71860FD518 /* AsyncGLExecutor.h in Headers */ = {isa = PBXBuildFile; fileRef = 73F8B5B5B046A835B67B6D97A95459AA /* AsyncGLExecutor.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		B8F5C1EFC278AF455BF51E7999F7260F /* Archive+Reading.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA6853B2F37DD9054CFA797099BDA5F1 /* Archive+Reading.swift */; };
+		BACB99A9363EE44C744C7C439BBF4347 /* Archive+Deprecated.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC0C2F28C86CEBD1E22B56CD0C0C0B39 /* Archive+Deprecated.swift */; };
+		BAD5747516D14B3F2164C5490B89BDFE /* Archive+WritingDeprecated.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5185AA3CB21B493777F8F407BFAEE07 /* Archive+WritingDeprecated.swift */; };
+		C6463B7B122DC1CEAC82DA71860FD518 /* AsyncGLExecutor.h in Headers */ = {isa = PBXBuildFile; fileRef = C76562EA3CA28F2B54FFBA129893EFDD /* AsyncGLExecutor.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		C83A440204631D1FD4C93B5A37A53473 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
-		C8B297B3F6353C80318A9257655772FE /* MWRequest-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = DBEE2C2DF9AA9E13EAAF4F8210A9DB15 /* MWRequest-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		D5E15858701A22B3D0AE0D18BC226D05 /* Data+Compression.swift in Sources */ = {isa = PBXBuildFile; fileRef = D874DEAA16A1DAD41D88A357DC7FC48C /* Data+Compression.swift */; };
-		E75502F9834CA9DC61273762C5ED37BE /* AsyncGL-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = BD6ADBAB3736AC6076278A8A4B9262E3 /* AsyncGL-dummy.m */; };
+		C8B297B3F6353C80318A9257655772FE /* MWRequest-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = CB5C82D82980F4DF2DD18084A90CCA4C /* MWRequest-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		DEEBD83F51737D5AA8DF2C0C16F43451 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
+		E5020E5CF470A5295C85D5345CCA459A /* Archive+Writing.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE18E222325E3EF009E6A6E704F8B71 /* Archive+Writing.swift */; };
+		E50A9A9273F004199C22DD8F6865163D /* Archive+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA5B4471FD2B529274D1E03A1305159A /* Archive+Helpers.swift */; };
+		E75502F9834CA9DC61273762C5ED37BE /* AsyncGL-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 557F98DA23C32F4A7CF19C2BCCABD8E3 /* AsyncGL-dummy.m */; };
+		E8679C150D5870B1BACEEB00919B0179 /* Date+ZIP.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAE53224033E691754E60C1685712EE7 /* Date+ZIP.swift */; };
 		EEB5C5CC87786F9B471C4C610969B82F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
-		EF78E1E358F82192ADEB64827E1826B4 /* Entry.swift in Sources */ = {isa = PBXBuildFile; fileRef = CC972174AA6CEC1859BBE663A96AD30C /* Entry.swift */; };
-		F488916EF8EF631CD2E80A2AD208C0E5 /* Data+CompressionDeprecated.swift in Sources */ = {isa = PBXBuildFile; fileRef = 27D436EC7B398381A5E8BB4B6C006DAE /* Data+CompressionDeprecated.swift */; };
-		F577D66E6D1024443D51238E69F036B6 /* AsyncGLView.h in Headers */ = {isa = PBXBuildFile; fileRef = EBD0FF7D113DA9C4E7BC65A48FF8CCAC /* AsyncGLView.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		F84120BFBC06F4D59215FB86877A3271 /* AsyncGLExecutor+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 6AFC9B848E302C93EB49CFB1F68AD040 /* AsyncGLExecutor+Private.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		FC39485A15F9B9A05077A9778B406E05 /* AsyncGLViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 53DDD506C3A274C372D99C8BFF4D96E3 /* AsyncGLViewController.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		EF92C59832D330F1B883E22A5FA154C4 /* Entry+ZIP64.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57715663FD54B3D7E3FC1E0C29684F4E /* Entry+ZIP64.swift */; };
+		F1058DEE51A2A8AA7427BE0007484AF3 /* Archive+BackingConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB7669EC75CD43B845E47B0D3629A519 /* Archive+BackingConfiguration.swift */; };
+		F577D66E6D1024443D51238E69F036B6 /* AsyncGLView.h in Headers */ = {isa = PBXBuildFile; fileRef = 439EDB388DFD11D8541B0D082D05F795 /* AsyncGLView.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		F84120BFBC06F4D59215FB86877A3271 /* AsyncGLExecutor+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FBA4248202DBD19046F121CFBA4B7CD /* AsyncGLExecutor+Private.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		FC39485A15F9B9A05077A9778B406E05 /* AsyncGLViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = E3EBF3BD657F924705303248CDFABBED /* AsyncGLViewController.h */; settings = {ATTRIBUTES = (Project, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		06CB03B0580AD6F10B7BC354E32E839D /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = AA15C8469D67684160CC2A7098EB841C;
-			remoteInfo = ZIPFoundation;
-		};
-		4EADE0D75938E152E04F5D65CADBE5B2 /* PBXContainerItemProxy */ = {
+		21E148DA1F5C4F87F02EDABDA8DE9B29 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = B0461866C4B5B8EDBF49D135C70E49C4;
 			remoteInfo = AsyncGL;
 		};
-		6B6F97BFBFD3578191711907E2D7CBF5 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = B45BC50C299B8144F2CCD63D4E7A880D;
-			remoteInfo = MWRequest;
-		};
-		A0002E4D091203C85611481FEA2E3ECB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = B45BC50C299B8144F2CCD63D4E7A880D;
-			remoteInfo = MWRequest;
-		};
-		D423612F162AB086F762AB6A074F0CB1 /* PBXContainerItemProxy */ = {
+		2A51A8DCB5E6581D75AF199809284707 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = AA15C8469D67684160CC2A7098EB841C;
 			remoteInfo = ZIPFoundation;
 		};
-		E6174AFA351C81AD390562C3526ACD29 /* PBXContainerItemProxy */ = {
+		6C31C67DFFD1A81DB298070048A88E31 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = A3282A5B2437E609EEB85861D7ECE717;
 			remoteInfo = AppCenter;
 		};
+		AE224616B1BD1E9BD00407C62DBEAF62 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AA15C8469D67684160CC2A7098EB841C;
+			remoteInfo = ZIPFoundation;
+		};
+		B005AE421F025819FC8C0450D456808E /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B45BC50C299B8144F2CCD63D4E7A880D;
+			remoteInfo = MWRequest;
+		};
+		F292822E2D145C6255413CAC9BB5C47D /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B45BC50C299B8144F2CCD63D4E7A880D;
+			remoteInfo = MWRequest;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		023B94D88AB9C5FC18D78FAAC86A3E66 /* AppCenter-xcframeworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "AppCenter-xcframeworks.sh"; sourceTree = "<group>"; };
-		058705BB98F704673152BDEFF9B1BAE1 /* Data+Serialization.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Data+Serialization.swift"; path = "Sources/ZIPFoundation/Data+Serialization.swift"; sourceTree = "<group>"; };
-		0617C2CB63E8D17FF7E69FDF972DD22A /* Pods-MobileCelestia-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-MobileCelestia-Info.plist"; sourceTree = "<group>"; };
-		09229452C879B702D1C3B47EC09A8893 /* Pods-CelestiaUI.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-CelestiaUI.debug.xcconfig"; sourceTree = "<group>"; };
-		12F75B5C98058EA4E9C06EA6E61F676F /* Entry+ZIP64.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Entry+ZIP64.swift"; path = "Sources/ZIPFoundation/Entry+ZIP64.swift"; sourceTree = "<group>"; };
-		14E32A33D1C6FB74C633C797881814EC /* Pods-CelestiaUI.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-CelestiaUI.release.xcconfig"; sourceTree = "<group>"; };
-		183770B83914F8AFD936448047A2017D /* Pods-CelestiaUI-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-CelestiaUI-acknowledgements.plist"; sourceTree = "<group>"; };
-		194ABAB931E8D9C90EE40FF14BC18D64 /* Archive+ReadingDeprecated.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Archive+ReadingDeprecated.swift"; path = "Sources/ZIPFoundation/Archive+ReadingDeprecated.swift"; sourceTree = "<group>"; };
-		1CBB8FCA7419903692D7F5637B4AF7B1 /* AppCenter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = AppCenter.release.xcconfig; sourceTree = "<group>"; };
-		1E0D883ECE85FE8085B3C28C99DEFC71 /* Archive.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Archive.swift; path = Sources/ZIPFoundation/Archive.swift; sourceTree = "<group>"; };
-		21D0BBE357619E1B2519F9BD867DB66A /* AsyncGLAPI.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AsyncGLAPI.h; path = AsyncGL/AsyncGLAPI.h; sourceTree = "<group>"; };
-		231B693FD66A89FB3A5EBBF8CF0A063C /* MWRequest-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "MWRequest-dummy.m"; sourceTree = "<group>"; };
-		23BAD928EC811C4585A8B83F3142100A /* AsyncGLViewController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AsyncGLViewController.h; path = AsyncGL/include/AsyncGLViewController.h; sourceTree = "<group>"; };
+		045BE0A498381373FBDB5C6998D26976 /* AsyncGLAPI.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AsyncGLAPI.h; path = AsyncGL/include/AsyncGLAPI.h; sourceTree = "<group>"; };
+		056D4287E3A65CC0A0048E4224EF1FB9 /* Pods-CelestiaUI.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-CelestiaUI.debug.xcconfig"; sourceTree = "<group>"; };
+		080F0FA2F663AAE25259D14066BA25C2 /* MWRequest.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = MWRequest.release.xcconfig; sourceTree = "<group>"; };
+		0A616B0BE56F005F31BFFCC4B1198852 /* AsyncGL-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "AsyncGL-prefix.pch"; sourceTree = "<group>"; };
+		0C54A0FE2D720E822D37CAA2C2367A43 /* AsyncGLAPI.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AsyncGLAPI.h; path = AsyncGL/AsyncGLAPI.h; sourceTree = "<group>"; };
+		0E97031F761BA6324C938E16B7402910 /* AsyncGLView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AsyncGLView.h; path = AsyncGL/include/AsyncGLView.h; sourceTree = "<group>"; };
+		0EFF627A8A3A962BCA36D48B9EA4A889 /* MWRequest-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "MWRequest-dummy.m"; sourceTree = "<group>"; };
+		116FF6F17542F4C6D5DD7DDA5828C4B2 /* Entry.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Entry.swift; path = Sources/ZIPFoundation/Entry.swift; sourceTree = "<group>"; };
+		17FCF96E4449B6D563FE359DBB0C00CF /* AsyncGLExecutor.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AsyncGLExecutor.h; path = AsyncGL/include/AsyncGLExecutor.h; sourceTree = "<group>"; };
+		1A79674DA13B135AFB01767E6A5C3FD4 /* AsyncGLViewController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = AsyncGLViewController.m; path = AsyncGL/AsyncGLViewController.m; sourceTree = "<group>"; };
+		1CF90F4A0690659C6DB8BE2C50C31FC1 /* AsyncGL-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "AsyncGL-umbrella.h"; sourceTree = "<group>"; };
+		1FBA4248202DBD19046F121CFBA4B7CD /* AsyncGLExecutor+Private.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "AsyncGLExecutor+Private.h"; path = "AsyncGL/AsyncGLExecutor+Private.h"; sourceTree = "<group>"; };
+		247D8F48C111CA58700AA36B4660FCF4 /* Pods-CelestiaUI-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-CelestiaUI-dummy.m"; sourceTree = "<group>"; };
 		27A211133D23340DAC3FDC42D1BC1D54 /* MWRequest */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = MWRequest; path = MWRequest.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		27A52744999C907A2FB3AD2DB24DC5B2 /* Pods-MobileCelestia.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-MobileCelestia.modulemap"; sourceTree = "<group>"; };
-		27D436EC7B398381A5E8BB4B6C006DAE /* Data+CompressionDeprecated.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Data+CompressionDeprecated.swift"; path = "Sources/ZIPFoundation/Data+CompressionDeprecated.swift"; sourceTree = "<group>"; };
-		2B0195F55BC9743C8ECB923CF73E14BF /* Archive+BackingConfiguration.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Archive+BackingConfiguration.swift"; path = "Sources/ZIPFoundation/Archive+BackingConfiguration.swift"; sourceTree = "<group>"; };
-		2F46B9441F6490353BCDA1CA04B840AF /* ZIPFoundation.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = ZIPFoundation.debug.xcconfig; sourceTree = "<group>"; };
-		315FE3AF987915099E897EE57A6110B1 /* AsyncGL.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = AsyncGL.modulemap; sourceTree = "<group>"; };
-		35CBFD2BC1209687193A4AB841A5B8CE /* Pods-CelestiaUI-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-CelestiaUI-dummy.m"; sourceTree = "<group>"; };
-		36E64F6B1515FD2A3C91D5D01382F7D1 /* Pods-MobileCelestia.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-MobileCelestia.release.xcconfig"; sourceTree = "<group>"; };
-		36E813C11A70A199B72850C27C89150D /* AsyncGL.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = AsyncGL.release.xcconfig; sourceTree = "<group>"; };
-		44C68CB91F3F6498C2921425175C1551 /* AsyncGL.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = AsyncGL.debug.xcconfig; sourceTree = "<group>"; };
-		4547C3B46BB37A6D4AB2739D439B7451 /* Archive+Writing.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Archive+Writing.swift"; path = "Sources/ZIPFoundation/Archive+Writing.swift"; sourceTree = "<group>"; };
+		2BD67F83793C066EC1E09B5A666B26DF /* Pods-CelestiaUI-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-CelestiaUI-acknowledgements.markdown"; sourceTree = "<group>"; };
+		3358DBBF019B4E26B2751FF6A95B7BE2 /* AppCenter-xcframeworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "AppCenter-xcframeworks.sh"; sourceTree = "<group>"; };
+		34565B0EAE053244C2781690B635ADF5 /* ZIPFoundation-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "ZIPFoundation-dummy.m"; sourceTree = "<group>"; };
+		35D87323A674DE94FDFE404E43967628 /* Pods-CelestiaUI-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-CelestiaUI-Info.plist"; sourceTree = "<group>"; };
+		3AA134EC0775FF838DC2A581D4628393 /* Pods-CelestiaUI-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-CelestiaUI-umbrella.h"; sourceTree = "<group>"; };
+		3D2F5BFFEED1EB1BEE555577B9624411 /* AppCenter.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; name = AppCenter.xcframework; path = "AppCenter-SDK-Apple/AppCenter.xcframework"; sourceTree = "<group>"; };
+		3FDA53D083CA976335C067B929ABA324 /* AppCenter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = AppCenter.release.xcconfig; sourceTree = "<group>"; };
+		439EDB388DFD11D8541B0D082D05F795 /* AsyncGLView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AsyncGLView.h; path = AsyncGL/AsyncGLView.h; sourceTree = "<group>"; };
 		48A4A6EDC08C8AC933D0DCD507E9D173 /* ZIPFoundation */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = ZIPFoundation; path = ZIPFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		4ACC27ABF8B3C64CA0A39FDA122822ED /* Pods-CelestiaUI-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-CelestiaUI-Info.plist"; sourceTree = "<group>"; };
-		5358D5FCECC9523932C0D13DE8111506 /* Pods-CelestiaUI.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-CelestiaUI.modulemap"; sourceTree = "<group>"; };
-		53DDD506C3A274C372D99C8BFF4D96E3 /* AsyncGLViewController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AsyncGLViewController.h; path = AsyncGL/AsyncGLViewController.h; sourceTree = "<group>"; };
-		540B8D337686C27D3C2F1C8D89E8A92C /* MWRequest-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "MWRequest-Info.plist"; sourceTree = "<group>"; };
-		553A24F6C1BE21F02BC7827A90F8951D /* Pods-MobileCelestia-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-MobileCelestia-acknowledgements.markdown"; sourceTree = "<group>"; };
-		570376660F4826083792941729E0CD10 /* ZIPFoundation.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = ZIPFoundation.modulemap; sourceTree = "<group>"; };
-		58497B27F7D7C8AE97252D562F2EC8C8 /* AsyncGL-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "AsyncGL-umbrella.h"; sourceTree = "<group>"; };
-		59BAA4A0456F3D45BDCBFB6BDA533ACD /* AsyncGLView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = AsyncGLView.m; path = AsyncGL/AsyncGLView.m; sourceTree = "<group>"; };
-		5AE140F5FD3BCE652A197EA8FB0215D6 /* AppCenterCrashes.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; name = AppCenterCrashes.xcframework; path = "AppCenter-SDK-Apple/AppCenterCrashes.xcframework"; sourceTree = "<group>"; };
-		5C56C4D8A88BE015A5A117C867B18CF6 /* ZIPFoundation-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "ZIPFoundation-dummy.m"; sourceTree = "<group>"; };
-		67742A3C6B1A7212067E443281346F6A /* MWRequest.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = MWRequest.modulemap; sourceTree = "<group>"; };
-		69965BF78FA5C2E2D990CC0D19666136 /* AsyncGLView+Private.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "AsyncGLView+Private.h"; path = "AsyncGL/AsyncGLView+Private.h"; sourceTree = "<group>"; };
-		6AFC9B848E302C93EB49CFB1F68AD040 /* AsyncGLExecutor+Private.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "AsyncGLExecutor+Private.h"; path = "AsyncGL/AsyncGLExecutor+Private.h"; sourceTree = "<group>"; };
-		6EBAEE61E5370DF952450F68144B58DF /* FileManager+ZIP.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "FileManager+ZIP.swift"; path = "Sources/ZIPFoundation/FileManager+ZIP.swift"; sourceTree = "<group>"; };
+		4AA32387C9C5D12826AF04FBA02D50BF /* AppCenter.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = AppCenter.debug.xcconfig; sourceTree = "<group>"; };
+		507FBF19201C7ACBE232A2D387D657CA /* ZIPFoundation-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "ZIPFoundation-Info.plist"; sourceTree = "<group>"; };
+		5406B52F31F41DFA7BD1DFCFA6C9C72D /* RequestHandler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RequestHandler.swift; path = Sources/MWRequest/RequestHandler.swift; sourceTree = "<group>"; };
+		557F98DA23C32F4A7CF19C2BCCABD8E3 /* AsyncGL-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "AsyncGL-dummy.m"; sourceTree = "<group>"; };
+		57715663FD54B3D7E3FC1E0C29684F4E /* Entry+ZIP64.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Entry+ZIP64.swift"; path = "Sources/ZIPFoundation/Entry+ZIP64.swift"; sourceTree = "<group>"; };
+		59AEB9128381B1A6087E80EE66E46DD6 /* Pods-MobileCelestia-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-MobileCelestia-dummy.m"; sourceTree = "<group>"; };
+		5BC3675E8FE1EF02E17FF96409B1AD97 /* AsyncGL-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "AsyncGL-Info.plist"; sourceTree = "<group>"; };
+		5C5DFA3BC53BD1D4A114C8BE91E4BA25 /* Pods-MobileCelestia-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-MobileCelestia-acknowledgements.plist"; sourceTree = "<group>"; };
+		5CD3359198CEC818BC8E122D086358B0 /* AppCenterAnalytics.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; name = AppCenterAnalytics.xcframework; path = "AppCenter-SDK-Apple/AppCenterAnalytics.xcframework"; sourceTree = "<group>"; };
 		73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
-		73F8B5B5B046A835B67B6D97A95459AA /* AsyncGLExecutor.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AsyncGLExecutor.h; path = AsyncGL/AsyncGLExecutor.h; sourceTree = "<group>"; };
-		77DD8D5B92AEF1A43691056A6D14981F /* AsyncGLExecutor.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AsyncGLExecutor.h; path = AsyncGL/include/AsyncGLExecutor.h; sourceTree = "<group>"; };
+		74AFD04F61D55170BD2DF66EE7A55C14 /* MWRequest-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "MWRequest-Info.plist"; sourceTree = "<group>"; };
+		759E0A03839FDE57371C3807D9552013 /* Pods-CelestiaUI-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-CelestiaUI-acknowledgements.plist"; sourceTree = "<group>"; };
 		78020024F1A70DF61F2E78929295C055 /* AsyncGL */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = AsyncGL; path = AsyncGL.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		7E35EF373E3E0C189291A134DF4275B8 /* RequestHandler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RequestHandler.swift; path = Sources/MWRequest/RequestHandler.swift; sourceTree = "<group>"; };
+		7877CBD3E9CE5491E26C4B93D355A576 /* Pods-MobileCelestia.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-MobileCelestia.debug.xcconfig"; sourceTree = "<group>"; };
+		7A430C103010DCA9E4306C1C617943B4 /* Pods-MobileCelestia-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-MobileCelestia-Info.plist"; sourceTree = "<group>"; };
+		7B1446B8A9EC3A71B7A9FFDED2761FAF /* Pods-CelestiaUI-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-CelestiaUI-resources.sh"; sourceTree = "<group>"; };
+		7B752434326F04583EF53F07EB395968 /* AsyncGLView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = AsyncGLView.m; path = AsyncGL/AsyncGLView.m; sourceTree = "<group>"; };
+		7E7DD76A1A62A13A095CCF6E0250F0E4 /* FileManager+ZIPDeprecated.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "FileManager+ZIPDeprecated.swift"; path = "Sources/ZIPFoundation/FileManager+ZIPDeprecated.swift"; sourceTree = "<group>"; };
+		7F603D9C16F07C83AF09FB9736A7200F /* AppCenterCrashes.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; name = AppCenterCrashes.xcframework; path = "AppCenter-SDK-Apple/AppCenterCrashes.xcframework"; sourceTree = "<group>"; };
+		8110488E3526AA12207594D5F70F1391 /* Pods-MobileCelestia.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-MobileCelestia.modulemap"; sourceTree = "<group>"; };
 		837AA3419F19290F988A6A88DD5B9332 /* Pods-CelestiaUI */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = "Pods-CelestiaUI"; path = Pods_CelestiaUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		86C7EFBCD598A9B564744632450CB128 /* Archive+Helpers.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Archive+Helpers.swift"; path = "Sources/ZIPFoundation/Archive+Helpers.swift"; sourceTree = "<group>"; };
-		96522E263A56BD2BF4D61317E95C21D3 /* ZIPFoundation-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "ZIPFoundation-umbrella.h"; sourceTree = "<group>"; };
-		973A2A39153E793CC33ECE3C7B94F7DA /* AsyncGLView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AsyncGLView.h; path = AsyncGL/include/AsyncGLView.h; sourceTree = "<group>"; };
-		9AB2CBC6310954A1BC47B75810020EC0 /* Archive+MemoryFile.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Archive+MemoryFile.swift"; path = "Sources/ZIPFoundation/Archive+MemoryFile.swift"; sourceTree = "<group>"; };
+		8B8EC9986156AB9ADF1EB73756F82B9E /* AsyncGLViewController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AsyncGLViewController.h; path = AsyncGL/include/AsyncGLViewController.h; sourceTree = "<group>"; };
+		8D480AA665E31686B969100990B64231 /* Archive+MemoryFile.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Archive+MemoryFile.swift"; path = "Sources/ZIPFoundation/Archive+MemoryFile.swift"; sourceTree = "<group>"; };
+		8EEBD06A3B0452BE3ACF3750EA6198BF /* Entry+Serialization.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Entry+Serialization.swift"; path = "Sources/ZIPFoundation/Entry+Serialization.swift"; sourceTree = "<group>"; };
+		909B09DFC691255F4B867DF53A28C484 /* ZIPFoundation-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "ZIPFoundation-umbrella.h"; sourceTree = "<group>"; };
+		96BDDE3A4D922D4F616BB40B073A5E08 /* Pods-MobileCelestia-resources.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "Pods-MobileCelestia-resources.sh"; sourceTree = "<group>"; };
+		9C3CDADA94134A80D601B29CA54245F0 /* MWRequest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = MWRequest.debug.xcconfig; sourceTree = "<group>"; };
 		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		9E89177E4BE50CA7FD9FED4ECA898A57 /* Request.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Request.swift; path = Sources/MWRequest/Request.swift; sourceTree = "<group>"; };
-		9F417314A49E91ECA81946F69201F5FD /* AsyncGLViewController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = AsyncGLViewController.m; path = AsyncGL/AsyncGLViewController.m; sourceTree = "<group>"; };
-		9F6F4075C69EE32A34C47E05486971EA /* AppCenterAnalytics.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; name = AppCenterAnalytics.xcframework; path = "AppCenter-SDK-Apple/AppCenterAnalytics.xcframework"; sourceTree = "<group>"; };
-		ACA1BE4D66E1DFCD36479AD5E5F4F69C /* Archive+Progress.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Archive+Progress.swift"; path = "Sources/ZIPFoundation/Archive+Progress.swift"; sourceTree = "<group>"; };
-		B02EF7443D334EB3CB4EB7E625B036A3 /* Archive+Reading.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Archive+Reading.swift"; path = "Sources/ZIPFoundation/Archive+Reading.swift"; sourceTree = "<group>"; };
-		B7DEA400B1BB30E752B69AF9E3ED7DB7 /* ZIPFoundation-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "ZIPFoundation-Info.plist"; sourceTree = "<group>"; };
-		B945591D796BE9E3159E3034464E528E /* Pods-MobileCelestia-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-MobileCelestia-acknowledgements.plist"; sourceTree = "<group>"; };
-		BD6ADBAB3736AC6076278A8A4B9262E3 /* AsyncGL-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "AsyncGL-dummy.m"; sourceTree = "<group>"; };
-		BF539B444E20ED6E66F37D7557F8CCA7 /* Pods-MobileCelestia-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-MobileCelestia-dummy.m"; sourceTree = "<group>"; };
-		C0449A19DC9D6390EFC6E7D725459817 /* Archive+WritingDeprecated.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Archive+WritingDeprecated.swift"; path = "Sources/ZIPFoundation/Archive+WritingDeprecated.swift"; sourceTree = "<group>"; };
-		C636389946165C129421F35F0726970A /* MWRequest-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "MWRequest-prefix.pch"; sourceTree = "<group>"; };
-		C6BCE015C477A5FB4C5352033BCFEA9B /* Entry+Serialization.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Entry+Serialization.swift"; path = "Sources/ZIPFoundation/Entry+Serialization.swift"; sourceTree = "<group>"; };
-		C8308C5A8B4914EB954EA04CC68C955B /* Pods-MobileCelestia-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-MobileCelestia-umbrella.h"; sourceTree = "<group>"; };
-		C867F4A2FC86C5A9FB6D2DFF6C3C7D50 /* AsyncGL-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "AsyncGL-prefix.pch"; sourceTree = "<group>"; };
-		CC5AB98C051351864EDD5B64062A2009 /* Archive+ZIP64.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Archive+ZIP64.swift"; path = "Sources/ZIPFoundation/Archive+ZIP64.swift"; sourceTree = "<group>"; };
-		CC5AE438AD110FDA1EF87CEEC6A8F785 /* AsyncGLExecutor.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = AsyncGLExecutor.m; path = AsyncGL/AsyncGLExecutor.m; sourceTree = "<group>"; };
-		CC972174AA6CEC1859BBE663A96AD30C /* Entry.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Entry.swift; path = Sources/ZIPFoundation/Entry.swift; sourceTree = "<group>"; };
-		CF2A3631B2452D2F661D4F78BEA0053F /* Pods-MobileCelestia.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-MobileCelestia.debug.xcconfig"; sourceTree = "<group>"; };
-		D1DF2306EFF6B08E66FC22BB61CD7EEA /* ZIPFoundation.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = ZIPFoundation.release.xcconfig; sourceTree = "<group>"; };
-		D82FDB18017A3477ED24046E1F00A00B /* AsyncGL-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "AsyncGL-Info.plist"; sourceTree = "<group>"; };
-		D874DEAA16A1DAD41D88A357DC7FC48C /* Data+Compression.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Data+Compression.swift"; path = "Sources/ZIPFoundation/Data+Compression.swift"; sourceTree = "<group>"; };
+		9FB4613214096BE2BB8A8451BC76C380 /* Data+Serialization.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Data+Serialization.swift"; path = "Sources/ZIPFoundation/Data+Serialization.swift"; sourceTree = "<group>"; };
+		9FC777CD6A692A0029A433C92051E143 /* AsyncGL.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = AsyncGL.debug.xcconfig; sourceTree = "<group>"; };
+		A0F1CD5EAC06A3C26F1234B4EC1B5943 /* Pods-MobileCelestia-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-MobileCelestia-acknowledgements.markdown"; sourceTree = "<group>"; };
+		A1BF77F9F65B97CBD8C04909EF7A2624 /* Pods-MobileCelestia.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-MobileCelestia.release.xcconfig"; sourceTree = "<group>"; };
+		A1D9F5B9989D7209FE2D01C7298D89A8 /* ZIPFoundation-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "ZIPFoundation-prefix.pch"; sourceTree = "<group>"; };
+		A3A6C7185E42B77AE08D13508FBB0B0C /* Data+Compression.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Data+Compression.swift"; path = "Sources/ZIPFoundation/Data+Compression.swift"; sourceTree = "<group>"; };
+		AA5B4471FD2B529274D1E03A1305159A /* Archive+Helpers.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Archive+Helpers.swift"; path = "Sources/ZIPFoundation/Archive+Helpers.swift"; sourceTree = "<group>"; };
+		AAE53224033E691754E60C1685712EE7 /* Date+ZIP.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Date+ZIP.swift"; path = "Sources/ZIPFoundation/Date+ZIP.swift"; sourceTree = "<group>"; };
+		AB8EA85A4F07E390616BA242E4271556 /* MWRequest-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "MWRequest-prefix.pch"; sourceTree = "<group>"; };
+		AC5C8863F46406BC74AA337CA8550065 /* URL+ZIP.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "URL+ZIP.swift"; path = "Sources/ZIPFoundation/URL+ZIP.swift"; sourceTree = "<group>"; };
+		B40B6CC64C76A4622D6985493965F5A6 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = Sources/ZIPFoundation/Resources/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		B71C2178EB70FC81F816552EF6B5035F /* AsyncRequestHandler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AsyncRequestHandler.swift; path = Sources/MWRequest/AsyncRequestHandler.swift; sourceTree = "<group>"; };
+		BF69D41B572B2FD53766D1645AC90AFB /* Archive+ZIP64.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Archive+ZIP64.swift"; path = "Sources/ZIPFoundation/Archive+ZIP64.swift"; sourceTree = "<group>"; };
+		BFD18C1F5F942ECE68612AB406010A73 /* Archive+ReadingDeprecated.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Archive+ReadingDeprecated.swift"; path = "Sources/ZIPFoundation/Archive+ReadingDeprecated.swift"; sourceTree = "<group>"; };
+		C76562EA3CA28F2B54FFBA129893EFDD /* AsyncGLExecutor.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AsyncGLExecutor.h; path = AsyncGL/AsyncGLExecutor.h; sourceTree = "<group>"; };
+		CA6853B2F37DD9054CFA797099BDA5F1 /* Archive+Reading.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Archive+Reading.swift"; path = "Sources/ZIPFoundation/Archive+Reading.swift"; sourceTree = "<group>"; };
+		CB5C82D82980F4DF2DD18084A90CCA4C /* MWRequest-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "MWRequest-umbrella.h"; sourceTree = "<group>"; };
+		CFAA4CD09F24EF269055211E3A8F1723 /* Archive+Progress.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Archive+Progress.swift"; path = "Sources/ZIPFoundation/Archive+Progress.swift"; sourceTree = "<group>"; };
+		D4AF2F6DB42C0EC99E89641B56D68D72 /* FileManager+ZIP.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "FileManager+ZIP.swift"; path = "Sources/ZIPFoundation/FileManager+ZIP.swift"; sourceTree = "<group>"; };
+		D4BFF496163D67BA2CA746783C4248E4 /* ZIPFoundation.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = ZIPFoundation.modulemap; sourceTree = "<group>"; };
+		D5185AA3CB21B493777F8F407BFAEE07 /* Archive+WritingDeprecated.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Archive+WritingDeprecated.swift"; path = "Sources/ZIPFoundation/Archive+WritingDeprecated.swift"; sourceTree = "<group>"; };
+		D52AAF8A235E97C170FCAB1CC43F470A /* Pods-CelestiaUI.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-CelestiaUI.modulemap"; sourceTree = "<group>"; };
+		D71DDAA5E1425C2EBB624CDE5675697C /* AsyncGLView+Private.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "AsyncGLView+Private.h"; path = "AsyncGL/AsyncGLView+Private.h"; sourceTree = "<group>"; };
 		D9A4B9EF8730C7123A86378223DBC3F6 /* Pods-MobileCelestia */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = "Pods-MobileCelestia"; path = Pods_MobileCelestia.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		DA6398F66BF09143D134FB99C25F0195 /* Pods-CelestiaUI-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-CelestiaUI-acknowledgements.markdown"; sourceTree = "<group>"; };
-		DBEE2C2DF9AA9E13EAAF4F8210A9DB15 /* MWRequest-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "MWRequest-umbrella.h"; sourceTree = "<group>"; };
-		DCB8804118C04E7ECD8463CF85F4D0C6 /* ZIPFoundation-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "ZIPFoundation-prefix.pch"; sourceTree = "<group>"; };
-		DCD150FE75E11DABDDE02D216A708D04 /* AsyncRequestHandler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AsyncRequestHandler.swift; path = Sources/MWRequest/AsyncRequestHandler.swift; sourceTree = "<group>"; };
-		E58B7D6E55D217782B6B72DA0B3BD591 /* MWRequest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = MWRequest.debug.xcconfig; sourceTree = "<group>"; };
-		EAA0D7103519A616A362A5DA3F09AA49 /* AsyncGLAPI.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AsyncGLAPI.h; path = AsyncGL/include/AsyncGLAPI.h; sourceTree = "<group>"; };
-		EBD0FF7D113DA9C4E7BC65A48FF8CCAC /* AsyncGLView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AsyncGLView.h; path = AsyncGL/AsyncGLView.h; sourceTree = "<group>"; };
-		F112FA337CFB223C2304E80FB603B6C8 /* AppCenter.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = AppCenter.debug.xcconfig; sourceTree = "<group>"; };
-		F320571F1BCB72C4054C093BC347366A /* AppCenter.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; name = AppCenter.xcframework; path = "AppCenter-SDK-Apple/AppCenter.xcframework"; sourceTree = "<group>"; };
-		F4552739B6F66B0167F9C1201813EFBB /* Pods-CelestiaUI-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-CelestiaUI-umbrella.h"; sourceTree = "<group>"; };
-		F8A686D31A215F831A026C2F326DEDD2 /* MWRequest.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = MWRequest.release.xcconfig; sourceTree = "<group>"; };
-		FFFDADF58B1A1D810D018AE5EE4ADF5F /* URL+ZIP.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "URL+ZIP.swift"; path = "Sources/ZIPFoundation/URL+ZIP.swift"; sourceTree = "<group>"; };
+		DA623871625FDB3F7BDDD3CF0C697B7B /* AsyncGL.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = AsyncGL.release.xcconfig; sourceTree = "<group>"; };
+		E0740E959BE3AFA7BAD714297A6471DC /* AsyncGL.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = AsyncGL.modulemap; sourceTree = "<group>"; };
+		E211C1A5F9843A8DCA0B7B28DF183A7A /* Request.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Request.swift; path = Sources/MWRequest/Request.swift; sourceTree = "<group>"; };
+		E3EBF3BD657F924705303248CDFABBED /* AsyncGLViewController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AsyncGLViewController.h; path = AsyncGL/AsyncGLViewController.h; sourceTree = "<group>"; };
+		E69883672008BF52BD6F3F7C204AB35F /* ZIPFoundation.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = ZIPFoundation.debug.xcconfig; sourceTree = "<group>"; };
+		E6EA20CB739063BBA94C33602CD349A9 /* Pods-MobileCelestia-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-MobileCelestia-umbrella.h"; sourceTree = "<group>"; };
+		EAE18E222325E3EF009E6A6E704F8B71 /* Archive+Writing.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Archive+Writing.swift"; path = "Sources/ZIPFoundation/Archive+Writing.swift"; sourceTree = "<group>"; };
+		EB7669EC75CD43B845E47B0D3629A519 /* Archive+BackingConfiguration.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Archive+BackingConfiguration.swift"; path = "Sources/ZIPFoundation/Archive+BackingConfiguration.swift"; sourceTree = "<group>"; };
+		F1B14838436FC6A736CC439A08A7AB8D /* MWRequest.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = MWRequest.modulemap; sourceTree = "<group>"; };
+		F3C9775993FCD56350F5B484AD3A5EEE /* Data+CompressionDeprecated.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Data+CompressionDeprecated.swift"; path = "Sources/ZIPFoundation/Data+CompressionDeprecated.swift"; sourceTree = "<group>"; };
+		F44616B925F9DAE3825423445B182D6F /* Pods-CelestiaUI.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-CelestiaUI.release.xcconfig"; sourceTree = "<group>"; };
+		F497FA2247358B1BCD5B6E089DB4CFA3 /* ZIPFoundation.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = ZIPFoundation.release.xcconfig; sourceTree = "<group>"; };
+		F65731E153DF68DD8734A4F0705E195B /* Archive.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Archive.swift; path = Sources/ZIPFoundation/Archive.swift; sourceTree = "<group>"; };
+		FA7404DA93448B603ABA3DA212339BEA /* AsyncGLExecutor.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = AsyncGLExecutor.m; path = AsyncGL/AsyncGLExecutor.m; sourceTree = "<group>"; };
+		FC0C2F28C86CEBD1E22B56CD0C0C0B39 /* Archive+Deprecated.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = "Archive+Deprecated.swift"; path = "Sources/ZIPFoundation/Archive+Deprecated.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		44909361F978876D174CE8D094C0C2A4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DEEBD83F51737D5AA8DF2C0C16F43451 /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		7CF84720D948277D0F1AF338E9C26962 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -228,14 +245,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		930FB82BE7F0BA76E5C9E263E417A3B5 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				39B9B9C7256673CD9850DE703F10B22C /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		EAA9AA4536235AEA3B6E8988DC5F339C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -247,85 +256,62 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		2BD9945435A4A01CA35670B73FAD43D5 /* Support Files */ = {
+		1AB63ED5B7DD4C10023BDC1B8DFF18C1 /* AsyncGL */ = {
 			isa = PBXGroup;
 			children = (
-				315FE3AF987915099E897EE57A6110B1 /* AsyncGL.modulemap */,
-				BD6ADBAB3736AC6076278A8A4B9262E3 /* AsyncGL-dummy.m */,
-				D82FDB18017A3477ED24046E1F00A00B /* AsyncGL-Info.plist */,
-				C867F4A2FC86C5A9FB6D2DFF6C3C7D50 /* AsyncGL-prefix.pch */,
-				58497B27F7D7C8AE97252D562F2EC8C8 /* AsyncGL-umbrella.h */,
-				44C68CB91F3F6498C2921425175C1551 /* AsyncGL.debug.xcconfig */,
-				36E813C11A70A199B72850C27C89150D /* AsyncGL.release.xcconfig */,
-			);
-			name = "Support Files";
-			path = "../Target Support Files/AsyncGL";
-			sourceTree = "<group>";
-		};
-		38F0A717B9FB813CE9C631F1168EB4EF /* Pods-MobileCelestia */ = {
-			isa = PBXGroup;
-			children = (
-				27A52744999C907A2FB3AD2DB24DC5B2 /* Pods-MobileCelestia.modulemap */,
-				553A24F6C1BE21F02BC7827A90F8951D /* Pods-MobileCelestia-acknowledgements.markdown */,
-				B945591D796BE9E3159E3034464E528E /* Pods-MobileCelestia-acknowledgements.plist */,
-				BF539B444E20ED6E66F37D7557F8CCA7 /* Pods-MobileCelestia-dummy.m */,
-				0617C2CB63E8D17FF7E69FDF972DD22A /* Pods-MobileCelestia-Info.plist */,
-				C8308C5A8B4914EB954EA04CC68C955B /* Pods-MobileCelestia-umbrella.h */,
-				CF2A3631B2452D2F661D4F78BEA0053F /* Pods-MobileCelestia.debug.xcconfig */,
-				36E64F6B1515FD2A3C91D5D01382F7D1 /* Pods-MobileCelestia.release.xcconfig */,
-			);
-			name = "Pods-MobileCelestia";
-			path = "Target Support Files/Pods-MobileCelestia";
-			sourceTree = "<group>";
-		};
-		441EBD8563177E1564255DC90382A762 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				5AE140F5FD3BCE652A197EA8FB0215D6 /* AppCenterCrashes.xcframework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		50DDED057B9BECB76E544C0E05AE6432 /* AsyncGL */ = {
-			isa = PBXGroup;
-			children = (
-				541C8E238F19D43D6573CCB676A72119 /* OpenGL */,
-				2BD9945435A4A01CA35670B73FAD43D5 /* Support Files */,
+				8319686B7C1C87061A6A8AC56CFE29CA /* OpenGL */,
+				21D90238E535C738425847B10E60BC6D /* Support Files */,
 			);
 			name = AsyncGL;
 			path = AsyncGL;
 			sourceTree = "<group>";
 		};
-		51C174C20AE537EDBC1200AF4289AA9C /* MWRequest */ = {
+		1CFA5C6F35B9D7D6F0F9B70DABB0A292 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				DCD150FE75E11DABDDE02D216A708D04 /* AsyncRequestHandler.swift */,
-				9E89177E4BE50CA7FD9FED4ECA898A57 /* Request.swift */,
-				7E35EF373E3E0C189291A134DF4275B8 /* RequestHandler.swift */,
-				D8AE7BC9546D295D63CAD99ADE65BADA /* Support Files */,
+				B40B6CC64C76A4622D6985493965F5A6 /* PrivacyInfo.xcprivacy */,
 			);
-			name = MWRequest;
-			path = MWRequest;
+			name = Resources;
 			sourceTree = "<group>";
 		};
-		541C8E238F19D43D6573CCB676A72119 /* OpenGL */ = {
+		21D90238E535C738425847B10E60BC6D /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
-				21D0BBE357619E1B2519F9BD867DB66A /* AsyncGLAPI.h */,
-				EAA0D7103519A616A362A5DA3F09AA49 /* AsyncGLAPI.h */,
-				73F8B5B5B046A835B67B6D97A95459AA /* AsyncGLExecutor.h */,
-				77DD8D5B92AEF1A43691056A6D14981F /* AsyncGLExecutor.h */,
-				CC5AE438AD110FDA1EF87CEEC6A8F785 /* AsyncGLExecutor.m */,
-				6AFC9B848E302C93EB49CFB1F68AD040 /* AsyncGLExecutor+Private.h */,
-				EBD0FF7D113DA9C4E7BC65A48FF8CCAC /* AsyncGLView.h */,
-				973A2A39153E793CC33ECE3C7B94F7DA /* AsyncGLView.h */,
-				59BAA4A0456F3D45BDCBFB6BDA533ACD /* AsyncGLView.m */,
-				69965BF78FA5C2E2D990CC0D19666136 /* AsyncGLView+Private.h */,
-				53DDD506C3A274C372D99C8BFF4D96E3 /* AsyncGLViewController.h */,
-				23BAD928EC811C4585A8B83F3142100A /* AsyncGLViewController.h */,
-				9F417314A49E91ECA81946F69201F5FD /* AsyncGLViewController.m */,
+				E0740E959BE3AFA7BAD714297A6471DC /* AsyncGL.modulemap */,
+				557F98DA23C32F4A7CF19C2BCCABD8E3 /* AsyncGL-dummy.m */,
+				5BC3675E8FE1EF02E17FF96409B1AD97 /* AsyncGL-Info.plist */,
+				0A616B0BE56F005F31BFFCC4B1198852 /* AsyncGL-prefix.pch */,
+				1CF90F4A0690659C6DB8BE2C50C31FC1 /* AsyncGL-umbrella.h */,
+				9FC777CD6A692A0029A433C92051E143 /* AsyncGL.debug.xcconfig */,
+				DA623871625FDB3F7BDDD3CF0C697B7B /* AsyncGL.release.xcconfig */,
 			);
-			name = OpenGL;
+			name = "Support Files";
+			path = "../Target Support Files/AsyncGL";
+			sourceTree = "<group>";
+		};
+		27486B8E02738E06964EBBC5E2CFDD2F /* Pods-MobileCelestia */ = {
+			isa = PBXGroup;
+			children = (
+				8110488E3526AA12207594D5F70F1391 /* Pods-MobileCelestia.modulemap */,
+				A0F1CD5EAC06A3C26F1234B4EC1B5943 /* Pods-MobileCelestia-acknowledgements.markdown */,
+				5C5DFA3BC53BD1D4A114C8BE91E4BA25 /* Pods-MobileCelestia-acknowledgements.plist */,
+				59AEB9128381B1A6087E80EE66E46DD6 /* Pods-MobileCelestia-dummy.m */,
+				7A430C103010DCA9E4306C1C617943B4 /* Pods-MobileCelestia-Info.plist */,
+				96BDDE3A4D922D4F616BB40B073A5E08 /* Pods-MobileCelestia-resources.sh */,
+				E6EA20CB739063BBA94C33602CD349A9 /* Pods-MobileCelestia-umbrella.h */,
+				7877CBD3E9CE5491E26C4B93D355A576 /* Pods-MobileCelestia.debug.xcconfig */,
+				A1BF77F9F65B97CBD8C04909EF7A2624 /* Pods-MobileCelestia.release.xcconfig */,
+			);
+			name = "Pods-MobileCelestia";
+			path = "Target Support Files/Pods-MobileCelestia";
+			sourceTree = "<group>";
+		};
+		3E440EFA48BAFA9AD1D488A1317FE734 /* Crashes */ = {
+			isa = PBXGroup;
+			children = (
+				EAE77E19502B2FD541A2F97E953B93FC /* Frameworks */,
+			);
+			name = Crashes;
 			sourceTree = "<group>";
 		};
 		578452D2E740E91742655AC8F1636D1F /* iOS */ = {
@@ -336,83 +322,126 @@
 			name = iOS;
 			sourceTree = "<group>";
 		};
-		8E73046A89EFDB13515910D6788A3D83 /* ZIPFoundation */ = {
+		5C8E348E69FFC76115565812071AD4B2 /* MWRequest */ = {
 			isa = PBXGroup;
 			children = (
-				1E0D883ECE85FE8085B3C28C99DEFC71 /* Archive.swift */,
-				2B0195F55BC9743C8ECB923CF73E14BF /* Archive+BackingConfiguration.swift */,
-				86C7EFBCD598A9B564744632450CB128 /* Archive+Helpers.swift */,
-				9AB2CBC6310954A1BC47B75810020EC0 /* Archive+MemoryFile.swift */,
-				ACA1BE4D66E1DFCD36479AD5E5F4F69C /* Archive+Progress.swift */,
-				B02EF7443D334EB3CB4EB7E625B036A3 /* Archive+Reading.swift */,
-				194ABAB931E8D9C90EE40FF14BC18D64 /* Archive+ReadingDeprecated.swift */,
-				4547C3B46BB37A6D4AB2739D439B7451 /* Archive+Writing.swift */,
-				C0449A19DC9D6390EFC6E7D725459817 /* Archive+WritingDeprecated.swift */,
-				CC5AB98C051351864EDD5B64062A2009 /* Archive+ZIP64.swift */,
-				D874DEAA16A1DAD41D88A357DC7FC48C /* Data+Compression.swift */,
-				27D436EC7B398381A5E8BB4B6C006DAE /* Data+CompressionDeprecated.swift */,
-				058705BB98F704673152BDEFF9B1BAE1 /* Data+Serialization.swift */,
-				CC972174AA6CEC1859BBE663A96AD30C /* Entry.swift */,
-				C6BCE015C477A5FB4C5352033BCFEA9B /* Entry+Serialization.swift */,
-				12F75B5C98058EA4E9C06EA6E61F676F /* Entry+ZIP64.swift */,
-				6EBAEE61E5370DF952450F68144B58DF /* FileManager+ZIP.swift */,
-				FFFDADF58B1A1D810D018AE5EE4ADF5F /* URL+ZIP.swift */,
-				E50A5EDF7C61217CFC921CBBB3A52747 /* Support Files */,
+				B71C2178EB70FC81F816552EF6B5035F /* AsyncRequestHandler.swift */,
+				E211C1A5F9843A8DCA0B7B28DF183A7A /* Request.swift */,
+				5406B52F31F41DFA7BD1DFCFA6C9C72D /* RequestHandler.swift */,
+				718AA63B68CC14949C29EB70E5B7916D /* Support Files */,
 			);
-			name = ZIPFoundation;
-			path = ZIPFoundation;
+			name = MWRequest;
+			path = MWRequest;
 			sourceTree = "<group>";
 		};
-		A686CD85B80747EC118057A3C486800C /* Core */ = {
+		6247178C4296C5255C02054E5A8EA107 /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
-				C4E44A592CA8CB3381E60A269ACA4491 /* Frameworks */,
+				3358DBBF019B4E26B2751FF6A95B7BE2 /* AppCenter-xcframeworks.sh */,
+				4AA32387C9C5D12826AF04FBA02D50BF /* AppCenter.debug.xcconfig */,
+				3FDA53D083CA976335C067B929ABA324 /* AppCenter.release.xcconfig */,
 			);
-			name = Core;
+			name = "Support Files";
+			path = "../Target Support Files/AppCenter";
 			sourceTree = "<group>";
 		};
-		BF482F0A6E0CEF1D197621A6525196D2 /* Targets Support Files */ = {
+		718AA63B68CC14949C29EB70E5B7916D /* Support Files */ = {
 			isa = PBXGroup;
 			children = (
-				C3FC110F01DADD5833F1A724D2ED6370 /* Pods-CelestiaUI */,
-				38F0A717B9FB813CE9C631F1168EB4EF /* Pods-MobileCelestia */,
+				F1B14838436FC6A736CC439A08A7AB8D /* MWRequest.modulemap */,
+				0EFF627A8A3A962BCA36D48B9EA4A889 /* MWRequest-dummy.m */,
+				74AFD04F61D55170BD2DF66EE7A55C14 /* MWRequest-Info.plist */,
+				AB8EA85A4F07E390616BA242E4271556 /* MWRequest-prefix.pch */,
+				CB5C82D82980F4DF2DD18084A90CCA4C /* MWRequest-umbrella.h */,
+				9C3CDADA94134A80D601B29CA54245F0 /* MWRequest.debug.xcconfig */,
+				080F0FA2F663AAE25259D14066BA25C2 /* MWRequest.release.xcconfig */,
 			);
-			name = "Targets Support Files";
+			name = "Support Files";
+			path = "../Target Support Files/MWRequest";
 			sourceTree = "<group>";
 		};
-		C3FC110F01DADD5833F1A724D2ED6370 /* Pods-CelestiaUI */ = {
+		795AD418102B54C4EEB6979DFD3BE2D9 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				5358D5FCECC9523932C0D13DE8111506 /* Pods-CelestiaUI.modulemap */,
-				DA6398F66BF09143D134FB99C25F0195 /* Pods-CelestiaUI-acknowledgements.markdown */,
-				183770B83914F8AFD936448047A2017D /* Pods-CelestiaUI-acknowledgements.plist */,
-				35CBFD2BC1209687193A4AB841A5B8CE /* Pods-CelestiaUI-dummy.m */,
-				4ACC27ABF8B3C64CA0A39FDA122822ED /* Pods-CelestiaUI-Info.plist */,
-				F4552739B6F66B0167F9C1201813EFBB /* Pods-CelestiaUI-umbrella.h */,
-				09229452C879B702D1C3B47EC09A8893 /* Pods-CelestiaUI.debug.xcconfig */,
-				14E32A33D1C6FB74C633C797881814EC /* Pods-CelestiaUI.release.xcconfig */,
+				91A3240C7A3544467A2AE038B9887A1F /* AppCenter */,
+				1AB63ED5B7DD4C10023BDC1B8DFF18C1 /* AsyncGL */,
+				5C8E348E69FFC76115565812071AD4B2 /* MWRequest */,
+				F2E53D1D4FD6FC78596E064DD60105BB /* ZIPFoundation */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		8319686B7C1C87061A6A8AC56CFE29CA /* OpenGL */ = {
+			isa = PBXGroup;
+			children = (
+				0C54A0FE2D720E822D37CAA2C2367A43 /* AsyncGLAPI.h */,
+				045BE0A498381373FBDB5C6998D26976 /* AsyncGLAPI.h */,
+				C76562EA3CA28F2B54FFBA129893EFDD /* AsyncGLExecutor.h */,
+				17FCF96E4449B6D563FE359DBB0C00CF /* AsyncGLExecutor.h */,
+				FA7404DA93448B603ABA3DA212339BEA /* AsyncGLExecutor.m */,
+				1FBA4248202DBD19046F121CFBA4B7CD /* AsyncGLExecutor+Private.h */,
+				439EDB388DFD11D8541B0D082D05F795 /* AsyncGLView.h */,
+				0E97031F761BA6324C938E16B7402910 /* AsyncGLView.h */,
+				7B752434326F04583EF53F07EB395968 /* AsyncGLView.m */,
+				D71DDAA5E1425C2EBB624CDE5675697C /* AsyncGLView+Private.h */,
+				E3EBF3BD657F924705303248CDFABBED /* AsyncGLViewController.h */,
+				8B8EC9986156AB9ADF1EB73756F82B9E /* AsyncGLViewController.h */,
+				1A79674DA13B135AFB01767E6A5C3FD4 /* AsyncGLViewController.m */,
+			);
+			name = OpenGL;
+			sourceTree = "<group>";
+		};
+		85504FE386E9E40C8BFF81F3466CB539 /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				D4BFF496163D67BA2CA746783C4248E4 /* ZIPFoundation.modulemap */,
+				34565B0EAE053244C2781690B635ADF5 /* ZIPFoundation-dummy.m */,
+				507FBF19201C7ACBE232A2D387D657CA /* ZIPFoundation-Info.plist */,
+				A1D9F5B9989D7209FE2D01C7298D89A8 /* ZIPFoundation-prefix.pch */,
+				909B09DFC691255F4B867DF53A28C484 /* ZIPFoundation-umbrella.h */,
+				E69883672008BF52BD6F3F7C204AB35F /* ZIPFoundation.debug.xcconfig */,
+				F497FA2247358B1BCD5B6E089DB4CFA3 /* ZIPFoundation.release.xcconfig */,
+			);
+			name = "Support Files";
+			path = "../Target Support Files/ZIPFoundation";
+			sourceTree = "<group>";
+		};
+		8C22F5CC3F5E958CA180FDF84F8861E4 /* Pods-CelestiaUI */ = {
+			isa = PBXGroup;
+			children = (
+				D52AAF8A235E97C170FCAB1CC43F470A /* Pods-CelestiaUI.modulemap */,
+				2BD67F83793C066EC1E09B5A666B26DF /* Pods-CelestiaUI-acknowledgements.markdown */,
+				759E0A03839FDE57371C3807D9552013 /* Pods-CelestiaUI-acknowledgements.plist */,
+				247D8F48C111CA58700AA36B4660FCF4 /* Pods-CelestiaUI-dummy.m */,
+				35D87323A674DE94FDFE404E43967628 /* Pods-CelestiaUI-Info.plist */,
+				7B1446B8A9EC3A71B7A9FFDED2761FAF /* Pods-CelestiaUI-resources.sh */,
+				3AA134EC0775FF838DC2A581D4628393 /* Pods-CelestiaUI-umbrella.h */,
+				056D4287E3A65CC0A0048E4224EF1FB9 /* Pods-CelestiaUI.debug.xcconfig */,
+				F44616B925F9DAE3825423445B182D6F /* Pods-CelestiaUI.release.xcconfig */,
 			);
 			name = "Pods-CelestiaUI";
 			path = "Target Support Files/Pods-CelestiaUI";
 			sourceTree = "<group>";
 		};
-		C4E44A592CA8CB3381E60A269ACA4491 /* Frameworks */ = {
+		91A3240C7A3544467A2AE038B9887A1F /* AppCenter */ = {
 			isa = PBXGroup;
 			children = (
-				F320571F1BCB72C4054C093BC347366A /* AppCenter.xcframework */,
+				FE79BFA870310807F9565592C1B6100D /* Analytics */,
+				F16FBA6758D8B2AE75A942824BAFA09E /* Core */,
+				3E440EFA48BAFA9AD1D488A1317FE734 /* Crashes */,
+				6247178C4296C5255C02054E5A8EA107 /* Support Files */,
 			);
-			name = Frameworks;
+			name = AppCenter;
+			path = AppCenter;
 			sourceTree = "<group>";
 		};
-		CEBBEFD962DDBABFC4227701ED6ACD44 /* Support Files */ = {
+		93737B321FB92B8157E3BD8DAC8A9C35 /* Targets Support Files */ = {
 			isa = PBXGroup;
 			children = (
-				023B94D88AB9C5FC18D78FAAC86A3E66 /* AppCenter-xcframeworks.sh */,
-				F112FA337CFB223C2304E80FB603B6C8 /* AppCenter.debug.xcconfig */,
-				1CBB8FCA7419903692D7F5637B4AF7B1 /* AppCenter.release.xcconfig */,
+				8C22F5CC3F5E958CA180FDF84F8861E4 /* Pods-CelestiaUI */,
+				27486B8E02738E06964EBBC5E2CFDD2F /* Pods-MobileCelestia */,
 			);
-			name = "Support Files";
-			path = "../Target Support Files/AppCenter";
+			name = "Targets Support Files";
 			sourceTree = "<group>";
 		};
 		CF1408CF629C7361332E53B88F7BD30C = {
@@ -420,18 +449,10 @@
 			children = (
 				9D940727FF8FB9C785EB98E56350EF41 /* Podfile */,
 				D210D550F4EA176C3123ED886F8F87F5 /* Frameworks */,
-				EE6F706507DE39566FA473EE38CDA847 /* Pods */,
+				795AD418102B54C4EEB6979DFD3BE2D9 /* Pods */,
 				D2EC6EF99A6885CA52ED726D05AA73B0 /* Products */,
-				BF482F0A6E0CEF1D197621A6525196D2 /* Targets Support Files */,
+				93737B321FB92B8157E3BD8DAC8A9C35 /* Targets Support Files */,
 			);
-			sourceTree = "<group>";
-		};
-		D043B1D8D49CDCE66D288BEFA7381882 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				9F6F4075C69EE32A34C47E05486971EA /* AppCenterAnalytics.xcframework */,
-			);
-			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		D210D550F4EA176C3123ED886F8F87F5 /* Frameworks */ = {
@@ -454,73 +475,75 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		D8AE7BC9546D295D63CAD99ADE65BADA /* Support Files */ = {
+		D57248A499DFF9C414908F3789DF67A0 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				67742A3C6B1A7212067E443281346F6A /* MWRequest.modulemap */,
-				231B693FD66A89FB3A5EBBF8CF0A063C /* MWRequest-dummy.m */,
-				540B8D337686C27D3C2F1C8D89E8A92C /* MWRequest-Info.plist */,
-				C636389946165C129421F35F0726970A /* MWRequest-prefix.pch */,
-				DBEE2C2DF9AA9E13EAAF4F8210A9DB15 /* MWRequest-umbrella.h */,
-				E58B7D6E55D217782B6B72DA0B3BD591 /* MWRequest.debug.xcconfig */,
-				F8A686D31A215F831A026C2F326DEDD2 /* MWRequest.release.xcconfig */,
+				5CD3359198CEC818BC8E122D086358B0 /* AppCenterAnalytics.xcframework */,
 			);
-			name = "Support Files";
-			path = "../Target Support Files/MWRequest";
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		DF049D747E1D822ABB87E77CB0C114F0 /* Crashes */ = {
+		E30F0A3ABCD6F554C08D06CB3C2CEE5D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				441EBD8563177E1564255DC90382A762 /* Frameworks */,
+				3D2F5BFFEED1EB1BEE555577B9624411 /* AppCenter.xcframework */,
 			);
-			name = Crashes;
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		E50A5EDF7C61217CFC921CBBB3A52747 /* Support Files */ = {
+		EAE77E19502B2FD541A2F97E953B93FC /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				570376660F4826083792941729E0CD10 /* ZIPFoundation.modulemap */,
-				5C56C4D8A88BE015A5A117C867B18CF6 /* ZIPFoundation-dummy.m */,
-				B7DEA400B1BB30E752B69AF9E3ED7DB7 /* ZIPFoundation-Info.plist */,
-				DCB8804118C04E7ECD8463CF85F4D0C6 /* ZIPFoundation-prefix.pch */,
-				96522E263A56BD2BF4D61317E95C21D3 /* ZIPFoundation-umbrella.h */,
-				2F46B9441F6490353BCDA1CA04B840AF /* ZIPFoundation.debug.xcconfig */,
-				D1DF2306EFF6B08E66FC22BB61CD7EEA /* ZIPFoundation.release.xcconfig */,
+				7F603D9C16F07C83AF09FB9736A7200F /* AppCenterCrashes.xcframework */,
 			);
-			name = "Support Files";
-			path = "../Target Support Files/ZIPFoundation";
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		EA4A5028FA68F1D7B0AC4372D4C8B4F4 /* Analytics */ = {
+		F16FBA6758D8B2AE75A942824BAFA09E /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				D043B1D8D49CDCE66D288BEFA7381882 /* Frameworks */,
+				E30F0A3ABCD6F554C08D06CB3C2CEE5D /* Frameworks */,
+			);
+			name = Core;
+			sourceTree = "<group>";
+		};
+		F2E53D1D4FD6FC78596E064DD60105BB /* ZIPFoundation */ = {
+			isa = PBXGroup;
+			children = (
+				F65731E153DF68DD8734A4F0705E195B /* Archive.swift */,
+				EB7669EC75CD43B845E47B0D3629A519 /* Archive+BackingConfiguration.swift */,
+				FC0C2F28C86CEBD1E22B56CD0C0C0B39 /* Archive+Deprecated.swift */,
+				AA5B4471FD2B529274D1E03A1305159A /* Archive+Helpers.swift */,
+				8D480AA665E31686B969100990B64231 /* Archive+MemoryFile.swift */,
+				CFAA4CD09F24EF269055211E3A8F1723 /* Archive+Progress.swift */,
+				CA6853B2F37DD9054CFA797099BDA5F1 /* Archive+Reading.swift */,
+				BFD18C1F5F942ECE68612AB406010A73 /* Archive+ReadingDeprecated.swift */,
+				EAE18E222325E3EF009E6A6E704F8B71 /* Archive+Writing.swift */,
+				D5185AA3CB21B493777F8F407BFAEE07 /* Archive+WritingDeprecated.swift */,
+				BF69D41B572B2FD53766D1645AC90AFB /* Archive+ZIP64.swift */,
+				A3A6C7185E42B77AE08D13508FBB0B0C /* Data+Compression.swift */,
+				F3C9775993FCD56350F5B484AD3A5EEE /* Data+CompressionDeprecated.swift */,
+				9FB4613214096BE2BB8A8451BC76C380 /* Data+Serialization.swift */,
+				AAE53224033E691754E60C1685712EE7 /* Date+ZIP.swift */,
+				116FF6F17542F4C6D5DD7DDA5828C4B2 /* Entry.swift */,
+				8EEBD06A3B0452BE3ACF3750EA6198BF /* Entry+Serialization.swift */,
+				57715663FD54B3D7E3FC1E0C29684F4E /* Entry+ZIP64.swift */,
+				D4AF2F6DB42C0EC99E89641B56D68D72 /* FileManager+ZIP.swift */,
+				7E7DD76A1A62A13A095CCF6E0250F0E4 /* FileManager+ZIPDeprecated.swift */,
+				AC5C8863F46406BC74AA337CA8550065 /* URL+ZIP.swift */,
+				1CFA5C6F35B9D7D6F0F9B70DABB0A292 /* Resources */,
+				85504FE386E9E40C8BFF81F3466CB539 /* Support Files */,
+			);
+			name = ZIPFoundation;
+			path = ZIPFoundation;
+			sourceTree = "<group>";
+		};
+		FE79BFA870310807F9565592C1B6100D /* Analytics */ = {
+			isa = PBXGroup;
+			children = (
+				D57248A499DFF9C414908F3789DF67A0 /* Frameworks */,
 			);
 			name = Analytics;
-			sourceTree = "<group>";
-		};
-		EE6F706507DE39566FA473EE38CDA847 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				FAF4FBD827280E67B191C33486E22F55 /* AppCenter */,
-				50DDED057B9BECB76E544C0E05AE6432 /* AsyncGL */,
-				51C174C20AE537EDBC1200AF4289AA9C /* MWRequest */,
-				8E73046A89EFDB13515910D6788A3D83 /* ZIPFoundation */,
-			);
-			name = Pods;
-			sourceTree = "<group>";
-		};
-		FAF4FBD827280E67B191C33486E22F55 /* AppCenter */ = {
-			isa = PBXGroup;
-			children = (
-				EA4A5028FA68F1D7B0AC4372D4C8B4F4 /* Analytics */,
-				A686CD85B80747EC118057A3C486800C /* Core */,
-				DF049D747E1D822ABB87E77CB0C114F0 /* Crashes */,
-				CEBBEFD962DDBABFC4227701ED6ACD44 /* Support Files */,
-			);
-			name = AppCenter;
-			path = AppCenter;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -552,11 +575,11 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		AA0DB9D19997BFE2BD970F99FB827C39 /* Headers */ = {
+		C6BBB0C6CB023BF20AF81294361BB685 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				349A670054E67E7E8AF4258591F450FD /* ZIPFoundation-umbrella.h in Headers */,
+				459C2BDFC514F07DB63E7173170BB3E1 /* ZIPFoundation-umbrella.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -591,10 +614,10 @@
 			buildRules = (
 			);
 			dependencies = (
-				9C292A368E52AB4C778FCF4A6F57FF34 /* PBXTargetDependency */,
-				6C632B4A72A57CC34A382C6CBC760557 /* PBXTargetDependency */,
-				62A5569D7005529FF8C5BE6C62E950EB /* PBXTargetDependency */,
-				D449A610C7E68A368480D19DAA7D6333 /* PBXTargetDependency */,
+				402A3CF7EABD0123FF8D95EE4B43BED9 /* PBXTargetDependency */,
+				39C7850514F87F5755D0FB44A6208449 /* PBXTargetDependency */,
+				2A97F63AD30F4F8A7D6BD951612C4E58 /* PBXTargetDependency */,
+				082B558F7B6FC0B557EEB698D2081D67 /* PBXTargetDependency */,
 			);
 			name = "Pods-MobileCelestia";
 			productName = Pods_MobileCelestia;
@@ -603,12 +626,12 @@
 		};
 		AA15C8469D67684160CC2A7098EB841C /* ZIPFoundation */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A207388268E2044623BE892D771C8F2A /* Build configuration list for PBXNativeTarget "ZIPFoundation" */;
+			buildConfigurationList = 2E4399B96D6813165DC65C1936B67DC3 /* Build configuration list for PBXNativeTarget "ZIPFoundation" */;
 			buildPhases = (
-				AA0DB9D19997BFE2BD970F99FB827C39 /* Headers */,
-				CB874C5AFD84D0F19529C0A5403B66F8 /* Sources */,
-				930FB82BE7F0BA76E5C9E263E417A3B5 /* Frameworks */,
-				D1E190935316E1186BF7AE45D8FB031C /* Resources */,
+				C6BBB0C6CB023BF20AF81294361BB685 /* Headers */,
+				CC24AC84C427455102A125F41A6C9E7E /* Sources */,
+				44909361F978876D174CE8D094C0C2A4 /* Frameworks */,
+				E6F9646A8C7FA28B53BD41177A8F8E85 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -667,8 +690,8 @@
 			buildRules = (
 			);
 			dependencies = (
-				6422EAD75EA217FBA61F468CDB66A95B /* PBXTargetDependency */,
-				8F1AB3F1BC5A43B4534BF5A05A31B08A /* PBXTargetDependency */,
+				6E8399FE050ED33C7B7A023BE95507AF /* PBXTargetDependency */,
+				9B66327DB5F6A7205CCEB1F2CE3A3D88 /* PBXTargetDependency */,
 			);
 			name = "Pods-CelestiaUI";
 			productName = Pods_CelestiaUI;
@@ -736,7 +759,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		D1E190935316E1186BF7AE45D8FB031C /* Resources */ = {
+		E6F9646A8C7FA28B53BD41177A8F8E85 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -793,29 +816,32 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CB874C5AFD84D0F19529C0A5403B66F8 /* Sources */ = {
+		CC24AC84C427455102A125F41A6C9E7E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3CF6EDAAB8EE08C716E0A6801CE9395F /* Archive.swift in Sources */,
-				957429C50510964F49F149436B04669D /* Archive+BackingConfiguration.swift in Sources */,
-				5D295E88C9B6712E733AAE84DB46D305 /* Archive+Helpers.swift in Sources */,
-				2674895739EF26F14775E11D5C07432E /* Archive+MemoryFile.swift in Sources */,
-				3B46A9AAA00DCCFB1AAB3702BED53E32 /* Archive+Progress.swift in Sources */,
-				1B21CC6C4FA89B94FB145FC91B38CF56 /* Archive+Reading.swift in Sources */,
-				974B41D2F35202F4E88002D230A074C1 /* Archive+ReadingDeprecated.swift in Sources */,
-				3D2785438FE0FD28BB60F1B8BDC2F6E0 /* Archive+Writing.swift in Sources */,
-				B45762494A1966DECDA40D47C8338FD2 /* Archive+WritingDeprecated.swift in Sources */,
-				40DA118987C9A82CF4E661BA2864E944 /* Archive+ZIP64.swift in Sources */,
-				D5E15858701A22B3D0AE0D18BC226D05 /* Data+Compression.swift in Sources */,
-				F488916EF8EF631CD2E80A2AD208C0E5 /* Data+CompressionDeprecated.swift in Sources */,
-				75031CCC571CE04B6095DE5BD70FCBF2 /* Data+Serialization.swift in Sources */,
-				EF78E1E358F82192ADEB64827E1826B4 /* Entry.swift in Sources */,
-				6520BAC5F52CC2FFFA866237B9669A32 /* Entry+Serialization.swift in Sources */,
-				9250EB0520E1CF91309931A23726DEC1 /* Entry+ZIP64.swift in Sources */,
-				2BE058F2E8C92D4AD3D3B3800A3A5CF6 /* FileManager+ZIP.swift in Sources */,
-				4F06E0CEFACCE86850504CAA18532856 /* URL+ZIP.swift in Sources */,
-				3C56D258FE0E9BEA5ED44FEA4DFFA4D0 /* ZIPFoundation-dummy.m in Sources */,
+				7B55194C888E323167548542DAAD7E79 /* Archive.swift in Sources */,
+				F1058DEE51A2A8AA7427BE0007484AF3 /* Archive+BackingConfiguration.swift in Sources */,
+				BACB99A9363EE44C744C7C439BBF4347 /* Archive+Deprecated.swift in Sources */,
+				E50A9A9273F004199C22DD8F6865163D /* Archive+Helpers.swift in Sources */,
+				29F922FACBA3FE6A7ADED7C3CD22ED4C /* Archive+MemoryFile.swift in Sources */,
+				603291D0DF7B9DFB453454D914B63F6A /* Archive+Progress.swift in Sources */,
+				B8F5C1EFC278AF455BF51E7999F7260F /* Archive+Reading.swift in Sources */,
+				6F77CC8C9E014E6EF0DA50E2D311FAE0 /* Archive+ReadingDeprecated.swift in Sources */,
+				E5020E5CF470A5295C85D5345CCA459A /* Archive+Writing.swift in Sources */,
+				BAD5747516D14B3F2164C5490B89BDFE /* Archive+WritingDeprecated.swift in Sources */,
+				8297BAEF5B1A145A022E9271C5ED5294 /* Archive+ZIP64.swift in Sources */,
+				79364187F389DAA5C68BFC961404F17B /* Data+Compression.swift in Sources */,
+				2FAC2F9A94B4596B6CD730E8CF877E7C /* Data+CompressionDeprecated.swift in Sources */,
+				3983F543999945FF65DE5F1A20A560A7 /* Data+Serialization.swift in Sources */,
+				E8679C150D5870B1BACEEB00919B0179 /* Date+ZIP.swift in Sources */,
+				70736CFD8D82F468430573297DA55F51 /* Entry.swift in Sources */,
+				5F762412B3F30153758D990C808EAC59 /* Entry+Serialization.swift in Sources */,
+				EF92C59832D330F1B883E22A5FA154C4 /* Entry+ZIP64.swift in Sources */,
+				9ADF6587306EFAE8311809727C844C37 /* FileManager+ZIP.swift in Sources */,
+				886364F79543A7FA36CC3EAEB4C4FFDF /* FileManager+ZIPDeprecated.swift in Sources */,
+				269A27DF205C6654B6DD2A85303C5817 /* URL+ZIP.swift in Sources */,
+				87D17C7090C03CC13C6B287814951B3F /* ZIPFoundation-dummy.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -833,45 +859,87 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		62A5569D7005529FF8C5BE6C62E950EB /* PBXTargetDependency */ = {
+		082B558F7B6FC0B557EEB698D2081D67 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = ZIPFoundation;
+			target = AA15C8469D67684160CC2A7098EB841C /* ZIPFoundation */;
+			targetProxy = 2A51A8DCB5E6581D75AF199809284707 /* PBXContainerItemProxy */;
+		};
+		2A97F63AD30F4F8A7D6BD951612C4E58 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = MWRequest;
 			target = B45BC50C299B8144F2CCD63D4E7A880D /* MWRequest */;
-			targetProxy = 6B6F97BFBFD3578191711907E2D7CBF5 /* PBXContainerItemProxy */;
+			targetProxy = B005AE421F025819FC8C0450D456808E /* PBXContainerItemProxy */;
 		};
-		6422EAD75EA217FBA61F468CDB66A95B /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = MWRequest;
-			target = B45BC50C299B8144F2CCD63D4E7A880D /* MWRequest */;
-			targetProxy = A0002E4D091203C85611481FEA2E3ECB /* PBXContainerItemProxy */;
-		};
-		6C632B4A72A57CC34A382C6CBC760557 /* PBXTargetDependency */ = {
+		39C7850514F87F5755D0FB44A6208449 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = AsyncGL;
 			target = B0461866C4B5B8EDBF49D135C70E49C4 /* AsyncGL */;
-			targetProxy = 4EADE0D75938E152E04F5D65CADBE5B2 /* PBXContainerItemProxy */;
+			targetProxy = 21E148DA1F5C4F87F02EDABDA8DE9B29 /* PBXContainerItemProxy */;
 		};
-		8F1AB3F1BC5A43B4534BF5A05A31B08A /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = ZIPFoundation;
-			target = AA15C8469D67684160CC2A7098EB841C /* ZIPFoundation */;
-			targetProxy = 06CB03B0580AD6F10B7BC354E32E839D /* PBXContainerItemProxy */;
-		};
-		9C292A368E52AB4C778FCF4A6F57FF34 /* PBXTargetDependency */ = {
+		402A3CF7EABD0123FF8D95EE4B43BED9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = AppCenter;
 			target = A3282A5B2437E609EEB85861D7ECE717 /* AppCenter */;
-			targetProxy = E6174AFA351C81AD390562C3526ACD29 /* PBXContainerItemProxy */;
+			targetProxy = 6C31C67DFFD1A81DB298070048A88E31 /* PBXContainerItemProxy */;
 		};
-		D449A610C7E68A368480D19DAA7D6333 /* PBXTargetDependency */ = {
+		6E8399FE050ED33C7B7A023BE95507AF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = MWRequest;
+			target = B45BC50C299B8144F2CCD63D4E7A880D /* MWRequest */;
+			targetProxy = F292822E2D145C6255413CAC9BB5C47D /* PBXContainerItemProxy */;
+		};
+		9B66327DB5F6A7205CCEB1F2CE3A3D88 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = ZIPFoundation;
 			target = AA15C8469D67684160CC2A7098EB841C /* ZIPFoundation */;
-			targetProxy = D423612F162AB086F762AB6A074F0CB1 /* PBXContainerItemProxy */;
+			targetProxy = AE224616B1BD1E9BD00407C62DBEAF62 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		047B0E2A18885C78ACB89B4DEC24217D /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = F497FA2247358B1BCD5B6E089DB4CFA3 /* ZIPFoundation.release.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				EXPANDED_CODE_SIGN_IDENTITY = "";
+				GCC_PREFIX_HEADER = "Target Support Files/ZIPFoundation/ZIPFoundation-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/ZIPFoundation/ZIPFoundation-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MODULEMAP_FILE = "Target Support Files/ZIPFoundation/ZIPFoundation.modulemap";
+				PRODUCT_MODULE_NAME = ZIPFoundation;
+				PRODUCT_NAME = ZIPFoundation;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
 		072CF24DD597B28B1EC6485A97C6DC75 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -936,7 +1004,7 @@
 		};
 		128E3DAB0487743EEFAC599811A55E78 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = E58B7D6E55D217782B6B72DA0B3BD591 /* MWRequest.debug.xcconfig */;
+			baseConfigurationReference = 9C3CDADA94134A80D601B29CA54245F0 /* MWRequest.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGNING_ALLOWED = NO;
@@ -977,7 +1045,7 @@
 		};
 		15BDB912CA15E81F241962E954827927 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 14E32A33D1C6FB74C633C797881814EC /* Pods-CelestiaUI.release.xcconfig */;
+			baseConfigurationReference = F44616B925F9DAE3825423445B182D6F /* Pods-CelestiaUI.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ENABLE_OBJC_WEAK = NO;
@@ -1020,7 +1088,7 @@
 		};
 		31FD037F8250E4F2D495D5FA8F5627E8 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F112FA337CFB223C2304E80FB603B6C8 /* AppCenter.debug.xcconfig */;
+			baseConfigurationReference = 4AA32387C9C5D12826AF04FBA02D50BF /* AppCenter.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -1042,7 +1110,7 @@
 		};
 		372C884890F81ADCB8D3DB6F6F3E37D2 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 44C68CB91F3F6498C2921425175C1551 /* AsyncGL.debug.xcconfig */;
+			baseConfigurationReference = 9FC777CD6A692A0029A433C92051E143 /* AsyncGL.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGNING_ALLOWED = NO;
@@ -1083,7 +1151,7 @@
 		};
 		610E2D27E762CA9041DC5168E4377985 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 36E64F6B1515FD2A3C91D5D01382F7D1 /* Pods-MobileCelestia.release.xcconfig */;
+			baseConfigurationReference = A1BF77F9F65B97CBD8C04909EF7A2624 /* Pods-MobileCelestia.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ENABLE_OBJC_WEAK = NO;
@@ -1126,7 +1194,7 @@
 		};
 		67694A32F85CA587DBC68EA0102D99F8 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F8A686D31A215F831A026C2F326DEDD2 /* MWRequest.release.xcconfig */;
+			baseConfigurationReference = 080F0FA2F663AAE25259D14066BA25C2 /* MWRequest.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGNING_ALLOWED = NO;
@@ -1166,50 +1234,9 @@
 			};
 			name = Release;
 		};
-		72460CEC14CCC19FE1BF8C7FFDFFA705 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2F46B9441F6490353BCDA1CA04B840AF /* ZIPFoundation.debug.xcconfig */;
-			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGNING_ALLOWED = NO;
-				CODE_SIGNING_REQUIRED = NO;
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				EXPANDED_CODE_SIGN_IDENTITY = "";
-				GCC_PREFIX_HEADER = "Target Support Files/ZIPFoundation/ZIPFoundation-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/ZIPFoundation/ZIPFoundation-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MACH_O_TYPE = staticlib;
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MODULEMAP_FILE = "Target Support Files/ZIPFoundation/ZIPFoundation.modulemap";
-				PRODUCT_MODULE_NAME = ZIPFoundation;
-				PRODUCT_NAME = ZIPFoundation;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SUPPORTS_MACCATALYST = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
 		8ACF203C6426BE4E781FA3664F8712B5 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 09229452C879B702D1C3B47EC09A8893 /* Pods-CelestiaUI.debug.xcconfig */;
+			baseConfigurationReference = 056D4287E3A65CC0A0048E4224EF1FB9 /* Pods-CelestiaUI.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ENABLE_OBJC_WEAK = NO;
@@ -1248,48 +1275,6 @@
 				VERSION_INFO_PREFIX = "";
 			};
 			name = Debug;
-		};
-		8D008A1895DB0EDC787DE3C5C92F2824 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = D1DF2306EFF6B08E66FC22BB61CD7EEA /* ZIPFoundation.release.xcconfig */;
-			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGNING_ALLOWED = NO;
-				CODE_SIGNING_REQUIRED = NO;
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				EXPANDED_CODE_SIGN_IDENTITY = "";
-				GCC_PREFIX_HEADER = "Target Support Files/ZIPFoundation/ZIPFoundation-prefix.pch";
-				INFOPLIST_FILE = "Target Support Files/ZIPFoundation/ZIPFoundation-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MACH_O_TYPE = staticlib;
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MODULEMAP_FILE = "Target Support Files/ZIPFoundation/ZIPFoundation.modulemap";
-				PRODUCT_MODULE_NAME = ZIPFoundation;
-				PRODUCT_NAME = ZIPFoundation;
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SUPPORTS_MACCATALYST = YES;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
 		};
 		94CA9DF48CE575FECE47DDD8786D50E7 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -1359,7 +1344,7 @@
 		};
 		99EE85EA685B6522D65C13B735F7E56D /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 36E813C11A70A199B72850C27C89150D /* AsyncGL.release.xcconfig */;
+			baseConfigurationReference = DA623871625FDB3F7BDDD3CF0C697B7B /* AsyncGL.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGNING_ALLOWED = NO;
@@ -1401,7 +1386,7 @@
 		};
 		B4CAA1CD6E8059DD6FB9C60AD566CFD9 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CF2A3631B2452D2F661D4F78BEA0053F /* Pods-MobileCelestia.debug.xcconfig */;
+			baseConfigurationReference = 7877CBD3E9CE5491E26C4B93D355A576 /* Pods-MobileCelestia.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ENABLE_OBJC_WEAK = NO;
@@ -1441,9 +1426,50 @@
 			};
 			name = Debug;
 		};
+		D3B9BE1BE2563A611955E2B76097A956 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E69883672008BF52BD6F3F7C204AB35F /* ZIPFoundation.debug.xcconfig */;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGNING_ALLOWED = NO;
+				CODE_SIGNING_REQUIRED = NO;
+				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
+				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
+				CURRENT_PROJECT_VERSION = 1;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				EXPANDED_CODE_SIGN_IDENTITY = "";
+				GCC_PREFIX_HEADER = "Target Support Files/ZIPFoundation/ZIPFoundation-prefix.pch";
+				INFOPLIST_FILE = "Target Support Files/ZIPFoundation/ZIPFoundation-Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				MACH_O_TYPE = staticlib;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
+				MODULEMAP_FILE = "Target Support Files/ZIPFoundation/ZIPFoundation.modulemap";
+				PRODUCT_MODULE_NAME = ZIPFoundation;
+				PRODUCT_NAME = ZIPFoundation;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = YES;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
 		DE8787EFD4156E5F3C1BF3055612A8FB /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1CBB8FCA7419903692D7F5637B4AF7B1 /* AppCenter.release.xcconfig */;
+			baseConfigurationReference = 3FDA53D083CA976335C067B929ABA324 /* AppCenter.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -1476,6 +1502,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		2E4399B96D6813165DC65C1936B67DC3 /* Build configuration list for PBXNativeTarget "ZIPFoundation" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D3B9BE1BE2563A611955E2B76097A956 /* Debug */,
+				047B0E2A18885C78ACB89B4DEC24217D /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -1490,15 +1525,6 @@
 			buildConfigurations = (
 				31FD037F8250E4F2D495D5FA8F5627E8 /* Debug */,
 				DE8787EFD4156E5F3C1BF3055612A8FB /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		A207388268E2044623BE892D771C8F2A /* Build configuration list for PBXNativeTarget "ZIPFoundation" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				72460CEC14CCC19FE1BF8C7FFDFFA705 /* Debug */,
-				8D008A1895DB0EDC787DE3C5C92F2824 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

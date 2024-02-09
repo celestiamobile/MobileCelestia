@@ -4,20 +4,20 @@ use_frameworks! :linkage => :static
 
 asyncgl_version_tag = "0.1.15"
 mwrequest_version_tag = "1.0.1"
-zipfoundation_version = "~> 0.9.16"
+zipfoundation_version_tag = "0.9.18"
 appcenter_version = "~> 5.0.4"
 
 target 'MobileCelestia' do
   pod 'AppCenter/Analytics', appcenter_version
   pod 'AppCenter/Crashes', appcenter_version
-  pod 'ZIPFoundation', zipfoundation_version
+  pod 'ZIPFoundation', :git => "https://github.com/weichsel/ZIPFoundation.git", :tag => zipfoundation_version_tag
 
   pod "MWRequest", :git => "https://github.com/levinli303/mwrequest.git", :tag => mwrequest_version_tag
   pod "AsyncGL/OpenGL", :git => "https://github.com/levinli303/AsyncGL.git", :tag => asyncgl_version_tag
 end
 
 target 'CelestiaUI' do
-  pod 'ZIPFoundation', zipfoundation_version
+  pod 'ZIPFoundation', :git => "https://github.com/weichsel/ZIPFoundation.git", :tag => zipfoundation_version_tag
 
   pod "MWRequest", :git => "https://github.com/levinli303/mwrequest.git", :tag => mwrequest_version_tag
 end
