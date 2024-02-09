@@ -354,65 +354,67 @@ typedef enum EGLRenderingAPI : int
 
 - (void)renderThreadMain {
     while (YES) {
-        AsyncGLViewEvent event = AsyncGLViewEventNone;
-        BOOL needsDrawn = NO;
+        @autoreleasepool {
+            AsyncGLViewEvent event = AsyncGLViewEventNone;
+            BOOL needsDrawn = NO;
 
-        [_condition lock];
-        while (!_requestExitThread && (_suspendedFlag || _event == AsyncGLViewEventNone))
-            [_condition wait];
+            [_condition lock];
+            while (!_requestExitThread && (_suspendedFlag || _event == AsyncGLViewEventNone))
+                [_condition wait];
 
-        BOOL requestExitThread = _requestExitThread;
-        event = _event;
-        _event = AsyncGLViewEventNone;
+            BOOL requestExitThread = _requestExitThread;
+            event = _event;
+            _event = AsyncGLViewEventNone;
 
-        NSArray *tasks = nil;
-        if ([_tasks count] > 0) {
-            tasks = [_tasks copy];
-            [_tasks removeAllObjects];
-        }
-
-        [_condition unlock];
-
-        if (requestExitThread) {
-            [self clearGL];
-            dispatch_sync(dispatch_get_main_queue(), ^{
-                self.contextState = AsyncGLViewContextStateEnded;
-            });
-            break;
-        }
-
-        if ((event & AsyncGLViewEventCreateRenderContext) != 0) {
-            if ([self createRenderContext]) {
-                _contextsCreated = YES;
-                dispatch_sync(dispatch_get_main_queue(), ^{
-                    self.contextState = AsyncGLViewContextStateRenderContextCreated;
-                    [self _startObservingViewStateNotifications];
-                    [self _checkViewState];
-                });
+            NSArray *tasks = nil;
+            if ([_tasks count] > 0) {
+                tasks = [_tasks copy];
+                [_tasks removeAllObjects];
             }
-            else {
+
+            [_condition unlock];
+
+            if (requestExitThread) {
                 [self clearGL];
                 dispatch_sync(dispatch_get_main_queue(), ^{
-                    self.contextState = AsyncGLViewContextStateFailed;
+                    self.contextState = AsyncGLViewContextStateEnded;
                 });
                 break;
             }
-        }
 
-        if (_contextsCreated) {
-            if ((event & AsyncGLViewEventDraw) != 0)
-                needsDrawn = YES;
+            if ((event & AsyncGLViewEventCreateRenderContext) != 0) {
+                if ([self createRenderContext]) {
+                    _contextsCreated = YES;
+                    dispatch_sync(dispatch_get_main_queue(), ^{
+                        self.contextState = AsyncGLViewContextStateRenderContextCreated;
+                        [self _startObservingViewStateNotifications];
+                        [self _checkViewState];
+                    });
+                }
+                else {
+                    [self clearGL];
+                    dispatch_sync(dispatch_get_main_queue(), ^{
+                        self.contextState = AsyncGLViewContextStateFailed;
+                    });
+                    break;
+                }
+            }
 
-            for (void (^task)(void) in tasks)
-                task();
-        }
+            if (_contextsCreated) {
+                if ((event & AsyncGLViewEventDraw) != 0)
+                    needsDrawn = YES;
 
-        if ((event & AsyncGLViewEventPause) != 0) {
-            [_condition lock];
-            _suspendedFlag = YES;
-            [_condition unlock];
-        } else if (needsDrawn) {
-            [self render];
+                for (void (^task)(void) in tasks)
+                    task();
+            }
+
+            if ((event & AsyncGLViewEventPause) != 0) {
+                [_condition lock];
+                _suspendedFlag = YES;
+                [_condition unlock];
+            } else if (needsDrawn) {
+                [self render];
+            }
         }
     }
 }

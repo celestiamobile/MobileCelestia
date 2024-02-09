@@ -2,7 +2,7 @@ platform :ios, '13.1'
 
 use_frameworks! :linkage => :static
 
-asyncgl_version_tag = "0.1.14"
+asyncgl_version_tag = "0.1.15"
 mwrequest_version_tag = "1.0.1"
 zipfoundation_version = "~> 0.9.16"
 appcenter_version = "~> 5.0.4"
