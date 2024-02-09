@@ -54,7 +54,19 @@ private let sharedInteractionItems: [SettingItem<AnyHashable>] = [
 ]
 
 #if targetEnvironment(macCatalyst)
-private let interactionItems = sharedInteractionItems
+private let interactionItems = sharedInteractionItems + [
+    SettingItem(
+        name: CelestiaString("Pinch Zoom", comment: "Settings for whether to pinch to zoom by FOV or by distance"),
+        subtitle: CelestiaString("Adjust view with pinch gestures by changing FOV or distance", comment: "Description for Pinch Zoom setting"),
+        type: .prefSelection,
+        associatedItem: .init(
+            AssociatedPreferenceSelectionItem(key: .pinchZoom, options: [
+                .init(name: CelestiaString("FOV", context: "Pinch Zoom", comment: "Pinch zoom setting option"), value: 0),
+                .init(name: CelestiaString("Distance", context: "Pinch Zoom", comment: "Pinch zoom setting option"), value: 1)
+            ], defaultOption: 0)
+        )
+    )
+]
 #else
 private let interactionItems = sharedInteractionItems + [
     SettingItem(

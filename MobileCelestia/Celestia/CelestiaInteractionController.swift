@@ -132,6 +132,10 @@ class CelestiaInteractionController: UIViewController {
     weak var delegate: CelestiaInteractionControllerDelegate?
     weak var targetProvider: RenderingTargetInformationProvider?
 
+    #if targetEnvironment(macCatalyst)
+    private var zoomByDistance = false
+    #endif
+
     private var zoomTimer: Timer?
 
     private var renderingTargetGeometry: RenderingTargetGeometry {
@@ -383,6 +387,10 @@ extension CelestiaInteractionController {
         if let clickGesture = targetInteractionView.gestureRecognizers?.filter({ String(cString: object_getClassName($0)) == "_UISecondaryClickDriverGestureRecognizer" }).first {
             clickGesture.require(toFail: pan1)
         }
+
+        #if targetEnvironment(macCatalyst)
+        zoomByDistance = userDefaults[.pinchZoom] == 1
+        #endif
     }
 }
 
@@ -464,7 +472,11 @@ extension CelestiaInteractionController {
             currentPinchScale = gesture.scale
         case .changed:
             let scale = gesture.scale
+            #if targetEnvironment(macCatalyst)
+            let zoomFOV = !zoomByDistance
+            #else
             let zoomFOV = interactionMode == .camera
+            #endif
             if let currentPinchScale {
                 let focus = gesture.location(with: renderingTargetGeometry)
                 executor.runAsynchronously {

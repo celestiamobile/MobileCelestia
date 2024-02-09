@@ -168,6 +168,7 @@ extension SettingCommonViewController {
                 if #available(iOS 15, visionOS 1, *) {
                     let cell = tableView.dequeueReusableCell(withIdentifier: "Selection15", for: indexPath) as! SelectionCell
                     cell.title = row.name
+                    cell.subtitle = row.subtitle
                     cell.selectionData = SelectionCell.SelectionData(options: item.options.map { $0.name }, selectedIndex: item.options.firstIndex(where: { $0.value == currentValue }) ?? -1)
                     cell.selectionChange = { [weak self] index in
                         guard let self else { return }
@@ -177,6 +178,7 @@ extension SettingCommonViewController {
                 }
                 let cell = tableView.dequeueReusableCell(withIdentifier: "Selection", for: indexPath) as! TextCell
                 cell.title = row.name
+                cell.subtitle = row.subtitle
                 cell.detail = item.options.first(where: { $0.value == currentValue })?.name ?? ""
                 cell.accessoryType = .disclosureIndicator
                 return cell

@@ -41,12 +41,18 @@ public enum UserDefaultsKey: String {
 
     #if !os(visionOS)
     case fullDPI
+    #else
+    case foveatedRendering
+    #endif
     case msaa
+    #if !os(visionOS)
     case toolbarItems
     case frameRate
     case dataDirPath
     case configFile
-    #if !targetEnvironment(macCatalyst)
+    #if targetEnvironment(macCatalyst)
+    case pinchZoom
+    #else
     case contextMenu
     #endif
     #endif
