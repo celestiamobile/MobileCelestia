@@ -26,6 +26,15 @@ public class ResourceItemViewController: UIViewController {
     private var item: ResourceItem
     private let needsRefetchItem: Bool
 
+
+    #if targetEnvironment(macCatalyst)
+    private lazy var toolbarShareItem: NSSharingServicePickerToolbarItem = {
+        let item = NSSharingServicePickerToolbarItem(itemIdentifier: .share)
+        item.activityItemsConfiguration = UIActivityItemsConfiguration(objects: [URL.fromAddonForSharing(addonItemID: itemID, language: AppCore.language) as NSURL])
+        return item
+    }()
+    #endif
+
     private lazy var progressView: UIProgressView = {
         if #available(iOS 14, *), traitCollection.userInterfaceIdiom == .mac {
             return UIProgressView(progressViewStyle: .default)
@@ -381,3 +390,23 @@ private extension ResourceItemViewController {
         self.updateUI()
     }
 }
+
+#if targetEnvironment(macCatalyst)
+extension NSToolbarItem.Identifier {
+    private static let prefix = Bundle(for: GoToInputViewController.self).bundleIdentifier!
+    fileprivate static let share = NSToolbarItem.Identifier.init("\(prefix).share")
+}
+
+extension ResourceItemViewController: ToolbarAwareViewController {
+    public func supportedToolbarItemIdentifiers(for toolbarContainerViewController: ToolbarContainerViewController) -> [NSToolbarItem.Identifier] {
+        return [.share]
+    }
+
+    public func toolbarContainerViewController(_ toolbarContainerViewController: ToolbarContainerViewController, itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier) -> NSToolbarItem? {
+        if itemIdentifier == .share {
+            return toolbarShareItem
+        }
+        return nil
+    }
+}
+#endif
