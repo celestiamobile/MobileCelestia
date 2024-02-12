@@ -10,20 +10,7 @@
 //
 
 import Foundation
-import ZIPFoundation
-
-enum ResourceManagerError: Error {
-    case addonDirectoryNotExists
-}
-
-extension ResourceManagerError: LocalizedError {
-    var errorDescription: String? {
-        switch self {
-        case .addonDirectoryNotExists:
-            return CelestiaString("Add-on directory does not exist.", comment: "")
-        }
-    }
-}
+import ZipUtils
 
 @MainActor
 public final class ResourceManager: @unchecked Sendable {
@@ -100,9 +87,11 @@ public final class ResourceManager: @unchecked Sendable {
     }
 
     func download(item: ResourceItem) {
+        guard let destinationURL = contextDirectory(forAddon: item) else { return }
+
         let downloadTask = URLSession.shared.downloadTask(with: item.item) { [weak self] url, response, error in
             guard let self else { return }
-            self.handleDownloadResult(item: item, url: url, response: response, error: error)
+            self.handleDownloadResult(item: item, url: url, response: response, error: error, destinationURL: destinationURL)
         }
         let observation = downloadTask.progress.observe(\.fractionCompleted) { progress, _ in
             // Download progress
@@ -128,7 +117,7 @@ public final class ResourceManager: @unchecked Sendable {
         return try moveTemporaryFile(url: url!)
     }
 
-    private nonisolated func handleDownloadResult(item: ResourceItem, url: URL?, response: URLResponse?, error: Error?) {
+    private nonisolated func handleDownloadResult(item: ResourceItem, url: URL?, response: URLResponse?, error: Error?, destinationURL: URL) {
         let tempURL: URL
         do {
             tempURL = try handleDownloadResult(url: url, response: response, error: error)
@@ -137,11 +126,12 @@ public final class ResourceManager: @unchecked Sendable {
                 self.tasks.removeValue(forKey: item.id)
                 self.observations.removeValue(forKey: item.id)?.invalidate()
 
-                if (error as? URLError)?.errorCode == URLError.cancelled.rawValue {
-                    // Canceled, do nothing
+                if let e = error as? URLError, e.errorCode == URLError.cancelled.rawValue {
+                    // Canceled
+                    NotificationCenter.default.post(name: Self.resourceError, object: nil, userInfo: [Self.downloadIdentifierKey: item.id, Self.resourceErrorKey: ResourceError.cancelled])
                 } else {
                     // Download error or moving to temp location error
-                    NotificationCenter.default.post(name: Self.resourceError, object: nil, userInfo: [Self.downloadIdentifierKey: item.id, Self.resourceErrorKey: error])
+                    NotificationCenter.default.post(name: Self.resourceError, object: nil, userInfo: [Self.downloadIdentifierKey: item.id, Self.resourceErrorKey: ResourceError.download])
                 }
             }
             return
@@ -154,9 +144,6 @@ public final class ResourceManager: @unchecked Sendable {
 
             NotificationCenter.default.post(name: Self.downloadSuccess, object: nil, userInfo: [Self.downloadIdentifierKey: item.id])
             do {
-                guard let destinationURL = self.contextDirectory(forAddon: item) else {
-                    throw ResourceManagerError.addonDirectoryNotExists
-                }
                 try await self.unzip(zipFileURL: tempURL, destinationURL: destinationURL)
                 NotificationCenter.default.post(name: Self.unzipSuccess, object: nil, userInfo: [Self.downloadIdentifierKey: item.id])
                 // Store a json file in the same folder
@@ -178,18 +165,46 @@ public final class ResourceManager: @unchecked Sendable {
         return movedURL
     }
 
+    enum ResourceError: Error {
+        case cancelled
+        case download
+        case zip
+        case createDirectory(contextPath: String)
+        case openFile(contextPath: String)
+        case writeFile(contextPath: String)
+    }
+
     private nonisolated func unzip(zipFileURL: URL, destinationURL: URL) async throws {
         let fm = FileManager.default
         if !fm.fileExists(atPath: destinationURL.path) {
-            try fm.createDirectory(at: destinationURL, withIntermediateDirectories: true, attributes: nil)
+            do {
+                try fm.createDirectory(at: destinationURL, withIntermediateDirectories: true, attributes: nil)
+            } catch {
+                throw ResourceError.createDirectory(contextPath: destinationURL.path)
+            }
         }
         try await withCheckedThrowingContinuation { continuation in
             DispatchQueue.global().async {
                 do {
-                    try FileManager.default.unzipItem(at: zipFileURL, to: destinationURL)
+                    try ZipUtils.unzip(zipFileURL.path, to: destinationURL.path)
                     continuation.resume(returning: ())
                 } catch {
-                    continuation.resume(throwing: error)
+                    if let e = error as? CEZZipError {
+                        switch e.code {
+                        case .createDirectory:
+                            continuation.resume(throwing: ResourceError.createDirectory(contextPath: e.userInfo[CEZZipErrorContextPathKey] as? String ?? ""))
+                        case .openFile:
+                            continuation.resume(throwing: ResourceError.openFile(contextPath: e.userInfo[CEZZipErrorContextPathKey] as? String ?? ""))
+                        case .writeFile:
+                            continuation.resume(throwing: ResourceError.writeFile(contextPath: e.userInfo[CEZZipErrorContextPathKey] as? String ?? ""))
+                        case .zip:
+                            continuation.resume(throwing: ResourceError.zip)
+                        @unknown default:
+                            continuation.resume(throwing: ResourceError.zip)
+                        }
+                    } else {
+                        continuation.resume(throwing: ResourceError.zip)
+                    }
                 }
             }
         }

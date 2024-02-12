@@ -108,6 +108,7 @@
 		EAA79CD22A56ADA90056DB91 /* AboutViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973BBA442405216700E3B061 /* AboutViewController.swift */; };
 		EAA79CD42A56AF6D0056DB91 /* SettingsFrameRateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA86E38326FE20C000FF2278 /* SettingsFrameRateViewController.swift */; };
 		EAA79CD62A56B0100056DB91 /* DataLocationSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F1141D2408AE06003A06D7 /* DataLocationSelectionViewController.swift */; };
+		EAA7D6B92B88446300D57718 /* ZipUtils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA86F8052B7A4A8500419451 /* ZipUtils.framework */; };
 		EAB623AB2A51AA0A00063D1B /* SubsystemBrowserCoordinatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF48514249B2C4700E5B817 /* SubsystemBrowserCoordinatorViewController.swift */; };
 		EAB623AC2A51AA0A00063D1B /* BrowserContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972477D02404A19700729B45 /* BrowserContainerViewController.swift */; };
 		EAB623AD2A51AA0A00063D1B /* BrowserCoordinatorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972477D62404A65C00729B45 /* BrowserCoordinatorController.swift */; };
@@ -203,6 +204,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = EA50E75D2A505627005E7D7A;
 			remoteInfo = CelestiaUI;
+		};
+		EA86F8042B7A4A8500419451 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 979D2F9F23FEB1D5005D2592 /* CelestiaCore.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = EA86F7B42B790E4800419451;
+			remoteInfo = ZipUtils;
 		};
 		EAB8F21A2A56BC8100C4E777 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -459,6 +467,7 @@
 			files = (
 				EA4E2D862A56B5E10046D62E /* CelestiaFoundation.framework in Frameworks */,
 				D717BEB626EBBEFE1C1E1A65 /* Pods_CelestiaUI.framework in Frameworks */,
+				EAA7D6B92B88446300D57718 /* ZipUtils.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -608,6 +617,7 @@
 			isa = PBXGroup;
 			children = (
 				979D2FA423FEB1D6005D2592 /* CelestiaCore.framework */,
+				EA86F8052B7A4A8500419451 /* ZipUtils.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -981,7 +991,6 @@
 				973BBA5724052FFB00E3B061 /* Copy General Data */,
 				973BBA592405305100E3B061 /* Convert PO */,
 				EAC84367252C84B600691943 /* Embed PlugIns */,
-				D25DF0CD253366AA038EE6DD /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1060,7 +1069,6 @@
 				EA50E75A2A505627005E7D7A /* Sources */,
 				EA50E75B2A505627005E7D7A /* Frameworks */,
 				EA50E75C2A505627005E7D7A /* Resources */,
-				43EEFF6EB8C27565DAE9A174 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -1165,6 +1173,13 @@
 			remoteRef = 979D2FA323FEB1D6005D2592 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
+		EA86F8052B7A4A8500419451 /* ZipUtils.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ZipUtils.framework;
+			remoteRef = EA86F8042B7A4A8500419451 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 /* End PBXReferenceProxy section */
 
 /* Begin PBXResourcesBuildPhase section */
@@ -1219,23 +1234,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		43EEFF6EB8C27565DAE9A174 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CelestiaUI/Pods-CelestiaUI-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-CelestiaUI/Pods-CelestiaUI-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-CelestiaUI/Pods-CelestiaUI-resources.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		477E6493D6EB88BE81BC5BDF /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -1314,23 +1312,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		D25DF0CD253366AA038EE6DD /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-MobileCelestia/Pods-MobileCelestia-resources-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-MobileCelestia/Pods-MobileCelestia-resources-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-MobileCelestia/Pods-MobileCelestia-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		EA9FB24027B7B0E800E0DC1F /* Copy Localized Files */ = {
@@ -1750,6 +1731,7 @@
 					"-lfreetype",
 					"-lintl",
 					"-lGL",
+					"-lzip",
 					"$(THIRD_PARTY_LIB_PATH)/libs/cspice.a",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.MobileCelestia;
@@ -1800,6 +1782,7 @@
 					"-lfreetype",
 					"-lintl",
 					"-lGL",
+					"-lzip",
 					"$(THIRD_PARTY_LIB_PATH)/libs/cspice.a",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.MobileCelestia;
