@@ -204,6 +204,13 @@
 			remoteGlobalIDString = EA50E75D2A505627005E7D7A;
 			remoteInfo = CelestiaUI;
 		};
+		EA86F8042B7A4A8500419451 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 979D2F9F23FEB1D5005D2592 /* CelestiaCore.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = EA86F7B42B790E4800419451;
+			remoteInfo = ZipUtils;
+		};
 		EAB8F21A2A56BC8100C4E777 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 979D2F9F23FEB1D5005D2592 /* CelestiaCore.xcodeproj */;
@@ -608,6 +615,7 @@
 			isa = PBXGroup;
 			children = (
 				979D2FA423FEB1D6005D2592 /* CelestiaCore.framework */,
+				EA86F8052B7A4A8500419451 /* ZipUtils.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1163,6 +1171,13 @@
 			fileType = wrapper.framework;
 			path = CelestiaCore.framework;
 			remoteRef = 979D2FA323FEB1D6005D2592 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		EA86F8052B7A4A8500419451 /* ZipUtils.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = ZipUtils.framework;
+			remoteRef = EA86F8042B7A4A8500419451 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */

@@ -374,12 +374,29 @@ private extension ResourceItemViewController {
         guard let identifier = notification.userInfo?[ResourceManager.downloadIdentifierKey] as? String, identifier == itemID else {
             return
         }
-        guard let error = notification.userInfo?[ResourceManager.resourceErrorKey] as? Error else {
+        guard let error = notification.userInfo?[ResourceManager.resourceErrorKey] as? ResourceManager.ResourceError else {
             return
         }
         self.currentState = .none
         self.updateUI()
-        self.showError(error.localizedDescription)
+
+        let message: String?
+        switch error {
+        case .cancelled:
+            message = nil
+        case .download:
+            message = CelestiaString("Error downloading add-on", comment: "")
+        case .zip:
+            message = CelestiaString("Error unzipping add-on", comment: "")
+        case .createDirectory(let contextPath):
+            message = CelestiaString("Error creating directory for add-on", comment: "")
+        case .openFile(let contextPath):
+            message = CelestiaString("Error opening file for saving add-on", comment: "")
+        case .writeFile(let contextPath):
+            message = CelestiaString("Error writing data file for add-on", comment: "")
+        }
+        guard let message else { return }
+        showError(CelestiaString("Failed to download or install this add-on.", comment: ""), detail: message)
     }
 
     @objc private func unzipSuccess(_ notification: Notification) {
