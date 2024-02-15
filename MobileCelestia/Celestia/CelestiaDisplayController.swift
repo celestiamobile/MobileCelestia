@@ -149,7 +149,7 @@ class CelestiaDisplayController: AsyncGLViewController {
 }
 
 extension CelestiaDisplayController {
-    override func prepareGL(_ size: CGSize) -> Bool {
+    override func prepareGL(_ size: CGSize, samples: Int) -> Bool {
         _ = AppCore.initGL()
 
         var success = false

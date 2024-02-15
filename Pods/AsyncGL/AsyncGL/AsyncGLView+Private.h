@@ -10,7 +10,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol AsyncGLViewDelegate <NSObject>
 
-- (BOOL)_prepareGL:(CGSize)size;
+- (BOOL)_prepareGL:(CGSize)size samples:(NSInteger)samples;
 - (void)_drawGL:(CGSize)size;
 - (void)_clearGL;
 

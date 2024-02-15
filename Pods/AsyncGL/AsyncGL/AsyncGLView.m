@@ -103,7 +103,7 @@ typedef enum EGLRenderingAPI : int
 @property (nonatomic) NSMutableArray *tasks;
 @property (nonatomic) AsyncGLViewContextState contextState;
 @property (nonatomic) BOOL requestExitThread;
-
+@property (nonatomic) GLsizei sampleCount;
 #ifdef USE_EGL
 @property (nonatomic) CAMetalLayer *metalLayer;
 @property (nonatomic) EGLRenderingAPI internalAPI;
@@ -282,6 +282,7 @@ typedef enum EGLRenderingAPI : int
     _requestExitThread = NO;
     _tasks = [NSMutableArray array];
     _isObservingNotifications = NO;
+    _sampleCount = 0;
 #ifdef USE_EGL
     _internalAPI = _api == AsyncGLAPIOpenGLES3 ? kEGLRenderingAPIOpenGLES3 : kEGLRenderingAPIOpenGLES2;
     _display = EGL_NO_DISPLAY;
@@ -559,6 +560,12 @@ typedef enum EGLRenderingAPI : int
 
     _renderContext = [self createEGLContextWithDisplay:_display api:_internalAPI sharedContext:EGL_NO_CONTEXT config:&_renderConfig depthSize:24 msaa:&_msaaEnabled];
 
+    if (_msaaEnabled) {
+        EGLint numSamples;
+        if (eglGetConfigAttrib(_display, _renderConfig, EGL_SAMPLES, &numSamples) && numSamples > 1)
+            _sampleCount = (GLsizei)numSamples;
+    }
+
     if (_renderContext == EGL_NO_CONTEXT)
         return NO;
 
@@ -595,6 +602,16 @@ typedef enum EGLRenderingAPI : int
     });
 
     [self makeRenderContextCurrent];
+
+    if (_msaaEnabled) {
+        GLint numSamples;
+        glGetIntegerv(GL_MAX_SAMPLES, &numSamples);
+        if (numSamples > 1)
+            _sampleCount = MIN(numSamples, 4);
+        else
+            _msaaEnabled = NO;
+    }
+
     return [self createRenderBuffers:size];
 #else
     const CGLPixelFormatAttribute attr[] = {
@@ -613,6 +630,17 @@ typedef enum EGLRenderingAPI : int
         return NO;
 
     [self makeRenderContextCurrent];
+
+    if (_msaaEnabled) {
+        glEnable(GL_MULTISAMPLE);
+        GLint numSamples;
+        glGetIntegerv(GL_MAX_SAMPLES, &numSamples);
+        if (numSamples > 1)
+            _sampleCount = MIN(numSamples, 4);
+        else
+            _msaaEnabled = NO;
+    }
+
     __block CGSize size;
     dispatch_sync(dispatch_get_main_queue(), ^{
         CGSize frameSize = self.frame.size;
@@ -692,18 +720,15 @@ typedef enum EGLRenderingAPI : int
     GLsizei height = (GLsizei)size.height;
 
     if (_msaaEnabled) {
-        GLint samples;
-        glGetIntegerv(GL_MAX_SAMPLES, &samples);
-
         glBindRenderbuffer(GL_RENDERBUFFER, _sampleColorbuffer);
 #if !TARGET_OSX_OR_CATALYST
-        glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, GL_RGBA8_OES, width, height);
+        glRenderbufferStorageMultisample(GL_RENDERBUFFER, _sampleCount, GL_RGBA8_OES, width, height);
 #else
-        glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, GL_RGBA8, width, height);
+        glRenderbufferStorageMultisample(GL_RENDERBUFFER, _sampleCount, GL_RGBA8, width, height);
 #endif
 
         glBindRenderbuffer(GL_RENDERBUFFER, _sampleDepthbuffer);
-        glRenderbufferStorageMultisample(GL_RENDERBUFFER, samples, GL_DEPTH_COMPONENT24, width, height);
+        glRenderbufferStorageMultisample(GL_RENDERBUFFER, _sampleCount, GL_DEPTH_COMPONENT24, width, height);
     } else {
         glBindRenderbuffer(GL_RENDERBUFFER, _depthBuffer);
         glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, width, height);
@@ -727,7 +752,7 @@ typedef enum EGLRenderingAPI : int
 
 #pragma mark - internal implementation
 - (BOOL)setupGL:(CGSize)size {
-    return [_delegate _prepareGL:size];
+    return [_delegate _prepareGL:size samples:(NSInteger)_sampleCount];
 }
 
 - (void)_drawGL:(CGSize)size
@@ -743,13 +768,7 @@ typedef enum EGLRenderingAPI : int
     if (_msaaEnabled) {
         glBindFramebuffer(GL_FRAMEBUFFER, _sampleFramebuffer);
 
-#if TARGET_OS_OSX
-        glEnable(GL_MULTISAMPLE);
-#endif
         [_delegate _drawGL:size];
-#if TARGET_OS_OSX
-        glDisable(GL_MULTISAMPLE);
-#endif
 
         glBindFramebuffer(GL_READ_FRAMEBUFFER, _sampleFramebuffer);
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _framebuffer);

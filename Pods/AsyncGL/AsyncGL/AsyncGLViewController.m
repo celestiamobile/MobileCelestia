@@ -167,9 +167,9 @@ static CVReturn displayCallback(CVDisplayLinkRef displayLink,
 }
 
 #pragma mark - AsyncGLViewDelegate
-- (BOOL)_prepareGL:(CGSize)size
+- (BOOL)_prepareGL:(CGSize)size samples:(NSInteger)samples
 {
-    if (![self prepareGL:size])
+    if (![self prepareGL:size samples:samples])
         return NO;
 
     dispatch_sync(dispatch_get_main_queue(), ^{
@@ -216,7 +216,7 @@ static CVReturn displayCallback(CVDisplayLinkRef displayLink,
 {
 }
 
-- (BOOL)prepareGL:(CGSize)rect
+- (BOOL)prepareGL:(CGSize)rect samples:(NSInteger)samples
 {
     return YES;
 }
