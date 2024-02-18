@@ -600,6 +600,14 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     func celestiaControllerRequestShowActionMenu(_ celestiaController: CelestiaViewController) {
+        #if targetEnvironment(macCatalyst)
+        if #available(iOS 14, *) {
+            split?.preferredDisplayMode = .oneBesideSecondary
+            return
+        }
+        #endif
+        guard presentedViewController != actionViewController, !actionViewController.isBeingPresented else { return }
+
         actionViewController.modalPresentationStyle = .custom
         actionViewController.transitioningDelegate = toolbarSlideInManager
         presentAfterDismissCurrent(actionViewController, animated: true)
