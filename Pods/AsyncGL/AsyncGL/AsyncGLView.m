@@ -114,11 +114,11 @@ typedef enum EGLRenderingAPI : int
 #else
 @property (nonatomic) GLuint framebuffer;
 @property (nonatomic) GLuint depthBuffer;
+@property (nonatomic) CGSize savedBufferSize;
+#if !TARGET_OSX_OR_CATALYST
 @property (nonatomic) GLuint sampleFramebuffer;
 @property (nonatomic) GLuint sampleDepthbuffer;
 @property (nonatomic) GLuint sampleColorbuffer;
-@property (nonatomic) CGSize savedBufferSize;
-#if !TARGET_OSX_OR_CATALYST
 @property (nonatomic) GLuint mainColorbuffer;
 @property (nonatomic) EAGLRenderingAPI internalAPI;
 @property (nonatomic, strong) EAGLContext *renderContext;
@@ -294,6 +294,9 @@ typedef enum EGLRenderingAPI : int
     _mainContext = nil;
     _renderContext = nil;
     _mainColorbuffer = 0;
+    _sampleFramebuffer = 0;
+    _sampleDepthbuffer = 0;
+    _sampleColorbuffer = 0;
 #else
     switch (_api)
     {
@@ -312,9 +315,6 @@ typedef enum EGLRenderingAPI : int
 #endif
     _framebuffer = 0;
     _depthBuffer = 0;
-    _sampleFramebuffer = 0;
-    _sampleDepthbuffer = 0;
-    _sampleColorbuffer = 0;
     _savedBufferSize = CGSizeZero;
 #endif
 
@@ -667,11 +667,16 @@ typedef enum EGLRenderingAPI : int
 - (BOOL)createRenderBuffers:(CGSize)size {
     glGenFramebuffers(1, &_framebuffer);
     glBindFramebuffer(GL_FRAMEBUFFER, _framebuffer);
+
 #if TARGET_OSX_OR_CATALYST
+    glGenRenderbuffers(1, &_depthBuffer);
+
+    [self updateBuffersSize:size];
+
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _renderColorbuffer);
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _depthBuffer);
 #else
     glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, _mainColorbuffer);
-#endif
 
     if (_msaaEnabled) {
         glGenRenderbuffers(1, &_sampleColorbuffer);
@@ -700,12 +705,17 @@ typedef enum EGLRenderingAPI : int
 
         glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, _depthBuffer);
     }
+#endif
 
     GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
     if (status != GL_FRAMEBUFFER_COMPLETE) {
         NSLog(@"framebuffer not complete %d", status);
         return NO;
     }
+
+#if TARGET_OSX_OR_CATALYST
+    _glLayer.sourceFramebuffer = _framebuffer;
+#endif
 
     return [self setupGL:size];
 }
@@ -719,27 +729,31 @@ typedef enum EGLRenderingAPI : int
     GLsizei width = (GLsizei)size.width;
     GLsizei height = (GLsizei)size.height;
 
+#if TARGET_OSX_OR_CATALYST
+    if (_msaaEnabled) {
+        glBindRenderbuffer(GL_RENDERBUFFER, _renderColorbuffer);
+        glRenderbufferStorageMultisample(GL_RENDERBUFFER, _sampleCount, GL_RGBA8, width, height);
+        glBindRenderbuffer(GL_RENDERBUFFER, _depthBuffer);
+        glRenderbufferStorageMultisample(GL_RENDERBUFFER, _sampleCount, GL_DEPTH_COMPONENT24, width, height);
+    } else {
+        glBindRenderbuffer(GL_RENDERBUFFER, _renderColorbuffer);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8, width, height);
+        glBindRenderbuffer(GL_RENDERBUFFER, _depthBuffer);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, width, height);
+    }
+
+    _glLayer.width = width;
+    _glLayer.height = height;
+#else
     if (_msaaEnabled) {
         glBindRenderbuffer(GL_RENDERBUFFER, _sampleColorbuffer);
-#if !TARGET_OSX_OR_CATALYST
         glRenderbufferStorageMultisample(GL_RENDERBUFFER, _sampleCount, GL_RGBA8_OES, width, height);
-#else
-        glRenderbufferStorageMultisample(GL_RENDERBUFFER, _sampleCount, GL_RGBA8, width, height);
-#endif
-
         glBindRenderbuffer(GL_RENDERBUFFER, _sampleDepthbuffer);
         glRenderbufferStorageMultisample(GL_RENDERBUFFER, _sampleCount, GL_DEPTH_COMPONENT24, width, height);
     } else {
         glBindRenderbuffer(GL_RENDERBUFFER, _depthBuffer);
         glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, width, height);
     }
-
-#if TARGET_OSX_OR_CATALYST
-    glBindRenderbuffer(GL_RENDERBUFFER, _renderColorbuffer);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_RGBA8, width, height);
-    _glLayer.sourceFramebuffer = _framebuffer;
-    _glLayer.width = width;
-    _glLayer.height = height;
 #endif
 }
 
@@ -765,6 +779,9 @@ typedef enum EGLRenderingAPI : int
     GLsizei width = (GLsizei)size.width;
     GLsizei height = (GLsizei)size.height;
 
+#if TARGET_OSX_OR_CATALYST
+    [_delegate _drawGL:size];
+#else
     if (_msaaEnabled) {
         glBindFramebuffer(GL_FRAMEBUFFER, _sampleFramebuffer);
 
@@ -773,7 +790,6 @@ typedef enum EGLRenderingAPI : int
         glBindFramebuffer(GL_READ_FRAMEBUFFER, _sampleFramebuffer);
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, _framebuffer);
 
-#if !TARGET_OSX_OR_CATALYST
         GLenum attachments[] = { GL_COLOR_ATTACHMENT0, GL_DEPTH_ATTACHMENT };
         if (_internalAPI == kEAGLRenderingAPIOpenGLES2) {
             glResolveMultisampleFramebufferAPPLE();
@@ -782,12 +798,10 @@ typedef enum EGLRenderingAPI : int
             glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
             glInvalidateFramebuffer(GL_READ_FRAMEBUFFER, 2, attachments);
         }
-#else
-        glBlitFramebuffer(0, 0, width, height, 0, 0, width, height, GL_COLOR_BUFFER_BIT, GL_NEAREST);
-#endif
     } else {
         [_delegate _drawGL:size];
     }
+#endif
 #endif
 }
 
@@ -817,6 +831,7 @@ typedef enum EGLRenderingAPI : int
         _depthBuffer = 0;
     }
 
+#if !TARGET_OSX_OR_CATALYST
     if (_sampleFramebuffer != 0) {
         glDeleteFramebuffers(1, &_sampleFramebuffer);
         _sampleFramebuffer = 0;
@@ -831,6 +846,7 @@ typedef enum EGLRenderingAPI : int
         glDeleteFramebuffers(1, &_sampleColorbuffer);
         _sampleColorbuffer = 0;
     }
+#endif
 
     if (_framebuffer != 0) {
         glDeleteFramebuffers(1, &_framebuffer);
