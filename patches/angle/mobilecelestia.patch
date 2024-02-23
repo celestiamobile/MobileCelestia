@@ -1,25 +1,25 @@
 diff --git a/MobileCelestia.xcodeproj/project.pbxproj b/MobileCelestia.xcodeproj/project.pbxproj
-index 2d1876d..875c1b2 100644
+index 33b4a13..fbd1a17 100644
 --- a/MobileCelestia.xcodeproj/project.pbxproj
 +++ b/MobileCelestia.xcodeproj/project.pbxproj
-@@ -1749,7 +1749,6 @@
+@@ -1730,7 +1730,6 @@
  					"-ljpeg",
  					"-lfreetype",
  					"-lintl",
 -					"-lGL",
+ 					"-lzip",
  					"$(THIRD_PARTY_LIB_PATH)/libs/cspice.a",
  				);
- 				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.MobileCelestia;
-@@ -1799,7 +1798,6 @@
+@@ -1781,7 +1780,6 @@
  					"-ljpeg",
  					"-lfreetype",
  					"-lintl",
 -					"-lGL",
+ 					"-lzip",
  					"$(THIRD_PARTY_LIB_PATH)/libs/cspice.a",
  				);
- 				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.MobileCelestia;
 diff --git a/MobileCelestia/Celestia/CelestiaDisplayController.swift b/MobileCelestia/Celestia/CelestiaDisplayController.swift
-index aebe510..3632e64 100644
+index 94b2dcf..3d630a8 100644
 --- a/MobileCelestia/Celestia/CelestiaDisplayController.swift
 +++ b/MobileCelestia/Celestia/CelestiaDisplayController.swift
 @@ -60,7 +60,7 @@ class CelestiaDisplayController: AsyncGLViewController {
@@ -32,11 +32,11 @@ index aebe510..3632e64 100644
          let api = AsyncGLAPI.openGLES2
  #endif
 diff --git a/Podfile b/Podfile
-index cadfaf8..4560e28 100644
+index 0ec4233..1268273 100644
 --- a/Podfile
 +++ b/Podfile
-@@ -13,7 +13,7 @@ target 'MobileCelestia' do
-   pod 'ZIPFoundation', :git => "https://github.com/weichsel/ZIPFoundation.git", :tag => zipfoundation_version_tag
+@@ -11,7 +11,7 @@ target 'MobileCelestia' do
+   pod 'AppCenter/Crashes', appcenter_version
  
    pod "MWRequest", :git => "https://github.com/levinli303/mwrequest.git", :tag => mwrequest_version_tag
 -  pod "AsyncGL/OpenGL", :git => "https://github.com/levinli303/AsyncGL.git", :tag => asyncgl_version_tag
