@@ -1723,7 +1723,7 @@
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lmeshoptimizer",
-					"-llua",
+					"-lluajit",
 					"-lpng16",
 					"-licui18n",
 					"-licudata",
@@ -1774,7 +1774,7 @@
 				OTHER_LDFLAGS = (
 					"$(inherited)",
 					"-lmeshoptimizer",
-					"-llua",
+					"-lluajit",
 					"-lpng16",
 					"-licui18n",
 					"-licudata",

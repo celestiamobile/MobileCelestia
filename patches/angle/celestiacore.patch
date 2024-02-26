@@ -1,13 +1,13 @@
 diff --git a/Configurations/Common.xcconfig b/Configurations/Common.xcconfig
-index 721cb23..8198e8b 100644
+index b901e6a..d6fc1fe 100644
 --- a/Configurations/Common.xcconfig
 +++ b/Configurations/Common.xcconfig
 @@ -33,6 +33,6 @@ THIRD_PARTY_LIB_PATH[sdk=iphonesimulator*] = $(PROJECT_DIR)/libs/dependency/ioss
  THIRD_PARTY_LIB_PATH[sdk=xros*] = $(PROJECT_DIR)/libs/dependency/visionos
  THIRD_PARTY_LIB_PATH[sdk=xrsimulator*] = $(PROJECT_DIR)/libs/dependency/visionossim
  
--SYSTEM_HEADER_SEARCH_PATHS = $(PROJECT_DIR) $(PROJECT_DIR)/../Celestia/src $(THIRD_PARTY_LIB_PATH)/include $(THIRD_PARTY_LIB_PATH)/include/miniaudio $(THIRD_PARTY_LIB_PATH)/include/meshoptimizer $(THIRD_PARTY_LIB_PATH)/include/eigen3 $(THIRD_PARTY_LIB_PATH)/include/lua $(THIRD_PARTY_LIB_PATH)/include/gettext $(THIRD_PARTY_LIB_PATH)/include/jpeg $(THIRD_PARTY_LIB_PATH)/include/libpng $(THIRD_PARTY_LIB_PATH)/include/cspice $(THIRD_PARTY_LIB_PATH)/include/freetype/freetype2 $(THIRD_PARTY_LIB_PATH)/include/icu $(THIRD_PARTY_LIB_PATH)/include/libepoxy
-+SYSTEM_HEADER_SEARCH_PATHS = $(PROJECT_DIR) $(PROJECT_DIR)/../Celestia/src $(THIRD_PARTY_LIB_PATH)/include $(THIRD_PARTY_LIB_PATH)/include/miniaudio $(THIRD_PARTY_LIB_PATH)/include/meshoptimizer $(THIRD_PARTY_LIB_PATH)/include/eigen3 $(THIRD_PARTY_LIB_PATH)/include/lua $(THIRD_PARTY_LIB_PATH)/include/gettext $(THIRD_PARTY_LIB_PATH)/include/jpeg $(THIRD_PARTY_LIB_PATH)/include/libpng $(THIRD_PARTY_LIB_PATH)/include/cspice $(THIRD_PARTY_LIB_PATH)/include/freetype/freetype2 $(THIRD_PARTY_LIB_PATH)/include/icu $(THIRD_PARTY_LIB_PATH)/include/angle
+-SYSTEM_HEADER_SEARCH_PATHS = $(PROJECT_DIR) $(PROJECT_DIR)/../Celestia/src $(THIRD_PARTY_LIB_PATH)/include $(THIRD_PARTY_LIB_PATH)/include/miniaudio $(THIRD_PARTY_LIB_PATH)/include/meshoptimizer $(THIRD_PARTY_LIB_PATH)/include/eigen3 $(THIRD_PARTY_LIB_PATH)/include/luajit $(THIRD_PARTY_LIB_PATH)/include/gettext $(THIRD_PARTY_LIB_PATH)/include/jpeg $(THIRD_PARTY_LIB_PATH)/include/libpng $(THIRD_PARTY_LIB_PATH)/include/cspice $(THIRD_PARTY_LIB_PATH)/include/freetype/freetype2 $(THIRD_PARTY_LIB_PATH)/include/icu $(THIRD_PARTY_LIB_PATH)/include/libepoxy
++SYSTEM_HEADER_SEARCH_PATHS = $(PROJECT_DIR) $(PROJECT_DIR)/../Celestia/src $(THIRD_PARTY_LIB_PATH)/include $(THIRD_PARTY_LIB_PATH)/include/miniaudio $(THIRD_PARTY_LIB_PATH)/include/meshoptimizer $(THIRD_PARTY_LIB_PATH)/include/eigen3 $(THIRD_PARTY_LIB_PATH)/include/luajit $(THIRD_PARTY_LIB_PATH)/include/gettext $(THIRD_PARTY_LIB_PATH)/include/jpeg $(THIRD_PARTY_LIB_PATH)/include/libpng $(THIRD_PARTY_LIB_PATH)/include/cspice $(THIRD_PARTY_LIB_PATH)/include/freetype/freetype2 $(THIRD_PARTY_LIB_PATH)/include/icu $(THIRD_PARTY_LIB_PATH)/include/angle
  
  STRIP_INSTALLED_PRODUCT = NO
 diff --git a/Configurations/Debug.xcconfig b/Configurations/Debug.xcconfig
