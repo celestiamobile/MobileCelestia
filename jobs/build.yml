@@ -114,7 +114,7 @@ jobs:
     displayName: 'Reintegrate CocoaPods'
 
   - script: |
-      brew install gettext gperf
+      brew install gettext gperf node
     displayName: 'Install Dependencies'
 
   - script: |
