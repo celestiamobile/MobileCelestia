@@ -1,0 +1,1 @@
+celestia,simulador,planetário,universo,estrela,galáxia,terra,lua,solar,astronomia,espaço,stellarium
