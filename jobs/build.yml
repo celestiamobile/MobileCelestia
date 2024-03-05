@@ -8,6 +8,7 @@ jobs:
     sdk: ${{ parameters.sdk }}
     signing: ${{ parameters.signing }}
     backend: ${{ parameters.backend }}
+    contentCommitHash: ${{ '8241b5d3891df24e398ce329f7cf09a252370546' }}
     XC_VERSION: ${{ '15.2' }}
     XC_WORKSPACE: ${{ 'MobileCelestia/MobileCelestia.xcworkspace' }}
     XC_SCHEME: ${{ 'MobileCelestia' }}
@@ -72,7 +73,7 @@ jobs:
 
   - script: |
       cd CelestiaContent
-      git checkout 8241b5d3891df24e398ce329f7cf09a252370546
+      git checkout $(contentCommitHash)
     displayName: 'Checkout Content'
 
   - script: |
