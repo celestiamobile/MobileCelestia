@@ -59,6 +59,7 @@ class MainViewController: UIViewController {
     @Injected(\.appCore) private var core
     @Injected(\.executor) private var executor
     @Injected(\.userDefaults) private var userDefaults
+    @Injected(\.requestHandler) private var requestHandler
 
     private let resourceManager = ResourceManager(extraAddonDirectory: UserDefaults.extraDirectory?.appendingPathComponent("extras"), extraScriptDirectory: UserDefaults.extraDirectory?.appendingPathComponent("scripts"))
 
@@ -75,7 +76,7 @@ class MainViewController: UIViewController {
     private var bottomToolbar: BottomControlViewController?
     private var bottomToolbarSizeConstraints = [NSLayoutConstraint]()
 
-    private lazy var subscriptionManager = SubscriptionManager(userDefaults: userDefaults)
+    private lazy var subscriptionManager = SubscriptionManager(userDefaults: userDefaults, requestHandler: requestHandler)
     private var subscriptionUpdateTask: Task<Void, Error>?
 
     private lazy var commonWebActionHandler = { [weak self] (action: CommonWebViewController.WebAction, viewController: UIViewController) in
@@ -290,7 +291,7 @@ extension MainViewController {
         if let guide = guideToOpen {
             // Need to wrap it in a NavVC without NavBar to make sure
             // the scrolling behavior is correct on macCatalyst
-            let vc = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromGuide(guideItemID: guide, language: locale), actionHandler: commonWebActionHandler, matchingQueryKeys: ["guide"])
+            let vc = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromGuide(guideItemID: guide, language: locale), requestHandler: requestHandler, actionHandler: commonWebActionHandler, matchingQueryKeys: ["guide"])
             let nav = UINavigationController(rootViewController: vc)
             nav.setNavigationBarHidden(true, animated: false)
             showViewController(nav, key: guide, titleVisible: false)
@@ -301,8 +302,8 @@ extension MainViewController {
         if let addon = addonToOpen {
             Task {
                 do {
-                    let item = try await ResourceItem.getMetadata(id: addon, language: locale)
-                    let nav = ToolbarNavigationContainerController(rootViewController: ResourceItemViewController(executor: executor, resourceManager: resourceManager, item: item, needsRefetchItem: false, actionHandler: commonWebActionHandler))
+                    let item = try await requestHandler.getMetadata(id: addon, language: locale)
+                    let nav = ToolbarNavigationContainerController(rootViewController: ResourceItemViewController(executor: executor, resourceManager: resourceManager, item: item, needsRefetchItem: false, requestHandler: requestHandler, actionHandler: commonWebActionHandler))
                     self.showViewController(nav, key: addon, customToolbar: true)
                 } catch {}
             }
@@ -313,9 +314,9 @@ extension MainViewController {
         // Check news
         Task {
             do {
-                let item = try await GuideItem.getLatestMetadata(language: locale)
+                let item = try await requestHandler.getLatestMetadata(language: locale)
                 if userDefaults[.lastNewsID] == item.id { return }
-                let vc = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromGuide(guideItemID: item.id, language: locale), actionHandler: { [weak self] action, viewController in
+                let vc = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromGuide(guideItemID: item.id, language: locale), requestHandler: requestHandler, actionHandler: { [weak self] action, viewController in
                     guard let self else { return }
                     if case let CommonWebViewController.WebAction.ack(id) = action, id == item.id {
                         self.userDefaults[.lastNewsID] = id
@@ -707,7 +708,7 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     private func showOnlineAddons() {
-        showViewController(ResourceCategoriesViewController(executor: executor, resourceManager: resourceManager, subscriptionManager: subscriptionManager, actionHandler: commonWebActionHandler), customToolbar: true)
+        showViewController(ResourceCategoriesViewController(executor: executor, resourceManager: resourceManager, subscriptionManager: subscriptionManager, requestHandler: requestHandler, actionHandler: commonWebActionHandler), customToolbar: true)
     }
 
     private func sendFeedback() {
@@ -1046,7 +1047,7 @@ Device Model: \(model)
     }
 
     @objc private func presentHelp() {
-        let vc = HelpViewController(executor: executor, resourceManager: resourceManager, actionHandler: commonWebActionHandler)
+        let vc = HelpViewController(executor: executor, resourceManager: resourceManager, requestHandler: requestHandler, actionHandler: commonWebActionHandler)
         showViewController(vc, titleVisible: false)
     }
 
@@ -1062,7 +1063,7 @@ Device Model: \(model)
     }
 
     private func presentInstalledAddons() {
-        let controller = ResourceViewController(executor: executor, resourceManager: resourceManager, actionHandler: commonWebActionHandler) { [weak self] in
+        let controller = ResourceViewController(executor: executor, resourceManager: resourceManager, requestHandler: requestHandler, actionHandler: commonWebActionHandler) { [weak self] in
             guard let self else { return }
             self.showOnlineAddons()
         }
@@ -1436,3 +1437,16 @@ extension MainViewController: ToolbarContainerViewController {
     }
 }
 #endif
+
+private struct RequestHandlerInjectionKey: InjectionKey {
+    static var currentValue: RequestHandlerImpl = {
+        return RequestHandlerImpl()
+    }()
+}
+
+extension InjectedValues {
+    var requestHandler: RequestHandlerImpl {
+        get { Self[RequestHandlerInjectionKey.self] }
+        set { Self[RequestHandlerInjectionKey.self] = newValue }
+    }
+}

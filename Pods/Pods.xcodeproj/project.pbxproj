@@ -20,142 +20,115 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		0CCCB9CA183EC763C3608C21B4D3395C /* AsyncGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 886218184A32F038A3D797573DAC5075 /* AsyncGLView.m */; };
+		05FD5B76588E4D8332963B035A6450B8 /* AsyncGLAPI.h in Headers */ = {isa = PBXBuildFile; fileRef = CED24B1C5D47BF74B4A83602259E35AF /* AsyncGLAPI.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2045F40645C914F4DEA862F1A887E30E /* AsyncRequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28CFF39B9939D9974A009D963AF73854 /* AsyncRequestHandler.swift */; };
-		21C7B5AC493FE7028F17518024118948 /* AsyncGLView+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 4182D5AC00CA9208529082E64F27D648 /* AsyncGLView+Private.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		22A2424EBC0514FABED7EC5E6EEB9C27 /* AsyncGLAPI.h in Headers */ = {isa = PBXBuildFile; fileRef = 04F506B6B9C61044ABA2E236BEDE02A5 /* AsyncGLAPI.h */; settings = {ATTRIBUTES = (Project, ); }; };
 		2493E421494910E41217C5FE1FC014D6 /* RequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3AE5C8D02DC0FDFBB04C19E4B672D65B /* RequestHandler.swift */; };
-		3A34837077C00B7B764CBB981A748E31 /* AsyncGLAPI.h in Headers */ = {isa = PBXBuildFile; fileRef = D40B9A788926D2605FD5BB9524FF2EE4 /* AsyncGLAPI.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		3DE6DD0E3245287202764DB28ADACE2E /* AsyncGLView.h in Headers */ = {isa = PBXBuildFile; fileRef = 54B46D3FA071DC840998A942B90F351D /* AsyncGLView.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		4203212421C8D229A976B48310DA393E /* Pods-CelestiaUI-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = F4552739B6F66B0167F9C1201813EFBB /* Pods-CelestiaUI-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		4C6F3AFC24048401F84DE879CEE1939B /* AsyncGL-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = AA370BA30319DAEC322A1855E98017D1 /* AsyncGL-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		4FBD9FA43005D0B669136E548D2528DB /* Pods-CelestiaUI-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 35CBFD2BC1209687193A4AB841A5B8CE /* Pods-CelestiaUI-dummy.m */; };
+		2F7D12DFBEBE3E5B8F1AC328A065A4F2 /* AsyncGL-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 327A389B9BC52918B73FF107DB206007 /* AsyncGL-dummy.m */; };
+		2FAA5F9C2F68429C27AB3980FDC4BF59 /* AsyncGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = 5ED8D9D182756FB1541793DA526DF3D0 /* AsyncGLView.m */; };
+		440B2EBE72D458806BB73521DD0009BE /* AsyncGLExecutor+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4AC28EB7842B3398FA18E2AEA243AC /* AsyncGLExecutor+Private.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		5416DA0502ED94AC4461A06D1EFEF3A5 /* AsyncGL-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = D0CBD7EE65659A5E4F762A9D12E66329 /* AsyncGL-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		57D43AC1E194C7DEB927BC4DC47E91AA /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
-		58D47D5C485A4A9DE7DBFAD9D4ABCDA1 /* Pods-MobileCelestia-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = C8308C5A8B4914EB954EA04CC68C955B /* Pods-MobileCelestia-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		58D47D5C485A4A9DE7DBFAD9D4ABCDA1 /* Pods-MobileCelestia-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = BA83A75494554567F09A63053609A654 /* Pods-MobileCelestia-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		61C5D1B6D9BA1AABD16310B354D27DC8 /* MWRequest-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = C9B6C44CA1803C17187EBB2D98F31ED9 /* MWRequest-dummy.m */; };
-		63A6AB696E855A6C7DF309C22BEAA6CC /* AsyncGLViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = A072E8F407A1218083BF3F5DD16EF592 /* AsyncGLViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		6E3336589C0D163EAAD6732D1F638BB7 /* AsyncGLExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = F173C505AFDBE31507F97CCACF5B7BDF /* AsyncGLExecutor.m */; };
-		6F504A542A64BDAE01824F8ED33B0F95 /* AsyncGLViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 14D378825BF4AA2B4FF797DC08A03CE7 /* AsyncGLViewController.m */; };
+		7275920ABE18F8B1AE8E3ED25AF429C4 /* AsyncGLView+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = A6DE376F1DC7180A855277430145BE7B /* AsyncGLView+Private.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		7F23F38B6C8C11BBC3740C0BE05E16CB /* AsyncGLViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = 43534B7B9AD5242ADA8A1AE6522E7951 /* AsyncGLViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		88136B743F2F3E255523AA38B249F8C5 /* Request.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5A314DFDFFD6228D30E828E1747AB118 /* Request.swift */; };
 		88FCD7AA42AE3B6AD839F671AF054A30 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
-		9E844B944DD29FCD83846CA59875C752 /* AsyncGLExecutor.h in Headers */ = {isa = PBXBuildFile; fileRef = 51CB3D1E59289D0154ADACFEEF8C5D0D /* AsyncGLExecutor.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		C3AFD366212FECC0BEB5BA9AC32ECE92 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
-		C6463B7B122DC1CEAC82DA71860FD518 /* AsyncGLExecutor.h in Headers */ = {isa = PBXBuildFile; fileRef = 2368DD4E90BA9D705C6F6EE7426FEC26 /* AsyncGLExecutor.h */; settings = {ATTRIBUTES = (Project, ); }; };
+		B542C006FFF3E02C72CC33DF429E86AC /* AsyncGLViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 861FC5908F803B015C20C22C5580AF19 /* AsyncGLViewController.m */; };
+		BA8AD11CFB9A590386CF6A9D5EFDF3CF /* AsyncGLView.h in Headers */ = {isa = PBXBuildFile; fileRef = 7F6D535313EF796E25642580B0898CDD /* AsyncGLView.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		C25D098E531FEC9255E70FFE52EFA37D /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
 		C8B297B3F6353C80318A9257655772FE /* MWRequest-umbrella.h in Headers */ = {isa = PBXBuildFile; fileRef = 0E31B944A38496029877A96592776442 /* MWRequest-umbrella.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		E75502F9834CA9DC61273762C5ED37BE /* AsyncGL-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 0300A33F44CC457BCA34A00B814DFBCA /* AsyncGL-dummy.m */; };
-		EEB5C5CC87786F9B471C4C610969B82F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */; };
-		F577D66E6D1024443D51238E69F036B6 /* AsyncGLView.h in Headers */ = {isa = PBXBuildFile; fileRef = AF5626A77E2C5413B711CA2027F6C1F1 /* AsyncGLView.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		F84120BFBC06F4D59215FB86877A3271 /* AsyncGLExecutor+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = C50A551433B41AF8ABDA3F1294457E1B /* AsyncGLExecutor+Private.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		FC39485A15F9B9A05077A9778B406E05 /* AsyncGLViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = E4A918A85552AC06C822D53C6FE5236A /* AsyncGLViewController.h */; settings = {ATTRIBUTES = (Project, ); }; };
-		FD16CE526656CC222121261503BB2385 /* Pods-MobileCelestia-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = BF539B444E20ED6E66F37D7557F8CCA7 /* Pods-MobileCelestia-dummy.m */; };
+		CEDB87C8A8161ADDBF7DE0C225CE4D78 /* AsyncGLExecutor.h in Headers */ = {isa = PBXBuildFile; fileRef = A69D9CB4E8C5D8ED0416D437B91159A3 /* AsyncGLExecutor.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		FAB62A95B7911EAB22F9374702E00D89 /* AsyncGLExecutor.m in Sources */ = {isa = PBXBuildFile; fileRef = D67CBBD87FC81DDA569FA67D38E5CF67 /* AsyncGLExecutor.m */; };
+		FD16CE526656CC222121261503BB2385 /* Pods-MobileCelestia-dummy.m in Sources */ = {isa = PBXBuildFile; fileRef = 31D803B3F3EB5952FD5D37D04C0CA830 /* Pods-MobileCelestia-dummy.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		05C7B8E9C8759F0230571B360FC9C301 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = B45BC50C299B8144F2CCD63D4E7A880D;
-			remoteInfo = MWRequest;
-		};
-		1AD5628CC842B1B2C22F4605C55EABAB /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = A3282A5B2437E609EEB85861D7ECE717;
-			remoteInfo = AppCenter;
-		};
-		F0B4E60527979E07FB65E5AABC4B7986 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = B45BC50C299B8144F2CCD63D4E7A880D;
-			remoteInfo = MWRequest;
-		};
-		F6049C0AD5C85C40986B1E29A1813693 /* PBXContainerItemProxy */ = {
+		1138A68B143A04682FA9D922A9D0E8E2 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = B0461866C4B5B8EDBF49D135C70E49C4;
 			remoteInfo = AsyncGL;
 		};
+		C1F05058FD4456DEB4EF4A5077DB2B68 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A3282A5B2437E609EEB85861D7ECE717;
+			remoteInfo = AppCenter;
+		};
+		E5979CD32EF26B2B6EBE85067E913BDB /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFDFE7DC352907FC980B868725387E98 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B45BC50C299B8144F2CCD63D4E7A880D;
+			remoteInfo = MWRequest;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		0300A33F44CC457BCA34A00B814DFBCA /* AsyncGL-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "AsyncGL-dummy.m"; sourceTree = "<group>"; };
-		04F506B6B9C61044ABA2E236BEDE02A5 /* AsyncGLAPI.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AsyncGLAPI.h; path = AsyncGL/AsyncGLAPI.h; sourceTree = "<group>"; };
-		0617C2CB63E8D17FF7E69FDF972DD22A /* Pods-MobileCelestia-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-MobileCelestia-Info.plist"; sourceTree = "<group>"; };
 		06A2D503C0763B557CED5B70E296ACC9 /* AppCenter.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = AppCenter.release.xcconfig; sourceTree = "<group>"; };
-		09229452C879B702D1C3B47EC09A8893 /* Pods-CelestiaUI.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-CelestiaUI.debug.xcconfig"; sourceTree = "<group>"; };
 		0E31B944A38496029877A96592776442 /* MWRequest-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "MWRequest-umbrella.h"; sourceTree = "<group>"; };
-		14D378825BF4AA2B4FF797DC08A03CE7 /* AsyncGLViewController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = AsyncGLViewController.m; path = AsyncGL/AsyncGLViewController.m; sourceTree = "<group>"; };
-		14E32A33D1C6FB74C633C797881814EC /* Pods-CelestiaUI.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-CelestiaUI.release.xcconfig"; sourceTree = "<group>"; };
-		183770B83914F8AFD936448047A2017D /* Pods-CelestiaUI-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-CelestiaUI-acknowledgements.plist"; sourceTree = "<group>"; };
 		192BC32CBB14016E63465BBDB738F6C9 /* MWRequest-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "MWRequest-prefix.pch"; sourceTree = "<group>"; };
-		2368DD4E90BA9D705C6F6EE7426FEC26 /* AsyncGLExecutor.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AsyncGLExecutor.h; path = AsyncGL/AsyncGLExecutor.h; sourceTree = "<group>"; };
-		2688779FFCA5F6335166480F1F7C6879 /* AsyncGL.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = AsyncGL.release.xcconfig; sourceTree = "<group>"; };
+		1A4AC28EB7842B3398FA18E2AEA243AC /* AsyncGLExecutor+Private.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "AsyncGLExecutor+Private.h"; path = "AsyncGL/AsyncGLExecutor+Private.h"; sourceTree = "<group>"; };
 		27A211133D23340DAC3FDC42D1BC1D54 /* MWRequest */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = MWRequest; path = MWRequest.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		27A52744999C907A2FB3AD2DB24DC5B2 /* Pods-MobileCelestia.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-MobileCelestia.modulemap"; sourceTree = "<group>"; };
 		28C5A34C2FF199CDC9E12EE1692A282C /* AppCenterAnalytics.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; name = AppCenterAnalytics.xcframework; path = "AppCenter-SDK-Apple/AppCenterAnalytics.xcframework"; sourceTree = "<group>"; };
 		28CFF39B9939D9974A009D963AF73854 /* AsyncRequestHandler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AsyncRequestHandler.swift; path = Sources/MWRequest/AsyncRequestHandler.swift; sourceTree = "<group>"; };
 		298E4F6F2592F86A3DDC83C27F91EC74 /* MWRequest-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "MWRequest-Info.plist"; sourceTree = "<group>"; };
 		30A24E064BA1278769B7B02C2DE2F76B /* AppCenterCrashes.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; name = AppCenterCrashes.xcframework; path = "AppCenter-SDK-Apple/AppCenterCrashes.xcframework"; sourceTree = "<group>"; };
-		35CBFD2BC1209687193A4AB841A5B8CE /* Pods-CelestiaUI-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-CelestiaUI-dummy.m"; sourceTree = "<group>"; };
-		36E64F6B1515FD2A3C91D5D01382F7D1 /* Pods-MobileCelestia.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-MobileCelestia.release.xcconfig"; sourceTree = "<group>"; };
+		31D803B3F3EB5952FD5D37D04C0CA830 /* Pods-MobileCelestia-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-MobileCelestia-dummy.m"; sourceTree = "<group>"; };
+		327A389B9BC52918B73FF107DB206007 /* AsyncGL-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "AsyncGL-dummy.m"; sourceTree = "<group>"; };
+		37CDA776C97A4C0B832B19539B1F6925 /* AsyncGL.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = AsyncGL.modulemap; sourceTree = "<group>"; };
 		3AE5C8D02DC0FDFBB04C19E4B672D65B /* RequestHandler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RequestHandler.swift; path = Sources/MWRequest/RequestHandler.swift; sourceTree = "<group>"; };
-		4182D5AC00CA9208529082E64F27D648 /* AsyncGLView+Private.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "AsyncGLView+Private.h"; path = "AsyncGL/AsyncGLView+Private.h"; sourceTree = "<group>"; };
-		4ACC27ABF8B3C64CA0A39FDA122822ED /* Pods-CelestiaUI-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-CelestiaUI-Info.plist"; sourceTree = "<group>"; };
-		51CB3D1E59289D0154ADACFEEF8C5D0D /* AsyncGLExecutor.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AsyncGLExecutor.h; path = AsyncGL/include/AsyncGLExecutor.h; sourceTree = "<group>"; };
-		5358D5FCECC9523932C0D13DE8111506 /* Pods-CelestiaUI.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-CelestiaUI.modulemap"; sourceTree = "<group>"; };
-		54B46D3FA071DC840998A942B90F351D /* AsyncGLView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AsyncGLView.h; path = AsyncGL/include/AsyncGLView.h; sourceTree = "<group>"; };
-		553A24F6C1BE21F02BC7827A90F8951D /* Pods-MobileCelestia-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-MobileCelestia-acknowledgements.markdown"; sourceTree = "<group>"; };
+		43534B7B9AD5242ADA8A1AE6522E7951 /* AsyncGLViewController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AsyncGLViewController.h; path = AsyncGL/AsyncGLViewController.h; sourceTree = "<group>"; };
+		45480FF36CE140004EE47690BA10E33F /* Pods-MobileCelestia-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-MobileCelestia-Info.plist"; sourceTree = "<group>"; };
+		567770D0945C58DCC61C8928DD42A806 /* AsyncGL-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "AsyncGL-Info.plist"; sourceTree = "<group>"; };
 		5A314DFDFFD6228D30E828E1747AB118 /* Request.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = Request.swift; path = Sources/MWRequest/Request.swift; sourceTree = "<group>"; };
+		5ED8D9D182756FB1541793DA526DF3D0 /* AsyncGLView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = AsyncGLView.m; path = AsyncGL/AsyncGLView.m; sourceTree = "<group>"; };
+		618F0DAD7C619AA12E2F6054485270B0 /* Pods-MobileCelestia.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-MobileCelestia.release.xcconfig"; sourceTree = "<group>"; };
+		68C564FC7C7C8CCCD51C487F06A6AB75 /* AsyncGL.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = AsyncGL.release.xcconfig; sourceTree = "<group>"; };
 		73010CC983E3809BECEE5348DA1BB8C6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS14.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		7441EC74A3F245A42B36796A40922317 /* MWRequest.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = MWRequest.debug.xcconfig; sourceTree = "<group>"; };
 		78020024F1A70DF61F2E78929295C055 /* AsyncGL */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = AsyncGL; path = AsyncGL.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7CFE8A155E5414B7E2C70ECB09805D4E /* MWRequest.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = MWRequest.release.xcconfig; sourceTree = "<group>"; };
-		837AA3419F19290F988A6A88DD5B9332 /* Pods-CelestiaUI */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = "Pods-CelestiaUI"; path = Pods_CelestiaUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7EBC22C67E549839CC27970A3E789765 /* Pods-MobileCelestia-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-MobileCelestia-acknowledgements.markdown"; sourceTree = "<group>"; };
+		7F6D535313EF796E25642580B0898CDD /* AsyncGLView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AsyncGLView.h; path = AsyncGL/AsyncGLView.h; sourceTree = "<group>"; };
 		83E5572F186BF57ACA7966BEE57D42F9 /* AppCenter.xcframework */ = {isa = PBXFileReference; includeInIndex = 1; name = AppCenter.xcframework; path = "AppCenter-SDK-Apple/AppCenter.xcframework"; sourceTree = "<group>"; };
-		886218184A32F038A3D797573DAC5075 /* AsyncGLView.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = AsyncGLView.m; path = AsyncGL/AsyncGLView.m; sourceTree = "<group>"; };
+		861FC5908F803B015C20C22C5580AF19 /* AsyncGLViewController.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = AsyncGLViewController.m; path = AsyncGL/AsyncGLViewController.m; sourceTree = "<group>"; };
+		90370C223EA809BAC9C40007B4821792 /* Pods-MobileCelestia.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-MobileCelestia.debug.xcconfig"; sourceTree = "<group>"; };
 		9D940727FF8FB9C785EB98E56350EF41 /* Podfile */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; includeInIndex = 1; indentWidth = 2; lastKnownFileType = text; name = Podfile; path = ../Podfile; sourceTree = SOURCE_ROOT; tabWidth = 2; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
-		A072E8F407A1218083BF3F5DD16EF592 /* AsyncGLViewController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AsyncGLViewController.h; path = AsyncGL/include/AsyncGLViewController.h; sourceTree = "<group>"; };
-		A4BA9B9051B49E88641065E4767AE780 /* AsyncGL.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = AsyncGL.debug.xcconfig; sourceTree = "<group>"; };
-		AA370BA30319DAEC322A1855E98017D1 /* AsyncGL-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "AsyncGL-umbrella.h"; sourceTree = "<group>"; };
+		A69D9CB4E8C5D8ED0416D437B91159A3 /* AsyncGLExecutor.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AsyncGLExecutor.h; path = AsyncGL/AsyncGLExecutor.h; sourceTree = "<group>"; };
+		A6DE376F1DC7180A855277430145BE7B /* AsyncGLView+Private.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "AsyncGLView+Private.h"; path = "AsyncGL/AsyncGLView+Private.h"; sourceTree = "<group>"; };
 		AC0B45CA64BD9DCF219B6B56216A51B2 /* MWRequest.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = MWRequest.modulemap; sourceTree = "<group>"; };
-		AF5626A77E2C5413B711CA2027F6C1F1 /* AsyncGLView.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AsyncGLView.h; path = AsyncGL/AsyncGLView.h; sourceTree = "<group>"; };
-		B2607C20FA7D994EAFFF42F584857215 /* AsyncGL-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "AsyncGL-prefix.pch"; sourceTree = "<group>"; };
-		B67C0441190D41BE999B7E7B834FBCBA /* AsyncGL.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = AsyncGL.modulemap; sourceTree = "<group>"; };
-		B945591D796BE9E3159E3034464E528E /* Pods-MobileCelestia-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-MobileCelestia-acknowledgements.plist"; sourceTree = "<group>"; };
-		BF539B444E20ED6E66F37D7557F8CCA7 /* Pods-MobileCelestia-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "Pods-MobileCelestia-dummy.m"; sourceTree = "<group>"; };
-		C50A551433B41AF8ABDA3F1294457E1B /* AsyncGLExecutor+Private.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = "AsyncGLExecutor+Private.h"; path = "AsyncGL/AsyncGLExecutor+Private.h"; sourceTree = "<group>"; };
-		C8308C5A8B4914EB954EA04CC68C955B /* Pods-MobileCelestia-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-MobileCelestia-umbrella.h"; sourceTree = "<group>"; };
+		B9A086C9D0F6BE909B58CE0D78DA79E6 /* Pods-MobileCelestia.modulemap */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.module; path = "Pods-MobileCelestia.modulemap"; sourceTree = "<group>"; };
+		BA83A75494554567F09A63053609A654 /* Pods-MobileCelestia-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-MobileCelestia-umbrella.h"; sourceTree = "<group>"; };
+		C64A941C1C364AE22EDC8400223E7FF5 /* AsyncGL.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = AsyncGL.debug.xcconfig; sourceTree = "<group>"; };
 		C9B6C44CA1803C17187EBB2D98F31ED9 /* MWRequest-dummy.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; path = "MWRequest-dummy.m"; sourceTree = "<group>"; };
 		C9D75C15BC28DF2F1C785B4B0AE12CC4 /* AppCenter.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = AppCenter.debug.xcconfig; sourceTree = "<group>"; };
-		CF2A3631B2452D2F661D4F78BEA0053F /* Pods-MobileCelestia.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; path = "Pods-MobileCelestia.debug.xcconfig"; sourceTree = "<group>"; };
-		D40B9A788926D2605FD5BB9524FF2EE4 /* AsyncGLAPI.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AsyncGLAPI.h; path = AsyncGL/include/AsyncGLAPI.h; sourceTree = "<group>"; };
+		CEB20A86ED59C1394409045116BE6C4C /* Pods-MobileCelestia-acknowledgements.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "Pods-MobileCelestia-acknowledgements.plist"; sourceTree = "<group>"; };
+		CED24B1C5D47BF74B4A83602259E35AF /* AsyncGLAPI.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AsyncGLAPI.h; path = AsyncGL/AsyncGLAPI.h; sourceTree = "<group>"; };
+		D0CBD7EE65659A5E4F762A9D12E66329 /* AsyncGL-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "AsyncGL-umbrella.h"; sourceTree = "<group>"; };
+		D67CBBD87FC81DDA569FA67D38E5CF67 /* AsyncGLExecutor.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = AsyncGLExecutor.m; path = AsyncGL/AsyncGLExecutor.m; sourceTree = "<group>"; };
 		D9A4B9EF8730C7123A86378223DBC3F6 /* Pods-MobileCelestia */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = "Pods-MobileCelestia"; path = Pods_MobileCelestia.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		DA6398F66BF09143D134FB99C25F0195 /* Pods-CelestiaUI-acknowledgements.markdown */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; path = "Pods-CelestiaUI-acknowledgements.markdown"; sourceTree = "<group>"; };
-		E4A918A85552AC06C822D53C6FE5236A /* AsyncGLViewController.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; name = AsyncGLViewController.h; path = AsyncGL/AsyncGLViewController.h; sourceTree = "<group>"; };
-		F173C505AFDBE31507F97CCACF5B7BDF /* AsyncGLExecutor.m */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.objc; name = AsyncGLExecutor.m; path = AsyncGL/AsyncGLExecutor.m; sourceTree = "<group>"; };
-		F4552739B6F66B0167F9C1201813EFBB /* Pods-CelestiaUI-umbrella.h */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "Pods-CelestiaUI-umbrella.h"; sourceTree = "<group>"; };
+		F300D48D7669B77429364727A31CA9A4 /* AsyncGL-prefix.pch */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.c.h; path = "AsyncGL-prefix.pch"; sourceTree = "<group>"; };
 		F5F4B98779E2A17930EBD26D3D2C8599 /* AppCenter-xcframeworks.sh */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.script.sh; path = "AppCenter-xcframeworks.sh"; sourceTree = "<group>"; };
-		FAC138D93D5FD69880FB9F66DF5ECAFF /* AsyncGL-Info.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = "AsyncGL-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		068904B61026F48738B2A905C4258028 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C25D098E531FEC9255E70FFE52EFA37D /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		2932A37954846FEF6543599782DC8E83 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				57D43AC1E194C7DEB927BC4DC47E91AA /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		3BA1CE1B38A58301B1E47CC7EA03AEA1 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				C3AFD366212FECC0BEB5BA9AC32ECE92 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -167,32 +140,9 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		8759BBA63ABDF08719451BA1822897D6 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				EEB5C5CC87786F9B471C4C610969B82F /* Foundation.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		0A882DF72EE0D93D33D99732328F65D7 /* Support Files */ = {
-			isa = PBXGroup;
-			children = (
-				B67C0441190D41BE999B7E7B834FBCBA /* AsyncGL.modulemap */,
-				0300A33F44CC457BCA34A00B814DFBCA /* AsyncGL-dummy.m */,
-				FAC138D93D5FD69880FB9F66DF5ECAFF /* AsyncGL-Info.plist */,
-				B2607C20FA7D994EAFFF42F584857215 /* AsyncGL-prefix.pch */,
-				AA370BA30319DAEC322A1855E98017D1 /* AsyncGL-umbrella.h */,
-				A4BA9B9051B49E88641065E4767AE780 /* AsyncGL.debug.xcconfig */,
-				2688779FFCA5F6335166480F1F7C6879 /* AsyncGL.release.xcconfig */,
-			);
-			name = "Support Files";
-			path = "../Target Support Files/AsyncGL";
-			sourceTree = "<group>";
-		};
 		0A9B25B005AD1AA6FF8251E9A83D13C4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -209,38 +159,12 @@
 			name = Core;
 			sourceTree = "<group>";
 		};
-		2137140BF0A171CC5B0CF59813F19F80 /* AsyncGL */ = {
-			isa = PBXGroup;
-			children = (
-				E5C17CABFFECEB94E7CC26D6AFC6FC74 /* OpenGL */,
-				0A882DF72EE0D93D33D99732328F65D7 /* Support Files */,
-			);
-			name = AsyncGL;
-			path = AsyncGL;
-			sourceTree = "<group>";
-		};
 		387C37F522519F65F46DFB0BB1109CC2 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
 				30A24E064BA1278769B7B02C2DE2F76B /* AppCenterCrashes.xcframework */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		38F0A717B9FB813CE9C631F1168EB4EF /* Pods-MobileCelestia */ = {
-			isa = PBXGroup;
-			children = (
-				27A52744999C907A2FB3AD2DB24DC5B2 /* Pods-MobileCelestia.modulemap */,
-				553A24F6C1BE21F02BC7827A90F8951D /* Pods-MobileCelestia-acknowledgements.markdown */,
-				B945591D796BE9E3159E3034464E528E /* Pods-MobileCelestia-acknowledgements.plist */,
-				BF539B444E20ED6E66F37D7557F8CCA7 /* Pods-MobileCelestia-dummy.m */,
-				0617C2CB63E8D17FF7E69FDF972DD22A /* Pods-MobileCelestia-Info.plist */,
-				C8308C5A8B4914EB954EA04CC68C955B /* Pods-MobileCelestia-umbrella.h */,
-				CF2A3631B2452D2F661D4F78BEA0053F /* Pods-MobileCelestia.debug.xcconfig */,
-				36E64F6B1515FD2A3C91D5D01382F7D1 /* Pods-MobileCelestia.release.xcconfig */,
-			);
-			name = "Pods-MobileCelestia";
-			path = "Target Support Files/Pods-MobileCelestia";
 			sourceTree = "<group>";
 		};
 		578452D2E740E91742655AC8F1636D1F /* iOS */ = {
@@ -251,12 +175,71 @@
 			name = iOS;
 			sourceTree = "<group>";
 		};
+		5EC9AAE72FB561EB974C75CFFF555AD7 /* Targets Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				C24999BBFE0C00AE12B07B9E485FC6F5 /* Pods-MobileCelestia */,
+			);
+			name = "Targets Support Files";
+			sourceTree = "<group>";
+		};
+		62598912BF984A6991F1BAE600AF2056 /* OpenGL */ = {
+			isa = PBXGroup;
+			children = (
+				CED24B1C5D47BF74B4A83602259E35AF /* AsyncGLAPI.h */,
+				A69D9CB4E8C5D8ED0416D437B91159A3 /* AsyncGLExecutor.h */,
+				D67CBBD87FC81DDA569FA67D38E5CF67 /* AsyncGLExecutor.m */,
+				1A4AC28EB7842B3398FA18E2AEA243AC /* AsyncGLExecutor+Private.h */,
+				7F6D535313EF796E25642580B0898CDD /* AsyncGLView.h */,
+				5ED8D9D182756FB1541793DA526DF3D0 /* AsyncGLView.m */,
+				A6DE376F1DC7180A855277430145BE7B /* AsyncGLView+Private.h */,
+				43534B7B9AD5242ADA8A1AE6522E7951 /* AsyncGLViewController.h */,
+				861FC5908F803B015C20C22C5580AF19 /* AsyncGLViewController.m */,
+			);
+			name = OpenGL;
+			sourceTree = "<group>";
+		};
+		6E8550529FD15115647AEAC104E594C6 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				78020024F1A70DF61F2E78929295C055 /* AsyncGL */,
+				27A211133D23340DAC3FDC42D1BC1D54 /* MWRequest */,
+				D9A4B9EF8730C7123A86378223DBC3F6 /* Pods-MobileCelestia */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		87F95B7DD3D814C5AAE191D00475E00F /* Support Files */ = {
+			isa = PBXGroup;
+			children = (
+				37CDA776C97A4C0B832B19539B1F6925 /* AsyncGL.modulemap */,
+				327A389B9BC52918B73FF107DB206007 /* AsyncGL-dummy.m */,
+				567770D0945C58DCC61C8928DD42A806 /* AsyncGL-Info.plist */,
+				F300D48D7669B77429364727A31CA9A4 /* AsyncGL-prefix.pch */,
+				D0CBD7EE65659A5E4F762A9D12E66329 /* AsyncGL-umbrella.h */,
+				C64A941C1C364AE22EDC8400223E7FF5 /* AsyncGL.debug.xcconfig */,
+				68C564FC7C7C8CCCD51C487F06A6AB75 /* AsyncGL.release.xcconfig */,
+			);
+			name = "Support Files";
+			path = "../Target Support Files/AsyncGL";
+			sourceTree = "<group>";
+		};
 		B0402956F4425C0FA626F3982C0535E0 /* Crashes */ = {
 			isa = PBXGroup;
 			children = (
 				387C37F522519F65F46DFB0BB1109CC2 /* Frameworks */,
 			);
 			name = Crashes;
+			sourceTree = "<group>";
+		};
+		B937D32F91A4C7404F747C6234A0A879 /* AsyncGL */ = {
+			isa = PBXGroup;
+			children = (
+				62598912BF984A6991F1BAE600AF2056 /* OpenGL */,
+				87F95B7DD3D814C5AAE191D00475E00F /* Support Files */,
+			);
+			name = AsyncGL;
+			path = AsyncGL;
 			sourceTree = "<group>";
 		};
 		B9C4374F11783DF05AEFA6B8654EFE4F /* Frameworks */ = {
@@ -267,29 +250,20 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		BF482F0A6E0CEF1D197621A6525196D2 /* Targets Support Files */ = {
+		C24999BBFE0C00AE12B07B9E485FC6F5 /* Pods-MobileCelestia */ = {
 			isa = PBXGroup;
 			children = (
-				C3FC110F01DADD5833F1A724D2ED6370 /* Pods-CelestiaUI */,
-				38F0A717B9FB813CE9C631F1168EB4EF /* Pods-MobileCelestia */,
+				B9A086C9D0F6BE909B58CE0D78DA79E6 /* Pods-MobileCelestia.modulemap */,
+				7EBC22C67E549839CC27970A3E789765 /* Pods-MobileCelestia-acknowledgements.markdown */,
+				CEB20A86ED59C1394409045116BE6C4C /* Pods-MobileCelestia-acknowledgements.plist */,
+				31D803B3F3EB5952FD5D37D04C0CA830 /* Pods-MobileCelestia-dummy.m */,
+				45480FF36CE140004EE47690BA10E33F /* Pods-MobileCelestia-Info.plist */,
+				BA83A75494554567F09A63053609A654 /* Pods-MobileCelestia-umbrella.h */,
+				90370C223EA809BAC9C40007B4821792 /* Pods-MobileCelestia.debug.xcconfig */,
+				618F0DAD7C619AA12E2F6054485270B0 /* Pods-MobileCelestia.release.xcconfig */,
 			);
-			name = "Targets Support Files";
-			sourceTree = "<group>";
-		};
-		C3FC110F01DADD5833F1A724D2ED6370 /* Pods-CelestiaUI */ = {
-			isa = PBXGroup;
-			children = (
-				5358D5FCECC9523932C0D13DE8111506 /* Pods-CelestiaUI.modulemap */,
-				DA6398F66BF09143D134FB99C25F0195 /* Pods-CelestiaUI-acknowledgements.markdown */,
-				183770B83914F8AFD936448047A2017D /* Pods-CelestiaUI-acknowledgements.plist */,
-				35CBFD2BC1209687193A4AB841A5B8CE /* Pods-CelestiaUI-dummy.m */,
-				4ACC27ABF8B3C64CA0A39FDA122822ED /* Pods-CelestiaUI-Info.plist */,
-				F4552739B6F66B0167F9C1201813EFBB /* Pods-CelestiaUI-umbrella.h */,
-				09229452C879B702D1C3B47EC09A8893 /* Pods-CelestiaUI.debug.xcconfig */,
-				14E32A33D1C6FB74C633C797881814EC /* Pods-CelestiaUI.release.xcconfig */,
-			);
-			name = "Pods-CelestiaUI";
-			path = "Target Support Files/Pods-CelestiaUI";
+			name = "Pods-MobileCelestia";
+			path = "Target Support Files/Pods-MobileCelestia";
 			sourceTree = "<group>";
 		};
 		CF1408CF629C7361332E53B88F7BD30C = {
@@ -298,8 +272,8 @@
 				9D940727FF8FB9C785EB98E56350EF41 /* Podfile */,
 				D210D550F4EA176C3123ED886F8F87F5 /* Frameworks */,
 				E116CD552610F485ADEF75853B32A68D /* Pods */,
-				F554CBCC5849392F3987618A5A651B53 /* Products */,
-				BF482F0A6E0CEF1D197621A6525196D2 /* Targets Support Files */,
+				6E8550529FD15115647AEAC104E594C6 /* Products */,
+				5EC9AAE72FB561EB974C75CFFF555AD7 /* Targets Support Files */,
 			);
 			sourceTree = "<group>";
 		};
@@ -327,30 +301,10 @@
 			isa = PBXGroup;
 			children = (
 				F984A60D591909F5879D103D66CA2C5E /* AppCenter */,
-				2137140BF0A171CC5B0CF59813F19F80 /* AsyncGL */,
+				B937D32F91A4C7404F747C6234A0A879 /* AsyncGL */,
 				DE7034BA19077EB04C93C401498CF2CA /* MWRequest */,
 			);
 			name = Pods;
-			sourceTree = "<group>";
-		};
-		E5C17CABFFECEB94E7CC26D6AFC6FC74 /* OpenGL */ = {
-			isa = PBXGroup;
-			children = (
-				04F506B6B9C61044ABA2E236BEDE02A5 /* AsyncGLAPI.h */,
-				D40B9A788926D2605FD5BB9524FF2EE4 /* AsyncGLAPI.h */,
-				2368DD4E90BA9D705C6F6EE7426FEC26 /* AsyncGLExecutor.h */,
-				51CB3D1E59289D0154ADACFEEF8C5D0D /* AsyncGLExecutor.h */,
-				F173C505AFDBE31507F97CCACF5B7BDF /* AsyncGLExecutor.m */,
-				C50A551433B41AF8ABDA3F1294457E1B /* AsyncGLExecutor+Private.h */,
-				AF5626A77E2C5413B711CA2027F6C1F1 /* AsyncGLView.h */,
-				54B46D3FA071DC840998A942B90F351D /* AsyncGLView.h */,
-				886218184A32F038A3D797573DAC5075 /* AsyncGLView.m */,
-				4182D5AC00CA9208529082E64F27D648 /* AsyncGLView+Private.h */,
-				E4A918A85552AC06C822D53C6FE5236A /* AsyncGLViewController.h */,
-				A072E8F407A1218083BF3F5DD16EF592 /* AsyncGLViewController.h */,
-				14D378825BF4AA2B4FF797DC08A03CE7 /* AsyncGLViewController.m */,
-			);
-			name = OpenGL;
 			sourceTree = "<group>";
 		};
 		EEE076A4EE24EA28CA91B4B26790CA2C /* Support Files */ = {
@@ -379,17 +333,6 @@
 			path = "../Target Support Files/MWRequest";
 			sourceTree = "<group>";
 		};
-		F554CBCC5849392F3987618A5A651B53 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				78020024F1A70DF61F2E78929295C055 /* AsyncGL */,
-				27A211133D23340DAC3FDC42D1BC1D54 /* MWRequest */,
-				837AA3419F19290F988A6A88DD5B9332 /* Pods-CelestiaUI */,
-				D9A4B9EF8730C7123A86378223DBC3F6 /* Pods-MobileCelestia */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
 		F984A60D591909F5879D103D66CA2C5E /* AppCenter */ = {
 			isa = PBXGroup;
 			children = (
@@ -413,21 +356,17 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
-		03480F178991C63AEC39744DC0458389 /* Headers */ = {
+		58489C7A86E0AB41FCB336EEA13378D8 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4C6F3AFC24048401F84DE879CEE1939B /* AsyncGL-umbrella.h in Headers */,
-				22A2424EBC0514FABED7EC5E6EEB9C27 /* AsyncGLAPI.h in Headers */,
-				3A34837077C00B7B764CBB981A748E31 /* AsyncGLAPI.h in Headers */,
-				C6463B7B122DC1CEAC82DA71860FD518 /* AsyncGLExecutor.h in Headers */,
-				9E844B944DD29FCD83846CA59875C752 /* AsyncGLExecutor.h in Headers */,
-				F84120BFBC06F4D59215FB86877A3271 /* AsyncGLExecutor+Private.h in Headers */,
-				F577D66E6D1024443D51238E69F036B6 /* AsyncGLView.h in Headers */,
-				3DE6DD0E3245287202764DB28ADACE2E /* AsyncGLView.h in Headers */,
-				21C7B5AC493FE7028F17518024118948 /* AsyncGLView+Private.h in Headers */,
-				FC39485A15F9B9A05077A9778B406E05 /* AsyncGLViewController.h in Headers */,
-				63A6AB696E855A6C7DF309C22BEAA6CC /* AsyncGLViewController.h in Headers */,
+				5416DA0502ED94AC4461A06D1EFEF3A5 /* AsyncGL-umbrella.h in Headers */,
+				05FD5B76588E4D8332963B035A6450B8 /* AsyncGLAPI.h in Headers */,
+				CEDB87C8A8161ADDBF7DE0C225CE4D78 /* AsyncGLExecutor.h in Headers */,
+				440B2EBE72D458806BB73521DD0009BE /* AsyncGLExecutor+Private.h in Headers */,
+				BA8AD11CFB9A590386CF6A9D5EFDF3CF /* AsyncGLView.h in Headers */,
+				7275920ABE18F8B1AE8E3ED25AF429C4 /* AsyncGLView+Private.h in Headers */,
+				7F23F38B6C8C11BBC3740C0BE05E16CB /* AsyncGLViewController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -436,14 +375,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				58D47D5C485A4A9DE7DBFAD9D4ABCDA1 /* Pods-MobileCelestia-umbrella.h in Headers */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		CE535253285F8BE677CD01B345557010 /* Headers */ = {
-			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				4203212421C8D229A976B48310DA393E /* Pods-CelestiaUI-umbrella.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -470,9 +401,9 @@
 			buildRules = (
 			);
 			dependencies = (
-				848E7DF281CC268A69D740C51FBBC12D /* PBXTargetDependency */,
-				1F2AC92B4F17F108B95DF4851B0BFBF0 /* PBXTargetDependency */,
-				B885B7120F0C771990C481E13A84F930 /* PBXTargetDependency */,
+				09DD5A196B5B70A32763B75E44CFE5B4 /* PBXTargetDependency */,
+				F744E52F4753BE3FA2008CD84D13D445 /* PBXTargetDependency */,
+				4B9AFE791B55899F6A211F21EF330FCA /* PBXTargetDependency */,
 			);
 			name = "Pods-MobileCelestia";
 			productName = Pods_MobileCelestia;
@@ -481,12 +412,12 @@
 		};
 		B0461866C4B5B8EDBF49D135C70E49C4 /* AsyncGL */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C903908BED6868AA25A7C90693D9EA31 /* Build configuration list for PBXNativeTarget "AsyncGL" */;
+			buildConfigurationList = FF2A3F0F128A517BCE5BC2514EEC1538 /* Build configuration list for PBXNativeTarget "AsyncGL" */;
 			buildPhases = (
-				03480F178991C63AEC39744DC0458389 /* Headers */,
-				DFF0516BCF50002E98A7AD0DCEDD4A51 /* Sources */,
-				8759BBA63ABDF08719451BA1822897D6 /* Frameworks */,
-				CA097D087D1B93EDD7F5A6E06D975808 /* Resources */,
+				58489C7A86E0AB41FCB336EEA13378D8 /* Headers */,
+				A962CA9C2CA5FE40A831FD59987A8DC3 /* Sources */,
+				068904B61026F48738B2A905C4258028 /* Frameworks */,
+				EF229E5D759E0DF00BB7DB018D3538CE /* Resources */,
 			);
 			buildRules = (
 			);
@@ -515,25 +446,6 @@
 			productReference = 27A211133D23340DAC3FDC42D1BC1D54 /* MWRequest */;
 			productType = "com.apple.product-type.framework";
 		};
-		C370664C0DC6BBF14ACCC4CC7EC8438E /* Pods-CelestiaUI */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 458B86739E5029A6D09DFF02F911A0C1 /* Build configuration list for PBXNativeTarget "Pods-CelestiaUI" */;
-			buildPhases = (
-				CE535253285F8BE677CD01B345557010 /* Headers */,
-				687E82EA0D1E4BD197491565AF6AB76C /* Sources */,
-				3BA1CE1B38A58301B1E47CC7EA03AEA1 /* Frameworks */,
-				80F475F5E458D57470F7191750B39B92 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				4D2CB50E01B90D860DDA7595B8B3C73F /* PBXTargetDependency */,
-			);
-			name = "Pods-CelestiaUI";
-			productName = Pods_CelestiaUI;
-			productReference = 837AA3419F19290F988A6A88DD5B9332 /* Pods-CelestiaUI */;
-			productType = "com.apple.product-type.framework";
-		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -552,14 +464,13 @@
 				en,
 			);
 			mainGroup = CF1408CF629C7361332E53B88F7BD30C;
-			productRefGroup = F554CBCC5849392F3987618A5A651B53 /* Products */;
+			productRefGroup = 6E8550529FD15115647AEAC104E594C6 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
 				A3282A5B2437E609EEB85861D7ECE717 /* AppCenter */,
 				B0461866C4B5B8EDBF49D135C70E49C4 /* AsyncGL */,
 				B45BC50C299B8144F2CCD63D4E7A880D /* MWRequest */,
-				C370664C0DC6BBF14ACCC4CC7EC8438E /* Pods-CelestiaUI */,
 				260C9AE10BA81A2E5FC2F93F12DEE8F9 /* Pods-MobileCelestia */,
 			);
 		};
@@ -580,14 +491,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		80F475F5E458D57470F7191750B39B92 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		CA097D087D1B93EDD7F5A6E06D975808 /* Resources */ = {
+		EF229E5D759E0DF00BB7DB018D3538CE /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -617,14 +521,6 @@
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		687E82EA0D1E4BD197491565AF6AB76C /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				4FBD9FA43005D0B669136E548D2528DB /* Pods-CelestiaUI-dummy.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		6BD6BD83C14FD3C44C289BE0BFC2958D /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -644,43 +540,37 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		DFF0516BCF50002E98A7AD0DCEDD4A51 /* Sources */ = {
+		A962CA9C2CA5FE40A831FD59987A8DC3 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E75502F9834CA9DC61273762C5ED37BE /* AsyncGL-dummy.m in Sources */,
-				6E3336589C0D163EAAD6732D1F638BB7 /* AsyncGLExecutor.m in Sources */,
-				0CCCB9CA183EC763C3608C21B4D3395C /* AsyncGLView.m in Sources */,
-				6F504A542A64BDAE01824F8ED33B0F95 /* AsyncGLViewController.m in Sources */,
+				2F7D12DFBEBE3E5B8F1AC328A065A4F2 /* AsyncGL-dummy.m in Sources */,
+				FAB62A95B7911EAB22F9374702E00D89 /* AsyncGLExecutor.m in Sources */,
+				2FAA5F9C2F68429C27AB3980FDC4BF59 /* AsyncGLView.m in Sources */,
+				B542C006FFF3E02C72CC33DF429E86AC /* AsyncGLViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		1F2AC92B4F17F108B95DF4851B0BFBF0 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = AsyncGL;
-			target = B0461866C4B5B8EDBF49D135C70E49C4 /* AsyncGL */;
-			targetProxy = F6049C0AD5C85C40986B1E29A1813693 /* PBXContainerItemProxy */;
-		};
-		4D2CB50E01B90D860DDA7595B8B3C73F /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			name = MWRequest;
-			target = B45BC50C299B8144F2CCD63D4E7A880D /* MWRequest */;
-			targetProxy = 05C7B8E9C8759F0230571B360FC9C301 /* PBXContainerItemProxy */;
-		};
-		848E7DF281CC268A69D740C51FBBC12D /* PBXTargetDependency */ = {
+		09DD5A196B5B70A32763B75E44CFE5B4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = AppCenter;
 			target = A3282A5B2437E609EEB85861D7ECE717 /* AppCenter */;
-			targetProxy = 1AD5628CC842B1B2C22F4605C55EABAB /* PBXContainerItemProxy */;
+			targetProxy = C1F05058FD4456DEB4EF4A5077DB2B68 /* PBXContainerItemProxy */;
 		};
-		B885B7120F0C771990C481E13A84F930 /* PBXTargetDependency */ = {
+		4B9AFE791B55899F6A211F21EF330FCA /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = MWRequest;
 			target = B45BC50C299B8144F2CCD63D4E7A880D /* MWRequest */;
-			targetProxy = F0B4E60527979E07FB65E5AABC4B7986 /* PBXContainerItemProxy */;
+			targetProxy = E5979CD32EF26B2B6EBE85067E913BDB /* PBXContainerItemProxy */;
+		};
+		F744E52F4753BE3FA2008CD84D13D445 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = AsyncGL;
+			target = B0461866C4B5B8EDBF49D135C70E49C4 /* AsyncGL */;
+			targetProxy = 1138A68B143A04682FA9D922A9D0E8E2 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -747,48 +637,6 @@
 			};
 			name = Release;
 		};
-		097E315ED56C573F39CF4EB3FE578D83 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 09229452C879B702D1C3B47EC09A8893 /* Pods-CelestiaUI.debug.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGNING_ALLOWED = NO;
-				CODE_SIGNING_REQUIRED = NO;
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				EXPANDED_CODE_SIGN_IDENTITY = "";
-				INFOPLIST_FILE = "Target Support Files/Pods-CelestiaUI/Pods-CelestiaUI-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MACH_O_TYPE = staticlib;
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MODULEMAP_FILE = "Target Support Files/Pods-CelestiaUI/Pods-CelestiaUI.modulemap";
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SUPPORTS_MACCATALYST = YES;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Debug;
-		};
 		128E3DAB0487743EEFAC599811A55E78 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 7441EC74A3F245A42B36796A40922317 /* MWRequest.debug.xcconfig */;
@@ -832,7 +680,7 @@
 		};
 		205DBADA50C861B3144D7A290FC6C0BD /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = CF2A3631B2452D2F661D4F78BEA0053F /* Pods-MobileCelestia.debug.xcconfig */;
+			baseConfigurationReference = 90370C223EA809BAC9C40007B4821792 /* Pods-MobileCelestia.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ENABLE_OBJC_WEAK = NO;
@@ -894,9 +742,9 @@
 			};
 			name = Debug;
 		};
-		372C884890F81ADCB8D3DB6F6F3E37D2 /* Debug */ = {
+		5E790F14118A9D95888E9158FD501230 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = A4BA9B9051B49E88641065E4767AE780 /* AsyncGL.debug.xcconfig */;
+			baseConfigurationReference = 68C564FC7C7C8CCCD51C487F06A6AB75 /* AsyncGL.release.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGNING_ALLOWED = NO;
@@ -930,10 +778,11 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
-			name = Debug;
+			name = Release;
 		};
 		67694A32F85CA587DBC68EA0102D99F8 /* Release */ = {
 			isa = XCBuildConfiguration;
@@ -970,49 +819,6 @@
 				SUPPORTS_MACCATALYST = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
 				SWIFT_VERSION = 5.9;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-				VERSIONING_SYSTEM = "apple-generic";
-				VERSION_INFO_PREFIX = "";
-			};
-			name = Release;
-		};
-		83485D096C5B3877DEC505A2BA37CD74 /* Release */ = {
-			isa = XCBuildConfiguration;
-			baseConfigurationReference = 14E32A33D1C6FB74C633C797881814EC /* Pods-CelestiaUI.release.xcconfig */;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGNING_ALLOWED = NO;
-				CODE_SIGNING_REQUIRED = NO;
-				"CODE_SIGN_IDENTITY[sdk=appletvos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
-				"CODE_SIGN_IDENTITY[sdk=watchos*]" = "";
-				CURRENT_PROJECT_VERSION = 1;
-				DEFINES_MODULE = YES;
-				DYLIB_COMPATIBILITY_VERSION = 1;
-				DYLIB_CURRENT_VERSION = 1;
-				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				EXPANDED_CODE_SIGN_IDENTITY = "";
-				INFOPLIST_FILE = "Target Support Files/Pods-CelestiaUI/Pods-CelestiaUI-Info.plist";
-				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				MACH_O_TYPE = staticlib;
-				MACOSX_DEPLOYMENT_TARGET = 10.15;
-				MODULEMAP_FILE = "Target Support Files/Pods-CelestiaUI/Pods-CelestiaUI.modulemap";
-				OTHER_LDFLAGS = "";
-				OTHER_LIBTOOLFLAGS = "";
-				PODS_ROOT = "$(SRCROOT)";
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.${PRODUCT_NAME:rfc1034identifier}";
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SDKROOT = iphoneos;
-				SKIP_INSTALL = YES;
-				SUPPORTS_MACCATALYST = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1086,9 +892,9 @@
 			};
 			name = Debug;
 		};
-		99EE85EA685B6522D65C13B735F7E56D /* Release */ = {
+		A0B35A16E49FF2263D5924731466B38B /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2688779FFCA5F6335166480F1F7C6879 /* AsyncGL.release.xcconfig */;
+			baseConfigurationReference = C64A941C1C364AE22EDC8400223E7FF5 /* AsyncGL.debug.xcconfig */;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGNING_ALLOWED = NO;
@@ -1122,15 +928,14 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "$(inherited) ";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
-			name = Release;
+			name = Debug;
 		};
 		A9528594D3C76FA99BD3718144158D53 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 36E64F6B1515FD2A3C91D5D01382F7D1 /* Pods-MobileCelestia.release.xcconfig */;
+			baseConfigurationReference = 618F0DAD7C619AA12E2F6054485270B0 /* Pods-MobileCelestia.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = NO;
 				CLANG_ENABLE_OBJC_WEAK = NO;
@@ -1197,15 +1002,6 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		458B86739E5029A6D09DFF02F911A0C1 /* Build configuration list for PBXNativeTarget "Pods-CelestiaUI" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				097E315ED56C573F39CF4EB3FE578D83 /* Debug */,
-				83485D096C5B3877DEC505A2BA37CD74 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		4821239608C13582E20E6DA73FD5F1F9 /* Build configuration list for PBXProject "Pods" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -1233,20 +1029,20 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C903908BED6868AA25A7C90693D9EA31 /* Build configuration list for PBXNativeTarget "AsyncGL" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				372C884890F81ADCB8D3DB6F6F3E37D2 /* Debug */,
-				99EE85EA685B6522D65C13B735F7E56D /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		D744984E9D109C2A60230DD6F7E10FEA /* Build configuration list for PBXNativeTarget "Pods-MobileCelestia" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				205DBADA50C861B3144D7A290FC6C0BD /* Debug */,
 				A9528594D3C76FA99BD3718144158D53 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		FF2A3F0F128A517BCE5BC2514EEC1538 /* Build configuration list for PBXNativeTarget "AsyncGL" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A0B35A16E49FF2263D5924731466B38B /* Debug */,
+				5E790F14118A9D95888E9158FD501230 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

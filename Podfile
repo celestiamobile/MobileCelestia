@@ -14,10 +14,6 @@ target 'MobileCelestia' do
   pod "AsyncGL/OpenGL", :git => "https://github.com/levinli303/AsyncGL.git", :tag => asyncgl_version_tag
 end
 
-target 'CelestiaUI' do
-  pod "MWRequest", :git => "https://github.com/levinli303/mwrequest.git", :tag => mwrequest_version_tag
-end
-
 post_install do |installer|
     installer.pods_project.targets.each do |target|
         target.build_configurations.each do |config|

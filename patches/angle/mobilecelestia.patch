@@ -1,8 +1,8 @@
 diff --git a/MobileCelestia.xcodeproj/project.pbxproj b/MobileCelestia.xcodeproj/project.pbxproj
-index 33b4a13..fbd1a17 100644
+index 0436284..7da1d1a 100644
 --- a/MobileCelestia.xcodeproj/project.pbxproj
 +++ b/MobileCelestia.xcodeproj/project.pbxproj
-@@ -1730,7 +1730,6 @@
+@@ -1723,7 +1723,6 @@
  					"-ljpeg",
  					"-lfreetype",
  					"-lintl",
@@ -10,7 +10,7 @@ index 33b4a13..fbd1a17 100644
  					"-lzip",
  					"$(THIRD_PARTY_LIB_PATH)/libs/cspice.a",
  				);
-@@ -1781,7 +1780,6 @@
+@@ -1774,7 +1773,6 @@
  					"-ljpeg",
  					"-lfreetype",
  					"-lintl",
@@ -32,7 +32,7 @@ index 94b2dcf..3d630a8 100644
          let api = AsyncGLAPI.openGLES2
  #endif
 diff --git a/Podfile b/Podfile
-index 0ec4233..1268273 100644
+index 93d8bb6..9bc93a5 100644
 --- a/Podfile
 +++ b/Podfile
 @@ -11,7 +11,7 @@ target 'MobileCelestia' do
@@ -43,4 +43,4 @@ index 0ec4233..1268273 100644
 +  pod "AsyncGL/ANGLE", :git => "https://github.com/levinli303/AsyncGL.git", :tag => asyncgl_version_tag
  end
  
- target 'CelestiaUI' do
+ post_install do |installer|

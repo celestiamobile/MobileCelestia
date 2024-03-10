@@ -15,11 +15,13 @@ public class ResourceViewController: ToolbarNavigationContainerController {
     private let executor: AsyncProviderExecutor
     private let resourceManager: ResourceManager
     private let actionHandler: ((CommonWebViewController.WebAction, UIViewController) -> Void)?
+    private let requestHandler: RequestHandler
 
-    public init(executor: AsyncProviderExecutor, resourceManager: ResourceManager, actionHandler: ((CommonWebViewController.WebAction, UIViewController) -> Void)?, getAddonHandler: @escaping () -> Void) {
+    public init(executor: AsyncProviderExecutor, resourceManager: ResourceManager, requestHandler: RequestHandler, actionHandler: ((CommonWebViewController.WebAction, UIViewController) -> Void)?, getAddonHandler: @escaping () -> Void) {
         self.executor = executor
         self.resourceManager = resourceManager
         self.actionHandler = actionHandler
+        self.requestHandler = requestHandler
         super.init(rootViewController: UIViewController())
         setViewControllers([
             InstalledResourceViewController(resourceManager: resourceManager, selection: { [weak self] item in
@@ -35,6 +37,6 @@ public class ResourceViewController: ToolbarNavigationContainerController {
 
 private extension ResourceViewController {
     private func viewItem(_ item: ResourceItem) {
-        pushViewController(ResourceItemViewController(executor: executor, resourceManager: resourceManager, item: item, needsRefetchItem: true, actionHandler: actionHandler), animated: true)
+        pushViewController(ResourceItemViewController(executor: executor, resourceManager: resourceManager, item: item, needsRefetchItem: true, requestHandler: requestHandler, actionHandler: actionHandler), animated: true)
     }
 }

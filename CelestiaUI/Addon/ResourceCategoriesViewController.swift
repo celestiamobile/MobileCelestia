@@ -16,8 +16,8 @@ public class ResourceCategoriesViewController: ToolbarNavigationContainerControl
     private let webViewController: CommonWebViewController
     private let subscriptionManager: SubscriptionManager
 
-    public init(executor: AsyncProviderExecutor, resourceManager: ResourceManager, subscriptionManager: SubscriptionManager, actionHandler: ((CommonWebViewController.WebAction, UIViewController) -> Void)?) {
-        self.webViewController = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .categoryURL(subscriptionManager: subscriptionManager), actionHandler: actionHandler, filterURL: false)
+    public init(executor: AsyncProviderExecutor, resourceManager: ResourceManager, subscriptionManager: SubscriptionManager, requestHandler: RequestHandler, actionHandler: ((CommonWebViewController.WebAction, UIViewController) -> Void)?) {
+        self.webViewController = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .categoryURL(subscriptionManager: subscriptionManager), requestHandler: requestHandler, actionHandler: actionHandler, filterURL: false)
         self.subscriptionManager = subscriptionManager
         super.init(rootViewController: webViewController)
     }

@@ -12,7 +12,6 @@
 import CelestiaCore
 import CoreSpotlight
 import MobileCoreServices
-import MWRequest
 import UIKit
 
 public class ResourceItemViewController: UIViewController {
@@ -25,7 +24,6 @@ public class ResourceItemViewController: UIViewController {
     private let itemID: String
     private var item: ResourceItem
     private let needsRefetchItem: Bool
-
 
     #if targetEnvironment(macCatalyst)
     private lazy var toolbarShareItem: NSSharingServicePickerToolbarItem = {
@@ -60,9 +58,10 @@ public class ResourceItemViewController: UIViewController {
     private let resourceManager: ResourceManager
 
     private let actionHandler: ((CommonWebViewController.WebAction, UIViewController) -> Void)?
+    private let requestHandler: RequestHandler
 
     private lazy var itemInfoController: CommonWebViewController = {
-        return CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromAddon(addonItemID: itemID, language: AppCore.language), actionHandler: actionHandler, matchingQueryKeys: ["item"], contextDirectory: resourceManager.contextDirectory(forAddon: item))
+        return CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromAddon(addonItemID: itemID, language: AppCore.language), requestHandler: requestHandler, actionHandler: actionHandler, matchingQueryKeys: ["item"], contextDirectory: resourceManager.contextDirectory(forAddon: item))
     }()
 
     private var scrollViewTopToViewTopConstrant: NSLayoutConstraint?
@@ -74,11 +73,12 @@ public class ResourceItemViewController: UIViewController {
 
     private let executor: AsyncProviderExecutor
 
-    public init(executor: AsyncProviderExecutor, resourceManager: ResourceManager, item: ResourceItem, needsRefetchItem: Bool, actionHandler: ((CommonWebViewController.WebAction, UIViewController) -> Void)?) {
+    public init(executor: AsyncProviderExecutor, resourceManager: ResourceManager, item: ResourceItem, needsRefetchItem: Bool, requestHandler: RequestHandler, actionHandler: ((CommonWebViewController.WebAction, UIViewController) -> Void)?) {
         self.executor = executor
         self.resourceManager = resourceManager
         self.itemID = item.id
         self.actionHandler = actionHandler
+        self.requestHandler = requestHandler
         self.item = item
         self.needsRefetchItem = needsRefetchItem
         let userActivity = NSUserActivity(activityType: "space.celestia.celestia.addon-user-activity")
@@ -147,7 +147,7 @@ public class ResourceItemViewController: UIViewController {
     private func refresh() {
         Task {
             do {
-                let item = try await ResourceItem.getMetadata(id: itemID, language: AppCore.language)
+                let item = try await requestHandler.getMetadata(id: itemID, language: AppCore.language)
                 self.item = item
                 self.title = item.name
                 self.associatedUserActivity.title = item.name

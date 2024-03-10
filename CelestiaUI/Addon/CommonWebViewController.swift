@@ -11,7 +11,6 @@
 
 import CelestiaCore
 import CelestiaFoundation
-import MWRequest
 import UIKit
 import WebKit
 
@@ -36,6 +35,7 @@ public class CommonWebViewController: UIViewController {
     private let resourceManager: ResourceManager
 
     private let actionHandler: ((WebAction, UIViewController) -> Void)?
+    private let requestHandler: RequestHandler
 
     weak var delegate: CommonWebViewControllerDelegate?
 
@@ -71,11 +71,12 @@ public class CommonWebViewController: UIViewController {
         view = containerView
     }
 
-    public init(executor: AsyncProviderExecutor, resourceManager: ResourceManager, url: URL, actionHandler: ((WebAction, UIViewController) -> Void)?, matchingQueryKeys: [String] = [], contextDirectory: URL? = nil, filterURL: Bool = true) {
+    public init(executor: AsyncProviderExecutor, resourceManager: ResourceManager, url: URL, requestHandler: RequestHandler, actionHandler: ((WebAction, UIViewController) -> Void)?, matchingQueryKeys: [String] = [], contextDirectory: URL? = nil, filterURL: Bool = true) {
         self.executor = executor
         self.resourceManager = resourceManager
         self.url = url
         self.actionHandler = actionHandler
+        self.requestHandler = requestHandler
         self.matchingQueryKeys = matchingQueryKeys
         self.contextDirectory = contextDirectory
         self.filterURL = filterURL
@@ -244,11 +245,11 @@ extension CommonWebViewController: CelestiaScriptHandlerDelegate {
     func openAddonNext(id: String) {
         Task {
             do {
-                let item: ResourceItem = try await ResourceItem.getMetadata(id: id, language: AppCore.language)
+                let item: ResourceItem = try await requestHandler.getMetadata(id: id, language: AppCore.language)
                 guard let navigationController else { return }
                 // Do not push another ResourceItemFragment if it is the top
                 if !(navigationController.topViewController is ResourceItemViewController) {
-                    navigationController.pushViewController(ResourceItemViewController(executor: self.executor, resourceManager: self.resourceManager, item: item, needsRefetchItem: false, actionHandler: self.actionHandler), animated: true)
+                    navigationController.pushViewController(ResourceItemViewController(executor: self.executor, resourceManager: self.resourceManager, item: item, needsRefetchItem: false, requestHandler: requestHandler, actionHandler: self.actionHandler), animated: true)
                 }
             } catch {}
         }

@@ -10,7 +10,6 @@
 //
 
 import Foundation
-import MWRequest
 import StoreKit
 
 public extension Notification.Name {
@@ -42,6 +41,7 @@ public class SubscriptionManager {
 
     private(set) var status: SubscriptionStatus = .unknown
     private let userDefaults: UserDefaults
+    private let requestHandler: RequestHandler
 
     private var transactionInfoCache: CacheTransactionInfo?
 
@@ -54,8 +54,9 @@ public class SubscriptionManager {
     private let yearlySubscriptionId = "space.celestia.mobilecelestia.plus.yearly"
     private let cacheKey = "celestia-plus"
 
-    public init(userDefaults: UserDefaults) {
+    public init(userDefaults: UserDefaults, requestHandler: RequestHandler) {
         self.userDefaults = userDefaults
+        self.requestHandler = requestHandler
         if let data: Data = userDefaults.data(forKey: cacheKey), let decoded = try? JSONDecoder().decode(CacheTransactionInfo.self, from: data) {
             transactionInfoCache = decoded
         }
@@ -185,15 +186,7 @@ public class SubscriptionManager {
 
     @available(iOS 15, *)
     private func performServerVerification(originalTransactionID: UInt64, environment: SubscriptionEnvironment) async throws -> Bool {
-        struct ValidationResult: Decodable {
-            let valid: Bool
-        }
-
-        let result: ValidationResult = try await AsyncJSONRequestHandler.getDecoded(url: "https://celestia.mobi/api/subscription/apple", parameters: [
-            "originalTransactionId": "\(originalTransactionID)",
-            "sandbox": environment == .production ? "0" : "1"
-        ])
-        return result.valid
+        return try await requestHandler.getSubscriptionValidity(originalTransactionID: originalTransactionID, sandbox: environment == .production)
     }
 
     @available(iOS 15, *)
