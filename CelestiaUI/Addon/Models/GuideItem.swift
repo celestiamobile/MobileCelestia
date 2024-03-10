@@ -11,7 +11,7 @@
 
 import Foundation
 
-public struct GuideItem: Codable {
+public struct GuideItem: Codable, Sendable {
     let title: String
     public let id: String
 }

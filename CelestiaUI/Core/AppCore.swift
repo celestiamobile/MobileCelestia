@@ -78,12 +78,12 @@ public func CelestiaFilename(_ key: String) -> String {
 }
 
 // MARK: Bookmark
-public final class BookmarkNode: NSObject {
+public final class BookmarkNode: NSObject, @unchecked Sendable {
     public let isFolder: Bool
 
-    @objc public var name: String
-    @objc public var url: String
-    @objc public var children: [BookmarkNode]
+    public var name: String
+    public var url: String
+    public var children: [BookmarkNode]
 
     public init(name: String, url: String, isFolder: Bool, children: [BookmarkNode] = []) {
         self.name = name
@@ -93,7 +93,7 @@ public final class BookmarkNode: NSObject {
         super.init()
     }
 
-    @objc public var isLeaf: Bool {
+    public var isLeaf: Bool {
         return !isFolder
     }
 }

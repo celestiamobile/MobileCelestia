@@ -12,7 +12,7 @@
 import CelestiaCore
 import Foundation
 
-public protocol AsyncProviderExecutor {
+public protocol AsyncProviderExecutor: Sendable {
     func run(_ task: @escaping @Sendable (AppCore) -> Void) async
     func get<T>(_ task: @escaping @Sendable (AppCore) -> T) async -> T
 }

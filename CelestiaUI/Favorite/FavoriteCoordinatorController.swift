@@ -17,6 +17,8 @@ public enum FavoriteRoot {
     case bookmarks
 }
 
+extension Destination: @unchecked Sendable {}
+
 public class FavoriteCoordinatorController: UIViewController {
     #if targetEnvironment(macCatalyst)
     private lazy var controller = ToolbarSplitContainerController(sidebarViewController: main)

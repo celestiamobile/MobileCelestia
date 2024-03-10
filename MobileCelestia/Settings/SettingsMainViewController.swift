@@ -13,9 +13,9 @@ import UIKit
 
 class SettingsMainViewController: BaseTableViewController {
     private let sections: [SettingSection]
-    private let selection: (SettingItem<AnyHashable>) async -> Void
+    private let selection: (SettingItem) async -> Void
 
-    init(sections: [SettingSection], selection: @escaping (SettingItem<AnyHashable>) async -> Void) {
+    init(sections: [SettingSection], selection: @escaping (SettingItem) async -> Void) {
         self.sections = sections
         self.selection = selection
         #if targetEnvironment(macCatalyst)

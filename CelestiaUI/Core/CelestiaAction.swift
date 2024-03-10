@@ -12,7 +12,7 @@
 import Foundation
 import UIKit
 
-public enum CelestiaAction: Int8 {
+public enum CelestiaAction: Int8, Sendable {
     case goTo = 103
     case goToSurface = 7
     case center = 99

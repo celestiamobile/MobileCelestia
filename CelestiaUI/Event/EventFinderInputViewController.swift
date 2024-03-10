@@ -178,6 +178,7 @@ extension EventFinderInputViewController {
     }
 }
 
+extension Body: @unchecked Sendable {}
 extension EclipseFinder: @unchecked Sendable {}
 extension Eclipse: @unchecked Sendable {}
 

@@ -167,51 +167,46 @@ private extension SettingsCoordinatorController {
     func setup() {
         main = SettingsMainViewController(sections: settings, selection: { [weak self] item in
             guard let self else { return }
-            func logWrongAssociatedItemType(_ item: AnyHashable) -> Never {
-                fatalError("Wrong associated item \(item.base)")
-            }
-
             let viewController: UIViewController
-            switch item.type {
-            case .common:
-                if let associated = item.associatedItem.base as? AssociatedCommonItem {
-                    viewController = SettingCommonViewController(core: core, executor: executor, userDefaults: userDefaults, item: associated)
-                } else {
-                    logWrongAssociatedItemType(item.associatedItem)
-                }
-            case .about:
-                viewController = AboutViewController(bundle: bundle, defaultDirectoryURL: self.defaultDataDirectory)
-            case .time:
-                viewController = TimeSettingViewController(core: core, executor: executor, dateInputHandler: self.dateInputHandler, textInputHandler: self.textInputHandler)
-            case .render:
-                let renderInfo = await self.rendererInfoProvider()
-                viewController = TextViewController(title: item.name, text: renderInfo)
-            case .dataLocation:
-                viewController = DataLocationSelectionViewController(userDefaults: dataLocationContext.userDefaults, dataDirectoryUserDefaultsKey: dataLocationContext.dataDirectoryUserDefaultsKey, configFileUserDefaultsKey: dataLocationContext.configFileUserDefaultsKey, defaultDataDirectoryURL: dataLocationContext.defaultDataDirectoryURL, defaultConfigFileURL: dataLocationContext.defaultConfigFileURL)
-            #if !os(visionOS)
-            case .frameRate:
-                viewController = SettingsFrameRateViewController(screen: self.screenProvider(), userDefaults: userDefaults, userDefaultsKey: frameRateContext.frameRateUserDefaultsKey, frameRateUpdateHandler: { [weak self] newFrameRate in
-                    self?.actionHandler(.refreshFrameRate(newFrameRate: newFrameRate))
-                })
-            case .font:
-                if #available(iOS 15, *) {
-                    viewController = FontSettingMainViewController(context: fontContext, userDefaults: userDefaults, subscriptionManager: subscriptionManager, openSubscriptionManagement: { [weak self] in
-                        guard let self else { return }
-                        self.openSubscriptionManagement(self)
+            switch item.associatedItem {
+            case .common(let associated):
+                viewController = SettingCommonViewController(core: core, executor: executor, userDefaults: userDefaults, item: associated)
+            case .other(let otherType):
+                switch otherType {
+                case .about:
+                    viewController = AboutViewController(bundle: bundle, defaultDirectoryURL: self.defaultDataDirectory)
+                case .render:
+                    let renderInfo = await self.rendererInfoProvider()
+                    viewController = TextViewController(title: item.name, text: renderInfo)
+                case .time:
+                    viewController = TimeSettingViewController(core: core, executor: executor, dateInputHandler: self.dateInputHandler, textInputHandler: self.textInputHandler)
+                case .dataLocation:
+                    viewController = DataLocationSelectionViewController(userDefaults: dataLocationContext.userDefaults, dataDirectoryUserDefaultsKey: dataLocationContext.dataDirectoryUserDefaultsKey, configFileUserDefaultsKey: dataLocationContext.configFileUserDefaultsKey, defaultDataDirectoryURL: dataLocationContext.defaultDataDirectoryURL, defaultConfigFileURL: dataLocationContext.defaultConfigFileURL)
+#if !os(visionOS)
+                case .frameRate:
+                    viewController = SettingsFrameRateViewController(screen: self.screenProvider(), userDefaults: userDefaults, userDefaultsKey: frameRateContext.frameRateUserDefaultsKey, frameRateUpdateHandler: { [weak self] newFrameRate in
+                        self?.actionHandler(.refreshFrameRate(newFrameRate: newFrameRate))
                     })
-                } else {
-                    fatalError()
+                case .font:
+                    if #available(iOS 15, *) {
+                        viewController = FontSettingMainViewController(context: fontContext, userDefaults: userDefaults, subscriptionManager: subscriptionManager, openSubscriptionManagement: { [weak self] in
+                            guard let self else { return }
+                            self.openSubscriptionManagement(self)
+                        })
+                    } else {
+                        fatalError()
+                    }
+                case .toolbar:
+                    if #available(iOS 15, *) {
+                        viewController = ToolbarSettingViewController(context: toolbarContext, userDefaults: userDefaults, subscriptionManager: subscriptionManager, openSubscriptionManagement: { [weak self] in
+                            guard let self else { return }
+                            self.openSubscriptionManagement(self)
+                        })
+                    } else {
+                        fatalError()
+                    }
+#endif
                 }
-            case .toolbar:
-                if #available(iOS 15, *) {
-                    viewController = ToolbarSettingViewController(context: toolbarContext, userDefaults: userDefaults, subscriptionManager: subscriptionManager, openSubscriptionManagement: { [weak self] in
-                        guard let self else { return }
-                        self.openSubscriptionManagement(self)
-                    })
-                } else {
-                    fatalError()
-                }
-            #endif
             case .slider, .prefSwitch, .checkmark, .action, .custom, .keyedSelection, .prefSelection, .selection, .prefSlider:
                 fatalError("Use .common for slider/action setting item.")
             }

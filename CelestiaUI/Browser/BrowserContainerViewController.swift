@@ -12,6 +12,8 @@
 import CelestiaCore
 import UIKit
 
+extension BrowserItem: @unchecked Sendable {}
+
 public class BrowserContainerViewController: UIViewController {
     #if targetEnvironment(macCatalyst)
     private lazy var controller = ToolbarSplitContainerController()

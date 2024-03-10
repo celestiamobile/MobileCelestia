@@ -11,12 +11,12 @@
 
 import UIKit
 
-struct DisplayFont {
+struct DisplayFont: Sendable {
     let font: CustomFont
     let name: String
 }
 
-public struct CustomFont: Codable {
+public struct CustomFont: Codable, Sendable {
     public let path: String
     public let ttcIndex: Int
 

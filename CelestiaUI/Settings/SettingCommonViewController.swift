@@ -70,170 +70,134 @@ extension SettingCommonViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let row = item.sections[indexPath.section].rows[indexPath.row]
 
-        switch row.type {
-        case .slider:
-            if let item = row.associatedItem.base as? AssociatedSliderItem {
-                let maxValue = item.maxValue
-                let minValue = item.minValue
-                let key = item.key
-                let cell = tableView.dequeueReusableCell(withIdentifier: "Slider", for: indexPath) as! SliderCell
+        switch row.associatedItem {
+        case .slider(let item):
+            let maxValue = item.maxValue
+            let minValue = item.minValue
+            let key = item.key
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Slider", for: indexPath) as! SliderCell
+            cell.title = row.name
+            cell.value = ((core.value(forKey: key) as! Double) - minValue) / (maxValue - minValue)
+            cell.valueChangeBlock = { [weak self] (value) in
+                guard let self = self else { return }
+                let transformed = value * (maxValue - minValue) + minValue
+                Task {
+                    await self.executor.run {
+                        $0.setValue(transformed, forKey: key)
+                    }
+                    self.userDefaults.set(transformed, forKey: key)
+                    self.tableView.reloadData()
+                }
+            }
+            return cell
+        case .action:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Action", for: indexPath) as! TextCell
+            cell.title = row.name
+            return cell
+        case .custom:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Custom", for: indexPath) as! TextCell
+            cell.title = row.name
+            return cell
+        case .checkmark(let item):
+            let enabled = core.value(forKey: item.key) as? Bool ?? false
+            if item.representation == .switch {
+                let cell = tableView.dequeueReusableCell(withIdentifier: "Switch", for: indexPath) as! SwitchCell
                 cell.title = row.name
-                cell.value = ((core.value(forKey: key) as! Double) - minValue) / (maxValue - minValue)
-                cell.valueChangeBlock = { [weak self] (value) in
-                    guard let self = self else { return }
-                    let transformed = value * (maxValue - minValue) + minValue
+                cell.subtitle = row.subtitle
+                cell.enabled = enabled
+                cell.toggleBlock = { [weak self] newValue in
+                    guard let self else { return }
                     Task {
                         await self.executor.run {
-                            $0.setValue(transformed, forKey: key)
+                            $0.setValue(newValue, forKey: item.key)
                         }
-                        self.userDefaults.set(transformed, forKey: key)
-                        self.tableView.reloadData()
+                        self.userDefaults.setValue(newValue, forKey: item.key)
                     }
                 }
                 return cell
             } else {
-                logWrongAssociatedItemType(row.associatedItem)
-            }
-        case .action:
-            if row.associatedItem.base is AssociatedActionItem {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "Action", for: indexPath) as! TextCell
-                cell.title = row.name
-                return cell
-            } else {
-                logWrongAssociatedItemType(row.associatedItem)
-            }
-        case .custom:
-            if row.associatedItem.base is AssociatedCustomItem {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "Custom", for: indexPath) as! TextCell
-                cell.title = row.name
-                return cell
-            } else {
-                logWrongAssociatedItemType(row.associatedItem)
-            }
-        case .checkmark:
-            if let item = row.associatedItem.base as? AssociatedCheckmarkItem {
-                let enabled = core.value(forKey: item.key) as? Bool ?? false
-                if item.representation == .switch {
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "Switch", for: indexPath) as! SwitchCell
-                    cell.title = row.name
-                    cell.subtitle = row.subtitle
-                    cell.enabled = enabled
-                    cell.toggleBlock = { [weak self] newValue in
-                        guard let self else { return }
-                        Task {
-                            await self.executor.run {
-                                $0.setValue(newValue, forKey: item.key)
-                            }
-                            self.userDefaults.setValue(newValue, forKey: item.key)
-                        }
-                    }
-                    return cell
-                } else {
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "Checkmark", for: indexPath) as! TextCell
-                    cell.title = row.name
-                    cell.subtitle = row.subtitle
-                    cell.accessoryType = enabled ? .checkmark : .none
-                    return cell
-                }
-            } else {
-                logWrongAssociatedItemType(row.associatedItem)
-            }
-        case .keyedSelection:
-            if let item = row.associatedItem.base as? AssociatedKeyedSelectionItem {
-                let selectedIndex = core.value(forKey: item.key) as? Int ?? 0
                 let cell = tableView.dequeueReusableCell(withIdentifier: "Checkmark", for: indexPath) as! TextCell
                 cell.title = row.name
-                cell.accessoryType = selectedIndex == item.index ? .checkmark : .none
+                cell.subtitle = row.subtitle
+                cell.accessoryType = enabled ? .checkmark : .none
                 return cell
-            } else {
-                logWrongAssociatedItemType(row.associatedItem)
             }
-        case .prefSwitch:
-            if let item = row.associatedItem.base as? AssociatedPreferenceSwitchItem {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "Switch", for: indexPath) as! SwitchCell
-                cell.enabled = userDefaults[item.key] ?? item.defaultOn
+        case .keyedSelection(let item):
+            let selectedIndex = core.value(forKey: item.key) as? Int ?? 0
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Checkmark", for: indexPath) as! TextCell
+            cell.title = row.name
+            cell.accessoryType = selectedIndex == item.index ? .checkmark : .none
+            return cell
+        case .prefSwitch(let item):
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Switch", for: indexPath) as! SwitchCell
+            cell.enabled = userDefaults[item.key] ?? item.defaultOn
+            cell.title = row.name
+            cell.subtitle = row.subtitle
+            cell.toggleBlock = { [weak self] enabled in
+                guard let self else { return }
+                self.userDefaults[item.key] = enabled
+            }
+            return cell
+        case .prefSelection(let item):
+            let currentValue = self.userDefaults[item.key] ?? item.defaultOption
+            if #available(iOS 15, visionOS 1, *) {
+                let cell = tableView.dequeueReusableCell(withIdentifier: "Selection15", for: indexPath) as! SelectionCell
                 cell.title = row.name
                 cell.subtitle = row.subtitle
-                cell.toggleBlock = { [weak self] enabled in
+                cell.selectionData = SelectionCell.SelectionData(options: item.options.map { $0.name }, selectedIndex: item.options.firstIndex(where: { $0.value == currentValue }) ?? -1)
+                cell.selectionChange = { [weak self] index in
                     guard let self else { return }
-                    self.userDefaults[item.key] = enabled
+                    self.userDefaults[item.key] = item.options[index].value
                 }
                 return cell
-            } else {
-                logWrongAssociatedItemType(row.associatedItem)
             }
-        case .prefSelection:
-            if let item = row.associatedItem.base as? AssociatedPreferenceSelectionItem {
-                let currentValue = self.userDefaults[item.key] ?? item.defaultOption
-                if #available(iOS 15, visionOS 1, *) {
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "Selection15", for: indexPath) as! SelectionCell
-                    cell.title = row.name
-                    cell.subtitle = row.subtitle
-                    cell.selectionData = SelectionCell.SelectionData(options: item.options.map { $0.name }, selectedIndex: item.options.firstIndex(where: { $0.value == currentValue }) ?? -1)
-                    cell.selectionChange = { [weak self] index in
-                        guard let self else { return }
-                        self.userDefaults[item.key] = item.options[index].value
-                    }
-                    return cell
-                }
-                let cell = tableView.dequeueReusableCell(withIdentifier: "Selection", for: indexPath) as! TextCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Selection", for: indexPath) as! TextCell
+            cell.title = row.name
+            cell.subtitle = row.subtitle
+            cell.detail = item.options.first(where: { $0.value == currentValue })?.name ?? ""
+            cell.accessoryType = .disclosureIndicator
+            return cell
+        case .selection(let item):
+            let currentValue = core.value(forKey: item.key) as? Int ?? item.defaultOption
+            if #available(iOS 15, visionOS 1, *) {
+                let cell = tableView.dequeueReusableCell(withIdentifier: "Selection15", for: indexPath) as! SelectionCell
                 cell.title = row.name
                 cell.subtitle = row.subtitle
-                cell.detail = item.options.first(where: { $0.value == currentValue })?.name ?? ""
-                cell.accessoryType = .disclosureIndicator
-                return cell
-            } else {
-                logWrongAssociatedItemType(row.associatedItem)
-            }
-        case .selection:
-            if let item = row.associatedItem.base as? AssociatedSelectionSingleItem {
-                let currentValue = core.value(forKey: item.key) as? Int ?? item.defaultOption
-                if #available(iOS 15, visionOS 1, *) {
-                    let cell = tableView.dequeueReusableCell(withIdentifier: "Selection15", for: indexPath) as! SelectionCell
-                    cell.title = row.name
-                    cell.subtitle = row.subtitle
-                    cell.selectionData = SelectionCell.SelectionData(options: item.options.map { $0.name }, selectedIndex: item.options.firstIndex(where: { $0.value == currentValue }) ?? -1)
-                    cell.selectionChange = { [weak self] index in
-                        guard let self else { return }
-                        Task {
-                            let value = item.options[index].value
-                            await self.executor.run {
-                                $0.setValue(value, forKey: item.key)
-                            }
-                            self.userDefaults.setValue(value, forKey: item.key)
+                cell.selectionData = SelectionCell.SelectionData(options: item.options.map { $0.name }, selectedIndex: item.options.firstIndex(where: { $0.value == currentValue }) ?? -1)
+                cell.selectionChange = { [weak self] index in
+                    guard let self else { return }
+                    Task {
+                        let value = item.options[index].value
+                        await self.executor.run {
+                            $0.setValue(value, forKey: item.key)
                         }
+                        self.userDefaults.setValue(value, forKey: item.key)
                     }
-                    return cell
-                }
-                let cell = tableView.dequeueReusableCell(withIdentifier: "Selection", for: indexPath) as! TextCell
-                cell.title = row.name
-                cell.subtitle = row.subtitle
-                cell.detail = item.options.first(where: { $0.value == currentValue })?.name ?? ""
-                cell.accessoryType = .disclosureIndicator
-                return cell
-            } else {
-                logWrongAssociatedItemType(row.associatedItem)
-            }
-        case .prefSlider:
-            if let item = row.associatedItem.base as? AssociatedPreferenceSliderItem {
-                let maxValue = item.maxValue
-                let minValue = item.minValue
-                let cell = tableView.dequeueReusableCell(withIdentifier: "Slider", for: indexPath) as! SliderCell
-                cell.title = row.name
-                let currentValue = self.userDefaults[item.key] ?? item.defaultValue
-                let transformedValue = (currentValue - minValue) / (maxValue - minValue)
-                cell.value = transformedValue
-                cell.subtitle = row.subtitle
-                cell.valueChangeBlock = { [weak self] (value) in
-                    guard let self = self else { return }
-                    let transformed = value * (maxValue - minValue) + minValue
-                    self.userDefaults[item.key] = transformed
                 }
                 return cell
-            } else {
-                logWrongAssociatedItemType(row.associatedItem)
             }
-        default:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Selection", for: indexPath) as! TextCell
+            cell.title = row.name
+            cell.subtitle = row.subtitle
+            cell.detail = item.options.first(where: { $0.value == currentValue })?.name ?? ""
+            cell.accessoryType = .disclosureIndicator
+            return cell
+        case .prefSlider(let item):
+            let maxValue = item.maxValue
+            let minValue = item.minValue
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Slider", for: indexPath) as! SliderCell
+            cell.title = row.name
+            let currentValue = self.userDefaults[item.key] ?? item.defaultValue
+            let transformedValue = (currentValue - minValue) / (maxValue - minValue)
+            cell.value = transformedValue
+            cell.subtitle = row.subtitle
+            cell.valueChangeBlock = { [weak self] (value) in
+                guard let self = self else { return }
+                let transformed = value * (maxValue - minValue) + minValue
+                self.userDefaults[item.key] = transformed
+            }
+            return cell
+        case .common, .other:
             fatalError("SettingCommonViewController cannot handle this type of item")
         }
     }
@@ -242,12 +206,10 @@ extension SettingCommonViewController {
         tableView.deselectRow(at: indexPath, animated: true)
 
         let row = item.sections[indexPath.section].rows[indexPath.row]
-        switch row.type {
-        case .action:
-            guard let item = row.associatedItem.base as? AssociatedActionItem else { break }
+        switch row.associatedItem {
+        case .action(let item):
             core.charEnter(item.action)
-        case .checkmark:
-            guard let item = row.associatedItem.base as? AssociatedCheckmarkItem, item.representation == .checkmark else { break }
+        case .checkmark(let item):
             guard let cell = tableView.cellForRow(at: indexPath) else { break }
             let checked = cell.accessoryType == .checkmark
             Task {
@@ -257,8 +219,7 @@ extension SettingCommonViewController {
                 self.userDefaults.set(!checked, forKey: item.key)
                 self.tableView.reloadData()
             }
-        case .keyedSelection:
-            guard let item = row.associatedItem.base as? AssociatedKeyedSelectionItem else { break }
+        case .keyedSelection(let item):
             Task {
                 await executor.run {
                     $0.setValue(item.index, forKey: item.key)
@@ -266,18 +227,16 @@ extension SettingCommonViewController {
                 self.userDefaults.set(item.index, forKey: item.key)
                 self.tableView.reloadData()
             }
-        case .custom:
-            guard let item = row.associatedItem.base as? AssociatedCustomItem else { break }
+        case .custom(let item):
             Task {
                 await executor.run {
                     item.block($0)
                 }
             }
-        case .prefSelection:
+        case .prefSelection(let item):
             if #available(iOS 15, visionOS 1, *) {
                 break
             }
-            guard let item = row.associatedItem.base as? AssociatedPreferenceSelectionItem else { break }
             let currentValue = userDefaults[item.key] ?? item.defaultOption
             let vc = SelectionViewController(title: row.name, options: item.options.map { $0.name }, selectedIndex: item.options.firstIndex(where: { $0.value == currentValue })) { [weak self] newIndex in
                 guard let self else { return }
@@ -285,11 +244,10 @@ extension SettingCommonViewController {
                 self.tableView.reloadData()
             }
             navigationController?.pushViewController(vc, animated: true)
-        case .selection:
+        case .selection(let item):
             if #available(iOS 15, visionOS 1, *) {
                 break
             }
-            guard let item = row.associatedItem.base as? AssociatedSelectionSingleItem else { break }
             let currentValue = core.value(forKey: item.key) as? Int ?? item.defaultOption
             let vc = SelectionViewController(title: row.name, options: item.options.map { $0.name }, selectedIndex: item.options.firstIndex(where: { $0.value == currentValue })) { [weak self] newIndex in
                 guard let self else { return }

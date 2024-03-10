@@ -19,35 +19,31 @@ private let defaultSensitivity: Double = 4.0
 #else
 private let defaultSensitivity: Double = 10.0
 #endif
-private let sharedInteractionItems: [SettingItem<AnyHashable>] = [
+private let sharedInteractionItems: [SettingItem] = [
     SettingItem(
         name: CelestiaString("Reverse Mouse Wheel", comment: ""),
-        type: .checkmark,
-        associatedItem: .init(
+        associatedItem: .checkmark(item:
             AssociatedCheckmarkItem(name: CelestiaString("Reverse Mouse Wheel", comment: ""), key: "enableReverseWheel", representation: .switch)
         )
     ),
     SettingItem(
         name: CelestiaString("Ray-Based Dragging", comment: ""),
         subtitle: CelestiaString("Dragging behavior based on change of pick rays instead of screen coordinates", comment: ""),
-        type: .checkmark,
-        associatedItem: .init(
+        associatedItem: .checkmark(item:
             AssociatedCheckmarkItem(name: CelestiaString("Ray-Based Dragging", comment: ""), key: "enableRayBasedDragging", representation: .switch)
         )
     ),
     SettingItem(
         name: CelestiaString("Focus Zooming", comment: ""),
         subtitle: CelestiaString("Zooming behavior keeping the original focus location on screen", comment: ""),
-        type: .checkmark,
-        associatedItem: .init(
+        associatedItem: .checkmark(item:
             AssociatedCheckmarkItem(name: CelestiaString("Focus Zooming", comment: ""), key: "enableFocusZooming", representation: .switch)
         )
     ),
     SettingItem(
         name: CelestiaString("Sensitivity", comment: "Setting for sensitivity for selecting an object"),
         subtitle: CelestiaString("Sensitivity for object selection", comment: "Notes for the sensitivity setting"),
-        type: .prefSlider,
-        associatedItem: .init(
+        associatedItem: .prefSlider(item:
             AssociatedPreferenceSliderItem(key: .pickSensitivity, minValue: 1.0, maxValue: 20.0, defaultValue: defaultSensitivity)
         )
     )
@@ -58,8 +54,7 @@ private let interactionItems = sharedInteractionItems + [
     SettingItem(
         name: CelestiaString("Pinch Zoom", comment: "Settings for whether to pinch to zoom by FOV or by distance"),
         subtitle: CelestiaString("Adjust view with pinch gestures by changing FOV or distance", comment: "Description for Pinch Zoom setting"),
-        type: .prefSelection,
-        associatedItem: .init(
+        associatedItem: .prefSelection(item:
             AssociatedPreferenceSelectionItem(key: .pinchZoom, options: [
                 .init(name: CelestiaString("FOV", context: "Pinch Zoom", comment: "Pinch zoom setting option"), value: 0),
                 .init(name: CelestiaString("Distance", context: "Pinch Zoom", comment: "Pinch zoom setting option"), value: 1)
@@ -72,8 +67,7 @@ private let interactionItems = sharedInteractionItems + [
     SettingItem(
         name: CelestiaString("Context Menu", comment: "Settings for whether context menu is enabled"),
         subtitle: CelestiaString("Context menu by long press or context click", comment: "Description for how a context menu is triggered"),
-        type: .prefSwitch,
-        associatedItem: .init(
+        associatedItem: .prefSwitch(item:
             AssociatedPreferenceSwitchItem(key: .contextMenu, defaultOn: true)
         )
     )
@@ -83,8 +77,7 @@ private let interactionItems = sharedInteractionItems + [
 private let advanceSettingExtraItems = [
     SettingItem(
         name: CelestiaString("Interaction", comment: "Settings for interaction"),
-        type: .common,
-        associatedItem: .init(
+        associatedItem: .common(item:
             AssociatedCommonItem(
                 title: CelestiaString("Interaction", comment: "Settings for interaction"),
                 sections: [
@@ -107,23 +100,20 @@ let mainSetting: [SettingSection] = {
         rendererSettings(extraItems: [
             SettingItem(
                 name: CelestiaString("Advanced", comment: "Advanced setting items"),
-                type: .common,
-                associatedItem: .init(
+                associatedItem: .common(item:
                     AssociatedCommonItem(
                         title: CelestiaString("Advanced", comment: "Advanced setting items"),
                         sections: [
                             .init(header: nil, rows: [
                                 SettingItem(
                                     name: CelestiaString("HiDPI", comment: "HiDPI support in display"),
-                                    type: .prefSwitch,
-                                    associatedItem: .init(
+                                    associatedItem: .prefSwitch(item:
                                         AssociatedPreferenceSwitchItem(key: .fullDPI, defaultOn: true)
                                     )
                                 ),
                                 SettingItem(
                                     name: CelestiaString("Anti-aliasing", comment: ""),
-                                    type: .prefSwitch,
-                                    associatedItem: .init(
+                                    associatedItem: .prefSwitch(item:
                                         AssociatedPreferenceSwitchItem(key: .msaa, defaultOn: false)
                                     )
                                 )

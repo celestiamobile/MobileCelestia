@@ -12,7 +12,7 @@
 import CelestiaCore
 import Foundation
 
-public enum GameControllerAction: Int, CaseIterable {
+public enum GameControllerAction: Int, CaseIterable, Sendable {
     case noop
     case moveFaster
     case moveSlower

@@ -94,7 +94,7 @@ extension BookmarkNode: FavoriteItemList {
     }
 }
 
-protocol FavoriteItem {
+protocol FavoriteItem: Sendable {
     associatedtype ItemList: FavoriteItemList
     associatedtype Representation
 
@@ -134,6 +134,8 @@ extension BookmarkNode: FavoriteItem {
         self.name = name
     }
 }
+
+extension Script: @unchecked Sendable {}
 
 extension Script: FavoriteItem {
     typealias ItemList = AnyFavoriteItemList<Script>

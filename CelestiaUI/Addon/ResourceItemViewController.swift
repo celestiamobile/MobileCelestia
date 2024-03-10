@@ -388,11 +388,11 @@ private extension ResourceItemViewController {
             message = CelestiaString("Error downloading add-on", comment: "")
         case .zip:
             message = CelestiaString("Error unzipping add-on", comment: "")
-        case .createDirectory(let contextPath):
+        case .createDirectory:
             message = CelestiaString("Error creating directory for add-on", comment: "")
-        case .openFile(let contextPath):
+        case .openFile:
             message = CelestiaString("Error opening file for saving add-on", comment: "")
-        case .writeFile(let contextPath):
+        case .writeFile:
             message = CelestiaString("Error writing data file for add-on", comment: "")
         }
         guard let message else { return }

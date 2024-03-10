@@ -11,7 +11,7 @@
 
 import Foundation
 
-public enum UserDefaultsKey: String {
+public enum UserDefaultsKey: String, Sendable {
     case databaseVersion
 
     case onboardMessageDisplayed

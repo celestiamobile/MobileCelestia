@@ -13,45 +13,45 @@ import CelestiaCore
 import CelestiaFoundation
 import Foundation
 
-public enum SettingType: Hashable {
-    case slider
-    case action
-    case prefSwitch
-    case common
+public enum OtherSettingType: Sendable {
     case about
     case render
     case time
     case dataLocation
     #if !os(visionOS)
     case frameRate
-    #endif
-    case checkmark
-    case custom
-    case keyedSelection
-    case prefSelection
-    case selection
-    case prefSlider
-    #if !os(visionOS)
     case font
     case toolbar
     #endif
 }
 
-public struct SettingItem<T: Hashable>: Hashable {
+public enum AssociatedItem: Sendable {
+    case other(type: OtherSettingType)
+    case common(item: AssociatedCommonItem)
+    case slider(item: AssociatedSliderItem)
+    case checkmark(item: AssociatedCheckmarkItem)
+    case keyedSelection(item: AssociatedKeyedSelectionItem)
+    case selection(item: AssociatedSelectionSingleItem)
+    case prefSelection(item: AssociatedPreferenceSelectionItem)
+    case prefSwitch(item: AssociatedPreferenceSwitchItem)
+    case prefSlider(item: AssociatedPreferenceSliderItem)
+    case custom(item: AssociatedCustomItem)
+    case action(item: AssociatedActionItem)
+}
+
+public struct SettingItem: Sendable {
     public let name: String
     public let subtitle: String?
-    public let type: SettingType
-    public let associatedItem: T
+    public let associatedItem: AssociatedItem
 
-    public init(name: String, subtitle: String? = nil, type: SettingType, associatedItem: T) {
+    public init(name: String, subtitle: String? = nil, associatedItem: AssociatedItem) {
         self.name = name
         self.subtitle = subtitle
-        self.type = type
         self.associatedItem = associatedItem
     }
 }
 
-public struct SettingActionItem: Hashable {
+public struct SettingActionItem: Sendable {
     public let action: Int8
 
     public init(action: Int8) {
@@ -59,23 +59,23 @@ public struct SettingActionItem: Hashable {
     }
 }
 
-public struct SettingSection: Hashable {
+public struct SettingSection: Sendable {
     public let title: String?
-    public let items: [SettingItem<AnyHashable>]
+    public let items: [SettingItem]
 
-    public init(title: String?, items: [SettingItem<AnyHashable>]) {
+    public init(title: String?, items: [SettingItem]) {
         self.title = title
         self.items = items
     }
 }
 
-public struct SettingCommonItem: Hashable {
-    public struct Section: Hashable {
+public struct SettingCommonItem: Sendable {
+    public struct Section: Sendable {
         public let header: String?
-        public let rows: [SettingItem<AnyHashable>]
+        public let rows: [SettingItem]
         public let footer: String?
 
-        public init(header: String?, rows: [SettingItem<AnyHashable>], footer: String?) {
+        public init(header: String?, rows: [SettingItem], footer: String?) {
             self.header = header
             self.rows = rows
             self.footer = footer
@@ -91,16 +91,16 @@ public struct SettingCommonItem: Hashable {
 }
 
 public extension SettingCommonItem {
-    init(title: String, items: [SettingItem<AnyHashable>]) {
+    init(title: String, items: [SettingItem]) {
         self.init(title: title, sections: [Section(header: nil, rows: items, footer: nil)])
     }
 
-    init(item: SettingItem<AnyHashable>) {
+    init(item: SettingItem) {
         self.init(title: item.name, items: [item])
     }
 }
 
-public struct SettingSelectionItem: Hashable {
+public struct SettingSelectionItem: Sendable {
     public let name: String
     public let index: Int
 
@@ -110,7 +110,7 @@ public struct SettingSelectionItem: Hashable {
     }
 }
 
-public struct SettingKeyedSelectionItem: Hashable {
+public struct SettingKeyedSelectionItem: Sendable {
     public let name: String
     public let key: String
     public let index: Int
@@ -122,8 +122,8 @@ public struct SettingKeyedSelectionItem: Hashable {
     }
 }
 
-public struct SettingSelectionSingleItem: Hashable {
-    public struct Option: Hashable {
+public struct SettingSelectionSingleItem: Sendable {
+    public struct Option: Sendable {
         public let name: String
         public let value: Int
 
@@ -144,7 +144,7 @@ public struct SettingSelectionSingleItem: Hashable {
     }
 }
 
-public struct SettingSliderItem: Hashable {
+public struct SettingSliderItem: Sendable {
     public let key: String
     public let minValue: Double
     public let maxValue: Double
@@ -163,8 +163,8 @@ public enum TextItem {
     case link(title: String, url: URL)
 }
 
-public struct SettingCheckmarkItem: Hashable {
-    public enum Representation: Hashable {
+public struct SettingCheckmarkItem: Sendable {
+    public enum Representation: Sendable {
         case checkmark
         case `switch`
     }
@@ -191,8 +191,7 @@ public extension Array where Element == SettingCheckmarkItem {
             rows: map({ item in
                 return SettingItem(
                     name: item.name,
-                    type: .checkmark,
-                    associatedItem: item
+                    associatedItem: .checkmark(item: item)
                 )
             }),
             footer: footer
@@ -200,7 +199,7 @@ public extension Array where Element == SettingCheckmarkItem {
     }
 }
 
-public struct AssociatedSelectionItem: Hashable {
+public struct AssociatedSelectionItem: Sendable {
     public let key: String
     public let subtitle: String?
     public let items: [SettingSelectionItem]
@@ -210,8 +209,7 @@ public struct AssociatedSelectionItem: Hashable {
             return SettingItem(
                 name: item.name,
                 subtitle: subtitle,
-                type: .keyedSelection,
-                associatedItem: SettingKeyedSelectionItem(name: item.name, key: key, index: item.index)
+                associatedItem: .keyedSelection(item: SettingKeyedSelectionItem(name: item.name, key: key, index: item.index))
             )
         }, footer: footer)
     }
@@ -223,7 +221,7 @@ public struct AssociatedSelectionItem: Hashable {
     }
 }
 
-public struct SettingPreferenceSwitchItem: Hashable {
+public struct SettingPreferenceSwitchItem: Sendable {
     public let key: UserDefaultsKey
     public let defaultOn: Bool
 
@@ -233,8 +231,8 @@ public struct SettingPreferenceSwitchItem: Hashable {
     }
 }
 
-public struct SettingPreferenceSelectionItem: Hashable {
-    public struct Option: Hashable {
+public struct SettingPreferenceSelectionItem: Sendable {
+    public struct Option: Sendable {
         public let name: String
         public let value: Int
 
@@ -255,7 +253,7 @@ public struct SettingPreferenceSelectionItem: Hashable {
     }
 }
 
-public struct SettingPreferenceSliderItem: Hashable {
+public struct SettingPreferenceSliderItem: Sendable {
     public let key: UserDefaultsKey
     public let minValue: Double
     public let maxValue: Double
@@ -269,7 +267,7 @@ public struct SettingPreferenceSliderItem: Hashable {
     }
 }
 
-public class BlockHolder<T: Sendable>: NSObject {
+public final class BlockHolder<T: Sendable>: NSObject, Sendable {
     public let block: @Sendable (T) -> Void
 
     public init(block: @escaping @Sendable (T) -> Void) {
@@ -295,8 +293,7 @@ public func displaySettings() -> SettingSection {
         items: [
             SettingItem(
                 name: CelestiaString("Objects", comment: ""),
-                type: .common,
-                associatedItem: .init(
+                associatedItem: .common(item:
                     AssociatedCommonItem(
                         title: CelestiaString("Objects", comment: ""),
                         sections: [
@@ -320,8 +317,7 @@ public func displaySettings() -> SettingSection {
             ),
             SettingItem(
                 name: CelestiaString("Features", comment: ""),
-                type: .common,
-                associatedItem: .init(
+                associatedItem: .common(item:
                     AssociatedCommonItem(
                         title: CelestiaString("Features", comment: ""),
                         sections: [
@@ -341,30 +337,26 @@ public func displaySettings() -> SettingSection {
             ),
             SettingItem(
                 name: CelestiaString("Orbits", comment: ""),
-                type: .common,
-                associatedItem: .init(
+                associatedItem: .common(item:
                     AssociatedCommonItem(title: CelestiaString("Orbits", comment: ""), sections: [
                         .init(
                             header: nil,
                             rows: [
                             SettingItem(
                                 name: CelestiaString("Show Orbits", comment: ""),
-                                type: .checkmark,
-                                associatedItem: .init(
+                                associatedItem: .checkmark(item:
                                     SettingCheckmarkItem(name: CelestiaString("Show Orbits", comment: ""), key: "showOrbits", representation: .switch)
                                 )
                             ),
                             SettingItem(
                                 name: CelestiaString("Fading Orbits", comment: ""),
-                                type: .checkmark,
-                                associatedItem: .init(
+                                associatedItem: .checkmark(item:
                                     SettingCheckmarkItem(name: CelestiaString("Fading Orbits", comment: ""), key: "showFadingOrbits", representation: .switch)
                                 )
                             ),
                             SettingItem(
                                 name: CelestiaString("Partial Trajectories", comment: ""),
-                                type: .checkmark,
-                                associatedItem: .init(
+                                associatedItem: .checkmark(item:
                                     SettingCheckmarkItem(name: CelestiaString("Partial Trajectories", comment: ""), key: "showPartialTrajectories", representation: .switch)
                                 )
                             ),
@@ -374,57 +366,49 @@ public func displaySettings() -> SettingSection {
                             rows: [
                             SettingItem(
                                 name: CelestiaString("Stars", comment: "Tab for stars in Star Browser"),
-                                type: .checkmark,
-                                associatedItem: .init(
+                                associatedItem: .checkmark(item:
                                     SettingCheckmarkItem(name: CelestiaString("Stars", comment: "Tab for stars in Star Browser"), key: "showStellarOrbits", representation: .checkmark)
                                 )
                             ),
                             SettingItem(
                                 name: CelestiaString("Planets", comment: ""),
-                                type: .checkmark,
-                                associatedItem: .init(
+                                associatedItem: .checkmark(item:
                                     SettingCheckmarkItem(name: CelestiaString("Planets", comment: ""), key: "showPlanetOrbits", representation: .checkmark)
                                 )
                             ),
                             SettingItem(
                                 name: CelestiaString("Dwarf Planets", comment: ""),
-                                type: .checkmark,
-                                associatedItem: .init(
+                                associatedItem: .checkmark(item:
                                     SettingCheckmarkItem(name: CelestiaString("Dwarf Planets", comment: ""), key: "showDwarfPlanetOrbits", representation: .checkmark)
                                 )
                             ),
                             SettingItem(
                                 name: CelestiaString("Moons", comment: ""),
-                                type: .checkmark,
-                                associatedItem: .init(
+                                associatedItem: .checkmark(item:
                                     SettingCheckmarkItem(name: CelestiaString("Moons", comment: ""), key: "showMoonOrbits", representation: .checkmark)
                                 )
                             ),
                             SettingItem(
                                 name: CelestiaString("Minor Moons", comment: ""),
-                                type: .checkmark,
-                                associatedItem: .init(
+                                associatedItem: .checkmark(item:
                                     SettingCheckmarkItem(name: CelestiaString("Minor Moons", comment: ""), key: "showMinorMoonOrbits", representation: .checkmark)
                                 )
                             ),
                             SettingItem(
                                 name: CelestiaString("Asteroids", comment: ""),
-                                type: .checkmark,
-                                associatedItem: .init(
+                                associatedItem: .checkmark(item:
                                     SettingCheckmarkItem(name: CelestiaString("Asteroids", comment: ""), key: "showAsteroidOrbits", representation: .checkmark)
                                 )
                             ),
                             SettingItem(
                                 name: CelestiaString("Comets", comment: ""),
-                                type: .checkmark,
-                                associatedItem: .init(
+                                associatedItem: .checkmark(item:
                                     SettingCheckmarkItem(name: CelestiaString("Comets", comment: ""), key: "showCometOrbits", representation: .checkmark)
                                 )
                             ),
                             SettingItem(
                                 name: CelestiaString("Spacecraft", comment: "Plural"),
-                                type: .checkmark,
-                                associatedItem: .init(
+                                associatedItem: .checkmark(item:
                                     SettingCheckmarkItem(name: CelestiaString("Spacecraft", comment: "Plural"), key: "showSpacecraftOrbits", representation: .checkmark)
                                 )
                             ),
@@ -434,37 +418,32 @@ public func displaySettings() -> SettingSection {
             ),
             SettingItem(
                 name: CelestiaString("Grids", comment: ""),
-                type: .common,
-                associatedItem: .init(
+                associatedItem: .common(item:
                     AssociatedCommonItem(title: CelestiaString("Grids", comment: ""), sections: [
                         .init(
                             header: nil,
                             rows: [
                             SettingItem(
                                 name: CelestiaString("Equatorial", comment: "Grids"),
-                                type: .checkmark,
-                                associatedItem: .init(
+                                associatedItem: .checkmark(item:
                                     SettingCheckmarkItem(name: CelestiaString("Equatorial", comment: "Grids"), key: "showCelestialSphere", representation: .checkmark)
                                 )
                             ),
                             SettingItem(
                                 name: CelestiaString("Ecliptic", comment: "Grids"),
-                                type: .checkmark,
-                                associatedItem: .init(
+                                associatedItem: .checkmark(item:
                                     SettingCheckmarkItem(name: CelestiaString("Ecliptic", comment: "Grids"), key: "showEclipticGrid", representation: .checkmark)
                                 )
                             ),
                             SettingItem(
                                 name: CelestiaString("Horizontal", comment: "Grids"),
-                                type: .checkmark,
-                                associatedItem: .init(
+                                associatedItem: .checkmark(item:
                                     SettingCheckmarkItem(name: CelestiaString("Horizontal", comment: "Grids"), key: "showHorizonGrid", representation: .checkmark)
                                 )
                             ),
                             SettingItem(
                                 name: CelestiaString("Galactic", comment: "Grids"),
-                                type: .checkmark,
-                                associatedItem: .init(
+                                associatedItem: .checkmark(item:
                                     SettingCheckmarkItem(name: CelestiaString("Galactic", comment: "Grids"), key: "showGalacticGrid", representation: .checkmark)
                                 )
                             ),
@@ -474,8 +453,7 @@ public func displaySettings() -> SettingSection {
                             rows: [
                             SettingItem(
                                 name: CelestiaString("Ecliptic Line", comment: ""),
-                                type: .checkmark,
-                                associatedItem: .init(
+                                associatedItem: .checkmark(item:
                                     SettingCheckmarkItem(name: CelestiaString("Ecliptic Line", comment: ""), key: "showEcliptic", representation: .checkmark)
                                 )
                             ),
@@ -485,34 +463,29 @@ public func displaySettings() -> SettingSection {
             ),
             SettingItem(
                 name: CelestiaString("Constellations", comment: ""),
-                type: .common,
-                associatedItem: .init(
+                associatedItem: .common(item:
                     AssociatedCommonItem(title: CelestiaString("Constellations", comment: ""), items: [
                         SettingItem(
                             name: CelestiaString("Show Diagrams", comment: "Show constellation diagrams"),
-                            type: .checkmark,
-                            associatedItem: .init(
+                            associatedItem: .checkmark(item:
                                 SettingCheckmarkItem(name: CelestiaString("Show Diagrams", comment: "Show constellation diagrams"), key: "showDiagrams", representation: .checkmark)
                             )
                         ),
                         SettingItem(
                             name: CelestiaString("Show Labels", comment: "Constellation labels"),
-                            type: .checkmark,
-                            associatedItem: .init(
+                            associatedItem: .checkmark(item:
                                 SettingCheckmarkItem(name: CelestiaString("Show Labels", comment: "Constellation labels"), key: "showConstellationLabels", representation: .checkmark)
                             )
                         ),
                         SettingItem(
                             name: CelestiaString("Show Labels in Latin", comment: "Constellation labels in Latin"),
-                            type: .checkmark,
-                            associatedItem: .init(
+                            associatedItem: .checkmark(item:
                                 SettingCheckmarkItem(name: CelestiaString("Show Labels in Latin", comment: "Constellation labels in Latin"), key: "showLatinConstellationLabels", representation: .checkmark)
                             )
                         ),
                         SettingItem(
                             name: CelestiaString("Show Boundaries", comment: "Show constellation boundaries"),
-                            type: .checkmark,
-                            associatedItem: .init(
+                            associatedItem: .checkmark(item:
                                 SettingCheckmarkItem(name: CelestiaString("Show Boundaries", comment: "Show constellation boundaries"), key: "showBoundaries", representation: .checkmark)
                             )
                         ),
@@ -521,8 +494,7 @@ public func displaySettings() -> SettingSection {
             ),
             SettingItem(
                 name: CelestiaString("Object Labels", comment: "Labels"),
-                type: .common,
-                associatedItem: .init(
+                associatedItem: .common(item:
                     AssociatedCommonItem(
                         title: CelestiaString("Object Labels", comment: "Labels"),
                         sections: [
@@ -546,23 +518,20 @@ public func displaySettings() -> SettingSection {
             ),
             SettingItem(
                 name: CelestiaString("Locations", comment: "Location labels to display"),
-                type: .common,
-                associatedItem: .init(
+                associatedItem: .common(item:
                     AssociatedCommonItem(title: CelestiaString("Locations", comment: "Location labels to display"), sections: [
                         .init(
                             header: nil,
                             rows: [
                             SettingItem(
                                 name: CelestiaString("Show Locations", comment: ""),
-                                type: .checkmark,
-                                associatedItem: .init(
+                                associatedItem: .checkmark(item:
                                     SettingCheckmarkItem(name: CelestiaString("Show Locations", comment: ""), key: "showLocationLabels", representation: .switch)
                                 )
                             ),
                             SettingItem(
                                 name: CelestiaString("Minimum Labeled Feature Size", comment: "Minimum feature size that we should display a label for"),
-                                type: .slider,
-                                associatedItem: .init(
+                                associatedItem: .slider(item:
                                     AssociatedSliderItem(key: "minimumFeatureSize", minValue: 0, maxValue: 99)
                                 )
                             ),
@@ -572,71 +541,61 @@ public func displaySettings() -> SettingSection {
                             rows: [
                             SettingItem(
                                 name: CelestiaString("Cities", comment: ""),
-                                type: .checkmark,
-                                associatedItem: .init(
+                                associatedItem: .checkmark(item:
                                     SettingCheckmarkItem(name: CelestiaString("Cities", comment: ""), key: "showCityLabels", representation: .checkmark)
                                 )
                             ),
                             SettingItem(
                                 name: CelestiaString("Observatories", comment: "Location labels"),
-                                type: .checkmark,
-                                associatedItem: .init(
+                                associatedItem: .checkmark(item:
                                     SettingCheckmarkItem(name: CelestiaString("Observatories", comment: "Location labels"), key: "showObservatoryLabels", representation: .checkmark)
                                 )
                             ),
                             SettingItem(
                                 name: CelestiaString("Landing Sites", comment: "Location labels"),
-                                type: .checkmark,
-                                associatedItem: .init(
+                                associatedItem: .checkmark(item:
                                     SettingCheckmarkItem(name: CelestiaString("Landing Sites", comment: "Location labels"), key: "showLandingSiteLabels", representation: .checkmark)
                                 )
                             ),
                             SettingItem(
                                 name: CelestiaString("Montes (Mountains)", comment: "Location labels"),
-                                type: .checkmark,
-                                associatedItem: .init(
+                                associatedItem: .checkmark(item:
                                     SettingCheckmarkItem(name: CelestiaString("Montes (Mountains)", comment: "Location labels"), key: "showMonsLabels", representation: .checkmark)
                                 )
                             ),
                             SettingItem(
                                 name: CelestiaString("Maria (Seas)", comment: "Location labels"),
-                                type: .checkmark,
-                                associatedItem: .init(
+                                associatedItem: .checkmark(item:
                                     SettingCheckmarkItem(name: CelestiaString("Maria (Seas)", comment: "Location labels"), key: "showMareLabels", representation: .checkmark)
                                 )
                             ),
                             SettingItem(
                                 name: CelestiaString("Craters", comment: "Location labels"),
-                                type: .checkmark,
-                                associatedItem: .init(
+                                associatedItem: .checkmark(item:
                                     SettingCheckmarkItem(name: CelestiaString("Craters", comment: "Location labels"), key: "showCraterLabels", representation: .checkmark)
                                 )
                             ),
                             SettingItem(
                                 name: CelestiaString("Valles (Valleys)", comment: "Location labels"),
-                                type: .checkmark,
-                                associatedItem: .init(
+                                associatedItem: .checkmark(item:
                                     SettingCheckmarkItem(name: CelestiaString("Valles (Valleys)", comment: "Location labels"), key: "showVallisLabels", representation: .checkmark)
                                 )
                             ),
                             SettingItem(
                                 name: CelestiaString("Terrae (Land masses)", comment: "Location labels"),
-                                type: .checkmark,
-                                associatedItem: .init(
+                                associatedItem: .checkmark(item:
                                     SettingCheckmarkItem(name: CelestiaString("Terrae (Land masses)", comment: "Location labels"), key: "showTerraLabels", representation: .checkmark)
                                 )
                             ),
                             SettingItem(
                                 name: CelestiaString("Volcanoes", comment: "Location labels"),
-                                type: .checkmark,
-                                associatedItem: .init(
+                                associatedItem: .checkmark(item:
                                     SettingCheckmarkItem(name: CelestiaString("Volcanoes", comment: "Location labels"), key: "showEruptiveCenterLabels", representation: .checkmark)
                                 )
                             ),
                             SettingItem(
                                 name: CelestiaString("Other", comment: "Other location labels; Android/iOS, Other objects to choose from in Eclipse Finder"),
-                                type: .checkmark,
-                                associatedItem: .init(
+                                associatedItem: .checkmark(item:
                                     SettingCheckmarkItem(name: CelestiaString("Other", comment: "Other location labels; Android/iOS, Other objects to choose from in Eclipse Finder"), key: "showOtherLabels", representation: .checkmark)
                                 )
                             ),
@@ -646,8 +605,7 @@ public func displaySettings() -> SettingSection {
             ),
             SettingItem(
                 name: CelestiaString("Markers", comment: ""),
-                type: .common,
-                associatedItem: .init(
+                associatedItem: .common(item:
                     AssociatedCommonItem(
                         title: CelestiaString("Markers", comment: ""),
                         sections: [
@@ -656,16 +614,14 @@ public func displaySettings() -> SettingSection {
                                 rows: [
                                 SettingItem(
                                     name: CelestiaString("Show Markers", comment: ""),
-                                    type: .checkmark,
-                                    associatedItem: .init(
+                                    associatedItem: .checkmark(item:
                                         SettingCheckmarkItem(name: CelestiaString("Show Markers", comment: ""), key: "showMarkers", representation: .switch)
                                     )
                                 ),
                                 SettingItem(
                                     name: CelestiaString("Unmark All", comment: "Unmark all objects"),
-                                    type: .custom,
-                                    associatedItem: .init(
-                                        AssociatedCustomItem() { core in
+                                    associatedItem: .custom(item:
+                                        AssociatedCustomItem { core in
                                             core.simulation.universe.unmarkAll()
                                         }
                                     )
@@ -677,8 +633,7 @@ public func displaySettings() -> SettingSection {
             ),
             SettingItem(
                 name: CelestiaString("Reference Vectors", comment: "Reference vectors for an object"),
-                type: .common,
-                associatedItem: .init(
+                associatedItem: .common(item:
                     AssociatedCommonItem(
                         title: CelestiaString("Reference Vectors", comment: "Reference vectors for an object"),
                         sections: [
@@ -689,8 +644,8 @@ public func displaySettings() -> SettingSection {
                                 AssociatedCheckmarkItem(name: CelestiaString("Show Velocity Vector", comment: "Reference vector"), key: "showVelocityVector"),
                                 AssociatedCheckmarkItem(name: CelestiaString("Show Planetographic Grid", comment: "Reference vector"), key: "showPlanetographicGrid"),
                                 AssociatedCheckmarkItem(name: CelestiaString("Show Terminator", comment: "Reference vector"), key: "showTerminator"),
-                            ].map { (item) -> SettingItem<AnyHashable> in
-                                return .init(name: item.name, type: .checkmark, associatedItem: .init(item))
+                            ].map { (item) -> SettingItem in
+                                return .init(name: item.name, associatedItem: .checkmark(item: item))
                             }, footer: CelestiaString("Reference vectors are only visible for the current selected solar system object.", comment: ""))
                         ]
                     )
@@ -706,8 +661,7 @@ public func timeAndRegionSettings() -> SettingSection {
         items: [
             SettingItem(
                 name: CelestiaString("Time Zone", comment: ""),
-                type: .common,
-                associatedItem: .init(
+                associatedItem: .common(item:
                     AssociatedCommonItem(
                         title: CelestiaString("Time Zone", comment: ""),
                         sections: [
@@ -724,8 +678,7 @@ public func timeAndRegionSettings() -> SettingSection {
             ),
             SettingItem(
                 name: CelestiaString("Date Format", comment: ""),
-                type: .common,
-                associatedItem: .init(
+                associatedItem: .common(item:
                     AssociatedCommonItem(
                         title: CelestiaString("Date Format", comment: ""),
                         sections: [
@@ -741,11 +694,10 @@ public func timeAndRegionSettings() -> SettingSection {
                     )
                 )
             ),
-            SettingItem(name: CelestiaString("Current Time", comment: ""), type: .time, associatedItem: .init(0)),
+            SettingItem(name: CelestiaString("Current Time", comment: ""), associatedItem: .other(type: .time)),
             SettingItem(
                 name: CelestiaString("Measure Units", comment: "Measurement system"),
-                type: .common,
-                associatedItem: .init(
+                associatedItem: .common(item:
                     AssociatedCommonItem(
                         title: CelestiaString("Measure Units", comment: "Measurement system"),
                         sections: [
@@ -770,8 +722,7 @@ public func timeAndRegionSettings() -> SettingSection {
             ),
             SettingItem(
                 name: CelestiaString("Info Display", comment: "HUD display"),
-                type: .common,
-                associatedItem: .init(
+                associatedItem: .common(item:
                     AssociatedCommonItem(
                         title: CelestiaString("Info Display", comment: "HUD display"),
                         sections: [
@@ -791,12 +742,11 @@ public func timeAndRegionSettings() -> SettingSection {
 }
 #endif
 
-public func rendererSettings(extraItems: [SettingItem<AnyHashable>]) -> SettingSection {
-    var items: [SettingItem<AnyHashable>] = [
+public func rendererSettings(extraItems: [SettingItem]) -> SettingSection {
+    var items: [SettingItem] = [
         SettingItem(
             name: CelestiaString("Texture Resolution", comment: ""),
-            type: .common,
-            associatedItem: .init(
+            associatedItem: .common(item:
                 AssociatedCommonItem(
                     title: CelestiaString("Texture Resolution", comment: ""),
                     sections: [
@@ -814,20 +764,19 @@ public func rendererSettings(extraItems: [SettingItem<AnyHashable>]) -> SettingS
         ),
         SettingItem(
             name: CelestiaString("Star Style", comment: ""),
-            type: .common,
-            associatedItem: .init(
+            associatedItem: .common(item:
                 AssociatedCommonItem(
                     title: CelestiaString("Star Style", comment: ""),
                     sections: [
                         .init(header: nil, rows: [
-                            SettingItem(name: CelestiaString("Star Style", comment: ""), type: .selection, associatedItem: .init(
+                            SettingItem(name: CelestiaString("Star Style", comment: ""), associatedItem: .selection(item: 
                                 AssociatedSelectionSingleItem(key: "starStyle", options: [
                                     .init(name: CelestiaString("Fuzzy Points", comment: "Star style"), value: 0),
                                     .init(name: CelestiaString("Points", comment: "Star style"), value: 1),
                                     .init(name: CelestiaString("Scaled Discs", comment: "Star style"), value: 2),
                                 ], defaultOption: 0)
                             )),
-                            SettingItem(name: CelestiaString("Star Colors", comment: ""), type: .selection, associatedItem: .init(
+                            SettingItem(name: CelestiaString("Star Colors", comment: ""), associatedItem: .selection(item: 
                                 AssociatedSelectionSingleItem(key: "starColors", options: [
                                     .init(name: CelestiaString("Classic Colors", comment: "Star colors option"), value: 0),
                                     .init(name: CelestiaString("Blackbody D65", comment: "Star colors option"), value: 1),
@@ -837,8 +786,7 @@ public func rendererSettings(extraItems: [SettingItem<AnyHashable>]) -> SettingS
                             )),
                             SettingItem(
                                 name: CelestiaString("Tinted Illumination Saturation", comment: ""),
-                                type: .slider,
-                                associatedItem: .init(
+                                associatedItem: .slider(item:
                                     AssociatedSliderItem(key: "tintSaturation", minValue: 0, maxValue: 1)
                                 )
                             ),
@@ -849,16 +797,14 @@ public func rendererSettings(extraItems: [SettingItem<AnyHashable>]) -> SettingS
         ),
         SettingItem(
             name: CelestiaString("Render Parameters", comment: "Render parameters in setting"),
-            type: .common,
-            associatedItem: .init(
+            associatedItem: .common(item:
                 AssociatedCommonItem(
                     title: CelestiaString("Render Parameters", comment: "Render parameters in setting"),
                     sections: [
                         .init(header: nil, rows: [
                             SettingItem(
                                 name: CelestiaString("Smooth Lines", comment: "Smooth lines for rendering"),
-                                type: .checkmark,
-                                associatedItem: .init(
+                                associatedItem: .checkmark(item:
                                     AssociatedCheckmarkItem(name: CelestiaString("Smooth Lines", comment: "Smooth lines for rendering"), key: "showSmoothLines", representation: .switch)
                                 )
                             ),
@@ -866,29 +812,25 @@ public func rendererSettings(extraItems: [SettingItem<AnyHashable>]) -> SettingS
                         .init(header: nil, rows: [
                             SettingItem(
                                 name: CelestiaString("Auto Mag", comment: "Auto mag for star display"),
-                                type: .checkmark,
-                                associatedItem: .init(
+                                associatedItem: .checkmark(item:
                                     AssociatedCheckmarkItem(name: CelestiaString("Auto Mag", comment: "Auto mag for star display"), key: "showAutoMag", representation: .switch)
                                 )
                             ),
                             SettingItem(
                                 name: CelestiaString("Ambient Light", comment: "In setting"),
-                                type: .slider,
-                                associatedItem: .init(
+                                associatedItem: .slider(item:
                                     AssociatedSliderItem(key: "ambientLightLevel", minValue: 0, maxValue: 1)
                                 )
                             ),
                             SettingItem(
                                 name: CelestiaString("Faintest Stars", comment: "Control the faintest star that Celestia should display"),
-                                type: .slider,
-                                associatedItem: .init(
+                                associatedItem: .slider(item:
                                     AssociatedSliderItem(key: "faintestVisible", minValue: 3, maxValue: 12)
                                 )
                             ),
                             SettingItem(
                                 name: CelestiaString("Galaxy Brightness", comment: "Render parameter"),
-                                type: .slider,
-                                associatedItem: .init(
+                                associatedItem: .slider(item:
                                     AssociatedSliderItem(key: "galaxyBrightness", minValue: 0, maxValue: 1)
                                 )
                             ),
@@ -899,10 +841,10 @@ public func rendererSettings(extraItems: [SettingItem<AnyHashable>]) -> SettingS
         ),
     ]
     #if !os(visionOS)
-    items.append(SettingItem(name: CelestiaString("Frame Rate", comment: "Frame rate of simulation"), type: .frameRate, associatedItem: .init(0)))
+    items.append(SettingItem(name: CelestiaString("Frame Rate", comment: "Frame rate of simulation"), associatedItem: .other(type: .frameRate)))
     #endif
     items.append(contentsOf: extraItems)
-    items.append(SettingItem(name: CelestiaString("Render Info", comment: "Information about renderer"), type: .render, associatedItem: .init(0)))
+    items.append(SettingItem(name: CelestiaString("Render Info", comment: "Information about renderer"), associatedItem: .other(type: .render)))
 
     return SettingSection(title: CelestiaString("Renderer", comment: "In settings"), items: items)
 }
@@ -911,10 +853,10 @@ public func rendererSettings(extraItems: [SettingItem<AnyHashable>]) -> SettingS
 @available(iOS 15, *)
 public func celestiaPlusSettings() -> SettingSection {
     var items = [
-        SettingItem<AnyHashable>(name: CelestiaString("Font", comment: ""), type: .font, associatedItem: .init(0)),
+        SettingItem(name: CelestiaString("Font", comment: ""),  associatedItem: .other(type: .font)),
     ]
     #if !targetEnvironment(macCatalyst)
-    items.insert(SettingItem<AnyHashable>(name: CelestiaString("Toolbar", comment: "Toolbar customization entry in Settings"), type: .toolbar, associatedItem: .init(0)), at: 0)
+    items.insert(SettingItem(name: CelestiaString("Toolbar", comment: "Toolbar customization entry in Settings"), associatedItem: .other(type: .toolbar)), at: 0)
     #endif
     return SettingSection(title: CelestiaString("Celestia PLUS", comment: "Name for the subscription service"), items: items)
 }
@@ -924,95 +866,82 @@ private let gamepadActions = GameControllerAction.allCases.map { action in
     SettingPreferenceSelectionItem.Option(name: action.name, value: action.rawValue)
 }
 
-public let gameControllerItem = SettingItem<AnyHashable>(
+public let gameControllerItem = SettingItem(
     name: CelestiaString("Game Controller", comment: "Settings for game controller"),
-    type: .common,
-    associatedItem: .init(
+    associatedItem: .common(item:
         AssociatedCommonItem(
             title: CelestiaString("Game Controller", comment: "Settings for game controller"),
             sections: [
                 .init(header: CelestiaString("Buttons", comment: "Settings for game controller buttons"), rows: [
                     SettingItem(
                         name: CelestiaString("A / X", comment: "Game controller button"),
-                        type: .prefSelection,
-                        associatedItem: .init(
+                        associatedItem: .prefSelection(item:
                             AssociatedPreferenceSelectionItem(key: .gameControllerRemapA, options: gamepadActions, defaultOption: GameControllerAction.moveSlower.rawValue)
                         )
                     ),
                     SettingItem(
                         name: CelestiaString("B / Circle", comment: "Game controller button"),
-                        type: .prefSelection,
-                        associatedItem: .init(
+                        associatedItem: .prefSelection(item:
                             AssociatedPreferenceSelectionItem(key: .gameControllerRemapB, options: gamepadActions, defaultOption: GameControllerAction.noop.rawValue)
                         )
                     ),
                     SettingItem(
                         name: CelestiaString("X / Square", comment: "Game controller button"),
-                        type: .prefSelection,
-                        associatedItem: .init(
+                        associatedItem: .prefSelection(item:
                             AssociatedPreferenceSelectionItem(key: .gameControllerRemapX, options: gamepadActions, defaultOption: GameControllerAction.moveFaster.rawValue)
                         )
                     ),
                     SettingItem(
                         name: CelestiaString("Y / Triangle", comment: "Game controller button"),
-                        type: .prefSelection,
-                        associatedItem: .init(
+                        associatedItem: .prefSelection(item:
                             AssociatedPreferenceSelectionItem(key: .gameControllerRemapY, options: gamepadActions, defaultOption: GameControllerAction.noop.rawValue)
                         )
                     ),
                     SettingItem(
                         name: CelestiaString("LB / L1", comment: "Game controller button"),
-                        type: .prefSelection,
-                        associatedItem: .init(
+                        associatedItem: .prefSelection(item:
                             AssociatedPreferenceSelectionItem(key: .gameControllerRemapLB, options: gamepadActions, defaultOption: GameControllerAction.noop.rawValue)
                         )
                     ),
                     SettingItem(
                         name: CelestiaString("LT / L2", comment: "Game controller button"),
-                        type: .prefSelection,
-                        associatedItem: .init(
+                        associatedItem: .prefSelection(item:
                             AssociatedPreferenceSelectionItem(key: .gameControllerRemapLT, options: gamepadActions, defaultOption: GameControllerAction.rollLeft.rawValue)
                         )
                     ),
                     SettingItem(
                         name: CelestiaString("RB / R1", comment: "Game controller button"),
-                        type: .prefSelection,
-                        associatedItem: .init(
+                        associatedItem: .prefSelection(item:
                             AssociatedPreferenceSelectionItem(key: .gameControllerRemapRB, options: gamepadActions, defaultOption: GameControllerAction.noop.rawValue)
                         )
                     ),
                     SettingItem(
                         name: CelestiaString("RT / R2", comment: "Game controller button"),
-                        type: .prefSelection,
-                        associatedItem: .init(
+                        associatedItem: .prefSelection(item:
                             AssociatedPreferenceSelectionItem(key: .gameControllerRemapRT, options: gamepadActions, defaultOption: GameControllerAction.rollRight.rawValue)
                         )
                     ),
                     SettingItem(
                         name: CelestiaString("D-pad Up", comment: "Game controller button"),
-                        type: .prefSelection,
-                        associatedItem: .init(
+                        associatedItem: .prefSelection(item:
                             AssociatedPreferenceSelectionItem(key: .gameControllerRemapDpadUp, options: gamepadActions, defaultOption: GameControllerAction.pitchUp.rawValue)
                         )
                     ),
                     SettingItem(
                         name: CelestiaString("D-pad Down", comment: "Game controller button"),
-                        type: .prefSelection,
-                        associatedItem: .init(
+                        associatedItem: .prefSelection(item:
                             AssociatedPreferenceSelectionItem(key: .gameControllerRemapDpadDown, options: gamepadActions, defaultOption: GameControllerAction.pitchDown.rawValue)
                         )
                     ),
                     SettingItem(
                         name: CelestiaString("D-pad Left", comment: "Game controller button"),
-                        type: .prefSelection,
-                        associatedItem: .init(
+                        associatedItem: .prefSelection(item:
                             AssociatedPreferenceSelectionItem(key: .gameControllerRemapDpadLeft, options: gamepadActions, defaultOption: GameControllerAction.rollLeft.rawValue)
                         )
                     ),
                     SettingItem(
                         name: CelestiaString("D-pad Right", comment: "Game controller button"),
-                        type: .prefSelection,
-                        associatedItem: .init(
+                        associatedItem: .prefSelection(item:
                             AssociatedPreferenceSelectionItem(key: .gameControllerRemapDpadRight, options: gamepadActions, defaultOption: GameControllerAction.rollRight.rawValue)
                         )
                     ),
@@ -1020,15 +949,13 @@ public let gameControllerItem = SettingItem<AnyHashable>(
                 .init(header: CelestiaString("Thumbsticks", comment: "Settings for game controller thumbsticks"), rows: [
                     SettingItem(
                         name: CelestiaString("Invert Horizontally", comment: "Invert game controller thumbstick axis horizontally"),
-                        type: .prefSwitch,
-                        associatedItem: .init(
+                        associatedItem: .prefSwitch(item:
                             AssociatedPreferenceSwitchItem(key: .gameControllerInvertX, defaultOn: false)
                         )
                     ),
                     SettingItem(
                         name: CelestiaString("Invert Vertically", comment: "Invert game controller thumbstick axis vertically"),
-                        type: .prefSwitch,
-                        associatedItem: .init(
+                        associatedItem: .prefSwitch(item:
                             AssociatedPreferenceSwitchItem(key: .gameControllerInvertY, defaultOn: false)
                         )
                     ),
@@ -1038,23 +965,22 @@ public let gameControllerItem = SettingItem<AnyHashable>(
     )
 )
 
-public func advancedSettings(extraItems: [SettingItem<AnyHashable>]) -> SettingSection {
+public func advancedSettings(extraItems: [SettingItem]) -> SettingSection {
     var items = extraItems
     #if !os(visionOS)
-    items.append(SettingItem(name: CelestiaString("Data Location", comment: "Title for celestia.cfg, data location setting"), type: .dataLocation, associatedItem: .init(0)))
+    items.append(SettingItem(name: CelestiaString("Data Location", comment: "Title for celestia.cfg, data location setting"), associatedItem: .other(type: .dataLocation)))
     #endif
     items.append(contentsOf: [
         SettingItem(
             name: CelestiaString("Security", comment: "Security settings title"),
-            type: .common,
-            associatedItem: .init(
+            associatedItem: .common(item:
                 AssociatedCommonItem(
                     title: CelestiaString("Security", comment: "Security settings title"),
                     sections: [
                         .init(
                             header: nil,
                             rows: [
-                                SettingItem(name: CelestiaString("Script System Access Policy", comment: "Policy for managing lua script's access to the system"), subtitle: CelestiaString("Lua scripts' access to the file system", comment: "Note for Script System Access Policy"), type: .selection, associatedItem: .init(
+                                SettingItem(name: CelestiaString("Script System Access Policy", comment: "Policy for managing lua script's access to the system"), subtitle: CelestiaString("Lua scripts' access to the file system", comment: "Note for Script System Access Policy"), associatedItem: .selection(item: 
                                     AssociatedSelectionSingleItem(key: "scriptSystemAccessPolicy", options: [
                                         .init(name: CelestiaString("Ask", comment: "Script system access policy option"), value: 0),
                                         .init(name: CelestiaString("Allow", comment: "Script system access policy option"), value: 1),
@@ -1078,22 +1004,19 @@ public func miscSettings() -> SettingSection {
         items: [
             SettingItem(
                 name: CelestiaString("Debug", comment: "Debug menu"),
-                type: .common,
-                associatedItem: .init(
+                associatedItem: .common(item:
                     AssociatedCommonItem(
                         title: CelestiaString("Debug", comment: "Debug menu"),
                         items: [
                             SettingItem(
                                 name: CelestiaString("Toggle FPS Display", comment: "Toggle FPS display on overlay"),
-                                type: .action,
-                                associatedItem: .init(
+                                associatedItem: .action(item:
                                     AssociatedActionItem(action: 0x60)
                                 )
                             ),
                             SettingItem(
                                 name: CelestiaString("Toggle Console Display", comment: "Toggle console log display on overlay"),
-                                type: .action,
-                                associatedItem: .init(
+                                associatedItem: .action(item:
                                     AssociatedActionItem(action: 0x7E)
                                 )
                             )
@@ -1101,6 +1024,6 @@ public func miscSettings() -> SettingSection {
                     )
                 )
             ),
-            SettingItem(name: CelestiaString("About", comment: "About Celstia..."), type: .about, associatedItem: .init(0))
+            SettingItem(name: CelestiaString("About", comment: "About Celstia..."), associatedItem: .other(type: .about))
         ])
 }
