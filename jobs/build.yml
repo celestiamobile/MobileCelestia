@@ -115,6 +115,7 @@ jobs:
     displayName: 'Reintegrate CocoaPods'
 
   - script: |
+      rm -rf /usr/local/bin/2to3* /usr/local/bin/idle3* /usr/local/bin/pydoc* /usr/local/bin/python* /usr/local/share/man/man1/python* /usr/local/lib/pkgconfig/python* /usr/local/Frameworks/Python.framework
       brew install gettext gperf node
     displayName: 'Install Dependencies'
 
