@@ -91,10 +91,10 @@
 		EA872F052A5ACC9C009E6A20 /* TutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CDD29240BC50A00137127 /* TutorialViewController.swift */; };
 		EA872F062A5ACC9C009E6A20 /* TutorialDescriptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CDD2D240BC6A900137127 /* TutorialDescriptionCell.swift */; };
 		EA872F072A5ACC9C009E6A20 /* TutorialActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CDD2F240BD78F00137127 /* TutorialActionCell.swift */; };
-		EA9039792BA19B1300C982BC /* AsyncGL in Frameworks */ = {isa = PBXBuildFile; productRef = EA9039782BA19B1300C982BC /* AsyncGL */; };
 		EA9039A22BA19CF100C982BC /* MWRequest in Frameworks */ = {isa = PBXBuildFile; productRef = EA9039A12BA19CF100C982BC /* MWRequest */; };
 		EA9039A52BA19D0000C982BC /* AppCenterAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = EA9039A42BA19D0000C982BC /* AppCenterAnalytics */; };
 		EA9039A72BA19D0000C982BC /* AppCenterCrashes in Frameworks */ = {isa = PBXBuildFile; productRef = EA9039A62BA19D0000C982BC /* AppCenterCrashes */; };
+		EA9039A92BA19F0900C982BC /* AsyncGLANGLE in Frameworks */ = {isa = PBXBuildFile; productRef = EA9039A82BA19F0900C982BC /* AsyncGLANGLE */; };
 		EA9166972B0AF20A00AF48B1 /* LinkTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9166962B0AF20A00AF48B1 /* LinkTextView.swift */; };
 		EA9166BE2B0C722000AF48B1 /* ToolbarSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9166BD2B0C722000AF48B1 /* ToolbarSettingViewController.swift */; };
 		EA9166C02B0C725100AF48B1 /* QuickAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9166BF2B0C725100AF48B1 /* QuickAction.swift */; };
@@ -431,7 +431,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EA9039792BA19B1300C982BC /* AsyncGL in Frameworks */,
+				EA9039A92BA19F0900C982BC /* AsyncGLANGLE in Frameworks */,
 				EA9039A72BA19D0000C982BC /* AppCenterCrashes in Frameworks */,
 				979D2FAD23FEB2B4005D2592 /* libbz2.tbd in Frameworks */,
 				EA4E2D7C2A56B46B0046D62E /* CelestiaFoundation.framework in Frameworks */,
@@ -1017,7 +1017,7 @@
 			);
 			name = MobileCelestia;
 			packageProductDependencies = (
-				EA9039782BA19B1300C982BC /* AsyncGL */,
+				EA9039A82BA19F0900C982BC /* AsyncGLANGLE */,
 				EA9039A12BA19CF100C982BC /* MWRequest */,
 				EA9039A42BA19D0000C982BC /* AppCenterAnalytics */,
 				EA9039A62BA19D0000C982BC /* AppCenterCrashes */,
@@ -1720,7 +1720,6 @@
 					"-ljpeg",
 					"-lfreetype",
 					"-lintl",
-					"-lGL",
 					"-lzip",
 					"$(THIRD_PARTY_LIB_PATH)/libs/cspice.a",
 					"-ObjC",
@@ -1772,7 +1771,6 @@
 					"-ljpeg",
 					"-lfreetype",
 					"-lintl",
-					"-lGL",
 					"-lzip",
 					"$(THIRD_PARTY_LIB_PATH)/libs/cspice.a",
 					"-ObjC",
@@ -2168,11 +2166,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		EA9039782BA19B1300C982BC /* AsyncGL */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = EA9039772BA19B1300C982BC /* XCRemoteSwiftPackageReference "AsyncGL" */;
-			productName = AsyncGL;
-		};
 		EA9039A12BA19CF100C982BC /* MWRequest */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = EA9039A02BA19CF100C982BC /* XCRemoteSwiftPackageReference "mwrequest" */;
@@ -2187,6 +2180,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = EA9039A32BA19D0000C982BC /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
 			productName = AppCenterCrashes;
+		};
+		EA9039A82BA19F0900C982BC /* AsyncGLANGLE */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EA9039772BA19B1300C982BC /* XCRemoteSwiftPackageReference "AsyncGL" */;
+			productName = AsyncGLANGLE;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

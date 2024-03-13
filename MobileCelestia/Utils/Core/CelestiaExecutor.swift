@@ -9,7 +9,7 @@
 // of the License, or (at your option) any later version.
 //
 
-import AsyncGL
+import AsyncGLANGLE
 import CelestiaCore
 import CelestiaUI
 import Foundation
