@@ -564,7 +564,6 @@
 				973E2EF92400F9E100B0F059 /* Resources */,
 				979D2F7B23FEB1A6005D2592 /* Products */,
 				979D2FA523FEB1DD005D2592 /* Frameworks */,
-				D065056EEA0615965A87D9B4 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -664,13 +663,6 @@
 				97FF95A4240A340300E9F44F /* RequestHandler.swift */,
 			);
 			path = Request;
-			sourceTree = "<group>";
-		};
-		D065056EEA0615965A87D9B4 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Pods;
 			sourceTree = "<group>";
 		};
 		EA1823EB27C08D3D00E0F5E4 /* CelestiaHelper */ = {
