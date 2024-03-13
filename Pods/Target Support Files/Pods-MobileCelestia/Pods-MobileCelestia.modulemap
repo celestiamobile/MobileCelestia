@@ -1,6 +1,0 @@
-framework module Pods_MobileCelestia {
-  umbrella header "Pods-MobileCelestia-umbrella.h"
-
-  export *
-  module * { export * }
-}

@@ -1,27 +1,90 @@
 diff --git a/MobileCelestia.xcodeproj/project.pbxproj b/MobileCelestia.xcodeproj/project.pbxproj
-index 0436284..7da1d1a 100644
+index 5f0593f..aa970a8 100644
 --- a/MobileCelestia.xcodeproj/project.pbxproj
 +++ b/MobileCelestia.xcodeproj/project.pbxproj
-@@ -1723,7 +1723,6 @@
+@@ -90,10 +90,10 @@
+ 		EA872F052A5ACC9C009E6A20 /* TutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CDD29240BC50A00137127 /* TutorialViewController.swift */; };
+ 		EA872F062A5ACC9C009E6A20 /* TutorialDescriptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CDD2D240BC6A900137127 /* TutorialDescriptionCell.swift */; };
+ 		EA872F072A5ACC9C009E6A20 /* TutorialActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CDD2F240BD78F00137127 /* TutorialActionCell.swift */; };
+-		EA9039792BA19B1300C982BC /* AsyncGL in Frameworks */ = {isa = PBXBuildFile; productRef = EA9039782BA19B1300C982BC /* AsyncGL */; };
+ 		EA9039A22BA19CF100C982BC /* MWRequest in Frameworks */ = {isa = PBXBuildFile; productRef = EA9039A12BA19CF100C982BC /* MWRequest */; };
+ 		EA9039A52BA19D0000C982BC /* AppCenterAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = EA9039A42BA19D0000C982BC /* AppCenterAnalytics */; };
+ 		EA9039A72BA19D0000C982BC /* AppCenterCrashes in Frameworks */ = {isa = PBXBuildFile; productRef = EA9039A62BA19D0000C982BC /* AppCenterCrashes */; };
++		EA9039A92BA19F0900C982BC /* AsyncGLANGLE in Frameworks */ = {isa = PBXBuildFile; productRef = EA9039A82BA19F0900C982BC /* AsyncGLANGLE */; };
+ 		EA9166972B0AF20A00AF48B1 /* LinkTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9166962B0AF20A00AF48B1 /* LinkTextView.swift */; };
+ 		EA9166BE2B0C722000AF48B1 /* ToolbarSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9166BD2B0C722000AF48B1 /* ToolbarSettingViewController.swift */; };
+ 		EA9166C02B0C725100AF48B1 /* QuickAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9166BF2B0C725100AF48B1 /* QuickAction.swift */; };
+@@ -423,7 +423,7 @@
+ 			isa = PBXFrameworksBuildPhase;
+ 			buildActionMask = 2147483647;
+ 			files = (
+-				EA9039792BA19B1300C982BC /* AsyncGL in Frameworks */,
++				EA9039A92BA19F0900C982BC /* AsyncGLANGLE in Frameworks */,
+ 				EA9039A72BA19D0000C982BC /* AppCenterCrashes in Frameworks */,
+ 				979D2FAD23FEB2B4005D2592 /* libbz2.tbd in Frameworks */,
+ 				EA4E2D7C2A56B46B0046D62E /* CelestiaFoundation.framework in Frameworks */,
+@@ -1013,7 +1013,7 @@
+ 			);
+ 			name = MobileCelestia;
+ 			packageProductDependencies = (
+-				EA9039782BA19B1300C982BC /* AsyncGL */,
++				EA9039A82BA19F0900C982BC /* AsyncGLANGLE */,
+ 				EA9039A12BA19CF100C982BC /* MWRequest */,
+ 				EA9039A42BA19D0000C982BC /* AppCenterAnalytics */,
+ 				EA9039A62BA19D0000C982BC /* AppCenterCrashes */,
+@@ -1710,7 +1710,6 @@
  					"-ljpeg",
  					"-lfreetype",
  					"-lintl",
 -					"-lGL",
  					"-lzip",
  					"$(THIRD_PARTY_LIB_PATH)/libs/cspice.a",
- 				);
-@@ -1774,7 +1773,6 @@
+ 					"-ObjC",
+@@ -1761,7 +1760,6 @@
  					"-ljpeg",
  					"-lfreetype",
  					"-lintl",
 -					"-lGL",
  					"-lzip",
  					"$(THIRD_PARTY_LIB_PATH)/libs/cspice.a",
- 				);
+ 					"-ObjC",
+@@ -2170,11 +2168,6 @@
+ /* End XCRemoteSwiftPackageReference section */
+ 
+ /* Begin XCSwiftPackageProductDependency section */
+-		EA9039782BA19B1300C982BC /* AsyncGL */ = {
+-			isa = XCSwiftPackageProductDependency;
+-			package = EA9039772BA19B1300C982BC /* XCRemoteSwiftPackageReference "AsyncGL" */;
+-			productName = AsyncGL;
+-		};
+ 		EA9039A12BA19CF100C982BC /* MWRequest */ = {
+ 			isa = XCSwiftPackageProductDependency;
+ 			package = EA9039A02BA19CF100C982BC /* XCRemoteSwiftPackageReference "mwrequest" */;
+@@ -2190,6 +2183,11 @@
+ 			package = EA9039A32BA19D0000C982BC /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
+ 			productName = AppCenterCrashes;
+ 		};
++		EA9039A82BA19F0900C982BC /* AsyncGLANGLE */ = {
++			isa = XCSwiftPackageProductDependency;
++			package = EA9039772BA19B1300C982BC /* XCRemoteSwiftPackageReference "AsyncGL" */;
++			productName = AsyncGLANGLE;
++		};
+ /* End XCSwiftPackageProductDependency section */
+ 	};
+ 	rootObject = 979D2F7223FEB1A6005D2592 /* Project object */;
 diff --git a/MobileCelestia/Celestia/CelestiaDisplayController.swift b/MobileCelestia/Celestia/CelestiaDisplayController.swift
-index 94b2dcf..3d630a8 100644
+index 94b2dcf..ebd8fe7 100644
 --- a/MobileCelestia/Celestia/CelestiaDisplayController.swift
 +++ b/MobileCelestia/Celestia/CelestiaDisplayController.swift
+@@ -9,7 +9,7 @@
+ // of the License, or (at your option) any later version.
+ //
+ 
+-import AsyncGL
++import AsyncGLANGLE
+ import CelestiaCore
+ import CelestiaFoundation
+ import CelestiaUI
 @@ -60,7 +60,7 @@ class CelestiaDisplayController: AsyncGLViewController {
  
      init(msaaEnabled: Bool, screen: UIScreen, initialFrameRate frameRate: Int, executor: AsyncGLExecutor, subscriptionManager: SubscriptionManager) {
@@ -31,16 +94,29 @@ index 94b2dcf..3d630a8 100644
  #else
          let api = AsyncGLAPI.openGLES2
  #endif
-diff --git a/Podfile b/Podfile
-index 93d8bb6..9bc93a5 100644
---- a/Podfile
-+++ b/Podfile
-@@ -11,7 +11,7 @@ target 'MobileCelestia' do
-   pod 'AppCenter/Crashes', appcenter_version
+diff --git a/MobileCelestia/Celestia/CelestiaViewController.swift b/MobileCelestia/Celestia/CelestiaViewController.swift
+index 29a2ca7..83b53d2 100644
+--- a/MobileCelestia/Celestia/CelestiaViewController.swift
++++ b/MobileCelestia/Celestia/CelestiaViewController.swift
+@@ -9,7 +9,7 @@
+ // of the License, or (at your option) any later version.
+ //
  
-   pod "MWRequest", :git => "https://github.com/levinli303/mwrequest.git", :tag => mwrequest_version_tag
--  pod "AsyncGL/OpenGL", :git => "https://github.com/levinli303/AsyncGL.git", :tag => asyncgl_version_tag
-+  pod "AsyncGL/ANGLE", :git => "https://github.com/levinli303/AsyncGL.git", :tag => asyncgl_version_tag
- end
+-import AsyncGL
++import AsyncGLANGLE
+ import CelestiaCore
+ import CelestiaFoundation
+ import CelestiaUI
+diff --git a/MobileCelestia/Utils/Core/CelestiaExecutor.swift b/MobileCelestia/Utils/Core/CelestiaExecutor.swift
+index 4fa0f69..ce066bd 100644
+--- a/MobileCelestia/Utils/Core/CelestiaExecutor.swift
++++ b/MobileCelestia/Utils/Core/CelestiaExecutor.swift
+@@ -9,7 +9,7 @@
+ // of the License, or (at your option) any later version.
+ //
  
- post_install do |installer|
+-import AsyncGL
++import AsyncGLANGLE
+ import CelestiaCore
+ import CelestiaUI
+ import Foundation
