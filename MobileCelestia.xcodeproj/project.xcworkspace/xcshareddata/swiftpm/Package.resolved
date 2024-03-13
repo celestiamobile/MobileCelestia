@@ -1,0 +1,42 @@
+{
+  "originHash" : "910ddb25e813d661dd9b338ac684dc6a563c0f712162ac1bfb6c5d1679d2658e",
+  "pins" : [
+    {
+      "identity" : "appcenter-sdk-apple",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/microsoft/appcenter-sdk-apple",
+      "state" : {
+        "revision" : "1120c26835925f8314d035127c580bc71689c620",
+        "version" : "5.0.4"
+      }
+    },
+    {
+      "identity" : "asyncgl",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/levinli303/AsyncGL",
+      "state" : {
+        "revision" : "c5d7c4fa90e5a5cd1848ec338bb283dae0156554",
+        "version" : "0.1.17"
+      }
+    },
+    {
+      "identity" : "mwrequest",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/levinli303/mwrequest",
+      "state" : {
+        "revision" : "de6bbc6494d4497b0229709d58bc3f7b30fecc76",
+        "version" : "1.0.1"
+      }
+    },
+    {
+      "identity" : "plcrashreporter",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/microsoft/PLCrashReporter.git",
+      "state" : {
+        "revision" : "1aed8f7dc79ce8e674c61e430ef51ca3db18cea9",
+        "version" : "1.11.1"
+      }
+    }
+  ],
+  "version" : 3
+}
