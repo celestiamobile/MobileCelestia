@@ -137,6 +137,7 @@
 		EAB8F2642A56DC3200C4E777 /* ResourceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF7910253895FD00F2460C /* ResourceViewController.swift */; };
 		EAB8F2652A56DC3200C4E777 /* FallbackWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAFF95F328885A64009C2FFD /* FallbackWebViewController.swift */; };
 		EAB8F2662A56DC3200C4E777 /* AsyncListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF791D2538986400F2460C /* AsyncListViewController.swift */; };
+		EAB93E8C2BC8608C009AB37B /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EAB93E8B2BC8608C009AB37B /* PrivacyInfo.xcprivacy */; };
 		EABC91FA2A56F254007E27F0 /* ResourceCategoriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABC91F92A56F254007E27F0 /* ResourceCategoriesViewController.swift */; };
 		EABC921F2A56FBAA007E27F0 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA787340296EB68A0099AB11 /* Bundle.swift */; };
 		EABC92342A56FF80007E27F0 /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EABC92332A56FF80007E27F0 /* SharedAssets.xcassets */; };
@@ -388,6 +389,7 @@
 		EAB08FE32780550600BB82F0 /* Font.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Font.swift; sourceTree = "<group>"; };
 		EAB623B42A51AB5100063D1B /* UIViewController+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		EAB8F2612A56DB9200C4E777 /* URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URL.swift; sourceTree = "<group>"; };
+		EAB93E8B2BC8608C009AB37B /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		EABC91F92A56F254007E27F0 /* ResourceCategoriesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceCategoriesViewController.swift; sourceTree = "<group>"; };
 		EABC92332A56FF80007E27F0 /* SharedAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SharedAssets.xcassets; sourceTree = "<group>"; };
 		EABDE3A82473DAA300E0A5FA /* SettingCommonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingCommonViewController.swift; sourceTree = "<group>"; };
@@ -600,6 +602,7 @@
 				979D2F8823FEB1A8005D2592 /* LaunchScreen.storyboard */,
 				979D2F8B23FEB1A8005D2592 /* Info.plist */,
 				EAD962992782BA2B00CDF86E /* Info-macos.plist */,
+				EAB93E8B2BC8608C009AB37B /* PrivacyInfo.xcprivacy */,
 			);
 			path = MobileCelestia;
 			sourceTree = "<group>";
@@ -1200,6 +1203,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				979D2F8A23FEB1A8005D2592 /* LaunchScreen.storyboard in Resources */,
+				EAB93E8C2BC8608C009AB37B /* PrivacyInfo.xcprivacy in Resources */,
 				979D2F8723FEB1A8005D2592 /* Assets.xcassets in Resources */,
 				97143F1823FFAEFD00F35D87 /* defaults.plist in Resources */,
 				EA28CA5324A2F399004B011E /* Fonts in Resources */,
