@@ -186,17 +186,29 @@ jobs:
     displayName: 'Install Certificates and Provisioning Profiles'
 
   - script: |
-      /usr/bin/xcodebuild archive -project "$XC_PROJECT" -scheme "$XC_SCHEME" -configuration "Release" -destination "generic/platform=iOS" -archivePath "$XC_ARCHIVE_PATH" CODE_SIGN_STYLE="Manual" PROVISIONING_PROFILE="$(IOS_PROVISIONING_PROFILE_UUID)" CODE_SIGN_IDENTITY="$(DISTRIBUTION_IDENTITY)"
+      sed -i '' 's/CODE_SIGN_STYLE = Automatic;/CODE_SIGN_STYLE = Manual;/g' $XC_PROJECT/project.pbxproj
+      sed -i '' 's/PROVISIONING_PROFILE_SPECIFIER = "";/PROVISIONING_PROFILE_SPECIFIER = "$(IOS_PROVISIONING_PROFILE_UUID)";/g' $XC_PROJECT/project.pbxproj
+      sed -i '' 's/CODE_SIGN_IDENTITY = "Apple Development";/CODE_SIGN_IDENTITY = "$(DISTRIBUTION_IDENTITY)";/g' $XC_PROJECT/project.pbxproj
+
+      /usr/bin/xcodebuild archive -project "$XC_PROJECT" -scheme "$XC_SCHEME" -configuration "Release" -destination "generic/platform=iOS" -archivePath "$XC_ARCHIVE_PATH"
     displayName: 'Build Archive (iOS)'
     condition: eq( variables['sdk'], 'iphoneos' )
 
   - script: |
-      /usr/bin/xcodebuild archive -project "$XC_PROJECT" -scheme "$XC_SCHEME" -configuration "Release" -destination "platform=macOS,variant=Mac Catalyst" -archivePath "$XC_ARCHIVE_PATH" CODE_SIGN_STYLE="Manual" PROVISIONING_PROFILE="$(MAC_APP_STORE_PROVISIONING_PROFILE_UUID)" CODE_SIGN_IDENTITY="$(DISTRIBUTION_IDENTITY)"
+      sed -i '' 's/CODE_SIGN_STYLE = Automatic;/CODE_SIGN_STYLE = Manual;/g' $XC_PROJECT/project.pbxproj
+      sed -i '' 's/PROVISIONING_PROFILE_SPECIFIER = "";/PROVISIONING_PROFILE_SPECIFIER = "$(MAC_APP_STORE_PROVISIONING_PROFILE_UUID)";/g' $XC_PROJECT/project.pbxproj
+      sed -i '' 's/CODE_SIGN_IDENTITY = "Apple Development";/CODE_SIGN_IDENTITY = "$(DISTRIBUTION_IDENTITY)";/g' $XC_PROJECT/project.pbxproj
+
+      /usr/bin/xcodebuild archive -project "$XC_PROJECT" -scheme "$XC_SCHEME" -configuration "Release" -destination "platform=macOS,variant=Mac Catalyst" -archivePath "$XC_ARCHIVE_PATH"
     displayName: 'Build Archive (Mac, App Store)'
     condition: and(eq( variables['sdk'], 'macosx' ), eq( variables['signing'], 'appStore' ))
 
   - script: |
-      /usr/bin/xcodebuild archive -project "$XC_PROJECT" -scheme "$XC_SCHEME" -configuration "Release" -destination "platform=macOS,variant=Mac Catalyst" -archivePath "$XC_ARCHIVE_PATH" CODE_SIGN_STYLE="Manual" PROVISIONING_PROFILE="$(MAC_DEVELOPER_ID_PROVISIONING_PROFILE_UUID)" CODE_SIGN_IDENTITY="$(DEVELOPER_ID_IDENTITY)"
+      sed -i '' 's/CODE_SIGN_STYLE = Automatic;/CODE_SIGN_STYLE = Manual;/g' $XC_PROJECT/project.pbxproj
+      sed -i '' 's/PROVISIONING_PROFILE_SPECIFIER = "";/PROVISIONING_PROFILE_SPECIFIER = "$(MAC_DEVELOPER_ID_PROVISIONING_PROFILE_UUID)";/g' $XC_PROJECT/project.pbxproj
+      sed -i '' 's/CODE_SIGN_IDENTITY = "Apple Development";/CODE_SIGN_IDENTITY = "$(DEVELOPER_ID_IDENTITY)";/g' $XC_PROJECT/project.pbxproj
+
+      /usr/bin/xcodebuild archive -project "$XC_PROJECT" -scheme "$XC_SCHEME" -configuration "Release" -destination "platform=macOS,variant=Mac Catalyst" -archivePath "$XC_ARCHIVE_PATH"
     displayName: 'Build Archive (Mac, Developer ID)'
     condition: and(eq( variables['sdk'], 'macosx' ), eq( variables['signing'], 'developerID' ))
 
