@@ -16,10 +16,12 @@ public class SubsystemBrowserCoordinatorViewController: ToolbarNavigationContain
     private let item: BrowserItem
 
     private let selection: (Selection) -> UIViewController
+    private let showAddonCategory: (CategoryInfo) -> Void
 
-    public init(item: BrowserItem, selection: @escaping (Selection) -> UIViewController) {
+    public init(item: BrowserItem, selection: @escaping (Selection) -> UIViewController, showAddonCategory: @escaping (CategoryInfo) -> Void) {
         self.item = item
         self.selection = selection
+        self.showAddonCategory = showAddonCategory
         super.init(rootViewController: UIViewController())
 
         setViewControllers([create(for: item)], animated: false)
@@ -43,7 +45,7 @@ private extension SubsystemBrowserCoordinatorViewController {
                 return
             }
             self.pushViewController(self.selection(transformed), animated: true)
-        })
+        }, showAddonCategory: showAddonCategory)
     }
 }
 
