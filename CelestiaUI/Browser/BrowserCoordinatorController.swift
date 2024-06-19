@@ -17,10 +17,12 @@ class BrowserCoordinatorController: UINavigationController {
     private let item: BrowserItem
 
     private let selection: (Selection) -> UIViewController
+    private let showAddonCategory: (CategoryInfo) -> Void
 
-    init(item: BrowserItem, image: UIImage, selection: @escaping (Selection) -> UIViewController) {
+    init(item: BrowserItem, image: UIImage, selection: @escaping (Selection) -> UIViewController, showAddonCategory: @escaping (CategoryInfo) -> Void) {
         self.item = item
         self.selection = selection
+        self.showAddonCategory = showAddonCategory
         super.init(rootViewController: UIViewController())
 
         tabBarItem = UITabBarItem(title: item.alternativeName ?? item.name, image: image, selectedImage: nil)
@@ -48,7 +50,7 @@ private extension BrowserCoordinatorController {
             }
             let vc = self.selection(transformed)
             self.pushViewController(vc, animated: true)
-        })
+        }, showAddonCategory: showAddonCategory)
     }
 }
 #endif

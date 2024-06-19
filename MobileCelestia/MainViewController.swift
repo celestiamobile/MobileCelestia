@@ -452,7 +452,7 @@ extension MainViewController {
                 showViewController(ToolbarNavigationContainerController(rootViewController: vc), customToolbar: true)
             }
         case .getAddons:
-            showOnlineAddons()
+            showOnlineAddons(category: nil)
         case .showInstalledAddons:
             presentInstalledAddons()
         case .addBookmark:
@@ -677,7 +677,7 @@ extension MainViewController: CelestiaControllerDelegate {
         case .addons:
             presentInstalledAddons()
         case .download:
-            showOnlineAddons()
+            showOnlineAddons(category: nil)
         case .paperplane:
             presentGoTo()
         case .speedometer:
@@ -707,8 +707,8 @@ extension MainViewController: CelestiaControllerDelegate {
         showViewController(nav, titleVisible: false)
     }
 
-    private func showOnlineAddons() {
-        showViewController(ResourceCategoriesViewController(executor: executor, resourceManager: resourceManager, subscriptionManager: subscriptionManager, requestHandler: requestHandler, actionHandler: commonWebActionHandler), customToolbar: true)
+    private func showOnlineAddons(category: CategoryInfo?) {
+        showViewController(ResourceCategoriesViewController(category: category, executor: executor, resourceManager: resourceManager, subscriptionManager: subscriptionManager, requestHandler: requestHandler, actionHandler: commonWebActionHandler), key: category?.category, customToolbar: true)
     }
 
     private func sendFeedback() {
@@ -1065,7 +1065,7 @@ Device Model: \(model)
     private func presentInstalledAddons() {
         let controller = ResourceViewController(executor: executor, resourceManager: resourceManager, requestHandler: requestHandler, actionHandler: commonWebActionHandler) { [weak self] in
             guard let self else { return }
-            self.showOnlineAddons()
+            self.showOnlineAddons(category: nil)
         }
         showViewController(controller, customToolbar: true)
     }
@@ -1159,9 +1159,12 @@ Device Model: \(model)
     private func showSubsystem(with selection: Selection) {
         guard let entry = selection.object else { return }
         let browserItem = BrowserItem(name: core.simulation.universe.name(for: selection), alternativeName: nil, catEntry: entry, provider: core.simulation.universe)
-        let controller = SubsystemBrowserCoordinatorViewController(item: browserItem) { [unowned self] (selection) -> UIViewController in
+        let controller = SubsystemBrowserCoordinatorViewController(item: browserItem, selection: { [unowned self] (selection) -> UIViewController in
             return self.createSelectionInfoViewController(with: selection, showNavigationTitle: true, backgroundColor: .systemBackground)
-        }
+        }, showAddonCategory: { [weak self] category in
+            guard let self else { return }
+            self.showOnlineAddons(category: category)
+        })
         showViewController(controller, customToolbar: true)
     }
 
@@ -1245,6 +1248,9 @@ Device Model: \(model)
     private func showBrowser() {
         let controller = BrowserContainerViewController(selected: { [unowned self] (info) in
             return self.createSelectionInfoViewController(with: info, showNavigationTitle: true, backgroundColor: .systemBackground)
+        }, showAddonCategory: { [weak self] category in
+            guard let self else { return }
+            self.showOnlineAddons(category: category)
         }, executor: executor)
         #if targetEnvironment(macCatalyst)
         showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600), customToolbar: true)
