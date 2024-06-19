@@ -46,6 +46,9 @@ public enum GlobalConstants {
 
     public static let baseCellHeight: CGFloat = 44
 
+    static let cardCornerRadius: CGFloat = 12
+    static let cardContentPadding: CGFloat = 16
+
     public static func preferredUIElementScaling(for traitCollection: UITraitCollection) -> CGFloat {
         #if targetEnvironment(macCatalyst)
         if #available(iOS 14, *) {

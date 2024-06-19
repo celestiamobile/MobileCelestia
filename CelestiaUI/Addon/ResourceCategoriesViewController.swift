@@ -15,9 +15,11 @@ import UIKit
 public class ResourceCategoriesViewController: ToolbarNavigationContainerController {
     private let webViewController: CommonWebViewController
     private let subscriptionManager: SubscriptionManager
+    private let category: CategoryInfo?
 
-    public init(executor: AsyncProviderExecutor, resourceManager: ResourceManager, subscriptionManager: SubscriptionManager, requestHandler: RequestHandler, actionHandler: ((CommonWebViewController.WebAction, UIViewController) -> Void)?) {
-        self.webViewController = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .categoryURL(subscriptionManager: subscriptionManager), requestHandler: requestHandler, actionHandler: actionHandler, filterURL: false)
+    public init(category: CategoryInfo?, executor: AsyncProviderExecutor, resourceManager: ResourceManager, subscriptionManager: SubscriptionManager, requestHandler: RequestHandler, actionHandler: ((CommonWebViewController.WebAction, UIViewController) -> Void)?) {
+        self.category = category
+        self.webViewController = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .categoryURL(category: category,subscriptionManager: subscriptionManager), requestHandler: requestHandler, actionHandler: actionHandler, filterURL: false)
         self.subscriptionManager = subscriptionManager
         super.init(rootViewController: webViewController)
     }
@@ -41,13 +43,13 @@ public class ResourceCategoriesViewController: ToolbarNavigationContainerControl
             return
         }
 
-        webViewController.reload(.categoryURL(subscriptionManager: subscriptionManager))
+        webViewController.reload(.categoryURL(category: category, subscriptionManager: subscriptionManager))
     }
 }
 
 private extension URL {
     @MainActor
-    static func categoryURL(subscriptionManager: SubscriptionManager) -> URL {
+    static func categoryURL(category: CategoryInfo?, subscriptionManager: SubscriptionManager) -> URL {
         var queryItems = [URLQueryItem]()
         if #available(iOS 15, *) {
             if let (transactionID, isSandbox) = subscriptionManager.transactionInfo() {
@@ -58,7 +60,12 @@ private extension URL {
                 queryItems.append(URLQueryItem(name: "isSandboxApple", value: "1"))
             }
         }
-        let baseURL = "https://celestia.mobi/resources/categories"
+        let baseURL: String
+        if let category, category.isLeaf {
+            baseURL = "https://celestia.mobi/resources/category"
+        } else {
+            baseURL = "https://celestia.mobi/resources/categories"
+        }
         #if os(visionOS)
         let platform = "visionos"
         #else
@@ -75,6 +82,13 @@ private extension URL {
             URLQueryItem(name: "platform", value: platform),
             URLQueryItem(name: "api", value: "1"),
         ])
+        if let category {
+            if category.isLeaf {
+                queryItems.append(URLQueryItem(name: "category", value: category.category))
+            } else {
+                queryItems.append(URLQueryItem(name: "parent", value: category.category))
+            }
+        }
         components.queryItems = queryItems
         return components.url!
     }

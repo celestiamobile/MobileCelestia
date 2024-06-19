@@ -31,11 +31,13 @@ public class BrowserContainerViewController: UIViewController {
     private var nearestStars: BrowserItem?
 
     private let selected: (Selection) -> UIViewController
+    private let showAddonCategory: (CategoryInfo) -> Void
 
     private let activityIndicator = UIActivityIndicatorView(style: .large)
 
-    public init(selected: @escaping (Selection) -> UIViewController, executor: AsyncProviderExecutor) {
+    public init(selected: @escaping (Selection) -> UIViewController, showAddonCategory: @escaping (CategoryInfo) -> Void, executor: AsyncProviderExecutor) {
         self.selected = selected
+        self.showAddonCategory = showAddonCategory
         self.executor = executor
         super.init(nibName: nil, bundle: nil)
     }
@@ -108,7 +110,8 @@ private extension BrowserContainerViewController {
                 starChildren[item.name] = item
             }
         }
-        let starBrowserRoot = BrowserItem(name: CelestiaString("Stars", comment: "Tab for stars in Star Browser"), children: starChildren)
+        let starBrowserRoot = BrowserPredefinedItem(name: CelestiaString("Stars", comment: "Tab for stars in Star Browser"), children: starChildren)
+        starBrowserRoot.categoryInfo = CategoryInfo(category: "5E023C91-86F8-EC5C-B53C-E3780163514F", isLeaf: true)
 
         #if targetEnvironment(macCatalyst)
         let rawBrowserRoots: [(item: BrowserItem?, image: UIImage)] = [
@@ -136,11 +139,11 @@ private extension BrowserContainerViewController {
         #else
         var allControllers = [BrowserCoordinatorController]()
         if let solRoot = Self.solBrowserRoot {
-            allControllers.append(BrowserCoordinatorController(item: solRoot, image: #imageLiteral(resourceName: "browser_tab_sso"), selection: handler))
+            allControllers.append(BrowserCoordinatorController(item: solRoot, image: #imageLiteral(resourceName: "browser_tab_sso"), selection: handler, showAddonCategory: showAddonCategory))
         }
-        allControllers.append(BrowserCoordinatorController(item: starBrowserRoot, image: #imageLiteral(resourceName: "browser_tab_star"), selection: handler))
+        allControllers.append(BrowserCoordinatorController(item: starBrowserRoot, image: #imageLiteral(resourceName: "browser_tab_star"), selection: handler, showAddonCategory: showAddonCategory))
         if let dsoRoot = Self.dsoBrowserRoot {
-            allControllers.append(BrowserCoordinatorController(item: dsoRoot, image: #imageLiteral(resourceName: "browser_tab_dso"), selection: handler))
+            allControllers.append(BrowserCoordinatorController(item: dsoRoot, image: #imageLiteral(resourceName: "browser_tab_dso"), selection: handler, showAddonCategory: showAddonCategory))
         }
         controller.setViewControllers(allControllers, animated: false)
         #endif
@@ -148,7 +151,7 @@ private extension BrowserContainerViewController {
 
     #if targetEnvironment(macCatalyst)
     private func createBrowserItemViewController(_ item: BrowserItem) -> BrowserCommonViewController {
-        return BrowserCommonViewController(item: item) { [weak self] selection, finish in
+        return BrowserCommonViewController(item: item, selection: { [weak self] selection, finish in
             guard let self else { return }
             if !finish {
                 let vc = self.createBrowserItemViewController(selection)
@@ -160,7 +163,7 @@ private extension BrowserContainerViewController {
                 return
             }
             self.controller.pushSecondaryViewController(self.selected(transformed), animated: true)
-        }
+        }, showAddonCategory: showAddonCategory)
     }
     #endif
 }
@@ -217,52 +220,62 @@ class BrowserSidebarController: BaseTableViewController {
 }
 #endif
 
+public struct CategoryInfo: Codable, Hashable {
+    public let category: String
+    public let isLeaf: Bool
+}
+
+final class BrowserPredefinedItem: BrowserItem {
+    var categoryInfo: CategoryInfo? = nil
+}
+
 private extension BrowserContainerViewController {
     nonisolated func createSolBrowserRoot(_ core: AppCore) -> BrowserItem? {
         let universe = core.simulation.universe
         if let sol = universe.find("Sol").star {
-            return BrowserItem(name: universe.starCatalog.starName(sol), alternativeName: CelestiaString("Solar System", comment: "Tab for solar system in Star Browser"), catEntry: sol, provider: universe)
+            let item = BrowserPredefinedItem(name: universe.starCatalog.starName(sol), alternativeName: CelestiaString("Solar System", comment: "Tab for solar system in Star Browser"), catEntry: sol, provider: universe)
+            item.categoryInfo = CategoryInfo(category: "B2E44BE0-9DF7-FAB9-92D4-F8D323D31250", isLeaf: false)
+            return item
         }
         return nil
     }
 
     nonisolated func createDSOBrowserRoot(_ core: AppCore) -> BrowserItem? {
         let universe = core.simulation.universe
-
-        let typeMap = [
-            "SB" : CelestiaString("Galaxies (Barred Spiral)", comment: ""),
-            "S" : CelestiaString("Galaxies (Spiral)", comment: ""),
-            "E" : CelestiaString("Galaxies (Elliptical)", comment: ""),
-            "Irr" : CelestiaString("Galaxies (Irregular)", comment: ""),
-            "Neb" : CelestiaString("Nebulae", comment: ""),
-            "Glob" : CelestiaString("Globulars", comment: ""),
-            "Open cluster" : CelestiaString("Open Clusters", comment: ""),
-            "Unknown" : CelestiaString("Unknown", comment: ""),
+        let galaxyCategory = CategoryInfo(category: "56FF5D9F-44F1-CE1D-0615-5655E3C851EF", isLeaf: true)
+        let nebulaCategory = CategoryInfo(category: "3F7546F9-D225-5194-A228-C63281B5C6FD", isLeaf: true)
+        let typeMap: [String: (name: String, categoryInfo: CategoryInfo?)] = [
+            "SB": (CelestiaString("Galaxies (Barred Spiral)", comment: ""), galaxyCategory),
+            "S": (CelestiaString("Galaxies (Spiral)", comment: ""), galaxyCategory),
+            "E": (CelestiaString("Galaxies (Elliptical)", comment: ""), galaxyCategory),
+            "Irr": (CelestiaString("Galaxies (Irregular)", comment: ""), galaxyCategory),
+            "Neb": (CelestiaString("Nebulae", comment: ""), nebulaCategory),
+            "Glob": (CelestiaString("Globulars", comment: ""), nil),
+            "Open cluster": (CelestiaString("Open Clusters", comment: ""), nil),
+            "Unknown": (CelestiaString("Unknown", comment: ""), nil),
         ]
-
-        func updateAccumulation(result: inout [String : BrowserItem], item: (key: String, value: [String : BrowserItem])) {
-            let fullName = typeMap[item.key]!
-            result[fullName] = BrowserItem(name: fullName, children: item.value)
-        }
 
         let prefixes = ["SB", "S", "E", "Irr", "Neb", "Glob", "Open cluster"]
 
-        var tempDict = prefixes.reduce(into: [String : [String : BrowserItem]]()) { $0[$1] = [String : BrowserItem]() }
+        var tempDict = [String: [String: BrowserItem]]()
 
         let catalog = universe.dsoCatalog
         catalog.forEach({ (dso) in
             let matchingType = prefixes.first(where: {dso.type.hasPrefix($0)}) ?? "Unknown"
             let name = catalog.dsoName(dso)
-            if tempDict[matchingType] != nil {
-                tempDict[matchingType]![name] = BrowserItem(name: name, catEntry: dso, provider: universe)
-            }
+            tempDict[matchingType, default: [:]][name] = BrowserItem(name: name, catEntry: dso, provider: universe)
         })
 
-        let results = tempDict.reduce(into: [String : BrowserItem](), updateAccumulation)
+        let results = prefixes.reduce(into: [String : BrowserItem]()) { partialResult, prefix in
+            let info = typeMap[prefix]!
+            let item = BrowserPredefinedItem(name: info.name, children: tempDict[prefix] ?? [:])
+            item.categoryInfo = info.categoryInfo
+            partialResult[info.name] = item
+        }
         return BrowserItem(name: CelestiaString("Deep Sky Objects", comment: ""), alternativeName: CelestiaString("DSOs", comment: "Tab for deep sky objects in Star Browser"), children: results)
     }
 
-    nonisolated func createStarBrowserRootItem(kind: StarBrowserKind, title: String, ordered: Bool, core: AppCore) -> BrowserItem {
+    nonisolated func createStarBrowserRootItem(kind: StarBrowserKind, title: String, ordered: Bool, core: AppCore, category: CategoryInfo?) -> BrowserItem {
         let simulation = core.simulation
         let universe = simulation.universe
         let observer = simulation.activeObserver
@@ -277,29 +290,34 @@ private extension BrowserContainerViewController {
             result.append(BrowserItemKeyValuePair(name: name, browserItem: BrowserItem(name: name, catEntry: star, provider: universe)))
         }
 
+        let browserItem: BrowserPredefinedItem
         if ordered {
             let items = StarBrowser(kind: kind, observer: observer, universe: universe).stars().reduce(into: [BrowserItemKeyValuePair](), updateAccumulationOrdered)
-            return BrowserItem(name: title, orderedChildren: items)
+            browserItem = BrowserPredefinedItem(name: title, orderedChildren: items)
         } else {
             let items = StarBrowser(kind: kind, observer: observer, universe: universe).stars().reduce(into: [String : BrowserItem](), updateAccumulation)
-            return BrowserItem(name: title, children: items)
+            browserItem = BrowserPredefinedItem(name: title, children: items)
         }
+        if let category {
+            browserItem.categoryInfo = category
+        }
+        return browserItem
     }
 
     nonisolated func createNearestStars(_ core: AppCore) -> BrowserItem {
-        return createStarBrowserRootItem(kind: .nearest, title: CelestiaString("Nearest Stars", comment: ""), ordered: true, core: core)
+        return createStarBrowserRootItem(kind: .nearest, title: CelestiaString("Nearest Stars", comment: ""), ordered: true, core: core, category: nil)
     }
 
     nonisolated func createBrightestStars(_ core: AppCore) -> BrowserItem {
-        return createStarBrowserRootItem(kind: .brighter, title: CelestiaString("Brightest Stars", comment: ""), ordered: true, core: core)
+        return createStarBrowserRootItem(kind: .brighter, title: CelestiaString("Brightest Stars", comment: ""), ordered: true, core: core, category: nil)
     }
 
     nonisolated func createAbsoluteBrightestStars(_ core: AppCore) -> BrowserItem {
-        return createStarBrowserRootItem(kind: .brightest, title: CelestiaString("Brightest Stars (Absolute Magnitude)", comment: ""), ordered: true, core: core)
+        return createStarBrowserRootItem(kind: .brightest, title: CelestiaString("Brightest Stars (Absolute Magnitude)", comment: ""), ordered: true, core: core, category: nil)
     }
 
     nonisolated func createStarsWithPlanets(_ core: AppCore) -> BrowserItem {
-        return createStarBrowserRootItem(kind: .starsWithPlants, title: CelestiaString("Stars with Planets", comment: ""), ordered: true, core: core)
+        return createStarBrowserRootItem(kind: .starsWithPlants, title: CelestiaString("Stars with Planets", comment: ""), ordered: true, core: core, category: CategoryInfo(category: "1B0E1953-C21C-D628-7FA6-33A3ABBD1B40", isLeaf: false))
     }
 
     nonisolated func createAllItems(shouldGenerateStaticItems: Bool, core: AppCore) -> (solBrowserRoot: BrowserItem?, dsoBrowserRoot: BrowserItem?, brightestStars: BrowserItem?, starsWithPlanets: BrowserItem?, brighterStars: BrowserItem, nearestStars: BrowserItem) {

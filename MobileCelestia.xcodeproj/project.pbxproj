@@ -158,6 +158,8 @@
 		EAD12AAA2A56757F007EE4D6 /* StepperCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EB41C82408F26200E6D441 /* StepperCell.swift */; };
 		EADE7FBB252B517600D4174F /* CelestiaDisplayController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE7FBA252B517600D4174F /* CelestiaDisplayController.swift */; };
 		EADE7FC0252B54A400D4174F /* CelestiaInteractionController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EADE7FBF252B54A400D4174F /* CelestiaInteractionController.swift */; };
+		EAE4CF9F2C22988F00B12AA5 /* TeachingCardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE4CF9D2C22988F00B12AA5 /* TeachingCardCell.swift */; };
+		EAE4CFA02C22988F00B12AA5 /* TeachingCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE4CF9E2C22988F00B12AA5 /* TeachingCardView.swift */; };
 		EAE51CA32A7B765100D6779C /* Formatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE51CA22A7B765100D6779C /* Formatter.swift */; };
 		EAE92A5C2A558B4400BFE06E /* AsyncProviderExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE92A5B2A558B4400BFE06E /* AsyncProviderExecutor.swift */; };
 		EAE92A5F2A558B8D00BFE06E /* GameControllerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE92A5E2A558B8D00BFE06E /* GameControllerManager.swift */; };
@@ -408,6 +410,8 @@
 		EAD962992782BA2B00CDF86E /* Info-macos.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-macos.plist"; sourceTree = "<group>"; };
 		EADE7FBA252B517600D4174F /* CelestiaDisplayController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaDisplayController.swift; sourceTree = "<group>"; };
 		EADE7FBF252B54A400D4174F /* CelestiaInteractionController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaInteractionController.swift; sourceTree = "<group>"; };
+		EAE4CF9D2C22988F00B12AA5 /* TeachingCardCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TeachingCardCell.swift; sourceTree = "<group>"; };
+		EAE4CF9E2C22988F00B12AA5 /* TeachingCardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TeachingCardView.swift; sourceTree = "<group>"; };
 		EAE51CA22A7B765100D6779C /* Formatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatter.swift; sourceTree = "<group>"; };
 		EAE6AC0E27A438E400F953DF /* CommonWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonWebViewController.swift; sourceTree = "<group>"; };
 		EAE92A5B2A558B4400BFE06E /* AsyncProviderExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncProviderExecutor.swift; sourceTree = "<group>"; };
@@ -747,6 +751,7 @@
 		EA50E7842A505F03005E7D7A /* UI */ = {
 			isa = PBXGroup;
 			children = (
+				EAE4CF9E2C22988F00B12AA5 /* TeachingCardView.swift */,
 				EA85C912289E9A7D009ADB1C /* UIContentSizeCategory+Extension.swift */,
 				978406D92402906C00876FD1 /* UIViewController+Extension.swift */,
 				EAD94F66261EED7700A93C93 /* UITableView+Extensions.swift */,
@@ -866,6 +871,7 @@
 		EAB623B32A51AAE100063D1B /* Cell */ = {
 			isa = PBXGroup;
 			children = (
+				EAE4CF9D2C22988F00B12AA5 /* TeachingCardCell.swift */,
 				EA839CB02A5696E100BF1CB4 /* MultiLineTextCell.swift */,
 				EA839CB12A5696E100BF1CB4 /* SliderCell.swift */,
 				EA839CB22A5696E100BF1CB4 /* SwitchCell.swift */,
@@ -1389,6 +1395,7 @@
 				EABC91FA2A56F254007E27F0 /* ResourceCategoriesViewController.swift in Sources */,
 				EAA79CD12A56AD770056DB91 /* TextViewController.swift in Sources */,
 				EAA79CD22A56ADA90056DB91 /* AboutViewController.swift in Sources */,
+				EAE4CF9F2C22988F00B12AA5 /* TeachingCardCell.swift in Sources */,
 				EA839CB52A5696E100BF1CB4 /* SwitchCell.swift in Sources */,
 				EAB8F25B2A56D71600C4E777 /* GuideItem.swift in Sources */,
 				EAB623B02A51AA7B00063D1B /* Selection.swift in Sources */,
@@ -1410,6 +1417,7 @@
 				EA50E7852A505F13005E7D7A /* Font.swift in Sources */,
 				EA872F042A5ACC9C009E6A20 /* OnboardViewController.swift in Sources */,
 				EAD12AA22A566DE1007EE4D6 /* ObserverModeViewController.swift in Sources */,
+				EAE4CFA02C22988F00B12AA5 /* TeachingCardView.swift in Sources */,
 				EA66BBDF2A55BA88008A7AAA /* DistanceInputCell.swift in Sources */,
 				EAB8F2632A56DC3200C4E777 /* InstalledResourceViewController.swift in Sources */,
 				EAD12AA62A566DE7007EE4D6 /* FavoriteCoordinatorController.swift in Sources */,
@@ -1604,7 +1612,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
-				SHARED_BUILD_NUMBER = 480;
+				SHARED_BUILD_NUMBER = 481;
 				SHARED_BUILD_VERSION = 1.7.2;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1664,7 +1672,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
 				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				SDKROOT = iphoneos;
-				SHARED_BUILD_NUMBER = 480;
+				SHARED_BUILD_NUMBER = 481;
 				SHARED_BUILD_VERSION = 1.7.2;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
