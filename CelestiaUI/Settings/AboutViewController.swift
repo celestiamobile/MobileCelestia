@@ -9,6 +9,7 @@
 // of the License, or (at your option) any later version.
 //
 
+import CelestiaCore
 import CelestiaFoundation
 import UIKit
 
@@ -63,14 +64,14 @@ public final class AboutViewController: BaseTableViewController {
         }
 
         totalItems.append([
-            TextItem.link(title: CelestiaString("Development", comment: "URL for Development wiki"), url: URL(string: "https://celestia.mobi/help/development")!),
-            TextItem.link(title: CelestiaString("Third Party Dependencies", comment: "URL for Third Party Dependencies wiki"), url: URL(string: "https://celestia.mobi/help/dependencies")!),
-            TextItem.link(title: CelestiaString("Privacy Policy and Service Agreement", comment: "Privacy Policy and Service Agreement"), url: URL(string: "https://celestia.mobi/privacy")!)
+            TextItem.link(title: CelestiaString("Development", comment: "URL for Development wiki"), url: URL(string: "https://celestia.mobi/help/development")!, localizable: false),
+            TextItem.link(title: CelestiaString("Third Party Dependencies", comment: "URL for Third Party Dependencies wiki"), url: URL(string: "https://celestia.mobi/help/dependencies")!, localizable: true),
+            TextItem.link(title: CelestiaString("Privacy Policy and Service Agreement", comment: "Privacy Policy and Service Agreement"), url: URL(string: "https://celestia.mobi/privacy")!, localizable: true)
         ])
 
         totalItems.append([
-            TextItem.link(title: CelestiaString("Official Website", comment: ""), url: officialWebsiteURL),
-            TextItem.link(title: CelestiaString("About Celestia", comment: "System menu item"), url: aboutCelestiaURL),
+            TextItem.link(title: CelestiaString("Official Website", comment: ""), url: officialWebsiteURL, localizable: true),
+            TextItem.link(title: CelestiaString("About Celestia", comment: "System menu item"), url: aboutCelestiaURL, localizable: true),
         ])
 
         items = totalItems
@@ -112,7 +113,7 @@ extension AboutViewController {
             cell.title = content
             cell.selectionStyle = .none
             return cell
-        case .link(let title, _):
+        case .link(let title, _, _):
             let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
             cell.title = title
             #if targetEnvironment(macCatalyst)
@@ -135,8 +136,21 @@ extension AboutViewController {
         tableView.deselectRow(at: indexPath, animated: true)
         let item = items[indexPath.section][indexPath.row]
         switch item {
-        case .link(_, let url):
-            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+        case .link(_, let url, let localizable):
+            let urlToOpen: URL
+            if localizable {
+                if var components = URLComponents(url: url, resolvingAgainstBaseURL: false) {
+                    var queryItems = components.queryItems ?? []
+                    queryItems.append(URLQueryItem(name: "lang", value: AppCore.language))
+                    components.queryItems = queryItems
+                    urlToOpen = components.url ?? url
+                } else {
+                    urlToOpen = url
+                }
+            } else {
+                urlToOpen = url
+            }
+            UIApplication.shared.open(urlToOpen, options: [:], completionHandler: nil)
         default:
             break
         }
