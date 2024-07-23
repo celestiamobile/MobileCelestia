@@ -171,7 +171,10 @@ extension CommonWebViewController: WKNavigationDelegate {
             return
         }
         Task.detached { @MainActor [weak self] in
-            guard let self else { return }
+            guard let self else {
+                decisionHandler(.cancel)
+                return
+            }
             if await self.isURLAllowed(url) {
                 decisionHandler(.allow)
             } else {
