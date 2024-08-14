@@ -31,6 +31,8 @@ public enum UserDefaultsKey: String, Sendable {
     case gameControllerRemapDpadDown
     case gameControllerInvertX
     case gameControllerInvertY
+    case gameControllerLeftThumbstickEnabled
+    case gameControllerRightThumbstickEnabled
 
     case normalFontPath
     case normalFontIndex

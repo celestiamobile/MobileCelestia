@@ -24,6 +24,7 @@
 		979D2FAD23FEB2B4005D2592 /* libbz2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 979D2FAC23FEB2AE005D2592 /* libbz2.tbd */; };
 		979D2FAF23FEB2BD005D2592 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 979D2FAE23FEB2B9005D2592 /* libz.tbd */; };
 		97C3A9F22445FACF00EB365A /* CelestiaControlView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97C3A9F12445FACF00EB365A /* CelestiaControlView.swift */; };
+		EA01989D2C6C753800AB7B1E /* GameControllerThumbstick.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA01989C2C6C753800AB7B1E /* GameControllerThumbstick.swift */; };
 		EA09B0732B10E76E00222229 /* EmptyHintView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA09B0722B10E76E00222229 /* EmptyHintView.swift */; };
 		EA09B0752B10FB2A00222229 /* SafeAreaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA09B0742B10FB2A00222229 /* SafeAreaView.swift */; };
 		EA09B0862B118C0E00222229 /* ICPCFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA09B0852B118C0E00222229 /* ICPCFooter.swift */; };
@@ -306,6 +307,7 @@
 		97EB41C82408F26200E6D441 /* StepperCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepperCell.swift; sourceTree = "<group>"; };
 		97F1141D2408AE06003A06D7 /* DataLocationSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataLocationSelectionViewController.swift; sourceTree = "<group>"; };
 		97FF95A4240A340300E9F44F /* RequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestHandler.swift; sourceTree = "<group>"; };
+		EA01989C2C6C753800AB7B1E /* GameControllerThumbstick.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameControllerThumbstick.swift; sourceTree = "<group>"; };
 		EA09B0722B10E76E00222229 /* EmptyHintView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyHintView.swift; sourceTree = "<group>"; };
 		EA09B0742B10FB2A00222229 /* SafeAreaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeAreaView.swift; sourceTree = "<group>"; };
 		EA09B0852B118C0E00222229 /* ICPCFooter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ICPCFooter.swift; sourceTree = "<group>"; };
@@ -956,6 +958,7 @@
 				EAE92A5E2A558B8D00BFE06E /* GameControllerManager.swift */,
 				EAE92A612A558D2900BFE06E /* GameControllerButton.swift */,
 				EAE92A632A558E8000BFE06E /* GameControllerThumbstickAxis.swift */,
+				EA01989C2C6C753800AB7B1E /* GameControllerThumbstick.swift */,
 			);
 			path = Interaction;
 			sourceTree = "<group>";
@@ -1412,6 +1415,7 @@
 				EA9166C22B0C734900AF48B1 /* ToolbarSettingContext.swift in Sources */,
 				EA872EFC2A5ACA1F009E6A20 /* UIContentSizeCategory+Extension.swift in Sources */,
 				EA50E77F2A505E5C005E7D7A /* StandardButton.swift in Sources */,
+				EA01989D2C6C753800AB7B1E /* GameControllerThumbstick.swift in Sources */,
 				EAB623AE2A51AA0A00063D1B /* BrowserCommonViewController.swift in Sources */,
 				EA50E77E2A505E42005E7D7A /* AppCore.swift in Sources */,
 				EA50E7852A505F13005E7D7A /* Font.swift in Sources */,

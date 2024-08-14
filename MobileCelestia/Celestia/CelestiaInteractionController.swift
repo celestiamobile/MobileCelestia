@@ -801,6 +801,15 @@ private extension CelestiaInteractionController {
                 guard let remapped: Int = self.userDefaults[button.userDefaultsKey] else { return nil }
                 return GameControllerAction(rawValue: remapped)
             },
+            thumbstickStatus: { [weak self] thumbstick in
+                guard let self else { return true }
+                switch thumbstick {
+                case .left:
+                    return self.userDefaults[.gameControllerLeftThumbstickEnabled] != false
+                case .right:
+                    return self.userDefaults[.gameControllerRightThumbstickEnabled] != false
+                }
+            },
             axisInversion: { [weak self] axis in
                 guard let self else { return false }
                 switch axis {

@@ -16,6 +16,7 @@ public class GameControllerManager {
     private let executor: AsyncProviderExecutor
     private let canAcceptEvents: () -> Bool
     private let actionRemapper: ((GameControllerButton) -> GameControllerAction?)?
+    private let thumbstickStatus: ((GameControllerThumbstick) -> Bool?)?
     private let axisInversion: ((GameControllerThumbstickAxis) -> Bool)?
     private let menuButtonHandler: (() -> Void)?
     private let connectedGameControllerChanged: ((GCController?) -> Void)?
@@ -26,6 +27,7 @@ public class GameControllerManager {
         executor: AsyncProviderExecutor,
         canAcceptEvents: @escaping () -> Bool,
         actionRemapper: ((GameControllerButton) -> GameControllerAction?)? = nil,
+        thumbstickStatus: ((GameControllerThumbstick) -> Bool?)? = nil,
         axisInversion: ((GameControllerThumbstickAxis) -> Bool)? = nil,
         menuButtonHandler: (() -> Void)? = nil,
         connectedGameControllerChanged: ((GCController?) -> Void)? = nil
@@ -33,6 +35,7 @@ public class GameControllerManager {
         self.executor = executor
         self.canAcceptEvents = canAcceptEvents
         self.actionRemapper = actionRemapper
+        self.thumbstickStatus = thumbstickStatus
         self.axisInversion = axisInversion
         self.menuButtonHandler = menuButtonHandler
         self.connectedGameControllerChanged = connectedGameControllerChanged
@@ -167,11 +170,15 @@ public class GameControllerManager {
                 }
             }
         }
-        let thumbstickChangedHandler = { [weak self] (xValue: Float, yValue: Float) in
+        let thumbstickChangedHandler = { [weak self] (thumbstick: GameControllerThumbstick, xValue: Float, yValue: Float) in
             guard let self else { return }
+            let thumbstickEnabled = self.thumbstickStatus?(thumbstick) ?? true
+            guard thumbstickEnabled else { return }
+
             guard self.canAcceptEvents() else {
                 return
             }
+
             let shouldInvertX = self.axisInversion?(.X) ?? false
             let shouldInvertY = self.axisInversion?(.Y) ?? false
             Task { @MainActor in
@@ -193,10 +200,10 @@ public class GameControllerManager {
             }
         }
         leftThumbstick?.valueChangedHandler = { _, xValue, yValue in
-            thumbstickChangedHandler(xValue, yValue)
+            thumbstickChangedHandler(.left, xValue, yValue)
         }
         rightThumbstick?.valueChangedHandler = { _, xValue, yValue in
-            thumbstickChangedHandler(xValue, yValue)
+            thumbstickChangedHandler(.right, xValue, yValue)
         }
         buttonA?.valueChangedHandler = { _, _, pressed in
             buttonStateChangedHandler(.A, .moveSlower, pressed)

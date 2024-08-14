@@ -948,6 +948,18 @@ public let gameControllerItem = SettingItem(
                 ], footer: nil),
                 .init(header: CelestiaString("Thumbsticks", comment: "Settings for game controller thumbsticks"), rows: [
                     SettingItem(
+                        name: CelestiaString("Enable Left Thumbstick", comment: "Setting item to control whether left thumbstick should be enabled"),
+                        associatedItem: .prefSwitch(item:
+                            AssociatedPreferenceSwitchItem(key: .gameControllerLeftThumbstickEnabled, defaultOn: true)
+                        )
+                    ),
+                    SettingItem(
+                        name: CelestiaString("Enable Right Thumbstick", comment: "Setting item to control whether right thumbstick should be enabled"),
+                        associatedItem: .prefSwitch(item:
+                            AssociatedPreferenceSwitchItem(key: .gameControllerRightThumbstickEnabled, defaultOn: true)
+                        )
+                    ),
+                    SettingItem(
                         name: CelestiaString("Invert Horizontally", comment: "Invert game controller thumbstick axis horizontally"),
                         associatedItem: .prefSwitch(item:
                             AssociatedPreferenceSwitchItem(key: .gameControllerInvertX, defaultOn: false)
