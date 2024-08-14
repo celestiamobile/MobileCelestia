@@ -18,9 +18,7 @@ class Grabber: UIView {
         layer.cornerCurve = .continuous
         backgroundColor = .tertiaryLabel
 
-        if #available(iOS 13.4, *) {
-            addInteraction(UIPointerInteraction(delegate: self))
-        }
+        addInteraction(UIPointerInteraction(delegate: self))
     }
 
     required init?(coder: NSCoder) {
@@ -33,7 +31,6 @@ class Grabber: UIView {
     }
 }
 
-@available(iOS 13.4, *)
 extension Grabber: UIPointerInteractionDelegate {
     func pointerInteraction(_ interaction: UIPointerInteraction, regionFor request: UIPointerRegionRequest, defaultRegion: UIPointerRegion) -> UIPointerRegion? {
         return defaultRegion

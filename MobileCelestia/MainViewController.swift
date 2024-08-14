@@ -96,14 +96,12 @@ class MainViewController: UIViewController {
         celestiaController = CelestiaViewController(screen: screen, executor: executor, userDefaults: userDefaults, subscriptionManager: subscriptionManager)
 
         #if targetEnvironment(macCatalyst)
-        if #available(iOS 14, *) {
-            let splitViewController = ToolbarSplitContainerController()
-            splitViewController.preferredDisplayMode = .secondaryOnly
-            splitViewController.minimumPrimaryColumnWidth = ToolbarViewController.Constants.width
-            splitViewController.maximumPrimaryColumnWidth = ToolbarViewController.Constants.width
-            splitViewController.setSecondaryViewController(celestiaController)
-            split = splitViewController
-        }
+        let splitViewController = ToolbarSplitContainerController()
+        splitViewController.preferredDisplayMode = .secondaryOnly
+        splitViewController.minimumPrimaryColumnWidth = ToolbarViewController.Constants.width
+        splitViewController.maximumPrimaryColumnWidth = ToolbarViewController.Constants.width
+        splitViewController.setSecondaryViewController(celestiaController)
+        split = splitViewController
         #endif
 
         if let url = initialURL {
@@ -221,14 +219,8 @@ extension MainViewController {
     }
 
     @objc private func requestOpenFile() {
-        let browser: UIDocumentPickerViewController
-        if #available(iOS 14, *) {
-            let types = Set([UTType(filenameExtension: "cel"), UTType(filenameExtension: "celx"), UTType(exportedAs: "space.celestia.script")]).compactMap { $0 }
-            browser = UIDocumentPickerViewController(forOpeningContentTypes: types)
-        } else {
-            let types = ["space.celestia.script", "public.flc-animation"] // .cel extension is taken by public.flc-animation
-            browser = UIDocumentPickerViewController(documentTypes: types, in: .open)
-        }
+        let types = Set([UTType(filenameExtension: "cel"), UTType(filenameExtension: "celx"), UTType(exportedAs: "space.celestia.script")]).compactMap { $0 }
+        let browser = UIDocumentPickerViewController(forOpeningContentTypes: types)
         browser.allowsMultipleSelection = false
         browser.delegate = self
         presentAfterDismissCurrent(browser, animated: true)
@@ -602,16 +594,14 @@ extension MainViewController: CelestiaControllerDelegate {
 
     func celestiaControllerRequestShowActionMenu(_ celestiaController: CelestiaViewController) {
         #if targetEnvironment(macCatalyst)
-        if #available(iOS 14, *) {
-            split?.preferredDisplayMode = .oneBesideSecondary
-            return
-        }
-        #endif
+        split?.preferredDisplayMode = .oneBesideSecondary
+        #else
         guard presentedViewController != actionViewController, !actionViewController.isBeingPresented else { return }
 
         actionViewController.modalPresentationStyle = .custom
         actionViewController.transitioningDelegate = toolbarSlideInManager
         presentAfterDismissCurrent(actionViewController, animated: true)
+        #endif
     }
 
     func celestiaControllerRequestShowSearch(_ celestiaController: CelestiaViewController) {
@@ -798,12 +788,7 @@ extension MainViewController: CelestiaControllerDelegate {
         #if targetEnvironment(macCatalyst)
         let os = "Mac"
         #else
-        let os: String
-        if #available(iOS 14, *), ProcessInfo.processInfo.isiOSAppOnMac {
-            os = "Mac (iOS)"
-        } else {
-            os = "iOS"
-        }
+        let os = ProcessInfo.processInfo.isiOSAppOnMac ? "Mac (iOS)" : "iOS"
         #endif
         #if arch(x86_64)
         let arch = "x86_64"
@@ -1288,12 +1273,7 @@ extension UIViewController {
 #if targetEnvironment(macCatalyst)
 extension MainViewController {
     private func saveFile(_ url: URL) {
-        let picker: UIDocumentPickerViewController
-        if #available(iOS 14, *) {
-            picker = UIDocumentPickerViewController(forExporting: [url], asCopy: false)
-        } else {
-            picker = UIDocumentPickerViewController(url: url, in: .moveToService)
-        }
+        let picker = UIDocumentPickerViewController(forExporting: [url], asCopy: false)
         picker.shouldShowFileExtensions = true
         picker.allowsMultipleSelection = false
         presentAfterDismissCurrent(picker, animated: true)
@@ -1431,7 +1411,6 @@ extension MainViewController: MFMailComposeViewControllerDelegate {
 }
 
 #if targetEnvironment(macCatalyst)
-@available(iOS 14, *)
 extension MainViewController: ToolbarContainerViewController {
     var nsToolbar: NSToolbar? {
         get { split?.nsToolbar }

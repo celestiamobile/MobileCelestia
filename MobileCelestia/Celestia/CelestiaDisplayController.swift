@@ -252,11 +252,7 @@ extension CelestiaDisplayController {
         #if targetEnvironment(macCatalyst)
         applicationScalingFactor = MacBridge.catalystScaleFactor
         #else
-        if #available(iOS 14, *) {
-            applicationScalingFactor = ProcessInfo.processInfo.isiOSAppOnMac ? 0.77 : 1
-        } else {
-            applicationScalingFactor = 1
-        }
+        applicationScalingFactor = ProcessInfo.processInfo.isiOSAppOnMac ? 0.77 : 1
         #endif
 
         let viewSafeAreaInsets = self.view.safeAreaInsets

@@ -127,14 +127,8 @@ extension DataLocationSelectionViewController {
 
             loadContents()
         } else {
-            let browser: UIDocumentPickerViewController
-            if #available(iOS 14, visionOS 1, *) {
-                let types = [UTType.folder, UTType.data]
-                browser = UIDocumentPickerViewController(forOpeningContentTypes: [types[indexPath.row]])
-            } else {
-                let types = [kUTTypeFolder as String, kUTTypeData as String]
-                browser = UIDocumentPickerViewController(documentTypes: [types[indexPath.row]], in: .open)
-            }
+            let types = [UTType.folder, UTType.data]
+            let browser = UIDocumentPickerViewController(forOpeningContentTypes: [types[indexPath.row]])
             currentPicker = Location(rawValue: indexPath.row)
             browser.allowsMultipleSelection = false
             browser.delegate = self

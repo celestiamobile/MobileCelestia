@@ -51,15 +51,11 @@ public enum GlobalConstants {
 
     public static func preferredUIElementScaling(for traitCollection: UITraitCollection) -> CGFloat {
         #if targetEnvironment(macCatalyst)
-        if #available(iOS 14, *) {
-            // Mac idiom, needs scaling
-            if traitCollection.userInterfaceIdiom == .mac {
-                return 0.77
-            }
-            // iPad idiom no need for scaling
-            return 1
+        // Mac idiom, needs scaling
+        if traitCollection.userInterfaceIdiom == .mac {
+            return 0.77
         }
-        // macCatalyst 13, only iPad idiom is available
+        // iPad idiom no need for scaling
         return 1
         #else
         return 1

@@ -60,7 +60,7 @@ class CelestiaViewController: UIViewController {
     private let safeAreaEdges: NSDirectionalRectEdge = .top
     #else
     private let safeAreaEdges: NSDirectionalRectEdge = {
-        if #available(iOS 14, *), ProcessInfo.processInfo.isiOSAppOnMac {
+        if ProcessInfo.processInfo.isiOSAppOnMac {
             return .top
         }
         return []
@@ -96,7 +96,7 @@ class CelestiaViewController: UIViewController {
     }
 
     override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-        if #available(iOS 13.4, *), let key = presses.first?.key {
+        if let key = presses.first?.key {
             interactionController?.keyDown(with: key.input, modifiers: UInt(key.modifierFlags.rawValue))
         } else {
             super.pressesBegan(presses, with: event)
@@ -104,7 +104,7 @@ class CelestiaViewController: UIViewController {
     }
 
     override func pressesEnded(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-        if #available(iOS 13.4, *), let key = presses.first?.key {
+        if let key = presses.first?.key {
             interactionController?.keyUp(with: key.input, modifiers: UInt(key.modifierFlags.rawValue))
         } else {
             super.pressesEnded(presses, with: event)
@@ -112,7 +112,7 @@ class CelestiaViewController: UIViewController {
     }
 
     override func pressesCancelled(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-        if #available(iOS 13.4, *), let key = presses.first?.key {
+        if let key = presses.first?.key {
             interactionController?.keyUp(with: key.input, modifiers: UInt(key.modifierFlags.rawValue))
         } else {
             super.pressesCancelled(presses, with: event)
@@ -272,7 +272,6 @@ extension CelestiaViewController: RenderingTargetInformationProvider {
     }
 }
 
-@available(iOS 13.4, *)
 private extension UIKey {
     var input: String? {
         let c = characters

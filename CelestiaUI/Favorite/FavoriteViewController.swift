@@ -86,13 +86,9 @@ extension FavoriteViewController {
         let type = FavoriteItemType(rawValue: indexPath.row)
         #if targetEnvironment(macCatalyst)
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath)
-        if #available(iOS 14, *) {
-            var configuration = UIListContentConfiguration.sidebarCell()
-            configuration.text = type?.description
-            cell.contentConfiguration = configuration
-        } else {
-            cell.textLabel?.text = type?.description
-        }
+        var configuration = UIListContentConfiguration.sidebarCell()
+        configuration.text = type?.description
+        cell.contentConfiguration = configuration
         #else
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
         cell.title = type?.description

@@ -358,9 +358,7 @@ extension NSToolbarItem {
         button.setValue(11, forKey: "bezelStyle") // textureRounded
         setValue(button, forKey: "view")
         toolTip = CelestiaString("Back", comment: "Undo an operation")
-        if #available(macCatalyst 14.0, *) {
-            isNavigational = true
-        }
+        isNavigational = true
     }
 
     convenience init(addItemIdentifier: NSToolbarItem.Identifier, target: Any, action: Selector) {
@@ -395,19 +393,16 @@ open class ToolbarSplitContainerController: UIViewController, ToolbarContainerVi
     private var secondaryNavigation: UINavigationController?
     private var titleObservation: NSKeyValueObservation?
 
-    @available(iOS 14, *)
     public var preferredDisplayMode: UISplitViewController.DisplayMode {
         get { split.preferredDisplayMode }
         set { split.preferredDisplayMode = newValue }
     }
 
-    @available(iOS 14, *)
     public var minimumPrimaryColumnWidth: CGFloat {
         get { split.minimumPrimaryColumnWidth }
         set { split.minimumPrimaryColumnWidth = newValue }
     }
 
-    @available(iOS 14, *)
     public var maximumPrimaryColumnWidth: CGFloat {
         get { split.maximumPrimaryColumnWidth }
         set { split.maximumPrimaryColumnWidth = newValue }
@@ -431,22 +426,14 @@ open class ToolbarSplitContainerController: UIViewController, ToolbarContainerVi
         }
         self.sidebarNavigation = sidebarNavigation
         self.secondaryNavigation = secondaryNavigation
-        if #available(iOS 14, *) {
-            split = UISplitViewController(style: .doubleColumn)
-        } else {
-            split = UISplitViewController()
-        }
+        split = UISplitViewController(style: .doubleColumn)
         super.init(nibName: nil, bundle: nil)
         split.primaryBackgroundStyle = .sidebar
         split.preferredDisplayMode = .oneBesideSecondary
         split.preferredPrimaryColumnWidthFraction = 0.3
         install(split)
-        if #available(iOS 14, *) {
-            split.setViewController(sidebarNavigation, for: .primary)
-            split.setViewController(secondaryNavigation, for: .secondary)
-        } else {
-            split.viewControllers = [sidebarNavigation, secondaryNavigation].compactMap { $0 }
-        }
+        split.setViewController(sidebarNavigation, for: .primary)
+        split.setViewController(secondaryNavigation, for: .secondary)
         sidebarNavigation?.delegate = self
         secondaryNavigation?.delegate = self
     }
@@ -459,11 +446,7 @@ open class ToolbarSplitContainerController: UIViewController, ToolbarContainerVi
         }
         newNavigation.delegate = self
         sidebarNavigation = newNavigation
-        if #available(iOS 14, *) {
-            split.setViewController(newNavigation, for: .primary)
-        } else {
-            split.viewControllers = [newNavigation, secondaryNavigation].compactMap { $0 }
-        }
+        split.setViewController(newNavigation, for: .primary)
         updateToolbar()
         return newNavigation
     }
@@ -480,11 +463,7 @@ open class ToolbarSplitContainerController: UIViewController, ToolbarContainerVi
         }
         newNavigation.delegate = self
         secondaryNavigation = newNavigation
-        if #available(iOS 14, *) {
-            split.setViewController(newNavigation, for: .secondary)
-        } else {
-            split.viewControllers = [sidebarNavigation, newNavigation].compactMap { $0 }
-        }
+        split.setViewController(newNavigation, for: .secondary)
         _updateToolbar(for: secondaryViewController)
         return newNavigation
     }
@@ -555,18 +534,15 @@ open class ToolbarSplitContainerController: UIViewController, ToolbarContainerVi
 
 extension ToolbarSplitContainerController: NSToolbarDelegate {
     public func toolbarAllowedItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
-        if #available(iOS 14, *) {
-            if #available(iOS 17, *) {
-                return [.toggleSidebar, .primarySidebarTrackingSeparatorItemIdentifier, .back] + currentToolbarItemIdentifiers
-            }
-            return [.toggleSidebar, .back] + currentToolbarItemIdentifiers
+        if #available(iOS 17, *) {
+            return [.toggleSidebar, .primarySidebarTrackingSeparatorItemIdentifier, .back] + currentToolbarItemIdentifiers
         }
-        return [.back] + currentToolbarItemIdentifiers
+        return [.toggleSidebar, .back] + currentToolbarItemIdentifiers
     }
 
     public func toolbarDefaultItemIdentifiers(_ toolbar: NSToolbar) -> [NSToolbarItem.Identifier] {
         var items = [NSToolbarItem.Identifier]()
-        if #available(iOS 14, *), secondaryNavigation != nil && sidebarNavigation != nil {
+        if secondaryNavigation != nil && sidebarNavigation != nil {
             items.append(.toggleSidebar)
             if #available(iOS 17, *) {
                 items.append(.primarySidebarTrackingSeparatorItemIdentifier)

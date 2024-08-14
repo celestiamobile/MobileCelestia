@@ -44,7 +44,7 @@ public class GameControllerManager {
     }
 
     private func startObservingGameControllerConnection() {
-        if #available(iOS 14, visionOS 1, *), let current = GCController.current {
+        if let current = GCController.current {
             gameControllerChanged(current)
         } else if let firstController = GCController.controllers().first {
             gameControllerChanged(firstController)

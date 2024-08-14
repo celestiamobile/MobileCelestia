@@ -70,13 +70,7 @@ class CelestiaInteractionController: UIViewController {
     private var zoomMode: ZoomMode? = nil
 
     #if targetEnvironment(macCatalyst)
-    private let needAddControlView: Bool = {
-        if #available(macCatalyst 14.0, *) {
-            return false
-        } else {
-            return true
-        }
-    }()
+    private let needAddControlView = false
     private lazy var activeControlView = CelestiaControlView(items: [
         CelestiaControlButton.tap(image: UIImage(systemName: "info.circle"), action: .info, accessibilityLabel: CelestiaString("Get Info", comment: "Action for getting info about current selected object")),
         CelestiaControlButton.tap(image: UIImage(systemName: "magnifyingglass.circle"), action: .search, accessibilityLabel: CelestiaString("Search", comment: "")),
@@ -330,22 +324,16 @@ extension CelestiaInteractionController: CelestiaControlViewDelegate {
 
 extension CelestiaInteractionController {
     private class PanGestureRecognizer: UIPanGestureRecognizer {
-        @available(iOS 13.4, *)
         var supportedMouseButtons: UIEvent.ButtonMask {
-            get { return UIEvent.ButtonMask(rawValue: supportedMouseButtonsRawValue) }
-            set { supportedMouseButtonsRawValue = newValue.rawValue }
+            get { return _supportedMouseButtons }
+            set { _supportedMouseButtons = newValue }
         }
 
-        private var supportedMouseButtonsRawValue: Int = {
-            if #available(iOS 13.4, *) {
-                return UIEvent.ButtonMask.primary.rawValue
-            }
-            return 1
-        }()
+        private var _supportedMouseButtons: UIEvent.ButtonMask = .primary
 
         // HACK, support other buttons by override this private method in UIKit
-        @objc private var _defaultAllowedMouseButtons: Int {
-            return supportedMouseButtonsRawValue
+        @objc private var _defaultAllowedMouseButtons: UIEvent.ButtonMask {
+            return _supportedMouseButtons
         }
     }
 
@@ -354,18 +342,14 @@ extension CelestiaInteractionController {
         pan1.minimumNumberOfTouches = 1
         pan1.maximumNumberOfTouches = 1
         pan1.delegate = self
-        if #available(iOS 13.4, *) {
-            pan1.supportedMouseButtons = [.primary, .secondary]
-        }
+        pan1.supportedMouseButtons = [.primary, .secondary]
         targetInteractionView.addGestureRecognizer(pan1)
 
-        if #available(iOS 13.4, *) {
-            let pan2 = UIPanGestureRecognizer(target: self, action: #selector(handlePanZoom(_:)))
-            pan2.allowedScrollTypesMask = [.discrete, .continuous]
-            pan2.delegate = self
-            targetInteractionView.addGestureRecognizer(pan2)
-            pan2.require(toFail: pan1)
-        }
+        let pan2 = UIPanGestureRecognizer(target: self, action: #selector(handlePanZoom(_:)))
+        pan2.allowedScrollTypesMask = [.discrete, .continuous]
+        pan2.delegate = self
+        targetInteractionView.addGestureRecognizer(pan2)
+        pan2.require(toFail: pan1)
 
         let pinch = UIPinchGestureRecognizer(target: self, action: #selector(handlePinch(_:)))
         pinch.delegate = self
@@ -398,10 +382,7 @@ extension CelestiaInteractionController {
     @objc private func handlePanZoom(_ pan: UIPanGestureRecognizer) {
         showControlViewIfNeeded()
 
-        var modifiers: UIKeyModifierFlags = []
-        if #available(iOS 13.4, *) {
-            modifiers = pan.modifierFlags
-        }
+        let modifiers = pan.modifierFlags
         switch pan.state {
         case .changed:
             let delta = pan.translation(with: renderingTargetGeometry).y / 400
@@ -417,15 +398,12 @@ extension CelestiaInteractionController {
         showControlViewIfNeeded()
 
         let location = pan.location(with: renderingTargetGeometry)
-        var modifiers: UIKeyModifierFlags = []
+        let modifiers = pan.modifierFlags
         var button = interactionMode.button
-        if #available(iOS 13.4, *) {
-            modifiers = pan.modifierFlags
-            if pan.buttonMask.contains(.primary) {
-                button = .left
-            } else if pan.buttonMask.contains(.secondary) {
-                button = .right
-            }
+        if pan.buttonMask.contains(.primary) {
+            button = .left
+        } else if pan.buttonMask.contains(.secondary) {
+            button = .right
         }
         switch pan.state {
         case .possible:
@@ -541,31 +519,12 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
         let location = interaction.location(with: renderingTargetGeometry)
 
-        if #available(iOS 14, *) {
-            return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { [weak self] _ in
-                guard let self else { return nil }
-                return UIMenu(options: .displayInline, children: [contextMenuForLocation(location: location, interaction: interaction)])
-            }
-        } else {
-            guard let selection = executor.getSynchronously({ core in
-                let handler = ContextMenuHandler()
-                core.contextMenuHandler = handler
-                core.mouseButtonDown(at: location, modifiers: 0, with: .right)
-                core.mouseButtonUp(at: location, modifiers: 0, with: .right)
-                core.contextMenuHandler = nil
-                return handler.pendingSelection
-            }) else {
-                return nil
-            }
-
-            return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { [weak self] _ in
-                guard let self else { return nil }
-                return UIMenu(children: self.contextMenuForSelection(selection: selection))
-            }
+        return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { [weak self] _ in
+            guard let self else { return nil }
+            return UIMenu(options: .displayInline, children: [contextMenuForLocation(location: location, interaction: interaction)])
         }
     }
 
-    @available(iOS 14, *)
     private func contextMenuForLocation(location: CGPoint, interaction: UIContextMenuInteraction) -> UIDeferredMenuElement {
         return UIDeferredMenuElement { [weak self, weak interaction] completion in
             guard let self else {

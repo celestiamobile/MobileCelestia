@@ -343,31 +343,24 @@ extension AppDelegate {
 
         let runScriptMenu = createMenuItem(identifierSuffix: "open", action: MenuActionContext(title: CelestiaString("Run Script…", comment: ""), action: #selector(openScriptFile), input: "O", modifierFlags: .command))
         builder.insertChild(runScriptMenu, atStartOfMenu: .file)
-        var captureImageKey = ""
-        if #available(iOS 13.4, *) {
-            captureImageKey = UIKeyCommand.f10
-        }
+        let captureImageKey = UIKeyCommand.f10
         let captureImageMenu = createMenuItem(identifierSuffix: "capture", action: MenuActionContext(title: CelestiaString("Capture Image", comment: "Take a screenshot in Celestia"), action: #selector(captureImage), input: captureImageKey))
 
-        if #available(iOS 14, *) {
-            let scriptsMenu = createMenuItemGroupDeferred(title: CelestiaString("Scripts", comment: ""), identifierSuffix: "scripts") { [weak self] in
-                guard let self else { return [] }
-                guard self.core.isInitialized else { return [] }
-                var scripts = Script.scripts(inDirectory: "scripts", deepScan: true)
-                if let extraScriptsDirectory = UserDefaults.extraScriptDirectory {
-                    scripts += Script.scripts(inDirectory: extraScriptsDirectory.path, deepScan: true)
-                }
-                return scripts.map { script in
-                    UIAction(title: script.title) { _ in
-                        NotificationCenter.default.post(name: requestRunScriptNotificationName, object: nil, userInfo: [requestRunScriptNotificationKey: script])
-                    }
+        let scriptsMenu = createMenuItemGroupDeferred(title: CelestiaString("Scripts", comment: ""), identifierSuffix: "scripts") { [weak self] in
+            guard let self else { return [] }
+            guard self.core.isInitialized else { return [] }
+            var scripts = Script.scripts(inDirectory: "scripts", deepScan: true)
+            if let extraScriptsDirectory = UserDefaults.extraScriptDirectory {
+                scripts += Script.scripts(inDirectory: extraScriptsDirectory.path, deepScan: true)
+            }
+            return scripts.map { script in
+                UIAction(title: script.title) { _ in
+                    NotificationCenter.default.post(name: requestRunScriptNotificationName, object: nil, userInfo: [requestRunScriptNotificationKey: script])
                 }
             }
-            builder.insertSibling(scriptsMenu, beforeMenu: .close)
-            builder.insertSibling(captureImageMenu, afterMenu: scriptsMenu.identifier)
-        } else {
-            builder.insertSibling(captureImageMenu, beforeMenu: .close)
         }
+        builder.insertSibling(scriptsMenu, beforeMenu: .close)
+        builder.insertSibling(captureImageMenu, afterMenu: scriptsMenu.identifier)
         let copyPasteMenu = createMenuItemGroup(identifierSuffix: "copypaste", actions: [
             MenuActionContext(title: CelestiaString("Copy URL", comment: "Copy current URL to pasteboard"), action: #selector(copy(_:)), input: "c", modifierFlags: .command),
             MenuActionContext(title: CelestiaString("Paste URL", comment: "Paste URL from pasteboard"), action: #selector(paste(_:)), input: "v", modifierFlags: .command),
@@ -425,20 +418,18 @@ extension AppDelegate {
             MenuActionContext(title: CelestiaString("Organize Bookmarks…", comment: ""), action: #selector(organizeBookmarks)),
         ])
         builder.insertChild(bookmarkActionMenu, atStartOfMenu: bookmarkMenu.identifier)
-        if #available(iOS 14, *) {
-            let openBookmarkMenu = createMenuItemGroupDeferred(identifierSuffix: "bookmark.open", options: .displayInline) { [weak self] in
-                guard let self else { return [] }
-                guard self.core.isInitialized else { return [] }
-                let bookmarks = readBookmarks()
-                // Only leaf bookmarks on top level
-                return bookmarks.filter { $0.isLeaf }.map { bookmark in
-                    UIAction(title: bookmark.name) { _ in
-                        NotificationCenter.default.post(name: requestOpenBookmarkNotificationName, object: nil, userInfo: [requestOpenBookmarkNotificationKey: bookmark])
-                    }
+        let openBookmarkMenu = createMenuItemGroupDeferred(identifierSuffix: "bookmark.open", options: .displayInline) { [weak self] in
+            guard let self else { return [] }
+            guard self.core.isInitialized else { return [] }
+            let bookmarks = readBookmarks()
+            // Only leaf bookmarks on top level
+            return bookmarks.filter { $0.isLeaf }.map { bookmark in
+                UIAction(title: bookmark.name) { _ in
+                    NotificationCenter.default.post(name: requestOpenBookmarkNotificationName, object: nil, userInfo: [requestOpenBookmarkNotificationKey: bookmark])
                 }
             }
-            builder.insertSibling(openBookmarkMenu, afterMenu: bookmarkActionMenu.identifier)
         }
+        builder.insertSibling(openBookmarkMenu, afterMenu: bookmarkActionMenu.identifier)
 
         let deleteActiveViewKey = String(Character(UnicodeScalar(0x7f)))
         builder.insertChild(createMenuItemGroup(identifierSuffix: "views", actions: [
@@ -484,7 +475,6 @@ extension AppDelegate {
         createMenuItemGroup(title: "", identifierSuffix: identifierSuffix, actions: [action], options: .displayInline)
     }
 
-    @available(iOS 14, *)
     private func createMenuItemGroupDeferred(title: String = "", identifierSuffix: String, options: UIMenu.Options = [], menuBuilder: @escaping @MainActor () async -> [UIAction]) -> UIMenu {
         let identifierPrefix = Bundle.app.bundleIdentifier! + "."
         let identifier = UIMenu.Identifier(identifierPrefix + identifierSuffix)

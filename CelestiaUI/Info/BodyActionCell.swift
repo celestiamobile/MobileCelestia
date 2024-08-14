@@ -15,14 +15,12 @@ final class BodyActionCell: UICollectionViewCell {
     var title: String? { didSet { button.setTitle(title, for: .normal) } }
     var menu: UIMenu? {
         didSet {
-            if #available(iOS 14, visionOS 1, *) {
-                if let menu = menu {
-                    button.menu = menu
-                    button.showsMenuAsPrimaryAction = true
-                } else {
-                    button.menu = nil
-                    button.showsMenuAsPrimaryAction = false
-                }
+            if let menu = menu {
+                button.menu = menu
+                button.showsMenuAsPrimaryAction = true
+            } else {
+                button.menu = nil
+                button.showsMenuAsPrimaryAction = false
             }
         }
     }
@@ -63,7 +61,7 @@ final class BodyActionCell: UICollectionViewCell {
             withHorizontalFittingPriority: UILayoutPriority.required,
             verticalFittingPriority: UILayoutPriority.defaultLow)
         let height: CGFloat
-        if #available(iOS 14, *), traitCollection.userInterfaceIdiom == .mac {
+        if traitCollection.userInterfaceIdiom == .mac {
             height = fittingSize.height
         } else {
             height = max(fittingSize.height, layoutAttributes.size.height)

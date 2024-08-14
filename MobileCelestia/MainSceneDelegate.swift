@@ -44,14 +44,12 @@ class MainSceneDelegate: CommonSceneDelegate {
         }
         let vc = MainViewController(initialURL: launchURL, screen: windowScene.screen)
         #if targetEnvironment(macCatalyst)
-        if #available(iOS 14, *) {
-            let toolbar = NSToolbar(identifier: UUID().uuidString)
-            toolbar.displayMode = .iconOnly
-            toolbar.allowsUserCustomization = false
-            toolbar.autosavesConfiguration = false
-            windowScene.titlebar?.toolbar = toolbar
-            vc.nsToolbar = toolbar
-        }
+        let toolbar = NSToolbar(identifier: UUID().uuidString)
+        toolbar.displayMode = .iconOnly
+        toolbar.allowsUserCustomization = false
+        toolbar.autosavesConfiguration = false
+        windowScene.titlebar?.toolbar = toolbar
+        vc.nsToolbar = toolbar
         #endif
         window.rootViewController = vc
 

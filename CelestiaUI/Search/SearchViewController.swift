@@ -312,13 +312,9 @@ extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
         let result = resultSections[indexPath.section].results[indexPath.row]
         if resultsInSidebar {
             let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath)
-            if #available(iOS 14, visionOS 1, *) {
-                var configuration = UIListContentConfiguration.sidebarCell()
-                configuration.text = result.name
-                cell.contentConfiguration = configuration
-            } else {
-                cell.textLabel?.text = result.name
-            }
+            var configuration = UIListContentConfiguration.sidebarCell()
+            configuration.text = result.name
+            cell.contentConfiguration = configuration
             return cell
         }
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
