@@ -9,7 +9,7 @@ jobs:
     signing: ${{ parameters.signing }}
     backend: ${{ parameters.backend }}
     contentCommitHash: ${{ '9f85700c021c0ef084c209a6e32b176bf95524d6' }}
-    XC_VERSION: ${{ '15.4' }}
+    XC_VERSION: ${{ '16_beta_6' }}
     XC_PROJECT: ${{ 'MobileCelestia/MobileCelestia.xcodeproj' }}
     XC_SCHEME: ${{ 'MobileCelestia' }}
     XC_ARCHIVE_PARENT_PATH: ${{ '$(system.defaultworkingdirectory)/archive' }}
@@ -107,6 +107,12 @@ jobs:
       sudo xcode-select -s /Applications/Xcode_$XC_VERSION.app
       xcodebuild -version
     displayName: 'Select Latest Xcode'
+
+  - script: |
+      xcodebuild -runFirstLaunch
+      xcodebuild -downloadPlatform iOS
+    displayName: 'Download iOS Platform'
+    condition: eq( variables['sdk'], 'iphoneos' )
 
   - script: |
       rm -rf /usr/local/bin/2to3* /usr/local/bin/idle3* /usr/local/bin/pydoc* /usr/local/bin/python* /usr/local/share/man/man1/python* /usr/local/lib/pkgconfig/python* /usr/local/Frameworks/Python.framework
