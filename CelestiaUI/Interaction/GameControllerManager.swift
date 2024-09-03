@@ -76,9 +76,6 @@ public class GameControllerManager: @unchecked Sendable {
         }
     }
 
-    @MainActor private func test() {
-    }
-
     @MainActor private func gameControllerChanged(_ controller: GCController) {
         var buttonA: GCDeviceButtonInput?
         var buttonB: GCDeviceButtonInput?

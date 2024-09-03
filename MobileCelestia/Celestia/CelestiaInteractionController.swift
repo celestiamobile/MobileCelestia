@@ -30,6 +30,8 @@ protocol RenderingTargetInformationProvider: AnyObject {
     var targetContents: Any? { get }
 }
 
+extension UIKeyModifierFlags: @unchecked @retroactive Sendable {}
+
 class CelestiaInteractionController: UIViewController {
     private enum InteractionMode {
         case object
@@ -109,9 +111,9 @@ class CelestiaInteractionController: UIViewController {
     #endif
     private var currentPinchScale: CGFloat?
 
-    @Injected(\.appCore) private var core
-    @Injected(\.executor) private var executor
-    @Injected(\.userDefaults) private var userDefaults
+    private let core: AppCore
+    private let executor: CelestiaExecutor
+    private let userDefaults: UserDefaults
     private let subscriptionManager: SubscriptionManager
 
     weak var delegate: CelestiaInteractionControllerDelegate?
@@ -155,8 +157,11 @@ class CelestiaInteractionController: UIViewController {
 
     private var gameControllerManager: GameControllerManager?
 
-    init(subscriptionManager: SubscriptionManager) {
+    init(subscriptionManager: SubscriptionManager, core: AppCore, executor: CelestiaExecutor, userDefaults: UserDefaults) {
         self.subscriptionManager = subscriptionManager
+        self.core = core
+        self.executor = executor
+        self.userDefaults = userDefaults
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -394,11 +399,13 @@ extension CelestiaInteractionController {
 
         let location = pan.location(with: renderingTargetGeometry)
         let modifiers = pan.modifierFlags
-        var button = interactionMode.button
+        let button: MouseButton
         if pan.buttonMask.contains(.primary) {
             button = .left
         } else if pan.buttonMask.contains(.secondary) {
             button = .right
+        } else {
+            button = interactionMode.button
         }
         switch pan.state {
         case .possible:

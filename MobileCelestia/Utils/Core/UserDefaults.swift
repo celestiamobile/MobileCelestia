@@ -19,23 +19,8 @@ extension UserDefaults {
         self[.databaseVersion] = databaseVersion
     }
 
-    fileprivate func initialize() {
+    func initialize() {
         upgrade()
-    }
-}
-
-private struct UserDefaultsInjectionKey: InjectionKey {
-    static var currentValue: UserDefaults = {
-        let defaults = UserDefaults.standard
-        defaults.initialize()
-        return defaults
-    }()
-}
-
-extension InjectedValues {
-    var userDefaults: UserDefaults {
-        get { Self[UserDefaultsInjectionKey.self] }
-        set { Self[UserDefaultsInjectionKey.self] = newValue }
     }
 }
 

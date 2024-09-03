@@ -94,6 +94,11 @@ public class CommonWebViewController: UIViewController {
         // Maybe no longer needed?
         titleObservation?.invalidate()
         titleObservation = nil
+        // Avoid leak https://stackoverflow.com/questions/26383031/
+        let webView = self.webView
+        Task { @MainActor in
+            webView.configuration.userContentController.removeScriptMessageHandler(forName: "iOSCelestia")
+        }
     }
 
     required init?(coder: NSCoder) {

@@ -17,54 +17,57 @@ import UIKit
 
 protocol CelestiaDisplayControllerDelegate: AnyObject {
     func celestiaDisplayController(_ celestiaDisplayController: CelestiaDisplayController, loadingStatusUpdated status: String)
-    func celestiaDisplayController(_ celestiaDisplayController: CelestiaDisplayController, loadingFailedShouldRetry shouldRetry: @escaping (Bool) -> Void)
+    func celestiaDisplayControllerLoadingFailedShouldRetry(_ celestiaDisplayController: CelestiaDisplayController) -> Bool
     func celestiaDisplayControllerLoadingFailed(_ celestiaDisplayController: CelestiaDisplayController)
     func celestiaDisplayControllerLoadingSucceeded(_ celestiaDisplayController: CelestiaDisplayController)
 }
 
 class CelestiaDisplayController: AsyncGLViewController {
-    @Injected(\.appCore) private var core
-    @Injected(\.executor) private var executor
-    @Injected(\.userDefaults) private var userDefaults
+    private let core: AppCore
+    private let executor: CelestiaExecutor
+    private let userDefaults: UserDefaults
     private let subscriptionManager: SubscriptionManager
 
     // MARK: rendering
-    private var currentSize: CGSize = .zero
+    private nonisolated(unsafe) var currentSize: CGSize = .zero
 
-    private var isLoaded = false
+    private nonisolated(unsafe) var isLoaded = false
     private var isInBackground = false
 
     private var isReady: Bool {
         return isLoaded && !isInBackground
     }
 
-    private var dataDirectoryURL: UniformedURL!
-    private var configFileURL: UniformedURL!
+    private nonisolated(unsafe) var dataDirectoryURL: UniformedURL!
+    private nonisolated(unsafe) var configFileURL: UniformedURL!
 
     private var currentViewScale: CGFloat = 1
 
-    weak var delegate: CelestiaDisplayControllerDelegate?
+    nonisolated(unsafe) weak var delegate: CelestiaDisplayControllerDelegate?
 
     #if targetEnvironment(macCatalyst)
-    private static let windowWillStartLiveResizeNotification = Notification.Name("NSWindowWillStartLiveResizeNotification")
-    private static let windowDidEndLiveResizeNotification = Notification.Name("NSWindowDidEndLiveResizeNotification")
+    private static nonisolated let windowWillStartLiveResizeNotification = Notification.Name("NSWindowWillStartLiveResizeNotification")
+    private static nonisolated let windowDidEndLiveResizeNotification = Notification.Name("NSWindowDidEndLiveResizeNotification")
     #endif
 
-    private var isRTL = false
+    private nonisolated(unsafe) var isRTL = false
 
     #if targetEnvironment(macCatalyst)
-    private var sensitivity: Double = 4.0
+    private nonisolated(unsafe) var sensitivity: Double = 4.0
     #else
-    private var sensitivity: Double = 10.0
+    private nonisolated(unsafe) var sensitivity: Double = 10.0
     #endif
 
-    init(msaaEnabled: Bool, screen: UIScreen, initialFrameRate frameRate: Int, executor: AsyncGLExecutor, subscriptionManager: SubscriptionManager) {
+    init(msaaEnabled: Bool, screen: UIScreen, initialFrameRate frameRate: Int, executor: CelestiaExecutor, subscriptionManager: SubscriptionManager, core: AppCore, userDefaults: UserDefaults) {
 #if targetEnvironment(macCatalyst)
         let api = AsyncGLAPI.openGLLegacy
 #else
         let api = AsyncGLAPI.openGLES2
 #endif
         self.subscriptionManager = subscriptionManager
+        self.core = core
+        self.executor = executor
+        self.userDefaults = userDefaults
         super.init(msaaEnabled: msaaEnabled, screen: screen, initialFrameRate: frameRate, api: api, executor: executor)
 
         if #available(iOS 17, *) {
@@ -167,25 +170,13 @@ extension CelestiaDisplayController {
             guard self.core.startSimulation(configFileName: self.configFileURL.url.path, extraDirectories: [UserDefaults.extraDirectory].compactMap{$0?.path}, progress: { (st) in
                 delegate?.celestiaDisplayController(self, loadingStatusUpdated: st)
             }) else {
-                let dispatchGroup = DispatchGroup()
-                dispatchGroup.enter()
-                delegate?.celestiaDisplayController(self, loadingFailedShouldRetry: { retry in
-                    shouldRetry = retry
-                    dispatchGroup.leave()
-                })
-                dispatchGroup.wait()
+                shouldRetry = delegate?.celestiaDisplayControllerLoadingFailedShouldRetry(self) ?? false
                 continue
             }
 
             guard self.core.startRenderer() else {
                 print("Failed to start renderer.")
-                let dispatchGroup = DispatchGroup()
-                dispatchGroup.enter()
-                delegate?.celestiaDisplayController(self, loadingFailedShouldRetry: { retry in
-                    shouldRetry = retry
-                    dispatchGroup.leave()
-                })
-                dispatchGroup.wait()
+                shouldRetry = delegate?.celestiaDisplayControllerLoadingFailedShouldRetry(self) ?? false
                 continue
             }
 
@@ -207,7 +198,8 @@ extension CelestiaDisplayController {
         }
         let sensitivity = self.sensitivity
         updateContentScale(viewSafeAreaInsets: viewSafeAreaInsets, viewScale: viewScale, applicationScalingFactor: applicationScalingFactor, sensitivity: sensitivity, customNormalFont: customNormalFont, customBoldFont: customBoldFont, normalFontPointSize: normalFontPointSize, boldFontPointSize: boldFontPointSize, core: core, executor: executor)
-        start()
+        core.tick()
+        core.start()
 
         isLoaded = true
         delegate?.celestiaDisplayControllerLoadingSucceeded(self)
@@ -301,11 +293,6 @@ extension CelestiaDisplayController {
 extension CelestiaDisplayController {
     var targetGeometry: RenderingTargetGeometry {
         return RenderingTargetGeometry(size: view.frame.size, scale: view.contentScaleFactor)
-    }
-
-    private func start() {
-        core.tick()
-        core.start()
     }
 }
 
