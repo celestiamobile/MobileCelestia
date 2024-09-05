@@ -24,9 +24,17 @@ struct RunScriptContext: Decodable {
     let scriptLocation: String?
 }
 
+struct ElementFrame: Decodable {
+    let left: CGFloat
+    let top: CGFloat
+    let width: CGFloat
+    let height: CGFloat
+}
+
 struct ShareURLContext: Decodable {
     let title: String
     let url: URL
+    let frame: ElementFrame
 }
 
 struct SendACKContext: Decodable {
@@ -79,7 +87,7 @@ class ShareURLHandler: JavascriptHandler<ShareURLContext> {
     override var operation: String { return "shareURL" }
 
     override func execute(context: ShareURLContext, delegate: CelestiaScriptHandlerDelegate) {
-        delegate.shareURL(title: context.title, url: context.url)
+        delegate.shareURL(title: context.title, url: context.url, rect: CGRect(x: context.frame.left, y: context.frame.top, width: context.frame.width, height: context.frame.height))
     }
 }
 
@@ -119,7 +127,7 @@ class OpenSubscriptionPageHandler: JavascriptHandler<OpenSubscriptionPageContext
 @MainActor
 protocol CelestiaScriptHandlerDelegate: AnyObject, Sendable {
     func runScript(type: String, content: String, name: String?, location: String?)
-    func shareURL(title: String, url: URL)
+    func shareURL(title: String, url: URL, rect: CGRect)
     func receivedACK(id: String)
     func openAddonNext(id: String)
     func runDemo()

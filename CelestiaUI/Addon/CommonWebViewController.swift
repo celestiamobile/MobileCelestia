@@ -237,8 +237,12 @@ extension CommonWebViewController: CelestiaScriptHandlerDelegate {
         }
     }
 
-    func shareURL(title: String, url: URL) {
-        showShareSheet(for: url)
+    func shareURL(title: String, url: URL, rect: CGRect) {
+        if !rect.isEmpty {
+            showShareSheet(for: url, source: .view(view: webView.scrollView, sourceRect: rect))
+        } else {
+            showShareSheet(for: url)
+        }
     }
 
     func receivedACK(id: String) {
