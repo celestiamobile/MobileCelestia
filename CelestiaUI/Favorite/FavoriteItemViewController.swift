@@ -135,8 +135,6 @@ extension BookmarkNode: FavoriteItem {
     }
 }
 
-extension Script: @unchecked Sendable {}
-
 extension Script: FavoriteItem {
     typealias ItemList = AnyFavoriteItemList<Script>
     typealias Representation = URL

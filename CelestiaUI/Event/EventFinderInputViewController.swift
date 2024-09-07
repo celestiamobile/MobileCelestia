@@ -180,7 +180,6 @@ extension EventFinderInputViewController {
 
 extension Body: @unchecked Sendable {}
 extension EclipseFinder: @unchecked Sendable {}
-extension Eclipse: @unchecked Sendable {}
 
 extension EclipseFinder {
     func search(kind: EclipseKind, from: Date, to: Date) async -> [Eclipse] {

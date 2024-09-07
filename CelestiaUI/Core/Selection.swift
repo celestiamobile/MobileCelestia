@@ -12,8 +12,6 @@
 import CelestiaCore
 import Foundation
 
-extension Selection: @unchecked Sendable {}
-
 extension Selection {
     convenience init?(item: BrowserItem) {
         if let object = item.entry {
