@@ -17,7 +17,6 @@
 		979D2F7E23FEB1A6005D2592 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979D2F7D23FEB1A6005D2592 /* AppDelegate.swift */; };
 		979D2F8223FEB1A6005D2592 /* CelestiaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979D2F8123FEB1A6005D2592 /* CelestiaViewController.swift */; };
 		979D2F8723FEB1A8005D2592 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 979D2F8623FEB1A8005D2592 /* Assets.xcassets */; };
-		979D2F8A23FEB1A8005D2592 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 979D2F8823FEB1A8005D2592 /* LaunchScreen.storyboard */; };
 		979D2F9523FEB1A8005D2592 /* MobileCelestiaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979D2F9423FEB1A8005D2592 /* MobileCelestiaTests.swift */; };
 		979D2FA623FEB1DD005D2592 /* CelestiaCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 979D2FA423FEB1D6005D2592 /* CelestiaCore.framework */; };
 		979D2FAB23FEB2AA005D2592 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 979D2FAA23FEB2A5005D2592 /* libc++.tbd */; };
@@ -293,7 +292,6 @@
 		979D2F7D23FEB1A6005D2592 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		979D2F8123FEB1A6005D2592 /* CelestiaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaViewController.swift; sourceTree = "<group>"; };
 		979D2F8623FEB1A8005D2592 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		979D2F8923FEB1A8005D2592 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		979D2F8B23FEB1A8005D2592 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		979D2F9023FEB1A8005D2592 /* MobileCelestiaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MobileCelestiaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		979D2F9423FEB1A8005D2592 /* MobileCelestiaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileCelestiaTests.swift; sourceTree = "<group>"; };
@@ -605,7 +603,6 @@
 				979D2F8623FEB1A8005D2592 /* Assets.xcassets */,
 				EA3EC553277C8EAD00936D4F /* Celestia-macOS.entitlements */,
 				EA1EF056249393BE0039F493 /* Celestia.entitlements */,
-				979D2F8823FEB1A8005D2592 /* LaunchScreen.storyboard */,
 				979D2F8B23FEB1A8005D2592 /* Info.plist */,
 				EAD962992782BA2B00CDF86E /* Info-macos.plist */,
 				EAB93E8B2BC8608C009AB37B /* PrivacyInfo.xcprivacy */,
@@ -1211,7 +1208,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				979D2F8A23FEB1A8005D2592 /* LaunchScreen.storyboard in Resources */,
 				EAB93E8C2BC8608C009AB37B /* PrivacyInfo.xcprivacy in Resources */,
 				979D2F8723FEB1A8005D2592 /* Assets.xcassets in Resources */,
 				97143F1823FFAEFD00F35D87 /* defaults.plist in Resources */,
@@ -1537,14 +1533,6 @@
 /* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
-		979D2F8823FEB1A8005D2592 /* LaunchScreen.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				979D2F8923FEB1A8005D2592 /* Base */,
-			);
-			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
 		EAA5A7A3259DBFE6001AFA82 /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
 			children = (
@@ -1616,7 +1604,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
-				SHARED_BUILD_NUMBER = 498;
+				SHARED_BUILD_NUMBER = 499;
 				SHARED_BUILD_VERSION = 1.7.7;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1676,7 +1664,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				SDKROOT = iphoneos;
-				SHARED_BUILD_NUMBER = 498;
+				SHARED_BUILD_NUMBER = 499;
 				SHARED_BUILD_VERSION = 1.7.7;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
