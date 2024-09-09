@@ -158,52 +158,47 @@ extension ToolbarViewController: UITableViewDelegate {
 
 private extension ToolbarViewController {
     func setUp() {
-        #if targetEnvironment(macCatalyst)
-        let sidebackBackground = true
-        #else
-        let sidebackBackground = false
-        #endif
-
         tableView.tableHeaderView = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 0, height: CGFloat.leastNonzeroMagnitude)))
         tableView.tableFooterView = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 0, height: CGFloat.leastNonzeroMagnitude)))
         tableView.separatorStyle = .none
         tableView.estimatedRowHeight = GlobalConstants.baseCellHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        if !sidebackBackground {
-            let style: UIBlurEffect.Style = .regular
-            let backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: style))
-            backgroundView.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(backgroundView)
 
-            NSLayoutConstraint.activate([
-                backgroundView.trailingAnchor.constraint(equalTo: view!.trailingAnchor),
-                backgroundView.topAnchor.constraint(equalTo: view!.topAnchor),
-                backgroundView.leadingAnchor.constraint(equalTo: view!.leadingAnchor),
-                backgroundView.bottomAnchor.constraint(equalTo: view!.bottomAnchor)
-            ])
+#if !targetEnvironment(macCatalyst)
+        let style: UIBlurEffect.Style = .regular
+        let backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: style))
+        backgroundView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(backgroundView)
 
-            let contentView = backgroundView.contentView
-            contentView.addSubview(tableView)
+        NSLayoutConstraint.activate([
+            backgroundView.trailingAnchor.constraint(equalTo: view!.trailingAnchor),
+            backgroundView.topAnchor.constraint(equalTo: view!.topAnchor),
+            backgroundView.leadingAnchor.constraint(equalTo: view!.leadingAnchor),
+            backgroundView.bottomAnchor.constraint(equalTo: view!.bottomAnchor)
+        ])
 
-            NSLayoutConstraint.activate([
-                tableView.topAnchor.constraint(equalTo: contentView.topAnchor),
-                tableView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            ])
+        let contentView = backgroundView.contentView
+        contentView.addSubview(tableView)
 
-            NSLayoutConstraint.activate([
-                tableView.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor),
-                tableView.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor)
-            ])
-        } else {
-            view.addSubview(tableView)
-            NSLayoutConstraint.activate([
-                tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-                tableView.topAnchor.constraint(equalTo: view.topAnchor),
-                tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            ])
-        }
+        NSLayoutConstraint.activate([
+            tableView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            tableView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+        ])
+
+        NSLayoutConstraint.activate([
+            tableView.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor)
+        ])
+#else
+        view.addSubview(tableView)
+        NSLayoutConstraint.activate([
+            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            tableView.topAnchor.constraint(equalTo: view.topAnchor),
+            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        ])
+#endif
 
         tableView.showsVerticalScrollIndicator = false
         tableView.backgroundColor = .clear

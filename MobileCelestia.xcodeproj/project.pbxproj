@@ -1616,7 +1616,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
-				SHARED_BUILD_NUMBER = 497;
+				SHARED_BUILD_NUMBER = 498;
 				SHARED_BUILD_VERSION = 1.7.7;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1676,7 +1676,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				SDKROOT = iphoneos;
-				SHARED_BUILD_NUMBER = 497;
+				SHARED_BUILD_NUMBER = 498;
 				SHARED_BUILD_VERSION = 1.7.7;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
@@ -2154,7 +2154,7 @@
 			repositoryURL = "https://github.com/levinli303/mwrequest";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.1;
+				minimumVersion = 1.0.2;
 			};
 		};
 		EA9039A32BA19D0000C982BC /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */ = {
