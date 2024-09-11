@@ -46,7 +46,7 @@ class MainViewController: UIViewController {
         return controller
     }()
     #if targetEnvironment(macCatalyst)
-    private var split: ToolbarSplitContainerController?
+    private var split: ToolbarSplitContainerController!
     #endif
 
     private var status: LoadingStatus = .notLoaded
@@ -131,11 +131,7 @@ class MainViewController: UIViewController {
 
         celestiaController.delegate = self
         #if targetEnvironment(macCatalyst)
-        if let split {
-            install(split)
-        } else {
-            install(celestiaController)
-        }
+        install(split)
         #else
         install(celestiaController)
         #endif
@@ -579,11 +575,7 @@ extension MainViewController: CelestiaControllerDelegate {
         self.status = .loaded
         self.loadingController.remove()
         #if targetEnvironment(macCatalyst)
-        if let split {
-            split.setSidebarViewController(actionViewController)
-        } else {
-            setupToolbar()
-        }
+        split.setSidebarViewController(actionViewController)
         setupTouchBar()
         #endif
         UIMenuSystem.main.setNeedsRebuild()
@@ -594,7 +586,7 @@ extension MainViewController: CelestiaControllerDelegate {
 
     func celestiaControllerRequestShowActionMenu(_ celestiaController: CelestiaViewController) {
         #if targetEnvironment(macCatalyst)
-        split?.preferredDisplayMode = .oneBesideSecondary
+        split.preferredDisplayMode = .oneBesideSecondary
         #else
         guard presentedViewController != actionViewController, !actionViewController.isBeingPresented else { return }
 
@@ -1316,15 +1308,6 @@ extension MainViewController: NSToolbarDelegate {
         return availableIdentifiers()
     }
 
-    private func setupToolbar() {
-        let toolbar = NSToolbar(identifier: Bundle.app.bundleIdentifier!)
-        toolbar.allowsUserCustomization = true
-        toolbar.autosavesConfiguration = true
-        toolbar.delegate = self
-        view.window?.windowScene?.titlebar?.titleVisibility = .hidden
-        view.window?.windowScene?.titlebar?.toolbar = toolbar
-    }
-
     @objc private func toolbarButtonItemClicked(_ sender: NSToolbarItem) {
         guard let action = AppToolbarAction(rawValue: sender.itemIdentifier.rawValue) else { return }
         toolbarActionSelected(action)
@@ -1413,12 +1396,12 @@ extension MainViewController: MFMailComposeViewControllerDelegate {
 #if targetEnvironment(macCatalyst)
 extension MainViewController: ToolbarContainerViewController {
     var nsToolbar: NSToolbar? {
-        get { split?.nsToolbar }
-        set { split?.nsToolbar = newValue }
+        get { split.nsToolbar }
+        set { split.nsToolbar = newValue }
     }
 
     func updateToolbar(for viewController: UIViewController) {
-        split?.updateToolbar(for: viewController)
+        split.updateToolbar(for: viewController)
     }
 }
 #endif

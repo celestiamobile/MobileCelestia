@@ -380,6 +380,11 @@ extension NSToolbarItem {
     private static var searchItemClassPrepared = false
 
     static func searchItem(with itemIdentifier: NSToolbarItem.Identifier, currentText: String? = nil, textChangeHandler: @escaping (String?) -> Void, returnHandler: @escaping (String?) -> Void, searchStartHandler: @escaping () -> Void, searchEndHandler: @escaping () -> Void) -> NSToolbarItem {
+        if #available(iOS 17, *) {
+            let searchTextField = UISearchTextField()
+            let item = NSUIViewToolbarItem(itemIdentifier: itemIdentifier, uiView: searchTextField)
+            return item
+        }
         let item = SearchToolbarItem(itemIdentifier: itemIdentifier, currentText: currentText, textChangeHandler: textChangeHandler, returnHandler: returnHandler, searchStartHandler: searchStartHandler, searchEndHandler: searchEndHandler)
         return item
     }

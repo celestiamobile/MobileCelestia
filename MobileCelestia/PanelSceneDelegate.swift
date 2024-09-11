@@ -28,6 +28,9 @@ class PanelSceneDelegate: CommonSceneDelegate {
         windowScene.titlebar?.titleVisibility = titleVisible ? .visible : .hidden
         if showsToolbar {
             let toolbar = NSToolbar(identifier: UUID().uuidString)
+            if #available(iOS 18, *) {
+                toolbar.allowsDisplayModeCustomization = false
+            }
             toolbar.displayMode = .iconOnly
             toolbar.allowsUserCustomization = false
             toolbar.autosavesConfiguration = false

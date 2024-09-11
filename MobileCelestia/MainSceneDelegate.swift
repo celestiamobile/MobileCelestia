@@ -43,6 +43,9 @@ class MainSceneDelegate: CommonSceneDelegate {
         let vc = MainViewController(initialURL: launchURL, screen: windowScene.screen)
         #if targetEnvironment(macCatalyst)
         let toolbar = NSToolbar(identifier: UUID().uuidString)
+        if #available(iOS 18, *) {
+            toolbar.allowsDisplayModeCustomization = false
+        }
         toolbar.displayMode = .iconOnly
         toolbar.allowsUserCustomization = false
         toolbar.autosavesConfiguration = false
