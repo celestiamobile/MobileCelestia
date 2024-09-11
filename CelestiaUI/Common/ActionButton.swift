@@ -12,6 +12,7 @@
 import UIKit
 
 public class ActionButton: StandardButton {
+#if !targetEnvironment(macCatalyst)
     public enum Constants {
         static func contentEdgeInsets(for traitCollection: UITraitCollection) -> UIEdgeInsets {
             let scale = GlobalConstants.preferredUIElementScaling(for: traitCollection)
@@ -27,58 +28,41 @@ public class ActionButton: StandardButton {
     public override init(frame: CGRect) {
         super.init(frame: frame)
 
-        setup()
+        setUp()
     }
 
     public required init?(coder: NSCoder) {
         super.init(coder: coder)
 
-        setup()
+        setUp()
     }
 
-    private func setup() {
-        if traitCollection.userInterfaceIdiom == .mac {
-        } else {
-            titleLabel?.lineBreakMode = .byWordWrapping
-            titleLabel?.textAlignment = .center
-            contentEdgeInsets = Constants.contentEdgeInsets(for: traitCollection)
-            layer.cornerRadius = Constants.cornerRadius(for: traitCollection)
-            layer.cornerCurve = .continuous
-            #if targetEnvironment(macCatalyst)
-            backgroundColor = tintColor
-            setTitleColor(.white, for: .normal)
-            #else
-            backgroundColor = .buttonBackground
-            setTitleColor(.buttonForeground, for: .normal)
-            #endif
-        }
+    private func setUp() {
+        titleLabel?.lineBreakMode = .byWordWrapping
+        titleLabel?.textAlignment = .center
+        contentEdgeInsets = Constants.contentEdgeInsets(for: traitCollection)
+        layer.cornerRadius = Constants.cornerRadius(for: traitCollection)
+        layer.cornerCurve = .continuous
+        backgroundColor = .buttonBackground
+        setTitleColor(.buttonForeground, for: .normal)
     }
-
-    #if targetEnvironment(macCatalyst)
-    public override func tintColorDidChange() {
-        super.tintColorDidChange()
-
-        if traitCollection.userInterfaceIdiom == .mac {
-        } else {
-            backgroundColor = tintColor
-        }
-    }
-    #endif
-
+#else
     public override func didAddSubview(_ subview: UIView) {
         super.didAddSubview(subview)
 
-        guard traitCollection.userInterfaceIdiom == .mac else { return }
-
-        if let uiNSView = subview.subviews.first,
-           String(describing: type(of: uiNSView)) == "_UINSView",
-           uiNSView.responds(to: NSSelectorFromString("contentNSView")) {
-            let contentNSView = uiNSView.value(forKey: "contentNSView") as AnyObject
-            if contentNSView.responds(to: NSSelectorFromString("setControlSize:")) {
-                contentNSView.setValue(3, forKey: "controlSize")
+        if #available(iOS 17, *) {
+        } else {
+            if let uiNSView = subview.subviews.first,
+               String(describing: type(of: uiNSView)) == "_UINSView",
+               uiNSView.responds(to: NSSelectorFromString("contentNSView")) {
+                let contentNSView = uiNSView.value(forKey: "contentNSView") as AnyObject
+                if contentNSView.responds(to: NSSelectorFromString("setControlSize:")) {
+                    contentNSView.setValue(3, forKey: "controlSize")
+                }
             }
         }
     }
+#endif
 }
 
 @MainActor
@@ -96,6 +80,12 @@ public class ActionButtonHelper {
             return button
         }
         #endif
-        return ActionButton(type: .system)
+        let button = ActionButton(type: .system)
+        #if targetEnvironment(macCatalyst)
+        if #available(iOS 17, *) {
+            button.traitOverrides.toolbarItemPresentationSize = .large
+        }
+        #endif
+        return button
     }
 }
