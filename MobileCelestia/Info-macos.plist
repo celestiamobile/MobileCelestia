@@ -221,5 +221,7 @@
 		<key>UIImageName</key>
 		<string>loading_icon</string>
 	</dict>
+	<key>UIUserInterfaceStyle</key>
+	<string>Dark</string>
 </dict>
 </plist>

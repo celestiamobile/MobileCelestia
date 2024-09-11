@@ -44,10 +44,6 @@
     return point;
 }
 
-+ (void)forceDarkAppearance {
-    [[NSApplication sharedApplication] setAppearance:[NSAppearance appearanceNamed:NSAppearanceNameDarkAqua]];
-}
-
 + (id)nsWindowForUIWindow:(id)uiWindow {
     // https://gist.github.com/steipete/30c33740bf0ebc34a0da897cba52fefe
     id delegate = [[NSApplication sharedApplication] delegate];

@@ -42,7 +42,6 @@ class PanelSceneDelegate: CommonSceneDelegate {
             windowScene.sizeRestrictions?.allowsFullScreen = false
         }
         let window = UIWindow(windowScene: windowScene)
-        window.overrideUserInterfaceStyle = .dark
         window.rootViewController = viewController
 
         self.window = window

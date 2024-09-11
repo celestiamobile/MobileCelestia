@@ -162,8 +162,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         UserDefaults.standard.register(defaults: ["NSApplicationCrashOnExceptions": true])
 
-        // Force dark aqua appearance
-        MacBridge.forceDarkAppearance()
         if #available(iOS 15, *) {
         } else {
             MacBridge.disableTabbingForAllWindows()
@@ -691,10 +689,6 @@ class MacBridge {
 
     static var currentMouseLocation: CGPoint? {
         return clazz.value(forKey: "currentMouseLocation") as? CGPoint
-    }
-
-    static func forceDarkAppearance() {
-        clazz.perform(NSSelectorFromString("forceDarkAppearance"))
     }
 
     static func nsWindowForUIWindow(_ uiWindow: UIWindow) -> NSObject? {

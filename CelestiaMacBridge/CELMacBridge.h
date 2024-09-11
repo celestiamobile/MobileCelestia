@@ -17,7 +17,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (CGFloat)catalystScaleFactor;
 + (CGPoint)currentMouseLocation;
-+ (void)forceDarkAppearance;
 + (nullable id)nsWindowForUIWindow:(id)uiWindow;
 + (void)disableFullScreenForNSWindow:(NSWindow *)window;
 + (void)disableTabbingForAllWindows;

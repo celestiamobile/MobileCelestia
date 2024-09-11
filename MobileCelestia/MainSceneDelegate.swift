@@ -24,7 +24,6 @@ class MainSceneDelegate: CommonSceneDelegate {
 
         if Self.mainWindowSessionIdentifier != nil {
             let window = UIWindow(windowScene: windowScene)
-            window.overrideUserInterfaceStyle = .dark
             window.rootViewController = UnsupportedViewController()
             self.window = window
             window.makeKeyAndVisible()
@@ -37,7 +36,6 @@ class MainSceneDelegate: CommonSceneDelegate {
         windowScene.titlebar?.autoHidesToolbarInFullScreen = true
         #endif
         let window = UIWindow(windowScene: windowScene)
-        window.overrideUserInterfaceStyle = .dark
         var launchURL: UniformedURL?
         if let url = connectionOptions.urlContexts.first {
             launchURL = UniformedURL(url: url.url, securityScoped: url.url.isFileURL && url.options.openInPlace)

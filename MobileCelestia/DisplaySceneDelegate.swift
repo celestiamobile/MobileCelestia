@@ -25,7 +25,6 @@ class DisplaySceneDelegate: CommonSceneDelegate {
 
         if Self.displayWindowSessionIdentifier != nil {
             let window = UIWindow(windowScene: windowScene)
-            window.overrideUserInterfaceStyle = .dark
             window.rootViewController = UnsupportedViewController()
             self.window = window
             window.makeKeyAndVisible()
@@ -48,7 +47,6 @@ class DisplaySceneDelegate: CommonSceneDelegate {
         Self.displayWindowSessionIdentifier = scene.session.persistentIdentifier
 
         let window = UIWindow(windowScene: windowScene)
-        window.overrideUserInterfaceStyle = .dark
         mainVC.moveDisplay(to: window, screen: windowScene.screen)
 
         self.window = window
