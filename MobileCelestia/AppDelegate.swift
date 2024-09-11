@@ -78,6 +78,10 @@ let requestOpenBookmarkNotificationKey = Notification.Name("RequestOpenBookmarkN
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
+#if targetEnvironment(macCatalyst)
+    private static let windowDidBecomeKeyNotification = NSNotification.Name("NSWindowDidBecomeKeyNotification")
+#endif
+
     private enum MenuAction: Hashable, Equatable {
         case selector(_ selector: Selector)
         case name(_ name: String)
@@ -160,7 +164,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Force dark aqua appearance
         MacBridge.forceDarkAppearance()
-        MacBridge.disableTabbingForAllWindows()
+        if #available(iOS 15, *) {
+        } else {
+            MacBridge.disableTabbingForAllWindows()
+        }
 
         // Avoid reading saved state
         if let libraryURL = URL.library() {
@@ -211,6 +218,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             Crashes.self
         ])
         #endif
+
+        #if targetEnvironment(macCatalyst)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleNSWindowDidBecomeKey(_:)), name: Self.windowDidBecomeKeyNotification, object: nil)
+        #endif
+
         return true
     }
 
@@ -251,6 +263,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return UISceneConfiguration(name: "Display", sessionRole: .windowApplication)
         }
         return UISceneConfiguration(name: "Main", sessionRole: connectingSceneSession.role)
+    }
+
+    @objc private func handleNSWindowDidBecomeKey(_ notification: Notification) {
+        guard let nsWindow = notification.object as? NSObject else { return }
+        guard let scene = UIApplication.shared.connectedScenes.first(where: { scene in
+            guard let windowScene = scene as? UIWindowScene else { return false }
+            return windowScene.windows.contains { window in
+                return window.nsWindow == nsWindow
+            }
+        }) else { return }
+
+        if nsWindow.responds(to: NSSelectorFromString("setRestorable:")) {
+            nsWindow.setValue(false, forKey: "restorable")
+        }
+
+        if scene.delegate is PanelSceneDelegate {
+            if #available(iOS 16, *) {
+            } else {
+                MacBridge.disableFullScreenForNSWindow(nsWindow)
+            }
+        }
     }
     #endif
 

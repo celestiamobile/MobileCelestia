@@ -17,8 +17,6 @@ import UIKit
 class PanelSceneDelegate: CommonSceneDelegate {
     var window: UIWindow?
 
-    private static let windowDidBecomeKeyNotification = NSNotification.Name("NSWindowDidBecomeKeyNotification")
-
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = scene as? UIWindowScene else { return }
         guard let userInfo = connectionOptions.userActivities.first?.userInfo else { return }
@@ -40,27 +38,15 @@ class PanelSceneDelegate: CommonSceneDelegate {
         }
         windowScene.sizeRestrictions?.minimumSize = size
         windowScene.sizeRestrictions?.maximumSize = size
+        if #available(iOS 16.0, *) {
+            windowScene.sizeRestrictions?.allowsFullScreen = false
+        }
         let window = UIWindow(windowScene: windowScene)
         window.overrideUserInterfaceStyle = .dark
         window.rootViewController = viewController
 
         self.window = window
         window.makeKeyAndVisible()
-
-        NotificationCenter.default.addObserver(self, selector: #selector(handleNSWindowDidBecomeKey(_:)), name: Self.windowDidBecomeKeyNotification, object: nil)
-    }
-
-    func sceneDidDisconnect(_ scene: UIScene) {
-        NotificationCenter.default.removeObserver(self, name: Self.windowDidBecomeKeyNotification, object: nil)
-    }
-
-    @objc private func handleNSWindowDidBecomeKey(_ notification: Notification) {
-        guard let window = notification.object as? NSObject else { return }
-        guard window == self.window?.nsWindow else { return }
-        if window.responds(to: NSSelectorFromString("setRestorable:")) {
-            window.setValue(false, forKey: "restorable")
-        }
-        MacBridge.disableFullScreenForNSWindow(window)
     }
 
     static var activityType = "\(Bundle.app.bundleIdentifier!).Panel"
