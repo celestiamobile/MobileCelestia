@@ -611,14 +611,8 @@ extension MainViewController: CelestiaControllerDelegate {
 
     func celestiaControllerCanAcceptKeyEvents(_ celestiaController: CelestiaViewController) -> Bool {
         #if targetEnvironment(macCatalyst)
-        // Check if the associated window is activated
-        if let window = view.window?.nsWindow {
-            if window.responds(to: NSSelectorFromString("isMainWindow")) {
-                let isMainWindow = window.value(forKey: "isMainWindow") as! Bool
-                if !isMainWindow {
-                    return false
-                }
-            }
+        if traitCollection.activeAppearance != .active {
+            return false
         }
         #endif
         return presentedViewController == nil
