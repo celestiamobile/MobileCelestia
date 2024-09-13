@@ -96,25 +96,43 @@ class CelestiaViewController: UIViewController {
     }
 
     override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-        if let key = presses.first?.key {
+        var handled = false
+        for press in presses {
+            guard let key = press.key else { continue }
+
+            handled = true
             interactionController?.keyDown(with: key.input, modifiers: UInt(key.modifierFlags.rawValue))
-        } else {
+        }
+
+        if !handled {
             super.pressesBegan(presses, with: event)
         }
     }
 
     override func pressesEnded(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-        if let key = presses.first?.key {
+        var handled = false
+        for press in presses {
+            guard let key = press.key else { continue }
+
+            handled = true
             interactionController?.keyUp(with: key.input, modifiers: UInt(key.modifierFlags.rawValue))
-        } else {
+        }
+
+        if !handled {
             super.pressesEnded(presses, with: event)
         }
     }
 
     override func pressesCancelled(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
-        if let key = presses.first?.key {
+        var handled = false
+        for press in presses {
+            guard let key = press.key else { continue }
+
+            handled = true
             interactionController?.keyUp(with: key.input, modifiers: UInt(key.modifierFlags.rawValue))
-        } else {
+        }
+
+        if !handled {
             super.pressesCancelled(presses, with: event)
         }
     }
