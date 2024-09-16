@@ -56,6 +56,7 @@ enum MenuBarAction: Hashable, Equatable {
     case reportBug
     case suggestFeature
     case celestiaPlus
+    case getInfo
 }
 
 let newURLOpenedNotificationName = Notification.Name("NewURLOpenedNotificationName")
@@ -124,6 +125,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         .selector(#selector(reportBug)),
         .selector(#selector(suggestFeature)),
         .selector(#selector(showCelestiaPlus)),
+        .selector(#selector(getInfo)),
     ]
 
     var window: UIWindow?
@@ -401,11 +403,16 @@ extension AppDelegate {
         let navigationMenu = createMenuItemGroup(title: CelestiaString("Navigation", comment: "Navigation menu"), identifierSuffix: "navigation", actions: [], options: [])
         builder.insertSibling(navigationMenu, afterMenu: .file)
 
+        let getInfoMenu = createMenuItemGroup(identifierSuffix: "getinfo", actions: [
+            MenuActionContext(title: CelestiaString("Get Info", comment: "Action for getting info about current selected object"), action: #selector(getInfo)),
+        ])
+        builder.insertChild(getInfoMenu, atStartOfMenu: navigationMenu.identifier)
+
         let selectMenu = createMenuItemGroup(identifierSuffix: "select", actions: [
             MenuActionContext(title: CelestiaString("Select Sol", comment: ""), action: #selector(selectSol), input: "h"),
             MenuActionContext(title: CelestiaString("Go to Object", comment: ""), action: #selector(showGoto)),
         ])
-        builder.insertChild(selectMenu, atStartOfMenu: navigationMenu.identifier)
+        builder.insertSibling(selectMenu, afterMenu: getInfoMenu.identifier)
 
         let selectionActionMenu = createMenuItemGroup(identifierSuffix: "selection.actions", actions: [
             MenuActionContext(title: CelestiaString("Center Selection", comment: "Center selected object"), action: #selector(centerSelection), input: "c"),
@@ -557,6 +564,10 @@ extension AppDelegate {
 
     @objc private func selectSol() {
         NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.selectSol])
+    }
+
+    @objc private func getInfo() {
+        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.getInfo])
     }
 
     @objc private func showGoto() {

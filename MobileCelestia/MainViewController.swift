@@ -459,6 +459,12 @@ extension MainViewController {
             if #available(iOS 15, *) {
                 showSubscription()
             }
+        case .getInfo:
+            Task {
+                let selection = await executor.get({ $0.simulation.selection })
+                guard !selection.isEmpty else { return }
+                showSelectionInfo(with: selection)
+            }
         }
     }
 
