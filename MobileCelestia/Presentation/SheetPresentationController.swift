@@ -9,6 +9,7 @@
 // of the License, or (at your option) any later version.
 //
 
+#if !targetEnvironment(macCatalyst)
 import CelestiaUI
 import UIKit
 
@@ -272,3 +273,4 @@ private extension SheetPresentationController {
         presentingViewController.dismiss(animated: true, completion: nil)
     }
 }
+#endif

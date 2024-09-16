@@ -190,6 +190,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UIView.appearance(whenContainedInInstancesOf: [UIAlertController.self]).tintColor = .themeLabel
         #endif
 
+        #if !targetEnvironment(macCatalyst)
         // Swizzle accessibilityPerformEscape to support zorro gesture return
         let escapeSelector = #selector(UIViewController.accessibilityPerformEscape)
         if let escapeMethod = class_getInstanceMethod(UIViewController.self, escapeSelector) {
@@ -206,6 +207,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 return handled
             } as @convention(block) (UIViewController) -> Bool), method_getTypeEncoding(escapeMethod))
         }
+        #endif
 
         #if !DEBUG
         #if targetEnvironment(macCatalyst)

@@ -52,9 +52,10 @@ class MainViewController: UIViewController {
     private var status: LoadingStatus = .notLoaded
     private var retried: Bool = false
 
+    #if !targetEnvironment(macCatalyst)
     private lazy var toolbarSlideInManager = PresentationManager(direction: UIView.userInterfaceLayoutDirection(for: self.view.semanticContentAttribute) == .rightToLeft ? .left : .right)
     private lazy var endSlideInManager = PresentationManager(direction: UIView.userInterfaceLayoutDirection(for: self.view.semanticContentAttribute) == .rightToLeft ? .left : .right, useSheetIfPossible: true)
-    private lazy var bottomSlideInManager = PresentationManager(direction: UIView.userInterfaceLayoutDirection(for: self.view.semanticContentAttribute) == .rightToLeft ? .bottomRight : .bottomLeft)
+    #endif
 
     @Injected(\.appCore) private var core
     @Injected(\.executor) private var executor

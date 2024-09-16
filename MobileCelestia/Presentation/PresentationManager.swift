@@ -9,6 +9,7 @@
 // of the License, or (at your option) any later version.
 //
 
+#if !targetEnvironment(macCatalyst)
 import UIKit
 
 final class SlideInPresentationAnimator: NSObject {
@@ -140,7 +141,12 @@ extension PresentationManager: UIViewControllerTransitioningDelegate {
     func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
         if useSheetIfPossible {
             let pc = SheetPresentationController(presentedViewController: presented, presenting: presenting)
-            pc.overrideTraitCollection = UITraitCollection(traitsFrom: [UITraitCollection(userInterfaceLevel: .base), UITraitCollection(horizontalSizeClass: .compact)])
+            if #available(iOS 17, visionOS 1, *) {
+                pc.traitOverrides.userInterfaceLevel = .base
+                pc.traitOverrides.horizontalSizeClass = .compact
+            } else {
+                pc.overrideTraitCollection = UITraitCollection(traitsFrom: [UITraitCollection(userInterfaceLevel: .base), UITraitCollection(horizontalSizeClass: .compact)])
+            }
             pc.delegate = self
             return pc
         }
@@ -169,3 +175,4 @@ extension PresentationManager: UIAdaptivePresentationControllerDelegate {
         return .none
     }
 }
+#endif

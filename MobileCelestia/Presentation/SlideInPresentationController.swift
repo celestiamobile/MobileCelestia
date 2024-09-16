@@ -9,19 +9,23 @@
 // of the License, or (at your option) any later version.
 //
 
+#if !targetEnvironment(macCatalyst)
 import UIKit
 
 class SlideInPresentationController: UIPresentationController {
-
     private var direction: PresentationManager.PresentationDirection
-
     private var dimmingView: UIView?
 
     init(presentedViewController: UIViewController, presenting presentingViewController: UIViewController?, direction: PresentationManager.PresentationDirection) {
         self.direction = direction
         super.init(presentedViewController: presentedViewController, presenting: presentingViewController)
 
-        overrideTraitCollection = UITraitCollection(traitsFrom: [UITraitCollection(userInterfaceLevel: .base), UITraitCollection(horizontalSizeClass: .compact)])
+        if #available(iOS 17, visionOS 1, *) {
+            traitOverrides.userInterfaceLevel = .base
+            traitOverrides.horizontalSizeClass = .compact
+        } else {
+            overrideTraitCollection = UITraitCollection(traitsFrom: [UITraitCollection(userInterfaceLevel: .base), UITraitCollection(horizontalSizeClass: .compact)])
+        }
 
         setupDimmingViewIfNeeded()
     }
@@ -136,3 +140,4 @@ private extension SlideInPresentationController {
         presentingViewController.dismiss(animated: true)
     }
 }
+#endif
