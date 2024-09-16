@@ -69,16 +69,7 @@ class CelestiaInteractionController: UIViewController {
 
     private var zoomMode: ZoomMode? = nil
 
-    #if targetEnvironment(macCatalyst)
-    private let needAddControlView = false
-    private lazy var activeControlView = CelestiaControlView(items: [
-        CelestiaControlButton.tap(image: UIImage(systemName: "info.circle"), action: .info, accessibilityLabel: CelestiaString("Get Info", comment: "Action for getting info about current selected object")),
-        CelestiaControlButton.tap(image: UIImage(systemName: "magnifyingglass.circle"), action: .search, accessibilityLabel: CelestiaString("Search", comment: "")),
-        CelestiaControlButton.tap(image: UIImage(systemName: "line.3.horizontal.circle") ?? UIImage(systemName: "line.horizontal.3.circle") ?? UIImage(named: "control_action_menu"), action: .showMenu, accessibilityLabel: CelestiaString("Menu", comment: "Menu button")),
-        CelestiaControlButton.tap(image: UIImage(systemName: "xmark.circle"), action: .hide, accessibilityLabel: CelestiaString("Hide", comment: "Action to hide the tool overlay")),
-    ])
-    #else
-    private let needAddControlView = true
+    #if !targetEnvironment(macCatalyst)
     private lazy var controlViewActions: [QuickAction] = {
         if #available(iOS 15, *), subscriptionManager.transactionInfo() != nil, let stringValue: String = userDefaults[UserDefaultsKey.toolbarItems] {
             var actions = QuickAction.from(stringValue) ?? QuickAction.defaultItems
@@ -188,17 +179,17 @@ class CelestiaInteractionController: UIViewController {
             targetInteractionView.trailingAnchor.constraint(equalTo: container.trailingAnchor)
         ])
 
-        if needAddControlView {
-            activeControlView.delegate = self
-            activeControlView.translatesAutoresizingMaskIntoConstraints = false
+        #if !targetEnvironment(macCatalyst)
+        activeControlView.delegate = self
+        activeControlView.translatesAutoresizingMaskIntoConstraints = false
 
-            container.addSubview(activeControlView)
+        container.addSubview(activeControlView)
 
-            NSLayoutConstraint.activate([
-                activeControlView.centerYAnchor.constraint(equalTo: container.centerYAnchor),
-                activeControlView.trailingAnchor.constraint(equalTo: container.safeAreaLayoutGuide.trailingAnchor, constant: -Constants.controlViewMarginTrailing),
-            ])
-        }
+        NSLayoutConstraint.activate([
+            activeControlView.centerYAnchor.constraint(equalTo: container.centerYAnchor),
+            activeControlView.trailingAnchor.constraint(equalTo: container.safeAreaLayoutGuide.trailingAnchor, constant: -Constants.controlViewMarginTrailing),
+        ])
+        #endif
 
         auxillaryContextMenuPreviewView.backgroundColor = .clear
         container.addSubview(auxillaryContextMenuPreviewView)
@@ -217,6 +208,7 @@ class CelestiaInteractionController: UIViewController {
     }
 }
 
+#if !targetEnvironment(macCatalyst)
 extension CelestiaInteractionController: CelestiaControlViewDelegate {
     func celestiaControlView(_ celestiaControlView: CelestiaControlView, pressDidStartWith action: CelestiaControlAction) {
         zoomMode = action == .zoomIn ? .in : .out
@@ -289,13 +281,11 @@ extension CelestiaInteractionController: CelestiaControlViewDelegate {
     }
 
     private func showControlViewIfNeeded() {
-        guard needAddControlView else { return }
         guard !isControlViewVisible else { return }
         showControlView()
     }
 
     private func hideControlViewIfNeeded() {
-        guard needAddControlView else { return }
         guard isControlViewVisible else { return }
         hideControlView()
     }
@@ -321,6 +311,7 @@ extension CelestiaInteractionController: CelestiaControlViewDelegate {
         #endif
     }
 }
+#endif
 
 extension CelestiaInteractionController {
     private class PanGestureRecognizer: UIPanGestureRecognizer {
@@ -380,7 +371,9 @@ extension CelestiaInteractionController {
 
 extension CelestiaInteractionController {
     @objc private func handlePanZoom(_ pan: UIPanGestureRecognizer) {
+#if !targetEnvironment(macCatalyst)
         showControlViewIfNeeded()
+#endif
 
         let modifiers = pan.modifierFlags
         switch pan.state {
@@ -395,7 +388,9 @@ extension CelestiaInteractionController {
     }
 
     @objc private func handlePan(_ pan: UIPanGestureRecognizer) {
+#if !targetEnvironment(macCatalyst)
         showControlViewIfNeeded()
+#endif
 
         let location = pan.location(with: renderingTargetGeometry)
         let modifiers = pan.modifierFlags
@@ -441,7 +436,9 @@ extension CelestiaInteractionController {
     }
 
     @objc private func handlePinch(_ gesture: UIPinchGestureRecognizer) {
+#if !targetEnvironment(macCatalyst)
         showControlViewIfNeeded()
+#endif
 
         switch gesture.state {
         case .possible:
@@ -470,7 +467,9 @@ extension CelestiaInteractionController {
     }
 
     @objc private func handleTap(_ tap: UITapGestureRecognizer) {
+#if !targetEnvironment(macCatalyst)
         showControlViewIfNeeded()
+#endif
 
         switch tap.state {
         case .ended:

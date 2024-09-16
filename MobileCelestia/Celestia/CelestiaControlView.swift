@@ -12,6 +12,7 @@
 import CelestiaUI
 import UIKit
 
+#if !targetEnvironment(macCatalyst)
 enum CelestiaControlAction {
     case zoomIn
     case zoomOut
@@ -201,3 +202,4 @@ final class CelestiaControlView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 }
+#endif
