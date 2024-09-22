@@ -9,10 +9,6 @@
 // of the License, or (at your option) any later version.
 //
 
-#if !DEBUG
-import AppCenter
-import AppCenterCrashes
-#endif
 import CelestiaCore
 import CelestiaFoundation
 import CelestiaUI
@@ -762,11 +758,6 @@ extension MainViewController: CelestiaControllerDelegate {
             }
         }
 
-        #if !DEBUG
-        if let crashReport = Crashes.lastSessionCrashReport, let data = crashReport.incidentIdentifier?.data(using: .utf8) {
-            vc.addAttachmentData(data, mimeType: "text/plain", fileName: "crashinfo.txt")
-        }
-        #endif
         let bundle = Bundle.app
         let device = UIDevice.current
 

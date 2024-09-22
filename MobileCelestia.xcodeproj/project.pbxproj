@@ -92,8 +92,6 @@
 		EA872F072A5ACC9C009E6A20 /* TutorialActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CDD2F240BD78F00137127 /* TutorialActionCell.swift */; };
 		EA9039792BA19B1300C982BC /* AsyncGL in Frameworks */ = {isa = PBXBuildFile; productRef = EA9039782BA19B1300C982BC /* AsyncGL */; };
 		EA9039A22BA19CF100C982BC /* MWRequest in Frameworks */ = {isa = PBXBuildFile; productRef = EA9039A12BA19CF100C982BC /* MWRequest */; };
-		EA9039A52BA19D0000C982BC /* AppCenterAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = EA9039A42BA19D0000C982BC /* AppCenterAnalytics */; };
-		EA9039A72BA19D0000C982BC /* AppCenterCrashes in Frameworks */ = {isa = PBXBuildFile; productRef = EA9039A62BA19D0000C982BC /* AppCenterCrashes */; };
 		EA9166972B0AF20A00AF48B1 /* LinkTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9166962B0AF20A00AF48B1 /* LinkTextView.swift */; };
 		EA9166BE2B0C722000AF48B1 /* ToolbarSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9166BD2B0C722000AF48B1 /* ToolbarSettingViewController.swift */; };
 		EA9166C02B0C725100AF48B1 /* QuickAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9166BF2B0C725100AF48B1 /* QuickAction.swift */; };
@@ -142,6 +140,7 @@
 		EABC921F2A56FBAA007E27F0 /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA787340296EB68A0099AB11 /* Bundle.swift */; };
 		EABC92342A56FF80007E27F0 /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EABC92332A56FF80007E27F0 /* SharedAssets.xcassets */; };
 		EABC92402A57021C007E27F0 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978406DB240294D000876FD1 /* LoadingViewController.swift */; };
+		EAC20FE12CA0CB7C0098AABA /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = EAC20FE02CA0CB7C0098AABA /* Sentry */; };
 		EAC8435F252C818700691943 /* CELMacBridge.m in Sources */ = {isa = PBXBuildFile; fileRef = EAC8435E252C818700691943 /* CELMacBridge.m */; };
 		EAC84364252C84B600691943 /* CelestiaMacBridge.bundle in Embed PlugIns */ = {isa = PBXBuildFile; fileRef = EAC84354252C816500691943 /* CelestiaMacBridge.bundle */; platformFilter = maccatalyst; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		EAD12A8E2A5656FF007EE4D6 /* EventFinderInputViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BC6E424A0E93D00F3F51B /* EventFinderInputViewController.swift */; };
@@ -430,7 +429,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				EA9039792BA19B1300C982BC /* AsyncGL in Frameworks */,
-				EA9039A72BA19D0000C982BC /* AppCenterCrashes in Frameworks */,
 				979D2FAD23FEB2B4005D2592 /* libbz2.tbd in Frameworks */,
 				EA4E2D7C2A56B46B0046D62E /* CelestiaFoundation.framework in Frameworks */,
 				EA9A426D288CD7FE00AF3BD6 /* AVFoundation.framework in Frameworks */,
@@ -438,8 +436,8 @@
 				EA7BF37C27033AE40058F704 /* GameController.framework in Frameworks */,
 				EA50E7642A505627005E7D7A /* CelestiaUI.framework in Frameworks */,
 				EA5C17832AF0DBBC00E1F615 /* libiconv.tbd in Frameworks */,
-				EA9039A52BA19D0000C982BC /* AppCenterAnalytics in Frameworks */,
 				EA9039A22BA19CF100C982BC /* MWRequest in Frameworks */,
+				EAC20FE12CA0CB7C0098AABA /* Sentry in Frameworks */,
 				979D2FAF23FEB2BD005D2592 /* libz.tbd in Frameworks */,
 				979D2FAB23FEB2AA005D2592 /* libc++.tbd in Frameworks */,
 				EA1823F027C08D3D00E0F5E4 /* CelestiaHelper.framework in Frameworks */,
@@ -1016,8 +1014,7 @@
 			packageProductDependencies = (
 				EA9039782BA19B1300C982BC /* AsyncGL */,
 				EA9039A12BA19CF100C982BC /* MWRequest */,
-				EA9039A42BA19D0000C982BC /* AppCenterAnalytics */,
-				EA9039A62BA19D0000C982BC /* AppCenterCrashes */,
+				EAC20FE02CA0CB7C0098AABA /* Sentry */,
 			);
 			productName = MobileCelestia;
 			productReference = 979D2F7A23FEB1A6005D2592 /* Celestia.app */;
@@ -1164,7 +1161,7 @@
 			packageReferences = (
 				EA9039772BA19B1300C982BC /* XCRemoteSwiftPackageReference "AsyncGL" */,
 				EA9039A02BA19CF100C982BC /* XCRemoteSwiftPackageReference "mwrequest" */,
-				EA9039A32BA19D0000C982BC /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */,
+				EAC20FDF2CA0CB7C0098AABA /* XCRemoteSwiftPackageReference "sentry-cocoa" */,
 			);
 			productRefGroup = 979D2F7B23FEB1A6005D2592 /* Products */;
 			projectDirPath = "";
@@ -2126,12 +2123,12 @@
 				minimumVersion = 1.0.2;
 			};
 		};
-		EA9039A32BA19D0000C982BC /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */ = {
+		EAC20FDF2CA0CB7C0098AABA /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/microsoft/appcenter-sdk-apple";
+			repositoryURL = "https://github.com/getsentry/sentry-cocoa";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 5.0.5;
+				minimumVersion = 8.36.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -2147,15 +2144,10 @@
 			package = EA9039A02BA19CF100C982BC /* XCRemoteSwiftPackageReference "mwrequest" */;
 			productName = MWRequest;
 		};
-		EA9039A42BA19D0000C982BC /* AppCenterAnalytics */ = {
+		EAC20FE02CA0CB7C0098AABA /* Sentry */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = EA9039A32BA19D0000C982BC /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
-			productName = AppCenterAnalytics;
-		};
-		EA9039A62BA19D0000C982BC /* AppCenterCrashes */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = EA9039A32BA19D0000C982BC /* XCRemoteSwiftPackageReference "appcenter-sdk-apple" */;
-			productName = AppCenterCrashes;
+			package = EAC20FDF2CA0CB7C0098AABA /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
+			productName = Sentry;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

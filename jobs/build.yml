@@ -158,8 +158,12 @@ jobs:
     displayName: 'Download Mac (Developer ID) Provisioning Profile'
 
   - script: |
-      sed -i '' 's/APPCENTER-APP-CATALYST/$(APPCENTER_SECRET_CATALYST)/g' MobileCelestia/AppDelegate.swift
-      sed -i '' 's/APPCENTER-APP-IOS/$(APPCENTER_SECRET_IOS)/g' MobileCelestia/AppDelegate.swift
+      TO_REPLACE="SENTRY-CATALYST-DSN"
+      NEW_STRING=$(SENTRY-CATALYST-DSN)
+      sed -ie "s#${TO_REPLACE}#${NEW_STRING}#g" MobileCelestia/AppDelegate.swift
+      TO_REPLACE="SENTRY-IOS-DSN"
+      NEW_STRING=$(SENTRY-IOS-DSN)
+      sed -ie "s#${TO_REPLACE}#${NEW_STRING}#g" MobileCelestia/AppDelegate.swift
       echo "New Content:"
       cat MobileCelestia/AppDelegate.swift
     workingDirectory: '$(System.DefaultWorkingDirectory)/MobileCelestia'

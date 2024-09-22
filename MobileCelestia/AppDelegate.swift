@@ -9,7 +9,6 @@
 // of the License, or (at your option) any later version.
 //
 
-import UIKit
 
 import CelestiaCore
 import CelestiaFoundation
@@ -17,12 +16,8 @@ import CelestiaFoundation
 import CelestiaHelper
 #endif
 import CelestiaUI
-
-#if !DEBUG
-import AppCenter
-import AppCenterAnalytics
-import AppCenterCrashes
-#endif
+import Sentry
+import UIKit
 
 enum MenuBarAction: Hashable, Equatable {
     case captureImage
@@ -209,17 +204,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         #endif
 
-        #if !DEBUG
         #if targetEnvironment(macCatalyst)
-        let appCenterID = "APPCENTER-APP-CATALYST"
+        let dsn = "SENTRY-CATALYST-DSN"
         #else
-        let appCenterID = "APPCENTER-APP-IOS"
+        let dsn = "SENTRY-IOS-DSN"
         #endif
-        AppCenter.start(withAppSecret: appCenterID, services: [
-            Analytics.self,
-            Crashes.self
-        ])
-        #endif
+        SentrySDK.start { options in
+            options.dsn = dsn
+            #if DEBUG
+            options.debug = true // Enabled debug when first installing is always helpful
+            #endif
+            options.tracesSampleRate = 0
+            options.enableAutoPerformanceTracing = false
+            options.enablePerformanceV2 = false
+        }
 
         #if targetEnvironment(macCatalyst)
         NotificationCenter.default.addObserver(self, selector: #selector(handleNSWindowDidBecomeKey(_:)), name: Self.windowDidBecomeKeyNotification, object: nil)
