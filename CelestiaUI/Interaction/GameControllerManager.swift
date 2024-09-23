@@ -12,7 +12,9 @@
 import Foundation
 import GameController
 
-public class GameControllerManager {
+extension GCController: @unchecked @retroactive Sendable {}
+
+public class GameControllerManager: @unchecked Sendable {
     private let executor: AsyncProviderExecutor
     private let canAcceptEvents: () -> Bool
     private let actionRemapper: ((GameControllerButton) -> GameControllerAction?)?
@@ -23,6 +25,7 @@ public class GameControllerManager {
 
     private var connectedGameController: GCController?
 
+    @MainActor
     public init(
         executor: AsyncProviderExecutor,
         canAcceptEvents: @escaping () -> Bool,
@@ -43,6 +46,7 @@ public class GameControllerManager {
         startObservingGameControllerConnection()
     }
 
+    @MainActor
     private func startObservingGameControllerConnection() {
         if let current = GCController.current {
             gameControllerChanged(current)
@@ -54,7 +58,7 @@ public class GameControllerManager {
         NotificationCenter.default.addObserver(self, selector: #selector(gameControllerDisconnected(_:)), name: .GCControllerDidDisconnect, object: nil)
     }
 
-    @objc func gameControllerConnected(_ notification: Notification) {
+    @objc private func gameControllerConnected(_ notification: Notification) {
         guard let controller = notification.object as? GCController else { return }
 
         Task { @MainActor in
@@ -62,7 +66,7 @@ public class GameControllerManager {
         }
     }
 
-    @objc func gameControllerDisconnected(_ notification: Notification) {
+    @objc private func gameControllerDisconnected(_ notification: Notification) {
         guard let controller = notification.object as? GCController else { return }
         Task { @MainActor in
             if connectedGameController == controller {
@@ -72,7 +76,7 @@ public class GameControllerManager {
         }
     }
 
-    private func gameControllerChanged(_ controller: GCController) {
+    @MainActor private func gameControllerChanged(_ controller: GCController) {
         var buttonA: GCDeviceButtonInput?
         var buttonB: GCDeviceButtonInput?
         var buttonX: GCDeviceButtonInput?

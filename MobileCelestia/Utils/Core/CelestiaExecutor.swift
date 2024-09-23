@@ -15,39 +15,33 @@ import CelestiaUI
 import Foundation
 
 final class CelestiaExecutor: AsyncGLExecutor, AsyncProviderExecutor, @unchecked Sendable {
-    @Injected(\.appCore) private var core
+    let core: AppCore
 
-    func runAsynchronously(_ task: @escaping (AppCore) -> Void) {
-        runTaskAsynchronously {
-            task(self.core)
+    init(core: AppCore) {
+        self.core = core
+    }
+
+    func runAsynchronously(_ task: @escaping @Sendable (AppCore) -> Void) {
+        Task {
+            runTaskAsynchronously {
+                task(self.core)
+            }
         }
     }
 
     func run(_ task: @escaping @Sendable (AppCore) -> Void) async {
-        let core = self.core
         await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
             self.runTaskAsynchronously {
-                task(core)
+                task(self.core)
                 continuation.resume(returning: ())
             }
         }
     }
 
-    func getSynchronously<T>(_ task: @escaping @Sendable (AppCore) -> T) -> T {
-        var item: T?
-        let core = self.core
-        runTaskSynchronously {
-            item = task(core)
-        }
-        guard let returnItem = item else { fatalError() }
-        return returnItem
-    }
-
     func get<T>(_ task: @escaping @Sendable (AppCore) -> T) async -> T {
-        let core = self.core
         return await withCheckedContinuation { continuation in
             self.runTaskAsynchronously {
-                continuation.resume(returning: task(core))
+                continuation.resume(returning: task(self.core))
             }
         }
     }
@@ -88,16 +82,5 @@ final class CelestiaExecutor: AsyncGLExecutor, AsyncProviderExecutor, @unchecked
         await run { core in
             core.setValue(value, forKey: key)
         }
-    }
-}
-
-private struct CelestiaExecutorKey: InjectionKey {
-    static var currentValue: CelestiaExecutor = CelestiaExecutor()
-}
-
-extension InjectedValues {
-    var executor: CelestiaExecutor {
-        get { Self[CelestiaExecutorKey.self] }
-        set { Self[CelestiaExecutorKey.self] = newValue }
     }
 }

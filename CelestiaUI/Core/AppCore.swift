@@ -13,7 +13,7 @@ import CelestiaCore
 import CelestiaFoundation
 import Foundation
 
-extension AppCore: @unchecked Sendable {}
+extension AppCore: @unchecked @retroactive Sendable {}
 
 public extension AppCore {
     func receive(_ action: CelestiaAction) {
@@ -51,7 +51,7 @@ public struct DSOCatalogIterator: IteratorProtocol {
     }
 }
 
-extension DSOCatalog: Sequence {
+extension DSOCatalog: @retroactive Sequence {
     public typealias Iterator = DSOCatalogIterator
 
     public __consuming func makeIterator() -> DSOCatalogIterator {

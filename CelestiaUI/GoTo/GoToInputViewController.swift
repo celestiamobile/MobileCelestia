@@ -17,7 +17,7 @@ protocol GoToInputItem {
     var detail: String { get }
 }
 
-extension DistanceUnit: CaseIterable {
+extension DistanceUnit: @retroactive CaseIterable {
     public static let allCases: [DistanceUnit] = [.radii, .KM, .AU]
 }
 

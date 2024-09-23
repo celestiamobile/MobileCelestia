@@ -75,7 +75,7 @@ class JavascriptHandler<T: Decodable & Sendable>: BaseJavascriptHandler, @unchec
     }
 }
 
-class RunScriptHandler: JavascriptHandler<RunScriptContext> {
+final class RunScriptHandler: JavascriptHandler<RunScriptContext>, @unchecked Sendable {
     override var operation: String { return "runScript" }
 
     override func execute(context: RunScriptContext, delegate: CelestiaScriptHandlerDelegate) {
@@ -83,7 +83,7 @@ class RunScriptHandler: JavascriptHandler<RunScriptContext> {
     }
 }
 
-class ShareURLHandler: JavascriptHandler<ShareURLContext> {
+final class ShareURLHandler: JavascriptHandler<ShareURLContext>, @unchecked Sendable {
     override var operation: String { return "shareURL" }
 
     override func execute(context: ShareURLContext, delegate: CelestiaScriptHandlerDelegate) {
@@ -91,7 +91,7 @@ class ShareURLHandler: JavascriptHandler<ShareURLContext> {
     }
 }
 
-class SendACKHandler: JavascriptHandler<SendACKContext> {
+final class SendACKHandler: JavascriptHandler<SendACKContext>, @unchecked Sendable {
     override var operation: String { return "sendACK" }
 
     override func execute(context: SendACKContext, delegate: CelestiaScriptHandlerDelegate) {
@@ -99,7 +99,7 @@ class SendACKHandler: JavascriptHandler<SendACKContext> {
     }
 }
 
-class OpenAddonNextHandler: JavascriptHandler<OpenAddonNextContext> {
+final class OpenAddonNextHandler: JavascriptHandler<OpenAddonNextContext>, @unchecked Sendable {
     override var operation: String { return "openAddonNext" }
 
     override func execute(context: OpenAddonNextContext, delegate: CelestiaScriptHandlerDelegate) {
@@ -107,7 +107,7 @@ class OpenAddonNextHandler: JavascriptHandler<OpenAddonNextContext> {
     }
 }
 
-class RunDemoHandler: JavascriptHandler<RunDemoContext> {
+final class RunDemoHandler: JavascriptHandler<RunDemoContext>, @unchecked Sendable {
     override var operation: String { return "runDemo" }
 
     override func execute(context: RunDemoContext, delegate: CelestiaScriptHandlerDelegate) {
@@ -116,7 +116,7 @@ class RunDemoHandler: JavascriptHandler<RunDemoContext> {
 }
 
 
-class OpenSubscriptionPageHandler: JavascriptHandler<OpenSubscriptionPageContext> {
+final class OpenSubscriptionPageHandler: JavascriptHandler<OpenSubscriptionPageContext>, @unchecked Sendable {
     override var operation: String { return "openSubscriptionPage" }
 
     override func execute(context: OpenSubscriptionPageContext, delegate: CelestiaScriptHandlerDelegate) {

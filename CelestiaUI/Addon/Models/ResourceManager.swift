@@ -122,7 +122,7 @@ public final class ResourceManager: @unchecked Sendable {
         do {
             tempURL = try handleDownloadResult(url: url, response: response, error: error)
         } catch {
-            Task.detached { @MainActor in
+            Task { @MainActor in
                 self.tasks.removeValue(forKey: item.id)
                 self.observations.removeValue(forKey: item.id)?.invalidate()
 
@@ -138,7 +138,7 @@ public final class ResourceManager: @unchecked Sendable {
         }
 
         // Download and move success
-        Task.detached { @MainActor in
+        Task { @MainActor in
             self.tasks.removeValue(forKey: item.id)
             self.observations.removeValue(forKey: item.id)?.invalidate()
 

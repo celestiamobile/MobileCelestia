@@ -187,6 +187,7 @@ open class ToolbarNavigationContainerController: UIViewController, ToolbarContai
 }
 
 #if targetEnvironment(macCatalyst)
+@MainActor
 protocol ToolbarAwareNavigationControllerDelegate: UINavigationControllerDelegate {
     @available(iOS 16, *)
     func fallbackStyleForNavigationController(_ navigationController: UINavigationController) -> ToolbarFallbackStyle
@@ -209,8 +210,10 @@ extension ToolbarNavigationContainerController: ToolbarAwareNavigationController
         view.window?.windowScene?.title = viewController.title
         titleObservation?.invalidate()
         titleObservation = viewController.observe(\.title) { [weak self] viewController, _ in
-            guard let self else { return }
-            self.view.window?.windowScene?.title = viewController.title
+            Task { @MainActor in
+                guard let self else { return }
+                self.view.window?.windowScene?.title = viewController.title
+            }
         }
         _updateToolbar(for: viewController)
     }
@@ -575,8 +578,10 @@ extension ToolbarSplitContainerController: ToolbarAwareNavigationControllerDeleg
             view.window?.windowScene?.title = viewController.title
             titleObservation?.invalidate()
             titleObservation = viewController.observe(\.title) { [weak self] viewController, _ in
-                guard let self else { return }
-                self.view.window?.windowScene?.title = viewController.title
+                Task { @MainActor in
+                    guard let self else { return }
+                    self.view.window?.windowScene?.title = viewController.title
+                }
             }
             _updateToolbar(for: viewController)
         }
