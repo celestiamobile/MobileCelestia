@@ -26,7 +26,9 @@ public class FavoriteCoordinatorController: UIViewController {
     private let executor: AsyncProviderExecutor
     private let extraScriptDirectoryPathProvider: (() -> String?)?
 
-    private lazy var main: FavoriteViewController = {
+    private lazy var main = createMain()
+
+    private func createMain() -> FavoriteViewController {
         let type: FavoriteItemType?
         switch root {
         case .main:
@@ -40,15 +42,13 @@ public class FavoriteCoordinatorController: UIViewController {
             case .bookmark:
                 self.replace(self.bookmarkRoot)
             case .script:
-                self.replace(AnyFavoriteItemList(title: CelestiaString("Scripts", comment: ""), items: scripts))
+                self.replace(AnyFavoriteItemList(title: CelestiaString("Scripts", comment: ""), items: self.scripts))
             case .destination:
-                Task {
-                    let destinations = await self.executor.get { $0.destinations }
-                    self.replace(AnyFavoriteItemList(title: CelestiaString("Destinations", comment: "A list of destinations in guide"), items: destinations))
-                }
+                let destinations = await self.executor.get { $0.destinations }
+                self.replace(AnyFavoriteItemList(title: CelestiaString("Destinations", comment: "A list of destinations in guide"), items: destinations))
             }
         })
-    }()
+    }
 
     private lazy var scripts: [Script] = {
         var scripts = Script.scripts(inDirectory: "scripts", deepScan: true)
