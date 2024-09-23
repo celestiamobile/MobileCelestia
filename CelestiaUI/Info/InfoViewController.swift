@@ -13,6 +13,8 @@ import CelestiaCore
 import LinkPresentation
 import UIKit
 
+extension LPLinkMetadata: @unchecked @retroactive Sendable {}
+
 public enum ObjectAction {
     case select
     case web(url: URL)
@@ -118,12 +120,12 @@ final public class InfoViewController: UICollectionViewController {
 
         let current = info
         let metaDataProvider = LPMetadataProvider()
-        metaDataProvider.startFetchingMetadata(for: url) { [weak self] metaData, error in
-            guard let data = metaData, error == nil else { return }
-            Task.detached { @MainActor in
+        Task { [weak self] in
+            do {
+                let metaData = try await metaDataProvider.startFetchingMetadata(for: url)
                 guard let self else { return }
                 guard self.info.isEqual(to: current) else { return }
-                self.linkMetaData = data
+                self.linkMetaData = metaData
                 self.actions.removeAll(where: {
                     switch $0 {
                     case .web:
@@ -133,7 +135,7 @@ final public class InfoViewController: UICollectionViewController {
                     }
                 })
                 self.collectionView.reloadData()
-            }
+            } catch {}
         }
     }
 

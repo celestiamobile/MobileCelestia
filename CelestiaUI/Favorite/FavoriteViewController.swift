@@ -32,10 +32,10 @@ private extension FavoriteItemType {
 }
 
 class FavoriteViewController: BaseTableViewController {
-    private let selected: (FavoriteItemType) -> Void
+    private let selected: @MainActor (FavoriteItemType) async -> Void
     private var currentSelection: FavoriteItemType?
 
-    init(currentSelection: FavoriteItemType?, selected: @escaping (FavoriteItemType) -> Void) {
+    init(currentSelection: FavoriteItemType?, selected: @MainActor @escaping (FavoriteItemType) async -> Void) {
         self.currentSelection = currentSelection
         self.selected = selected
         #if targetEnvironment(macCatalyst)
@@ -61,7 +61,9 @@ class FavoriteViewController: BaseTableViewController {
         if let selection = currentSelection {
             currentSelection = nil
             tableView.selectRow(at: IndexPath(row: selection.rawValue, section: 0), animated: false, scrollPosition: .none)
-            selected(selection)
+            Task {
+                await selected(selection)
+            }
         }
     }
 }
@@ -102,6 +104,9 @@ extension FavoriteViewController {
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        selected(FavoriteItemType(rawValue: indexPath.row)!)
+        guard let selectedType = FavoriteItemType(rawValue: indexPath.row) else { return }
+        Task {
+            await selected(selectedType)
+        }
     }
 }
