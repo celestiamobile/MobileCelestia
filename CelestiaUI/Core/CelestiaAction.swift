@@ -32,7 +32,7 @@ public enum CelestiaAction: Int8, Sendable {
     case reverseSpeed = 113
 }
 
-public enum CelestiaContinuousAction: Int {
+public enum CelestiaContinuousAction: Int, Sendable {
     case travelFaster = 97
     case travelSlower = 122
     case f1 = 11

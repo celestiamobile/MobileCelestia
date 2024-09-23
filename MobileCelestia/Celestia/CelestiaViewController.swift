@@ -53,6 +53,9 @@ class CelestiaViewController: UIViewController {
     private(set) var displayScreen: UIScreen
     private(set) var isMirroring: Bool
     private let subscriptionManager: SubscriptionManager
+    private let core: AppCore
+    private let executor: CelestiaExecutor
+    private let userDefaults: UserDefaults
 
     // On Mac, we have top title bar/toolbar, which covers
     // part of the view, we do not to extend to below the bars
@@ -67,12 +70,15 @@ class CelestiaViewController: UIViewController {
     }()
     #endif
 
-    init(screen: UIScreen, executor: CelestiaExecutor, userDefaults: UserDefaults, subscriptionManager: SubscriptionManager) {
+    init(screen: UIScreen, executor: CelestiaExecutor, userDefaults: UserDefaults, subscriptionManager: SubscriptionManager, core: AppCore) {
         appScreen = screen
         displayScreen = screen
         isMirroring = false
         self.subscriptionManager = subscriptionManager
-        displayController = CelestiaDisplayController(msaaEnabled: userDefaults[.msaa] == true, screen: screen, initialFrameRate: userDefaults[.frameRate] ?? 60, executor: executor, subscriptionManager: subscriptionManager)
+        self.core = core
+        self.executor = executor
+        self.userDefaults = userDefaults
+        displayController = CelestiaDisplayController(msaaEnabled: userDefaults[.msaa] == true, screen: screen, initialFrameRate: userDefaults[.frameRate] ?? 60, executor: executor, subscriptionManager: subscriptionManager, core: core, userDefaults: userDefaults)
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -185,7 +191,7 @@ extension CelestiaViewController: CelestiaInteractionControllerDelegate {
 extension CelestiaViewController: CelestiaDisplayControllerDelegate {
     nonisolated func celestiaDisplayControllerLoadingSucceeded(_ celestiaDisplayController: CelestiaDisplayController) {
         Task.detached { @MainActor in
-            let interactionController = CelestiaInteractionController(subscriptionManager: self.subscriptionManager)
+            let interactionController = CelestiaInteractionController(subscriptionManager: self.subscriptionManager, core: self.core, executor: self.executor, userDefaults: self.userDefaults)
             interactionController.delegate = self
             interactionController.targetProvider = self
             self.install(interactionController, safeAreaEdges: self.safeAreaEdges)
@@ -197,10 +203,18 @@ extension CelestiaViewController: CelestiaDisplayControllerDelegate {
         }
     }
 
-    nonisolated func celestiaDisplayController(_ celestiaDisplayController: CelestiaDisplayController, loadingFailedShouldRetry shouldRetry: @escaping (Bool) -> Void) {
-        Task.detached { @MainActor in
-            self.delegate?.celestiaController(self, loadingFailedShouldRetry: shouldRetry)
+    nonisolated func celestiaDisplayControllerLoadingFailedShouldRetry(_ celestiaDisplayController: CelestiaDisplayController) -> Bool {
+        var retry = false
+        let dispatchGroup = DispatchGroup()
+        dispatchGroup.enter()
+        Task { @MainActor in
+            self.delegate?.celestiaController(self, loadingFailedShouldRetry: { result in
+                retry = result
+                dispatchGroup.leave()
+            })
         }
+        dispatchGroup.wait()
+        return retry
     }
 
     nonisolated func celestiaDisplayControllerLoadingFailed(_ celestiaDisplayController: CelestiaDisplayController) {

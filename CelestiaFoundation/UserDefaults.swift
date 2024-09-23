@@ -93,4 +93,4 @@ public extension UserDefaults {
     }
 }
 
-extension UserDefaults: @unchecked Sendable {}
+extension UserDefaults: @unchecked @retroactive Sendable {}

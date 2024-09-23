@@ -95,7 +95,10 @@ public class CommonWebViewController: UIViewController {
         titleObservation?.invalidate()
         titleObservation = nil
         // Avoid leak https://stackoverflow.com/questions/26383031/
-        webView.configuration.userContentController.removeScriptMessageHandler(forName: "iOSCelestia")
+        let webView = self.webView
+        Task { @MainActor in
+            webView.configuration.userContentController.removeScriptMessageHandler(forName: "iOSCelestia")
+        }
     }
 
     required init?(coder: NSCoder) {
@@ -157,30 +160,22 @@ extension CommonWebViewController: WKNavigationDelegate {
         return true
     }
 
-    public nonisolated func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction, decisionHandler: @escaping (WKNavigationActionPolicy) -> Void) {
+    public func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction) async -> WKNavigationActionPolicy {
         if !filterURL {
-            decisionHandler(.allow)
-            return
+            return .allow
         }
         if navigationAction.targetFrame?.isMainFrame == false {
-            decisionHandler(.allow)
-            return
+            return .allow
         }
         guard let url = navigationAction.request.url else {
-            decisionHandler(.cancel)
-            return
+            return .cancel
         }
-        Task.detached { @MainActor [weak self] in
-            guard let self else {
-                decisionHandler(.cancel)
-                return
-            }
-            if await self.isURLAllowed(url) {
-                decisionHandler(.allow)
-            } else {
-                decisionHandler(.cancel)
-                UIApplication.shared.open(url, options: [:], completionHandler: nil)
-            }
+
+        if await isURLAllowed(url) {
+            return .allow
+        } else {
+            UIApplication.shared.open(url, options: [:], completionHandler: nil)
+            return .cancel
         }
     }
 

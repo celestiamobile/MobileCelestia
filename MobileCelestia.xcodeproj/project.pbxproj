@@ -54,7 +54,6 @@
 		EA50E7812A505EA4005E7D7A /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394A22403E68800E38B82 /* Color.swift */; };
 		EA50E7832A505EDF005E7D7A /* CelestiaAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA50E7822A505EDF005E7D7A /* CelestiaAction.swift */; };
 		EA50E7852A505F13005E7D7A /* Font.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAB08FE32780550600BB82F0 /* Font.swift */; };
-		EA50E7872A50609C005E7D7A /* AppCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA50E7862A50609C005E7D7A /* AppCore.swift */; };
 		EA50E7892A506406005E7D7A /* GlobalConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA50E7882A506406005E7D7A /* GlobalConstants.swift */; };
 		EA5C17832AF0DBBC00E1F615 /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EA5C17822AF0DBB800E1F615 /* libiconv.tbd */; };
 		EA5D32E7266F9518005D5931 /* SheetPresentationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5D32E6266F9518005D5931 /* SheetPresentationController.swift */; };
@@ -70,7 +69,6 @@
 		EA741A6A2ADA6B5E00C7F1DC /* FontSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA741A692ADA6B5E00C7F1DC /* FontSettingViewController.swift */; };
 		EA741A6C2ADA6C8A00C7F1DC /* SubscriptionBackingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA741A6B2ADA6C8A00C7F1DC /* SubscriptionBackingViewController.swift */; };
 		EA741A6E2ADA6FD000C7F1DC /* FontSettingMainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA741A6D2ADA6FD000C7F1DC /* FontSettingMainViewController.swift */; };
-		EA787309296DE50D0099AB11 /* Injecton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA787308296DE50D0099AB11 /* Injecton.swift */; };
 		EA78730F296DEA6B0099AB11 /* CelestiaExecutor.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA78730E296DEA6B0099AB11 /* CelestiaExecutor.swift */; };
 		EA78733D296EB61B0099AB11 /* UserDefaults.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA78733B296EB61A0099AB11 /* UserDefaults.swift */; };
 		EA7BACEF2A959A760014D1FF /* FeatureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA5AA1682A947AA50061764D /* FeatureView.swift */; };
@@ -333,7 +331,6 @@
 		EA50E75E2A505627005E7D7A /* CelestiaUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CelestiaUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA50E7602A505627005E7D7A /* CelestiaUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CelestiaUI.h; sourceTree = "<group>"; };
 		EA50E7822A505EDF005E7D7A /* CelestiaAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaAction.swift; sourceTree = "<group>"; };
-		EA50E7862A50609C005E7D7A /* AppCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCore.swift; sourceTree = "<group>"; };
 		EA50E7882A506406005E7D7A /* GlobalConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalConstants.swift; sourceTree = "<group>"; };
 		EA544E5E2566BC50003F351D /* DestinationDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DestinationDetailViewController.swift; sourceTree = "<group>"; };
 		EA5AA1642A94715D0061764D /* SubscriptionManagerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionManagerViewController.swift; sourceTree = "<group>"; };
@@ -352,7 +349,6 @@
 		EA741A6B2ADA6C8A00C7F1DC /* SubscriptionBackingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionBackingViewController.swift; sourceTree = "<group>"; };
 		EA741A6D2ADA6FD000C7F1DC /* FontSettingMainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontSettingMainViewController.swift; sourceTree = "<group>"; };
 		EA775EB32664B63F00479295 /* ActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButton.swift; sourceTree = "<group>"; };
-		EA787308296DE50D0099AB11 /* Injecton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Injecton.swift; sourceTree = "<group>"; };
 		EA78730A296DE5CE0099AB11 /* AppCore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCore.swift; sourceTree = "<group>"; };
 		EA78730E296DEA6B0099AB11 /* CelestiaExecutor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaExecutor.swift; sourceTree = "<group>"; };
 		EA787339296EB5F40099AB11 /* Selection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Selection.swift; sourceTree = "<group>"; };
@@ -803,8 +799,6 @@
 			children = (
 				EA78733B296EB61A0099AB11 /* UserDefaults.swift */,
 				EA78730E296DEA6B0099AB11 /* CelestiaExecutor.swift */,
-				EA787308296DE50D0099AB11 /* Injecton.swift */,
-				EA50E7862A50609C005E7D7A /* AppCore.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -1119,7 +1113,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 1130;
-				LastUpgradeCheck = 1540;
+				LastUpgradeCheck = 1600;
 				ORGANIZATIONNAME = "Celestia Development Team";
 				TargetAttributes = {
 					979D2F7923FEB1A6005D2592 = {
@@ -1316,7 +1310,6 @@
 				EAB623B52A51AB5100063D1B /* UIViewController+Extension.swift in Sources */,
 				977394A02402A9AF00E38B82 /* PresentationManager.swift in Sources */,
 				EA28CA4E24A25FE7004B011E /* BottomControlViewController.swift in Sources */,
-				EA50E7872A50609C005E7D7A /* AppCore.swift in Sources */,
 				9773949C2402A8F700E38B82 /* ToolbarViewController.swift in Sources */,
 				979D2F8223FEB1A6005D2592 /* CelestiaViewController.swift in Sources */,
 				EA934C90251D90C500DD284C /* MainSceneDelegate.swift in Sources */,
@@ -1335,7 +1328,6 @@
 				EADE7FC0252B54A400D4174F /* CelestiaInteractionController.swift in Sources */,
 				EA78730F296DEA6B0099AB11 /* CelestiaExecutor.swift in Sources */,
 				9773949E2402A96B00E38B82 /* SlideInPresentationController.swift in Sources */,
-				EA787309296DE50D0099AB11 /* Injecton.swift in Sources */,
 				979D2F7E23FEB1A6005D2592 /* AppDelegate.swift in Sources */,
 				EA5E185D2477C78E00F5374B /* Toast.swift in Sources */,
 			);
@@ -1606,6 +1598,7 @@
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_STRICT_CONCURRENCY = targeted;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2,6";
 				XROS_DEPLOYMENT_TARGET = 1.0;
 			};
@@ -1666,6 +1659,7 @@
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_STRICT_CONCURRENCY = targeted;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2,6";
 				VALIDATE_PRODUCT = YES;
 				XROS_DEPLOYMENT_TARGET = 1.0;
@@ -1715,7 +1709,6 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTS_MACCATALYST = YES;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_VERSION = 5.0;
 				THIRD_PARTY_LIB_PATH = "";
 				"THIRD_PARTY_LIB_PATH[sdk=iphoneos*]" = "$(THIRD_PARTY_LIB_PATH_BASE)/ios";
 				"THIRD_PARTY_LIB_PATH[sdk=iphonesimulator*]" = "$(THIRD_PARTY_LIB_PATH_BASE)/iossim";
@@ -1767,7 +1760,6 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTS_MACCATALYST = YES;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				SWIFT_VERSION = 5.0;
 				THIRD_PARTY_LIB_PATH = "";
 				"THIRD_PARTY_LIB_PATH[sdk=iphoneos*]" = "$(THIRD_PARTY_LIB_PATH_BASE)/ios";
 				"THIRD_PARTY_LIB_PATH[sdk=iphonesimulator*]" = "$(THIRD_PARTY_LIB_PATH_BASE)/iossim";
@@ -1779,7 +1771,6 @@
 		979D2F9D23FEB1A8005D2592 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = MobileCelestiaTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1789,7 +1780,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = cc.meowssage.MobileCelestiaTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MobileCelestia.app/MobileCelestia";
 			};
 			name = Debug;
@@ -1797,7 +1787,6 @@
 		979D2F9E23FEB1A8005D2592 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = MobileCelestiaTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1807,7 +1796,6 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = cc.meowssage.MobileCelestiaTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/MobileCelestia.app/MobileCelestia";
 			};
 			name = Release;
@@ -1897,7 +1885,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -1928,7 +1915,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -1959,7 +1945,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -1990,7 +1975,6 @@
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
 			};
@@ -2112,7 +2096,7 @@
 			repositoryURL = "https://github.com/levinli303/AsyncGL";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.1.21;
+				minimumVersion = 1.0.0;
 			};
 		};
 		EA9039A02BA19CF100C982BC /* XCRemoteSwiftPackageReference "mwrequest" */ = {

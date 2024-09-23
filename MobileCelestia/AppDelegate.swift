@@ -72,7 +72,7 @@ let requestRunScriptNotificationKey = Notification.Name("RequestRunScriptNotific
 let requestOpenBookmarkNotificationName = Notification.Name("RequestOpenBookmarkNotificationName")
 let requestOpenBookmarkNotificationKey = Notification.Name("RequestOpenBookmarkNotificationKey")
 
-@UIApplicationMain
+@main
 class AppDelegate: UIResponder, UIApplicationDelegate {
 #if targetEnvironment(macCatalyst)
     private static let windowDidBecomeKeyNotification = NSNotification.Name("NSWindowDidBecomeKeyNotification")
@@ -125,7 +125,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     var window: UIWindow?
 
-    @Injected(\.appCore) private var core
+    lazy var core = AppCore()
+    lazy var executor = CelestiaExecutor(core: core)
+    lazy var userDefaults: UserDefaults = {
+        let defaults = UserDefaults.standard
+        defaults.initialize()
+        return defaults
+    }()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
 

@@ -12,7 +12,7 @@
 import CelestiaCore
 import UIKit
 
-extension BrowserItem: @unchecked Sendable {}
+extension BrowserItem: @unchecked @retroactive Sendable {}
 
 public class BrowserContainerViewController: UIViewController {
     #if targetEnvironment(macCatalyst)
@@ -225,7 +225,7 @@ public struct CategoryInfo: Codable, Hashable {
     public let isLeaf: Bool
 }
 
-final class BrowserPredefinedItem: BrowserItem {
+final class BrowserPredefinedItem: BrowserItem, @unchecked Sendable {
     var categoryInfo: CategoryInfo? = nil
 }
 

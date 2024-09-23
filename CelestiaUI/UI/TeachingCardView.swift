@@ -11,10 +11,12 @@
 
 import UIKit
 
+@MainActor
 protocol BaseContentConfiguration {
     func makeContentView() -> UIView & BaseContentView
 }
 
+@MainActor
 protocol BaseContentView: NSObjectProtocol {
     var configuration: BaseContentConfiguration { get set }
 }

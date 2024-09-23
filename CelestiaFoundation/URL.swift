@@ -11,7 +11,7 @@
 
 import Foundation
 
-public class UniformedURL {
+public class UniformedURL: @unchecked Sendable {
     private let securityScoped: Bool
 
     public let url: URL

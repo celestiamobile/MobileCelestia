@@ -17,6 +17,8 @@ import MessageUI
 import UniformTypeIdentifiers
 import UIKit
 
+extension GoToLocation: @unchecked @retroactive Sendable {}
+
 class MainViewController: UIViewController {
     enum LoadingStatus {
         case notLoaded
@@ -53,10 +55,10 @@ class MainViewController: UIViewController {
     private lazy var endSlideInManager = PresentationManager(direction: UIView.userInterfaceLayoutDirection(for: self.view.semanticContentAttribute) == .rightToLeft ? .left : .right, useSheetIfPossible: true)
     #endif
 
-    @Injected(\.appCore) private var core
-    @Injected(\.executor) private var executor
-    @Injected(\.userDefaults) private var userDefaults
-    @Injected(\.requestHandler) private var requestHandler
+    private let core: AppCore
+    private let executor: CelestiaExecutor
+    private let userDefaults: UserDefaults
+    private let requestHandler = RequestHandlerImpl()
 
     private let resourceManager = ResourceManager(extraAddonDirectory: UserDefaults.extraDirectory?.appendingPathComponent("extras"), extraScriptDirectory: UserDefaults.extraDirectory?.appendingPathComponent("scripts"))
 
@@ -88,9 +90,12 @@ class MainViewController: UIViewController {
         }
     }
 
-    init(initialURL: UniformedURL?, screen: UIScreen) {
+    init(initialURL: UniformedURL?, screen: UIScreen, core: AppCore, executor: CelestiaExecutor, userDefaults: UserDefaults) {
+        self.core = core
+        self.executor = executor
+        self.userDefaults = userDefaults
         super.init(nibName: nil, bundle: nil)
-        celestiaController = CelestiaViewController(screen: screen, executor: executor, userDefaults: userDefaults, subscriptionManager: subscriptionManager)
+        celestiaController = CelestiaViewController(screen: screen, executor: executor, userDefaults: userDefaults, subscriptionManager: subscriptionManager, core: core)
 
         #if targetEnvironment(macCatalyst)
         let splitViewController = ToolbarSplitContainerController()
@@ -1379,7 +1384,7 @@ extension CelestiaAction: ToolbarTouchBarAction {
 }
 #endif
 
-extension MainViewController: MFMailComposeViewControllerDelegate {
+extension MainViewController: @preconcurrency MFMailComposeViewControllerDelegate {
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
         controller.dismiss(animated: true)
     }
@@ -1397,16 +1402,3 @@ extension MainViewController: ToolbarContainerViewController {
     }
 }
 #endif
-
-private struct RequestHandlerInjectionKey: InjectionKey {
-    static var currentValue: RequestHandlerImpl = {
-        return RequestHandlerImpl()
-    }()
-}
-
-extension InjectedValues {
-    var requestHandler: RequestHandlerImpl {
-        get { Self[RequestHandlerInjectionKey.self] }
-        set { Self[RequestHandlerInjectionKey.self] = newValue }
-    }
-}
