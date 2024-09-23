@@ -1,8 +1,8 @@
 diff --git a/MobileCelestia.xcodeproj/project.pbxproj b/MobileCelestia.xcodeproj/project.pbxproj
-index bd440eb..f69311f 100644
+index d9b6b45..b206498 100644
 --- a/MobileCelestia.xcodeproj/project.pbxproj
 +++ b/MobileCelestia.xcodeproj/project.pbxproj
-@@ -90,8 +90,8 @@
+@@ -88,8 +88,8 @@
  		EA872F052A5ACC9C009E6A20 /* TutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CDD29240BC50A00137127 /* TutorialViewController.swift */; };
  		EA872F062A5ACC9C009E6A20 /* TutorialDescriptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CDD2D240BC6A900137127 /* TutorialDescriptionCell.swift */; };
  		EA872F072A5ACC9C009E6A20 /* TutorialActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CDD2F240BD78F00137127 /* TutorialActionCell.swift */; };
@@ -12,7 +12,7 @@ index bd440eb..f69311f 100644
  		EA9166972B0AF20A00AF48B1 /* LinkTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9166962B0AF20A00AF48B1 /* LinkTextView.swift */; };
  		EA9166BE2B0C722000AF48B1 /* ToolbarSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9166BD2B0C722000AF48B1 /* ToolbarSettingViewController.swift */; };
  		EA9166C02B0C725100AF48B1 /* QuickAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9166BF2B0C725100AF48B1 /* QuickAction.swift */; };
-@@ -428,7 +428,7 @@
+@@ -424,7 +424,7 @@
  			isa = PBXFrameworksBuildPhase;
  			buildActionMask = 2147483647;
  			files = (
@@ -21,7 +21,7 @@ index bd440eb..f69311f 100644
  				979D2FAD23FEB2B4005D2592 /* libbz2.tbd in Frameworks */,
  				EA4E2D7C2A56B46B0046D62E /* CelestiaFoundation.framework in Frameworks */,
  				EA9A426D288CD7FE00AF3BD6 /* AVFoundation.framework in Frameworks */,
-@@ -1012,7 +1012,7 @@
+@@ -1006,7 +1006,7 @@
  			);
  			name = MobileCelestia;
  			packageProductDependencies = (
@@ -30,7 +30,7 @@ index bd440eb..f69311f 100644
  				EA9039A12BA19CF100C982BC /* MWRequest */,
  				EAC20FE02CA0CB7C0098AABA /* Sentry */,
  			);
-@@ -1705,7 +1705,6 @@
+@@ -1699,7 +1699,6 @@
  					"-ljpeg",
  					"-lfreetype",
  					"-lintl",
@@ -38,7 +38,7 @@ index bd440eb..f69311f 100644
  					"-lzip",
  					"$(THIRD_PARTY_LIB_PATH)/libs/cspice.a",
  					"-ObjC",
-@@ -1757,7 +1756,6 @@
+@@ -1750,7 +1749,6 @@
  					"-ljpeg",
  					"-lfreetype",
  					"-lintl",
@@ -46,7 +46,7 @@ index bd440eb..f69311f 100644
  					"-lzip",
  					"$(THIRD_PARTY_LIB_PATH)/libs/cspice.a",
  					"-ObjC",
-@@ -2134,11 +2132,6 @@
+@@ -2118,11 +2116,6 @@
  /* End XCRemoteSwiftPackageReference section */
  
  /* Begin XCSwiftPackageProductDependency section */
@@ -58,7 +58,7 @@ index bd440eb..f69311f 100644
  		EA9039A12BA19CF100C982BC /* MWRequest */ = {
  			isa = XCSwiftPackageProductDependency;
  			package = EA9039A02BA19CF100C982BC /* XCRemoteSwiftPackageReference "mwrequest" */;
-@@ -2149,6 +2142,11 @@
+@@ -2133,6 +2126,11 @@
  			package = EAC20FDF2CA0CB7C0098AABA /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
  			productName = Sentry;
  		};
@@ -71,7 +71,7 @@ index bd440eb..f69311f 100644
  	};
  	rootObject = 979D2F7223FEB1A6005D2592 /* Project object */;
 diff --git a/MobileCelestia/Celestia/CelestiaDisplayController.swift b/MobileCelestia/Celestia/CelestiaDisplayController.swift
-index 46ab237..85f4cc8 100644
+index 7c8dd07..debab51 100644
 --- a/MobileCelestia/Celestia/CelestiaDisplayController.swift
 +++ b/MobileCelestia/Celestia/CelestiaDisplayController.swift
 @@ -9,7 +9,7 @@
@@ -85,7 +85,7 @@ index 46ab237..85f4cc8 100644
  import CelestiaUI
 @@ -60,7 +60,7 @@ class CelestiaDisplayController: AsyncGLViewController {
  
-     init(msaaEnabled: Bool, screen: UIScreen, initialFrameRate frameRate: Int, executor: AsyncGLExecutor, subscriptionManager: SubscriptionManager) {
+     init(msaaEnabled: Bool, screen: UIScreen, initialFrameRate frameRate: Int, executor: CelestiaExecutor, subscriptionManager: SubscriptionManager, core: AppCore, userDefaults: UserDefaults) {
  #if targetEnvironment(macCatalyst)
 -        let api = AsyncGLAPI.openGLLegacy
 +        let api = AsyncGLAPI.openGLES2
@@ -93,7 +93,7 @@ index 46ab237..85f4cc8 100644
          let api = AsyncGLAPI.openGLES2
  #endif
 diff --git a/MobileCelestia/Celestia/CelestiaViewController.swift b/MobileCelestia/Celestia/CelestiaViewController.swift
-index f843625..69982c1 100644
+index a37a463..0d81003 100644
 --- a/MobileCelestia/Celestia/CelestiaViewController.swift
 +++ b/MobileCelestia/Celestia/CelestiaViewController.swift
 @@ -9,7 +9,7 @@
@@ -106,7 +106,7 @@ index f843625..69982c1 100644
  import CelestiaFoundation
  import CelestiaUI
 diff --git a/MobileCelestia/Utils/Core/CelestiaExecutor.swift b/MobileCelestia/Utils/Core/CelestiaExecutor.swift
-index 4fa0f69..ce066bd 100644
+index 8d25b97..ff1d661 100644
 --- a/MobileCelestia/Utils/Core/CelestiaExecutor.swift
 +++ b/MobileCelestia/Utils/Core/CelestiaExecutor.swift
 @@ -9,7 +9,7 @@
