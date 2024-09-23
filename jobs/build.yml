@@ -118,8 +118,8 @@ jobs:
     displayName: 'Running gperf'
 
   - script: |
-      npm install -g appcenter-cli
-    displayName: 'Install AppCenter-CLI'
+      brew install getsentry/tools/sentry-cli
+    displayName: 'Install Sentry-CLI'
 
   - task: DownloadSecureFile@1
     name: macInstallerP12
@@ -158,12 +158,16 @@ jobs:
     displayName: 'Download Mac (Developer ID) Provisioning Profile'
 
   - script: |
-      sed -i '' 's/APPCENTER-APP-CATALYST/$(APPCENTER_SECRET_CATALYST)/g' MobileCelestia/AppDelegate.swift
-      sed -i '' 's/APPCENTER-APP-IOS/$(APPCENTER_SECRET_IOS)/g' MobileCelestia/AppDelegate.swift
+      TO_REPLACE="SENTRY-CATALYST-DSN"
+      NEW_STRING=$(SENTRY-CATALYST-DSN)
+      sed -ie "s#${TO_REPLACE}#${NEW_STRING}#g" MobileCelestia/AppDelegate.swift
+      TO_REPLACE="SENTRY-IOS-DSN"
+      NEW_STRING=$(SENTRY-IOS-DSN)
+      sed -ie "s#${TO_REPLACE}#${NEW_STRING}#g" MobileCelestia/AppDelegate.swift
       echo "New Content:"
       cat MobileCelestia/AppDelegate.swift
     workingDirectory: '$(System.DefaultWorkingDirectory)/MobileCelestia'
-    displayName: 'Replace AppCenter Placeholders'
+    displayName: 'Replace Sentry Placeholders'
 
   - script: |
       # create variables
@@ -263,16 +267,18 @@ jobs:
     displayName: 'Publish Archive Artifacts'
 
   - script: |
-      cd $XC_ARCHIVE_PATH/dSYMs
-      zip -vr symbols.zip * -x "*.DS_Store"
-      appcenter crashes upload-symbols --symbol symbols.zip --app CelestiaProject/Celestia --token $(IOS_APPCENTER_TOKEN) --disable-telemetry --debug
+      export SENTRY_ORG=celestia-vs
+      export SENTRY_PROJECT=apple-ios
+      export SENTRY_AUTH_TOKEN=$(SENTRY_AUTH_TOKEN)
+      sentry-cli debug-files upload --include-sources $XC_ARCHIVE_PATH/dSYMs
     displayName: 'Upload Symbols (iOS)'
     condition: and( succeeded(), eq( variables['sdk'], 'iphoneos' ) )
 
   - script: |
-      cd $XC_ARCHIVE_PATH/dSYMs
-      zip -vr symbols.zip * -x "*.DS_Store"
-      appcenter crashes upload-symbols --symbol symbols.zip --app CelestiaProject/Celestia-3 --token $(MAC_APPCENTER_TOKEN) --disable-telemetry --debug
+      export SENTRY_ORG=celestia-vs
+      export SENTRY_PROJECT=apple-catalyst
+      export SENTRY_AUTH_TOKEN=$(SENTRY_AUTH_TOKEN)
+      sentry-cli debug-files upload --include-sources $XC_ARCHIVE_PATH/dSYMs
     displayName: 'Upload Symbols (Mac)'
     condition: eq( variables['sdk'], 'macosx' )
 
