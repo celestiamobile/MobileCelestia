@@ -279,10 +279,10 @@ public extension AppCore {
         let eqPos = AstroUtils.ecliptic(toEquatorial: AstroUtils.cel(toJ2000Ecliptic: celPos))
         let sph = AstroUtils.rect(toSpherical: eqPos)
 
-        let hms = DMS(decimal: sph.dx)
+        let hms = DMS(decimal: AstroUtils.deg(fromRad: sph.dx))
         lines.append(String.localizedStringWithFormat(CelestiaString("RA: %@h %@m %@s", comment: "Equatorial coordinate"), formatter.string(from: hms.hmsHours), formatter.string(from: hms.hmsMinutes), formatter.string(from: hms.hmsSeconds)))
 
-        let dms = DMS(decimal: sph.dy)
+        let dms = DMS(decimal: AstroUtils.deg(fromRad: sph.dy))
         lines.append(String.localizedStringWithFormat(CelestiaString("DEC: %@° %@′ %@″", comment: "Equatorial coordinate"), formatter.string(from: dms.degrees), formatter.string(from: dms.minutes), formatter.string(from: dms.seconds)))
 
         return lines.joined(separator: "\n")
@@ -305,19 +305,19 @@ public extension AppCore {
         let eqPos = AstroUtils.ecliptic(toEquatorial: AstroUtils.cel(toJ2000Ecliptic: celPos))
         var sph = AstroUtils.rect(toSpherical: eqPos)
 
-        let hms = DMS(decimal: sph.dx)
+        let hms = DMS(decimal: AstroUtils.deg(fromRad: sph.dx))
         lines.append(String.localizedStringWithFormat(CelestiaString("RA: %@h %@m %@s", comment: "Equatorial coordinate"), formatter.string(from: hms.hmsHours), formatter.string(from: hms.hmsMinutes), formatter.string(from: hms.hmsSeconds)))
 
-        var dms = DMS(decimal: sph.dy)
+        var dms = DMS(decimal: AstroUtils.deg(fromRad: sph.dy))
         lines.append(String.localizedStringWithFormat(CelestiaString("DEC: %@° %@′ %@″", comment: "Equatorial coordinate"), formatter.string(from: dms.degrees), formatter.string(from: dms.minutes), formatter.string(from: dms.seconds)))
 
         let galPos = AstroUtils.equatorial(toGalactic: eqPos)
         sph = AstroUtils.rect(toSpherical: galPos)
 
-        dms = DMS(decimal: sph.dx)
+        dms = DMS(decimal: AstroUtils.deg(fromRad: sph.dx))
         lines.append(String.localizedStringWithFormat(CelestiaString("L: %@° %@′ %@″", comment: "Galactic coordinates"), formatter.string(from: dms.degrees), formatter.string(from: dms.minutes), formatter.string(from: dms.seconds)))
 
-        dms = DMS(decimal: sph.dy)
+        dms = DMS(decimal: AstroUtils.deg(fromRad: sph.dy))
         lines.append(String.localizedStringWithFormat(CelestiaString("B: %@° %@′ %@″", comment: "Galactic coordinates"), formatter.string(from: dms.degrees), formatter.string(from: dms.minutes), formatter.string(from: dms.seconds)))
 
         return lines.joined(separator: "\n")
