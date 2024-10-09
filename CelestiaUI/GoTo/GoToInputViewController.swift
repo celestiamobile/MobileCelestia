@@ -107,8 +107,8 @@ class GoToInputViewController: BaseTableViewController {
     private let objectNameHandler: ((GoToInputViewController) -> Void)
     private let textInputHandler: (_ viewController: UIViewController, _ title: String, _ text: String, _ keyboardType: UIKeyboardType) async -> String?
 
-    private lazy var displayName = LocalizedString("Earth", "celestia-data")
-    private lazy var objectPath = "Sol/Earth"
+    private lazy var displayName = ""
+    private lazy var object = Selection()
 
     private var longitude: Float?
     private var longitudeString: String?
@@ -164,9 +164,9 @@ class GoToInputViewController: BaseTableViewController {
         setUp()
     }
 
-    func updateObject(displayName: String, objectPath: String) {
+    func updateObject(displayName: String, object: Selection) {
         self.displayName = displayName
-        self.objectPath = objectPath
+        self.object = object
         reload()
     }
 }
@@ -210,15 +210,11 @@ private extension GoToInputViewController {
     }
 
     @objc private func go() {
-        Task {
-            let objectName = self.objectPath
-            let selection = await executor.get { $0.simulation.findObject(from: objectName) }
-            guard !selection.isEmpty else {
-                showError(CelestiaString("Object not found", comment: ""))
-                return
-            }
-            locationHandler(GoToLocation(selection: selection, longitude: longitude ?? Constants.defaultLongitude, latitude: latitude ?? Constants.defaultLatitude, distance: distance ?? Constants.defaultDistance, unit: unit))
+        guard !object.isEmpty else {
+            showError(CelestiaString("Object not found", comment: ""))
+            return
         }
+        locationHandler(GoToLocation(selection: object, longitude: longitude ?? Constants.defaultLongitude, latitude: latitude ?? Constants.defaultLatitude, distance: distance ?? Constants.defaultDistance, unit: unit))
     }
 
     private func reload() {

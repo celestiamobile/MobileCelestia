@@ -13,7 +13,7 @@ import CelestiaCore
 import UIKit
 
 struct SearchResult {
-    let name: String
+    let completion: Completion
 }
 
 struct SearchResultSection {
@@ -28,9 +28,10 @@ public class SearchViewController: UIViewController {
     #endif
 
     private var resultSections: [SearchResultSection] = []
-    private var rawResults: [String] = []
+    private var rawResults: [Completion] = []
+    private var fullMatch: Selection = Selection()
 
-    private let selected: (_ viewController: SearchViewController, _ display: String, _ path: String) -> Void
+    private let selected: (_ viewController: SearchViewController, _ display: String, _ selection: Selection) -> Void
 
     private let executor: AsyncProviderExecutor
     private var currentSearchTerm: String?
@@ -60,7 +61,7 @@ public class SearchViewController: UIViewController {
     private var state: State = .empty
     private var isSearchActive: Bool = false
 
-    public init(executor: AsyncProviderExecutor, selected: @escaping (_ viewController: SearchViewController, _ display: String, _ path: String) -> Void) {
+    public init(executor: AsyncProviderExecutor, selected: @escaping (_ viewController: SearchViewController, _ display: String, _ selection: Selection) -> Void) {
         self.selected = selected
         self.executor = executor
         super.init(nibName: nil, bundle: nil)
@@ -241,6 +242,7 @@ private extension SearchViewController {
             validSearchTerm = ""
             rawResults = []
             resultSections = []
+            fullMatch = Selection()
             tableView.reloadData()
             loadingView.stopAnimating()
             updateState(.empty)
@@ -253,11 +255,12 @@ private extension SearchViewController {
             if rawResults.isEmpty {
                 updateState(.loading)
             }
-            let (sections, rawResults) = await self.search(with: text)
+            let (sections, rawResults, fullMatch) = await self.search(with: text)
             guard text == currentSearchTerm else { return }
             validSearchTerm = text
             self.resultSections = sections
             self.rawResults = rawResults
+            self.fullMatch = fullMatch
             self.tableView.reloadData()
             self.updateState(.results(empty: rawResults.isEmpty))
         }
@@ -269,7 +272,7 @@ private extension SearchViewController {
     }
 
     private func itemSelected(with name: String) {
-        selected(self, name, name)
+        selected(self, name, fullMatch)
     }
 }
 
@@ -289,11 +292,14 @@ extension SearchViewController: UISearchResultsUpdating {
 #endif
 
 extension SearchViewController {
-    private func search(with text: String) async -> ([SearchResultSection], [String]) {
-        let completions = await executor.get {
-            $0.simulation.completion(for: text)
+    private func search(with text: String) async -> (results: [SearchResultSection], rawResults: [Completion], fullMatch: Selection) {
+        let results: (completions: [Completion], fullMatch: Selection) = await executor.get { core in
+            let completions = core.simulation.completion(for: text)
+            let fullMatch = core.simulation.findObject(from: text)
+            return (completions, fullMatch)
         }
-        return ([SearchResultSection(title: nil, results: completions.map { SearchResult(name: $0) })], completions)
+        let completions = results.completions
+        return ([SearchResultSection(title: nil, results: completions.map { SearchResult(completion: $0) })], completions, results.fullMatch)
     }
 }
 
@@ -309,7 +315,7 @@ extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let result = resultSections[indexPath.section].results[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
-        cell.title = result.name
+        cell.title = result.completion.name
         return cell
     }
 
@@ -328,16 +334,10 @@ extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
         guard indexPath.section < resultSections.count, indexPath.row < resultSections[indexPath.section].results.count else { return }
 
         let selection = resultSections[indexPath.section].results[indexPath.row]
-        let name: String
-        if let lastSeparatorIndex = validSearchTerm.lastIndex(of: "/") {
-            name = String(validSearchTerm[validSearchTerm.startIndex...lastSeparatorIndex] + selection.name)
-        } else {
-            name = selection.name
-        }
         #if !targetEnvironment(macCatalyst)
         searchController.searchBar.resignFirstResponder()
         #endif
-        selected(self, selection.name, name)
+        selected(self, selection.completion.name, selection.completion.selection)
     }
 }
 

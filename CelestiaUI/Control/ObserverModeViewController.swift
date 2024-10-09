@@ -26,8 +26,8 @@ public class ObserverModeViewController: BaseTableViewController {
     private var coordinateSystem: CoordinateSystem = .universal
     private var referenceObjectName = ""
     private var targetObjectName = ""
-    private var referenceObjectPath = ""
-    private var targetObjectPath = ""
+    private var referenceObject = Selection()
+    private var targetObject = Selection()
 
     private enum Row {
         case coordinateSystem
@@ -54,13 +54,11 @@ public class ObserverModeViewController: BaseTableViewController {
 
     @objc private func applyObserverMode() {
         let system = coordinateSystem
-        let refPath = referenceObjectPath
-        let targetPath = targetObjectPath
+        let ref = referenceObject
+        let target = targetObject
 
         Task {
             await executor.run { appCore in
-                let ref = refPath.isEmpty ? Selection() : appCore.simulation.findObject(from: refPath)
-                let target = targetPath.isEmpty ? Selection() : appCore.simulation.findObject(from: targetPath)
                 appCore.simulation.activeObserver.setFrame(coordinate: system, target: target, reference: ref)
             }
         }
@@ -176,20 +174,20 @@ extension ObserverModeViewController {
                 navigationController?.pushViewController(vc, animated: true)
             }
         case .referenceObjectName:
-            let searchController = SearchViewController(executor: executor) { [weak self] _, displayName, objectPath in
+            let searchController = SearchViewController(executor: executor) { [weak self] _, displayName, object in
                 guard let self else { return }
                 self.navigationController?.popViewController(animated: true)
                 self.referenceObjectName = displayName
-                self.referenceObjectPath = objectPath
+                self.referenceObject = object
                 self.tableView.reloadData()
             }
             navigationController?.pushViewController(searchController, animated: true)
         case .targetObjectName:
-            let searchController = SearchViewController(executor: executor) { [weak self] _, displayName, objectPath in
+            let searchController = SearchViewController(executor: executor) { [weak self] _, displayName, object in
                 guard let self else { return }
                 self.navigationController?.popViewController(animated: true)
                 self.targetObjectName = displayName
-                self.targetObjectPath = objectPath
+                self.targetObject = object
                 self.tableView.reloadData()
             }
             navigationController?.pushViewController(searchController, animated: true)

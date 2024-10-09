@@ -21,19 +21,14 @@ public class SearchCoordinatorController: ToolbarNavigationContainerController {
         self.selection = selected
         self.executor = executor
         super.init(rootViewController: UIViewController())
-        setViewControllers([SearchViewController(executor: executor) { [weak self] parent, _, name in
+        setViewControllers([SearchViewController(executor: executor) { [weak self] parent, _, object in
             guard let self else { return }
-            Task {
-                let object = await self.executor.get {
-                    $0.simulation.findObject(from: name)
-                }
-                guard !object.isEmpty else {
-                    self.showError(CelestiaString("Object not found", comment: ""))
-                    return
-                }
-                let viewController = self.selection(object)
-                parent.installContentViewController(viewController)
+            guard !object.isEmpty else {
+                self.showError(CelestiaString("Object not found", comment: ""))
+                return
             }
+            let viewController = self.selection(object)
+            parent.installContentViewController(viewController)
         }], animated: false)
     }
 
