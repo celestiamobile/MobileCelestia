@@ -27,8 +27,6 @@ public class SearchViewController: UIViewController {
     private var shouldActivate = true
     #endif
 
-    private let resultsInSidebar: Bool
-
     private var resultSections: [SearchResultSection] = []
     private var rawResults: [String] = []
 
@@ -46,7 +44,7 @@ public class SearchViewController: UIViewController {
     private var contentViewController: UIViewController?
 
     private lazy var resultViewController: BaseTableViewController = {
-        return BaseTableViewController(style: resultsInSidebar ? .defaultGrouped : .plain)
+        return BaseTableViewController(style: .plain)
     }()
 
     private var tableView: UITableView {
@@ -62,8 +60,7 @@ public class SearchViewController: UIViewController {
     private var state: State = .empty
     private var isSearchActive: Bool = false
 
-    public init(resultsInSidebar: Bool, executor: AsyncProviderExecutor, selected: @escaping (_ viewController: SearchViewController, _ display: String, _ path: String) -> Void) {
-        self.resultsInSidebar = resultsInSidebar
+    public init(executor: AsyncProviderExecutor, selected: @escaping (_ viewController: SearchViewController, _ display: String, _ path: String) -> Void) {
         self.selected = selected
         self.executor = executor
         super.init(nibName: nil, bundle: nil)
@@ -228,7 +225,7 @@ private extension SearchViewController {
         #endif
         #endif
 
-        tableView.register(resultsInSidebar ? UITableViewCell.self : TextCell.self, forCellReuseIdentifier: "Text")
+        tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
 
         tableView.dataSource = self
         tableView.delegate = self
@@ -311,13 +308,6 @@ extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
 
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let result = resultSections[indexPath.section].results[indexPath.row]
-        if resultsInSidebar {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath)
-            var configuration = UIListContentConfiguration.sidebarCell()
-            configuration.text = result.name
-            cell.contentConfiguration = configuration
-            return cell
-        }
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
         cell.title = result.name
         return cell

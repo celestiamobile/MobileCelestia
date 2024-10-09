@@ -186,8 +186,11 @@ class BrowserSidebarController: BaseTableViewController {
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
         let dataSource = UITableViewDiffableDataSource<Section, Item>(tableView: tableView) { (view, indexPath, item) -> UITableViewCell? in
             let cell = view.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
-            cell.textLabel?.text = item.item.alternativeName ?? item.item.name
-            cell.imageView?.image = item.image
+            var contentConfiguration = UIListContentConfiguration.sidebarCell()
+            contentConfiguration.text = item.item.alternativeName ?? item.item.name
+            contentConfiguration.image = item.image
+            contentConfiguration.imageProperties.reservedLayoutSize = CGSize(width: UIListContentConfiguration.ImageProperties.standardDimension, height: UIListContentConfiguration.ImageProperties.standardDimension)
+            cell.contentConfiguration = contentConfiguration
             return cell
         }
         return dataSource
