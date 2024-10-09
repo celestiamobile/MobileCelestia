@@ -59,6 +59,7 @@ private extension TimeSettingViewController {
     func setUp() {
         tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         title = CelestiaString("Current Time", comment: "")
+        windowTitle = title
     }
 }
 

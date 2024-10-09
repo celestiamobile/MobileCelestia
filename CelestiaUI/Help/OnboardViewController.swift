@@ -17,7 +17,6 @@ enum OnboardAction {
 }
 
 class OnboardViewController: UIViewController {
-
     private let actionHandler: ((OnboardAction) -> Void)
     private let urlHandler: (())
 
@@ -77,5 +76,7 @@ private extension OnboardViewController {
         ])
 
         tutorialController.didMove(toParent: self)
+
+        windowTitle = CelestiaString("Welcome to Celestia", comment: "Welcome message")
     }
 }

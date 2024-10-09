@@ -72,9 +72,6 @@ public protocol ToolbarContainerViewController: UIViewController {
 
 open class ToolbarNavigationContainerController: UIViewController, ToolbarContainerViewController {
     private let navigation: UINavigationController
-    #if targetEnvironment(macCatalyst)
-    private var titleObservation: NSKeyValueObservation?
-    #endif
 
     public var topViewController: UIViewController? {
         return navigation.topViewController
@@ -85,10 +82,11 @@ open class ToolbarNavigationContainerController: UIViewController, ToolbarContai
         let vc = ToolbarAwareNavigationController(rootViewController: rootViewController)
         navigation = vc
         #else
-        navigation = UINavigationController(rootViewController: rootViewController)
+        navigation = NavigationController(rootViewController: rootViewController)
         #endif
         super.init(nibName: nil, bundle: nil)
         install(navigation)
+        observeWindowTitle(for: navigation)
         #if targetEnvironment(macCatalyst)
         vc.delegate = self
         #endif
@@ -193,7 +191,7 @@ protocol ToolbarAwareNavigationControllerDelegate: UINavigationControllerDelegat
     func fallbackStyleForNavigationController(_ navigationController: UINavigationController) -> ToolbarFallbackStyle
 }
 
-private class ToolbarAwareNavigationController: UINavigationController {}
+private class ToolbarAwareNavigationController: NavigationController {}
 
 @available(iOS 16, *)
 extension ToolbarAwareNavigationController: UINavigationBarDelegate {
@@ -207,14 +205,6 @@ extension ToolbarAwareNavigationController: UINavigationBarDelegate {
 
 extension ToolbarNavigationContainerController: ToolbarAwareNavigationControllerDelegate {
     public func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
-        view.window?.windowScene?.title = viewController.title
-        titleObservation?.invalidate()
-        titleObservation = viewController.observe(\.title) { [weak self] viewController, _ in
-            Task { @MainActor in
-                guard let self else { return }
-                self.view.window?.windowScene?.title = viewController.title
-            }
-        }
         _updateToolbar(for: viewController)
     }
 
@@ -394,7 +384,7 @@ open class ToolbarSplitContainerController: UIViewController, ToolbarContainerVi
     private let split: UISplitViewController
     private var sidebarNavigation: UINavigationController?
     private var secondaryNavigation: UINavigationController?
-    private var titleObservation: NSKeyValueObservation?
+    private var secondaryNavigationIsPlaceholder = false
 
     public var preferredDisplayMode: UISplitViewController.DisplayMode {
         get { split.preferredDisplayMode }
@@ -439,6 +429,7 @@ open class ToolbarSplitContainerController: UIViewController, ToolbarContainerVi
         split.setViewController(secondaryNavigation, for: .secondary)
         sidebarNavigation?.delegate = self
         secondaryNavigation?.delegate = self
+        updateTitleObservation()
     }
 
     @discardableResult public func setSidebarViewController(_ sidebarViewController: UIViewController) -> UINavigationController {
@@ -451,6 +442,7 @@ open class ToolbarSplitContainerController: UIViewController, ToolbarContainerVi
         sidebarNavigation = newNavigation
         split.setViewController(newNavigation, for: .primary)
         updateToolbar()
+        updateTitleObservation()
         return newNavigation
     }
 
@@ -458,7 +450,7 @@ open class ToolbarSplitContainerController: UIViewController, ToolbarContainerVi
         secondaryNavigation?.pushViewController(secondaryViewController, animated: true)
     }
 
-    @discardableResult public func setSecondaryViewController(_ secondaryViewController: UIViewController) -> UINavigationController {
+    @discardableResult public func setSecondaryViewController(_ secondaryViewController: UIViewController, isPlaceholder: Bool = false) -> UINavigationController {
         secondaryNavigation?.delegate = nil
         let newNavigation = ToolbarAwareNavigationController(rootViewController: secondaryViewController)
         if nsToolbar != nil {
@@ -466,8 +458,10 @@ open class ToolbarSplitContainerController: UIViewController, ToolbarContainerVi
         }
         newNavigation.delegate = self
         secondaryNavigation = newNavigation
+        secondaryNavigationIsPlaceholder = isPlaceholder
         split.setViewController(newNavigation, for: .secondary)
         _updateToolbar(for: secondaryViewController)
+        updateTitleObservation()
         return newNavigation
     }
 
@@ -511,6 +505,22 @@ open class ToolbarSplitContainerController: UIViewController, ToolbarContainerVi
         let itemsToInsert = toolbarDefaultItemIdentifiers(nsToolbar)
         for itemToInsert in itemsToInsert.reversed() {
             nsToolbar.insertItem(withItemIdentifier: itemToInsert, at: 0)
+        }
+    }
+
+    private func updateTitleObservation() {
+        stopObservingWindowTitle()
+        let observingViewController: UIViewController?
+        if let secondaryNavigation, !secondaryNavigationIsPlaceholder {
+            observingViewController = secondaryNavigation
+        } else if let sidebarNavigation {
+            observingViewController = sidebarNavigation
+        } else {
+            observingViewController = nil
+        }
+
+        if let observingViewController {
+            observeWindowTitle(for: observingViewController)
         }
     }
 
@@ -575,14 +585,6 @@ extension ToolbarSplitContainerController: NSToolbarDelegate {
 extension ToolbarSplitContainerController: ToolbarAwareNavigationControllerDelegate {
     public func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
         if navigationController == secondaryNavigation {
-            view.window?.windowScene?.title = viewController.title
-            titleObservation?.invalidate()
-            titleObservation = viewController.observe(\.title) { [weak self] viewController, _ in
-                Task { @MainActor in
-                    guard let self else { return }
-                    self.view.window?.windowScene?.title = viewController.title
-                }
-            }
             _updateToolbar(for: viewController)
         }
     }

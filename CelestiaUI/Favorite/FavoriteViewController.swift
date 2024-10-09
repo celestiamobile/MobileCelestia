@@ -76,6 +76,7 @@ private extension FavoriteViewController {
         tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         #endif
         title = CelestiaString("Favorites", comment: "Favorites (currently bookmarks and scripts)")
+        windowTitle = title
     }
 }
 

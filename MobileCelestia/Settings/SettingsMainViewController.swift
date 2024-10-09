@@ -44,6 +44,7 @@ private extension SettingsMainViewController {
         tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         #endif
         title = CelestiaString("Settings", comment: "")
+        windowTitle = title
     }
 }
 

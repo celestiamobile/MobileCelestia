@@ -95,7 +95,6 @@ private extension TutorialViewController {
         tableView.register(TutorialDescriptionCell.self, forCellReuseIdentifier: "Description")
         tableView.register(TutorialActionCell.self, forCellReuseIdentifier: "Action")
         tableView.register(TutorialActionCell.self, forCellReuseIdentifier: "URL")
-        title = CelestiaString("Tutorial", comment: "")
     }
 }
 

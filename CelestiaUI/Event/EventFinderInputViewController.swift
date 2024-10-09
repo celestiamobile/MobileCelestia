@@ -81,6 +81,7 @@ class EventFinderInputViewController: BaseTableViewController {
 private extension EventFinderInputViewController {
     func setup() {
         title = CelestiaString("Eclipse Finder", comment: "")
+        windowTitle = title
         tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: CelestiaString("Find", comment: "Find (eclipses)"), style: .plain, target: self, action: #selector(findEclipse))

@@ -178,6 +178,7 @@ public class SearchViewController: UIViewController {
 private extension SearchViewController {
     func setUp() {
         title = CelestiaString("Search", comment: "")
+        windowTitle = title
 
         install(resultViewController)
 

@@ -86,6 +86,7 @@ private extension ObserverModeViewController {
 
         navigationItem.backButtonTitle = ""
         title = CelestiaString("Flight Mode", comment: "")
+        windowTitle = title
         if #available(iOS 15, visionOS 1, *) {
             tableView.register(SelectionCell.self, forCellReuseIdentifier: "Selection")
         }

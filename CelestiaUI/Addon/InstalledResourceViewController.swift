@@ -52,6 +52,7 @@ class InstalledResourceViewController: AsyncListViewController<ResourceItem> {
         super.viewDidLoad()
 
         title = CelestiaString("Installed", comment: "Title for the list of installed add-ons")
+        windowTitle = title
     }
 
     override func loadItems(pageStart: Int, pageSize: Int) async throws -> [ResourceItem] {

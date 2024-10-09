@@ -120,11 +120,13 @@ private extension FavoriteCoordinatorController {
         #if targetEnvironment(macCatalyst)
         let emptyViewController = UIViewController()
         emptyViewController.view.backgroundColor = .systemBackground
-        controller.setSecondaryViewController(emptyViewController)
+        controller.setSecondaryViewController(emptyViewController, isPlaceholder: true)
         install(controller)
+        observeWindowTitle(for: controller)
         #else
-        navigation = UINavigationController(rootViewController: main)
+        navigation = NavigationController(rootViewController: main)
         install(navigation)
+        observeWindowTitle(for: navigation)
         #endif
     }
 

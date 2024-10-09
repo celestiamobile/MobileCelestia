@@ -140,6 +140,7 @@ open class SubscriptionBackingViewController: UIViewController {
             loadingView.stopAnimating()
             loadingView.isHidden = true
             install(viewController)
+            observeWindowTitle(for: viewController)
             view.sendSubviewToBack(viewController.view)
             currentViewController = viewController
         }

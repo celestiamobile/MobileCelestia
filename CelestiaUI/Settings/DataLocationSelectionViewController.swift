@@ -78,6 +78,7 @@ private extension DataLocationSelectionViewController {
     func setUp() {
         tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         title = CelestiaString("Data Location", comment: "Title for celestia.cfg, data location setting")
+        windowTitle = title
     }
 }
 

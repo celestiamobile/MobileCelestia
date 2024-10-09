@@ -376,6 +376,7 @@ private extension FavoriteItemViewController {
     func setUp() {
         tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         title = itemList.title
+        windowTitle = title
 
         if itemList.canBeModified {
             navigationItem.rightBarButtonItems = [

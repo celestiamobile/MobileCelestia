@@ -19,4 +19,5 @@ FOUNDATION_EXPORT const unsigned char CelestiaUIVersionString[];
 
 // In this header, you should import all the public headers of your framework using statements like #import <CelestiaUI/PublicHeader.h>
 
-
+#import <CelestiaUI/UIViewController+WindowTitle.h>
+#import <CelestiaUI/BaseNavigationController.h>

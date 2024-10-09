@@ -184,6 +184,7 @@ class ToolbarSettingViewController: SubscriptionBackingViewController {
             return ContentViewController(userDefaults: userDefaults, toolbarActionsKey: context.toolbarActionsKey)
         }
         title = CelestiaString("Toolbar", comment: "Toolbar customization entry in Settings")
+        windowTitle = title
     }
 
     override func setEditing(_ editing: Bool, animated: Bool) {

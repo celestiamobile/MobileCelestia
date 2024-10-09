@@ -44,6 +44,7 @@ private extension EventFinderResultViewController {
     func setUp() {
         tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         title = CelestiaString("Eclipse Finder", comment: "")
+        windowTitle = title
 
         if events.isEmpty {
             let view = EmptyHintView()

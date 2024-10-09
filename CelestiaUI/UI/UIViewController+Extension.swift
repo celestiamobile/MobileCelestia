@@ -58,6 +58,41 @@ public extension UIViewController {
         view.removeFromSuperview()
         removeFromParent()
     }
+
+    func stopObservingWindowTitle() {
+        _titleObservation?.invalidate()
+        _titleObservation = nil
+    }
+
+    func observeWindowTitle(for viewController: UIViewController) {
+        stopObservingWindowTitle()
+        _titleObservation = viewController.observe(\.windowTitle, options: [.initial, .new]) { [weak self] (viewController, _) in
+            Task { @MainActor in
+                guard let self = self else { return }
+                self.windowTitle = viewController.windowTitle
+            }
+        }
+    }
+}
+
+private struct UIViewControllerAssociatedKeys {
+    @MainActor
+    static var _titleObservation: UInt8 = 0
+}
+
+fileprivate extension UIViewController {
+    var _titleObservation: NSKeyValueObservation? {
+        get { return objc_getAssociatedObject(self, &UIViewControllerAssociatedKeys._titleObservation) as? NSKeyValueObservation }
+        set { objc_setAssociatedObject(self, &UIViewControllerAssociatedKeys._titleObservation, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
+    }
+}
+
+public class NavigationController: BaseNavigationController {
+    override public func topViewControllerDidChange(_ viewController: UIViewController) {
+        super.topViewControllerDidChange(viewController)
+
+        observeWindowTitle(for: viewController)
+    }
 }
 
 public extension UIViewController {

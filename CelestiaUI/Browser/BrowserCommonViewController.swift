@@ -60,6 +60,7 @@ class BrowserCommonViewController: BaseTableViewController {
         self.categoryInfo = (item as? BrowserPredefinedItem)?.categoryInfo
         super.init(style: .defaultGrouped)
         title = item.alternativeName ?? item.name
+        windowTitle = title
     }
 
     required init?(coder: NSCoder) {

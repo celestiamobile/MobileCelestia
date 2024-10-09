@@ -16,6 +16,7 @@ import UIKit
 #if targetEnvironment(macCatalyst)
 class PanelSceneDelegate: CommonSceneDelegate {
     var window: UIWindow?
+    private var titleObservation: NSKeyValueObservation?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = scene as? UIWindowScene else { return }
@@ -25,7 +26,15 @@ class PanelSceneDelegate: CommonSceneDelegate {
         guard let viewController = Self.viewControllersToPresent.removeValue(forKey: id) else { return }
         let size = CGSize(width: width, height: height)
         Self.weakSessionTable.setObject(session, forKey: sessionKey as NSString)
+
         windowScene.titlebar?.titleVisibility = titleVisible ? .visible : .hidden
+        titleObservation = viewController.observe(\.windowTitle, options: [.initial, .new]) { [weak windowScene] (viewController, _) in
+            Task { @MainActor in
+                guard let windowScene = windowScene else { return }
+                windowScene.title = viewController.windowTitle
+            }
+        }
+
         if showsToolbar {
             let toolbar = NSToolbar(identifier: UUID().uuidString)
             if #available(iOS 18, *) {

@@ -51,6 +51,7 @@ private extension SettingCommonViewController {
             tableView.register(SelectionCell.self, forCellReuseIdentifier: "Selection15")
         }
         title = item.title
+        windowTitle = title
     }
 }
 

@@ -60,6 +60,7 @@ private extension CameraControlViewController {
         tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         tableView.register(StepperCell.self, forCellReuseIdentifier: "Stepper")
         title = CelestiaString("Camera Control", comment: "Observer control")
+        windowTitle = title
     }
 }
 

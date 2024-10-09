@@ -52,6 +52,7 @@ class DestinationDetailViewController: UIViewController {
 private extension DestinationDetailViewController {
     func setup() {
         title = destination.name
+        windowTitle = title
 
         view.addSubview(scrollView)
         scrollView.translatesAutoresizingMaskIntoConstraints = false

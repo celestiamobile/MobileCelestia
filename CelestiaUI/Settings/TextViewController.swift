@@ -18,6 +18,7 @@ public final class TextViewController: UIViewController {
         self.text = text
         super.init(nibName: nil, bundle: nil)
         self.title = title
+        self.windowTitle = title
     }
 
     required init?(coder: NSCoder) {

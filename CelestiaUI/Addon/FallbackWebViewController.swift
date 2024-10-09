@@ -38,6 +38,7 @@ public class FallbackWebViewController: UIViewController {
 
         webViewController.delegate = self
         install(webViewController)
+        observeWindowTitle(for: webViewController)
     }
 }
 
@@ -46,6 +47,8 @@ extension FallbackWebViewController: CommonWebViewControllerDelegate {
         guard webViewController.parent == self else { return }
         webViewController.remove()
 
-        install(fallbackViewControllerCreator())
+        let viewController = fallbackViewControllerCreator()
+        install(viewController)
+        observeWindowTitle(for: viewController)
     }
 }

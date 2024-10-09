@@ -47,6 +47,7 @@ final class FontSettingMainViewController: SubscriptionBackingViewController {
             }
         )
         title = CelestiaString("Font", comment: "")
+        windowTitle = title
     }
     
     required public init?(coder: NSCoder) {

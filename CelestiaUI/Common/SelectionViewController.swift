@@ -22,6 +22,7 @@ public final class SelectionViewController: BaseTableViewController {
         self.selectionChange = selectionChange
         super.init(style: .defaultGrouped)
         self.title = title
+        self.windowTitle = title
     }
 
     public required init?(coder: NSCoder) {

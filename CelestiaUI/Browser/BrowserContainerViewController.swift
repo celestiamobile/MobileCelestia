@@ -87,6 +87,7 @@ public class BrowserContainerViewController: UIViewController {
 
 private extension BrowserContainerViewController {
     func setUp() {
+        windowTitle = CelestiaString("Star Browser", comment: "")
         activityIndicator.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(activityIndicator)
 
@@ -100,6 +101,7 @@ private extension BrowserContainerViewController {
         activityIndicator.isHidden = true
 
         install(controller)
+        observeWindowTitle(for: controller)
         let handler = { [unowned self] (selection: Selection) -> UIViewController in
             return self.selected(selection)
         }
@@ -132,10 +134,11 @@ private extension BrowserContainerViewController {
             let newVC = self.createBrowserItemViewController(item)
             self.controller.setSecondaryViewController(newVC)
         }
+        sidebarController.windowTitle = CelestiaString("Star Browser", comment: "")
         controller.setSidebarViewController(sidebarController)
         let emptyViewController = UIViewController()
         emptyViewController.view.backgroundColor = .systemBackground
-        controller.setSecondaryViewController(emptyViewController)
+        controller.setSecondaryViewController(emptyViewController, isPlaceholder: true)
         #else
         var allControllers = [BrowserCoordinatorController]()
         if let solRoot = Self.solBrowserRoot {

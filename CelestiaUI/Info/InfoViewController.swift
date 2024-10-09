@@ -65,6 +65,7 @@ final public class InfoViewController: UICollectionViewController {
         if showNavigationTitle {
             title = bodyInfo.name
         }
+        windowTitle = bodyInfo.name
 
         if #available(iOS 17, visionOS 1, *) {
             registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { (self: Self, _) in
@@ -100,6 +101,7 @@ final public class InfoViewController: UICollectionViewController {
             if showNavigationTitle {
                 title = bodyInfo.name
             }
+            windowTitle = bodyInfo.name
             bodyInfoNeedsUpdating = false
         }
 

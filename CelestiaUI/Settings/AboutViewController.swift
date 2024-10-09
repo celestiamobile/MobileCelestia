@@ -87,6 +87,7 @@ private extension AboutViewController {
         tableView.register(ICPCFooter.self, forHeaderFooterViewReuseIdentifier: "ICPC")
         #endif
         title = CelestiaString("About", comment: "About Celstia...")
+        windowTitle = title
     }
 }
 

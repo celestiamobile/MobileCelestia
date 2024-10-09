@@ -96,6 +96,7 @@ public class ResourceItemViewController: UIViewController {
         self.associatedUserActivity = userActivity
         super.init(nibName: nil, bundle: nil)
         title = item.name
+        windowTitle = item.name
     }
 
     public required init?(coder: NSCoder) {
@@ -145,6 +146,7 @@ public class ResourceItemViewController: UIViewController {
                 let item = try await requestHandler.getMetadata(id: itemID, language: AppCore.language)
                 self.item = item
                 self.title = item.name
+                self.windowTitle = self.title
                 self.associatedUserActivity.title = item.name
                 self.associatedUserActivity.keywords = [item.name]
                 self.associatedUserActivity.contentAttributeSet?.contentCreationDate = item.publishTime

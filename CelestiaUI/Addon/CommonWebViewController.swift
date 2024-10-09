@@ -119,6 +119,7 @@ public class CommonWebViewController: UIViewController {
             guard let self else { return }
             Task.detached { @MainActor in
                 self.title = webView.title
+                self.windowTitle = self.title
             }
         })
     }

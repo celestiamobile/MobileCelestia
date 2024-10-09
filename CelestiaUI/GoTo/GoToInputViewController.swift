@@ -194,6 +194,7 @@ extension GoToInputViewController: ToolbarAwareViewController {
 private extension GoToInputViewController {
     func setUp() {
         title = CelestiaString("Go to Object", comment: "")
+        windowTitle = title
         #if !os(visionOS)
         tableView.keyboardDismissMode = .interactive
         #endif

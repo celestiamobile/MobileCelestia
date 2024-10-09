@@ -158,6 +158,7 @@ public class SubscriptionManagerViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
 
+        windowTitle = CelestiaString("Celestia PLUS", comment: "Name for the subscription service")
         reloadData()
     }
 }
