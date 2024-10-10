@@ -282,7 +282,7 @@ extension MainViewController {
             // Need to wrap it in a NavVC without NavBar to make sure
             // the scrolling behavior is correct on macCatalyst
             let vc = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromGuide(guideItemID: guide, language: locale), requestHandler: requestHandler, actionHandler: commonWebActionHandler, matchingQueryKeys: ["guide"])
-            let nav = NavigationController(rootViewController: vc)
+            let nav = BaseNavigationController(rootViewController: vc)
             nav.setNavigationBarHidden(true, animated: false)
             showViewController(nav, key: guide, titleVisible: false)
             cleanup()
@@ -314,7 +314,7 @@ extension MainViewController {
                         self.commonWebActionHandler(action, viewController)
                     }
                 }, matchingQueryKeys: ["guide"])
-                let nav = NavigationController(rootViewController: vc)
+                let nav = BaseNavigationController(rootViewController: vc)
                 nav.setNavigationBarHidden(true, animated: false)
                 self.showViewController(nav, key: item.id, titleVisible: false)
             } catch {}
@@ -686,7 +686,7 @@ extension MainViewController: CelestiaControllerDelegate {
     @available(iOS 15, *)
     private func showSubscription(for viewController: UIViewController? = nil) {
         let vc = SubscriptionManagerViewController(subscriptionManager: subscriptionManager)
-        let nav = NavigationController(rootViewController: vc)
+        let nav = BaseNavigationController(rootViewController: vc)
         nav.setNavigationBarHidden(true, animated: false)
         showViewController(nav, titleVisible: false)
     }

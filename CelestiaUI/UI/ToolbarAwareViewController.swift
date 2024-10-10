@@ -82,7 +82,7 @@ open class ToolbarNavigationContainerController: UIViewController, ToolbarContai
         let vc = ToolbarAwareNavigationController(rootViewController: rootViewController)
         navigation = vc
         #else
-        navigation = NavigationController(rootViewController: rootViewController)
+        navigation = BaseNavigationController(rootViewController: rootViewController)
         #endif
         super.init(nibName: nil, bundle: nil)
         install(navigation)
@@ -191,7 +191,7 @@ protocol ToolbarAwareNavigationControllerDelegate: UINavigationControllerDelegat
     func fallbackStyleForNavigationController(_ navigationController: UINavigationController) -> ToolbarFallbackStyle
 }
 
-private class ToolbarAwareNavigationController: NavigationController {}
+private class ToolbarAwareNavigationController: BaseNavigationController {}
 
 @available(iOS 16, *)
 extension ToolbarAwareNavigationController: UINavigationBarDelegate {
@@ -382,8 +382,8 @@ extension NSToolbarItem {
 #if targetEnvironment(macCatalyst)
 open class ToolbarSplitContainerController: UIViewController, ToolbarContainerViewController {
     private let split: UISplitViewController
-    private var sidebarNavigation: UINavigationController?
-    private var secondaryNavigation: UINavigationController?
+    private var sidebarNavigation: BaseNavigationController?
+    private var secondaryNavigation: BaseNavigationController?
     private var secondaryNavigationIsPlaceholder = false
 
     public var preferredDisplayMode: UISplitViewController.DisplayMode {

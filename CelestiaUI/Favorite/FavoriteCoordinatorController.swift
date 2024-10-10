@@ -124,7 +124,7 @@ private extension FavoriteCoordinatorController {
         install(controller)
         observeWindowTitle(for: controller)
         #else
-        navigation = NavigationController(rootViewController: main)
+        navigation = BaseNavigationController(rootViewController: main)
         install(navigation)
         observeWindowTitle(for: navigation)
         #endif

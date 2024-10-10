@@ -108,10 +108,6 @@
 		EAA79CD42A56AF6D0056DB91 /* SettingsFrameRateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA86E38326FE20C000FF2278 /* SettingsFrameRateViewController.swift */; };
 		EAA79CD62A56B0100056DB91 /* DataLocationSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F1141D2408AE06003A06D7 /* DataLocationSelectionViewController.swift */; };
 		EAA7D6B92B88446300D57718 /* ZipUtils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA86F8052B7A4A8500419451 /* ZipUtils.framework */; };
-		EAB18D6C2CB6F3FA00696A11 /* BaseNavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = EAB18D6B2CB6F3FA00696A11 /* BaseNavigationController.m */; };
-		EAB18D6D2CB6F3FA00696A11 /* BaseNavigationController.h in Headers */ = {isa = PBXBuildFile; fileRef = EAB18D6A2CB6F3FA00696A11 /* BaseNavigationController.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		EAB18D702CB6F50C00696A11 /* UIViewController+WindowTitle.h in Headers */ = {isa = PBXBuildFile; fileRef = EAB18D6E2CB6F50C00696A11 /* UIViewController+WindowTitle.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		EAB18D712CB6F50C00696A11 /* UIViewController+WindowTitle.m in Sources */ = {isa = PBXBuildFile; fileRef = EAB18D6F2CB6F50C00696A11 /* UIViewController+WindowTitle.m */; };
 		EAB623AB2A51AA0A00063D1B /* SubsystemBrowserCoordinatorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF48514249B2C4700E5B817 /* SubsystemBrowserCoordinatorViewController.swift */; };
 		EAB623AC2A51AA0A00063D1B /* BrowserContainerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972477D02404A19700729B45 /* BrowserContainerViewController.swift */; };
 		EAB623AD2A51AA0A00063D1B /* BrowserCoordinatorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 972477D62404A65C00729B45 /* BrowserCoordinatorController.swift */; };
@@ -388,10 +384,6 @@
 		EAA79CCB2A56A01F0056DB91 /* SettingsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsModel.swift; sourceTree = "<group>"; };
 		EAA79CD82A56B10A0056DB91 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
 		EAB08FE32780550600BB82F0 /* Font.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Font.swift; sourceTree = "<group>"; };
-		EAB18D6A2CB6F3FA00696A11 /* BaseNavigationController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = BaseNavigationController.h; sourceTree = "<group>"; };
-		EAB18D6B2CB6F3FA00696A11 /* BaseNavigationController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BaseNavigationController.m; sourceTree = "<group>"; };
-		EAB18D6E2CB6F50C00696A11 /* UIViewController+WindowTitle.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "UIViewController+WindowTitle.h"; sourceTree = "<group>"; };
-		EAB18D6F2CB6F50C00696A11 /* UIViewController+WindowTitle.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = "UIViewController+WindowTitle.m"; sourceTree = "<group>"; };
 		EAB623B42A51AB5100063D1B /* UIViewController+Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		EAB8F2612A56DB9200C4E777 /* URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URL.swift; sourceTree = "<group>"; };
 		EAB93E8B2BC8608C009AB37B /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
@@ -762,10 +754,6 @@
 				977394A22403E68800E38B82 /* Color.swift */,
 				EAA16A9728A6654600DBCE4F /* GlobalConstants.swift */,
 				EA2AF7432A7F419A00492345 /* ToolbarAwareViewController.swift */,
-				EAB18D6A2CB6F3FA00696A11 /* BaseNavigationController.h */,
-				EAB18D6B2CB6F3FA00696A11 /* BaseNavigationController.m */,
-				EAB18D6E2CB6F50C00696A11 /* UIViewController+WindowTitle.h */,
-				EAB18D6F2CB6F50C00696A11 /* UIViewController+WindowTitle.m */,
 			);
 			path = UI;
 			sourceTree = "<group>";
@@ -988,9 +976,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EAB18D702CB6F50C00696A11 /* UIViewController+WindowTitle.h in Headers */,
 				EA50E7612A505627005E7D7A /* CelestiaUI.h in Headers */,
-				EAB18D6D2CB6F3FA00696A11 /* BaseNavigationController.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1396,7 +1382,6 @@
 				EAE92A5F2A558B8D00BFE06E /* GameControllerManager.swift in Sources */,
 				EABC91FA2A56F254007E27F0 /* ResourceCategoriesViewController.swift in Sources */,
 				EAA79CD12A56AD770056DB91 /* TextViewController.swift in Sources */,
-				EAB18D6C2CB6F3FA00696A11 /* BaseNavigationController.m in Sources */,
 				EAA79CD22A56ADA90056DB91 /* AboutViewController.swift in Sources */,
 				EAE4CF9F2C22988F00B12AA5 /* TeachingCardCell.swift in Sources */,
 				EA839CB52A5696E100BF1CB4 /* SwitchCell.swift in Sources */,
@@ -1426,7 +1411,6 @@
 				EAB8F2632A56DC3200C4E777 /* InstalledResourceViewController.swift in Sources */,
 				EAD12AA62A566DE7007EE4D6 /* FavoriteCoordinatorController.swift in Sources */,
 				EA09B0732B10E76E00222229 /* EmptyHintView.swift in Sources */,
-				EAB18D712CB6F50C00696A11 /* UIViewController+WindowTitle.m in Sources */,
 				EAB8F25A2A56D71600C4E777 /* CelestiaScriptHandler.swift in Sources */,
 				EA7BACF12A959A760014D1FF /* SubscriptionManagerViewController.swift in Sources */,
 				EA66BBC72A55AABF008A7AAA /* SearchCoordinatorController.swift in Sources */,
@@ -1609,7 +1593,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
-				SHARED_BUILD_NUMBER = 522;
+				SHARED_BUILD_NUMBER = 523;
 				SHARED_BUILD_VERSION = 1.7.10;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -1670,7 +1654,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				SDKROOT = iphoneos;
-				SHARED_BUILD_NUMBER = 522;
+				SHARED_BUILD_NUMBER = 523;
 				SHARED_BUILD_VERSION = 1.7.10;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";

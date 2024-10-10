@@ -78,6 +78,8 @@ public extension UIViewController {
 private struct UIViewControllerAssociatedKeys {
     @MainActor
     static var _titleObservation: UInt8 = 0
+    @MainActor
+    static var windowTitle: UInt8 = 0
 }
 
 fileprivate extension UIViewController {
@@ -87,9 +89,44 @@ fileprivate extension UIViewController {
     }
 }
 
-public class NavigationController: BaseNavigationController {
-    override public func topViewControllerDidChange(_ viewController: UIViewController) {
-        super.topViewControllerDidChange(viewController)
+public extension UIViewController {
+    @objc dynamic var windowTitle: String? {
+        get { return objc_getAssociatedObject(self, &UIViewControllerAssociatedKeys.windowTitle) as? String }
+        set { objc_setAssociatedObject(self, &UIViewControllerAssociatedKeys.windowTitle, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC) }
+    }
+}
+
+public class BaseNavigationController: UINavigationController {
+    public override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+
+        commonInit()
+    }
+
+    public override init(rootViewController: UIViewController) {
+        super.init(rootViewController: rootViewController)
+
+        commonInit()
+    }
+
+    public override init(navigationBarClass: AnyClass?, toolbarClass: AnyClass?) {
+        super.init(navigationBarClass: navigationBarClass, toolbarClass: toolbarClass)
+
+        commonInit()
+    }
+
+    public required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+
+        commonInit()
+    }
+
+    private func commonInit() {
+        NotificationCenter.default.addObserver(self, selector: #selector(willShowViewController(_:)), name: Notification.Name("UINavigationControllerWillShowViewControllerNotification"), object: self)
+    }
+
+    @objc private func willShowViewController(_ notification: Notification) {
+        guard let viewController = notification.userInfo?["UINavigationControllerNextVisibleViewController"] as? UIViewController else { return }
 
         observeWindowTitle(for: viewController)
     }

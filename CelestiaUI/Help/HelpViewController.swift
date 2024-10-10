@@ -48,7 +48,7 @@ public final class HelpViewController: UIViewController {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
             }
         })
-        let nav = NavigationController(rootViewController: vc)
+        let nav = BaseNavigationController(rootViewController: vc)
         nav.setNavigationBarHidden(true, animated: false)
         install(nav)
         observeWindowTitle(for: nav)
