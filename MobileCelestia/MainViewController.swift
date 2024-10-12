@@ -858,13 +858,16 @@ Device Model: \(model)
             if success {
                 #if targetEnvironment(macCatalyst)
                 self.saveFile(url)
+                return
                 #else
                 if let data = try? Data(contentsOf: url), let image = UIImage(data: data) {
                     try? FileManager.default.removeItem(at: url)
                     self.showShareSheet(for: image)
+                    return
                 }
                 #endif
             }
+            self.showError(CelestiaString("Unable to generate image.", comment: "Failed to generate an image for sharing"))
         }
     }
 
