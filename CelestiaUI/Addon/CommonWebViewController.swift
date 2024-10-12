@@ -111,6 +111,11 @@ public class CommonWebViewController: UIViewController {
         activityIndicator.startAnimating()
         webView.load(URLRequest(url: url))
         webView.navigationDelegate = self
+        #if DEBUG
+        if #available(iOS 16.4, *) {
+            webView.isInspectable = true
+        }
+        #endif
 
         navigationItem.leftBarButtonItem = goBackItem
         updateNavigation()
@@ -235,7 +240,8 @@ extension CommonWebViewController: CelestiaScriptHandlerDelegate {
 
     func shareURL(title: String, url: URL, rect: CGRect) {
         if !rect.isEmpty {
-            showShareSheet(for: url, source: .view(view: webView.scrollView, sourceRect: rect))
+            let elementRect = CGRect(x: rect.minX + webView.scrollView.adjustedContentInset.left, y: rect.minY + webView.scrollView.adjustedContentInset.top, width: rect.width, height: rect.height)
+            showShareSheet(for: url, source: .view(view: webView, sourceRect: elementRect))
         } else {
             showShareSheet(for: url)
         }
