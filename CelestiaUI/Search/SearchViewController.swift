@@ -330,7 +330,7 @@ extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
     public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        guard let validSearchTerm else { return }
+        guard validSearchTerm != nil else { return }
         guard indexPath.section < resultSections.count, indexPath.row < resultSections[indexPath.section].results.count else { return }
 
         let selection = resultSections[indexPath.section].results[indexPath.row]
