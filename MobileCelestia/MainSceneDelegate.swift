@@ -73,7 +73,8 @@ class MainSceneDelegate: CommonSceneDelegate {
         if backgroundTaskID == .invalid {
             return
         }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
+        Task { @MainActor in
+            try await Task.sleep(nanoseconds: 5_000_000_000)
             application.endBackgroundTask(backgroundTaskID)
         }
     }
