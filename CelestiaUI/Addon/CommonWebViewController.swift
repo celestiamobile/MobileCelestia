@@ -278,7 +278,7 @@ extension CommonWebViewController: CelestiaScriptHandlerDelegate {
 extension Data {
     func write(to url: URL, options: Data.WritingOptions = []) async throws {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
-            DispatchQueue.global().async {
+            Task.detached {
                 do {
                     try self.write(to: url, options: options)
                     continuation.resume(returning: ())

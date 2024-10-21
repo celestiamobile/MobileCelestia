@@ -58,7 +58,7 @@ class InstalledResourceViewController: AsyncListViewController<ResourceItem> {
     override func loadItems(pageStart: Int, pageSize: Int) async throws -> [ResourceItem] {
         let resourceManager = self.resourceManager
         return await withCheckedContinuation { continuation in
-            DispatchQueue.global().async {
+            Task.detached {
                 let items = resourceManager.installedResources()
                 if pageStart >= items.count {
                     continuation.resume(returning: [])

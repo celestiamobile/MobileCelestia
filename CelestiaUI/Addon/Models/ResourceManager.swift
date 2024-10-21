@@ -184,7 +184,7 @@ public final class ResourceManager: @unchecked Sendable {
             }
         }
         try await withCheckedThrowingContinuation { continuation in
-            DispatchQueue.global().async {
+            Task.detached {
                 do {
                     try ZipUtils.unzip(zipFileURL.path, to: destinationURL.path)
                     continuation.resume(returning: ())

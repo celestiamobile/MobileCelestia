@@ -185,7 +185,7 @@ extension EclipseFinder: @unchecked @retroactive Sendable {}
 extension EclipseFinder {
     func search(kind: EclipseKind, from: Date, to: Date) async -> [Eclipse] {
         return await withCheckedContinuation { continuation in
-            DispatchQueue.global().async {
+            Task.detached {
                 continuation.resume(returning: self.search(kind: kind, from: from, to: to))
             }
         }
