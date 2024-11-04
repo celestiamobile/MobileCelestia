@@ -8,8 +8,8 @@ jobs:
     sdk: ${{ parameters.sdk }}
     signing: ${{ parameters.signing }}
     backend: ${{ parameters.backend }}
-    contentCommitHash: ${{ '9f85700c021c0ef084c209a6e32b176bf95524d6' }}
-    XC_VERSION: ${{ '16.0' }}
+    contentCommitHash: ${{ 'c3104d9af82a3020dd5143baac23546cbb9f71c6' }}
+    XC_VERSION: ${{ '16.1' }}
     XC_PROJECT: ${{ 'MobileCelestia/MobileCelestia.xcodeproj' }}
     XC_SCHEME: ${{ 'MobileCelestia' }}
     XC_ARCHIVE_PARENT_PATH: ${{ '$(system.defaultworkingdirectory)/archive' }}
