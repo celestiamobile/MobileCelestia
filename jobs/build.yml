@@ -170,27 +170,41 @@ jobs:
     displayName: 'Replace Sentry Placeholders'
 
   - script: |
-      # create variables
-      KEYCHAIN_PATH=$(Agent.TempDirectory)/app-signing.keychain-db
-      KEYCHAIN_PASSWORD=temppassword
-      # create temporary keychain
-      security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
-      security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
-      security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
-      # import certificate to keychain
-      if [ "$(signing)" = "developerID" ]; then
-        security import "$(macInstallerP12.secureFilePath)" -P "$(P12_PASSWORD)" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
-        security import "$(developerIDP12.secureFilePath)" -P "$(P12_PASSWORD)" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
-      elif [ "$(signing)" = "appStore" ]; then
-        security import "$(distributionP12.secureFilePath)" -P "$(P12_PASSWORD)" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
-      fi
-      security list-keychain -d user -s $KEYCHAIN_PATH
-      # apply provisioning profile
       mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
       cp "$(iosProvisioningProfile.secureFilePath)" ~/Library/MobileDevice/Provisioning\ Profiles
       cp "$(macAppStoreProvisioningProfile.secureFilePath)" ~/Library/MobileDevice/Provisioning\ Profiles
       cp "$(macDeveloperIDProvisioningProfile.secureFilePath)" ~/Library/MobileDevice/Provisioning\ Profiles
-    displayName: 'Install Certificates and Provisioning Profiles'
+    displayName: 'Install Provisioning Profiles'
+
+  - script: |
+      KEYCHAIN_PATH=$(Agent.TempDirectory)/app-signing-mac-installer.keychain-db
+      KEYCHAIN_PASSWORD=temppassword
+      security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+      security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+      security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+      security import "$(macInstallerP12.secureFilePath)" -P "$(P12_PASSWORD)" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+      security list-keychain -d user -s $KEYCHAIN_PATH
+    displayName: 'Install Certificates (Mac Installer)'
+
+  - script: |
+      KEYCHAIN_PATH=$(Agent.TempDirectory)/app-signing-distribution.keychain-db
+      KEYCHAIN_PASSWORD=temppassword
+      security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+      security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+      security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+      security import "$(distributionP12.secureFilePath)" -P "$(P12_PASSWORD)" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+      security list-keychain -d user -s $KEYCHAIN_PATH
+    displayName: 'Install Certificates (Apple Distribution)'
+
+  - script: |
+      KEYCHAIN_PATH=$(Agent.TempDirectory)/app-signing-developer-id.keychain-db
+      KEYCHAIN_PASSWORD=temppassword
+      security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+      security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+      security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+      security import "$(developerIDP12.secureFilePath)" -P "$(P12_PASSWORD)" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+      security list-keychain -d user -s $KEYCHAIN_PATH
+    displayName: 'Install Certificates (Developer ID)'
 
   - script: |
       sed -i '' 's/CODE_SIGN_STYLE = Automatic;/CODE_SIGN_STYLE = Manual;/g' $XC_PROJECT/project.pbxproj
