@@ -99,7 +99,7 @@
 		EA9A426D288CD7FE00AF3BD6 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA9A426C288CD7FE00AF3BD6 /* AVFoundation.framework */; };
 		EA9A426F288CD80300AF3BD6 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA9A426E288CD80200AF3BD6 /* AudioToolbox.framework */; };
 		EA9FB23F27B7852A00E0DC1F /* CommonSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9FB23E27B7852A00E0DC1F /* CommonSceneDelegate.swift */; };
-		EAA5A7A1259DBFE6001AFA82 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = EAA5A7A3259DBFE6001AFA82 /* InfoPlist.strings */; };
+		EAA2FA192CED1EEC00D915C1 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = EAA2FA182CED1EEC00D915C1 /* InfoPlist.xcstrings */; };
 		EAA79CCC2A56A01F0056DB91 /* SettingsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAA79CCB2A56A01F0056DB91 /* SettingsModel.swift */; };
 		EAA79CCE2A56AB2D0056DB91 /* SettingCommonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABDE3A82473DAA300E0A5FA /* SettingCommonViewController.swift */; };
 		EAA79CCF2A56AC1C0056DB91 /* TimeSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 973BBA632405481200E3B061 /* TimeSettingViewController.swift */; };
@@ -306,8 +306,6 @@
 		EA09B0722B10E76E00222229 /* EmptyHintView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyHintView.swift; sourceTree = "<group>"; };
 		EA09B0742B10FB2A00222229 /* SafeAreaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeAreaView.swift; sourceTree = "<group>"; };
 		EA09B0852B118C0E00222229 /* ICPCFooter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ICPCFooter.swift; sourceTree = "<group>"; };
-		EA113708262C72AA002E49DA /* zh_TW */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_TW; path = zh_TW.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		EA113709262C72B2002E49DA /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EA17951A27B1510500D47397 /* CelestiaScriptHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaScriptHandler.swift; sourceTree = "<group>"; };
 		EA17951F27B371D700D47397 /* GuideItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideItem.swift; sourceTree = "<group>"; };
 		EA1823EA27C08D3D00E0F5E4 /* CelestiaHelper.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CelestiaHelper.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -378,8 +376,7 @@
 		EA9A426E288CD80200AF3BD6 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
 		EA9FB23E27B7852A00E0DC1F /* CommonSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonSceneDelegate.swift; sourceTree = "<group>"; };
 		EAA16A9728A6654600DBCE4F /* GlobalConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalConstants.swift; sourceTree = "<group>"; };
-		EAA5A7A2259DBFE6001AFA82 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		EAA5A7A7259DC062001AFA82 /* zh_CN */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = zh_CN; path = zh_CN.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		EAA2FA182CED1EEC00D915C1 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
 		EAA6C4CA253B5CD200ED1D60 /* InstalledResourceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstalledResourceViewController.swift; sourceTree = "<group>"; };
 		EAA79CCB2A56A01F0056DB91 /* SettingsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsModel.swift; sourceTree = "<group>"; };
 		EAA79CD82A56B10A0056DB91 /* UserDefaults.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaults.swift; sourceTree = "<group>"; };
@@ -413,7 +410,6 @@
 		EAE92A5E2A558B8D00BFE06E /* GameControllerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameControllerManager.swift; sourceTree = "<group>"; };
 		EAE92A612A558D2900BFE06E /* GameControllerButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameControllerButton.swift; sourceTree = "<group>"; };
 		EAE92A632A558E8000BFE06E /* GameControllerThumbstickAxis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameControllerThumbstickAxis.swift; sourceTree = "<group>"; };
-		EAF4851325A2B0E600F0E9F9 /* bg */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = bg; path = bg.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		EAF48514249B2C4700E5B817 /* SubsystemBrowserCoordinatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubsystemBrowserCoordinatorViewController.swift; sourceTree = "<group>"; };
 		EAF4851F249B5C2500E5B817 /* StandardButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandardButton.swift; sourceTree = "<group>"; };
 		EAFF95F328885A64009C2FFD /* FallbackWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FallbackWebViewController.swift; sourceTree = "<group>"; };
@@ -497,7 +493,7 @@
 			children = (
 				EA28CA5124A2F399004B011E /* Fonts */,
 				97143F1623FFAEFD00F35D87 /* defaults.plist */,
-				EAA5A7A3259DBFE6001AFA82 /* InfoPlist.strings */,
+				EAA2FA182CED1EEC00D915C1 /* InfoPlist.xcstrings */,
 				EABC92332A56FF80007E27F0 /* SharedAssets.xcassets */,
 			);
 			path = Resources;
@@ -1200,11 +1196,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				EAB93E8C2BC8608C009AB37B /* PrivacyInfo.xcprivacy in Resources */,
+				EAA2FA192CED1EEC00D915C1 /* InfoPlist.xcstrings in Resources */,
 				979D2F8723FEB1A8005D2592 /* Assets.xcassets in Resources */,
 				97143F1823FFAEFD00F35D87 /* defaults.plist in Resources */,
 				EA28CA5324A2F399004B011E /* Fonts in Resources */,
 				EABC92342A56FF80007E27F0 /* SharedAssets.xcassets in Resources */,
-				EAA5A7A1259DBFE6001AFA82 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1521,21 +1517,6 @@
 		};
 /* End PBXTargetDependency section */
 
-/* Begin PBXVariantGroup section */
-		EAA5A7A3259DBFE6001AFA82 /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				EAA5A7A2259DBFE6001AFA82 /* en */,
-				EAA5A7A7259DC062001AFA82 /* zh_CN */,
-				EAF4851325A2B0E600F0E9F9 /* bg */,
-				EA113708262C72AA002E49DA /* zh_TW */,
-				EA113709262C72B2002E49DA /* ru */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
-/* End PBXVariantGroup section */
-
 /* Begin XCBuildConfiguration section */
 		979D2F9723FEB1A8005D2592 /* Debug */ = {
 			isa = XCBuildConfiguration;
@@ -1590,12 +1571,14 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright (C) 2001-2024, the Celestia Development Team";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SHARED_BUILD_NUMBER = 531;
 				SHARED_BUILD_VERSION = 1.7.10;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2,6";
@@ -1651,11 +1634,13 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright (C) 2001-2024, the Celestia Development Team";
 				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				SDKROOT = iphoneos;
 				SHARED_BUILD_NUMBER = 531;
 				SHARED_BUILD_VERSION = 1.7.10;
 				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2,6";

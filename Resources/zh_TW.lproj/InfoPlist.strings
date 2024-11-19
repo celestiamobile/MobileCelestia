@@ -1,9 +1,0 @@
-/* 
-  InfoPlist.strings
-  MobileCelestia
-
-  Created by Levin Li on 2020/12/31.
-  Copyright © 2020 Celestia Development Team. All rights reserved.
-*/
-
-"NSPhotoLibraryAddUsageDescription" = "將截圖儲存至「照片」App需要許可權。";

@@ -1,9 +1,0 @@
-/* 
-  InfoPlist.strings
-  MobileCelestia
-
-  Created by Georgi Georgiev (RacerBG) on 2021/01/02.
-  Copyright © 2020 Celestia Development Team. All rights reserved.
-*/
-
-"NSPhotoLibraryAddUsageDescription" = "Нужно е разрешение за запазване в приложението „Photos“.";
