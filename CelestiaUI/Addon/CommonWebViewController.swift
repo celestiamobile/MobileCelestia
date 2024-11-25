@@ -152,9 +152,9 @@ public class CommonWebViewController: UIViewController {
 }
 
 extension CommonWebViewController: WKNavigationDelegate {
-    nonisolated private func isURLAllowed(_ url: URL) async -> Bool {
+    private func isURLAllowed(_ url: URL) -> Bool {
         let comp1 = URLComponents(url: url, resolvingAgainstBaseURL: false)!
-        let comp2 = URLComponents(url: await self.url, resolvingAgainstBaseURL: false)!
+        let comp2 = URLComponents(url: url, resolvingAgainstBaseURL: false)!
         if comp1.host != comp2.host || comp1.path != comp2.path {
             return false
         }
@@ -177,7 +177,7 @@ extension CommonWebViewController: WKNavigationDelegate {
             return .cancel
         }
 
-        if await isURLAllowed(url) {
+        if isURLAllowed(url) {
             return .allow
         } else {
             UIApplication.shared.open(url, options: [:], completionHandler: nil)
@@ -185,24 +185,18 @@ extension CommonWebViewController: WKNavigationDelegate {
         }
     }
 
-    public nonisolated func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
-        Task.detached { @MainActor in
-            self.activityIndicator.stopAnimating()
-            self.activityIndicator.isHidden = true
-            self.updateNavigation()
-        }
+    public func webView(_ webView: WKWebView, didCommit navigation: WKNavigation!) {
+        activityIndicator.stopAnimating()
+        activityIndicator.isHidden = true
+        updateNavigation()
     }
 
-    public nonisolated func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-        Task.detached { @MainActor in
-            self.delegate?.webViewLoadFailed()
-        }
+    public func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        delegate?.webViewLoadFailed()
     }
 
-    public nonisolated func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-        Task.detached { @MainActor in
-            self.delegate?.webViewLoadFailed()
-        }
+    public func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+        delegate?.webViewLoadFailed()
     }
 }
 
