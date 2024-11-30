@@ -16,8 +16,8 @@ jobs:
     XC_ARCHIVE_PATH: ${{ '$(system.defaultworkingdirectory)/archive/MobileCelestia.xcarchive' }}
     XC_EXPORT_PATH: ${{ '$(agent.buildDirectory)/output' }}
     IOS_PROVISIONING_PROFILE_UUID: ${{ 'dada330c-c47b-44df-9932-534b471e750d' }}
-    MAC_APP_STORE_PROVISIONING_PROFILE_UUID: ${{ '8b5d898c-d2c2-4181-846e-37cc2fb5438f' }}
-    MAC_DEVELOPER_ID_PROVISIONING_PROFILE_UUID: ${{ '1e444495-f70f-40b9-9897-7e05ab2cc975' }}
+    MAC_APP_STORE_PROVISIONING_PROFILE_UUID: ${{ '9b3087ea-0c47-479c-90c4-129c530f04b3' }}
+    MAC_DEVELOPER_ID_PROVISIONING_PROFILE_UUID: ${{ '05aab2eb-1c4c-4e55-a63d-e0721011273d' }}
     DISTRIBUTION_IDENTITY: 'Apple Distribution: Linfeng Li (22NR5428TD)'
     DEVELOPER_ID_IDENTITY: 'Developer ID Application: Linfeng Li (22NR5428TD)'
 
