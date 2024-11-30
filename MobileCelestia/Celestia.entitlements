@@ -14,5 +14,7 @@
 	<true/>
 	<key>com.apple.developer.kernel.increased-memory-limit</key>
 	<true/>
+	<key>com.apple.developer.kernel.extended-virtual-addressing</key>
+	<true/>
 </dict>
 </plist>
