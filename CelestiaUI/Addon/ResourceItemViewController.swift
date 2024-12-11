@@ -69,6 +69,7 @@ public class ResourceItemViewController: UIViewController {
 
     private var currentState: ResourceItemState = .none
 
+    private var viewIsVisible = false
     private var associatedUserActivity: NSUserActivity
 
     private let executor: AsyncProviderExecutor
@@ -120,6 +121,10 @@ public class ResourceItemViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(resourceFetchError(_:)), name: ResourceManager.resourceError, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(downloadSuccess(_:)), name: ResourceManager.downloadSuccess, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(unzipSuccess(_:)), name: ResourceManager.unzipSuccess, object: nil)
+        #if targetEnvironment(macCatalyst)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleWindowWillBecomeKey(_:)), name: Notification.Name("_UIWindowWillBecomeApplicationKeyNotification"), object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleWindowDidResignKey(_:)), name: Notification.Name("_UIWindowDidResignApplicationKeyNotification"), object: nil)
+        #endif
 
         // Fetch the latest item, this is needed as user might come
         // here from Installed where the URL might be incorrect
@@ -131,12 +136,20 @@ public class ResourceItemViewController: UIViewController {
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
+        viewIsVisible = true
+        #if targetEnvironment(macCatalyst)
+        if view.window?.isKeyWindow == true {
+            associatedUserActivity.becomeCurrent()
+        }
+        #else
         associatedUserActivity.becomeCurrent()
+        #endif
     }
 
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
+        viewIsVisible = false
         associatedUserActivity.resignCurrent()
     }
 
@@ -421,6 +434,22 @@ extension ResourceItemViewController: ToolbarAwareViewController {
             return toolbarShareItem
         }
         return nil
+    }
+}
+
+private extension ResourceItemViewController {
+    @objc func handleWindowWillBecomeKey(_ notification: Notification) {
+        guard let object = notification.object as? NSObject, object === view.window else { return }
+
+        if viewIsVisible {
+            associatedUserActivity.becomeCurrent()
+        }
+    }
+
+    @objc func handleWindowDidResignKey(_ notification: Notification) {
+        guard let object = notification.object as? NSObject, object === view.window else { return }
+
+        associatedUserActivity.resignCurrent()
     }
 }
 #endif
