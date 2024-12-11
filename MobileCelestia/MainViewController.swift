@@ -60,7 +60,7 @@ class MainViewController: UIViewController {
     private let userDefaults: UserDefaults
     private let requestHandler = RequestHandlerImpl()
 
-    private let resourceManager = ResourceManager(extraAddonDirectory: UserDefaults.extraDirectory?.appendingPathComponent("extras"), extraScriptDirectory: UserDefaults.extraDirectory?.appendingPathComponent("scripts"))
+    private let resourceManager = ResourceManager(extraAddonDirectory: UserDefaults.extraAddonDirectory, extraScriptDirectory: UserDefaults.extraScriptDirectory)
 
     private var viewControllerStack: [UIViewController] = []
 
@@ -467,6 +467,10 @@ extension MainViewController {
                 guard !selection.isEmpty else { return }
                 showSelectionInfo(with: selection)
             }
+        case .openAddonFolder:
+            openFolder(UserDefaults.extraAddonDirectory)
+        case .openScriptFolder:
+            openFolder(UserDefaults.extraScriptDirectory)
         }
     }
 
@@ -481,6 +485,13 @@ extension MainViewController {
         guard let url = URL(string: bookmark.url) else { return }
 
         celestiaController.openURL(UniformedURL(url: url, securityScoped: false))
+    }
+
+    private func openFolder(_ url: URL?) {
+        #if targetEnvironment(macCatalyst)
+        guard let url else { return }
+        MacBridge.openFolderURL(url)
+        #endif
     }
 }
 

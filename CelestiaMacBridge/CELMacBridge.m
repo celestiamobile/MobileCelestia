@@ -106,4 +106,8 @@
     [[NSDocumentController sharedDocumentController] noteNewRecentDocumentURL:url];
 }
 
++ (void)openFolder:(NSURL *)folderURL {
+    [[NSWorkspace sharedWorkspace] openURL:folderURL];
+}
+
 @end

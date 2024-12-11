@@ -48,6 +48,7 @@ extension UserDefaults {
         return parentDirectory
     }()
 
+    static let extraAddonDirectory: URL? = extraDirectory?.appendingPathComponent("extras")
     static let extraScriptDirectory: URL? = extraDirectory?.appendingPathComponent("scripts")
 
     func currentDataDirectory() -> UniformedURL {

@@ -52,6 +52,8 @@ enum MenuBarAction: Hashable, Equatable {
     case suggestFeature
     case celestiaPlus
     case getInfo
+    case openAddonFolder
+    case openScriptFolder
 }
 
 let newURLOpenedNotificationName = Notification.Name("NewURLOpenedNotificationName")
@@ -121,6 +123,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         .selector(#selector(suggestFeature)),
         .selector(#selector(showCelestiaPlus)),
         .selector(#selector(getInfo)),
+        .selector(#selector(openAddonFolder)),
+        .selector(#selector(openScriptFolder)),
     ]
 
     var window: UIWindow?
@@ -443,6 +447,13 @@ extension AppDelegate {
             MenuActionContext(title: CelestiaString("Installed Add-ons", comment: "Open a page for managing installed add-ons"), action: #selector(showInstalledAddons)),
         ])
         builder.insertSibling(addonToolsMenu, afterMenu: mainToolsMenu.identifier)
+#if targetEnvironment(macCatalyst)
+        let openFoldersMenu = createMenuItemGroup(identifierSuffix: "tools.folders", actions: [
+            MenuActionContext(title: CelestiaString("Open Add-on Folder", comment: "Open the folder for add-ons"), action: #selector(openAddonFolder)),
+            MenuActionContext(title: CelestiaString("Open Script Folder", comment: "Open the folder for scripts"), action: #selector(openScriptFolder)),
+        ])
+        builder.insertSibling(openFoldersMenu, afterMenu: addonToolsMenu.identifier)
+#endif
 
         let timeMenu = createMenuItemGroup(title: CelestiaString("Time", comment: ""), identifierSuffix: "time", actions: [], options: [])
         builder.insertSibling(timeMenu, afterMenu: toolsMenu.identifier)
@@ -669,6 +680,14 @@ extension AppDelegate {
         NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.showInstalledAddons])
     }
 
+    @objc private func openAddonFolder() {
+        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.openAddonFolder])
+    }
+
+    @objc private func openScriptFolder() {
+        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.openScriptFolder])
+    }
+
     @objc private func addBookmark() {
         NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.addBookmark])
     }
@@ -734,6 +753,10 @@ class MacBridge {
 
     static func addRecentURL(_ url: URL) {
         clazz.perform(NSSelectorFromString("addRecentOpenedFile:"), with: url)
+    }
+
+    static func openFolderURL(_ folderURL: URL) {
+        clazz.perform(NSSelectorFromString("openFolder:"), with: folderURL)
     }
 }
 
