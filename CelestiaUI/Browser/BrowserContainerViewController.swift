@@ -237,8 +237,9 @@ final class BrowserPredefinedItem: BrowserItem, @unchecked Sendable {
 
 private extension BrowserContainerViewController {
     nonisolated func createSolBrowserRoot(_ core: AppCore) -> BrowserItem? {
-        let universe = core.simulation.universe
-        if let sol = universe.find("Sol").star {
+        let simulation = core.simulation
+        let universe = simulation.universe
+        if let sol = simulation.findObject(from: "Sol").star {
             let item = BrowserPredefinedItem(name: universe.starCatalog.starName(sol), alternativeName: CelestiaString("Solar System", comment: "Tab for solar system in Star Browser"), catEntry: sol, provider: universe)
             item.categoryInfo = CategoryInfo(category: "B2E44BE0-9DF7-FAB9-92D4-F8D323D31250", isLeaf: false)
             return item
