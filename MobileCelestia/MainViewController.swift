@@ -17,8 +17,6 @@ import MessageUI
 import UniformTypeIdentifiers
 import UIKit
 
-extension GoToLocation: @unchecked @retroactive Sendable {}
-
 class MainViewController: UIViewController {
     enum LoadingStatus {
         case notLoaded
