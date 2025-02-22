@@ -1244,6 +1244,7 @@
 /* Begin PBXShellScriptBuildPhase section */
 		973BBA5724052FFB00E3B061 /* Copy General Data */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 12;
 			files = (
 			);
@@ -1262,6 +1263,7 @@
 		};
 		973BBA592405305100E3B061 /* Convert PO */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 12;
 			files = (
 			);
@@ -1280,6 +1282,7 @@
 		};
 		EA9FB24027B7B0E800E0DC1F /* Copy Localized Files */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
