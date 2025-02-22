@@ -1747,6 +1747,7 @@
 		};
 		EA50FDA22A49601F00E23091 /* Copy General Data */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
@@ -1765,6 +1766,7 @@
 		};
 		EA50FDA42A49605400E23091 /* Convert PO */ = {
 			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
 			buildActionMask = 2147483647;
 			files = (
 			);
