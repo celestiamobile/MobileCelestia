@@ -19,7 +19,7 @@
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright (C) 2001-2024, the Celestia Development Team</string>
+	<string>Copyright (C) 2001-2025, the Celestia Development Team</string>
 	<key>NSPrincipalClass</key>
 	<string>CELMacBridge</string>
 </dict>
