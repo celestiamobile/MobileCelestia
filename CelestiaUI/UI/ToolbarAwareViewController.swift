@@ -255,72 +255,6 @@ extension UINavigationBar.NSToolbarSection {
     }
 }
 
-@objc private final class SearchToolbarItem: NSToolbarItem {
-    private static var searchItemClassPrepared = false
-    private let textChangeHandler: (String?) -> Void
-    private let returnHandler: (String?) -> Void
-    private let searchStartHandler: () -> Void
-    private let searchEndHandler: () -> Void
-
-    private let searchField: NSObject
-
-    init(itemIdentifier: NSToolbarItem.Identifier, currentText: String?, textChangeHandler: @escaping (String?) -> Void, returnHandler: @escaping (String?) -> Void, searchStartHandler: @escaping () -> Void, searchEndHandler: @escaping () -> Void) {
-        if !Self.searchItemClassPrepared {
-            if let delegateProtocol = objc_getProtocol("NSSearchFieldDelegate") {
-                class_addProtocol(SearchToolbarItem.self, delegateProtocol)
-                Self.searchItemClassPrepared = SearchToolbarItem.conforms(to: delegateProtocol)
-            }
-        }
-
-        let searchFieldClass = NSClassFromString("NSSearchField") as! NSObject.Type
-        searchField = searchFieldClass.init()
-        if let currentText {
-            searchField.setValue(currentText, forKey: "stringValue")
-        }
-        self.textChangeHandler = textChangeHandler
-        self.returnHandler = returnHandler
-        self.searchStartHandler = searchStartHandler
-        self.searchEndHandler = searchEndHandler
-        super.init(itemIdentifier: itemIdentifier)
-        searchField.perform(NSSelectorFromString("setTarget:"), with: self)
-        if Self.searchItemClassPrepared {
-            let selector = NSSelectorFromString("setDelegate:")
-            typealias SetDelegateMethod = @convention(c) (NSObject, Selector, NSObject?) -> Void
-            let methodIMP = searchFieldClass.instanceMethod(for: selector)
-            let method = unsafeBitCast(methodIMP, to: SetDelegateMethod.self)
-            method(searchField, selector, self)
-        }
-        let selector = NSSelectorFromString("setAction:")
-        typealias SetActionMethod = @convention(c) (NSObject, Selector, Selector) -> Void
-        let methodIMP = searchFieldClass.instanceMethod(for: selector)
-        let method = unsafeBitCast(methodIMP, to: SetActionMethod.self)
-        method(searchField, selector, #selector(textChanged(_:)))
-        setValue(searchField, forKey: "view")
-    }
-
-    @objc private func textChanged(_ sender: NSObject) {
-        let value = searchField.value(forKey: "stringValue") as? String
-        textChangeHandler(value)
-    }
-
-    @objc(control:textView:doCommandBySelector:) func control(_ control: NSObject, textView: NSObject, doCommandBySelector selector: Selector) -> Bool {
-        if selector == NSSelectorFromString("insertNewline:") {
-            let value = searchField.value(forKey: "stringValue") as? String
-            returnHandler(value)
-            return true
-        }
-        return false
-    }
-
-    @objc(searchFieldDidStartSearching:) func searchFieldDidStartSearching(_ sender: NSObject) {
-        searchStartHandler()
-    }
-
-    @objc(searchFieldDidEndSearching:) func searchFieldDidEndSearching(_ sender: NSObject) {
-        searchEndHandler()
-    }
-}
-
 extension NSToolbarItem {
     convenience init(itemIdentifier: NSToolbarItem.Identifier, buttonTitle: String, target: Any, action: Selector) {
         self.init(itemIdentifier: itemIdentifier)
@@ -370,11 +304,77 @@ extension NSToolbarItem {
         toolTip = CelestiaString("Add", comment: "Add a new item (bookmark)")
     }
 
+
+    private struct AssociatedKeys {
+        @MainActor
+        static var searchFieldDelegate: UInt8 = 0
+    }
+
     private static var searchItemClassPrepared = false
 
     static func searchItem(with itemIdentifier: NSToolbarItem.Identifier, currentText: String? = nil, textChangeHandler: @escaping (String?) -> Void, returnHandler: @escaping (String?) -> Void, searchStartHandler: @escaping () -> Void, searchEndHandler: @escaping () -> Void) -> NSToolbarItem {
-        let item = SearchToolbarItem(itemIdentifier: itemIdentifier, currentText: currentText, textChangeHandler: textChangeHandler, returnHandler: returnHandler, searchStartHandler: searchStartHandler, searchEndHandler: searchEndHandler)
+        if !Self.searchItemClassPrepared {
+            if let delegateProtocol = objc_getProtocol("NSSearchFieldDelegate") {
+                class_addProtocol(SearchFieldDelegate.self, delegateProtocol)
+                Self.searchItemClassPrepared = SearchFieldDelegate.conforms(to: delegateProtocol)
+            }
+        }
+
+        let delegate = SearchFieldDelegate(textChangeHandler: textChangeHandler, returnHandler: returnHandler, searchStartHandler: searchStartHandler, searchEndHandler: searchEndHandler)
+        let clazz = NSClassFromString("NSSearchToolbarItem") as! NSToolbarItem.Type
+        let item = clazz.init(itemIdentifier: itemIdentifier)
+        let searchField = item.value(forKey: "searchField") as! NSObject
+        if let currentText {
+            searchField.setValue(currentText, forKey: "stringValue")
+        }
+        if Self.searchItemClassPrepared {
+            searchField.perform(NSSelectorFromString("setDelegate:"), with: delegate)
+        }
+        searchField.perform(NSSelectorFromString("setTarget:"), with: delegate)
+        let selector = NSSelectorFromString("setAction:")
+        typealias SetActionMethod = @convention(c) (NSObject, Selector, Selector) -> Void
+        let methodIMP = searchField.method(for: selector)
+        let method = unsafeBitCast(methodIMP, to: SetActionMethod.self)
+        method(searchField, selector, #selector(SearchFieldDelegate.textChanged(_:)))
+        objc_setAssociatedObject(item, &AssociatedKeys.searchFieldDelegate, delegate, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         return item
+    }
+}
+
+private final class SearchFieldDelegate: NSObject {
+    private let textChangeHandler: (String?) -> Void
+    private let returnHandler: (String?) -> Void
+    private let searchStartHandler: () -> Void
+    private let searchEndHandler: () -> Void
+
+    init(textChangeHandler: @escaping (String?) -> Void, returnHandler: @escaping (String?) -> Void, searchStartHandler: @escaping () -> Void, searchEndHandler: @escaping () -> Void) {
+        self.textChangeHandler = textChangeHandler
+        self.returnHandler = returnHandler
+        self.searchStartHandler = searchStartHandler
+        self.searchEndHandler = searchEndHandler
+        super.init()
+    }
+
+    @objc func textChanged(_ sender: NSObject) {
+        let value = sender.value(forKey: "stringValue") as? String
+        textChangeHandler(value)
+    }
+
+    @objc(control:textView:doCommandBySelector:) func control(_ control: NSObject, textView: NSObject, doCommandBySelector selector: Selector) -> Bool {
+        if selector == NSSelectorFromString("insertNewline:") {
+            let value = control.value(forKey: "stringValue") as? String
+            returnHandler(value)
+            return true
+        }
+        return false
+    }
+
+    @objc(searchFieldDidStartSearching:) func searchFieldDidStartSearching(_ sender: NSObject) {
+        searchStartHandler()
+    }
+
+    @objc(searchFieldDidEndSearching:) func searchFieldDidEndSearching(_ sender: NSObject) {
+        searchEndHandler()
     }
 }
 #endif
