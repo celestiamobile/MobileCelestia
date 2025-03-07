@@ -128,14 +128,6 @@ final public class InfoViewController: UICollectionViewController {
                 guard let self else { return }
                 guard self.info.isEqual(to: current) else { return }
                 self.linkMetaData = metaData
-                self.actions.removeAll(where: {
-                    switch $0 {
-                    case .web:
-                        return true
-                    default:
-                        return false
-                    }
-                })
                 self.collectionView.reloadData()
             } catch {}
         }
