@@ -183,30 +183,27 @@ public final class ResourceManager: @unchecked Sendable {
                 throw ResourceError.createDirectory(contextPath: destinationURL.path)
             }
         }
-        try await withCheckedThrowingContinuation { continuation in
-            Task.detached {
-                do {
-                    try ZipUtils.unzip(zipFileURL.path, to: destinationURL.path)
-                    continuation.resume(returning: ())
-                } catch {
-                    if let e = error as? CEZZipError {
-                        switch e.code {
-                        case .createDirectory:
-                            continuation.resume(throwing: ResourceError.createDirectory(contextPath: e.userInfo[CEZZipErrorContextPathKey] as? String ?? ""))
-                        case .openFile:
-                            continuation.resume(throwing: ResourceError.openFile(contextPath: e.userInfo[CEZZipErrorContextPathKey] as? String ?? ""))
-                        case .writeFile:
-                            continuation.resume(throwing: ResourceError.writeFile(contextPath: e.userInfo[CEZZipErrorContextPathKey] as? String ?? ""))
-                        case .zip:
-                            continuation.resume(throwing: ResourceError.zip)
-                        @unknown default:
-                            continuation.resume(throwing: ResourceError.zip)
-                        }
-                    } else {
-                        continuation.resume(throwing: ResourceError.zip)
+        try await Task.detached(priority: .background) {
+            do {
+                try ZipUtils.unzip(zipFileURL.path, to: destinationURL.path)
+            } catch {
+                if let e = error as? CEZZipError {
+                    switch e.code {
+                    case .createDirectory:
+                        throw ResourceError.createDirectory(contextPath: e.userInfo[CEZZipErrorContextPathKey] as? String ?? "")
+                    case .openFile:
+                        throw ResourceError.openFile(contextPath: e.userInfo[CEZZipErrorContextPathKey] as? String ?? "")
+                    case .writeFile:
+                        throw ResourceError.writeFile(contextPath: e.userInfo[CEZZipErrorContextPathKey] as? String ?? "")
+                    case .zip:
+                        throw ResourceError.zip
+                    @unknown default:
+                        throw ResourceError.zip
                     }
+                } else {
+                    throw ResourceError.zip
                 }
             }
-        }
+        }.value
     }
 }

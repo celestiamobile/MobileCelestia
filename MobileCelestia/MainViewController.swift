@@ -943,19 +943,12 @@ Device Model: \(model)
 
     private func hideBottomToolbar() async {
         guard let bottomToolbar else { return }
-        await withCheckedContinuation { continuation in
-            let animator = UIViewPropertyAnimator(duration: GlobalConstants.transitionDuration, curve: .linear) {
-                bottomToolbar.view.alpha = 0
-            }
-            animator.isUserInteractionEnabled = false
-            animator.addCompletion { [unowned self] _ in
-                bottomToolbar.remove()
-                self.bottomToolbar = nil
-                self.bottomToolbarSizeConstraints = []
-                continuation.resume()
-            }
-            animator.startAnimation()
-        }
+        await UIViewPropertyAnimator.runningPropertyAnimator(withDuration: GlobalConstants.transitionDuration, delay: 0, options: [.curveLinear]) {
+            bottomToolbar.view.alpha = 0
+        }.addCompletion()
+        bottomToolbar.remove()
+        self.bottomToolbar = nil
+        self.bottomToolbarSizeConstraints = []
     }
 
     private func presentActionToolbar(for actions: [BottomControlAction]) async {
@@ -1014,16 +1007,9 @@ Device Model: \(model)
         view.updateConstraintsIfNeeded()
 
         newController.view.alpha = 0
-        await withCheckedContinuation { (continuation: CheckedContinuation<(), Never>) in
-            let animator = UIViewPropertyAnimator(duration: GlobalConstants.transitionDuration, curve: .linear) {
-                newController.view.alpha = 1.0
-            }
-            animator.isUserInteractionEnabled = false
-            animator.addCompletion { _ in
-                continuation.resume()
-            }
-            animator.startAnimation()
-        }
+        await UIViewPropertyAnimator.runningPropertyAnimator(withDuration: GlobalConstants.transitionDuration, delay: 0, options: [.curveLinear]) {
+            newController.view.alpha = 1.0
+        }.addCompletion()
     }
 
     private func presentCameraControl() {
