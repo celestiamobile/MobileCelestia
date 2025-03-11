@@ -38,10 +38,10 @@ index 85228e5..23129a3 100644
  				EA3A88C62D80B0100029ACA4 /* libintl.xcframework */,
  				EA3A88C82D80B0100029ACA4 /* libpng.xcframework */,
  				EA3A88C92D80B0100029ACA4 /* libzip.xcframework */,
-diff --git a/Configurations/Debug.xcconfig b/Configurations/Debug.xcconfig
+diff --git a/CelestiaCore/Configurations/Debug.xcconfig b/CelestiaCore/Configurations/Debug.xcconfig
 index 3f921cc..2247fff 100644
---- a/Configurations/Debug.xcconfig
-+++ b/Configurations/Debug.xcconfig
+--- a/CelestiaCore/Configurations/Debug.xcconfig
++++ b/CelestiaCore/Configurations/Debug.xcconfig
 @@ -11,9 +11,6 @@
  
  #include "Common.xcconfig"
@@ -53,10 +53,10 @@ index 3f921cc..2247fff 100644
 -GCC_PREPROCESSOR_DEFINITIONS[sdk=macosx*] = $(PREPROCESSOR_BASE)
 -GCC_PREPROCESSOR_DEFINITIONS[sdk=iphoneos*] = $(PREPROCESSOR_BASE) GL_ES
 -GCC_PREPROCESSOR_DEFINITIONS[sdk=iphonesimulator*] = $(PREPROCESSOR_BASE) GL_ES
-diff --git a/Configurations/Release.xcconfig b/Configurations/Release.xcconfig
+diff --git a/CelestiaCore/Configurations/Release.xcconfig b/CelestiaCore/Configurations/Release.xcconfig
 index 338ab27..5ef5024 100644
---- a/Configurations/Release.xcconfig
-+++ b/Configurations/Release.xcconfig
+--- a/CelestiaCore/Configurations/Release.xcconfig
++++ b/CelestiaCore/Configurations/Release.xcconfig
 @@ -11,9 +11,6 @@
  
  #include "Common.xcconfig"
