@@ -1667,26 +1667,9 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(THIRD_PARTY_LIB_PATH)/libs",
-				);
 				MARKETING_VERSION = "$(SHARED_BUILD_VERSION)";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
-					"-lmeshoptimizer",
-					"-lluajit",
-					"-lpng16",
-					"-licui18n",
-					"-licudata",
-					"-licuuc",
-					"-lfmt",
-					"-ljpeg",
-					"-lfreetype",
-					"-lintl",
-					"-lGL",
-					"-lzip",
-					"$(THIRD_PARTY_LIB_PATH)/libs/cspice.a",
 					"-ObjC",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.MobileCelestia;
@@ -1694,11 +1677,6 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTS_MACCATALYST = YES;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				THIRD_PARTY_LIB_PATH = "";
-				"THIRD_PARTY_LIB_PATH[sdk=iphoneos*]" = "$(THIRD_PARTY_LIB_PATH_BASE)/ios";
-				"THIRD_PARTY_LIB_PATH[sdk=iphonesimulator*]" = "$(THIRD_PARTY_LIB_PATH_BASE)/iossim";
-				"THIRD_PARTY_LIB_PATH[sdk=macosx*]" = "$(THIRD_PARTY_LIB_PATH_BASE)/catalyst";
-				THIRD_PARTY_LIB_PATH_BASE = "$(PROJECT_DIR)/../CelestiaCore/libs/dependency";
 			};
 			name = Debug;
 		};
@@ -1717,26 +1695,9 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				LIBRARY_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(THIRD_PARTY_LIB_PATH)/libs",
-				);
 				MARKETING_VERSION = "$(SHARED_BUILD_VERSION)";
 				OTHER_LDFLAGS = (
 					"$(inherited)",
-					"-lmeshoptimizer",
-					"-lluajit",
-					"-lpng16",
-					"-licui18n",
-					"-licudata",
-					"-licuuc",
-					"-lfmt",
-					"-ljpeg",
-					"-lfreetype",
-					"-lintl",
-					"-lGL",
-					"-lzip",
-					"$(THIRD_PARTY_LIB_PATH)/libs/cspice.a",
 					"-ObjC",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.MobileCelestia;
@@ -1744,11 +1705,6 @@
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTS_MACCATALYST = YES;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
-				THIRD_PARTY_LIB_PATH = "";
-				"THIRD_PARTY_LIB_PATH[sdk=iphoneos*]" = "$(THIRD_PARTY_LIB_PATH_BASE)/ios";
-				"THIRD_PARTY_LIB_PATH[sdk=iphonesimulator*]" = "$(THIRD_PARTY_LIB_PATH_BASE)/iossim";
-				"THIRD_PARTY_LIB_PATH[sdk=macosx*]" = "$(THIRD_PARTY_LIB_PATH_BASE)/catalyst";
-				THIRD_PARTY_LIB_PATH_BASE = "$(PROJECT_DIR)/../CelestiaCore/libs/dependency";
 			};
 			name = Release;
 		};
