@@ -1,5 +1,5 @@
 diff --git a/MobileCelestia.xcodeproj/project.pbxproj b/MobileCelestia.xcodeproj/project.pbxproj
-index d9b6b45..b206498 100644
+index 2936296..75b873a 100644
 --- a/MobileCelestia.xcodeproj/project.pbxproj
 +++ b/MobileCelestia.xcodeproj/project.pbxproj
 @@ -88,8 +88,8 @@
@@ -12,7 +12,7 @@ index d9b6b45..b206498 100644
  		EA9166972B0AF20A00AF48B1 /* LinkTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9166962B0AF20A00AF48B1 /* LinkTextView.swift */; };
  		EA9166BE2B0C722000AF48B1 /* ToolbarSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9166BD2B0C722000AF48B1 /* ToolbarSettingViewController.swift */; };
  		EA9166C02B0C725100AF48B1 /* QuickAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9166BF2B0C725100AF48B1 /* QuickAction.swift */; };
-@@ -424,7 +424,7 @@
+@@ -420,7 +420,7 @@
  			isa = PBXFrameworksBuildPhase;
  			buildActionMask = 2147483647;
  			files = (
@@ -21,7 +21,7 @@ index d9b6b45..b206498 100644
  				979D2FAD23FEB2B4005D2592 /* libbz2.tbd in Frameworks */,
  				EA4E2D7C2A56B46B0046D62E /* CelestiaFoundation.framework in Frameworks */,
  				EA9A426D288CD7FE00AF3BD6 /* AVFoundation.framework in Frameworks */,
-@@ -1006,7 +1006,7 @@
+@@ -1002,7 +1002,7 @@
  			);
  			name = MobileCelestia;
  			packageProductDependencies = (
@@ -30,23 +30,7 @@ index d9b6b45..b206498 100644
  				EA9039A12BA19CF100C982BC /* MWRequest */,
  				EAC20FE02CA0CB7C0098AABA /* Sentry */,
  			);
-@@ -1699,7 +1699,6 @@
- 					"-ljpeg",
- 					"-lfreetype",
- 					"-lintl",
--					"-lGL",
- 					"-lzip",
- 					"$(THIRD_PARTY_LIB_PATH)/libs/cspice.a",
- 					"-ObjC",
-@@ -1750,7 +1749,6 @@
- 					"-ljpeg",
- 					"-lfreetype",
- 					"-lintl",
--					"-lGL",
- 					"-lzip",
- 					"$(THIRD_PARTY_LIB_PATH)/libs/cspice.a",
- 					"-ObjC",
-@@ -2118,11 +2116,6 @@
+@@ -2054,16 +2054,16 @@
  /* End XCRemoteSwiftPackageReference section */
  
  /* Begin XCSwiftPackageProductDependency section */
@@ -58,20 +42,18 @@ index d9b6b45..b206498 100644
  		EA9039A12BA19CF100C982BC /* MWRequest */ = {
  			isa = XCSwiftPackageProductDependency;
  			package = EA9039A02BA19CF100C982BC /* XCRemoteSwiftPackageReference "mwrequest" */;
-@@ -2133,6 +2126,11 @@
- 			package = EAC20FDF2CA0CB7C0098AABA /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
- 			productName = Sentry;
+ 			productName = MWRequest;
  		};
 +		EA9039A82BA19F0900C982BC /* AsyncGLANGLE */ = {
 +			isa = XCSwiftPackageProductDependency;
 +			package = EA9039772BA19B1300C982BC /* XCRemoteSwiftPackageReference "AsyncGL" */;
 +			productName = AsyncGLANGLE;
 +		};
- /* End XCSwiftPackageProductDependency section */
- 	};
- 	rootObject = 979D2F7223FEB1A6005D2592 /* Project object */;
+ 		EAC20FE02CA0CB7C0098AABA /* Sentry */ = {
+ 			isa = XCSwiftPackageProductDependency;
+ 			package = EAC20FDF2CA0CB7C0098AABA /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
 diff --git a/MobileCelestia/Celestia/CelestiaDisplayController.swift b/MobileCelestia/Celestia/CelestiaDisplayController.swift
-index 7c8dd07..debab51 100644
+index 0391b30..ae52858 100644
 --- a/MobileCelestia/Celestia/CelestiaDisplayController.swift
 +++ b/MobileCelestia/Celestia/CelestiaDisplayController.swift
 @@ -9,7 +9,7 @@
