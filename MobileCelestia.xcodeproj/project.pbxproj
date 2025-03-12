@@ -16,7 +16,6 @@
 		EA28CA5324A2F399004B011E /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = EA28CA5124A2F399004B011E /* Fonts */; };
 		EA4E2D7C2A56B46B0046D62E /* CelestiaFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA4E2D752A56B4570046D62E /* CelestiaFoundation.framework */; };
 		EA4E2D862A56B5E10046D62E /* CelestiaFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA4E2D752A56B4570046D62E /* CelestiaFoundation.framework */; };
-		EA50E7612A505627005E7D7A /* CelestiaUI.h in Headers */ = {isa = PBXBuildFile; fileRef = EA50E7602A505627005E7D7A /* CelestiaUI.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		EA50E7642A505627005E7D7A /* CelestiaUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA50E75E2A505627005E7D7A /* CelestiaUI.framework */; };
 		EA5C17832AF0DBBC00E1F615 /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EA5C17822AF0DBB800E1F615 /* libiconv.tbd */; };
 		EA7BF37C27033AE40058F704 /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA7BF37B27033AE40058F704 /* GameController.framework */; };
@@ -130,7 +129,6 @@
 		EA28CA5124A2F399004B011E /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Fonts; path = ../../CelestiaCore/Fonts; sourceTree = "<group>"; };
 		EA4E2D752A56B4570046D62E /* CelestiaFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CelestiaFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA50E75E2A505627005E7D7A /* CelestiaUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CelestiaUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		EA50E7602A505627005E7D7A /* CelestiaUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CelestiaUI.h; sourceTree = "<group>"; };
 		EA5C17822AF0DBB800E1F615 /* libiconv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.2.sdk/usr/lib/libiconv.tbd; sourceTree = DEVELOPER_DIR; };
 		EA7BF37B27033AE40058F704 /* GameController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameController.framework; path = System/Library/Frameworks/GameController.framework; sourceTree = SDKROOT; };
 		EA9A426C288CD7FE00AF3BD6 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
@@ -178,6 +176,13 @@
 			);
 			target = 979D2F8F23FEB1A8005D2592 /* MobileCelestiaTests */;
 		};
+		EA3AD4CF2D812D760029ACA4 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			publicHeaders = (
+				CelestiaUI.h,
+			);
+			target = EA50E75D2A505627005E7D7A /* CelestiaUI */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -187,24 +192,7 @@
 		EA3AC0082D811AA10029ACA4 /* MobileCelestia */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (EA3AC0232D811AA10029ACA4 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = MobileCelestia; sourceTree = "<group>"; };
 		EA3AC2392D811B760029ACA4 /* MobileCelestiaTests */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (EA3AC23B2D811B760029ACA4 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = MobileCelestiaTests; sourceTree = "<group>"; };
 		EA3AC23E2D811B790029ACA4 /* Shared */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Shared; sourceTree = "<group>"; };
-		EA3AC4D32D811D710029ACA4 /* Subscription */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Subscription; sourceTree = "<group>"; };
-		EA3AC4DA2D811D780029ACA4 /* Loading */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Loading; sourceTree = "<group>"; };
-		EA3AC4E12D811D7A0029ACA4 /* Help */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Help; sourceTree = "<group>"; };
-		EA3AC63A2D811F420029ACA4 /* Info */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Info; sourceTree = "<group>"; };
-		EA3AC6442D811F460029ACA4 /* Core */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Core; sourceTree = "<group>"; };
-		EA3AC64D2D811F500029ACA4 /* Browser */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Browser; sourceTree = "<group>"; };
-		EA3AC6572D811F540029ACA4 /* Interaction */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Interaction; sourceTree = "<group>"; };
-		EA3AC8882D81275B0029ACA4 /* Control */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Control; sourceTree = "<group>"; };
-		EA3AC88F2D81275E0029ACA4 /* Favorite */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Favorite; sourceTree = "<group>"; };
-		EA3AC8972D8127620029ACA4 /* Event */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Event; sourceTree = "<group>"; };
-		EA3AC89F2D8127650029ACA4 /* GoTo */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = GoTo; sourceTree = "<group>"; };
-		EA3AC8A62D8127690029ACA4 /* Search */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Search; sourceTree = "<group>"; };
-		EA3ACAA52D8128610029ACA4 /* Cell */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Cell; sourceTree = "<group>"; };
-		EA3ACAB82D81286B0029ACA4 /* UI */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = UI; sourceTree = "<group>"; };
-		EA3ACACE2D8128710029ACA4 /* Common */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Common; sourceTree = "<group>"; };
-		EA3ACD6D2D812ABD0029ACA4 /* Settings */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Settings; sourceTree = "<group>"; };
-		EA3ACD7E2D812AC20029ACA4 /* Request */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Request; sourceTree = "<group>"; };
-		EA3AD0952D812C6D0029ACA4 /* Addon */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Addon; sourceTree = "<group>"; };
+		EA3AD4692D812D750029ACA4 /* CelestiaUI */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (EA3AD4CF2D812D760029ACA4 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = CelestiaUI; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -289,7 +277,7 @@
 				EA3ABD8F2D81160B0029ACA4 /* CelestiaMacBridge */,
 				EA3ABD872D8116090029ACA4 /* CelestiaHelper */,
 				EA3ABD962D8116130029ACA4 /* CelestiaFoundation */,
-				EA50E75F2A505627005E7D7A /* CelestiaUI */,
+				EA3AD4692D812D750029ACA4 /* CelestiaUI */,
 				EA3AC23E2D811B790029ACA4 /* Shared */,
 				973E2EF92400F9E100B0F059 /* Resources */,
 				979D2F7B23FEB1A6005D2592 /* Products */,
@@ -333,32 +321,6 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		EA50E75F2A505627005E7D7A /* CelestiaUI */ = {
-			isa = PBXGroup;
-			children = (
-				EA3AC4D32D811D710029ACA4 /* Subscription */,
-				EA3AC4E12D811D7A0029ACA4 /* Help */,
-				EA3AC4DA2D811D780029ACA4 /* Loading */,
-				EA3AD0952D812C6D0029ACA4 /* Addon */,
-				EA3ACD6D2D812ABD0029ACA4 /* Settings */,
-				EA3AC8882D81275B0029ACA4 /* Control */,
-				EA3AC88F2D81275E0029ACA4 /* Favorite */,
-				EA3AC8972D8127620029ACA4 /* Event */,
-				EA3AC89F2D8127650029ACA4 /* GoTo */,
-				EA3AC8A62D8127690029ACA4 /* Search */,
-				EA3AC6572D811F540029ACA4 /* Interaction */,
-				EA3ACAA52D8128610029ACA4 /* Cell */,
-				EA3AC64D2D811F500029ACA4 /* Browser */,
-				EA3ACAB82D81286B0029ACA4 /* UI */,
-				EA3ACD7E2D812AC20029ACA4 /* Request */,
-				EA3AC6442D811F460029ACA4 /* Core */,
-				EA3ACACE2D8128710029ACA4 /* Common */,
-				EA3AC63A2D811F420029ACA4 /* Info */,
-				EA50E7602A505627005E7D7A /* CelestiaUI.h */,
-			);
-			path = CelestiaUI;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -380,7 +342,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EA50E7612A505627005E7D7A /* CelestiaUI.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -498,24 +459,7 @@
 				EA4E2D892A56B5E20046D62E /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				EA3AC4D32D811D710029ACA4 /* Subscription */,
-				EA3AC4DA2D811D780029ACA4 /* Loading */,
-				EA3AC4E12D811D7A0029ACA4 /* Help */,
-				EA3AC63A2D811F420029ACA4 /* Info */,
-				EA3AC6442D811F460029ACA4 /* Core */,
-				EA3AC64D2D811F500029ACA4 /* Browser */,
-				EA3AC6572D811F540029ACA4 /* Interaction */,
-				EA3AC8882D81275B0029ACA4 /* Control */,
-				EA3AC88F2D81275E0029ACA4 /* Favorite */,
-				EA3AC8972D8127620029ACA4 /* Event */,
-				EA3AC89F2D8127650029ACA4 /* GoTo */,
-				EA3AC8A62D8127690029ACA4 /* Search */,
-				EA3ACAA52D8128610029ACA4 /* Cell */,
-				EA3ACAB82D81286B0029ACA4 /* UI */,
-				EA3ACACE2D8128710029ACA4 /* Common */,
-				EA3ACD6D2D812ABD0029ACA4 /* Settings */,
-				EA3ACD7E2D812AC20029ACA4 /* Request */,
-				EA3AD0952D812C6D0029ACA4 /* Addon */,
+				EA3AD4692D812D750029ACA4 /* CelestiaUI */,
 			);
 			name = CelestiaUI;
 			productName = CelestiaUI;
