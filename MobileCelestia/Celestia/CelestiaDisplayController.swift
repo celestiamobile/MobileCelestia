@@ -7,7 +7,7 @@
 // as published by the Free Software Foundation; either version 2
 // of the License, or (at your option) any later version.
 
-import AsyncGL
+import AsyncGLANGLE
 import CelestiaCore
 import CelestiaFoundation
 import CelestiaUI
@@ -59,7 +59,7 @@ class CelestiaDisplayController: AsyncGLViewController {
 
     init(msaaEnabled: Bool, screen: UIScreen, initialFrameRate frameRate: Int, executor: CelestiaExecutor, subscriptionManager: SubscriptionManager, core: AppCore, userDefaults: UserDefaults) {
 #if targetEnvironment(macCatalyst)
-        let api = AsyncGLAPI.openGLLegacy
+        let api = AsyncGLAPI.openGLES2
 #else
         let api = AsyncGLAPI.openGLES2
 #endif
