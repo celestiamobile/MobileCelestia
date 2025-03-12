@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		97143F1823FFAEFD00F35D87 /* defaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 97143F1623FFAEFD00F35D87 /* defaults.plist */; };
-		979D2F9523FEB1A8005D2592 /* MobileCelestiaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979D2F9423FEB1A8005D2592 /* MobileCelestiaTests.swift */; };
 		979D2FA623FEB1DD005D2592 /* CelestiaCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 979D2FA423FEB1D6005D2592 /* CelestiaCore.framework */; };
 		979D2FAB23FEB2AA005D2592 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 979D2FAA23FEB2A5005D2592 /* libc++.tbd */; };
 		979D2FAD23FEB2B4005D2592 /* libbz2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 979D2FAC23FEB2AE005D2592 /* libbz2.tbd */; };
@@ -37,7 +36,6 @@
 		EA50E7832A505EDF005E7D7A /* CelestiaAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA50E7822A505EDF005E7D7A /* CelestiaAction.swift */; };
 		EA50E7852A505F13005E7D7A /* Font.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAB08FE32780550600BB82F0 /* Font.swift */; };
 		EA5C17832AF0DBBC00E1F615 /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EA5C17822AF0DBB800E1F615 /* libiconv.tbd */; };
-		EA61209C2B9DBEFB00497075 /* RequestHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA61209B2B9DBEFB00497075 /* RequestHandler.swift */; };
 		EA66BBC62A55AABF008A7AAA /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394BC2404189000E38B82 /* SearchViewController.swift */; };
 		EA66BBC72A55AABF008A7AAA /* SearchCoordinatorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394BE24041A9A00E38B82 /* SearchCoordinatorController.swift */; };
 		EA66BBDF2A55BA88008A7AAA /* DistanceInputCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EACAB98828BB314300192C75 /* DistanceInputCell.swift */; };
@@ -249,8 +247,6 @@
 		978406DB240294D000876FD1 /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
 		979D2F7A23FEB1A6005D2592 /* Celestia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Celestia.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		979D2F9023FEB1A8005D2592 /* MobileCelestiaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MobileCelestiaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		979D2F9423FEB1A8005D2592 /* MobileCelestiaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileCelestiaTests.swift; sourceTree = "<group>"; };
-		979D2F9623FEB1A8005D2592 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		979D2F9F23FEB1D5005D2592 /* CelestiaCore.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CelestiaCore.xcodeproj; path = ../CelestiaCore/CelestiaCore.xcodeproj; sourceTree = "<group>"; };
 		979D2FAA23FEB2A5005D2592 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		979D2FAC23FEB2AE005D2592 /* libbz2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbz2.tbd; path = usr/lib/libbz2.tbd; sourceTree = SDKROOT; };
@@ -282,7 +278,6 @@
 		EA5AA1642A94715D0061764D /* SubscriptionManagerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionManagerViewController.swift; sourceTree = "<group>"; };
 		EA5AA1682A947AA50061764D /* FeatureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureView.swift; sourceTree = "<group>"; };
 		EA5C17822AF0DBB800E1F615 /* libiconv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.2.sdk/usr/lib/libiconv.tbd; sourceTree = DEVELOPER_DIR; };
-		EA61209B2B9DBEFB00497075 /* RequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestHandler.swift; sourceTree = "<group>"; };
 		EA6671C829B3919C00A7846E /* SelectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectionCell.swift; sourceTree = "<group>"; };
 		EA6671CA29B391B900A7846E /* SelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionViewController.swift; sourceTree = "<group>"; };
 		EA6671CD29B3947800A7846E /* GameControllerAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameControllerAction.swift; sourceTree = "<group>"; };
@@ -376,6 +371,13 @@
 			);
 			target = 979D2F7923FEB1A6005D2592 /* MobileCelestia */;
 		};
+		EA3AC23B2D811B760029ACA4 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				MobileCelestiaTests.swift,
+			);
+			target = 979D2F8F23FEB1A8005D2592 /* MobileCelestiaTests */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -383,6 +385,8 @@
 		EA3ABD8F2D81160B0029ACA4 /* CelestiaMacBridge */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (EA3ABD912D81160B0029ACA4 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = CelestiaMacBridge; sourceTree = "<group>"; };
 		EA3ABD962D8116130029ACA4 /* CelestiaFoundation */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (EA3ABD9B2D8116140029ACA4 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = CelestiaFoundation; sourceTree = "<group>"; };
 		EA3AC0082D811AA10029ACA4 /* MobileCelestia */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (EA3AC0232D811AA10029ACA4 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = MobileCelestia; sourceTree = "<group>"; };
+		EA3AC2392D811B760029ACA4 /* MobileCelestiaTests */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (EA3AC23B2D811B760029ACA4 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = MobileCelestiaTests; sourceTree = "<group>"; };
+		EA3AC23E2D811B790029ACA4 /* Shared */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Shared; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -494,12 +498,12 @@
 			children = (
 				979D2F9F23FEB1D5005D2592 /* CelestiaCore.xcodeproj */,
 				EA3AC0082D811AA10029ACA4 /* MobileCelestia */,
-				979D2F9323FEB1A8005D2592 /* MobileCelestiaTests */,
+				EA3AC2392D811B760029ACA4 /* MobileCelestiaTests */,
 				EA3ABD8F2D81160B0029ACA4 /* CelestiaMacBridge */,
 				EA3ABD872D8116090029ACA4 /* CelestiaHelper */,
 				EA3ABD962D8116130029ACA4 /* CelestiaFoundation */,
 				EA50E75F2A505627005E7D7A /* CelestiaUI */,
-				EA6120A12B9DC63100497075 /* Shared */,
+				EA3AC23E2D811B790029ACA4 /* Shared */,
 				973E2EF92400F9E100B0F059 /* Resources */,
 				979D2F7B23FEB1A6005D2592 /* Products */,
 				979D2FA523FEB1DD005D2592 /* Frameworks */,
@@ -517,15 +521,6 @@
 				EA4E2D752A56B4570046D62E /* CelestiaFoundation.framework */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		979D2F9323FEB1A8005D2592 /* MobileCelestiaTests */ = {
-			isa = PBXGroup;
-			children = (
-				979D2F9423FEB1A8005D2592 /* MobileCelestiaTests.swift */,
-				979D2F9623FEB1A8005D2592 /* Info.plist */,
-			);
-			path = MobileCelestiaTests;
 			sourceTree = "<group>";
 		};
 		979D2FA023FEB1D5005D2592 /* Products */ = {
@@ -629,22 +624,6 @@
 				EA2AF7432A7F419A00492345 /* ToolbarAwareViewController.swift */,
 			);
 			path = UI;
-			sourceTree = "<group>";
-		};
-		EA61209A2B9DBEF100497075 /* Request */ = {
-			isa = PBXGroup;
-			children = (
-				EA61209B2B9DBEFB00497075 /* RequestHandler.swift */,
-			);
-			path = Request;
-			sourceTree = "<group>";
-		};
-		EA6120A12B9DC63100497075 /* Shared */ = {
-			isa = PBXGroup;
-			children = (
-				EA61209A2B9DBEF100497075 /* Request */,
-			);
-			path = Shared;
 			sourceTree = "<group>";
 		};
 		EA66BBC52A55AAA5008A7AAA /* Search */ = {
@@ -847,6 +826,7 @@
 			);
 			fileSystemSynchronizedGroups = (
 				EA3AC0082D811AA10029ACA4 /* MobileCelestia */,
+				EA3AC23E2D811B790029ACA4 /* Shared */,
 			);
 			name = MobileCelestia;
 			packageProductDependencies = (
@@ -1158,7 +1138,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EA61209C2B9DBEFB00497075 /* RequestHandler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1166,7 +1145,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				979D2F9523FEB1A8005D2592 /* MobileCelestiaTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
