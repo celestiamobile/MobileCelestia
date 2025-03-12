@@ -1,18 +1,18 @@
 diff --git a/MobileCelestia.xcodeproj/project.pbxproj b/MobileCelestia.xcodeproj/project.pbxproj
-index 2936296..75b873a 100644
+index f9825d7..db1d053 100644
 --- a/MobileCelestia.xcodeproj/project.pbxproj
 +++ b/MobileCelestia.xcodeproj/project.pbxproj
-@@ -88,8 +88,8 @@
- 		EA872F052A5ACC9C009E6A20 /* TutorialViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CDD29240BC50A00137127 /* TutorialViewController.swift */; };
- 		EA872F062A5ACC9C009E6A20 /* TutorialDescriptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CDD2D240BC6A900137127 /* TutorialDescriptionCell.swift */; };
- 		EA872F072A5ACC9C009E6A20 /* TutorialActionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977CDD2F240BD78F00137127 /* TutorialActionCell.swift */; };
+@@ -19,8 +19,8 @@
+ 		EA50E7642A505627005E7D7A /* CelestiaUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA50E75E2A505627005E7D7A /* CelestiaUI.framework */; };
+ 		EA5C17832AF0DBBC00E1F615 /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EA5C17822AF0DBB800E1F615 /* libiconv.tbd */; };
+ 		EA7BF37C27033AE40058F704 /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA7BF37B27033AE40058F704 /* GameController.framework */; };
 -		EA9039792BA19B1300C982BC /* AsyncGL in Frameworks */ = {isa = PBXBuildFile; productRef = EA9039782BA19B1300C982BC /* AsyncGL */; };
  		EA9039A22BA19CF100C982BC /* MWRequest in Frameworks */ = {isa = PBXBuildFile; productRef = EA9039A12BA19CF100C982BC /* MWRequest */; };
 +		EA9039A92BA19F0900C982BC /* AsyncGLANGLE in Frameworks */ = {isa = PBXBuildFile; productRef = EA9039A82BA19F0900C982BC /* AsyncGLANGLE */; };
- 		EA9166972B0AF20A00AF48B1 /* LinkTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9166962B0AF20A00AF48B1 /* LinkTextView.swift */; };
- 		EA9166BE2B0C722000AF48B1 /* ToolbarSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9166BD2B0C722000AF48B1 /* ToolbarSettingViewController.swift */; };
- 		EA9166C02B0C725100AF48B1 /* QuickAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9166BF2B0C725100AF48B1 /* QuickAction.swift */; };
-@@ -420,7 +420,7 @@
+ 		EA9A426D288CD7FE00AF3BD6 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA9A426C288CD7FE00AF3BD6 /* AVFoundation.framework */; };
+ 		EA9A426F288CD80300AF3BD6 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA9A426E288CD80200AF3BD6 /* AudioToolbox.framework */; };
+ 		EAA2FA192CED1EEC00D915C1 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = EAA2FA182CED1EEC00D915C1 /* InfoPlist.xcstrings */; };
+@@ -200,7 +200,7 @@
  			isa = PBXFrameworksBuildPhase;
  			buildActionMask = 2147483647;
  			files = (
@@ -21,7 +21,7 @@ index 2936296..75b873a 100644
  				979D2FAD23FEB2B4005D2592 /* libbz2.tbd in Frameworks */,
  				EA4E2D7C2A56B46B0046D62E /* CelestiaFoundation.framework in Frameworks */,
  				EA9A426D288CD7FE00AF3BD6 /* AVFoundation.framework in Frameworks */,
-@@ -1002,7 +1002,7 @@
+@@ -375,7 +375,7 @@
  			);
  			name = MobileCelestia;
  			packageProductDependencies = (
@@ -30,7 +30,7 @@ index 2936296..75b873a 100644
  				EA9039A12BA19CF100C982BC /* MWRequest */,
  				EAC20FE02CA0CB7C0098AABA /* Sentry */,
  			);
-@@ -2054,16 +2054,16 @@
+@@ -1305,16 +1305,16 @@
  /* End XCRemoteSwiftPackageReference section */
  
  /* Begin XCSwiftPackageProductDependency section */
