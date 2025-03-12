@@ -12,36 +12,19 @@
 		979D2FAB23FEB2AA005D2592 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 979D2FAA23FEB2A5005D2592 /* libc++.tbd */; };
 		979D2FAD23FEB2B4005D2592 /* libbz2.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 979D2FAC23FEB2AE005D2592 /* libbz2.tbd */; };
 		979D2FAF23FEB2BD005D2592 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 979D2FAE23FEB2B9005D2592 /* libz.tbd */; };
-		EA09B0732B10E76E00222229 /* EmptyHintView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA09B0722B10E76E00222229 /* EmptyHintView.swift */; };
-		EA09B0752B10FB2A00222229 /* SafeAreaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA09B0742B10FB2A00222229 /* SafeAreaView.swift */; };
 		EA09B0862B118C0E00222229 /* ICPCFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA09B0852B118C0E00222229 /* ICPCFooter.swift */; };
 		EA1823F027C08D3D00E0F5E4 /* CelestiaHelper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA1823EA27C08D3D00E0F5E4 /* CelestiaHelper.framework */; platformFilter = maccatalyst; };
 		EA28CA5324A2F399004B011E /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = EA28CA5124A2F399004B011E /* Fonts */; };
-		EA2AF7442A7F419A00492345 /* ToolbarAwareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2AF7432A7F419A00492345 /* ToolbarAwareViewController.swift */; };
 		EA4E2D7C2A56B46B0046D62E /* CelestiaFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA4E2D752A56B4570046D62E /* CelestiaFoundation.framework */; };
 		EA4E2D862A56B5E10046D62E /* CelestiaFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA4E2D752A56B4570046D62E /* CelestiaFoundation.framework */; };
 		EA50E7612A505627005E7D7A /* CelestiaUI.h in Headers */ = {isa = PBXBuildFile; fileRef = EA50E7602A505627005E7D7A /* CelestiaUI.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		EA50E7642A505627005E7D7A /* CelestiaUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA50E75E2A505627005E7D7A /* CelestiaUI.framework */; };
-		EA50E77C2A505E09005E7D7A /* ActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA775EB32664B63F00479295 /* ActionButton.swift */; };
-		EA50E77F2A505E5C005E7D7A /* StandardButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAF4851F249B5C2500E5B817 /* StandardButton.swift */; };
-		EA50E7802A505E82005E7D7A /* GlobalConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAA16A9728A6654600DBCE4F /* GlobalConstants.swift */; };
-		EA50E7812A505EA4005E7D7A /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394A22403E68800E38B82 /* Color.swift */; };
-		EA50E7852A505F13005E7D7A /* Font.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAB08FE32780550600BB82F0 /* Font.swift */; };
 		EA5C17832AF0DBBC00E1F615 /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EA5C17822AF0DBB800E1F615 /* libiconv.tbd */; };
-		EA66BBE32A564888008A7AAA /* SelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6671CA29B391B900A7846E /* SelectionViewController.swift */; };
 		EA741A6A2ADA6B5E00C7F1DC /* FontSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA741A692ADA6B5E00C7F1DC /* FontSettingViewController.swift */; };
 		EA741A6E2ADA6FD000C7F1DC /* FontSettingMainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA741A6D2ADA6FD000C7F1DC /* FontSettingMainViewController.swift */; };
 		EA7BF37C27033AE40058F704 /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA7BF37B27033AE40058F704 /* GameController.framework */; };
-		EA839CB32A5696E100BF1CB4 /* MultiLineTextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA839CB02A5696E100BF1CB4 /* MultiLineTextCell.swift */; };
-		EA839CB42A5696E100BF1CB4 /* SliderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA839CB12A5696E100BF1CB4 /* SliderCell.swift */; };
-		EA839CB52A5696E100BF1CB4 /* SwitchCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA839CB22A5696E100BF1CB4 /* SwitchCell.swift */; };
-		EA872EFC2A5ACA1F009E6A20 /* UIContentSizeCategory+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA85C912289E9A7D009ADB1C /* UIContentSizeCategory+Extension.swift */; };
-		EA872EFD2A5ACA53009E6A20 /* AutoSizingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA85C914289E9AD2009ADB1C /* AutoSizingView.swift */; };
-		EA872EFE2A5ACB1D009E6A20 /* IconView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA85C916289EA1ED009ADB1C /* IconView.swift */; };
-		EA872EFF2A5ACB6E009E6A20 /* ButtonView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA85C91A289F5811009ADB1C /* ButtonView.swift */; };
 		EA9039792BA19B1300C982BC /* AsyncGL in Frameworks */ = {isa = PBXBuildFile; productRef = EA9039782BA19B1300C982BC /* AsyncGL */; };
 		EA9039A22BA19CF100C982BC /* MWRequest in Frameworks */ = {isa = PBXBuildFile; productRef = EA9039A12BA19CF100C982BC /* MWRequest */; };
-		EA9166972B0AF20A00AF48B1 /* LinkTextView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9166962B0AF20A00AF48B1 /* LinkTextView.swift */; };
 		EA9166BE2B0C722000AF48B1 /* ToolbarSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9166BD2B0C722000AF48B1 /* ToolbarSettingViewController.swift */; };
 		EA9166C02B0C725100AF48B1 /* QuickAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9166BF2B0C725100AF48B1 /* QuickAction.swift */; };
 		EA9166C22B0C734900AF48B1 /* ToolbarSettingContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9166C12B0C734900AF48B1 /* ToolbarSettingContext.swift */; };
@@ -56,11 +39,6 @@
 		EAA79CD42A56AF6D0056DB91 /* SettingsFrameRateViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA86E38326FE20C000FF2278 /* SettingsFrameRateViewController.swift */; };
 		EAA79CD62A56B0100056DB91 /* DataLocationSelectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97F1141D2408AE06003A06D7 /* DataLocationSelectionViewController.swift */; };
 		EAA7D6B92B88446300D57718 /* ZipUtils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA86F8052B7A4A8500419451 /* ZipUtils.framework */; };
-		EAB623AF2A51AA4400063D1B /* BaseTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA982BFE25496B6D00CDC642 /* BaseTableViewController.swift */; };
-		EAB623B12A51AA9300063D1B /* UIViewController+Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978406D92402906C00876FD1 /* UIViewController+Extension.swift */; };
-		EAB623B22A51AAB600063D1B /* UITableView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAD94F66261EED7700A93C93 /* UITableView+Extensions.swift */; };
-		EAB623B62A51AC0F00063D1B /* TextCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394B22403F74800E38B82 /* TextCell.swift */; };
-		EAB623B72A51AC2C00063D1B /* UILabel+DynamicType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA7209DF27C64270004C1400 /* UILabel+DynamicType.swift */; };
 		EAB8F2252A56BD6100C4E777 /* SettingsMainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394AD2403F08800E38B82 /* SettingsMainViewController.swift */; };
 		EAB8F2272A56BDA600C4E777 /* SettingsCoordinatorController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 977394AB2403F07C00E38B82 /* SettingsCoordinatorController.swift */; };
 		EAB8F2582A56D71600C4E777 /* ResourceItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF792B25389B3100F2460C /* ResourceItem.swift */; };
@@ -79,12 +57,6 @@
 		EABC92342A56FF80007E27F0 /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EABC92332A56FF80007E27F0 /* SharedAssets.xcassets */; };
 		EAC20FE12CA0CB7C0098AABA /* Sentry in Frameworks */ = {isa = PBXBuildFile; productRef = EAC20FE02CA0CB7C0098AABA /* Sentry */; };
 		EAC84364252C84B600691943 /* CelestiaMacBridge.bundle in Embed PlugIns */ = {isa = PBXBuildFile; fileRef = EAC84354252C816500691943 /* CelestiaMacBridge.bundle */; platformFilter = maccatalyst; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
-		EAD12AA72A566E4F007EE4D6 /* SelectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6671C829B3919C00A7846E /* SelectionCell.swift */; };
-		EAD12AA82A566EE1007EE4D6 /* LinkFooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA6671D229B3A9AE00A7846E /* LinkFooterView.swift */; };
-		EAD12AAA2A56757F007EE4D6 /* StepperCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97EB41C82408F26200E6D441 /* StepperCell.swift */; };
-		EAE4CF9F2C22988F00B12AA5 /* TeachingCardCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE4CF9D2C22988F00B12AA5 /* TeachingCardCell.swift */; };
-		EAE4CFA02C22988F00B12AA5 /* TeachingCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE4CF9E2C22988F00B12AA5 /* TeachingCardView.swift */; };
-		EAE51CA32A7B765100D6779C /* Formatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAE51CA22A7B765100D6779C /* Formatter.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -179,60 +151,37 @@
 		973BBA442405216700E3B061 /* AboutViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutViewController.swift; sourceTree = "<group>"; };
 		973BBA632405481200E3B061 /* TimeSettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimeSettingViewController.swift; sourceTree = "<group>"; };
 		973BBA6524054E9900E3B061 /* TextViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewController.swift; sourceTree = "<group>"; };
-		977394A22403E68800E38B82 /* Color.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
 		977394AB2403F07C00E38B82 /* SettingsCoordinatorController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCoordinatorController.swift; sourceTree = "<group>"; };
 		977394AD2403F08800E38B82 /* SettingsMainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsMainViewController.swift; sourceTree = "<group>"; };
-		977394B22403F74800E38B82 /* TextCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextCell.swift; sourceTree = "<group>"; };
-		978406D92402906C00876FD1 /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		979D2F7A23FEB1A6005D2592 /* Celestia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Celestia.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		979D2F9023FEB1A8005D2592 /* MobileCelestiaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MobileCelestiaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		979D2F9F23FEB1D5005D2592 /* CelestiaCore.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = CelestiaCore.xcodeproj; path = ../CelestiaCore/CelestiaCore.xcodeproj; sourceTree = "<group>"; };
 		979D2FAA23FEB2A5005D2592 /* libc++.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = "libc++.tbd"; path = "usr/lib/libc++.tbd"; sourceTree = SDKROOT; };
 		979D2FAC23FEB2AE005D2592 /* libbz2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbz2.tbd; path = usr/lib/libbz2.tbd; sourceTree = SDKROOT; };
 		979D2FAE23FEB2B9005D2592 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
-		97EB41C82408F26200E6D441 /* StepperCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StepperCell.swift; sourceTree = "<group>"; };
 		97F1141D2408AE06003A06D7 /* DataLocationSelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataLocationSelectionViewController.swift; sourceTree = "<group>"; };
 		97FF95A4240A340300E9F44F /* RequestHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RequestHandler.swift; sourceTree = "<group>"; };
-		EA09B0722B10E76E00222229 /* EmptyHintView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyHintView.swift; sourceTree = "<group>"; };
-		EA09B0742B10FB2A00222229 /* SafeAreaView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SafeAreaView.swift; sourceTree = "<group>"; };
 		EA09B0852B118C0E00222229 /* ICPCFooter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ICPCFooter.swift; sourceTree = "<group>"; };
 		EA17951A27B1510500D47397 /* CelestiaScriptHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CelestiaScriptHandler.swift; sourceTree = "<group>"; };
 		EA17951F27B371D700D47397 /* GuideItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GuideItem.swift; sourceTree = "<group>"; };
 		EA1823EA27C08D3D00E0F5E4 /* CelestiaHelper.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CelestiaHelper.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA28CA5124A2F399004B011E /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Fonts; path = ../../CelestiaCore/Fonts; sourceTree = "<group>"; };
-		EA2AF7432A7F419A00492345 /* ToolbarAwareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarAwareViewController.swift; sourceTree = "<group>"; };
 		EA4E2D752A56B4570046D62E /* CelestiaFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CelestiaFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA50E75E2A505627005E7D7A /* CelestiaUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CelestiaUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA50E7602A505627005E7D7A /* CelestiaUI.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CelestiaUI.h; sourceTree = "<group>"; };
 		EA5C17822AF0DBB800E1F615 /* libiconv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX14.2.sdk/usr/lib/libiconv.tbd; sourceTree = DEVELOPER_DIR; };
-		EA6671C829B3919C00A7846E /* SelectionCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectionCell.swift; sourceTree = "<group>"; };
-		EA6671CA29B391B900A7846E /* SelectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectionViewController.swift; sourceTree = "<group>"; };
-		EA6671D229B3A9AE00A7846E /* LinkFooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkFooterView.swift; sourceTree = "<group>"; };
-		EA7209DF27C64270004C1400 /* UILabel+DynamicType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UILabel+DynamicType.swift"; sourceTree = "<group>"; };
 		EA741A692ADA6B5E00C7F1DC /* FontSettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontSettingViewController.swift; sourceTree = "<group>"; };
 		EA741A6D2ADA6FD000C7F1DC /* FontSettingMainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FontSettingMainViewController.swift; sourceTree = "<group>"; };
-		EA775EB32664B63F00479295 /* ActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButton.swift; sourceTree = "<group>"; };
 		EA7BF37B27033AE40058F704 /* GameController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameController.framework; path = System/Library/Frameworks/GameController.framework; sourceTree = SDKROOT; };
-		EA839CB02A5696E100BF1CB4 /* MultiLineTextCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiLineTextCell.swift; sourceTree = "<group>"; };
-		EA839CB12A5696E100BF1CB4 /* SliderCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SliderCell.swift; sourceTree = "<group>"; };
-		EA839CB22A5696E100BF1CB4 /* SwitchCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwitchCell.swift; sourceTree = "<group>"; };
-		EA85C912289E9A7D009ADB1C /* UIContentSizeCategory+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIContentSizeCategory+Extension.swift"; sourceTree = "<group>"; };
-		EA85C914289E9AD2009ADB1C /* AutoSizingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoSizingView.swift; sourceTree = "<group>"; };
-		EA85C916289EA1ED009ADB1C /* IconView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IconView.swift; sourceTree = "<group>"; };
-		EA85C91A289F5811009ADB1C /* ButtonView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ButtonView.swift; sourceTree = "<group>"; };
 		EA86E38326FE20C000FF2278 /* SettingsFrameRateViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsFrameRateViewController.swift; sourceTree = "<group>"; };
-		EA9166962B0AF20A00AF48B1 /* LinkTextView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkTextView.swift; sourceTree = "<group>"; };
 		EA9166BD2B0C722000AF48B1 /* ToolbarSettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarSettingViewController.swift; sourceTree = "<group>"; };
 		EA9166BF2B0C725100AF48B1 /* QuickAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAction.swift; sourceTree = "<group>"; };
 		EA9166C12B0C734900AF48B1 /* ToolbarSettingContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarSettingContext.swift; sourceTree = "<group>"; };
-		EA982BFE25496B6D00CDC642 /* BaseTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTableViewController.swift; sourceTree = "<group>"; };
 		EA9A426C288CD7FE00AF3BD6 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		EA9A426E288CD80200AF3BD6 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		EAA16A9728A6654600DBCE4F /* GlobalConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalConstants.swift; sourceTree = "<group>"; };
 		EAA2FA182CED1EEC00D915C1 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
 		EAA6C4CA253B5CD200ED1D60 /* InstalledResourceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstalledResourceViewController.swift; sourceTree = "<group>"; };
 		EAA79CCB2A56A01F0056DB91 /* SettingsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsModel.swift; sourceTree = "<group>"; };
-		EAB08FE32780550600BB82F0 /* Font.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Font.swift; sourceTree = "<group>"; };
 		EAB8F2612A56DB9200C4E777 /* URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URL.swift; sourceTree = "<group>"; };
 		EABC91F92A56F254007E27F0 /* ResourceCategoriesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceCategoriesViewController.swift; sourceTree = "<group>"; };
 		EABC92332A56FF80007E27F0 /* SharedAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SharedAssets.xcassets; sourceTree = "<group>"; };
@@ -243,12 +192,7 @@
 		EABF793B2538A1C100F2460C /* ResourceItemViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ResourceItemViewController.swift; sourceTree = "<group>"; };
 		EABF79492538A86500F2460C /* ResourceManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceManager.swift; sourceTree = "<group>"; };
 		EAC84354252C816500691943 /* CelestiaMacBridge.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CelestiaMacBridge.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
-		EAD94F66261EED7700A93C93 /* UITableView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Extensions.swift"; sourceTree = "<group>"; };
-		EAE4CF9D2C22988F00B12AA5 /* TeachingCardCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TeachingCardCell.swift; sourceTree = "<group>"; };
-		EAE4CF9E2C22988F00B12AA5 /* TeachingCardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TeachingCardView.swift; sourceTree = "<group>"; };
-		EAE51CA22A7B765100D6779C /* Formatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatter.swift; sourceTree = "<group>"; };
 		EAE6AC0E27A438E400F953DF /* CommonWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonWebViewController.swift; sourceTree = "<group>"; };
-		EAF4851F249B5C2500E5B817 /* StandardButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StandardButton.swift; sourceTree = "<group>"; };
 		EAFF95F328885A64009C2FFD /* FallbackWebViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FallbackWebViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -311,6 +255,9 @@
 		EA3AC8972D8127620029ACA4 /* Event */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Event; sourceTree = "<group>"; };
 		EA3AC89F2D8127650029ACA4 /* GoTo */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = GoTo; sourceTree = "<group>"; };
 		EA3AC8A62D8127690029ACA4 /* Search */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Search; sourceTree = "<group>"; };
+		EA3ACAA52D8128610029ACA4 /* Cell */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Cell; sourceTree = "<group>"; };
+		EA3ACAB82D81286B0029ACA4 /* UI */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = UI; sourceTree = "<group>"; };
+		EA3ACACE2D8128710029ACA4 /* Common */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Common; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -461,51 +408,16 @@
 				EA3AC89F2D8127650029ACA4 /* GoTo */,
 				EA3AC8A62D8127690029ACA4 /* Search */,
 				EA3AC6572D811F540029ACA4 /* Interaction */,
-				EAB623B32A51AAE100063D1B /* Cell */,
+				EA3ACAA52D8128610029ACA4 /* Cell */,
 				EA3AC64D2D811F500029ACA4 /* Browser */,
-				EA50E7842A505F03005E7D7A /* UI */,
+				EA3ACAB82D81286B0029ACA4 /* UI */,
 				97FF959C240A2E8A00E9F44F /* Request */,
 				EA3AC6442D811F460029ACA4 /* Core */,
-				EA50E77B2A505DFA005E7D7A /* Common */,
+				EA3ACACE2D8128710029ACA4 /* Common */,
 				EA3AC63A2D811F420029ACA4 /* Info */,
 				EA50E7602A505627005E7D7A /* CelestiaUI.h */,
 			);
 			path = CelestiaUI;
-			sourceTree = "<group>";
-		};
-		EA50E77B2A505DFA005E7D7A /* Common */ = {
-			isa = PBXGroup;
-			children = (
-				EA85C91A289F5811009ADB1C /* ButtonView.swift */,
-				EA85C916289EA1ED009ADB1C /* IconView.swift */,
-				EA85C914289E9AD2009ADB1C /* AutoSizingView.swift */,
-				EA6671D229B3A9AE00A7846E /* LinkFooterView.swift */,
-				EA6671CA29B391B900A7846E /* SelectionViewController.swift */,
-				EAF4851F249B5C2500E5B817 /* StandardButton.swift */,
-				EA775EB32664B63F00479295 /* ActionButton.swift */,
-				EAE51CA22A7B765100D6779C /* Formatter.swift */,
-				EA9166962B0AF20A00AF48B1 /* LinkTextView.swift */,
-				EA09B0722B10E76E00222229 /* EmptyHintView.swift */,
-				EA09B0742B10FB2A00222229 /* SafeAreaView.swift */,
-			);
-			path = Common;
-			sourceTree = "<group>";
-		};
-		EA50E7842A505F03005E7D7A /* UI */ = {
-			isa = PBXGroup;
-			children = (
-				EAE4CF9E2C22988F00B12AA5 /* TeachingCardView.swift */,
-				EA85C912289E9A7D009ADB1C /* UIContentSizeCategory+Extension.swift */,
-				978406D92402906C00876FD1 /* UIViewController+Extension.swift */,
-				EAD94F66261EED7700A93C93 /* UITableView+Extensions.swift */,
-				EA982BFE25496B6D00CDC642 /* BaseTableViewController.swift */,
-				EA7209DF27C64270004C1400 /* UILabel+DynamicType.swift */,
-				EAB08FE32780550600BB82F0 /* Font.swift */,
-				977394A22403E68800E38B82 /* Color.swift */,
-				EAA16A9728A6654600DBCE4F /* GlobalConstants.swift */,
-				EA2AF7432A7F419A00492345 /* ToolbarAwareViewController.swift */,
-			);
-			path = UI;
 			sourceTree = "<group>";
 		};
 		EAA79CCA2A56A0000056DB91 /* Settings */ = {
@@ -528,20 +440,6 @@
 				EA9166C12B0C734900AF48B1 /* ToolbarSettingContext.swift */,
 			);
 			path = Settings;
-			sourceTree = "<group>";
-		};
-		EAB623B32A51AAE100063D1B /* Cell */ = {
-			isa = PBXGroup;
-			children = (
-				EAE4CF9D2C22988F00B12AA5 /* TeachingCardCell.swift */,
-				EA839CB02A5696E100BF1CB4 /* MultiLineTextCell.swift */,
-				EA839CB12A5696E100BF1CB4 /* SliderCell.swift */,
-				EA839CB22A5696E100BF1CB4 /* SwitchCell.swift */,
-				977394B22403F74800E38B82 /* TextCell.swift */,
-				97EB41C82408F26200E6D441 /* StepperCell.swift */,
-				EA6671C829B3919C00A7846E /* SelectionCell.swift */,
-			);
-			path = Cell;
 			sourceTree = "<group>";
 		};
 		EAB8F2532A56D70600C4E777 /* Addon */ = {
@@ -722,6 +620,9 @@
 				EA3AC8972D8127620029ACA4 /* Event */,
 				EA3AC89F2D8127650029ACA4 /* GoTo */,
 				EA3AC8A62D8127690029ACA4 /* Search */,
+				EA3ACAA52D8128610029ACA4 /* Cell */,
+				EA3ACAB82D81286B0029ACA4 /* UI */,
+				EA3ACACE2D8128710029ACA4 /* Common */,
 			);
 			name = CelestiaUI;
 			productName = CelestiaUI;
@@ -979,57 +880,29 @@
 				EA9166C02B0C725100AF48B1 /* QuickAction.swift in Sources */,
 				EA09B0862B118C0E00222229 /* ICPCFooter.swift in Sources */,
 				EAB8F2272A56BDA600C4E777 /* SettingsCoordinatorController.swift in Sources */,
-				EA872EFF2A5ACB6E009E6A20 /* ButtonView.swift in Sources */,
-				EAB623AF2A51AA4400063D1B /* BaseTableViewController.swift in Sources */,
 				EAA79CCC2A56A01F0056DB91 /* SettingsModel.swift in Sources */,
-				EA9166972B0AF20A00AF48B1 /* LinkTextView.swift in Sources */,
-				EAD12AA72A566E4F007EE4D6 /* SelectionCell.swift in Sources */,
-				EA50E7812A505EA4005E7D7A /* Color.swift in Sources */,
 				EAB8F2602A56D9B500C4E777 /* ResourceItemViewController.swift in Sources */,
 				EABC91FA2A56F254007E27F0 /* ResourceCategoriesViewController.swift in Sources */,
 				EAA79CD12A56AD770056DB91 /* TextViewController.swift in Sources */,
 				EAA79CD22A56ADA90056DB91 /* AboutViewController.swift in Sources */,
-				EAE4CF9F2C22988F00B12AA5 /* TeachingCardCell.swift in Sources */,
-				EA839CB52A5696E100BF1CB4 /* SwitchCell.swift in Sources */,
 				EAB8F25B2A56D71600C4E777 /* GuideItem.swift in Sources */,
 				EA741A6E2ADA6FD000C7F1DC /* FontSettingMainViewController.swift in Sources */,
 				EAB8F2592A56D71600C4E777 /* ResourceManager.swift in Sources */,
-				EAB623B12A51AA9300063D1B /* UIViewController+Extension.swift in Sources */,
-				EA50E7802A505E82005E7D7A /* GlobalConstants.swift in Sources */,
-				EA839CB32A5696E100BF1CB4 /* MultiLineTextCell.swift in Sources */,
-				EA872EFD2A5ACA53009E6A20 /* AutoSizingView.swift in Sources */,
 				EAB8F2252A56BD6100C4E777 /* SettingsMainViewController.swift in Sources */,
 				EA9166C22B0C734900AF48B1 /* ToolbarSettingContext.swift in Sources */,
-				EA872EFC2A5ACA1F009E6A20 /* UIContentSizeCategory+Extension.swift in Sources */,
-				EA50E77F2A505E5C005E7D7A /* StandardButton.swift in Sources */,
-				EA50E7852A505F13005E7D7A /* Font.swift in Sources */,
-				EAE4CFA02C22988F00B12AA5 /* TeachingCardView.swift in Sources */,
 				EAB8F2632A56DC3200C4E777 /* InstalledResourceViewController.swift in Sources */,
-				EA09B0732B10E76E00222229 /* EmptyHintView.swift in Sources */,
 				EAB8F25A2A56D71600C4E777 /* CelestiaScriptHandler.swift in Sources */,
-				EAB623B72A51AC2C00063D1B /* UILabel+DynamicType.swift in Sources */,
-				EAB623B22A51AAB600063D1B /* UITableView+Extensions.swift in Sources */,
-				EA09B0752B10FB2A00222229 /* SafeAreaView.swift in Sources */,
 				EAB8F2662A56DC3200C4E777 /* AsyncListViewController.swift in Sources */,
 				EA741A6A2ADA6B5E00C7F1DC /* FontSettingViewController.swift in Sources */,
 				EAB8F25F2A56D99B00C4E777 /* RequestHandler.swift in Sources */,
-				EAB623B62A51AC0F00063D1B /* TextCell.swift in Sources */,
 				EAB8F2622A56DB9200C4E777 /* URL.swift in Sources */,
 				EAA79CCF2A56AC1C0056DB91 /* TimeSettingViewController.swift in Sources */,
-				EAD12AA82A566EE1007EE4D6 /* LinkFooterView.swift in Sources */,
 				EA9166BE2B0C722000AF48B1 /* ToolbarSettingViewController.swift in Sources */,
 				EAB8F2652A56DC3200C4E777 /* FallbackWebViewController.swift in Sources */,
-				EAD12AAA2A56757F007EE4D6 /* StepperCell.swift in Sources */,
-				EAE51CA32A7B765100D6779C /* Formatter.swift in Sources */,
 				EAA79CD42A56AF6D0056DB91 /* SettingsFrameRateViewController.swift in Sources */,
-				EA66BBE32A564888008A7AAA /* SelectionViewController.swift in Sources */,
 				EAB8F2582A56D71600C4E777 /* ResourceItem.swift in Sources */,
-				EA50E77C2A505E09005E7D7A /* ActionButton.swift in Sources */,
-				EA872EFE2A5ACB1D009E6A20 /* IconView.swift in Sources */,
 				EAA79CD62A56B0100056DB91 /* DataLocationSelectionViewController.swift in Sources */,
 				EAB8F25D2A56D80D00C4E777 /* CommonWebViewController.swift in Sources */,
-				EA839CB42A5696E100BF1CB4 /* SliderCell.swift in Sources */,
-				EA2AF7442A7F419A00492345 /* ToolbarAwareViewController.swift in Sources */,
 				EAA79CCE2A56AB2D0056DB91 /* SettingCommonViewController.swift in Sources */,
 				EAB8F2642A56DC3200C4E777 /* ResourceViewController.swift in Sources */,
 			);
