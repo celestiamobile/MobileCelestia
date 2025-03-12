@@ -8,9 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		97143F1823FFAEFD00F35D87 /* defaults.plist in Resources */ = {isa = PBXBuildFile; fileRef = 97143F1623FFAEFD00F35D87 /* defaults.plist */; };
-		978406D724028F0000876FD1 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978406D624028F0000876FD1 /* MainViewController.swift */; };
-		979D2F7E23FEB1A6005D2592 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979D2F7D23FEB1A6005D2592 /* AppDelegate.swift */; };
-		979D2F8723FEB1A8005D2592 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 979D2F8623FEB1A8005D2592 /* Assets.xcassets */; };
 		979D2F9523FEB1A8005D2592 /* MobileCelestiaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 979D2F9423FEB1A8005D2592 /* MobileCelestiaTests.swift */; };
 		979D2FA623FEB1DD005D2592 /* CelestiaCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 979D2FA423FEB1D6005D2592 /* CelestiaCore.framework */; };
 		979D2FAB23FEB2AA005D2592 /* libc++.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 979D2FAA23FEB2A5005D2592 /* libc++.tbd */; };
@@ -21,7 +18,6 @@
 		EA09B0752B10FB2A00222229 /* SafeAreaView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA09B0742B10FB2A00222229 /* SafeAreaView.swift */; };
 		EA09B0862B118C0E00222229 /* ICPCFooter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA09B0852B118C0E00222229 /* ICPCFooter.swift */; };
 		EA1823F027C08D3D00E0F5E4 /* CelestiaHelper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA1823EA27C08D3D00E0F5E4 /* CelestiaHelper.framework */; platformFilter = maccatalyst; };
-		EA1BE1572748E9DC0046074C /* DisplaySceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA1BE1562748E9DC0046074C /* DisplaySceneDelegate.swift */; };
 		EA28CA5324A2F399004B011E /* Fonts in Resources */ = {isa = PBXBuildFile; fileRef = EA28CA5124A2F399004B011E /* Fonts */; };
 		EA2AF7442A7F419A00492345 /* ToolbarAwareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA2AF7432A7F419A00492345 /* ToolbarAwareViewController.swift */; };
 		EA4E2D7C2A56B46B0046D62E /* CelestiaFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA4E2D752A56B4570046D62E /* CelestiaFoundation.framework */; };
@@ -75,11 +71,8 @@
 		EA9166BE2B0C722000AF48B1 /* ToolbarSettingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9166BD2B0C722000AF48B1 /* ToolbarSettingViewController.swift */; };
 		EA9166C02B0C725100AF48B1 /* QuickAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9166BF2B0C725100AF48B1 /* QuickAction.swift */; };
 		EA9166C22B0C734900AF48B1 /* ToolbarSettingContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9166C12B0C734900AF48B1 /* ToolbarSettingContext.swift */; };
-		EA934C90251D90C500DD284C /* MainSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA934C8F251D90C500DD284C /* MainSceneDelegate.swift */; };
-		EA934C9A251D92AD00DD284C /* PanelSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA934C99251D92A700DD284C /* PanelSceneDelegate.swift */; };
 		EA9A426D288CD7FE00AF3BD6 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA9A426C288CD7FE00AF3BD6 /* AVFoundation.framework */; };
 		EA9A426F288CD80300AF3BD6 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA9A426E288CD80200AF3BD6 /* AudioToolbox.framework */; };
-		EA9FB23F27B7852A00E0DC1F /* CommonSceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EA9FB23E27B7852A00E0DC1F /* CommonSceneDelegate.swift */; };
 		EAA2FA192CED1EEC00D915C1 /* InfoPlist.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = EAA2FA182CED1EEC00D915C1 /* InfoPlist.xcstrings */; };
 		EAA79CCC2A56A01F0056DB91 /* SettingsModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAA79CCB2A56A01F0056DB91 /* SettingsModel.swift */; };
 		EAA79CCE2A56AB2D0056DB91 /* SettingCommonViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABDE3A82473DAA300E0A5FA /* SettingCommonViewController.swift */; };
@@ -113,7 +106,6 @@
 		EAB8F2642A56DC3200C4E777 /* ResourceViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF7910253895FD00F2460C /* ResourceViewController.swift */; };
 		EAB8F2652A56DC3200C4E777 /* FallbackWebViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EAFF95F328885A64009C2FFD /* FallbackWebViewController.swift */; };
 		EAB8F2662A56DC3200C4E777 /* AsyncListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABF791D2538986400F2460C /* AsyncListViewController.swift */; };
-		EAB93E8C2BC8608C009AB37B /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EAB93E8B2BC8608C009AB37B /* PrivacyInfo.xcprivacy */; };
 		EABC91FA2A56F254007E27F0 /* ResourceCategoriesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = EABC91F92A56F254007E27F0 /* ResourceCategoriesViewController.swift */; };
 		EABC92342A56FF80007E27F0 /* SharedAssets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EABC92332A56FF80007E27F0 /* SharedAssets.xcassets */; };
 		EABC92402A57021C007E27F0 /* LoadingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 978406DB240294D000876FD1 /* LoadingViewController.swift */; };
@@ -253,13 +245,9 @@
 		977CDD2D240BC6A900137127 /* TutorialDescriptionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialDescriptionCell.swift; sourceTree = "<group>"; };
 		977CDD2F240BD78F00137127 /* TutorialActionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialActionCell.swift; sourceTree = "<group>"; };
 		977CDD33240BDFE500137127 /* OnboardViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardViewController.swift; sourceTree = "<group>"; };
-		978406D624028F0000876FD1 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		978406D92402906C00876FD1 /* UIViewController+Extension.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Extension.swift"; sourceTree = "<group>"; };
 		978406DB240294D000876FD1 /* LoadingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingViewController.swift; sourceTree = "<group>"; };
 		979D2F7A23FEB1A6005D2592 /* Celestia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Celestia.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		979D2F7D23FEB1A6005D2592 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		979D2F8623FEB1A8005D2592 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		979D2F8B23FEB1A8005D2592 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		979D2F9023FEB1A8005D2592 /* MobileCelestiaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MobileCelestiaTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		979D2F9423FEB1A8005D2592 /* MobileCelestiaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MobileCelestiaTests.swift; sourceTree = "<group>"; };
 		979D2F9623FEB1A8005D2592 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -281,13 +269,10 @@
 		EA1BC6E224A0E92B00F3F51B /* EventFinderCoordinatorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventFinderCoordinatorViewController.swift; sourceTree = "<group>"; };
 		EA1BC6E424A0E93D00F3F51B /* EventFinderInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventFinderInputViewController.swift; sourceTree = "<group>"; };
 		EA1BC6E624A0E94900F3F51B /* EventFinderResultViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventFinderResultViewController.swift; sourceTree = "<group>"; };
-		EA1BE1562748E9DC0046074C /* DisplaySceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DisplaySceneDelegate.swift; sourceTree = "<group>"; };
-		EA1EF056249393BE0039F493 /* Celestia.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Celestia.entitlements; sourceTree = "<group>"; };
 		EA28CA5124A2F399004B011E /* Fonts */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Fonts; path = ../../CelestiaCore/Fonts; sourceTree = "<group>"; };
 		EA2AF7432A7F419A00492345 /* ToolbarAwareViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarAwareViewController.swift; sourceTree = "<group>"; };
 		EA374CD1263A8B320069589C /* GoToContainerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoToContainerViewController.swift; sourceTree = "<group>"; };
 		EA374CD9263A8B770069589C /* GoToInputViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoToInputViewController.swift; sourceTree = "<group>"; };
-		EA3EC553277C8EAD00936D4F /* Celestia-macOS.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Celestia-macOS.entitlements"; sourceTree = "<group>"; };
 		EA445D14265CF6CD00E5D46A /* LinkPreviewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkPreviewCell.swift; sourceTree = "<group>"; };
 		EA4E2D752A56B4570046D62E /* CelestiaFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CelestiaFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA50E75E2A505627005E7D7A /* CelestiaUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CelestiaUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -326,19 +311,15 @@
 		EA9166BD2B0C722000AF48B1 /* ToolbarSettingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarSettingViewController.swift; sourceTree = "<group>"; };
 		EA9166BF2B0C725100AF48B1 /* QuickAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAction.swift; sourceTree = "<group>"; };
 		EA9166C12B0C734900AF48B1 /* ToolbarSettingContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ToolbarSettingContext.swift; sourceTree = "<group>"; };
-		EA934C8F251D90C500DD284C /* MainSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainSceneDelegate.swift; sourceTree = "<group>"; };
-		EA934C99251D92A700DD284C /* PanelSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PanelSceneDelegate.swift; sourceTree = "<group>"; };
 		EA982BFE25496B6D00CDC642 /* BaseTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseTableViewController.swift; sourceTree = "<group>"; };
 		EA9A426C288CD7FE00AF3BD6 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		EA9A426E288CD80200AF3BD6 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
-		EA9FB23E27B7852A00E0DC1F /* CommonSceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonSceneDelegate.swift; sourceTree = "<group>"; };
 		EAA16A9728A6654600DBCE4F /* GlobalConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GlobalConstants.swift; sourceTree = "<group>"; };
 		EAA2FA182CED1EEC00D915C1 /* InfoPlist.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = InfoPlist.xcstrings; sourceTree = "<group>"; };
 		EAA6C4CA253B5CD200ED1D60 /* InstalledResourceViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstalledResourceViewController.swift; sourceTree = "<group>"; };
 		EAA79CCB2A56A01F0056DB91 /* SettingsModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsModel.swift; sourceTree = "<group>"; };
 		EAB08FE32780550600BB82F0 /* Font.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Font.swift; sourceTree = "<group>"; };
 		EAB8F2612A56DB9200C4E777 /* URL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URL.swift; sourceTree = "<group>"; };
-		EAB93E8B2BC8608C009AB37B /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		EABC91F92A56F254007E27F0 /* ResourceCategoriesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResourceCategoriesViewController.swift; sourceTree = "<group>"; };
 		EABC92332A56FF80007E27F0 /* SharedAssets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = SharedAssets.xcassets; sourceTree = "<group>"; };
 		EABDE3A82473DAA300E0A5FA /* SettingCommonViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingCommonViewController.swift; sourceTree = "<group>"; };
@@ -351,7 +332,6 @@
 		EACAB98628BB2B3E00192C75 /* LongitudeLatitudeInputCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LongitudeLatitudeInputCell.swift; sourceTree = "<group>"; };
 		EACAB98828BB314300192C75 /* DistanceInputCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DistanceInputCell.swift; sourceTree = "<group>"; };
 		EAD94F66261EED7700A93C93 /* UITableView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+Extensions.swift"; sourceTree = "<group>"; };
-		EAD962992782BA2B00CDF86E /* Info-macos.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-macos.plist"; sourceTree = "<group>"; };
 		EAE4CF9D2C22988F00B12AA5 /* TeachingCardCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TeachingCardCell.swift; sourceTree = "<group>"; };
 		EAE4CF9E2C22988F00B12AA5 /* TeachingCardView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TeachingCardView.swift; sourceTree = "<group>"; };
 		EAE51CA22A7B765100D6779C /* Formatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatter.swift; sourceTree = "<group>"; };
@@ -388,17 +368,21 @@
 			);
 			target = EA4E2D742A56B4570046D62E /* CelestiaFoundation */;
 		};
+		EA3AC0232D811AA10029ACA4 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"Info-macos.plist",
+				Info.plist,
+			);
+			target = 979D2F7923FEB1A6005D2592 /* MobileCelestia */;
+		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		EA3ABD872D8116090029ACA4 /* CelestiaHelper */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (EA3ABD8B2D8116090029ACA4 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = CelestiaHelper; sourceTree = "<group>"; };
 		EA3ABD8F2D81160B0029ACA4 /* CelestiaMacBridge */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (EA3ABD912D81160B0029ACA4 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = CelestiaMacBridge; sourceTree = "<group>"; };
 		EA3ABD962D8116130029ACA4 /* CelestiaFoundation */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (EA3ABD9B2D8116140029ACA4 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = CelestiaFoundation; sourceTree = "<group>"; };
-		EA3ABE842D8118390029ACA4 /* Celestia */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Celestia; sourceTree = "<group>"; };
-		EA3ABE8C2D81183C0029ACA4 /* Presentation */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Presentation; sourceTree = "<group>"; };
-		EA3ABF0B2D8119440029ACA4 /* Settings */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Settings; sourceTree = "<group>"; };
-		EA3ABF102D81194C0029ACA4 /* Toolbar */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Toolbar; sourceTree = "<group>"; };
-		EA3ABF1B2D8119540029ACA4 /* Utils */ = {isa = PBXFileSystemSynchronizedRootGroup; explicitFileTypes = {}; explicitFolders = (); path = Utils; sourceTree = "<group>"; };
+		EA3AC0082D811AA10029ACA4 /* MobileCelestia */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (EA3AC0232D811AA10029ACA4 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = MobileCelestia; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -509,7 +493,7 @@
 			isa = PBXGroup;
 			children = (
 				979D2F9F23FEB1D5005D2592 /* CelestiaCore.xcodeproj */,
-				979D2F7C23FEB1A6005D2592 /* MobileCelestia */,
+				EA3AC0082D811AA10029ACA4 /* MobileCelestia */,
 				979D2F9323FEB1A8005D2592 /* MobileCelestiaTests */,
 				EA3ABD8F2D81160B0029ACA4 /* CelestiaMacBridge */,
 				EA3ABD872D8116090029ACA4 /* CelestiaHelper */,
@@ -533,30 +517,6 @@
 				EA4E2D752A56B4570046D62E /* CelestiaFoundation.framework */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		979D2F7C23FEB1A6005D2592 /* MobileCelestia */ = {
-			isa = PBXGroup;
-			children = (
-				EA3ABE842D8118390029ACA4 /* Celestia */,
-				EA3ABE8C2D81183C0029ACA4 /* Presentation */,
-				EA3ABF0B2D8119440029ACA4 /* Settings */,
-				EA3ABF102D81194C0029ACA4 /* Toolbar */,
-				EA3ABF1B2D8119540029ACA4 /* Utils */,
-				979D2F7D23FEB1A6005D2592 /* AppDelegate.swift */,
-				978406D624028F0000876FD1 /* MainViewController.swift */,
-				EA934C8F251D90C500DD284C /* MainSceneDelegate.swift */,
-				EA934C99251D92A700DD284C /* PanelSceneDelegate.swift */,
-				EA1BE1562748E9DC0046074C /* DisplaySceneDelegate.swift */,
-				EA9FB23E27B7852A00E0DC1F /* CommonSceneDelegate.swift */,
-				979D2F8623FEB1A8005D2592 /* Assets.xcassets */,
-				EA3EC553277C8EAD00936D4F /* Celestia-macOS.entitlements */,
-				EA1EF056249393BE0039F493 /* Celestia.entitlements */,
-				979D2F8B23FEB1A8005D2592 /* Info.plist */,
-				EAD962992782BA2B00CDF86E /* Info-macos.plist */,
-				EAB93E8B2BC8608C009AB37B /* PrivacyInfo.xcprivacy */,
-			);
-			path = MobileCelestia;
 			sourceTree = "<group>";
 		};
 		979D2F9323FEB1A8005D2592 /* MobileCelestiaTests */ = {
@@ -886,11 +846,7 @@
 				EA4E2D7F2A56B46B0046D62E /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				EA3ABE842D8118390029ACA4 /* Celestia */,
-				EA3ABE8C2D81183C0029ACA4 /* Presentation */,
-				EA3ABF0B2D8119440029ACA4 /* Settings */,
-				EA3ABF102D81194C0029ACA4 /* Toolbar */,
-				EA3ABF1B2D8119540029ACA4 /* Utils */,
+				EA3AC0082D811AA10029ACA4 /* MobileCelestia */,
 			);
 			name = MobileCelestia;
 			packageProductDependencies = (
@@ -1093,9 +1049,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EAB93E8C2BC8608C009AB37B /* PrivacyInfo.xcprivacy in Resources */,
 				EAA2FA192CED1EEC00D915C1 /* InfoPlist.xcstrings in Resources */,
-				979D2F8723FEB1A8005D2592 /* Assets.xcassets in Resources */,
 				97143F1823FFAEFD00F35D87 /* defaults.plist in Resources */,
 				EA28CA5324A2F399004B011E /* Fonts in Resources */,
 				EABC92342A56FF80007E27F0 /* SharedAssets.xcassets in Resources */,
@@ -1204,13 +1158,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EA934C90251D90C500DD284C /* MainSceneDelegate.swift in Sources */,
-				EA1BE1572748E9DC0046074C /* DisplaySceneDelegate.swift in Sources */,
-				978406D724028F0000876FD1 /* MainViewController.swift in Sources */,
-				EA9FB23F27B7852A00E0DC1F /* CommonSceneDelegate.swift in Sources */,
 				EA61209C2B9DBEFB00497075 /* RequestHandler.swift in Sources */,
-				EA934C9A251D92AD00DD284C /* PanelSceneDelegate.swift in Sources */,
-				979D2F7E23FEB1A6005D2592 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
