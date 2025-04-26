@@ -8,7 +8,7 @@ jobs:
     sdk: ${{ parameters.sdk }}
     signing: ${{ parameters.signing }}
     backend: ${{ parameters.backend }}
-    contentCommitHash: ${{ 'c7fc5bbd2b6ecc97fa6168e47682ec3d79003fa0' }}
+    contentCommitHash: ${{ '7cf89b3deace6b18c1ac6eeb5be3338c34fe470e' }}
     XC_VERSION: ${{ '16.3' }}
     XC_PROJECT: ${{ 'MobileCelestia/MobileCelestia.xcodeproj' }}
     XC_SCHEME: ${{ 'MobileCelestia' }}
@@ -88,7 +88,7 @@ jobs:
       feedsToUse: 'internal'
       vstsFeed: '9f9dcde1-dcba-4537-8214-71c8a03b99a0/14bb1031-e6b2-40ac-b287-73e7fcb5900e'
       vstsFeedPackage: 'ef4b9b1c-43f9-4b15-91ae-8a601ae5ef45'
-      vstsPackageVersion: '0.0.23'
+      vstsPackageVersion: '0.0.24'
     displayName: 'Download Catalyst Dependencies'
     condition: eq( variables['sdk'], 'macosx' )
 
@@ -99,7 +99,7 @@ jobs:
       feedsToUse: 'internal'
       vstsFeed: '9f9dcde1-dcba-4537-8214-71c8a03b99a0/14bb1031-e6b2-40ac-b287-73e7fcb5900e'
       vstsFeedPackage: '929aa8ac-b8eb-409b-afe7-30f2b73aebc8'
-      vstsPackageVersion: '0.0.23'
+      vstsPackageVersion: '0.0.24'
     displayName: 'Download iOS Dependencies'
     condition: eq( variables['sdk'], 'iphoneos' )
 
