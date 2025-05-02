@@ -93,7 +93,7 @@ public extension QuickAction {
     var image: UIImage? {
         switch self {
         case .mode:
-            return UIImage(named: "tutorial_switch_mode")?.withRenderingMode(.alwaysTemplate)
+            return UIImage(named: "tutorial_switch_mode")
         case .info:
             return UIImage(systemName: "info.circle")
         case .search:

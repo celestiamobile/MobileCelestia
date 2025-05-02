@@ -248,7 +248,7 @@ extension AppToolbarAction: ToolbarAction {
         case .speedometer:
             return UIImage(systemName: "speedometer")
         case .newsarchive:
-            return UIImage(systemName: "newspaper") ?? UIImage(named: "toolbar_newsarchive")
+            return UIImage(systemName: "newspaper")
         case .feedback:
             return UIImage(systemName: "exclamationmark.bubble")
         case .plus:

@@ -91,7 +91,7 @@ class CelestiaInteractionController: UIViewController {
         case .search:
             CelestiaControlButton.tap(image: UIImage(systemName: "magnifyingglass.circle"), action: .search, accessibilityLabel: CelestiaString("Search", comment: ""))
         case .menu:
-            CelestiaControlButton.tap(image: UIImage(systemName: "line.3.horizontal.circle") ?? UIImage(systemName: "line.horizontal.3.circle") ?? UIImage(named: "control_action_menu"), action: .showMenu, accessibilityLabel: CelestiaString("Menu", comment: "Menu button"))
+            CelestiaControlButton.tap(image: UIImage(systemName: "line.3.horizontal.circle") ?? UIImage(systemName: "line.horizontal.3.circle"), action: .showMenu, accessibilityLabel: CelestiaString("Menu", comment: "Menu button"))
         case .hide:
             CelestiaControlButton.tap(image: UIImage(systemName: "xmark.circle"), action: .hide, accessibilityLabel: CelestiaString("Hide", comment: "Action to hide the tool overlay"))
         case .zoomIn:
@@ -99,7 +99,7 @@ class CelestiaInteractionController: UIViewController {
         case .zoomOut:
             CelestiaControlButton.pressAndHold(image: UIImage(systemName: "minus.circle"), action: .zoomOut, accessibilityLabel: CelestiaString("Zoom Out", comment: ""))
         case .go:
-            CelestiaControlButton.tap(image: UIImage(systemName: "paperplane.circle") ?? UIImage(named: "control_go"), action: .go, accessibilityLabel: CelestiaString("Go", comment: "Go to an object"))
+            CelestiaControlButton.tap(image: UIImage(systemName: "paperplane.circle"), action: .go, accessibilityLabel: CelestiaString("Go", comment: "Go to an object"))
         }
     })
     #endif
