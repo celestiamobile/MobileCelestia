@@ -31,7 +31,7 @@ class MainViewController: UIViewController {
     }
 
     private(set) var celestiaController: CelestiaViewController!
-    private lazy var loadingController = LoadingViewController()
+    private lazy var loadingController = LoadingViewController(assetProvider: assetProvider)
     private lazy var actionViewController: ToolbarViewController = {
         let actions: [[AppToolbarAction]] = AppToolbarAction.persistentAction
         let controller = ToolbarViewController(actions: actions)
@@ -57,6 +57,7 @@ class MainViewController: UIViewController {
     private let executor: CelestiaExecutor
     private let userDefaults: UserDefaults
     private let requestHandler = RequestHandlerImpl()
+    private let assetProvider = CelestiaAssetProvider()
 
     private let resourceManager = ResourceManager(extraAddonDirectory: UserDefaults.extraAddonDirectory, extraScriptDirectory: UserDefaults.extraScriptDirectory)
 
@@ -694,7 +695,7 @@ extension MainViewController: CelestiaControllerDelegate {
 
     @available(iOS 15, *)
     private func showSubscription(for viewController: UIViewController? = nil) {
-        let vc = SubscriptionManagerViewController(subscriptionManager: subscriptionManager)
+        let vc = SubscriptionManagerViewController(subscriptionManager: subscriptionManager, assetProvider: assetProvider)
         let nav = BaseNavigationController(rootViewController: vc)
         nav.setNavigationBarHidden(true, animated: false)
         showViewController(nav, titleVisible: false)
@@ -1019,7 +1020,7 @@ Device Model: \(model)
     }
 
     @objc private func presentHelp() {
-        let vc = HelpViewController(executor: executor, resourceManager: resourceManager, requestHandler: requestHandler, actionHandler: commonWebActionHandler)
+        let vc = HelpViewController(executor: executor, resourceManager: resourceManager, requestHandler: requestHandler, assetProvider: assetProvider, actionHandler: commonWebActionHandler)
         showViewController(vc, titleVisible: false)
     }
 
@@ -1173,6 +1174,7 @@ Device Model: \(model)
                 boldFontIndexKey: UserDefaultsKey.boldFontIndex.rawValue
             ),
             toolbarContext: ToolbarSettingContext(toolbarActionsKey: UserDefaultsKey.toolbarItems.rawValue),
+            assetProvider: assetProvider,
             actionHandler: { [weak self]
                 settingsAction in
                 guard let self else { return }
@@ -1218,7 +1220,7 @@ Device Model: \(model)
     }
 
     private func showBrowser() {
-        let controller = BrowserContainerViewController(selected: { [unowned self] (info) in
+        let controller = BrowserContainerViewController(assetProvider: assetProvider, selected: { [unowned self] (info) in
             return self.createSelectionInfoViewController(with: info, showNavigationTitle: true, backgroundColor: .systemBackground)
         }, showAddonCategory: { [weak self] category in
             guard let self else { return }
@@ -1400,3 +1402,24 @@ extension MainViewController: ToolbarContainerViewController {
     }
 }
 #endif
+
+struct CelestiaAssetProvider: AssetProvider {
+    func image(for image: AssetImage) -> UIImage {
+        return UIImage(resource: imageResource(for: image))
+    }
+
+    private func imageResource(for image: AssetImage) -> ImageResource {
+        switch image {
+        case .loadingIcon:
+            .loadingIcon
+        case .browserTabDso:
+            .browserTabDso
+        case .browserTabSso:
+            .browserTabSso
+        case .browserTabStar:
+            .browserTabStar
+        case .tutorialSwitchMode:
+            .tutorialSwitchMode
+        }
+    }
+}

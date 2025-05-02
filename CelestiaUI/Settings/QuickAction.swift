@@ -90,10 +90,11 @@ public extension QuickAction {
         }
     }
 
-    var image: UIImage? {
+    @MainActor
+    func image(with assetProvider: AssetProvider) -> UIImage? {
         switch self {
         case .mode:
-            return UIImage(named: "tutorial_switch_mode")
+            return assetProvider.image(for: .tutorialSwitchMode)
         case .info:
             return UIImage(systemName: "info.circle")
         case .search:

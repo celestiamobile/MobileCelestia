@@ -17,8 +17,10 @@ public final class HelpViewController: UIViewController {
     private let resourceManager: ResourceManager
     private let actionHandler: ((CommonWebViewController.WebAction, UIViewController) -> Void)?
     private let requestHandler: RequestHandler
+    private let assetProvider: AssetProvider
 
-    public init(executor: AsyncProviderExecutor, resourceManager: ResourceManager, requestHandler: RequestHandler, actionHandler: ((CommonWebViewController.WebAction, UIViewController) -> Void)?) {
+    public init(executor: AsyncProviderExecutor, resourceManager: ResourceManager, requestHandler: RequestHandler, assetProvider: AssetProvider, actionHandler: ((CommonWebViewController.WebAction, UIViewController) -> Void)?) {
+        self.assetProvider = assetProvider
         self.executor = executor
         self.resourceManager = resourceManager
         self.actionHandler = actionHandler
@@ -34,7 +36,8 @@ public final class HelpViewController: UIViewController {
         super.viewDidLoad()
 
         let url = URL.fromGuideShort(path: "/help/welcome", language: AppCore.language, shareable: false)
-        let vc = FallbackWebViewController(executor: executor, resourceManager: resourceManager, url: url, requestHandler: requestHandler, actionHandler: actionHandler, fallbackViewControllerCreator: OnboardViewController() { [weak self] action in
+        let assetProvider = self.assetProvider
+        let vc = FallbackWebViewController(executor: executor, resourceManager: resourceManager, url: url, requestHandler: requestHandler, actionHandler: actionHandler, fallbackViewControllerCreator: OnboardViewController(assetProvider: assetProvider) { [weak self] action in
             guard let self else { return }
             switch action {
             case .tutorial(let tutorial):

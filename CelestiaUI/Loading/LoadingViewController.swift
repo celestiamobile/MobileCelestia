@@ -16,8 +16,18 @@ public class LoadingViewController: UIViewController {
         static let loadingGapVertical: CGFloat = 24
     }
 
+    private let assetProvider: AssetProvider
     private var statusLabel = UILabel(textStyle: .body)
 
+    public init(assetProvider: AssetProvider) {
+        self.assetProvider = assetProvider
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     public override func loadView() {
         view = UIView()
         #if !os(visionOS)
@@ -45,7 +55,7 @@ private extension LoadingViewController {
         view.addSubview(container)
 
         // display an icon above status
-        let iconImageView = UIImageView(image: #imageLiteral(resourceName: "loading_icon"))
+        let iconImageView = UIImageView(image: assetProvider.image(for: .loadingIcon))
         container.addSubview(iconImageView)
         iconImageView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([

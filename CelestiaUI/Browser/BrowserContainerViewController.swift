@@ -30,12 +30,14 @@ public class BrowserContainerViewController: UIViewController {
     private var brighterStars: BrowserItem?
     private var nearestStars: BrowserItem?
 
+    private let assetProvider: AssetProvider
     private let selected: (Selection) -> UIViewController
     private let showAddonCategory: (CategoryInfo) -> Void
 
     private let activityIndicator = UIActivityIndicatorView(style: .large)
 
-    public init(selected: @escaping (Selection) -> UIViewController, showAddonCategory: @escaping (CategoryInfo) -> Void, executor: AsyncProviderExecutor) {
+    public init(assetProvider: AssetProvider, selected: @escaping (Selection) -> UIViewController, showAddonCategory: @escaping (CategoryInfo) -> Void, executor: AsyncProviderExecutor) {
+        self.assetProvider = assetProvider
         self.selected = selected
         self.showAddonCategory = showAddonCategory
         self.executor = executor
@@ -117,9 +119,9 @@ private extension BrowserContainerViewController {
 
         #if targetEnvironment(macCatalyst)
         let rawBrowserRoots: [(item: BrowserItem?, image: UIImage)] = [
-            (Self.solBrowserRoot, #imageLiteral(resourceName: "browser_tab_sso")),
-            (starBrowserRoot, #imageLiteral(resourceName: "browser_tab_star")),
-            (Self.dsoBrowserRoot, #imageLiteral(resourceName: "browser_tab_dso"))
+            (Self.solBrowserRoot, assetProvider.image(for: .browserTabSso)),
+            (starBrowserRoot, assetProvider.image(for: .browserTabStar)),
+            (Self.dsoBrowserRoot, assetProvider.image(for: .browserTabDso))
         ]
         let browserRoot = rawBrowserRoots.compactMap { item in
             if let browserItem = item.item {
@@ -142,11 +144,11 @@ private extension BrowserContainerViewController {
         #else
         var allControllers = [BrowserCoordinatorController]()
         if let solRoot = Self.solBrowserRoot {
-            allControllers.append(BrowserCoordinatorController(item: solRoot, image: #imageLiteral(resourceName: "browser_tab_sso"), selection: handler, showAddonCategory: showAddonCategory))
+            allControllers.append(BrowserCoordinatorController(item: solRoot, image: assetProvider.image(for: .browserTabSso), selection: handler, showAddonCategory: showAddonCategory))
         }
-        allControllers.append(BrowserCoordinatorController(item: starBrowserRoot, image: #imageLiteral(resourceName: "browser_tab_star"), selection: handler, showAddonCategory: showAddonCategory))
+        allControllers.append(BrowserCoordinatorController(item: starBrowserRoot, image: assetProvider.image(for: .browserTabStar), selection: handler, showAddonCategory: showAddonCategory))
         if let dsoRoot = Self.dsoBrowserRoot {
-            allControllers.append(BrowserCoordinatorController(item: dsoRoot, image: #imageLiteral(resourceName: "browser_tab_dso"), selection: handler, showAddonCategory: showAddonCategory))
+            allControllers.append(BrowserCoordinatorController(item: dsoRoot, image: assetProvider.image(for: .browserTabDso), selection: handler, showAddonCategory: showAddonCategory))
         }
         controller.setViewControllers(allControllers, animated: false)
         #endif

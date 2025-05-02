@@ -40,7 +40,7 @@ class TutorialViewController: BaseTableViewController {
 
     #if !targetEnvironment(macCatalyst)
     private lazy var tutorialDescriptionItems = [
-        TutorialDescriptionItem(image: UIImage(named: "tutorial_switch_mode"),
+        TutorialDescriptionItem(image: assetProvider.image(for: .tutorialSwitchMode),
                                 text: CelestiaString("Tap the mode button on the sidebar to switch between object mode and camera mode.", comment: "")),
         TutorialDescriptionItem(image: UIImage(systemName: "cube"),
                                 text: CelestiaString("In object mode, drag to rotate around an object.\n\nPinch to zoom in/out on an object.", comment: "")),
@@ -69,8 +69,10 @@ class TutorialViewController: BaseTableViewController {
 
     private let actionHandler: ((TutorialAction) -> Void)?
     private let urlHandler: ((URL) -> Void)?
+    private let assetProvider: AssetProvider
 
-    init(actionHandler: ((TutorialAction) -> Void)?, urlHandler: ((URL) -> Void)?) {
+    init(assetProvider: AssetProvider, actionHandler: ((TutorialAction) -> Void)?, urlHandler: ((URL) -> Void)?) {
+        self.assetProvider = assetProvider
         self.actionHandler = actionHandler
         self.urlHandler = urlHandler
         super.init(style: .plain)

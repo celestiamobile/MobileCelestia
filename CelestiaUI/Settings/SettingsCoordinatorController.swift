@@ -76,6 +76,7 @@ public class SettingsCoordinatorController: UIViewController {
     private let subscriptionManager: SubscriptionManager
     private let openSubscriptionManagement: (UIViewController) -> Void
     #endif
+    private let assetProvider: AssetProvider
 
     #if os(visionOS)
     public init(
@@ -86,6 +87,7 @@ public class SettingsCoordinatorController: UIViewController {
         defaultDataDirectory: URL,
         settings: [SettingSection],
         dataLocationContext: DataLocationSettingContext,
+        assetProvider: AssetProvider,
         actionHandler: @escaping ((SettingAction) -> Void),
         dateInputHandler: @escaping (_ viewController: UIViewController, _ title: String, _ format: String) async -> Date?,
         textInputHandler: @escaping (_ viewController: UIViewController, _ title: String, _ keyboardType: UIKeyboardType) async -> String?,
@@ -102,6 +104,7 @@ public class SettingsCoordinatorController: UIViewController {
         self.dateInputHandler = dateInputHandler
         self.textInputHandler = textInputHandler
         self.rendererInfoProvider = rendererInfoProvider
+        self.assetProvider = assetProvider
         super.init(nibName: nil, bundle: nil)
     }
     #else
@@ -116,6 +119,7 @@ public class SettingsCoordinatorController: UIViewController {
         dataLocationContext: DataLocationSettingContext,
         fontContext: FontSettingContext,
         toolbarContext: ToolbarSettingContext,
+        assetProvider: AssetProvider,
         actionHandler: @escaping ((SettingAction) -> Void),
         dateInputHandler: @escaping (_ viewController: UIViewController, _ title: String, _ format: String) async -> Date?,
         textInputHandler: @escaping (_ viewController: UIViewController, _ title: String, _ keyboardType: UIKeyboardType) async -> String?,
@@ -141,6 +145,7 @@ public class SettingsCoordinatorController: UIViewController {
         self.screenProvider = screenProvider
         self.subscriptionManager = subscriptionManager
         self.openSubscriptionManagement = openSubscriptionManagement
+        self.assetProvider = assetProvider
         super.init(nibName: nil, bundle: nil)
     }
     #endif
@@ -198,7 +203,7 @@ private extension SettingsCoordinatorController {
                     }
                 case .toolbar:
                     if #available(iOS 15, *) {
-                        viewController = ToolbarSettingViewController(context: toolbarContext, userDefaults: userDefaults, subscriptionManager: subscriptionManager, openSubscriptionManagement: { [weak self] in
+                        viewController = ToolbarSettingViewController(context: toolbarContext, userDefaults: userDefaults, subscriptionManager: subscriptionManager, assetProvider: assetProvider, openSubscriptionManagement: { [weak self] in
                             guard let self else { return }
                             self.openSubscriptionManagement(self)
                         })

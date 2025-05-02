@@ -19,8 +19,10 @@ enum OnboardAction {
 class OnboardViewController: UIViewController {
     private let actionHandler: ((OnboardAction) -> Void)
     private let urlHandler: (())
+    private let assetProvider: AssetProvider
 
-    init(actionHandler: @escaping ((OnboardAction) -> Void)) {
+    init(assetProvider: AssetProvider, actionHandler: @escaping ((OnboardAction) -> Void)) {
+        self.assetProvider = assetProvider
         self.actionHandler = actionHandler
         super.init(nibName: nil, bundle: nil)
     }
@@ -56,7 +58,7 @@ private extension OnboardViewController {
             welcomeView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: GlobalConstants.pageMediumMarginVertical),
         ])
 
-        let tutorialController = TutorialViewController(actionHandler: { [unowned self] (action) in
+        let tutorialController = TutorialViewController(assetProvider: assetProvider, actionHandler: { [unowned self] (action) in
             self.actionHandler(.tutorial(action: action))
         }, urlHandler: { url in
             self.actionHandler(.url(url: url))

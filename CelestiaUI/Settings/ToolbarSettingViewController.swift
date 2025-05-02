@@ -16,13 +16,15 @@ class ToolbarSettingViewController: SubscriptionBackingViewController {
     private class ContentViewController: BaseTableViewController {
         private let userDefaults: UserDefaults
         private let toolbarActionsKey: String
+        private let assetProvider: AssetProvider
 
         private var addedActions: [QuickAction] = []
         private var otherActions: [QuickAction] = []
 
-        init(userDefaults: UserDefaults, toolbarActionsKey: String) {
+        init(userDefaults: UserDefaults, toolbarActionsKey: String, assetProvider: AssetProvider) {
             self.userDefaults = userDefaults
             self.toolbarActionsKey = toolbarActionsKey
+            self.assetProvider = assetProvider
 
             super.init(style: .defaultGrouped)
         }
@@ -152,7 +154,7 @@ class ToolbarSettingViewController: SubscriptionBackingViewController {
             }
             var configuration = UIListContentConfiguration.cell()
             configuration.text = action.title
-            configuration.image = action.image
+            configuration.image = action.image(with: assetProvider)
             configuration.imageProperties.tintColor = .label
             configuration.imageProperties.maximumSize = CGSize(width: GlobalConstants.listItemIconSize, height: GlobalConstants.listItemIconSize)
             cell.contentConfiguration = configuration
@@ -178,10 +180,10 @@ class ToolbarSettingViewController: SubscriptionBackingViewController {
         }
     }
 
-    init(context: ToolbarSettingContext, userDefaults: UserDefaults, subscriptionManager: SubscriptionManager, openSubscriptionManagement: @escaping () -> Void) {
+    init(context: ToolbarSettingContext, userDefaults: UserDefaults, subscriptionManager: SubscriptionManager, assetProvider: AssetProvider, openSubscriptionManagement: @escaping () -> Void) {
         super.init(subscriptionManager: subscriptionManager, openSubscriptionManagement: openSubscriptionManagement) { containerViewController in
             containerViewController.navigationItem.rightBarButtonItem = containerViewController.editButtonItem
-            return ContentViewController(userDefaults: userDefaults, toolbarActionsKey: context.toolbarActionsKey)
+            return ContentViewController(userDefaults: userDefaults, toolbarActionsKey: context.toolbarActionsKey, assetProvider: assetProvider)
         }
         title = CelestiaString("Toolbar", comment: "Toolbar customization entry in Settings")
         windowTitle = title

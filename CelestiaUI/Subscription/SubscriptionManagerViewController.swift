@@ -15,6 +15,7 @@ import UIKit
 @available(iOS 15, *)
 public class SubscriptionManagerViewController: UIViewController {
     private let subscriptionManager: SubscriptionManager
+    private let assetProvider: AssetProvider
 
     private enum Constants {
         static let boxCornerRadius: CGFloat = 12
@@ -71,8 +72,9 @@ public class SubscriptionManagerViewController: UIViewController {
     private lazy var planStack = UIStackView(arrangedSubviews: [])
     private lazy var containerView = UIView()
 
-    public init(subscriptionManager: SubscriptionManager) {
+    public init(subscriptionManager: SubscriptionManager, assetProvider: AssetProvider) {
         self.subscriptionManager = subscriptionManager
+        self.assetProvider = assetProvider
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -90,7 +92,7 @@ public class SubscriptionManagerViewController: UIViewController {
         ])
 
         let scaling = GlobalConstants.preferredUIElementScaling(for: containerView.traitCollection)
-        let appIconView = IconView(image: UIImage(named: "loading_icon"), baseSize: CGSize(width: Constants.appIconDimension * scaling, height: Constants.appIconDimension * scaling)) { imageView in
+        let appIconView = IconView(image: assetProvider.image(for: .loadingIcon), baseSize: CGSize(width: Constants.appIconDimension * scaling, height: Constants.appIconDimension * scaling)) { imageView in
             imageView.contentMode = .scaleAspectFit
         }
 
