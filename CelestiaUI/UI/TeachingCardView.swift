@@ -66,6 +66,7 @@ class TeachingCardContentView: UIView, BaseContentView {
     private func apply(_ configuration: TeachingCardContentConfiguration) {
         guard currentConfiguration != configuration else { return }
 
+        currentConfiguration = configuration
         titleLabel.text = configuration.title
         titleLabel.isHidden = configuration.title == nil
         actionButton.setTitle(configuration.actionButtonTitle, for: .normal)
