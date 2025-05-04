@@ -16,7 +16,7 @@ protocol AsyncListItem: Sendable {
     var imageURL: (URL, String)? { get }
 }
 
-class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
+class AsyncListViewController<T: AsyncListItem>: UICollectionViewController {
     class var showDisclosureIndicator: Bool { return true }
     class var useStandardUITableViewCell: Bool { return false }
     class var alwaysRefreshOnAppear: Bool { return false }
@@ -35,7 +35,7 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
 
     init(selection: @escaping (T) -> Void) {
         self.selection = selection
-        super.init(style: Self.showDisclosureIndicator ? .defaultGrouped : .grouped)
+        super.init(collectionViewLayout: UICollectionViewCompositionalLayout.list(using: .init(appearance: Self.showDisclosureIndicator ? .defaultGrouped : .grouped)))
     }
 
     required init?(coder: NSCoder) {
@@ -60,7 +60,7 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
             isLoading = false
             hasMoreToLoad = true
             items = []
-            tableView.reloadData()
+            collectionView.reloadData()
             callRefresh()
         }
     }
@@ -92,7 +92,7 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
         let requestID = UUID()
         currentRequestID = requestID
         do {
-            tableView.backgroundView = nil
+            collectionView.backgroundView = nil
             let newItems = try await loadItems(pageStart: pageStart, pageSize: pageSize)
             guard self.currentRequestID == requestID else { return }
             if freshLoad {
@@ -102,11 +102,11 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
             self.isLoading = false
             self.items.append(contentsOf: newItems)
             if freshLoad {
-                self.tableView.reloadData()
+                self.collectionView.reloadData()
             } else {
-                self.tableView.insertRows(at: (pageStart..<(pageStart + newItems.count)).map{ IndexPath(row: $0, section: 0) }, with: .automatic)
+                self.collectionView.insertItems(at: (pageStart..<(pageStart + newItems.count)).map{ IndexPath(row: $0, section: 0) })
             }
-            self.tableView.backgroundView = self.items.isEmpty ? self.emptyHintView() : nil
+            self.collectionView.backgroundView = self.items.isEmpty ? self.emptyHintView() : nil
         } catch {
             guard self.currentRequestID == requestID else { return }
             if freshLoad {
@@ -117,67 +117,58 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
     }
 
     private func startRefreshing() {
-        tableView.backgroundView = activityIndicator
+        collectionView.backgroundView = activityIndicator
         activityIndicator.startAnimating()
     }
 
     private func stopRefreshing(success: Bool) {
-        tableView.backgroundView = success ? nil : refreshButton
+        collectionView.backgroundView = success ? nil : refreshButton
         activityIndicator.stopAnimating()
     }
 
-    override func numberOfSections(in tableView: UITableView) -> Int {
+    override func numberOfSections(in collectionView: UICollectionView) -> Int {
         return additionalItem == nil ? 1 : 2
     }
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return section == 0 ? items.count : additionalItem == nil ? 0 : 1
     }
 
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let item = indexPath.section == 0 ? items[indexPath.row] : additionalItem!
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Text", for: indexPath) as! UICollectionViewListCell
+        let item = indexPath.section == 0 ? items[indexPath.item] : additionalItem!
+        var configuration: UIListContentConfiguration
         if Self.useStandardUITableViewCell {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath)
-            var configuration = UIListContentConfiguration.sidebarCell()
-            configuration.text = item.name
-            cell.contentConfiguration = configuration
-            cell.accessoryType = Self.showDisclosureIndicator ? .disclosureIndicator : .none
-            return cell
+            configuration = UIListContentConfiguration.sidebarCell()
+        } else {
+            configuration = UIListContentConfiguration.celestiaCell()
         }
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
-        cell.accessoryType = Self.showDisclosureIndicator ? .disclosureIndicator : .none
-        cell.title = item.name
+        configuration.text = item.name
+        cell.contentConfiguration = configuration
+        cell.accessories = Self.showDisclosureIndicator ? [.disclosureIndicator()] : []
         return cell
     }
 
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if indexPath.section == 0 {
-            selection(items[indexPath.row])
+            selection(items[indexPath.item])
         } else if let item = additionalItem {
             selection(item)
         }
     }
 
-    override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if indexPath.section == 0 && indexPath.row == items.count - 1 {
+    override func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        if indexPath.section == 0 && indexPath.item == items.count - 1 {
             Task {
                 await loadNewItems()
             }
         }
     }
-
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
-    }
 }
 
 private extension AsyncListViewController {
     func setup() {
-        if Self.useStandardUITableViewCell {
-            tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Text")
-        } else {
-            tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
-        }
+        collectionView.register(UICollectionViewListCell.self, forCellWithReuseIdentifier: "Text")
 
         refreshButton.setTitle(CelestiaString("Refresh", comment: "Button to refresh this list"), for: .normal)
         refreshButton.addTarget(self, action: #selector(callRefresh), for: .touchUpInside)

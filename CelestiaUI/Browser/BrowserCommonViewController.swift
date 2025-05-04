@@ -12,7 +12,7 @@
 import CelestiaCore
 import UIKit
 
-class BrowserCommonViewController: BaseTableViewController {
+class BrowserCommonViewController: UICollectionViewController {
     private let item: BrowserItem
 
     private let selection: (BrowserItem, Bool) -> Void
@@ -30,35 +30,57 @@ class BrowserCommonViewController: BaseTableViewController {
         case item(item: BrowserItem, isMain: Bool)
     }
 
-    class BrowserDataSource: UITableViewDiffableDataSource<Section, Item> {
-        override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-            if let identifier = sectionIdentifierCompat(for: section), identifier == .subsystem {
-                return CelestiaString("Subsystem", comment: "Subsystem of an object (e.g. planetarium system)")
+    private lazy var dataSource: UICollectionViewDiffableDataSource<Section, Item> = {
+        let dataSource = UICollectionViewDiffableDataSource<Section, Item>(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
+            switch itemIdentifier {
+            case .item(let item, let isMain):
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Text", for: indexPath) as! UICollectionViewListCell
+                var configuration = UIListContentConfiguration.celestiaCell()
+                configuration.text = item.name
+                cell.contentConfiguration = configuration
+                if isMain {
+                    cell.accessories = []
+                } else {
+                    cell.accessories = item.entry != nil && item.children.isEmpty ? [] : [.disclosureIndicator()]
+                }
+                return cell
             }
-            return nil
         }
-    }
-
-    private lazy var dataSource = BrowserDataSource(tableView: tableView) { tableView, indexPath, itemIdentifier in
-        switch itemIdentifier {
-        case .item(let item, let isMain):
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
-            cell.title = item.name
-            if isMain {
-                cell.accessoryType = .none
-            } else {
-                cell.accessoryType = item.entry != nil && item.children.isEmpty ? .none : .disclosureIndicator
+        dataSource.supplementaryViewProvider = { [weak self, weak dataSource] collectionView, kind, indexPath in
+            if kind == UICollectionView.elementKindSectionHeader {
+                let cell = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Header", for: indexPath) as! UICollectionViewListCell
+                var configuration = UIListContentConfiguration.groupedHeader()
+                if let dataSource, let identifier = dataSource.sectionIdentifierCompat(for: indexPath.section), identifier == .subsystem {
+                    configuration.text = CelestiaString("Subsystem", comment: "Subsystem of an object (e.g. planetarium system)")
+                }
+                cell.contentConfiguration = configuration
+                return cell
             }
+            let cell = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Footer", for: indexPath) as! UICollectionViewListCell
+            var configuration: UIContentConfiguration
+            if let self, let dataSource, let sectionIdentifier = dataSource.sectionIdentifierCompat(for: indexPath.section), let categoryInfo = self.categoryInfo, sectionIdentifier == .categoryCard {
+                configuration = TeachingCardContentConfiguration(title: CelestiaString("Enhance Celestia with online add-ons", comment: ""), actionButtonTitle: CelestiaString("Get Add-ons", comment: "Open webpage for downloading add-ons")) { [weak self] in
+                    guard let self else { return }
+                    self.showAddonCategory(categoryInfo)
+                }
+            } else {
+                configuration = UIListContentConfiguration.groupedFooter()
+            }
+            cell.contentConfiguration = configuration
             return cell
         }
-    }
+        return dataSource
+    }()
 
     init(item: BrowserItem, selection: @escaping (BrowserItem, Bool) -> Void, showAddonCategory: @escaping (CategoryInfo) -> Void) {
         self.item = item
         self.selection = selection
         self.showAddonCategory = showAddonCategory
         self.categoryInfo = (item as? BrowserPredefinedItem)?.categoryInfo
-        super.init(style: .defaultGrouped)
+        var config = UICollectionLayoutListConfiguration(appearance: .defaultGrouped)
+        config.headerMode = .supplementary
+        config.footerMode = .supplementary
+        super.init(collectionViewLayout: UICollectionViewCompositionalLayout.list(using: config))
         title = item.alternativeName ?? item.name
         windowTitle = title
     }
@@ -76,8 +98,9 @@ class BrowserCommonViewController: BaseTableViewController {
 
 private extension BrowserCommonViewController {
     func setUp() {
-        tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
-        tableView.register(TeachingCardCell.self, forHeaderFooterViewReuseIdentifier: "TeachingCard")
+        collectionView.register(UICollectionViewListCell.self, forCellWithReuseIdentifier: "Text")
+        collectionView.register(UICollectionViewListCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "Header")
+        collectionView.register(UICollectionViewListCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "Footer")
 
         var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
 
@@ -96,45 +119,31 @@ private extension BrowserCommonViewController {
             snapshot.appendSections([.categoryCard])
         }
 
-        tableView.dataSource = dataSource
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.sectionFooterHeight = UITableView.automaticDimension
+        collectionView.dataSource = dataSource
         dataSource.apply(snapshot, animatingDifferences: false, completion: nil)
     }
 }
 
 extension BrowserCommonViewController {
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
         switch item {
         case let .item(item, isMain):
             if isMain {
-                tableView.deselectRow(at: indexPath, animated: true)
+                collectionView.deselectItem(at: indexPath, animated: true)
                 selection(item, true)
             } else {
                 let isLeaf = item.entry != nil && item.children.isEmpty
                 if isLeaf {
-                    tableView.deselectRow(at: indexPath, animated: true)
+                    collectionView.deselectItem(at: indexPath, animated: true)
                 }
                 selection(item, isLeaf)
             }
         }
     }
-
-    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        guard let sectionIdentifier = dataSource.sectionIdentifierCompat(for: section), let categoryInfo, sectionIdentifier == .categoryCard else { return nil }
-
-        let cell = tableView.dequeueReusableHeaderFooterView(withIdentifier: "TeachingCard") as! TeachingCardCell
-        cell.teachingCard.contentConfiguration = TeachingCardContentConfiguration(title: CelestiaString("Enhance Celestia with online add-ons", comment: ""), actionButtonTitle: CelestiaString("Get Add-ons", comment: "Open webpage for downloading add-ons"))
-        cell.teachingCard.actionButtonTapped = { [weak self] in
-            guard let self else { return }
-            self.showAddonCategory(categoryInfo)
-        }
-        return cell
-    }
 }
 
-extension UITableViewDiffableDataSource {
+extension UICollectionViewDiffableDataSource {
     func sectionIdentifierCompat(for index: Int) -> SectionIdentifierType? {
         if #available(iOS 15, *) {
             return sectionIdentifier(for: index)

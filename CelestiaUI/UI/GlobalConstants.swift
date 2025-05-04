@@ -26,6 +26,8 @@ public enum GlobalConstants {
         #endif
     }()
 
+    public static let listItemDirectionalLayoutMargins = NSDirectionalEdgeInsets(top: listItemMediumMarginVertical, leading: listItemMediumMarginHorizontal, bottom: listItemMediumMarginVertical, trailing: listItemMediumMarginHorizontal)
+
     public static let listItemAccessoryMinMarginVertical: CGFloat = 6
 
     public static let listTextGapVertical: CGFloat = 4
@@ -56,5 +58,19 @@ public enum GlobalConstants {
         #else
         return 1
         #endif
+    }
+}
+
+extension UIListContentConfiguration {
+    static func celestiaCell() -> Self {
+        var configuration = valueCell()
+        configuration.directionalLayoutMargins = GlobalConstants.listItemDirectionalLayoutMargins
+        return configuration
+    }
+
+    static func celestiaSubtitleCell() -> Self {
+        var configuration = subtitleCell()
+        configuration.directionalLayoutMargins = GlobalConstants.listItemDirectionalLayoutMargins
+        return configuration
     }
 }

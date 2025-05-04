@@ -42,10 +42,10 @@ class SettingCommonViewController: BaseTableViewController {
 private extension SettingCommonViewController {
     func setUp() {
         tableView.register(SliderCell.self, forCellReuseIdentifier: "Slider")
-        tableView.register(TextCell.self, forCellReuseIdentifier: "Action")
-        tableView.register(TextCell.self, forCellReuseIdentifier: "Checkmark")
-        tableView.register(TextCell.self, forCellReuseIdentifier: "Custom")
-        tableView.register(SwitchCell.self, forCellReuseIdentifier: "Switch")
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Action")
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Checkmark")
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Custom")
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Switch")
         tableView.register(TextCell.self, forCellReuseIdentifier: "Selection")
         if #available(iOS 15, visionOS 1, *) {
             tableView.register(SelectionCell.self, forCellReuseIdentifier: "Selection15")
@@ -92,52 +92,70 @@ extension SettingCommonViewController {
             }
             return cell
         case .action:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Action", for: indexPath) as! TextCell
-            cell.title = row.name
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Action", for: indexPath)
+            var configuration = UIListContentConfiguration.celestiaCell()
+            configuration.text = row.name
+            cell.contentConfiguration = configuration
             return cell
         case .custom:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Custom", for: indexPath) as! TextCell
-            cell.title = row.name
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Custom", for: indexPath)
+            var configuration = UIListContentConfiguration.celestiaCell()
+            configuration.text = row.name
+            cell.contentConfiguration = configuration
             return cell
         case .checkmark(let item):
             let enabled = core.value(forKey: item.key) as? Bool ?? false
             if item.representation == .switch {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "Switch", for: indexPath) as! SwitchCell
-                cell.title = row.name
-                cell.subtitle = row.subtitle
-                cell.enabled = enabled
-                cell.toggleBlock = { [weak self] newValue in
-                    guard let self else { return }
+                let cell = tableView.dequeueReusableCell(withIdentifier: "Switch", for: indexPath)
+                var configuration = UIListContentConfiguration.celestiaSubtitleCell()
+                configuration.text = row.name
+                configuration.secondaryText = row.subtitle
+                cell.contentConfiguration = configuration
+                let toggle = UISwitch()
+                toggle.isOn = enabled
+                toggle.addAction(UIAction { [weak self, weak toggle] _ in
+                    guard let self, let toggle else { return }
                     Task {
+                        let value = toggle.isOn
                         await self.executor.run {
-                            $0.setValue(newValue, forKey: item.key)
+                            $0.setValue(value, forKey: item.key)
                         }
-                        self.userDefaults.setValue(newValue, forKey: item.key)
+                        self.userDefaults.setValue(value, forKey: item.key)
                     }
-                }
+                }, for: .valueChanged)
+                cell.accessoryView = toggle
                 return cell
             } else {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "Checkmark", for: indexPath) as! TextCell
-                cell.title = row.name
-                cell.subtitle = row.subtitle
+                let cell = tableView.dequeueReusableCell(withIdentifier: "Checkmark", for: indexPath)
+                var configuration = UIListContentConfiguration.celestiaSubtitleCell()
+                configuration.text = row.name
+                configuration.secondaryText = row.subtitle
+                cell.contentConfiguration = configuration
                 cell.accessoryType = enabled ? .checkmark : .none
                 return cell
             }
         case .keyedSelection(let item):
             let selectedIndex = core.value(forKey: item.key) as? Int ?? 0
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Checkmark", for: indexPath) as! TextCell
-            cell.title = row.name
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Checkmark", for: indexPath)
+            var configuration = UIListContentConfiguration.celestiaCell()
+            configuration.text = row.name
+            cell.contentConfiguration = configuration
             cell.accessoryType = selectedIndex == item.index ? .checkmark : .none
             return cell
         case .prefSwitch(let item):
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Switch", for: indexPath) as! SwitchCell
-            cell.enabled = userDefaults[item.key] ?? item.defaultOn
-            cell.title = row.name
-            cell.subtitle = row.subtitle
-            cell.toggleBlock = { [weak self] enabled in
-                guard let self else { return }
-                self.userDefaults[item.key] = enabled
-            }
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Switch", for: indexPath)
+            let enabled = userDefaults[item.key] ?? item.defaultOn
+            var configuration = UIListContentConfiguration.celestiaSubtitleCell()
+            configuration.text = row.name
+            configuration.secondaryText = row.subtitle
+            cell.contentConfiguration = configuration
+            let toggle = UISwitch()
+            toggle.isOn = enabled
+            toggle.addAction(UIAction { [weak self, weak toggle] _ in
+                guard let self, let toggle else { return }
+                self.userDefaults[item.key] = toggle.isOn
+            }, for: .valueChanged)
+            cell.accessoryView = toggle
             return cell
         case .prefSelection(let item):
             let currentValue = self.userDefaults[item.key] ?? item.defaultOption

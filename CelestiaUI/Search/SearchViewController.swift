@@ -226,7 +226,7 @@ private extension SearchViewController {
         #endif
         #endif
 
-        tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Text")
 
         tableView.dataSource = self
         tableView.delegate = self
@@ -314,8 +314,10 @@ extension SearchViewController: UITableViewDataSource, UITableViewDelegate {
 
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let result = resultSections[indexPath.section].results[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
-        cell.title = result.completion.name
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath)
+        var configuration = UIListContentConfiguration.celestiaCell()
+        configuration.text = result.completion.name
+        cell.contentConfiguration = configuration
         return cell
     }
 

@@ -57,7 +57,7 @@ public class TimeSettingViewController: BaseTableViewController {
 
 private extension TimeSettingViewController {
     func setUp() {
-        tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Text")
         title = CelestiaString("Current Time", comment: "")
         windowTitle = title
     }
@@ -69,17 +69,18 @@ extension TimeSettingViewController {
     }
 
     public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath)
+        var contentConfiguration = UIListContentConfiguration.celestiaCell()
         if indexPath.row == 0 {
-            cell.title = CelestiaString("Select Time", comment: "Select simulation time")
-            cell.detail = displayDateFormatter.string(from: core.simulation.time)
+            contentConfiguration.text = CelestiaString("Select Time", comment: "Select simulation time")
+            contentConfiguration.secondaryText = displayDateFormatter.string(from: core.simulation.time)
         } else if indexPath.row == 1 {
-            cell.title = CelestiaString("Julian Day", comment: "Select time via entering Julian day")
-            cell.detail = displayNumberFormatter.string(from: (core.simulation.time as NSDate).julianDay)
+            contentConfiguration.text = CelestiaString("Julian Day", comment: "Select time via entering Julian day")
+            contentConfiguration.secondaryText = displayNumberFormatter.string(from: (core.simulation.time as NSDate).julianDay)
         } else {
-            cell.title = CelestiaString("Set to Current Time", comment: "Set simulation time to device")
-            cell.detail = nil
+            contentConfiguration.text = CelestiaString("Set to Current Time", comment: "Set simulation time to device")
         }
+        cell.contentConfiguration = contentConfiguration
         return cell
     }
 

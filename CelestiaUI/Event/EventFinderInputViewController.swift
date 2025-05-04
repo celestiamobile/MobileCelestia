@@ -82,7 +82,7 @@ private extension EventFinderInputViewController {
     func setup() {
         title = CelestiaString("Eclipse Finder", comment: "")
         windowTitle = title
-        tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Text")
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: CelestiaString("Find", comment: "Find (eclipses)"), style: .plain, target: self, action: #selector(findEclipse))
     }
@@ -119,14 +119,15 @@ extension EventFinderInputViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = allSections[indexPath.section][indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
-        cell.title = item.title
-
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath)
+        var configuration = UIListContentConfiguration.celestiaCell()
+        configuration.text = item.title
         if item is ObjectItem {
-            cell.detail = objectName
+            configuration.secondaryText = objectName
         } else if let it = item as? DateItem {
-            cell.detail = displayDateFormatter.string(from: it.isStartTime ? startTime : endTime)
+            configuration.secondaryText = displayDateFormatter.string(from: it.isStartTime ? startTime : endTime)
         }
+        cell.contentConfiguration = configuration
 
         return cell
     }

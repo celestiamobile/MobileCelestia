@@ -76,7 +76,7 @@ class DataLocationSelectionViewController: BaseTableViewController {
 
 private extension DataLocationSelectionViewController {
     func setUp() {
-        tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Text")
         title = CelestiaString("Data Location", comment: "Title for celestia.cfg, data location setting")
         windowTitle = title
     }
@@ -95,20 +95,24 @@ extension DataLocationSelectionViewController {
         let item = items[indexPath.section][indexPath.row]
         switch item {
         case .short(let title, let detail):
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
-            cell.title = title
-            cell.detail = detail
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath)
+            var configuration = UIListContentConfiguration.celestiaCell()
+            configuration.text = title
+            configuration.secondaryText = detail
+            cell.contentConfiguration = configuration
             cell.selectionStyle = .default
             cell.accessoryType = indexPath.section == 0 ? .disclosureIndicator : .none
             return cell
         case .action(let title):
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
-            cell.title = title
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath)
+            var configuration = UIListContentConfiguration.celestiaCell()
+            configuration.text = title
             #if targetEnvironment(macCatalyst)
-            cell.titleColor = cell.tintColor
+            configuration.textProperties.color = cell.tintColor
             #else
-            cell.titleColor = UIColor.themeLabel
+            configuration.textProperties.color = UIColor.themeLabel
             #endif
+            cell.contentConfiguration = configuration
             cell.selectionStyle = .default
             return cell
         default:

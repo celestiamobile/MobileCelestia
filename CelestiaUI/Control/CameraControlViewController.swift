@@ -57,8 +57,8 @@ public final class CameraControlViewController: BaseTableViewController {
 
 private extension CameraControlViewController {
     func setUp() {
-        tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
-        tableView.register(StepperCell.self, forCellReuseIdentifier: "Stepper")
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Text")
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Stepper")
         title = CelestiaString("Camera Control", comment: "Observer control")
         windowTitle = title
     }
@@ -76,27 +76,33 @@ extension CameraControlViewController {
 
     public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.section == controlItems.count {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
-            cell.title = CelestiaString("Flight Mode", comment: "")
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath)
+            var configuration = UIListContentConfiguration.celestiaCell()
+            configuration.text = CelestiaString("Flight Mode", comment: "")
+            cell.contentConfiguration = configuration
             cell.accessoryType = .disclosureIndicator
             return cell
         }
         if indexPath.section == controlItems.count + 1 {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
-            cell.title = CelestiaString("Reverse Direction", comment: "Reverse camera direction, reverse travel direction")
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath)
+            var configuration = UIListContentConfiguration.celestiaCell()
+            configuration.text = CelestiaString("Reverse Direction", comment: "Reverse camera direction, reverse travel direction")
+            cell.contentConfiguration = configuration
             cell.accessoryType = .none
             return cell
         }
         let item = controlItems[indexPath.section].items[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Stepper", for: indexPath) as! StepperCell
-        cell.title = item.title
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Stepper", for: indexPath)
+        var configuration = UIListContentConfiguration.celestiaCell()
+        configuration.text = item.title
+        cell.contentConfiguration = configuration
         cell.selectionStyle = .none
-        cell.changeBlock = { [unowned self] (plus) in
-            self.handleItemChange(indexPath: indexPath, plus: plus)
-        }
-        cell.stopBlock = { [unowned self] in
-            self.handleStop()
-        }
+//        cell.changeBlock = { [unowned self] (plus) in
+//            self.handleItemChange(indexPath: indexPath, plus: plus)
+//        }
+//        cell.stopBlock = { [unowned self] in
+//            self.handleStop()
+//        }
         return cell
     }
 

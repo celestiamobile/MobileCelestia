@@ -11,7 +11,7 @@
 
 import UIKit
 
-public final class SelectionViewController: BaseTableViewController {
+public final class SelectionViewController: UICollectionViewController {
     private let options: [String]
     private var selectedIndex: Int?
     private let selectionChange: (Int) -> Void
@@ -20,7 +20,7 @@ public final class SelectionViewController: BaseTableViewController {
         self.options = options
         self.selectedIndex = selectedIndex
         self.selectionChange = selectionChange
-        super.init(style: .defaultGrouped)
+        super.init(collectionViewLayout: UICollectionViewCompositionalLayout.list(using: .init(appearance: .defaultGrouped)))
         self.title = title
         self.windowTitle = title
     }
@@ -32,30 +32,28 @@ public final class SelectionViewController: BaseTableViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
 
-        tableView.register(TextCell.self, forCellReuseIdentifier: "Cell")
+        collectionView.register(UICollectionViewListCell.self, forCellWithReuseIdentifier: "Cell")
     }
 }
 
 extension SelectionViewController {
-    public override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    public override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return options.count
     }
 
-    public override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
-    }
-
-    public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! TextCell
-        cell.title = options[indexPath.row]
-        cell.accessoryType = indexPath.row == selectedIndex ? .checkmark : .none
+    public override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! UICollectionViewListCell
+        var configuration = UIListContentConfiguration.celestiaCell()
+        configuration.text = options[indexPath.item]
+        cell.contentConfiguration = configuration
+        cell.accessories = indexPath.row == selectedIndex ? [.checkmark()] : []
         return cell
     }
 
-    public override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        selectedIndex = indexPath.row
-        tableView.reloadData()
+    public override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+        selectedIndex = indexPath.item
+        collectionView.reloadData()
         selectionChange(indexPath.row)
     }
 }

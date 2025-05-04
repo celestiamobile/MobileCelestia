@@ -11,31 +11,27 @@
 
 import UIKit
 
-@MainActor
-protocol BaseContentConfiguration {
-    func makeContentView() -> UIView & BaseContentView
-}
-
-@MainActor
-protocol BaseContentView: NSObjectProtocol {
-    var configuration: BaseContentConfiguration { get set }
-}
-
-struct TeachingCardContentConfiguration: BaseContentConfiguration, Hashable {
-    func makeContentView() -> UIView & BaseContentView {
+struct TeachingCardContentConfiguration: UIContentConfiguration {
+    func updated(for state: any UIConfigurationState) -> TeachingCardContentConfiguration {
+        return self
+    }
+    
+    func makeContentView() -> UIView & UIContentView {
         return TeachingCardContentView(configuration: self)
     }
 
     var title: String?
     var actionButtonTitle: String?
+    var actionHandler: (() -> Void)?
 
-    init(title: String?, actionButtonTitle: String?) {
+    init(title: String?, actionButtonTitle: String?, actionHandler: (() -> Void)? = nil) {
         self.title = title
         self.actionButtonTitle = actionButtonTitle
+        self.actionHandler = actionHandler
     }
 }
 
-class TeachingCardContentView: UIView, BaseContentView {
+class TeachingCardContentView: UIView, UIContentView {
     private var currentConfiguration: TeachingCardContentConfiguration?
 
     private lazy var titleLabel = UILabel(textStyle: .body)
@@ -43,7 +39,7 @@ class TeachingCardContentView: UIView, BaseContentView {
     private lazy var stackView = UIStackView(arrangedSubviews: [titleLabel, actionButton])
 
     var actionButtonTapped: (() -> Void)?
-    var configuration: BaseContentConfiguration {
+    var configuration: UIContentConfiguration {
         get { return currentConfiguration! }
         set {
             guard let configuration = newValue as? TeachingCardContentConfiguration else {
@@ -64,13 +60,12 @@ class TeachingCardContentView: UIView, BaseContentView {
     }
 
     private func apply(_ configuration: TeachingCardContentConfiguration) {
-        guard currentConfiguration != configuration else { return }
-
         currentConfiguration = configuration
         titleLabel.text = configuration.title
         titleLabel.isHidden = configuration.title == nil
         actionButton.setTitle(configuration.actionButtonTitle, for: .normal)
         actionButton.isHidden = configuration.actionButtonTitle == nil
+        actionButtonTapped = configuration.actionHandler
     }
 
     @objc private func buttonTapped() {
@@ -96,84 +91,5 @@ class TeachingCardContentView: UIView, BaseContentView {
             stackView.centerXAnchor.constraint(equalTo: centerXAnchor),
             stackView.centerYAnchor.constraint(equalTo: centerYAnchor),
         ])
-    }
-}
-
-class TeachingCardView: UIView {
-    var actionButtonTapped: (() -> Void)? = nil
-    var contentConfiguration: BaseContentConfiguration? {
-        didSet {
-            update(oldConfiguration: oldValue, newConfiguration: contentConfiguration)
-        }
-    }
-
-    private var currentContentView: UIView?
-    private lazy var container = UIView()
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        container.translatesAutoresizingMaskIntoConstraints = false
-        container.layer.cornerRadius = GlobalConstants.cardCornerRadius
-        container.backgroundColor = .secondarySystemBackground
-        container.layer.cornerCurve = .continuous
-        addSubview(container)
-
-        NSLayoutConstraint.activate([
-            container.leadingAnchor.constraint(equalTo: leadingAnchor),
-            container.topAnchor.constraint(equalTo: topAnchor),
-            container.centerXAnchor.constraint(equalTo: centerXAnchor),
-            container.centerYAnchor.constraint(equalTo: centerYAnchor),
-        ])
-        update(oldConfiguration: nil, newConfiguration: nil)
-    }
-
-    convenience init(title: String?, actionButtonTitle: String?) {
-        self.init()
-        update(oldConfiguration: nil, newConfiguration: TeachingCardContentConfiguration(title: title, actionButtonTitle: actionButtonTitle))
-    }
-
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    private func update(oldConfiguration: BaseContentConfiguration?, newConfiguration: BaseContentConfiguration?) {
-        if let currentContent = currentContentView as? BaseContentView, let old = oldConfiguration, let new = newConfiguration {
-            if type(of: old) == type(of: new) {
-                currentContent.configuration = new
-                return
-            }
-        }
-
-        let contentView: UIView
-        if let view = newConfiguration?.makeContentView() {
-            contentView = view
-        } else {
-            let view = UIView()
-            NSLayoutConstraint.activate([
-                view.widthAnchor.constraint(equalToConstant: 0),
-                view.heightAnchor.constraint(equalToConstant: 0),
-            ])
-            contentView = view
-        }
-
-        currentContentView?.removeFromSuperview()
-
-        contentView.translatesAutoresizingMaskIntoConstraints = false
-        container.addSubview(contentView)
-        NSLayoutConstraint.activate([
-            contentView.leadingAnchor.constraint(equalTo: container.leadingAnchor, constant: GlobalConstants.cardContentPadding),
-            contentView.topAnchor.constraint(equalTo: container.topAnchor, constant: GlobalConstants.cardContentPadding),
-            contentView.centerXAnchor.constraint(equalTo: container.centerXAnchor),
-            contentView.centerYAnchor.constraint(equalTo: container.centerYAnchor),
-        ])
-
-        if let view = contentView as? TeachingCardContentView {
-            view.actionButtonTapped = { [weak self] in
-                guard let self else { return }
-                self.actionButtonTapped?()
-            }
-        }
-
-        currentContentView = contentView
     }
 }

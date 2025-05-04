@@ -88,7 +88,7 @@ private extension ObserverModeViewController {
         if #available(iOS 15, visionOS 1, *) {
             tableView.register(SelectionCell.self, forCellReuseIdentifier: "Selection")
         }
-        tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Text")
         tableView.register(LinkFooterView.self, forHeaderFooterViewReuseIdentifier: "Footer")
         #if !os(visionOS)
         tableView.keyboardDismissMode = .interactive
@@ -121,7 +121,8 @@ extension ObserverModeViewController {
             }
             return cell
         }
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath)
+        var configuration = UIListContentConfiguration.celestiaCell()
         let title: String
         let detail: String
         let type: UITableViewCell.AccessoryType
@@ -139,8 +140,9 @@ extension ObserverModeViewController {
             detail = targetObjectName
             type = .disclosureIndicator
         }
-        cell.title = title
-        cell.detail = detail
+        configuration.text = title
+        configuration.secondaryText = detail
+        cell.contentConfiguration = configuration
         cell.accessoryType = type
         return cell
     }

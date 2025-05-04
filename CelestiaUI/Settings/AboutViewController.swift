@@ -81,8 +81,8 @@ public final class AboutViewController: BaseTableViewController {
 
 private extension AboutViewController {
     func setUp() {
-        tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
-        tableView.register(MultiLineTextCell.self, forCellReuseIdentifier: "MultiLine")
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Text")
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "MultiLine")
         #if !targetEnvironment(macCatalyst)
         tableView.register(ICPCFooter.self, forHeaderFooterViewReuseIdentifier: "ICPC")
         #endif
@@ -104,24 +104,30 @@ extension AboutViewController {
         let item = items[indexPath.section][indexPath.row]
         switch item {
         case .short(let title, let detail):
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
-            cell.title = title
-            cell.detail = detail
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath)
+            var configuration = UIListContentConfiguration.celestiaCell()
+            configuration.text = title
+            configuration.secondaryText = detail
+            cell.contentConfiguration = configuration
             cell.selectionStyle = .none
             return cell
         case .long(let content):
-            let cell = tableView.dequeueReusableCell(withIdentifier: "MultiLine", for: indexPath) as! MultiLineTextCell
-            cell.title = content
+            let cell = tableView.dequeueReusableCell(withIdentifier: "MultiLine", for: indexPath)
+            var configuration = UIListContentConfiguration.celestiaCell()
+            configuration.text = content
+            cell.contentConfiguration = configuration
             cell.selectionStyle = .none
             return cell
         case .link(let title, _, _):
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
-            cell.title = title
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath)
+            var configuration = UIListContentConfiguration.celestiaCell()
+            configuration.text = title
             #if targetEnvironment(macCatalyst)
-            cell.titleColor = cell.tintColor
+            configuration.textProperties.color = cell.tintColor
             #else
-            cell.titleColor = UIColor.themeLabel
+            configuration.textProperties.color = UIColor.themeLabel
             #endif
+            cell.contentConfiguration = configuration
             cell.selectionStyle = .default
             return cell
         case .action:

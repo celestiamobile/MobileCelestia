@@ -198,7 +198,7 @@ private extension GoToInputViewController {
         #if !os(visionOS)
         tableView.keyboardDismissMode = .interactive
         #endif
-        tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Text")
         if #available(iOS 15, visionOS 1, *) {
             tableView.register(LongitudeLatitudeInputCell.self, forCellReuseIdentifier: "LonLat")
             tableView.register(DistanceInputCell.self, forCellReuseIdentifier: "Distance")
@@ -287,9 +287,11 @@ extension GoToInputViewController {
             }
             return cell
         }
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
-        cell.title = item.title
-        cell.detail = item.detail
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath)
+        var configuration = UIListContentConfiguration.celestiaCell()
+        configuration.text = item.title
+        configuration.secondaryText = item.detail
+        cell.contentConfiguration = configuration
         if item is DoubleValueItem || item is FloatValueItem {
             cell.accessoryType = .none
         } else {

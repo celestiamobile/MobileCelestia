@@ -11,7 +11,7 @@
 
 import UIKit
 
-class SettingsMainViewController: BaseTableViewController {
+class SettingsMainViewController: UICollectionViewController {
     private let sections: [SettingSection]
     private let selection: (SettingItem) async -> Void
 
@@ -19,10 +19,13 @@ class SettingsMainViewController: BaseTableViewController {
         self.sections = sections
         self.selection = selection
         #if targetEnvironment(macCatalyst)
-        super.init(style: .grouped)
+        var configuration = UICollectionLayoutListConfiguration(appearance: .grouped)
         #else
-        super.init(style: .defaultGrouped)
+        var configuration = UICollectionLayoutListConfiguration(appearance: .defaultGrouped)
         #endif
+        configuration.headerMode = .supplementary
+
+        super.init(collectionViewLayout: UICollectionViewCompositionalLayout.list(using: configuration))
     }
 
     required init?(coder: NSCoder) {
@@ -38,51 +41,47 @@ class SettingsMainViewController: BaseTableViewController {
 
 private extension SettingsMainViewController {
     func setUp() {
-        #if targetEnvironment(macCatalyst)
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Text")
-        #else
-        tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
-        #endif
+        collectionView.register(UICollectionViewListCell.self, forCellWithReuseIdentifier: "Text")
+        collectionView.register(UICollectionViewListCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "Header")
         title = CelestiaString("Settings", comment: "")
         windowTitle = title
     }
 }
 
 extension SettingsMainViewController {
-    override func numberOfSections(in tableView: UITableView) -> Int {
+    override func numberOfSections(in collectionView: UICollectionView) -> Int {
         return sections.count
     }
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return sections[section].items.count
     }
 
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let item = sections[indexPath.section].items[indexPath.row]
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewListCell {
+        let item = sections[indexPath.section].items[indexPath.item]
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Text", for: indexPath) as! UICollectionViewListCell
         #if targetEnvironment(macCatalyst)
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath)
         var configuration = UIListContentConfiguration.sidebarCell()
+        #else
+        var configuration = UIListContentConfiguration.celestiaCell()
+        cell.accessories = [.disclosureIndicator()]
+        #endif
         configuration.text = item.name
         cell.contentConfiguration = configuration
-        #else
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
-        cell.title = item.name
-        cell.accessoryType = .disclosureIndicator
-        #endif
         return cell
     }
 
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return sections[section].title
+    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        let view = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Header", for: indexPath) as! UICollectionViewListCell
+        var configuration = UIListContentConfiguration.groupedHeader()
+        configuration.text = sections[indexPath.section].title
+        view.contentConfiguration = configuration
+        return view
     }
 
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
-    }
-
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         Task {
-            await selection(sections[indexPath.section].items[indexPath.row])
+            await selection(sections[indexPath.section].items[indexPath.item])
         }
     }
 }

@@ -12,7 +12,7 @@
 #if !os(visionOS)
 import UIKit
 
-class SettingsFrameRateViewController: BaseTableViewController {
+class SettingsFrameRateViewController: UICollectionViewController {
     private struct FrameRateItem {
         let frameRate: Int
         let isMaximum: Bool
@@ -41,7 +41,7 @@ class SettingsFrameRateViewController: BaseTableViewController {
         self.userDefaults = userDefaults
         self.userDefaultsKey = userDefaultsKey
         self.frameRateUpdateHandler = frameRateUpdateHandler
-        super.init(style: .defaultGrouped)
+        super.init(collectionViewLayout: UICollectionViewCompositionalLayout.list(using: .init(appearance: .defaultGrouped)))
     }
 
     required init?(coder: NSCoder) {
@@ -72,42 +72,39 @@ class SettingsFrameRateViewController: BaseTableViewController {
         standardFrameRate.insert(FrameRateItem(frameRate: maxFrameRate, isMaximum: true), at: 0)
 
         items = standardFrameRate
-        tableView.reloadData()
+        collectionView.reloadData()
     }
 }
 
 private extension SettingsFrameRateViewController {
     func setUp() {
-        tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
+        collectionView.register(UICollectionViewListCell.self, forCellWithReuseIdentifier: "Text")
         title = CelestiaString("Frame Rate", comment: "Frame rate of simulation")
         windowTitle = title
     }
 }
 
 extension SettingsFrameRateViewController {
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return items.count
     }
 
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let selectedFrameRate: Int = userDefaults.value(forKey: userDefaultsKey) as? Int ?? 60
-        let item = items[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
-
-        cell.title = String.localizedStringWithFormat(item.isMaximum ? CelestiaString("Maximum (%@ FPS)", comment: "") : CelestiaString("%@ FPS", comment: ""), numberFormatter.string(from: item.frameRate))
-        cell.accessoryType = item.frameRateValue == selectedFrameRate ? .checkmark : .none
+        let item = items[indexPath.item]
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Text", for: indexPath) as! UICollectionViewListCell
+        var configuration = UIListContentConfiguration.celestiaCell()
+        configuration.text = String.localizedStringWithFormat(item.isMaximum ? CelestiaString("Maximum (%@ FPS)", comment: "") : CelestiaString("%@ FPS", comment: ""), numberFormatter.string(from: item.frameRate))
+        cell.contentConfiguration = configuration
+        cell.accessories = item.frameRateValue == selectedFrameRate ? [.checkmark()] : []
         return cell
     }
 
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
-    }
-
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        let item = items[indexPath.row]
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+        let item = items[indexPath.item]
         frameRateUpdateHandler(item.frameRateValue)
-        tableView.reloadData()
+        collectionView.reloadData()
     }
 }
 #endif

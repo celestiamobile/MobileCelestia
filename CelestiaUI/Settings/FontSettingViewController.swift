@@ -113,7 +113,7 @@ final class FontSettingViewController: BaseTableViewController {
         tableView.sectionHeaderHeight = UITableView.automaticDimension
         tableView.rowHeight = UITableView.automaticDimension
         tableView.register(SegmentedHeader.self, forHeaderFooterViewReuseIdentifier: "Header")
-        tableView.register(TextCell.self, forCellReuseIdentifier: "Cell")
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
     }
 }
 
@@ -130,16 +130,18 @@ extension FontSettingViewController {
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! TextCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+        var configuration = UIListContentConfiguration.celestiaCell()
         let current = isBold ? boldFont : normalFont
         if indexPath.section == 0 {
-            cell.title = CelestiaString("Default", comment: "")
+            configuration.text = CelestiaString("Default", comment: "")
             cell.accessoryType = current == nil ? .checkmark : .none
         } else {
             let font = customFonts[indexPath.row]
-            cell.title = font.name
+            configuration.text = font.name
             cell.accessoryType = (current?.path == font.font.path && current?.ttcIndex == font.font.ttcIndex) ? .checkmark : .none
         }
+        cell.contentConfiguration = configuration
         return cell
     }
 

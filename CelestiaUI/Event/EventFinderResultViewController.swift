@@ -42,7 +42,7 @@ class EventFinderResultViewController: BaseTableViewController {
 
 private extension EventFinderResultViewController {
     func setUp() {
-        tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Text")
         title = CelestiaString("Eclipse Finder", comment: "")
         windowTitle = title
 
@@ -61,9 +61,11 @@ extension EventFinderResultViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let event = events[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
-        cell.title = "\(event.occulter.name) -> \(event.receiver.name)"
-        cell.detail = displayDateFormatter.string(from: event.startTime)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath)
+        var configuration = UIListContentConfiguration.celestiaCell()
+        configuration.text = "\(event.occulter.name) -> \(event.receiver.name)"
+        configuration.secondaryText = displayDateFormatter.string(from: event.startTime)
+        cell.contentConfiguration = configuration
 
         return cell
     }

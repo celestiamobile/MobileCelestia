@@ -70,11 +70,7 @@ class FavoriteViewController: BaseTableViewController {
 
 private extension FavoriteViewController {
     func setup() {
-        #if targetEnvironment(macCatalyst)
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Text")
-        #else
-        tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
-        #endif
         title = CelestiaString("Favorites", comment: "Favorites (currently bookmarks and scripts)")
         windowTitle = title
     }
@@ -87,16 +83,15 @@ extension FavoriteViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let type = FavoriteItemType(rawValue: indexPath.row)
-        #if targetEnvironment(macCatalyst)
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath)
+        #if targetEnvironment(macCatalyst)
         var configuration = UIListContentConfiguration.sidebarCell()
+        #else
+        cell.accessoryType = .disclosureIndicator
+        var configuration = UIListContentConfiguration.celestiaCell()
+        #endif
         configuration.text = type?.description
         cell.contentConfiguration = configuration
-        #else
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
-        cell.title = type?.description
-        cell.accessoryType = .disclosureIndicator
-        #endif
         return cell
     }
 
