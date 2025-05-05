@@ -47,7 +47,7 @@ class CelestiaViewController: UIViewController {
     private let displayController: CelestiaDisplayController
     private var interactionController: CelestiaInteractionController?
 
-    private lazy var auxiliaryWindows = [UIWindow]()
+    private lazy var auxiliaryWindows = [UIScreen: UIWindow]()
 
     private(set) var appScreen: UIScreen
     private(set) var displayScreen: UIScreen
@@ -271,18 +271,17 @@ extension CelestiaViewController {
             return false
         }
         newWindow.windowScene = windowScene
-        auxiliaryWindows.append(newWindow)
+        auxiliaryWindows[screen] = newWindow
         move(to: newWindow, screen: screen)
         newWindow.isHidden = false
         return true
     }
 
     func moveBack(from screen: UIScreen) -> Bool {
-        guard let windowIndex = auxiliaryWindows.firstIndex(where: { $0.windowScene?.screen == screen }) else {
+        guard let window = auxiliaryWindows.removeValue(forKey: screen) else {
             // No window with this screen is found
             return false
         }
-        let window = auxiliaryWindows.remove(at: windowIndex)
         moveBack(from: window)
         return true
     }

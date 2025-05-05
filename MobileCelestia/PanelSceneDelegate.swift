@@ -82,6 +82,7 @@ class PanelSceneDelegate: CommonSceneDelegate {
             }
         }
         if let existingSession = weakSessionTable.object(forKey: sessionTableKey as NSString) {
+            weakSessionTable.removeObject(forKey: sessionTableKey as NSString)
             UIApplication.shared.requestSceneSessionDestruction(existingSession, options: nil) { _ in }
         }
         let activity = NSUserActivity(activityType: Self.activityType)
