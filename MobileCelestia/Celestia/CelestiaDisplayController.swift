@@ -77,29 +77,18 @@ class CelestiaDisplayController: AsyncGLViewController {
         }
     }
 
-    #if targetEnvironment(macCatalyst)
     override func viewDidLoad() {
         super.viewDidLoad()
 
         isRTL = UIView.userInterfaceLayoutDirection(for: view.semanticContentAttribute) == .rightToLeft
 
+        #if targetEnvironment(macCatalyst)
         NotificationCenter.default.addObserver(self, selector: #selector(windowWillStartLiveResizing(_:)), name: Self.windowWillStartLiveResizeNotification, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(windowDidEndLiveResizing(_:)), name: Self.windowDidEndLiveResizeNotification, object: nil)
-    }
-
-    deinit {
-        NotificationCenter.default.removeObserver(self, name: Self.windowWillStartLiveResizeNotification, object: nil)
-        NotificationCenter.default.removeObserver(self, name: Self.windowDidEndLiveResizeNotification, object: nil)
-    }
-    #else
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        isRTL = UIView.userInterfaceLayoutDirection(for: view.semanticContentAttribute) == .rightToLeft
-
+        #else
         view.contentMode = .center
+        #endif
     }
-    #endif
 
     override func viewSafeAreaInsetsDidChange() {
         super.viewSafeAreaInsetsDidChange()
