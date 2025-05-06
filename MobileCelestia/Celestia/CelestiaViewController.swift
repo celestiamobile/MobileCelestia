@@ -239,6 +239,7 @@ extension CelestiaViewController {
         displayController.setPreferredFramesPerSecond(newFrameRate)
     }
 
+    #if !targetEnvironment(macCatalyst)
     func move(to window: UIWindow, screen: UIScreen) {
         // Only move the display controller to the new screen
         displayController.remove()
@@ -263,16 +264,10 @@ extension CelestiaViewController {
         interactionController?.stopMirroring()
     }
 
-    #if !targetEnvironment(macCatalyst)
-    func move(to screen: UIScreen) -> Bool {
-        let newWindow = UIWindow(frame: screen.bounds)
-        // Find the window scene associated with the screen...
-        guard let windowScene = UIApplication.shared.connectedScenes.compactMap({ $0 as? UIWindowScene }).first(where: { $0.screen == screen }) else {
-            return false
-        }
-        newWindow.windowScene = windowScene
-        auxiliaryWindows[screen] = newWindow
-        move(to: newWindow, screen: screen)
+    func move(to windowScene: UIWindowScene) -> Bool {
+        let newWindow = UIWindow(windowScene: windowScene)
+        auxiliaryWindows[windowScene.screen] = newWindow
+        move(to: newWindow, screen: windowScene.screen)
         newWindow.isHidden = false
         return true
     }

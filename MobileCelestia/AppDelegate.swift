@@ -269,9 +269,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         if options.userActivities.contains(where: { $0.activityType == PanelSceneDelegate.activityType }) {
             return UISceneConfiguration(name: "Panel", sessionRole: .windowApplication)
         }
-        if options.userActivities.contains(where: { $0.activityType == DisplaySceneDelegate.activityType }) {
-            return UISceneConfiguration(name: "Display", sessionRole: .windowApplication)
-        }
         return UISceneConfiguration(name: "Main", sessionRole: connectingSceneSession.role)
     }
 

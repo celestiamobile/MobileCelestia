@@ -131,12 +131,6 @@
 					<key>UISceneDelegateClassName</key>
 					<string>$(PRODUCT_MODULE_NAME).PanelSceneDelegate</string>
 				</dict>
-				<dict>
-					<key>UISceneDelegateClassName</key>
-					<string>$(PRODUCT_MODULE_NAME).DisplaySceneDelegate</string>
-					<key>UISceneConfigurationName</key>
-					<string>Display</string>
-				</dict>
 			</array>
 		</dict>
 	</dict>

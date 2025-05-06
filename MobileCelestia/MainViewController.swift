@@ -64,7 +64,7 @@ class MainViewController: UIViewController {
     private var viewControllerStack: [UIViewController] = []
 
     #if !targetEnvironment(macCatalyst)
-    private var currentExternalScreenToSwitchTo: UIScreen?
+    private var currentWindowSceneForMirroring: UIWindowScene?
     #endif
 
     private var scriptOrCelURL: UniformedURL?
@@ -143,8 +143,8 @@ class MainViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(newAddonOpened(_:)), name: newAddonOpenedNotificationName, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(newGuideOpened(_:)), name: newGuideOpenedNotificationName, object: nil)
         #if !targetEnvironment(macCatalyst)
-        NotificationCenter.default.addObserver(self, selector: #selector(newScreenConnected(_:)), name: UIScreen.didConnectNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(screenDisconnected(_:)), name: UIScreen.didDisconnectNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(newScreenConnected(_:)), name: newScreenConnectedNotificationName, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(screenDisconnected(_:)), name: screenDisconnectedNotificationName, object: nil)
         #endif
         NotificationCenter.default.addObserver(self, selector: #selector(presentHelp), name: showHelpNotificationName, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(showSettings), name: showPreferencesNotificationName, object: nil)
@@ -497,16 +497,16 @@ extension MainViewController {
 extension MainViewController {
     #if !targetEnvironment(macCatalyst)
     @objc private func newScreenConnected(_ notification: Notification) {
-        guard let newScreen = notification.object as? UIScreen else { return }
+        guard let windowScene = notification.object as? UIWindowScene else { return }
         // Avoid handling connecting to a new screen when we are working on a screen already
-        guard currentExternalScreenToSwitchTo == nil else { return }
+        guard currentWindowSceneForMirroring == nil else { return }
 
-        currentExternalScreenToSwitchTo = newScreen
+        currentWindowSceneForMirroring = windowScene
         showOption(CelestiaString("An external screen is connected, do you want to display Celestia on the external screen?", comment: "")) { [weak self] choice in
             guard choice, let self = self else { return }
-            self.currentExternalScreenToSwitchTo = nil
+            self.currentWindowSceneForMirroring = nil
 
-            guard self.celestiaController.move(to: newScreen) else {
+            guard self.celestiaController.move(to: windowScene) else {
                 self.showError(CelestiaString("Failed to connect to the external screen.", comment: ""))
                 return
             }
@@ -514,13 +514,13 @@ extension MainViewController {
     }
 
     @objc private func screenDisconnected(_ notification: Notification) {
-        guard let screen = notification.object as? UIScreen else { return }
+        guard let windowScene = notification.object as? UIWindowScene else { return }
 
-        if screen == currentExternalScreenToSwitchTo {
+        if windowScene == currentWindowSceneForMirroring {
             // The screen we are asking to connect is disconnected, dismiss
             // the presented alert controller
             dismiss(animated: true, completion: nil)
-            currentExternalScreenToSwitchTo = nil
+            currentWindowSceneForMirroring = nil
             return
         }
 
@@ -529,25 +529,17 @@ extension MainViewController {
             return
         }
 
-        guard screen == celestiaController.displayScreen else {
+        guard windowScene.screen == celestiaController.displayScreen else {
             // Not the screen we expected
             return
         }
 
-        guard celestiaController.moveBack(from: screen) else {
+        guard celestiaController.moveBack(from: windowScene.screen) else {
             // Unable to move back from the screen
             return
         }
     }
     #endif
-
-    func moveDisplayBack(from window: UIWindow) {
-        celestiaController.moveBack(from: window)
-    }
-
-    func moveDisplay(to window: UIWindow, screen: UIScreen) {
-        celestiaController.move(to: window, screen: screen)
-    }
 }
 
 extension MainViewController: UIDocumentPickerDelegate {
