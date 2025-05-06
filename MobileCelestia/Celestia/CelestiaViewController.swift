@@ -268,6 +268,9 @@ extension CelestiaViewController {
         let newWindow = UIWindow(windowScene: windowScene)
         auxiliaryWindows[windowScene.screen] = newWindow
         move(to: newWindow, screen: windowScene.screen)
+        if let sceneDelegate = windowScene.delegate as? ExternalScreenSceneDelegate {
+            sceneDelegate.window = newWindow
+        }
         newWindow.isHidden = false
         return true
     }

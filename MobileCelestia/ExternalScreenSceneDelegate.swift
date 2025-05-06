@@ -19,6 +19,8 @@ let screenDisconnectedNotificationName = Notification.Name("ScreenDisconnectedNo
 let windowSceneUserInfoKey: String = "WindowSceneUserInfoKey"
 
 class ExternalScreenSceneDelegate: CommonSceneDelegate {
+    var window: UIWindow?
+
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = scene as? UIWindowScene else { return }
         NotificationCenter.default.post(name: newScreenConnectedNotificationName, object: windowScene)
