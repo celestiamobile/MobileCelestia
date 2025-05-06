@@ -119,6 +119,15 @@
 		<false/>
 		<key>UISceneConfigurations</key>
 		<dict>
+			<key>UIWindowSceneSessionRoleExternalDisplay</key>
+			<array>
+				<dict>
+					<key>UISceneDelegateClassName</key>
+					<string>$(PRODUCT_MODULE_NAME).ExternalScreenSceneDelegate</string>
+					<key>UISceneConfigurationName</key>
+					<string>ExternalScreen</string>
+				</dict>
+			</array>
 			<key>UIWindowSceneSessionRoleExternalDisplayNonInteractive</key>
 			<array>
 				<dict>
