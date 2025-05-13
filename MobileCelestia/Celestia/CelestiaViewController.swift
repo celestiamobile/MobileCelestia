@@ -98,7 +98,9 @@ class CelestiaViewController: UIViewController {
         displayController.delegate = self
         install(displayController, safeAreaEdges: safeAreaEdges)
 
+        #if targetEnvironment(macCatalyst)
         NotificationCenter.default.addObserver(self, selector: #selector(windowDidMoveToScreenNotification(_:)), name: NSNotification.Name("UIWindowDidMoveToScreenNotification"), object: nil)
+        #endif
     }
 
     override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
@@ -144,6 +146,7 @@ class CelestiaViewController: UIViewController {
     }
 }
 
+#if targetEnvironment(macCatalyst)
 extension CelestiaViewController {
     @objc private func windowDidMoveToScreenNotification(_ notification: Notification) {
         guard let window = notification.object as? UIWindow else { return }
@@ -161,6 +164,7 @@ extension CelestiaViewController {
         }
     }
 }
+#endif
 
 extension CelestiaViewController: CelestiaInteractionControllerDelegate {
     func celestiaInteractionControllerRequestShowActionMenu(_ celestiaInteractionController: CelestiaInteractionController) {
@@ -240,7 +244,7 @@ extension CelestiaViewController {
     }
 
     #if !targetEnvironment(macCatalyst)
-    func move(to window: UIWindow, screen: UIScreen) {
+    private func move(to window: UIWindow, screen: UIScreen) {
         // Only move the display controller to the new screen
         displayController.remove()
         let dummyViewController = UIViewController()
@@ -252,7 +256,7 @@ extension CelestiaViewController {
         isMirroring = true
     }
 
-    func moveBack(from window: UIWindow) {
+    private func moveBack(from window: UIWindow) {
         // Only move back when it has the display view controller
         guard let rootViewController = window.rootViewController, rootViewController.children.contains(displayController) else { return }
         displayController.remove()
