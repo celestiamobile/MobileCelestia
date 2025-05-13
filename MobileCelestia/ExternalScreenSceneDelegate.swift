@@ -16,6 +16,8 @@ import UIKit
 #if !targetEnvironment(macCatalyst)
 let newScreenConnectedNotificationName = Notification.Name("NewScreenConnectedNotification")
 let screenDisconnectedNotificationName = Notification.Name("ScreenDisconnectedNotification")
+let screenEnterForegroundNotificationName = Notification.Name("ScreenEnterForegroundNotification")
+let screenEnterBackgroundNotificationName = Notification.Name("ScreenEnterBackgroundNotification")
 let windowSceneUserInfoKey: String = "WindowSceneUserInfoKey"
 
 class ExternalScreenSceneDelegate: CommonSceneDelegate {
@@ -29,6 +31,16 @@ class ExternalScreenSceneDelegate: CommonSceneDelegate {
     func sceneDidDisconnect(_ scene: UIScene) {
         guard let windowScene = scene as? UIWindowScene else { return }
         NotificationCenter.default.post(name: screenDisconnectedNotificationName, object: windowScene)
+    }
+
+    func sceneWillEnterForeground(_ scene: UIScene) {
+        guard let windowScene = scene as? UIWindowScene else { return }
+        NotificationCenter.default.post(name: screenEnterForegroundNotificationName, object: windowScene)
+    }
+
+    func sceneDidEnterBackground(_ scene: UIScene) {
+        guard let windowScene = scene as? UIWindowScene else { return }
+        NotificationCenter.default.post(name: screenEnterBackgroundNotificationName, object: windowScene)
     }
 }
 #endif

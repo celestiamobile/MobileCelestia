@@ -100,6 +100,9 @@ class CelestiaViewController: UIViewController {
 
         #if targetEnvironment(macCatalyst)
         NotificationCenter.default.addObserver(self, selector: #selector(windowDidMoveToScreenNotification(_:)), name: NSNotification.Name("UIWindowDidMoveToScreenNotification"), object: nil)
+        #else
+        NotificationCenter.default.addObserver(self, selector: #selector(windowSceneEnterForegroundNotification(_:)), name: screenEnterForegroundNotificationName, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(windowSceneEnterBackgroundNotification(_:)), name: screenEnterBackgroundNotificationName, object: nil)
         #endif
     }
 
@@ -161,6 +164,22 @@ extension CelestiaViewController {
             if displayScreen != screen {
                 setDisplayScreen(screen)
             }
+        }
+    }
+}
+#else
+extension CelestiaViewController {
+    @objc private func windowSceneEnterForegroundNotification(_ notification: Notification) {
+        guard let windowScene = notification.object as? UIWindowScene else { return }
+        if let window = auxiliaryWindows[windowScene.screen] {
+            move(to: window, screen: window.screen)
+        }
+    }
+
+    @objc private func windowSceneEnterBackgroundNotification(_ notification: Notification) {
+        guard let windowScene = notification.object as? UIWindowScene else { return }
+        if let window = auxiliaryWindows[windowScene.screen] {
+            moveBack(from: window)
         }
     }
 }
