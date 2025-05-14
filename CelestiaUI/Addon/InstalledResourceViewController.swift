@@ -70,4 +70,22 @@ class InstalledResourceViewController: AsyncListViewController<ResourceItem> {
     override func emptyHintView() -> UIView? {
         return emptyView
     }
+
+    @available(iOS 17, visionOS 1, *)
+    override func emptyViewConfiguration() -> UIContentUnavailableConfiguration? {
+        var config = UIContentUnavailableConfiguration.empty()
+        config.text = CelestiaString("Enhance Celestia with online add-ons", comment: "")
+        #if !targetEnvironment(macCatalyst)
+        var button = UIButton.Configuration.filled()
+        button.baseBackgroundColor = .buttonBackground
+        button.baseForegroundColor = .buttonForeground
+        config.button = button
+        #endif
+        config.button.title = CelestiaString("Get Add-ons", comment: "Open webpage for downloading add-ons")
+        config.buttonProperties.primaryAction = UIAction { [weak self] _ in
+            guard let self else { return }
+            self.getAddonsHandler()
+        }
+        return config
+    }
 }

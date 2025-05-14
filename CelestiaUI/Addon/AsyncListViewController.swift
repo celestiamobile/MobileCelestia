@@ -29,6 +29,7 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
     private var items: [T] = []
     private var hasMoreToLoad = true
     private var isLoading = false
+    private var isFreshLoadSuccessful = true
     private var selection: (T) -> Void
     private var currentRequestID: UUID?
     private var isFirstAppear: Bool = true
@@ -65,11 +66,41 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
         }
     }
 
+    @available(iOS 17, visionOS 1, *)
+    override func updateContentUnavailableConfiguration(using state: UIContentUnavailableConfigurationState) {
+        if !items.isEmpty {
+            contentUnavailableConfiguration = nil
+        } else if isLoading {
+            contentUnavailableConfiguration = UIContentUnavailableConfiguration.loading()
+        } else if !isFreshLoadSuccessful {
+            var config = UIContentUnavailableConfiguration.empty()
+            #if !targetEnvironment(macCatalyst)
+            var button = UIButton.Configuration.filled()
+            button.baseBackgroundColor = .buttonBackground
+            button.baseForegroundColor = .buttonForeground
+            config.button = button
+            #endif
+            config.button.title = CelestiaString("Refresh", comment: "Button to refresh this list")
+            config.buttonProperties.primaryAction = UIAction { [weak self] _ in
+                guard let self else { return }
+                self.callRefresh()
+            }
+            contentUnavailableConfiguration = config
+        } else {
+            contentUnavailableConfiguration = emptyViewConfiguration()
+        }
+    }
+
     func loadItems(pageStart: Int, pageSize: Int) async throws -> [T] {
         fatalError()
     }
 
     func emptyHintView() -> UIView? {
+        return nil
+    }
+
+    @available(iOS 17, visionOS 1, *)
+    func emptyViewConfiguration() -> UIContentUnavailableConfiguration? {
         return nil
     }
 
@@ -105,7 +136,11 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
             } else {
                 self.tableView.insertRows(at: (pageStart..<(pageStart + newItems.count)).map{ IndexPath(row: $0, section: 0) }, with: .automatic)
             }
-            self.tableView.backgroundView = self.items.isEmpty ? self.emptyHintView() : nil
+            if #available(iOS 17, visionOS 1, *) {
+                self.setNeedsUpdateContentUnavailableConfiguration()
+            } else {
+                self.tableView.backgroundView = self.items.isEmpty ? self.emptyHintView() : nil
+            }
         } catch {
             guard self.currentRequestID == requestID else { return }
             if freshLoad {
@@ -116,13 +151,22 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
     }
 
     private func startRefreshing() {
-        tableView.backgroundView = activityIndicator
-        activityIndicator.startAnimating()
+        if #available(iOS 17, visionOS 1, *) {
+            setNeedsUpdateContentUnavailableConfiguration()
+        } else {
+            tableView.backgroundView = activityIndicator
+            activityIndicator.startAnimating()
+        }
     }
 
     private func stopRefreshing(success: Bool) {
-        tableView.backgroundView = success ? nil : refreshButton
-        activityIndicator.stopAnimating()
+        isFreshLoadSuccessful = success
+        if #available(iOS 17, visionOS 1, *) {
+            setNeedsUpdateContentUnavailableConfiguration()
+        } else {
+            tableView.backgroundView = success ? nil : refreshButton
+            activityIndicator.stopAnimating()
+        }
     }
 
     override func numberOfSections(in tableView: UITableView) -> Int {

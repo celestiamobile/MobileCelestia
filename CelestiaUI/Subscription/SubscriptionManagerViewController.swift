@@ -210,19 +210,44 @@ private extension SubscriptionManagerViewController {
     func reloadViews() {
         switch status {
         case .empty:
-            loadingView.isHidden = false
-            loadingView.startAnimating()
-            errorView.isHidden = true
+            if #available(iOS 17, visionOS 1, *) {
+                contentUnavailableConfiguration = UIContentUnavailableConfiguration.loading()
+            } else {
+                loadingView.isHidden = false
+                loadingView.startAnimating()
+                errorView.isHidden = true
+            }
             scrollContainer.isHidden = true
         case .error:
-            loadingView.isHidden = true
-            loadingView.stopAnimating()
-            errorView.isHidden = false
+            if #available(iOS 17, visionOS 1, *) {
+                var config = UIContentUnavailableConfiguration.empty()
+                config.text = CelestiaString("We encountered an error.", comment: "Error loading the subscription page")
+                #if !targetEnvironment(macCatalyst)
+                var button = UIButton.Configuration.filled()
+                button.baseBackgroundColor = .buttonBackground
+                button.baseForegroundColor = .buttonForeground
+                config.button = button
+                #endif
+                config.button.title = CelestiaString("Refresh", comment: "Button to refresh this list")
+                config.buttonProperties.primaryAction = UIAction { [weak self] _ in
+                    guard let self else { return }
+                    self.reloadData()
+                }
+                contentUnavailableConfiguration = config
+            } else {
+                loadingView.isHidden = true
+                loadingView.stopAnimating()
+                errorView.isHidden = false
+            }
             scrollContainer.isHidden = true
         case .status(let subscriptionStatus, let plans), .inProgress(let subscriptionStatus, let plans, _):
-            loadingView.isHidden = true
-            loadingView.stopAnimating()
-            errorView.isHidden = true
+            if #available(iOS 17, visionOS 1, *) {
+                contentUnavailableConfiguration = nil
+            } else {
+                loadingView.isHidden = true
+                loadingView.stopAnimating()
+                errorView.isHidden = true
+            }
             scrollContainer.isHidden = false
             let pendingProduct: Product?
             if case let Status.inProgress(_, _, product) = status {
