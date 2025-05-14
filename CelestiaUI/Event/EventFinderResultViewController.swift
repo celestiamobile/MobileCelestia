@@ -47,9 +47,15 @@ private extension EventFinderResultViewController {
         windowTitle = title
 
         if events.isEmpty {
-            let view = EmptyHintView()
-            view.title = CelestiaString("No eclipse is found for the given object in the time range", comment: "")
-            tableView.backgroundView = view
+            if #available(iOS 17, visionOS 1, *) {
+                var empty = UIContentUnavailableConfiguration.empty()
+                empty.text = CelestiaString("No eclipse is found for the given object in the time range", comment: "")
+                contentUnavailableConfiguration = empty
+            } else {
+                let view = EmptyHintView()
+                view.title = CelestiaString("No eclipse is found for the given object in the time range", comment: "")
+                tableView.backgroundView = view
+            }
         }
     }
 }

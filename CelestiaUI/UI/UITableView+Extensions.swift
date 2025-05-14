@@ -12,11 +12,29 @@
 import UIKit
 
 public extension UITableView.Style {
-    static var defaultGrouped: UITableView.Style {
+    static var defaultGrouped: Self {
         #if targetEnvironment(macCatalyst)
         return .insetGrouped
         #else
         return .grouped
         #endif
+    }
+}
+
+public extension UICollectionLayoutListConfiguration.Appearance {
+    static var defaultGrouped: Self {
+        #if targetEnvironment(macCatalyst)
+        return .insetGrouped
+        #else
+        return .grouped
+        #endif
+    }
+}
+
+public extension UIListContentConfiguration {
+    static func celestiaCell() -> Self {
+        var configuration = cell()
+        configuration.directionalLayoutMargins = NSDirectionalEdgeInsets(top: GlobalConstants.listItemMediumMarginVertical, leading: GlobalConstants.listItemMediumMarginHorizontal, bottom: GlobalConstants.listItemMediumMarginVertical, trailing: GlobalConstants.listItemMediumMarginHorizontal)
+        return configuration
     }
 }

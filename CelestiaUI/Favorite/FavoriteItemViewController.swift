@@ -189,7 +189,7 @@ extension Destination: FavoriteItem {
     }
 }
 
-class FavoriteItemViewController<ItemList: FavoriteItemList>: BaseTableViewController {
+class FavoriteItemViewController<ItemList: FavoriteItemList>: UICollectionViewController {
     private let itemList: ItemList
 
     private let selection: (ItemList.Item) -> Void
@@ -197,7 +197,7 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: BaseTableViewContr
     private let share: (ItemList.Item, FavoriteItemViewController<ItemList>) -> Void
     private let textInputHandler: (_ viewController: UIViewController, _ title: String, _ text: String) async -> String?
 
-    private lazy var addBarButtonItem =                 UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(requestAdd(_:)))
+    private lazy var addBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(requestAdd(_:)))
 
     init(
         item: ItemList,
@@ -211,7 +211,37 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: BaseTableViewContr
         self.add = add
         self.share = share
         self.textInputHandler = textInputHandler
-        super.init(style: .defaultGrouped)
+        super.init(collectionViewLayout: UICollectionViewFlowLayout())
+        var configuration = UICollectionLayoutListConfiguration(appearance: .defaultGrouped)
+        configuration.trailingSwipeActionsConfigurationProvider = { indexPath in
+            var actions = [UIContextualAction]()
+            if item.canBeModified {
+                actions.append(
+                    UIContextualAction(style: .destructive, title: CelestiaString("Delete", comment: "")) { [weak self] (_, _, completionHandler) in
+                        if let self {
+                            self.requestRemoveObject(at: indexPath.item)
+                            completionHandler(true)
+                        } else {
+                            completionHandler(false)
+                        }
+                    }
+                )
+            }
+            let item = item[indexPath.item]
+            if item.canBeRenamed {
+                actions.append(
+                    UIContextualAction(style: .normal, title: CelestiaString("Edit", comment: "Enter edit mode for favorite items")) { [weak self] (_, _, completionHandler) in
+                        if let self {
+                            self.requestRenameObject(at: indexPath.item, completionHandler: completionHandler)
+                        } else {
+                            completionHandler(false)
+                        }
+                    }
+                )
+            }
+            return UISwipeActionsConfiguration(actions: actions)
+        }
+        collectionView.collectionViewLayout = UICollectionViewCompositionalLayout.list(using: configuration)
     }
 
     required init?(coder: NSCoder) {
@@ -224,89 +254,85 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: BaseTableViewContr
         setUp()
     }
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    @available(iOS 17.0, visionOS 1, *)
+    override func updateContentUnavailableConfiguration(using state: UIContentUnavailableConfigurationState) {
+        var config: UIContentUnavailableConfiguration?
+        if itemList.count == 0, let emptyHint = itemList.emptyHint {
+            var empty = UIContentUnavailableConfiguration.empty()
+            empty.text = emptyHint
+            config = empty
+        }
+        contentUnavailableConfiguration = config
+    }
+
+    override func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return itemList.count
     }
 
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
-        let item = itemList[indexPath.row]
-        cell.title = item.title
-        cell.accessoryType = item.isLeaf ? (item.hasFullPageRepresentation ? .disclosureIndicator : .none) : .disclosureIndicator
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Text", for: indexPath) as! UICollectionViewListCell
+        let item = itemList[indexPath.item]
+        var content = UIListContentConfiguration.celestiaCell()
+        content.text = item.title
+        cell.contentConfiguration = content
+        var accessories: [UICellAccessory] = [.delete(displayed: .whenEditing), .reorder(displayed: .whenEditing)]
+        if !item.isLeaf || item.hasFullPageRepresentation {
+            accessories.append(.disclosureIndicator(displayed: .whenNotEditing))
+        }
+        cell.accessories = accessories
         return cell
     }
 
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let item = itemList[indexPath.row]
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let item = itemList[indexPath.item]
         if item.isLeaf {
-            tableView.deselectRow(at: indexPath, animated: true)
+            collectionView.deselectItem(at: indexPath, animated: true)
         }
         selection(item)
     }
 
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
-    }
-
-    override func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        var actions = [UIContextualAction]()
-        if itemList.canBeModified {
-            actions.append(
-                UIContextualAction(style: .destructive, title: CelestiaString("Delete", comment: "")) { [unowned self] (_, _, completionHandler) in
-                    self.requestRemoveObject(at: indexPath.row)
-                    completionHandler(true)
-                }
-            )
-        }
-        let item = itemList[indexPath.row]
-        if item.canBeRenamed {
-            actions.append(
-                UIContextualAction(style: .normal, title: CelestiaString("Edit", comment: "Enter edit mode for favorite items")) { [unowned self] (_, _, completionHandler) in
-                    self.requestRenameObject(at: indexPath.row, completionHandler: completionHandler)
-                }
-            )
-        }
-        return UISwipeActionsConfiguration(actions: actions)
-    }
-
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+    override func collectionView(_ collectionView: UICollectionView, canEditItemAt indexPath: IndexPath) -> Bool {
         return itemList.canBeModified
     }
 
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+    override func collectionView(_ collectionView: UICollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
         return itemList.canBeModified
     }
 
-    override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+    override func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         defer { reload() }
-        itemList.move(from: sourceIndexPath.row, to: destinationIndexPath.row)
+        itemList.move(from: sourceIndexPath.item, to: destinationIndexPath.item)
     }
 
-    override func tableView(_ tableView: UITableView, contextMenuConfigurationForRowAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
-        guard !tableView.isEditing else { return nil }
+    override func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        guard !collectionView.isEditing else { return nil }
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { [weak self] (_) -> UIMenu? in
             guard let self = self else { return nil }
 
             var actions = [UIAction]()
             if self.itemList.canBeModified {
                 let deleteAction = UIAction(title: CelestiaString("Delete", comment: ""), image: UIImage(systemName: "trash"), identifier: nil) { (_) in
-                    self.requestRemoveObject(at: indexPath.row)
+                    self.requestRemoveObject(at: indexPath.item)
                 }
                 deleteAction.attributes = .destructive
                 actions.append(deleteAction)
             }
-            let item = self.itemList[indexPath.row]
+            let item = self.itemList[indexPath.item]
             if item.canBeRenamed {
                 actions.append(
                     UIAction(title: CelestiaString("Edit", comment: "Enter edit mode for favorite items"), image: UIImage(systemName: "square.and.pencil"), identifier: nil) { (_) in
-                        self.requestRenameObject(at: indexPath.row)
+                        self.requestRenameObject(at: indexPath.item)
                     }
                 )
             }
             if item.canBeShared {
                 actions.append(
                     UIAction(title: CelestiaString("Share", comment: ""), image: UIImage(systemName: "square.and.arrow.up"), identifier: nil) { (_) in
-                        self.requestShareObject(at: indexPath.row)
+                        self.requestShareObject(at: indexPath.item)
                     }
                 )
             }
@@ -374,7 +400,7 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: BaseTableViewContr
 
 private extension FavoriteItemViewController {
     func setUp() {
-        tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
+        collectionView.register(UICollectionViewListCell.self, forCellWithReuseIdentifier: "Text")
         title = itemList.title
         windowTitle = title
 
@@ -389,14 +415,19 @@ private extension FavoriteItemViewController {
     }
 
     func reload() {
-        if itemList.count == 0, let emptyHint = itemList.emptyHint {
-            let view = EmptyHintView()
-            view.title = emptyHint
-            tableView.backgroundView = view
+        if #available(iOS 17, visionOS 1, *) {
+            setNeedsUpdateContentUnavailableConfiguration()
         } else {
-            tableView.backgroundView = nil
+            if itemList.count == 0, let emptyHint = itemList.emptyHint {
+                let view = EmptyHintView()
+                view.layer.zPosition = 1024
+                view.title = emptyHint
+                collectionView.backgroundView = view
+            } else {
+                collectionView.backgroundView = nil
+            }
         }
-        tableView.reloadData()
+        collectionView.reloadData()
     }
 }
 

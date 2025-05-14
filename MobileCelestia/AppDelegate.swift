@@ -213,21 +213,21 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             } as @convention(block) (UIViewController) -> Bool), method_getTypeEncoding(escapeMethod))
         }
         #endif
-
-        #if targetEnvironment(macCatalyst)
-        let dsn = "SENTRY-CATALYST-DSN"
-        #else
-        let dsn = "SENTRY-IOS-DSN"
-        #endif
-        SentrySDK.start { options in
-            options.dsn = dsn
-            #if DEBUG
-            options.debug = true // Enabled debug when first installing is always helpful
-            #endif
-            options.tracesSampleRate = 0
-            options.enableAutoPerformanceTracing = false
-            options.enablePerformanceV2 = false
-        }
+//
+//        #if targetEnvironment(macCatalyst)
+//        let dsn = "SENTRY-CATALYST-DSN"
+//        #else
+//        let dsn = "SENTRY-IOS-DSN"
+//        #endif
+//        SentrySDK.start { options in
+//            options.dsn = dsn
+//            #if DEBUG
+//            options.debug = true // Enabled debug when first installing is always helpful
+//            #endif
+//            options.tracesSampleRate = 0
+//            options.enableAutoPerformanceTracing = false
+//            options.enablePerformanceV2 = false
+//        }
 
         #if targetEnvironment(macCatalyst)
         NotificationCenter.default.addObserver(self, selector: #selector(handleNSWindowDidBecomeKey(_:)), name: Self.windowDidBecomeKeyNotification, object: nil)

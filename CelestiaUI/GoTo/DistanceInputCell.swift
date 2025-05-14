@@ -107,6 +107,21 @@ class DistanceInputCell: UITableViewCell {
 
         distanceTextField.keyboardType = .decimalPad
         distanceTextField.addTarget(self, action: #selector(distanceTextChanged), for: .editingChanged)
+
+        let button = UIButton(type: .system)
+        button.setTitle("Button", for: .normal)
+        contentView.addSubview(button)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            button.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
+            button.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+        ])
+
+        let menu = UIMenu(children: [UIAction(title: "Test") { _ in
+
+        }])
+        button.menu = menu
+        button.showsMenuAsPrimaryAction = true
     }
 
     @objc private func distanceTextChanged() {

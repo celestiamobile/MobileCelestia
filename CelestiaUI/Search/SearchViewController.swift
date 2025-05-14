@@ -104,6 +104,30 @@ public class SearchViewController: UIViewController {
     }
     #endif
 
+    @available(iOS 17, visionOS 1, *)
+    public override func updateContentUnavailableConfiguration(using state: UIContentUnavailableConfigurationState) {
+        var config: UIContentUnavailableConfiguration?
+        switch self.state {
+        case .empty:
+            var empty = UIContentUnavailableConfiguration.empty()
+            empty.text = CelestiaString("Find stars, DSOs, and nearby objects", comment: "")
+            config = empty
+        case .loading:
+            config = UIContentUnavailableConfiguration.loading()
+        case .results(let empty):
+            if empty {
+                var empty = UIContentUnavailableConfiguration.empty()
+                empty.text = CelestiaString("No result found", comment: "")
+                config = empty
+            }
+        }
+
+        if contentViewController != nil, !isSearchActive {
+            config = nil
+        }
+        contentUnavailableConfiguration = config
+    }
+
     private func updateState(_ newState: State) {
         guard newState != state else { return }
         state = newState
@@ -119,37 +143,55 @@ public class SearchViewController: UIViewController {
     }
 
     private func reload() {
-        switch state {
-        case .empty:
-            resultViewController.view.isHidden = true
-            loadingView.stopAnimating()
-            loadingViewContainer.isHidden = true
-            emptyView.title = CelestiaString("Find stars, DSOs, and nearby objects", comment: "")
-            emptyViewContainer.isHidden = false
-        case .loading:
-            resultViewController.view.isHidden = true
-            emptyViewContainer.isHidden = true
-            loadingViewContainer.isHidden = false
-            loadingView.startAnimating()
-        case .results(let empty):
-            resultViewController.view.isHidden = empty
-            emptyView.title = empty ? CelestiaString("No result found", comment: "") : nil
-            emptyViewContainer.isHidden = !empty
-            loadingView.stopAnimating()
-            loadingViewContainer.isHidden = true
+        defer {
+            if #available(iOS 17, visionOS 1, *) {
+                setNeedsUpdateContentUnavailableConfiguration()
+            }
         }
 
         if let contentViewController {
             if !isSearchActive {
-                loadingView.stopAnimating()
+                if #available(iOS 17, visionOS 1, *) {
+                } else {
+                    loadingView.stopAnimating()
+                    emptyViewContainer.isHidden = true
+                    loadingViewContainer.isHidden = true
+                }
                 resultViewController.view.isHidden = true
-                emptyViewContainer.isHidden = true
-                loadingViewContainer.isHidden = true
-
                 contentViewController.view.isHidden = false
                 view.sendSubviewToBack(contentViewController.view)
+                return
             } else {
                 contentViewController.view.isHidden = true
+            }
+        }
+
+        switch state {
+        case .empty:
+            resultViewController.view.isHidden = true
+            if #available(iOS 17, visionOS 1, *) {
+            } else {
+                loadingView.stopAnimating()
+                loadingViewContainer.isHidden = true
+                emptyView.title = CelestiaString("Find stars, DSOs, and nearby objects", comment: "")
+                emptyViewContainer.isHidden = false
+            }
+        case .loading:
+            resultViewController.view.isHidden = true
+            if #available(iOS 17, visionOS 1, *) {
+            } else {
+                emptyViewContainer.isHidden = true
+                loadingViewContainer.isHidden = false
+                loadingView.startAnimating()
+            }
+        case .results(let empty):
+            resultViewController.view.isHidden = empty
+            if #available(iOS 17, visionOS 1, *) {
+            } else {
+                emptyView.title = empty ? CelestiaString("No result found", comment: "") : nil
+                emptyViewContainer.isHidden = !empty
+                loadingView.stopAnimating()
+                loadingViewContainer.isHidden = true
             }
         }
     }
@@ -180,19 +222,22 @@ private extension SearchViewController {
 
         install(resultViewController)
 
-        for emptyView in [emptyViewContainer, loadingViewContainer] {
-            #if !os(visionOS)
-            emptyView.backgroundColor = .systemBackground
-            #endif
-            emptyView.translatesAutoresizingMaskIntoConstraints = false
-            view.addSubview(emptyView)
+        if #available(iOS 17, visionOS 1, *) {
+        } else {
+            for emptyView in [emptyViewContainer, loadingViewContainer] {
+                #if !os(visionOS)
+                emptyView.backgroundColor = .systemBackground
+                #endif
+                emptyView.translatesAutoresizingMaskIntoConstraints = false
+                view.addSubview(emptyView)
 
-            NSLayoutConstraint.activate([
-                emptyView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                emptyView.topAnchor.constraint(equalTo: view.topAnchor),
-                emptyView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-                emptyView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            ])
+                NSLayoutConstraint.activate([
+                    emptyView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                    emptyView.topAnchor.constraint(equalTo: view.topAnchor),
+                    emptyView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                    emptyView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+                ])
+            }
         }
 
         let appearance = UINavigationBarAppearance()
@@ -244,7 +289,6 @@ private extension SearchViewController {
             resultSections = []
             fullMatch = Selection()
             tableView.reloadData()
-            loadingView.stopAnimating()
             updateState(.empty)
             updateSearchState(false)
             return

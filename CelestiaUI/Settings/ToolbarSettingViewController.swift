@@ -13,7 +13,7 @@ import UIKit
 
 @available(iOS 15, *)
 class ToolbarSettingViewController: SubscriptionBackingViewController {
-    private class ContentViewController: BaseTableViewController {
+    private class ContentViewController: UICollectionViewController {
         private let userDefaults: UserDefaults
         private let toolbarActionsKey: String
         private let assetProvider: AssetProvider
@@ -26,7 +26,16 @@ class ToolbarSettingViewController: SubscriptionBackingViewController {
             self.toolbarActionsKey = toolbarActionsKey
             self.assetProvider = assetProvider
 
-            super.init(style: .defaultGrouped)
+            var configuration = UICollectionLayoutListConfiguration(appearance: .defaultGrouped)
+            configuration.footerMode = .supplementary
+            super.init(collectionViewLayout: UICollectionViewCompositionalLayout(sectionProvider: { section, environment in
+                if section == 1 {
+                    var configuration = UICollectionLayoutListConfiguration(appearance: .defaultGrouped)
+                    configuration.footerMode = .supplementary
+                    return NSCollectionLayoutSection.list(using: configuration, layoutEnvironment: environment)
+                }
+                return NSCollectionLayoutSection.list(using: .init(appearance: .defaultGrouped), layoutEnvironment: environment)
+            }))
         }
 
         required init?(coder: NSCoder) {
@@ -46,96 +55,58 @@ class ToolbarSettingViewController: SubscriptionBackingViewController {
             }
 
             otherActions = QuickAction.allCases.filter { !addedActions.contains($0) }
+            collectionView.register(UICollectionViewListCell.self, forCellWithReuseIdentifier: "Entry")
+            collectionView.register(UICollectionViewListCell.self, forCellWithReuseIdentifier: "Reset")
+            collectionView.register(UICollectionViewListCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "Footer")
         }
 
         override func setEditing(_ editing: Bool, animated: Bool) {
             super.setEditing(editing, animated: animated)
 
-            tableView.reloadData()
+            collectionView.reloadData()
         }
 
-        override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        override func collectionView(_ collectionView: UICollectionView, canEditItemAt indexPath: IndexPath) -> Bool {
             return indexPath.section == 0
         }
 
-        override func tableView(_ tableView: UITableView, targetIndexPathForMoveFromRowAt sourceIndexPath: IndexPath, toProposedIndexPath proposedDestinationIndexPath: IndexPath) -> IndexPath {
-            guard proposedDestinationIndexPath.section == 0 else { return IndexPath(row: addedActions.count - 1, section: 0) }
-            if proposedDestinationIndexPath.row >= addedActions.count {
-                return IndexPath(row: addedActions.count - 1, section: proposedDestinationIndexPath.section)
+        override func collectionView(_ collectionView: UICollectionView, targetIndexPathForMoveFromItemAt currentIndexPath: IndexPath, toProposedIndexPath proposedIndexPath: IndexPath) -> IndexPath {
+            guard proposedIndexPath.section == 0 else { return IndexPath(item: addedActions.count - 1, section: 0) }
+            if proposedIndexPath.item >= addedActions.count {
+                return IndexPath(item: addedActions.count - 1, section: proposedIndexPath.section)
             }
-            return proposedDestinationIndexPath
+            return proposedIndexPath
         }
 
-        override func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
-            guard indexPath.section == 0 else { return .none }
-            if indexPath.row < addedActions.count {
-                return addedActions[indexPath.row].deletable ? .delete : .none
-            }
-            return .insert
-        }
-
-        override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-            guard indexPath.section == 0 else { return }
-            switch editingStyle {
-            case .delete:
-                let action = addedActions.remove(at: indexPath.row)
-                let insertionIndex = otherActions.firstIndex(where: { $0.rawValue > action.rawValue }) ?? 0
-                otherActions.insert(action, at: insertionIndex)
-                userDefaults.set(QuickAction.toString(addedActions), forKey: toolbarActionsKey)
-                tableView.beginUpdates()
-                tableView.deleteRows(at: [indexPath], with: .bottom)
-                tableView.insertRows(at: [IndexPath(item: addedActions.count + insertionIndex, section: indexPath.section)], with: .top)
-                tableView.endUpdates()
-                break
-            case .insert:
-                addedActions.append(otherActions.remove(at: indexPath.row - addedActions.count))
-                userDefaults.set(QuickAction.toString(addedActions), forKey: toolbarActionsKey)
-                tableView.beginUpdates()
-                tableView.deleteRows(at: [indexPath], with: .top)
-                tableView.insertRows(at: [IndexPath(item: addedActions.count - 1, section: indexPath.section)], with: .bottom)
-                tableView.endUpdates()
-                break
-            case .none:
-                break
-            @unknown default:
-                break
-            }
-        }
-
-        override func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-            guard destinationIndexPath.section == 0, destinationIndexPath.row < addedActions.count else { 
-                tableView.reloadData()
+        override func collectionView(_ collectionView: UICollectionView, moveItemAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+            guard destinationIndexPath.section == 0, destinationIndexPath.item < addedActions.count else { 
+                collectionView.reloadData()
                 return
             }
-            addedActions.insert(addedActions.remove(at: sourceIndexPath.row), at: destinationIndexPath.row)
+            addedActions.insert(addedActions.remove(at: sourceIndexPath.item), at: destinationIndexPath.item)
             userDefaults.set(QuickAction.toString(addedActions), forKey: toolbarActionsKey)
         }
 
-        override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-            return indexPath.section == 0 && indexPath.row < addedActions.count
+        override func collectionView(_ collectionView: UICollectionView, canMoveItemAt indexPath: IndexPath) -> Bool {
+            return indexPath.section == 0 && indexPath.item < addedActions.count
         }
 
-        override func numberOfSections(in tableView: UITableView) -> Int {
-            return tableView.isEditing ? 1 : 2
+        override func numberOfSections(in collectionView: UICollectionView) -> Int {
+            return collectionView.isEditing ? 1 : 2
         }
 
-        override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
             if section == 1 { return 1 }
-            if tableView.isEditing {
+            if collectionView.isEditing {
                 return addedActions.count + otherActions.count
             }
             return addedActions.count
         }
 
-        override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-            let cell: UITableViewCell
-            if let c = tableView.dequeueReusableCell(withIdentifier: "Cell") {
-                cell = c
-            } else {
-                cell = UITableViewCell(style: .default, reuseIdentifier: "Cell")
-            }
+        override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
             if indexPath.section == 1 {
-                var configuration = UIListContentConfiguration.cell()
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Reset", for: indexPath) as! UICollectionViewListCell
+                var configuration = UIListContentConfiguration.celestiaCell()
                 #if targetEnvironment(macCatalyst)
                 configuration.textProperties.color = cell.tintColor
                 #else
@@ -143,40 +114,71 @@ class ToolbarSettingViewController: SubscriptionBackingViewController {
                 #endif
                 configuration.text = CelestiaString("Reset to Default", comment: "Reset celestia.cfg, data directory location")
                 cell.contentConfiguration = configuration
-                cell.selectionStyle = .default
                 return cell
             }
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Entry", for: indexPath) as! UICollectionViewListCell
             let action: QuickAction
-            if indexPath.row >= addedActions.count {
-                action = otherActions[indexPath.row - addedActions.count]
+            if indexPath.item >= addedActions.count {
+                action = otherActions[indexPath.item - addedActions.count]
             } else {
-                action = addedActions[indexPath.row]
+                action = addedActions[indexPath.item]
             }
-            var configuration = UIListContentConfiguration.cell()
+            var configuration = UIListContentConfiguration.celestiaCell()
             configuration.text = action.title
             configuration.image = action.image(with: assetProvider)
             configuration.imageProperties.tintColor = .label
             configuration.imageProperties.maximumSize = CGSize(width: GlobalConstants.listItemIconSize, height: GlobalConstants.listItemIconSize)
             cell.contentConfiguration = configuration
-            cell.selectionStyle = .none
+            if indexPath.item < addedActions.count {
+                if addedActions[indexPath.item].deletable {
+                    cell.accessories = [.delete(displayed: .whenEditing, actionHandler: { [weak self] in
+                        guard let self else { return }
+                        let action = self.addedActions.remove(at: indexPath.item)
+                        let insertionIndex = self.otherActions.firstIndex(where: { $0.rawValue > action.rawValue }) ?? 0
+                        self.otherActions.insert(action, at: insertionIndex)
+                        self.userDefaults.set(QuickAction.toString(self.addedActions), forKey: self.toolbarActionsKey)
+                        collectionView.performBatchUpdates {
+                            collectionView.deleteItems(at: [indexPath])
+                            collectionView.insertItems(at: [IndexPath(item: self.addedActions.count + insertionIndex, section: indexPath.section)])
+                        }
+                    }), .reorder(displayed: .whenEditing)]
+                } else {
+                    cell.accessories = [.reorder(displayed: .whenEditing)]
+                }
+            } else {
+                cell.accessories = [.insert(displayed: .whenEditing, actionHandler: { [weak self] in
+                    guard let self else { return }
+                    self.addedActions.append(self.otherActions.remove(at: indexPath.item - self.addedActions.count))
+                    self.userDefaults.set(QuickAction.toString(self.addedActions), forKey: self.toolbarActionsKey)
+                    collectionView.performBatchUpdates {
+                        collectionView.deleteItems(at: [indexPath])
+                        collectionView.insertItems(at: [IndexPath(item: self.addedActions.count - 1, section: indexPath.section)])
+                    }
+                })]
+            }
             return cell
         }
 
-        override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-            tableView.deselectRow(at: indexPath, animated: true)
-            guard indexPath.section == 1, indexPath.row == 0 else { return }
+        override func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool {
+            return indexPath.item == 1
+        }
+
+        override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+            collectionView.deselectItem(at: indexPath, animated: true)
+            guard indexPath.section == 1, indexPath.item == 0 else { return }
 
             userDefaults.set(nil, forKey: toolbarActionsKey)
             addedActions = QuickAction.defaultItems
             otherActions = QuickAction.allCases.filter { !addedActions.contains($0) }
-            tableView.reloadData()
+            collectionView.reloadData()
         }
 
-        override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-            if section == 1 {
-                return CelestiaString("Configuration will take effect after a restart.", comment: "Change requires a restart")
-            }
-            return nil
+        override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+            let cell = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Footer", for: indexPath) as! UICollectionViewListCell
+            var configuration = UIListContentConfiguration.groupedFooter()
+            configuration.text = CelestiaString("Configuration will take effect after a restart.", comment: "Change requires a restart")
+            cell.contentConfiguration = configuration
+            return cell
         }
     }
 
