@@ -56,18 +56,17 @@ public class SubscriptionManagerViewController: UIViewController {
 
     private lazy var statusLabel = UILabel(textStyle: .body)
     private lazy var loadingView = UIActivityIndicatorView(style: .large)
-    private lazy var errorView: UIView = {
-        let hintLabel = UILabel(textStyle: .body)
-        hintLabel.text = CelestiaString("We encountered an error.", comment: "Error loading the subscription page")
-        let button = ActionButtonHelper.newButton()
-        button.setTitle(CelestiaString("Refresh", comment: "Button to refresh this list"), for: .normal)
-        let stackView = UIStackView(arrangedSubviews: [hintLabel, button])
-        stackView.axis = .vertical
-        stackView.spacing = GlobalConstants.pageSmallGapVertical
-        stackView.alignment = .center
-        button.addTarget(self, action: #selector(reloadData), for: .touchUpInside)
-        return stackView
+    private lazy var innerErrorView: EmptyHintView = {
+        let view = EmptyHintView()
+        view.title = CelestiaString("We encountered an error.", comment: "Error loading the subscription page")
+        view.actionText = CelestiaString("Refresh", comment: "Button to refresh this list")
+        view.action = { [weak self] in
+            guard let self else { return }
+            self.reloadData()
+        }
+        return view
     }()
+    private lazy var errorView = SafeAreaView(view: innerErrorView)
     private lazy var scrollContainer = UIScrollView()
     private lazy var planStack = UIStackView(arrangedSubviews: [])
     private lazy var containerView = UIView()
@@ -154,6 +153,30 @@ public class SubscriptionManagerViewController: UIViewController {
             ])
         }
 
+        containerView.addSubview(scrollContainer)
+        containerView.addSubview(errorView)
+        containerView.addSubview(loadingView)
+        scrollContainer.isHidden = true
+        errorView.isHidden = true
+        loadingView.isHidden = true
+
+        scrollContainer.translatesAutoresizingMaskIntoConstraints = false
+        errorView.translatesAutoresizingMaskIntoConstraints = false
+        loadingView.translatesAutoresizingMaskIntoConstraints = false
+
+        NSLayoutConstraint.activate([
+            scrollContainer.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            scrollContainer.topAnchor.constraint(equalTo: containerView.topAnchor),
+            scrollContainer.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            scrollContainer.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+            errorView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            errorView.topAnchor.constraint(equalTo: containerView.topAnchor),
+            errorView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            errorView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+            loadingView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+            loadingView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
+        ])
+
         view = containerView
     }
 
@@ -167,7 +190,7 @@ public class SubscriptionManagerViewController: UIViewController {
 
 @available(iOS 15, *)
 private extension SubscriptionManagerViewController {
-    @objc func reloadData() {
+    func reloadData() {
         status = .empty
         reloadViews()
 
@@ -185,20 +208,22 @@ private extension SubscriptionManagerViewController {
     }
 
     func reloadViews() {
-        let view: UIView
-        let stretch: Bool
         switch status {
         case .empty:
-            view = loadingView
+            loadingView.isHidden = false
             loadingView.startAnimating()
-            stretch = false
+            errorView.isHidden = true
+            scrollContainer.isHidden = true
         case .error:
-            view = errorView
+            loadingView.isHidden = true
             loadingView.stopAnimating()
-            stretch = false
+            errorView.isHidden = false
+            scrollContainer.isHidden = true
         case .status(let subscriptionStatus, let plans), .inProgress(let subscriptionStatus, let plans, _):
-            view = scrollContainer
+            loadingView.isHidden = true
             loadingView.stopAnimating()
+            errorView.isHidden = true
+            scrollContainer.isHidden = false
             let pendingProduct: Product?
             if case let Status.inProgress(_, _, product) = status {
                 pendingProduct = product
@@ -206,35 +231,6 @@ private extension SubscriptionManagerViewController {
                 pendingProduct = nil
             }
             setUpPlanList(subscriptionStatus: subscriptionStatus, plans: plans, pendingProduct: pendingProduct)
-            stretch = true
-        }
-
-        if containerView.subviews.contains(view) {
-            return
-        }
-
-        for subview in containerView.subviews {
-            subview.removeFromSuperview()
-        }
-
-        containerView.addSubview(view)
-        view.translatesAutoresizingMaskIntoConstraints = false
-
-        NSLayoutConstraint.activate([
-            view.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-            view.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
-        ])
-
-        if stretch {
-            NSLayoutConstraint.activate([
-                view.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-                view.topAnchor.constraint(equalTo: containerView.topAnchor),
-            ])
-        } else {
-            NSLayoutConstraint.activate([
-                view.leadingAnchor.constraint(greaterThanOrEqualTo: containerView.leadingAnchor),
-                view.topAnchor.constraint(greaterThanOrEqualTo: containerView.topAnchor),
-            ])
         }
     }
 

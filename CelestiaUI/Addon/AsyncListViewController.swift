@@ -92,7 +92,6 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
         let requestID = UUID()
         currentRequestID = requestID
         do {
-            tableView.backgroundView = nil
             let newItems = try await loadItems(pageStart: pageStart, pageSize: pageSize)
             guard self.currentRequestID == requestID else { return }
             if freshLoad {
