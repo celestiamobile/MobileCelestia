@@ -21,38 +21,17 @@ open class SubscriptionBackingViewController: UIViewController {
 
     private lazy var loadingView = UIActivityIndicatorView(style: .large)
 
-    private lazy var emptyHintView: UIView = {
-        let label = UILabel(textStyle: .body)
-        label.text = CelestiaString("This feature is only available to Celestia PLUS users.", comment: "")
-        label.numberOfLines = 0
-        label.textAlignment = .center
-        let button = ActionButtonHelper.newButton()
-        button.setTitle(CelestiaString("Get Celestia PLUS", comment: ""), for: .normal)
-        button.addTarget(self, action: #selector(requestOpenSubscriptionManagement), for: .touchUpInside)
-        label.translatesAutoresizingMaskIntoConstraints = false
-        button.translatesAutoresizingMaskIntoConstraints = false
-        let view = UIView()
-        view.addSubview(label)
-        view.addSubview(button)
-        NSLayoutConstraint.activate([
-            label.topAnchor.constraint(equalTo: view.topAnchor),
-            label.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            button.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            button.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            button.topAnchor.constraint(equalTo: label.bottomAnchor, constant: GlobalConstants.pageMediumGapVertical),
-            label.leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor),
-            button.leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor),
-        ])
-        let optionalConstraints = [
-            label.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            button.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-        ]
-        for constraint in optionalConstraints {
-            constraint.priority = .defaultLow
+    private lazy var emptyHintView: EmptyHintView = {
+        let view = EmptyHintView()
+        view.title = CelestiaString("This feature is only available to Celestia PLUS users.", comment: "")
+        view.actionText = CelestiaString("Get Celestia PLUS", comment: "")
+        view.action = { [weak self] in
+            guard let self else { return }
+            self.requestOpenSubscriptionManagement()
         }
-        NSLayoutConstraint.activate(optionalConstraints)
         return view
     }()
+    private lazy var emptyViewContainer = SafeAreaView(view: emptyHintView)
 
     init(
         subscriptionManager: SubscriptionManager,
@@ -72,21 +51,21 @@ open class SubscriptionBackingViewController: UIViewController {
         containerView.backgroundColor = .systemBackground
         #endif
 
-        containerView.addSubview(emptyHintView)
+        containerView.addSubview(emptyViewContainer)
         containerView.addSubview(loadingView)
 
-        emptyHintView.translatesAutoresizingMaskIntoConstraints = false
+        emptyViewContainer.translatesAutoresizingMaskIntoConstraints = false
         loadingView.translatesAutoresizingMaskIntoConstraints = false
 
         NSLayoutConstraint.activate([
             loadingView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
             loadingView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
-            emptyHintView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-            emptyHintView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
-            emptyHintView.widthAnchor.constraint(lessThanOrEqualTo: containerView.widthAnchor),
+            emptyViewContainer.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+            emptyViewContainer.topAnchor.constraint(equalTo: containerView.topAnchor),
+            emptyViewContainer.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+            emptyViewContainer.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
         ])
-
-        emptyHintView.isHidden = true
+        emptyViewContainer.isHidden = true
 
         view = containerView
     }
@@ -105,7 +84,7 @@ open class SubscriptionBackingViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
-    @objc private func requestOpenSubscriptionManagement() {
+    private func requestOpenSubscriptionManagement() {
         openSubscriptionManagement()
     }
 
@@ -127,14 +106,14 @@ open class SubscriptionBackingViewController: UIViewController {
         currentViewController?.remove()
         currentViewController = nil
         loadingView.isHidden = false
-        emptyHintView.isHidden = true
+        emptyViewContainer.isHidden = true
         loadingView.startAnimating()
 
         let transactionInfo = subscriptionManager.transactionInfo()
         if transactionInfo == nil {
             loadingView.stopAnimating()
             loadingView.isHidden = true
-            emptyHintView.isHidden = false
+            emptyViewContainer.isHidden = false
         } else {
             let viewController = await viewControllerBuilder(self)
             loadingView.stopAnimating()
