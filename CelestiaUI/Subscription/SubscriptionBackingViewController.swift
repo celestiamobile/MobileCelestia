@@ -51,21 +51,24 @@ open class SubscriptionBackingViewController: UIViewController {
         containerView.backgroundColor = .systemBackground
         #endif
 
-        containerView.addSubview(emptyViewContainer)
-        containerView.addSubview(loadingView)
+        if #available(iOS 17, visionOS 1, *) {
+        } else {
+            containerView.addSubview(emptyViewContainer)
+            containerView.addSubview(loadingView)
 
-        emptyViewContainer.translatesAutoresizingMaskIntoConstraints = false
-        loadingView.translatesAutoresizingMaskIntoConstraints = false
+            emptyViewContainer.translatesAutoresizingMaskIntoConstraints = false
+            loadingView.translatesAutoresizingMaskIntoConstraints = false
 
-        NSLayoutConstraint.activate([
-            loadingView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-            loadingView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
-            emptyViewContainer.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-            emptyViewContainer.topAnchor.constraint(equalTo: containerView.topAnchor),
-            emptyViewContainer.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-            emptyViewContainer.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
-        ])
-        emptyViewContainer.isHidden = true
+            NSLayoutConstraint.activate([
+                loadingView.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
+                loadingView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
+                emptyViewContainer.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+                emptyViewContainer.topAnchor.constraint(equalTo: containerView.topAnchor),
+                emptyViewContainer.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+                emptyViewContainer.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+            ])
+            emptyViewContainer.isHidden = true
+        }
 
         view = containerView
     }
@@ -105,19 +108,45 @@ open class SubscriptionBackingViewController: UIViewController {
     private func reload() async {
         currentViewController?.remove()
         currentViewController = nil
-        loadingView.isHidden = false
-        emptyViewContainer.isHidden = true
-        loadingView.startAnimating()
+
+        if #available(iOS 17, visionOS 1, *) {
+            contentUnavailableConfiguration = UIContentUnavailableConfiguration.loading()
+        } else {
+            loadingView.isHidden = false
+            emptyViewContainer.isHidden = true
+            loadingView.startAnimating()
+        }
 
         let transactionInfo = subscriptionManager.transactionInfo()
         if transactionInfo == nil {
-            loadingView.stopAnimating()
-            loadingView.isHidden = true
-            emptyViewContainer.isHidden = false
+            if #available(iOS 17, visionOS 1, *) {
+                var config = UIContentUnavailableConfiguration.empty()
+                config.text = CelestiaString("This feature is only available to Celestia PLUS users.", comment: "")
+                #if !targetEnvironment(macCatalyst)
+                var button = UIButton.Configuration.filled()
+                button.baseBackgroundColor = .buttonBackground
+                button.baseForegroundColor = .buttonForeground
+                config.button = button
+                #endif
+                config.button.title = CelestiaString("Get Celestia PLUS", comment: "")
+                config.buttonProperties.primaryAction = UIAction { [weak self] _ in
+                    guard let self else { return }
+                    self.requestOpenSubscriptionManagement()
+                }
+                contentUnavailableConfiguration = config
+            } else {
+                loadingView.stopAnimating()
+                loadingView.isHidden = true
+                emptyViewContainer.isHidden = false
+            }
         } else {
             let viewController = await viewControllerBuilder(self)
-            loadingView.stopAnimating()
-            loadingView.isHidden = true
+            if #available(iOS 17, visionOS 1, *) {
+                contentUnavailableConfiguration = nil
+            } else {
+                loadingView.stopAnimating()
+                loadingView.isHidden = true
+            }
             install(viewController)
             observeWindowTitle(for: viewController)
             view.sendSubviewToBack(viewController.view)
