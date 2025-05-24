@@ -15,8 +15,8 @@ jobs:
     XC_ARCHIVE_PARENT_PATH: ${{ '$(system.defaultworkingdirectory)/archive' }}
     XC_ARCHIVE_PATH: ${{ '$(system.defaultworkingdirectory)/archive/MobileCelestia.xcarchive' }}
     XC_EXPORT_PATH: ${{ '$(agent.buildDirectory)/output' }}
-    IOS_PROVISIONING_PROFILE_UUID: ${{ 'dada330c-c47b-44df-9932-534b471e750d' }}
-    MAC_APP_STORE_PROVISIONING_PROFILE_UUID: ${{ '9b3087ea-0c47-479c-90c4-129c530f04b3' }}
+    IOS_PROVISIONING_PROFILE_UUID: ${{ '61ac6d7c-5dea-4b7e-8a69-43491626686e' }}
+    MAC_APP_STORE_PROVISIONING_PROFILE_UUID: ${{ '15ce2562-5fe5-4bd7-9295-f393542ef86a' }}
     MAC_DEVELOPER_ID_PROVISIONING_PROFILE_UUID: ${{ '05aab2eb-1c4c-4e55-a63d-e0721011273d' }}
     DISTRIBUTION_IDENTITY: 'Apple Distribution: Linfeng Li (22NR5428TD)'
     DEVELOPER_ID_IDENTITY: 'Developer ID Application: Linfeng Li (22NR5428TD)'
@@ -128,13 +128,13 @@ jobs:
   - task: DownloadSecureFile@1
     name: macInstallerP12
     inputs:
-      secureFile: 'MacInstallerDistribution20250522.p12'
+      secureFile: 'MacInstallerDistribution20260524.p12'
     displayName: 'Download Mac Installer Certificate'
 
   - task: DownloadSecureFile@1
     name: distributionP12
     inputs:
-      secureFile: 'AppleDistribution20250522.p12'
+      secureFile: 'AppleDistribution20260524.p12'
     displayName: 'Download Distribution Certificate'
 
   - task: DownloadSecureFile@1
@@ -146,13 +146,13 @@ jobs:
   - task: DownloadSecureFile@1
     name: iosProvisioningProfile
     inputs:
-      secureFile: 'iOSDistribution20250522.mobileprovision'
+      secureFile: 'iOSDistribution20260524.mobileprovision'
     displayName: 'Download iOS Provisioning Profile'
 
   - task: DownloadSecureFile@1
     name: macAppStoreProvisioningProfile
     inputs:
-      secureFile: 'MacDistribution20250522.provisionprofile'
+      secureFile: 'MacDistribution20260524.provisionprofile'
     displayName: 'Download Mac (App Store) Provisioning Profile'
 
   - task: DownloadSecureFile@1
