@@ -65,6 +65,7 @@ class MainViewController: UIViewController {
 
     #if !targetEnvironment(macCatalyst)
     private var currentWindowSceneForMirroring: UIWindowScene?
+    private var disabledScalingBehindSheets: Bool = false
     #endif
 
     private var scriptOrCelURL: UniformedURL?
@@ -151,6 +152,19 @@ class MainViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(requestRunScript(_:)), name: requestRunScriptNotificationName, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(requestOpenBookmark(_:)), name: requestOpenBookmarkNotificationName, object: nil)
     }
+
+    #if !targetEnvironment(macCatalyst)
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        if #available(iOS 16, *), Self.canUseSystemSheetPresentationController, !disabledScalingBehindSheets {
+            if let sheet = view.window?.value(forKey: "rootPresentationController") as? UISheetPresentationController {
+                sheet.setValue(false, forKey: "shouldScaleDownBehindDescendantSheets")
+                disabledScalingBehindSheets = true
+            }
+        }
+    }
+    #endif
 
     override var prefersHomeIndicatorAutoHidden: Bool {
          return true
@@ -1238,12 +1252,51 @@ Device Model: \(model)
         PanelSceneDelegate.present(viewController, key: key, preferredSize: macOSPreferredSize, titleVisible: titleVisible, customToolbar: customToolbar)
         #else
         viewController.preferredContentSize = iOSPreferredSize
-        viewController.modalPresentationStyle = .custom
-        viewController.transitioningDelegate = endSlideInManager
+        if #available(iOS 16, *), Self.canUseSystemSheetPresentationController, let sheet = viewController.sheetPresentationController {
+            sheet.prefersGrabberVisible = true
+            sheet.detents = [.small(for: viewController), .medium(), .large()]
+            sheet.selectedDetentIdentifier = .large
+            sheet.largestUndimmedDetentIdentifier = .large
+            sheet.prefersEdgeAttachedInCompactHeight = true
+            sheet.widthFollowsPreferredContentSizeWhenEdgeAttached = true
+            sheet.setValue(1, forKey: "horizontalAlignment")
+            sheet.setValue(true, forKey: "wantsBottomAttached")
+            sheet.setValue(GlobalConstants.pageMediumMarginHorizontal, forKey: "marginInRegularWidthRegularHeight")
+            sheet.setValue(GlobalConstants.pageMediumMarginHorizontal, forKey: "marginInCompactHeight")
+
+        } else {
+            viewController.modalPresentationStyle = .custom
+            viewController.transitioningDelegate = endSlideInManager
+        }
 
         presentAfterDismissCurrent(viewController, animated: true)
         #endif
     }
+
+    #if !targetEnvironment(macCatalyst)
+    private static var _canUseSystemSheetPresentationController: Bool?
+
+    @available(iOS 16, *)
+    private static var canUseSystemSheetPresentationController: Bool {
+        if let _canUseSystemSheetPresentationController {
+            return _canUseSystemSheetPresentationController
+        }
+
+        func resolveValue() -> Bool {
+            guard UIWindow.instancesRespond(to: NSSelectorFromString("_rootPresentationController")) else { return false }
+            guard UISheetPresentationController.instancesRespond(to: NSSelectorFromString("_setShouldScaleDownBehindDescendantSheets:")) else { return false }
+            guard UISheetPresentationController.instancesRespond(to: NSSelectorFromString("_setHorizontalAlignment:")) else { return false }
+            guard UISheetPresentationController.instancesRespond(to: NSSelectorFromString("_setWantsBottomAttached:")) else { return false }
+            guard UISheetPresentationController.instancesRespond(to: NSSelectorFromString("_setMarginInRegularWidthRegularHeight:")) else { return false }
+            guard UISheetPresentationController.instancesRespond(to: NSSelectorFromString("_setMarginInCompactHeight:")) else { return false }
+            return true
+        }
+
+        let canUse = resolveValue()
+        _canUseSystemSheetPresentationController = canUse
+        return canUse
+    }
+    #endif
 }
 
 extension UIViewController {
@@ -1430,3 +1483,18 @@ struct CelestiaAssetProvider: AssetProvider {
         }
     }
 }
+
+#if targetEnvironment(macCatalyst)
+#else
+@available(iOS 16.0, *)
+extension UISheetPresentationController.Detent {
+    static let smallIdentifier = Identifier("\(Bundle.app.bundleIdentifier!).detents.small")
+
+    static func small(for viewController: UIViewController) -> UISheetPresentationController.Detent {
+        return custom(identifier: smallIdentifier) { [weak viewController] context in
+            guard let viewController else { return nil }
+            return viewController.minimumSheetHeight
+        }
+    }
+}
+#endif

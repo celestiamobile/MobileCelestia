@@ -85,6 +85,10 @@ open class SubscriptionBackingViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    public override var minimumSheetHeight: CGFloat {
+        return currentViewController?.minimumSheetHeight ?? super.minimumSheetHeight
+    }
+
     private func requestOpenSubscriptionManagement() {
         openSubscriptionManagement()
     }

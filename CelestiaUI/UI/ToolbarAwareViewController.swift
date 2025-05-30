@@ -114,6 +114,10 @@ open class ToolbarNavigationContainerController: UIViewController, ToolbarContai
         navigation.popToRootViewController(animated: animated)
     }
 
+    public override var minimumSheetHeight: CGFloat {
+        return navigation.minimumSheetHeight
+    }
+
     #if targetEnvironment(macCatalyst)
     private var currentToolbarItemIdentifiers: [NSToolbarItem.Identifier] = []
 
@@ -397,6 +401,10 @@ open class ToolbarSplitContainerController: UIViewController, ToolbarContainerVi
     public var maximumPrimaryColumnWidth: CGFloat {
         get { split.maximumPrimaryColumnWidth }
         set { split.maximumPrimaryColumnWidth = newValue }
+    }
+
+    public override var minimumSheetHeight: CGFloat {
+        return split.minimumSheetHeight
     }
 
     private lazy var backToolbarItem = NSToolbarItem(backItemIdentifier: .back, target: self, action: #selector(goBack))
