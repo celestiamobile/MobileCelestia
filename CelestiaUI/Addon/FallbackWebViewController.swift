@@ -13,10 +13,12 @@ import UIKit
 
 public class FallbackWebViewController: UIViewController {
     private let webViewController: CommonWebViewController
+    private var currentViewController: UIViewController
     private let fallbackViewControllerCreator: () -> UIViewController
 
     public init(executor: AsyncProviderExecutor, resourceManager: ResourceManager, url: URL, requestHandler: RequestHandler, actionHandler: ((CommonWebViewController.WebAction, UIViewController) -> Void)?, matchingQueryKeys: [String] = [], contextDirectory: URL? = nil, filterURL: Bool = true, fallbackViewControllerCreator: @escaping @autoclosure () -> UIViewController) {
         webViewController = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: url, requestHandler: requestHandler, actionHandler: actionHandler, matchingQueryKeys: matchingQueryKeys, contextDirectory: contextDirectory, filterURL: filterURL)
+        self.currentViewController = webViewController
         self.fallbackViewControllerCreator = fallbackViewControllerCreator
         super.init(nibName: nil, bundle: nil)
     }
@@ -40,6 +42,10 @@ public class FallbackWebViewController: UIViewController {
         install(webViewController)
         observeWindowTitle(for: webViewController)
     }
+
+    public override var minimumSheetHeight: CGFloat {
+        return currentViewController.minimumSheetHeight
+    }
 }
 
 extension FallbackWebViewController: CommonWebViewControllerDelegate {
@@ -48,6 +54,7 @@ extension FallbackWebViewController: CommonWebViewControllerDelegate {
         webViewController.remove()
 
         let viewController = fallbackViewControllerCreator()
+        currentViewController = viewController
         install(viewController)
         observeWindowTitle(for: viewController)
     }

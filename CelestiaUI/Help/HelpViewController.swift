@@ -60,4 +60,8 @@ public final class HelpViewController: UIViewController {
         install(nav)
         observeWindowTitle(for: nav)
     }
+
+    public override var minimumSheetHeight: CGFloat {
+        return nav.minimumSheetHeight
+    }
 }

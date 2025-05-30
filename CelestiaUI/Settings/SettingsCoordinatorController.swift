@@ -166,6 +166,14 @@ public class SettingsCoordinatorController: UIViewController {
 
         setup()
     }
+
+    public override var minimumSheetHeight: CGFloat {
+        #if targetEnvironment(macCatalyst)
+        return controller.minimumSheetHeight
+        #else
+        return navigation.minimumSheetHeight
+        #endif
+    }
 }
 
 private extension SettingsCoordinatorController {

@@ -85,6 +85,10 @@ public class BrowserContainerViewController: UIViewController {
             self.rootItemsLoaded()
         }
     }
+
+    public override var minimumSheetHeight: CGFloat {
+        return controller.minimumSheetHeight
+    }
 }
 
 private extension BrowserContainerViewController {

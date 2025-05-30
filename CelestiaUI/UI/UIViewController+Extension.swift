@@ -75,6 +75,31 @@ public extension UIViewController {
     }
 }
 
+public extension UIViewController {
+    @objc var minimumSheetHeight: CGFloat {
+        let safeAreaInsets = view.safeAreaInsets
+        return safeAreaInsets.top + safeAreaInsets.bottom
+    }
+}
+
+public extension UITabBarController {
+    override var minimumSheetHeight: CGFloat {
+        return selectedViewController?.minimumSheetHeight ?? super.minimumSheetHeight
+    }
+}
+
+public extension UINavigationController {
+    override var minimumSheetHeight: CGFloat {
+        return topViewController?.minimumSheetHeight ?? super.minimumSheetHeight
+    }
+}
+
+public extension UISplitViewController {
+    override var minimumSheetHeight: CGFloat {
+        return viewControllers.map({ $0.minimumSheetHeight }).max() ?? super.minimumSheetHeight
+    }
+}
+
 private struct UIViewControllerAssociatedKeys {
     @MainActor
     static var _titleObservation: UInt8 = 0
