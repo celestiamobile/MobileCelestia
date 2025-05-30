@@ -12,6 +12,10 @@
 import CelestiaCore
 import UIKit
 
+public protocol SearchContentViewController: UIViewController {
+    var contentScrollView: UIScrollView? { get }
+}
+
 public class SearchViewController: UIViewController {
     #if !targetEnvironment(macCatalyst)
     private lazy var searchController = UISearchController(searchResultsController: nil)
@@ -27,13 +31,18 @@ public class SearchViewController: UIViewController {
     private var validSearchTerm: String?
 
     private lazy var resultViewController: SearchResultViewController = {
-        return SearchResultViewController { [weak self] _, display, selection in
+        return SearchResultViewController(selected: { [weak self] _, display, selection in
             guard let self else { return }
             #if !targetEnvironment(macCatalyst)
             self.searchController.searchBar.resignFirstResponder()
             #endif
             self.selected(self, display, selection)
-        }
+        }, contentScrollViewChanged: { [weak self] scrollView in
+            guard let self else { return }
+            if #available(iOS 15, visionOS 1, *) {
+                self.setContentScrollView(scrollView)
+            }
+        })
     }()
 
     public init(executor: AsyncProviderExecutor, selected: @escaping (_ viewController: SearchViewController, _ display: String, _ selection: Selection) -> Void) {
@@ -79,7 +88,7 @@ public class SearchViewController: UIViewController {
     }
     #endif
 
-    func installContentViewController(_ viewController: UIViewController) {
+    func installContentViewController(_ viewController: SearchContentViewController) {
         #if !targetEnvironment(macCatalyst)
         view.endEditing(true)
         #endif
@@ -95,15 +104,14 @@ private extension SearchViewController {
         install(resultViewController)
 
         #if !targetEnvironment(macCatalyst)
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithDefaultBackground()
-        navigationItem.standardAppearance = appearance
-        navigationItem.compactAppearance = appearance
-        navigationItem.scrollEdgeAppearance = appearance
         if #available(iOS 15, visionOS 1, *) {
-            navigationItem.compactScrollEdgeAppearance = appearance
+        } else {
+            let appearance = UINavigationBarAppearance()
+            appearance.configureWithDefaultBackground()
+            navigationItem.standardAppearance = appearance
+            navigationItem.compactAppearance = appearance
+            navigationItem.scrollEdgeAppearance = appearance
         }
-
         // Configure search bar
         let searchBar = searchController.searchBar
         navigationItem.searchController = searchController

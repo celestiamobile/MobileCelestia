@@ -25,13 +25,15 @@ public class SearchResultViewController: UIViewController {
     private var rawResults: [Completion] = []
 
     private let selected: (_ viewController: SearchResultViewController, _ display: String, _ selection: Selection) -> Void
+    private let contentScrollViewChanged: (UIScrollView?) -> Void
 
     private lazy var emptyView = EmptyHintView()
     private lazy var loadingView = UIActivityIndicatorView(style: .large)
     private lazy var emptyViewContainer = SafeAreaView(view: emptyView)
     private lazy var loadingViewContainer = SafeAreaView(view: loadingView)
 
-    private var contentViewController: UIViewController?
+    private var contentViewController: SearchContentViewController?
+    private var contentScrollView: UIScrollView?
 
     private lazy var resultViewController: BaseTableViewController = {
         return BaseTableViewController(style: .plain)
@@ -53,8 +55,9 @@ public class SearchResultViewController: UIViewController {
         return resultSections.reduce(0, { $0 + $1.results.count }) == 0
     }
 
-    public init(selected: @escaping (_ viewController: SearchResultViewController, _ display: String, _ selection: Selection) -> Void) {
+    public init(selected: @escaping (_ viewController: SearchResultViewController, _ display: String, _ selection: Selection) -> Void, contentScrollViewChanged: @escaping (UIScrollView?) -> Void) {
         self.selected = selected
+        self.contentScrollViewChanged = contentScrollViewChanged
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -116,6 +119,16 @@ public class SearchResultViewController: UIViewController {
         tableView.reloadData()
     }
 
+    private func updateContentScrollView(_ newContentScrollView: UIScrollView?) {
+        if #available(iOS 15, visionOS 1, *) {
+            setContentScrollView(newContentScrollView)
+        }
+        if contentScrollView != newContentScrollView {
+            contentScrollView = newContentScrollView
+            contentScrollViewChanged(newContentScrollView)
+        }
+    }
+
     private func reload() {
         defer {
             if #available(iOS 17, visionOS 1, *) {
@@ -125,6 +138,7 @@ public class SearchResultViewController: UIViewController {
 
         if let contentViewController {
             if !isSearchActive {
+                updateContentScrollView(contentViewController.contentScrollView)
                 if #available(iOS 17, visionOS 1, *) {
                 } else {
                     loadingView.stopAnimating()
@@ -142,6 +156,7 @@ public class SearchResultViewController: UIViewController {
 
         switch state {
         case .empty:
+            updateContentScrollView(nil)
             resultViewController.view.isHidden = true
             if #available(iOS 17, visionOS 1, *) {
             } else {
@@ -151,6 +166,7 @@ public class SearchResultViewController: UIViewController {
                 emptyViewContainer.isHidden = false
             }
         case .loading:
+            updateContentScrollView(nil)
             resultViewController.view.isHidden = true
             if #available(iOS 17, visionOS 1, *) {
             } else {
@@ -159,6 +175,7 @@ public class SearchResultViewController: UIViewController {
                 loadingView.startAnimating()
             }
         case .results(let empty):
+            updateContentScrollView(resultViewController.tableView)
             resultViewController.view.isHidden = empty
             if #available(iOS 17, visionOS 1, *) {
             } else {
@@ -170,7 +187,7 @@ public class SearchResultViewController: UIViewController {
         }
     }
 
-    func installContentViewController(_ viewController: UIViewController) {
+    func installContentViewController(_ viewController: SearchContentViewController) {
         if let contentViewController {
             contentViewController.remove()
             self.contentViewController = nil

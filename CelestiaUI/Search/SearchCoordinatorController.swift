@@ -15,9 +15,9 @@ import UIKit
 public class SearchCoordinatorController: ToolbarNavigationContainerController {
     private let executor: AsyncProviderExecutor
 
-    private let selection: (Selection) -> UIViewController
+    private let selection: (Selection) -> SearchContentViewController
 
-    public init(executor: AsyncProviderExecutor, selected: @escaping (Selection) -> UIViewController) {
+    public init(executor: AsyncProviderExecutor, selected: @escaping (Selection) -> SearchContentViewController) {
         self.selection = selected
         self.executor = executor
         super.init(rootViewController: UIViewController())
@@ -35,4 +35,8 @@ public class SearchCoordinatorController: ToolbarNavigationContainerController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+}
+
+extension InfoViewController: SearchContentViewController {
+    public var contentScrollView: UIScrollView? { return collectionView }
 }
