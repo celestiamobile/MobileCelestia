@@ -86,6 +86,10 @@ public class SearchViewController: UIViewController {
     }
     #endif
 
+    public override var minimumSheetHeight: CGFloat {
+        return resultViewController.minimumSheetHeight
+    }
+
     func installContentViewController(_ viewController: SearchContentViewController) {
         #if !targetEnvironment(macCatalyst)
         view.endEditing(true)

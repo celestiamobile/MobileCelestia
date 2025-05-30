@@ -75,6 +75,10 @@ public class SearchResultViewController: UIViewController {
         setUp()
     }
 
+    public override var minimumSheetHeight: CGFloat {
+        return contentViewController?.minimumSheetHeight ?? resultViewController.minimumSheetHeight
+    }
+
     @available(iOS 17, visionOS 1, *)
     public override func updateContentUnavailableConfiguration(using state: UIContentUnavailableConfigurationState) {
         var config: UIContentUnavailableConfiguration?

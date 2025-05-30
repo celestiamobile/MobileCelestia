@@ -111,6 +111,14 @@ public class FavoriteCoordinatorController: UIViewController {
         storeBookmarks(bookmarkRoot.children)
         UIMenuSystem.main.setNeedsRebuild()
     }
+
+    public override var minimumSheetHeight: CGFloat {
+        #if targetEnvironment(macCatalyst)
+        return controller.minimumSheetHeight
+        #else
+        return navigation.minimumSheetHeight
+        #endif
+    }
 }
 
 private extension FavoriteCoordinatorController {
