@@ -1235,8 +1235,18 @@ Device Model: \(model)
         PanelSceneDelegate.present(viewController, key: key, preferredSize: macOSPreferredSize, titleVisible: titleVisible, customToolbar: customToolbar)
         #else
         viewController.preferredContentSize = iOSPreferredSize
-        viewController.modalPresentationStyle = .custom
-        viewController.transitioningDelegate = endSlideInManager
+        if #available(iOS 15, *) {
+            if let sheet = viewController.presentationController as? UISheetPresentationController {
+                sheet.prefersGrabberVisible = true
+                sheet.detents = [.medium(), .large()]
+                sheet.largestUndimmedDetentIdentifier = .large
+                sheet.widthFollowsPreferredContentSizeWhenEdgeAttached = true
+                sheet.setValue(1, forKey: "horizontalAlignment")
+                sheet.setValue(true, forKey: "wantsBottomAttached")
+                sheet.setValue(16, forKey: "marginInRegularWidthRegularHeight")
+            }
+        }
+//        viewController.transitioningDelegate = endSlideInManager
 
         presentAfterDismissCurrent(viewController, animated: true)
         #endif
