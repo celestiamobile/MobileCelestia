@@ -112,7 +112,7 @@ public class CommonWebViewController: UIViewController {
         webView.load(URLRequest(url: url))
         webView.navigationDelegate = self
         #if DEBUG
-        if #available(iOS 16.4, *) {
+        if #available(iOS 16.4, visionOS 1, *) {
             webView.isInspectable = true
         }
         #endif

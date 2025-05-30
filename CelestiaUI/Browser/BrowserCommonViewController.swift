@@ -136,7 +136,7 @@ extension BrowserCommonViewController {
 
 extension UITableViewDiffableDataSource {
     func sectionIdentifierCompat(for index: Int) -> SectionIdentifierType? {
-        if #available(iOS 15, *) {
+        if #available(iOS 15, visionOS 1, *) {
             return sectionIdentifier(for: index)
         } else {
             let sectionIdentifiers = snapshot().sectionIdentifiers

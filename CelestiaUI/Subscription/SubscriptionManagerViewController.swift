@@ -210,7 +210,7 @@ private extension SubscriptionManagerViewController {
     func reloadViews() {
         switch status {
         case .empty:
-            if #available(iOS 17, visionOS 1, *) {
+            if #available(iOS 17, *) {
                 contentUnavailableConfiguration = UIContentUnavailableConfiguration.loading()
             } else {
                 loadingView.isHidden = false
@@ -219,7 +219,7 @@ private extension SubscriptionManagerViewController {
             }
             scrollContainer.isHidden = true
         case .error:
-            if #available(iOS 17, visionOS 1, *) {
+            if #available(iOS 17, *) {
                 var config = UIContentUnavailableConfiguration.empty()
                 config.text = CelestiaString("We encountered an error.", comment: "Error loading the subscription page")
                 #if !targetEnvironment(macCatalyst)
@@ -241,7 +241,7 @@ private extension SubscriptionManagerViewController {
             }
             scrollContainer.isHidden = true
         case .status(let subscriptionStatus, let plans), .inProgress(let subscriptionStatus, let plans, _):
-            if #available(iOS 17, visionOS 1, *) {
+            if #available(iOS 17, *) {
                 contentUnavailableConfiguration = nil
             } else {
                 loadingView.isHidden = true
