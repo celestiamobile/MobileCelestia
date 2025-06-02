@@ -34,6 +34,7 @@ class MainSceneDelegate: CommonSceneDelegate {
 
         #if targetEnvironment(macCatalyst)
         windowScene.titlebar?.autoHidesToolbarInFullScreen = true
+        windowScene.titlebar?.toolbarStyle = .unifiedCompact
         #endif
         let window = UIWindow(windowScene: windowScene)
         var launchURL: UniformedURL?
