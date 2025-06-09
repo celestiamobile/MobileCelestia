@@ -1006,7 +1006,11 @@ Device Model: \(model)
     }
 
     private func presentCameraControl() {
+        #if !targetEnvironment(macCatalyst)
+        let vc = CameraControlViewController(executor: executor, gyroscopeSettings: celestiaController.gyroscopeSettings)
+        #else
         let vc = CameraControlViewController(executor: executor)
+        #endif
         let controller = ToolbarNavigationContainerController(rootViewController: vc)
         showViewController(controller, customToolbar: true)
     }

@@ -12,6 +12,9 @@
 import CelestiaCore
 import CelestiaFoundation
 import CelestiaUI
+#if !targetEnvironment(macCatalyst)
+import CoreMotion
+#endif
 import UIKit
 
 @MainActor
@@ -124,6 +127,16 @@ class CelestiaInteractionController: UIViewController {
     #endif
 
     private var zoomTimer: Timer?
+
+    #if !targetEnvironment(macCatalyst)
+    private var isObservingGyroscopeUpdates = false
+    private lazy var motionManager: CMMotionManager = {
+        let motionManager = CMMotionManager()
+        motionManager.deviceMotionUpdateInterval = 1.0 / 60.0
+        return motionManager
+    }()
+    var lastRotationQuaternion: CMQuaternion?
+    #endif
 
     private var renderingTargetGeometry: RenderingTargetGeometry {
         return targetProvider?.targetGeometry ?? RenderingTargetGeometry(size: view.frame.size, scale: view.contentScaleFactor)
@@ -794,6 +807,38 @@ private extension CelestiaInteractionController {
         )
     }
 }
+
+#if !targetEnvironment(macCatalyst)
+extension CelestiaInteractionController {
+    func setGyroscopeEnabled(_ enabled: Bool) {
+        if enabled {
+            guard motionManager.isDeviceMotionAvailable else { return }
+            if !isObservingGyroscopeUpdates {
+                motionManager.startDeviceMotionUpdates(to: .main) { [weak self] deviceMotionData, error in
+                    guard let self = self, let deviceMotionData, error == nil else { return }
+
+                    let currentQuat = deviceMotionData.attitude.quaternion
+                    guard let previousQuat = self.lastRotationQuaternion else {
+                        self.lastRotationQuaternion = currentQuat
+                        return
+                    }
+                    self.lastRotationQuaternion = currentQuat
+                    self.executor.runAsynchronously { core in
+                        core.simulation.activeObserver.rotate(from: previousQuat, to: currentQuat)
+                    }
+                }
+                isObservingGyroscopeUpdates = true
+            }
+        } else {
+            if isObservingGyroscopeUpdates {
+                motionManager.stopDeviceMotionUpdates()
+                lastRotationQuaternion = nil
+                isObservingGyroscopeUpdates = false
+            }
+        }
+    }
+}
+#endif
 
 private extension CGPoint {
     func scale(by factor: CGFloat) -> CGPoint {
