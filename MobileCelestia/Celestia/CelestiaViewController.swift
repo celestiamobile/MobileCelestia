@@ -227,17 +227,20 @@ extension CelestiaViewController: CelestiaDisplayControllerDelegate {
     }
 
     nonisolated func celestiaDisplayControllerLoadingFailedShouldRetry(_ celestiaDisplayController: CelestiaDisplayController) -> Bool {
-        var retry = false
+        final class RetryRequest: @unchecked Sendable {
+            var shouldRetry: Bool = false
+        }
+        let request = RetryRequest()
         let dispatchGroup = DispatchGroup()
         dispatchGroup.enter()
         Task { @MainActor in
             self.delegate?.celestiaController(self, loadingFailedShouldRetry: { result in
-                retry = result
+                request.shouldRetry = result
                 dispatchGroup.leave()
             })
         }
         dispatchGroup.wait()
-        return retry
+        return request.shouldRetry
     }
 
     nonisolated func celestiaDisplayControllerLoadingFailed(_ celestiaDisplayController: CelestiaDisplayController) {

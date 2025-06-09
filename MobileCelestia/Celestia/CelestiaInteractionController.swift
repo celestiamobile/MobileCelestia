@@ -257,13 +257,15 @@ extension CelestiaInteractionController: CelestiaControlViewDelegate {
             self?.activeControlView.alpha = 0
         }
 
-        animator.addCompletion { [weak self] _ in
-            self?.currentHideAnimator = nil
-            self?.isControlViewVisible = false
-        }
-
         currentHideAnimator = animator
         animator.startAnimation()
+
+
+        Task {
+            await animator.addCompletion()
+            self.currentHideAnimator = nil
+            self.isControlViewVisible = false
+        }
     }
 
     private func showControlView() {
@@ -276,13 +278,14 @@ extension CelestiaInteractionController: CelestiaControlViewDelegate {
             self?.activeControlView.alpha = 1
         }
 
-        animator.addCompletion { [weak self] _ in
-            self?.currentShowAnimator = nil
-            self?.isControlViewVisible = true
-        }
-
         currentShowAnimator = animator
         animator.startAnimation()
+
+        Task {
+            await animator.addCompletion()
+            self.currentShowAnimator = nil
+            self.isControlViewVisible = true
+        }
     }
 
     private func showControlViewIfNeeded() {
