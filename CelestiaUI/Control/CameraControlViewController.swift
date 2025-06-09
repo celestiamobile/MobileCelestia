@@ -13,7 +13,7 @@ import CelestiaCore
 import UIKit
 
 public final class CameraControlViewController: BaseTableViewController {
-    private struct Item {
+    private struct KeyAction {
         let title: String
         let minusKey: Int
         let plusKey: Int
@@ -21,18 +21,26 @@ public final class CameraControlViewController: BaseTableViewController {
 
     private struct Section {
         let items: [Item]
-        let footer: String
+        let footer: String?
     }
 
-    private var controlItems: [Section] = [
+    private enum Item {
+        case keyAction(KeyAction)
+        case flightMode
+        case reverseOrientation
+    }
+
+    private var sections: [Section] = [
         Section(items: [
-            Item(title: CelestiaString("Pitch", comment: "Camera control"), minusKey: 32, plusKey: 26),
-            Item(title: CelestiaString("Yaw", comment: "Camera control"), minusKey: 28, plusKey: 30),
-            Item(title: CelestiaString("Roll", comment: "Camera control"), minusKey: 31, plusKey: 33)
+            .keyAction(KeyAction(title: CelestiaString("Pitch", comment: "Camera control"), minusKey: 32, plusKey: 26)),
+            .keyAction(KeyAction(title: CelestiaString("Yaw", comment: "Camera control"), minusKey: 28, plusKey: 30)),
+            .keyAction(KeyAction(title: CelestiaString("Roll", comment: "Camera control"), minusKey: 31, plusKey: 33)),
         ], footer: CelestiaString("Long press on stepper to change orientation.", comment: "")),
         Section(items: [
-            Item(title: CelestiaString("Zoom (Distance)", comment: "Zoom in/out in Camera Control, this changes the relative distance to the object"), minusKey: 6, plusKey: 5),
+            .keyAction(KeyAction(title: CelestiaString("Zoom (Distance)", comment: "Zoom in/out in Camera Control, this changes the relative distance to the object"), minusKey: 6, plusKey: 5)),
         ], footer: CelestiaString("Long press on stepper to zoom in/out.", comment: "")),
+        Section(items: [.flightMode], footer: nil),
+        Section(items: [.reverseOrientation], footer: nil),
     ]
 
     private var lastKey: Int?
@@ -59,6 +67,7 @@ private extension CameraControlViewController {
     func setUp() {
         tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         tableView.register(StepperCell.self, forCellReuseIdentifier: "Stepper")
+        tableView.rowHeight = UITableView.automaticDimension
         title = CelestiaString("Camera Control", comment: "Observer control")
         windowTitle = title
     }
@@ -66,71 +75,64 @@ private extension CameraControlViewController {
 
 extension CameraControlViewController {
     public override func numberOfSections(in tableView: UITableView) -> Int {
-        return controlItems.count + 2
+        return sections.count
     }
 
     public override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section >= controlItems.count { return 1 }
-        return controlItems[section].items.count
+        return sections[section].items.count
     }
 
     public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        if indexPath.section == controlItems.count {
+        let item = sections[indexPath.section].items[indexPath.row]
+        switch item {
+        case let .keyAction(keyAction):
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Stepper", for: indexPath) as! StepperCell
+            cell.title = keyAction.title
+            cell.selectionStyle = .none
+            cell.changeBlock = { [unowned self] plus in
+                self.handleKeyAction(keyAction, plus: plus)
+            }
+            cell.stopBlock = { [unowned self] in
+                self.handleStop()
+            }
+            return cell
+        case .flightMode:
             let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
             cell.title = CelestiaString("Flight Mode", comment: "")
             cell.accessoryType = .disclosureIndicator
             return cell
-        }
-        if indexPath.section == controlItems.count + 1 {
+        case .reverseOrientation:
             let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
             cell.title = CelestiaString("Reverse Direction", comment: "Reverse camera direction, reverse travel direction")
             cell.accessoryType = .none
             return cell
         }
-        let item = controlItems[indexPath.section].items[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Stepper", for: indexPath) as! StepperCell
-        cell.title = item.title
-        cell.selectionStyle = .none
-        cell.changeBlock = { [unowned self] (plus) in
-            self.handleItemChange(indexPath: indexPath, plus: plus)
-        }
-        cell.stopBlock = { [unowned self] in
-            self.handleStop()
-        }
-        return cell
     }
 
     public override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        if section < controlItems.count {
-            return controlItems[section].footer
-        }
-        return nil
-    }
-
-    public override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
+        return sections[section].footer
     }
 
     public override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        if indexPath.section == controlItems.count {
+        let item = sections[indexPath.section].items[indexPath.row]
+        switch item {
+        case .keyAction:
+            break
+        case .flightMode:
             navigationController?.pushViewController(ObserverModeViewController(executor: executor), animated: true)
-            return
-        }
-        if indexPath.section == controlItems.count + 1 {
+        case .reverseOrientation:
             Task {
                 await executor.run { $0.simulation.reverseObserverOrientation() }
             }
-            return
         }
     }
 }
 
 private extension CameraControlViewController {
-    func handleItemChange(indexPath: IndexPath, plus: Bool) {
-        let item = controlItems[indexPath.section].items[indexPath.row]
-        let key = plus ? item.plusKey : item.minusKey
+    private func handleKeyAction(_ keyAction: KeyAction, plus: Bool) {
+        let key = plus ? keyAction.plusKey : keyAction.minusKey
         if let prev = lastKey {
             if key == prev { return }
             Task {
@@ -144,7 +146,7 @@ private extension CameraControlViewController {
         lastKey = key
     }
 
-    func handleStop() {
+    private func handleStop() {
         if let key = lastKey {
             Task {
                 await executor.run { $0.keyUp(key) }
