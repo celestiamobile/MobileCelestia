@@ -132,7 +132,7 @@ class CelestiaInteractionController: UIViewController {
     private var isObservingGyroscopeUpdates = false
     private lazy var motionManager: CMMotionManager = {
         let motionManager = CMMotionManager()
-        motionManager.deviceMotionUpdateInterval = 1.0 / 60.0
+        motionManager.deviceMotionUpdateInterval = 0.02
         return motionManager
     }()
     var lastRotationQuaternion: CMQuaternion?
