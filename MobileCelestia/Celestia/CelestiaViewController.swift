@@ -13,6 +13,7 @@ import AsyncGL
 import CelestiaCore
 import CelestiaFoundation
 import CelestiaUI
+import Combine
 import UIKit
 
 enum CelestiaLoadingError: Error {
@@ -68,6 +69,11 @@ class CelestiaViewController: UIViewController {
         }
         return []
     }()
+    #endif
+
+    #if !targetEnvironment(macCatalyst)
+    let gyroscopeSettings = GyroscopeSettings(isEnabled: false)
+    private var gyroscopeSettingsSubscription: Set<AnyCancellable> = []
     #endif
 
     init(screen: UIScreen, executor: CelestiaExecutor, userDefaults: UserDefaults, subscriptionManager: SubscriptionManager, core: AppCore) {
@@ -215,8 +221,18 @@ extension CelestiaViewController: CelestiaDisplayControllerDelegate {
     nonisolated func celestiaDisplayControllerLoadingSucceeded(_ celestiaDisplayController: CelestiaDisplayController) {
         Task.detached { @MainActor in
             let interactionController = CelestiaInteractionController(subscriptionManager: self.subscriptionManager, core: self.core, executor: self.executor, userDefaults: self.userDefaults)
+            #if !targetEnvironment(macCatalyst)
+            interactionController.setGyroscopeEnabled(self.gyroscopeSettings.isEnabled)
+            #endif
             interactionController.delegate = self
             interactionController.targetProvider = self
+            #if !targetEnvironment(macCatalyst)
+            self.gyroscopeSettings.$isEnabled.sink { [weak self] isEnabled in
+                guard let self else { return }
+                self.interactionController?.setGyroscopeEnabled(isEnabled)
+            }
+            .store(in: &self.gyroscopeSettingsSubscription)
+            #endif
             self.install(interactionController, safeAreaEdges: self.safeAreaEdges)
             self.interactionController = interactionController
             if self.isMirroring {

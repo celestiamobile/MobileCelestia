@@ -9,8 +9,19 @@
 // of the License, or (at your option) any later version.
 //
 
+import Combine
 import CelestiaCore
 import UIKit
+
+#if os(iOS) && !targetEnvironment(macCatalyst)
+public class GyroscopeSettings: ObservableObject {
+    @Published public var isEnabled: Bool
+
+    public init(isEnabled: Bool) {
+        self.isEnabled = isEnabled
+    }
+}
+#endif
 
 public final class CameraControlViewController: BaseTableViewController {
     private struct KeyAction {
@@ -28,29 +39,57 @@ public final class CameraControlViewController: BaseTableViewController {
         case keyAction(KeyAction)
         case flightMode
         case reverseOrientation
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        case gyroscope
+        #endif
     }
 
-    private var sections: [Section] = [
-        Section(items: [
-            .keyAction(KeyAction(title: CelestiaString("Pitch", comment: "Camera control"), minusKey: 32, plusKey: 26)),
-            .keyAction(KeyAction(title: CelestiaString("Yaw", comment: "Camera control"), minusKey: 28, plusKey: 30)),
-            .keyAction(KeyAction(title: CelestiaString("Roll", comment: "Camera control"), minusKey: 31, plusKey: 33)),
-        ], footer: CelestiaString("Long press on stepper to change orientation.", comment: "")),
-        Section(items: [
-            .keyAction(KeyAction(title: CelestiaString("Zoom (Distance)", comment: "Zoom in/out in Camera Control, this changes the relative distance to the object"), minusKey: 6, plusKey: 5)),
-        ], footer: CelestiaString("Long press on stepper to zoom in/out.", comment: "")),
-        Section(items: [.flightMode], footer: nil),
-        Section(items: [.reverseOrientation], footer: nil),
-    ]
+    private var sections: [Section] = {
+        let keyActions = [
+            Section(items: [
+                .keyAction(KeyAction(title: CelestiaString("Pitch", comment: "Camera control"), minusKey: 32, plusKey: 26)),
+                .keyAction(KeyAction(title: CelestiaString("Yaw", comment: "Camera control"), minusKey: 28, plusKey: 30)),
+                .keyAction(KeyAction(title: CelestiaString("Roll", comment: "Camera control"), minusKey: 31, plusKey: 33)),
+            ], footer: CelestiaString("Long press on stepper to change orientation.", comment: "")),
+            Section(items: [
+                .keyAction(KeyAction(title: CelestiaString("Zoom (Distance)", comment: "Zoom in/out in Camera Control, this changes the relative distance to the object"), minusKey: 6, plusKey: 5)),
+            ], footer: CelestiaString("Long press on stepper to zoom in/out.", comment: "")),
+        ]
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        let additionalActions = [
+            Section(items: [.gyroscope], footer: nil),
+            Section(items: [.flightMode], footer: nil),
+            Section(items: [.reverseOrientation], footer: nil),
+        ]
+        #else
+        let additionalActions = [
+            Section(items: [.flightMode], footer: nil),
+            Section(items: [.reverseOrientation], footer: nil),
+        ]
+        #endif
+        return keyActions + additionalActions
+    }()
 
     private var lastKey: Int?
 
     private let executor: AsyncProviderExecutor
 
+    #if os(iOS) && !targetEnvironment(macCatalyst)
+    private var gyroscopeSettings: GyroscopeSettings
+    #endif
+
+    #if os(iOS) && !targetEnvironment(macCatalyst)
+    public init(executor: AsyncProviderExecutor, gyroscopeSettings: GyroscopeSettings) {
+        self.executor = executor
+        self.gyroscopeSettings = gyroscopeSettings
+        super.init(style: .defaultGrouped)
+    }
+    #else
     public init(executor: AsyncProviderExecutor) {
         self.executor = executor
         super.init(style: .defaultGrouped)
     }
+    #endif
 
     public required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -67,6 +106,9 @@ private extension CameraControlViewController {
     func setUp() {
         tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         tableView.register(StepperCell.self, forCellReuseIdentifier: "Stepper")
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        tableView.register(SwitchCell.self, forCellReuseIdentifier: "Switch")
+        #endif
         tableView.rowHeight = UITableView.automaticDimension
         title = CelestiaString("Camera Control", comment: "Observer control")
         windowTitle = title
@@ -96,6 +138,17 @@ extension CameraControlViewController {
                 self.handleStop()
             }
             return cell
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        case .gyroscope:
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Switch", for: indexPath) as! SwitchCell
+            cell.title = CelestiaString("Enable Gyroscope Control", comment: "Enable gyroscope control for camera rotation")
+            cell.enabled = gyroscopeSettings.isEnabled
+            cell.toggleBlock = { [weak self] isEnabled in
+                guard let self else { return }
+                self.gyroscopeSettings.isEnabled = isEnabled
+            }
+            return cell
+        #endif
         case .flightMode:
             let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
             cell.title = CelestiaString("Flight Mode", comment: "")
@@ -120,6 +173,10 @@ extension CameraControlViewController {
         switch item {
         case .keyAction:
             break
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        case .gyroscope:
+            break
+        #endif
         case .flightMode:
             navigationController?.pushViewController(ObserverModeViewController(executor: executor), animated: true)
         case .reverseOrientation:
