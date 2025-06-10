@@ -54,7 +54,9 @@ class MainSceneDelegate: CommonSceneDelegate {
         windowScene.titlebar?.toolbar = toolbar
         vc.nsToolbar = toolbar
         #endif
-        window.rootViewController = vc
+        let navVC = UINavigationController(rootViewController: vc)
+        navVC.setNavigationBarHidden(true, animated: false)
+        window.rootViewController = navVC
 
         self.window = window
         window.makeKeyAndVisible()
