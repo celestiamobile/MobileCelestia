@@ -594,4 +594,16 @@ extension ToolbarSplitContainerController: ToolbarAwareNavigationControllerDeleg
         return .none
     }
 }
+#else
+public typealias ToolbarSplitContainerController = UISplitViewController
+
+public extension ToolbarSplitContainerController {
+    @discardableResult func setSecondaryAndCompactViewController(_ secondaryViewController: UIViewController) -> UINavigationController {
+        let navigation = UINavigationController(rootViewController: secondaryViewController)
+        navigation.setNavigationBarHidden(true, animated: false)
+        setViewController(navigation, for: .secondary)
+        setViewController(navigation, for: .compact)
+        return navigation
+    }
+}
 #endif

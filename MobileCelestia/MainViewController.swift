@@ -41,9 +41,7 @@ class MainViewController: UIViewController {
         }
         return controller
     }()
-    #if targetEnvironment(macCatalyst)
     private var split: ToolbarSplitContainerController!
-    #endif
 
     private var status: LoadingStatus = .notLoaded
     private var retried: Bool = false
@@ -98,12 +96,18 @@ class MainViewController: UIViewController {
 
         #if targetEnvironment(macCatalyst)
         let splitViewController = ToolbarSplitContainerController()
+        #else
+        let splitViewController = ToolbarSplitContainerController(style: .doubleColumn)
+        #endif
         splitViewController.preferredDisplayMode = .secondaryOnly
         splitViewController.minimumPrimaryColumnWidth = ToolbarViewController.Constants.width
         splitViewController.maximumPrimaryColumnWidth = ToolbarViewController.Constants.width
+        #if targetEnvironment(macCatalyst)
         splitViewController.setSecondaryViewController(celestiaController)
-        split = splitViewController
+        #else
+        splitViewController.setSecondaryAndCompactViewController(celestiaController)
         #endif
+        split = splitViewController
 
         if let url = initialURL {
             receivedURL(url)
@@ -131,11 +135,7 @@ class MainViewController: UIViewController {
         view.backgroundColor = .systemBackground
 
         celestiaController.delegate = self
-        #if targetEnvironment(macCatalyst)
         install(split)
-        #else
-        install(celestiaController)
-        #endif
 
         install(loadingController)
 
