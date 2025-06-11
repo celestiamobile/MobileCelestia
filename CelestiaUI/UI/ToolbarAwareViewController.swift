@@ -450,7 +450,7 @@ open class ToolbarSplitContainerController: UIViewController, ToolbarContainerVi
         secondaryNavigation?.pushViewController(secondaryViewController, animated: true)
     }
 
-    @discardableResult public func setSecondaryViewController(_ secondaryViewController: UIViewController, isPlaceholder: Bool = false) -> UINavigationController {
+    @discardableResult public func setSecondaryAndCompactViewController(_ secondaryViewController: UIViewController, isPlaceholder: Bool = false) -> UINavigationController {
         secondaryNavigation?.delegate = nil
         let newNavigation = ToolbarAwareNavigationController(rootViewController: secondaryViewController)
         if nsToolbar != nil {
@@ -460,6 +460,7 @@ open class ToolbarSplitContainerController: UIViewController, ToolbarContainerVi
         secondaryNavigation = newNavigation
         secondaryNavigationIsPlaceholder = isPlaceholder
         split.setViewController(newNavigation, for: .secondary)
+        split.setViewController(newNavigation, for: .compact)
         _updateToolbar(for: secondaryViewController)
         updateTitleObservation()
         return newNavigation

@@ -216,7 +216,7 @@ private extension SettingsCoordinatorController {
                 fatalError("Use .common for slider/action setting item.")
             }
             #if targetEnvironment(macCatalyst)
-            self.controller.setSecondaryViewController(viewController)
+            self.controller.setSecondaryAndCompactViewController(viewController)
             #else
             self.navigation.pushViewController(viewController, animated: true)
             #endif
@@ -225,7 +225,7 @@ private extension SettingsCoordinatorController {
         controller.setSidebarViewController(main)
         let emptyViewController = UIViewController()
         emptyViewController.view.backgroundColor = .systemBackground
-        controller.setSecondaryViewController(emptyViewController, isPlaceholder: true)
+        controller.setSecondaryAndCompactViewController(emptyViewController, isPlaceholder: true)
         install(controller)
         observeWindowTitle(for: controller)
         #else

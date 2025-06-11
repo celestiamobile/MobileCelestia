@@ -120,7 +120,7 @@ private extension FavoriteCoordinatorController {
         #if targetEnvironment(macCatalyst)
         let emptyViewController = UIViewController()
         emptyViewController.view.backgroundColor = .systemBackground
-        controller.setSecondaryViewController(emptyViewController, isPlaceholder: true)
+        controller.setSecondaryAndCompactViewController(emptyViewController, isPlaceholder: true)
         install(controller)
         observeWindowTitle(for: controller)
         #else
@@ -133,7 +133,7 @@ private extension FavoriteCoordinatorController {
     func replace<T: FavoriteItemList>(_ itemList: T) {
         #if targetEnvironment(macCatalyst)
         let vc = generateVC(itemList)
-        navigation = controller.setSecondaryViewController(vc)
+        navigation = controller.setSecondaryAndCompactViewController(vc)
         #else
         show(itemList)
         #endif

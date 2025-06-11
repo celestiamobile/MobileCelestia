@@ -39,6 +39,10 @@ class MainViewController: UIViewController {
             guard let self, let ac = action as? AppToolbarAction else { return }
             self.toolbarActionSelected(ac)
         }
+        #if !targetEnvironment(macCatalyst)
+        controller.modalPresentationStyle = .custom
+        controller.transitioningDelegate = toolbarSlideInManager
+        #endif
         return controller
     }()
     private var split: ToolbarSplitContainerController!
@@ -102,11 +106,7 @@ class MainViewController: UIViewController {
         splitViewController.preferredDisplayMode = .secondaryOnly
         splitViewController.minimumPrimaryColumnWidth = ToolbarViewController.Constants.width
         splitViewController.maximumPrimaryColumnWidth = ToolbarViewController.Constants.width
-        #if targetEnvironment(macCatalyst)
-        splitViewController.setSecondaryViewController(celestiaController)
-        #else
         splitViewController.setSecondaryAndCompactViewController(celestiaController)
-        #endif
         split = splitViewController
 
         if let url = initialURL {
@@ -599,9 +599,6 @@ extension MainViewController: CelestiaControllerDelegate {
         split.preferredDisplayMode = .oneBesideSecondary
         #else
         guard presentedViewController != actionViewController, !actionViewController.isBeingPresented else { return }
-
-        actionViewController.modalPresentationStyle = .custom
-        actionViewController.transitioningDelegate = toolbarSlideInManager
         presentAfterDismissCurrent(actionViewController, animated: true)
         #endif
     }

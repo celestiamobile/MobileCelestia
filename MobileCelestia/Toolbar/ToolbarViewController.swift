@@ -165,32 +165,6 @@ private extension ToolbarViewController {
         tableView.rowHeight = UITableView.automaticDimension
         tableView.translatesAutoresizingMaskIntoConstraints = false
 
-#if !targetEnvironment(macCatalyst)
-        let style: UIBlurEffect.Style = .regular
-        let backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: style))
-        backgroundView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(backgroundView)
-
-        NSLayoutConstraint.activate([
-            backgroundView.trailingAnchor.constraint(equalTo: view!.trailingAnchor),
-            backgroundView.topAnchor.constraint(equalTo: view!.topAnchor),
-            backgroundView.leadingAnchor.constraint(equalTo: view!.leadingAnchor),
-            backgroundView.bottomAnchor.constraint(equalTo: view!.bottomAnchor)
-        ])
-
-        let contentView = backgroundView.contentView
-        contentView.addSubview(tableView)
-
-        NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            tableView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-        ])
-
-        NSLayoutConstraint.activate([
-            tableView.leadingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: contentView.safeAreaLayoutGuide.trailingAnchor)
-        ])
-#else
         view.addSubview(tableView)
         NSLayoutConstraint.activate([
             tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
@@ -198,7 +172,6 @@ private extension ToolbarViewController {
             tableView.topAnchor.constraint(equalTo: view.topAnchor),
             tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
-#endif
 
         tableView.showsVerticalScrollIndicator = false
         tableView.backgroundColor = .clear

@@ -49,7 +49,7 @@ extension SlideInPresentationAnimator: UIViewControllerAnimatedTransitioning {
             dismissedFrame.origin.x = transitionContext.containerView.frame.size.width
         case .top:
             dismissedFrame.origin.y = -presentedFrame.height
-        case .bottom, .bottomLeft, .bottomRight:
+        case .bottom:
             dismissedFrame.origin.y = transitionContext.containerView.frame.size.height
         }
 
@@ -121,8 +121,6 @@ class PresentationManager: NSObject {
         case top
         case right
         case bottom
-        case bottomLeft
-        case bottomRight
     }
 
     private let direction: PresentationDirection

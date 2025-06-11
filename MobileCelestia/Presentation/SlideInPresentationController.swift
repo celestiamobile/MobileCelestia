@@ -15,6 +15,7 @@ import UIKit
 class SlideInPresentationController: UIPresentationController {
     private var direction: PresentationManager.PresentationDirection
     private var dimmingView: UIView?
+    private var backgroundView: UIVisualEffectView?
 
     init(presentedViewController: UIViewController, presenting presentingViewController: UIViewController?, direction: PresentationManager.PresentationDirection) {
         self.direction = direction
@@ -27,11 +28,14 @@ class SlideInPresentationController: UIPresentationController {
             overrideTraitCollection = UITraitCollection(traitsFrom: [UITraitCollection(userInterfaceLevel: .base), UITraitCollection(horizontalSizeClass: .compact)])
         }
 
-        setupDimmingViewIfNeeded()
+        setupDimmingView()
+        setupBackgroundView()
     }
 
     override func containerViewWillLayoutSubviews() {
-        presentedView?.frame = frameOfPresentedViewInContainerView
+        let frame = frameOfPresentedViewInContainerView
+        presentedView?.frame = frame
+        backgroundView?.frame = frame
     }
 
     override func size(forChildContentContainer container: UIContentContainer,
@@ -43,8 +47,6 @@ class SlideInPresentationController: UIPresentationController {
             size = CGSize(width: min(preferredSize.width, parentSize.width * 0.6), height: parentSize.height)
         case .bottom, .top:
             size = CGSize(width: parentSize.width, height: preferredSize.height)
-        case .bottomRight, .bottomLeft:
-            size = CGSize(width: min(preferredSize.width, parentSize.width * 0.8), height: preferredSize.height)
         }
         if let safeAreaInset = containerView?.safeAreaInsets {
             switch direction {
@@ -56,12 +58,6 @@ class SlideInPresentationController: UIPresentationController {
                 size.width += safeAreaInset.left
             case .right:
                 size.width += safeAreaInset.right
-            case .bottomLeft:
-                size.width += safeAreaInset.left
-                size.height += safeAreaInset.bottom
-            case .bottomRight:
-                size.width += safeAreaInset.right
-                size.height += safeAreaInset.bottom
             }
         }
         return size
@@ -75,10 +71,7 @@ class SlideInPresentationController: UIPresentationController {
         switch direction {
         case .right:
             frame.origin.x = containerView!.frame.width - frame.width
-        case .bottom, .bottomLeft:
-            frame.origin.y = containerView!.frame.height - frame.height
-        case .bottomRight:
-            frame.origin.x = containerView!.frame.width - frame.width
+        case .bottom:
             frame.origin.y = containerView!.frame.height - frame.height
         default:
             frame.origin = .zero
@@ -87,9 +80,10 @@ class SlideInPresentationController: UIPresentationController {
     }
 
     override func presentationTransitionWillBegin() {
-        guard let dimmingView = dimmingView else { return }
+        guard let dimmingView, let backgroundView else { return }
 
         containerView?.insertSubview(dimmingView, at: 0)
+        containerView?.insertSubview(backgroundView, at: 1)
 
         NSLayoutConstraint.activate(
             NSLayoutConstraint.constraints(withVisualFormat: "V:|[dimmingView]|",
@@ -98,33 +92,61 @@ class SlideInPresentationController: UIPresentationController {
             NSLayoutConstraint.constraints(withVisualFormat: "H:|[dimmingView]|",
                                            options: [], metrics: nil, views: ["dimmingView": dimmingView]))
 
+        let frameTo = frameOfPresentedViewInContainerView
+        var frameFrom = frameTo
+        switch direction {
+        case .left:
+            frameFrom.origin.x = -frameTo.width
+        case .top:
+            frameFrom.origin.y = -frameTo.height
+        case .right:
+            frameFrom.origin.x = containerView!.bounds.width
+        case .bottom:
+            frameFrom.origin.y = containerView!.bounds.height
+        }
+
         guard let coordinator = presentedViewController.transitionCoordinator else {
             dimmingView.alpha = 1.0
+            backgroundView.frame = frameTo
             return
         }
 
+        backgroundView.frame = frameFrom
         coordinator.animate(alongsideTransition: { _ in
-            self.dimmingView?.alpha = 1.0
+            dimmingView.alpha = 1.0
+            backgroundView.frame = frameTo
         })
     }
 
     override func dismissalTransitionWillBegin() {
+        guard let dimmingView, let backgroundView else { return }
+
+        var frameTo = frameOfPresentedViewInContainerView
+        switch direction {
+        case .left:
+            frameTo.origin.x = -frameTo.width
+        case .top:
+            frameTo.origin.y = -frameTo.height
+        case .right:
+            frameTo.origin.x = containerView!.bounds.width
+        case .bottom:
+            frameTo.origin.y = containerView!.bounds.height
+        }
+
         guard let coordinator = presentedViewController.transitionCoordinator else {
-            dimmingView?.alpha = 0.0
+            dimmingView.alpha = 0.0
+            backgroundView.frame = frameTo
             return
         }
 
         coordinator.animate(alongsideTransition: { _ in
-            self.dimmingView?.alpha = 0.0
+            dimmingView.alpha = 0.0
+            backgroundView.frame = frameTo
         })
     }
 }
 
 private extension SlideInPresentationController {
-    func setupDimmingViewIfNeeded() {
-        setupDimmingView()
-    }
-
     func setupDimmingView() {
         let dimmingView = UIView()
         dimmingView.translatesAutoresizingMaskIntoConstraints = false
@@ -134,6 +156,10 @@ private extension SlideInPresentationController {
         dimmingView.addGestureRecognizer(recognizer)
 
         self.dimmingView = dimmingView
+    }
+
+    func setupBackgroundView() {
+        backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .regular))
     }
 
     @objc func handleTap(recognizer: UITapGestureRecognizer) {

@@ -134,13 +134,13 @@ private extension BrowserContainerViewController {
         let sidebarController = BrowserSidebarController(browserRoots: browserRoot) { [weak self] item in
             guard let self else { return }
             let newVC = self.createBrowserItemViewController(item)
-            self.controller.setSecondaryViewController(newVC)
+            self.controller.setSecondaryAndCompactViewController(newVC)
         }
         sidebarController.windowTitle = CelestiaString("Star Browser", comment: "")
         controller.setSidebarViewController(sidebarController)
         let emptyViewController = UIViewController()
         emptyViewController.view.backgroundColor = .systemBackground
-        controller.setSecondaryViewController(emptyViewController, isPlaceholder: true)
+        controller.setSecondaryAndCompactViewController(emptyViewController, isPlaceholder: true)
         #else
         var allControllers = [BrowserCoordinatorController]()
         if let solRoot = Self.solBrowserRoot {
