@@ -606,5 +606,13 @@ public extension ToolbarSplitContainerController {
         setViewController(navigation, for: .compact)
         return navigation
     }
+
+    @available(iOS 26, *)
+    @discardableResult func setInspectorViewController(_ inspectorViewController: UIViewController) -> UINavigationController {
+        let navigation = UINavigationController(rootViewController: inspectorViewController)
+        navigation.setNavigationBarHidden(true, animated: false)
+        setViewController(navigation, for: .inspector)
+        return navigation
+    }
 }
 #endif

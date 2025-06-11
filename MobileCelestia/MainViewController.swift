@@ -40,8 +40,10 @@ class MainViewController: UIViewController {
             self.toolbarActionSelected(ac)
         }
         #if !targetEnvironment(macCatalyst)
-        controller.modalPresentationStyle = .custom
-        controller.transitioningDelegate = toolbarSlideInManager
+        if #unavailable(iOS 26) {
+            controller.modalPresentationStyle = .custom
+            controller.transitioningDelegate = toolbarSlideInManager
+        }
         #endif
         return controller
     }()
@@ -102,11 +104,21 @@ class MainViewController: UIViewController {
         let splitViewController = ToolbarSplitContainerController()
         #else
         let splitViewController = ToolbarSplitContainerController(style: .doubleColumn)
+        splitViewController.preferredSplitBehavior = .overlay
+        if #available(iOS 26, *) {
+            splitViewController.minimumInspectorColumnWidth = ToolbarViewController.Constants.width
+            splitViewController.maximumInspectorColumnWidth = ToolbarViewController.Constants.width
+        }
         #endif
         splitViewController.preferredDisplayMode = .secondaryOnly
         splitViewController.minimumPrimaryColumnWidth = ToolbarViewController.Constants.width
         splitViewController.maximumPrimaryColumnWidth = ToolbarViewController.Constants.width
         splitViewController.setSecondaryAndCompactViewController(celestiaController)
+        #if !targetEnvironment(macCatalyst)
+        if #available(iOS 26, *) {
+            contentSplitViewController = splitViewController
+        }
+        #endif
         split = splitViewController
 
         if let url = initialURL {
@@ -587,6 +599,12 @@ extension MainViewController: CelestiaControllerDelegate {
         #if targetEnvironment(macCatalyst)
         split.setSidebarViewController(actionViewController)
         setupTouchBar()
+        #else
+        if #available(iOS 26, *) {
+            let actualViewController = split.setInspectorViewController(actionViewController)
+            actualViewController.modalPresentationStyle = .custom
+            actualViewController.transitioningDelegate = toolbarSlideInManager
+        }
         #endif
         UIMenuSystem.main.setNeedsRebuild()
         UIApplication.shared.isIdleTimerDisabled = true
@@ -598,8 +616,14 @@ extension MainViewController: CelestiaControllerDelegate {
         #if targetEnvironment(macCatalyst)
         split.preferredDisplayMode = .oneBesideSecondary
         #else
-        guard presentedViewController != actionViewController, !actionViewController.isBeingPresented else { return }
-        presentAfterDismissCurrent(actionViewController, animated: true)
+        if #available(iOS 26, *) {
+            callAfterDismissCurrent(animated: true) { [weak self] in
+                self?.split.show(.inspector)
+            }
+        } else {
+            guard presentedViewController != actionViewController, !actionViewController.isBeingPresented else { return }
+            presentAfterDismissCurrent(actionViewController, animated: true)
+        }
         #endif
     }
 
@@ -1251,6 +1275,7 @@ extension UIViewController {
         }
     }
 }
+
 
 #if targetEnvironment(macCatalyst)
 extension MainViewController {

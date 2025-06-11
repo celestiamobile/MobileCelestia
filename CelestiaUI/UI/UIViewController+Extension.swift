@@ -80,6 +80,10 @@ private struct UIViewControllerAssociatedKeys {
     static var _titleObservation: UInt8 = 0
     @MainActor
     static var windowTitle: UInt8 = 0
+    #if !targetEnvironment(macCatalyst)
+    @MainActor
+    static var contentSplitViewController: UInt8 = 0
+    #endif
 }
 
 fileprivate extension UIViewController {
@@ -295,6 +299,11 @@ public extension UIViewController {
     }
 
     func callAfterDismissCurrent(animated: Bool, block: @escaping () -> Void) {
+        #if !targetEnvironment(macCatalyst)
+        if #available(iOS 26, *), let contentSplitViewController {
+            contentSplitViewController.hide(.inspector)
+        }
+        #endif
         if presentedViewController == nil || presentedViewController?.isBeingDismissed == true {
             block()
         } else {
@@ -343,3 +352,12 @@ public extension UIViewController {
         showShareSheet(for: CelestiaURLObject(title: placeholder, url: url))
     }
 }
+
+#if !targetEnvironment(macCatalyst)
+public extension UIViewController {
+    var contentSplitViewController: UISplitViewController? {
+        get { return objc_getAssociatedObject(self, &UIViewControllerAssociatedKeys.contentSplitViewController) as? UISplitViewController }
+        set { objc_setAssociatedObject(self, &UIViewControllerAssociatedKeys.contentSplitViewController, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
+    }
+}
+#endif
