@@ -23,5 +23,9 @@ extension GlobalConstants {
     static let bottomControlViewDimension: CGFloat = 60
     static let bottomControlContainerCornerRadius: CGFloat = 8
 
+    #if targetEnvironment(macCatalyst)
+    static let actionMenuItemCornerRadius: CGFloat = 12
+    #endif
+
     static let transitionDuration: TimeInterval = 0.2
 }

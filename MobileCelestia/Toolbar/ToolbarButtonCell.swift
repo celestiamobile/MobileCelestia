@@ -142,6 +142,10 @@ class ToolbarImageTextButtonCell: UITableViewCell, ToolbarCell {
             super.init(frame: frame)
 
             backgroundColor = .clear
+            #if targetEnvironment(macCatalyst)
+            layer.cornerRadius = GlobalConstants.actionMenuItemCornerRadius
+            layer.cornerCurve = .continuous
+            #endif
         }
 
         required init?(coder: NSCoder) {
