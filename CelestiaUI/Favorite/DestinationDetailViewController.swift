@@ -68,8 +68,8 @@ private extension DestinationDetailViewController {
         NSLayoutConstraint.activate([
             contentContainer.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor, constant: GlobalConstants.pageMediumMarginVertical),
             contentContainer.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor, constant: -GlobalConstants.pageMediumGapVertical),
-            contentContainer.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor, constant: GlobalConstants.pageMediumMarginHorizontal),
-            contentContainer.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor, constant: -GlobalConstants.pageMediumMarginHorizontal),
+            contentContainer.leadingAnchor.constraint(equalTo: scrollView.safeAreaLayoutGuide.leadingAnchor, constant: GlobalConstants.pageMediumMarginHorizontal),
+            contentContainer.trailingAnchor.constraint(equalTo: scrollView.safeAreaLayoutGuide.trailingAnchor, constant: -GlobalConstants.pageMediumMarginHorizontal),
             scrollView.contentLayoutGuide.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
         ])
 
@@ -103,7 +103,7 @@ private extension DestinationDetailViewController {
         NSLayoutConstraint.activate([
             goToButton.topAnchor.constraint(equalTo: scrollView.bottomAnchor),
             goToButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -GlobalConstants.pageMediumMarginVertical),
-            goToButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: GlobalConstants.pageMediumMarginHorizontal),
+            goToButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: GlobalConstants.pageMediumMarginHorizontal),
             goToButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -GlobalConstants.pageMediumMarginHorizontal),
         ])
         goToButton.addTarget(self, action: #selector(goToButtonClicked), for: .touchUpInside)

@@ -60,7 +60,10 @@ final public class InfoViewController: UICollectionViewController {
         self.showNavigationTitle = showNavigationTitle
         self.backgroundColor = backgroundColor
         self.bodyInfo = BodyInfo(selection: info, core: core)
-        super.init(collectionViewLayout: InfoCollectionLayout())
+        let layout = InfoCollectionLayout()
+        layout.sectionInsetReference = .fromSafeArea
+
+        super.init(collectionViewLayout: layout)
 
         if showNavigationTitle {
             title = bodyInfo.name
@@ -384,7 +387,7 @@ private extension ObjectAction {
 
 extension InfoViewController: UICollectionViewDelegateFlowLayout {
     public func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let width = max(collectionView.bounds.width - 2 * GlobalConstants.pageMediumMarginHorizontal, 1)
+        let width = max(collectionView.bounds.width - collectionView.safeAreaInsets.left - collectionView.safeAreaInsets.right - 2 * GlobalConstants.pageMediumMarginHorizontal, 1)
         let height = collectionView.bounds.height
         if indexPath.section == 0 {
             return CGSize(width: width, height: max(height, 1))

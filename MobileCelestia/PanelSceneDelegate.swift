@@ -28,7 +28,11 @@ class PanelSceneDelegate: CommonSceneDelegate {
         Self.weakSessionTable.setObject(session, forKey: sessionKey as NSString)
 
         windowScene.titlebar?.titleVisibility = titleVisible ? .visible : .hidden
-        windowScene.titlebar?.toolbarStyle = .unifiedCompact
+        if #available(iOS 26, *), !titleVisible {
+            windowScene.titlebar?.toolbarStyle = .unified
+        } else {
+            windowScene.titlebar?.toolbarStyle = .unifiedCompact
+        }
         titleObservation = viewController.observe(\.windowTitle, options: [.initial, .new]) { [weak windowScene] (viewController, _) in
             Task { @MainActor in
                 guard let windowScene = windowScene else { return }

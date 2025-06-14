@@ -61,7 +61,12 @@ class CelestiaViewController: UIViewController {
     // On Mac, we have top title bar/toolbar, which covers
     // part of the view, we do not to extend to below the bars
     #if targetEnvironment(macCatalyst)
-    private let safeAreaEdges: NSDirectionalRectEdge = .top
+    private let safeAreaEdges: NSDirectionalRectEdge = {
+        if #available(iOS 26, *) {
+            return []
+        }
+        return .top
+    }()
     #else
     private let safeAreaEdges: NSDirectionalRectEdge = {
         if ProcessInfo.processInfo.isiOSAppOnMac {
