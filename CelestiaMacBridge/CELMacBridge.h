@@ -19,6 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (CGPoint)currentMouseLocation;
 + (nullable id)nsWindowForUIWindow:(id)uiWindow;
 + (void)disableFullScreenForNSWindow:(NSWindow *)window;
++ (void)disableRestorationForNSWindow:(NSWindow *)window;
 + (void)disableTabbingForAllWindows;
 + (void)openFolder:(NSURL *)folderURL;
 

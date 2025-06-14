@@ -67,6 +67,10 @@
     return nil;
 }
 
++ (void)disableRestorationForNSWindow:(NSWindow *)window {
+    [window setRestorable:NO];
+}
+
 + (void)disableFullScreenForNSWindow:(NSWindow *)window {
     NSWindowCollectionBehavior behavior = NSWindowCollectionBehaviorFullScreenAuxiliary | NSWindowCollectionBehaviorFullScreenNone;
     [window setCollectionBehavior:behavior];

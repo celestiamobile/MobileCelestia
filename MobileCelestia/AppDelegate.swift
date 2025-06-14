@@ -281,10 +281,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }) else { return }
 
-        if nsWindow.responds(to: NSSelectorFromString("setRestorable:")) {
-            nsWindow.setValue(false, forKey: "restorable")
-        }
-
+        MacBridge.disableRestorationForNSWindow(nsWindow)
         if scene.delegate is PanelSceneDelegate {
             if #available(iOS 16, *) {
             } else {
@@ -727,6 +724,10 @@ class MacBridge {
 
     static func nsWindowForUIWindow(_ uiWindow: UIWindow) -> NSObject? {
         return clazz.perform(NSSelectorFromString("nsWindowForUIWindow:"), with: uiWindow)?.takeUnretainedValue() as? NSObject
+    }
+
+    static func disableRestorationForNSWindow(_ nsWindow: NSObject) {
+        clazz.perform(NSSelectorFromString("disableRestorationForNSWindow:"), with: nsWindow)
     }
 
     static func disableFullScreenForNSWindow(_ nsWindow: NSObject) {
