@@ -87,8 +87,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private var menuActions: [MenuAction] = [
         .selector(#selector(showHelp(_:))),
-        .selector(#selector(copy(_:))),
-        .selector(#selector(paste(_:))),
+        .selector(#selector(copyURL(_:))),
+        .selector(#selector(pasteURL(_:))),
         .selector(#selector(showPreferences)),
         .selector(#selector(openScriptFile)),
         .selector(#selector(captureImage)),
@@ -310,11 +310,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return false
     }
 
-    override func copy(_ sender: Any?) {
+    @objc private func copyURL(_ sender: Any?) {
         NotificationCenter.default.post(name: requestCopyNotificationName, object: nil)
     }
 
-    override func paste(_ sender: Any?) {
+    @objc private func pasteURL(_ sender: Any?) {
         NotificationCenter.default.post(name: requestPasteNotificationName, object: nil)
     }
 
@@ -400,8 +400,8 @@ extension AppDelegate {
         builder.insertSibling(scriptsMenu, beforeMenu: .close)
         builder.insertSibling(captureImageMenu, afterMenu: scriptsMenu.identifier)
         let copyPasteMenu = createMenuItemGroup(identifierSuffix: "copypaste", actions: [
-            MenuActionContext(title: CelestiaString("Copy URL", comment: "Copy current URL to pasteboard"), action: #selector(copy(_:)), input: "c", modifierFlags: .command),
-            MenuActionContext(title: CelestiaString("Paste URL", comment: "Paste URL from pasteboard"), action: #selector(paste(_:)), input: "v", modifierFlags: .command),
+            MenuActionContext(title: CelestiaString("Copy URL", comment: "Copy current URL to pasteboard"), action: #selector(copyURL(_:)), input: "c", modifierFlags: .command),
+            MenuActionContext(title: CelestiaString("Paste URL", comment: "Paste URL from pasteboard"), action: #selector(pasteURL(_:)), input: "v", modifierFlags: .command),
         ])
         builder.insertSibling(copyPasteMenu, afterMenu: captureImageMenu.identifier)
 
