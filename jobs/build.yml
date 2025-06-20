@@ -54,21 +54,15 @@ jobs:
     condition: eq( variables['Build.Reason'], 'PullRequest' )
 
   - script: |
-      cd Celestia
-      git apply ../MobileCelestia/patches/angle/celestia.patch --ignore-whitespace --whitespace=nowarn
-    displayName: 'Apply ANGLE Patches (1)'
-    condition: eq( variables['backend'], 'angle' )
-
-  - script: |
       cd CelestiaCore
       git apply ../MobileCelestia/patches/angle/celestiacore.patch --ignore-whitespace --whitespace=nowarn
-    displayName: 'Apply ANGLE Patches (2)'
+    displayName: 'Apply ANGLE Patches (1)'
     condition: eq( variables['backend'], 'angle' )
 
   - script: |
       cd MobileCelestia
       git apply patches/angle/mobilecelestia.patch --ignore-whitespace --whitespace=nowarn
-    displayName: 'Apply ANGLE Patches (3)'
+    displayName: 'Apply ANGLE Patches (2)'
     condition: eq( variables['backend'], 'angle' )
 
   - script: |
@@ -88,7 +82,7 @@ jobs:
       feedsToUse: 'internal'
       vstsFeed: '9f9dcde1-dcba-4537-8214-71c8a03b99a0/14bb1031-e6b2-40ac-b287-73e7fcb5900e'
       vstsFeedPackage: 'ef4b9b1c-43f9-4b15-91ae-8a601ae5ef45'
-      vstsPackageVersion: '0.0.26'
+      vstsPackageVersion: '0.0.27'
     displayName: 'Download Catalyst Dependencies'
     condition: eq( variables['sdk'], 'macosx' )
 
@@ -99,9 +93,16 @@ jobs:
       feedsToUse: 'internal'
       vstsFeed: '9f9dcde1-dcba-4537-8214-71c8a03b99a0/14bb1031-e6b2-40ac-b287-73e7fcb5900e'
       vstsFeedPackage: '929aa8ac-b8eb-409b-afe7-30f2b73aebc8'
-      vstsPackageVersion: '0.0.26'
+      vstsPackageVersion: '0.0.27'
     displayName: 'Download iOS Dependencies'
     condition: eq( variables['sdk'], 'iphoneos' )
+
+  - script: |
+      cd CelestiaCore/libs/dependency
+      rm -rf libepoxy.xcframework
+      mv libepoxy_angle.xcframework libepoxy.xcframework
+    displayName: 'Use libepoxy with ANGLE'
+    condition: eq( variables['backend'], 'angle' )
 
   - script: |
       sudo xcode-select -s /Applications/Xcode_$XC_VERSION.app

@@ -1,70 +1,26 @@
-diff --git a/CelestiaCore.xcodeproj/project.pbxproj b/CelestiaCore.xcodeproj/project.pbxproj
-index 85228e5..23129a3 100644
---- a/CelestiaCore.xcodeproj/project.pbxproj
-+++ b/CelestiaCore.xcodeproj/project.pbxproj
-@@ -404,7 +404,7 @@
- 		EA3A88CE2D80B0100029ACA4 /* boost.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA3A88C22D80B00F0029ACA4 /* boost.xcframework */; };
- 		EA3A88D02D80B0100029ACA4 /* jpeg.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA3A88C32D80B0100029ACA4 /* jpeg.xcframework */; };
- 		EA3A88D22D80B0100029ACA4 /* fmt.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA3A88C42D80B0100029ACA4 /* fmt.xcframework */; };
--		EA3A88D42D80B0100029ACA4 /* libepoxy.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA3A88C52D80B0100029ACA4 /* libepoxy.xcframework */; };
-+		EA3A88D42D80B0100029ACA4 /* angle.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA3A88C52D80B0100029ACA4 /* angle.xcframework */; };
- 		EA3A88D62D80B0100029ACA4 /* libintl.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA3A88C62D80B0100029ACA4 /* libintl.xcframework */; };
- 		EA3A88D82D80B0100029ACA4 /* cspice.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA3A88C72D80B0100029ACA4 /* cspice.xcframework */; };
- 		EA3A88DA2D80B0100029ACA4 /* libpng.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA3A88C82D80B0100029ACA4 /* libpng.xcframework */; };
-@@ -948,7 +948,7 @@
- 		EA3A88C22D80B00F0029ACA4 /* boost.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = boost.xcframework; path = libs/dependency/boost.xcframework; sourceTree = "<group>"; };
- 		EA3A88C32D80B0100029ACA4 /* jpeg.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = jpeg.xcframework; path = libs/dependency/jpeg.xcframework; sourceTree = "<group>"; };
- 		EA3A88C42D80B0100029ACA4 /* fmt.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = fmt.xcframework; path = libs/dependency/fmt.xcframework; sourceTree = "<group>"; };
--		EA3A88C52D80B0100029ACA4 /* libepoxy.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libepoxy.xcframework; path = libs/dependency/libepoxy.xcframework; sourceTree = "<group>"; };
-+		EA3A88C52D80B0100029ACA4 /* angle.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = angle.xcframework; path = libs/dependency/angle.xcframework; sourceTree = "<group>"; };
- 		EA3A88C62D80B0100029ACA4 /* libintl.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libintl.xcframework; path = libs/dependency/libintl.xcframework; sourceTree = "<group>"; };
- 		EA3A88C72D80B0100029ACA4 /* cspice.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = cspice.xcframework; path = libs/dependency/cspice.xcframework; sourceTree = "<group>"; };
- 		EA3A88C82D80B0100029ACA4 /* libpng.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = libpng.xcframework; path = libs/dependency/libpng.xcframework; sourceTree = "<group>"; };
-@@ -1110,7 +1110,7 @@
- 				EA3A88E02D80B0100029ACA4 /* meshoptimizer.xcframework in Frameworks */,
- 				EA3A88D62D80B0100029ACA4 /* libintl.xcframework in Frameworks */,
- 				EA3A88D02D80B0100029ACA4 /* jpeg.xcframework in Frameworks */,
--				EA3A88D42D80B0100029ACA4 /* libepoxy.xcframework in Frameworks */,
-+				EA3A88D42D80B0100029ACA4 /* angle.xcframework in Frameworks */,
- 				EA3A88E42D80B0100029ACA4 /* freetype.xcframework in Frameworks */,
- 				EA3A88EC2D80B0910029ACA4 /* icu.xcframework in Frameworks */,
- 			);
-@@ -1267,7 +1267,7 @@
- 				EA3A88C42D80B0100029ACA4 /* fmt.xcframework */,
- 				EA3A88CD2D80B0100029ACA4 /* freetype.xcframework */,
- 				EA3A88C32D80B0100029ACA4 /* jpeg.xcframework */,
--				EA3A88C52D80B0100029ACA4 /* libepoxy.xcframework */,
-+				EA3A88C52D80B0100029ACA4 /* angle.xcframework */,
- 				EA3A88C62D80B0100029ACA4 /* libintl.xcframework */,
- 				EA3A88C82D80B0100029ACA4 /* libpng.xcframework */,
- 				EA3A88C92D80B0100029ACA4 /* libzip.xcframework */,
 diff --git a/CelestiaCore/Configurations/Debug.xcconfig b/CelestiaCore/Configurations/Debug.xcconfig
-index 3f921cc..2247fff 100644
+index cd659f0..1f8abcb 100644
 --- a/CelestiaCore/Configurations/Debug.xcconfig
 +++ b/CelestiaCore/Configurations/Debug.xcconfig
-@@ -11,9 +11,6 @@
- 
- #include "Common.xcconfig"
- 
--PREPROCESSOR_BASE = DEBUG=1 ENABLE_NLS USE_SPICE USE_MINIAUDIO CELX USE_ICU BOOST_NO_EXCEPTIONS
-+PREPROCESSOR_BASE = DEBUG=1 ENABLE_NLS USE_SPICE USE_MINIAUDIO CELX USE_ICU BOOST_NO_EXCEPTIONS GL_ES
+@@ -14,7 +14,7 @@
+ PREPROCESSOR_BASE = DEBUG=1 ENABLE_NLS USE_SPICE USE_MINIAUDIO CELX USE_ICU BOOST_NO_EXCEPTIONS
  
  GCC_PREPROCESSOR_DEFINITIONS = $(PREPROCESSOR_BASE)
 -GCC_PREPROCESSOR_DEFINITIONS[sdk=macosx*] = $(PREPROCESSOR_BASE)
--GCC_PREPROCESSOR_DEFINITIONS[sdk=iphoneos*] = $(PREPROCESSOR_BASE) GL_ES
--GCC_PREPROCESSOR_DEFINITIONS[sdk=iphonesimulator*] = $(PREPROCESSOR_BASE) GL_ES
++GCC_PREPROCESSOR_DEFINITIONS[sdk=macosx*] = $(PREPROCESSOR_BASE) GL_ES
+ GCC_PREPROCESSOR_DEFINITIONS[sdk=iphoneos*] = $(PREPROCESSOR_BASE) GL_ES
+ GCC_PREPROCESSOR_DEFINITIONS[sdk=iphonesimulator*] = $(PREPROCESSOR_BASE) GL_ES
+ GCC_PREPROCESSOR_DEFINITIONS[sdk=xros*] = $(PREPROCESSOR_BASE) GL_ES
 diff --git a/CelestiaCore/Configurations/Release.xcconfig b/CelestiaCore/Configurations/Release.xcconfig
-index 338ab27..5ef5024 100644
+index e23c32c..67188d1 100644
 --- a/CelestiaCore/Configurations/Release.xcconfig
 +++ b/CelestiaCore/Configurations/Release.xcconfig
-@@ -11,9 +11,6 @@
- 
- #include "Common.xcconfig"
- 
--PREPROCESSOR_BASE = NDEBUG NO_DEBUG EIGEN_NO_DEBUG ENABLE_NLS USE_SPICE USE_MINIAUDIO CELX USE_ICU BOOST_NO_EXCEPTIONS
-+PREPROCESSOR_BASE = NDEBUG NO_DEBUG EIGEN_NO_DEBUG ENABLE_NLS USE_SPICE USE_MINIAUDIO CELX USE_ICU BOOST_NO_EXCEPTIONS GL_ES
+@@ -14,7 +14,7 @@
+ PREPROCESSOR_BASE = NDEBUG NO_DEBUG EIGEN_NO_DEBUG ENABLE_NLS USE_SPICE USE_MINIAUDIO CELX USE_ICU BOOST_NO_EXCEPTIONS
  
  GCC_PREPROCESSOR_DEFINITIONS = $(PREPROCESSOR_BASE)
 -GCC_PREPROCESSOR_DEFINITIONS[sdk=macosx*] = $(PREPROCESSOR_BASE)
--GCC_PREPROCESSOR_DEFINITIONS[sdk=iphoneos*] = $(PREPROCESSOR_BASE) GL_ES
--GCC_PREPROCESSOR_DEFINITIONS[sdk=iphonesimulator*] = $(PREPROCESSOR_BASE) GL_ES
++GCC_PREPROCESSOR_DEFINITIONS[sdk=macosx*] = $(PREPROCESSOR_BASE) GL_ES
+ GCC_PREPROCESSOR_DEFINITIONS[sdk=iphoneos*] = $(PREPROCESSOR_BASE) GL_ES
+ GCC_PREPROCESSOR_DEFINITIONS[sdk=iphonesimulator*] = $(PREPROCESSOR_BASE) GL_ES
+ GCC_PREPROCESSOR_DEFINITIONS[sdk=xros*] = $(PREPROCESSOR_BASE) GL_ES
