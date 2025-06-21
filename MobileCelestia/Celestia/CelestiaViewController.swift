@@ -109,9 +109,8 @@ class CelestiaViewController: UIViewController {
         displayController.delegate = self
         install(displayController, safeAreaEdges: safeAreaEdges)
 
-        #if targetEnvironment(macCatalyst)
         NotificationCenter.default.addObserver(self, selector: #selector(windowDidMoveToScreenNotification(_:)), name: NSNotification.Name("UIWindowDidMoveToScreenNotification"), object: nil)
-        #else
+        #if !targetEnvironment(macCatalyst)
         NotificationCenter.default.addObserver(self, selector: #selector(windowSceneEnterForegroundNotification(_:)), name: screenEnterForegroundNotificationName, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(windowSceneEnterBackgroundNotification(_:)), name: screenEnterBackgroundNotificationName, object: nil)
         #endif
@@ -160,7 +159,6 @@ class CelestiaViewController: UIViewController {
     }
 }
 
-#if targetEnvironment(macCatalyst)
 extension CelestiaViewController {
     @objc private func windowDidMoveToScreenNotification(_ notification: Notification) {
         guard let window = notification.object as? UIWindow else { return }
@@ -178,7 +176,8 @@ extension CelestiaViewController {
         }
     }
 }
-#else
+
+#if !targetEnvironment(macCatalyst)
 extension CelestiaViewController {
     @objc private func windowSceneEnterForegroundNotification(_ notification: Notification) {
         guard let windowScene = notification.object as? UIWindowScene else { return }
