@@ -22,6 +22,7 @@ protocol CelestiaInteractionControllerDelegate: AnyObject {
     func celestiaInteractionControllerRequestShowActionMenu(_ celestiaInteractionController: CelestiaInteractionController)
     func celestiaInteractionControllerRequestShowSearch(_ celestiaInteractionController: CelestiaInteractionController)
     func celestiaInteractionController(_ celestiaInteractionController: CelestiaInteractionController, requestShowInfoWithSelection selection: Selection)
+    func celestiaInteractionController(_ celestiaInteractionController: CelestiaInteractionController, requestShowSubsystemWithSelection selection: Selection)
     func celestiaInteractionController(_ celestiaInteractionController: CelestiaInteractionController, requestWebInfo webURL: URL)
     func celestiaInteractionControllerRequestGo(_ celestiaInteractionController: CelestiaInteractionController)
     func celestiaInteractionControllerCanAcceptKeyEvents(_ celestiaInteractionController: CelestiaInteractionController) -> Bool
@@ -585,7 +586,7 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
             }
         ]))
 
-        actions.append(UIMenu(title: "", options: .displayInline, children: CelestiaAction.allCases.map { action in
+        actions.append(UIMenu(options: .displayInline, children: CelestiaAction.allCases.map { action in
             return UIAction(title: action.description) { [weak self] _ in
                 guard let self else { return }
                 Task {
@@ -596,11 +597,14 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
 
         if let entry = selection.object {
             let browserItem = BrowserItem(name: core.simulation.universe.name(for: selection), catEntry: entry, provider: core.simulation.universe)
-            actions.append(UIMenu(title: "", options: .displayInline, children: browserItem.children.compactMap { $0.createMenuItems(additionalItemName: CelestiaString("Go", comment: "Go to an object")) { [weak self] selection in
+            actions.append(UIMenu(options: .displayInline, children: browserItem.children.compactMap { $0.createMenuItems(object: entry, additionalItemName: CelestiaString("Go", comment: "Go to an object"), additionalItemHandler: { [weak self] selection in
                 guard let self else { return }
                 Task {
                     await self.executor.selectAndReceive(selection, action: .goTo)
                 }
+            }) { [weak self] selection in
+                guard let self else { return }
+                self.delegate?.celestiaInteractionController(self, requestShowSubsystemWithSelection: selection)
             }}))
         }
 
@@ -633,7 +637,7 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
                 }
             }
         })
-        actions.append(UIMenu(title: "", options: .displayInline, children: [markerMenu]))
+        actions.append(UIMenu(options: .displayInline, children: [markerMenu]))
         return actions
     }
 
@@ -657,27 +661,42 @@ extension UIContextMenuInteraction {
 
 extension BrowserItem {
     @MainActor
-    func createMenuItems(additionalItemName: String, with callback: @escaping (Selection) -> Void) -> UIMenu? {
+    func createMenuItems(object: AstroObject, additionalItemName: String, additionalItemHandler: @escaping (Selection) -> Void, showMoreHandler: @escaping (Selection) -> Void) -> UIMenu? {
         var items = [UIMenuElement]()
-
-        if let ent = entry {
-            items.append(UIAction(title: additionalItemName, handler: { (_) in
-                let selection = Selection(object: ent)
-                guard selection.isEmpty else { return }
-                callback(selection)
+        var parent = object
+        if let entry {
+            parent = entry
+            items.append(UIAction(title: additionalItemName, handler: { _ in
+                let selection = Selection(object: entry)
+                guard !selection.isEmpty else { return }
+                additionalItemHandler(selection)
             }))
         }
 
         var childItems = [UIMenuElement]()
+        var shouldInsertShowMore = false
         for i in 0..<children.count {
+            if i > 50 {
+                shouldInsertShowMore = true
+                break
+            }
             let subItemName = childName(at: Int(i))!
             let child = child(with: subItemName)!
-            if let childMenu = child.createMenuItems(additionalItemName: additionalItemName, with: callback) {
+            if let childMenu = child.createMenuItems(object: parent, additionalItemName: additionalItemName, additionalItemHandler: additionalItemHandler, showMoreHandler: showMoreHandler) {
                 childItems.append(childMenu)
             }
         }
         if childItems.count > 0 {
-            items.append(UIMenu(title: "", options: .displayInline, children: childItems))
+            items.append(UIMenu(options: .displayInline, children: childItems))
+        }
+        if shouldInsertShowMore {
+            items.append(UIMenu(options: .displayInline, children: [
+                UIAction(title: CelestiaString("Show More…", comment: "Menu action to indicate that more items that are not shown in the menu"), handler: { _ in
+                    let selection = Selection(object: parent)
+                    guard !selection.isEmpty else { return }
+                    showMoreHandler(selection)
+                })
+            ]))
         }
         return items.count == 0 ? nil : UIMenu(title: name, children: items)
     }

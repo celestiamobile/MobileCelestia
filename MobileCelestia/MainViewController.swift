@@ -612,6 +612,11 @@ extension MainViewController: CelestiaControllerDelegate {
         showSelectionInfo(with: selection)
     }
 
+    func celestiaController(_ celestiaController: CelestiaViewController, requestShowSubsystemWithSelection selection: Selection) {
+        guard !selection.isEmpty else { return }
+        showSubsystem(with: selection)
+    }
+
     func celestiaController(_ celestiaController: CelestiaViewController, requestWebInfo webURL: URL) {
         showWeb(webURL)
     }
