@@ -149,9 +149,6 @@ class MainViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(presentHelp), name: showHelpNotificationName, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(showSettings), name: showPreferencesNotificationName, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(requestOpenFile), name: requestOpenFileNotificationName, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(requestCopy), name: requestCopyNotificationName, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(requestPaste), name: requestPasteNotificationName, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(requestPaste), name: requestPasteNotificationName, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(menuBarAction(_:)), name: menuBarActionNotificationName, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(requestRunScript(_:)), name: requestRunScriptNotificationName, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(requestOpenBookmark(_:)), name: requestOpenBookmarkNotificationName, object: nil)
@@ -322,14 +319,14 @@ extension MainViewController {
 }
 
 extension MainViewController {
-    @objc private func requestCopy() {
+    override func copy(_ sender: Any?) {
         Task {
             let url = await executor.get { $0.currentURL }
             UIPasteboard.general.url = URL(string: url)
         }
     }
 
-    @objc private func requestPaste() {
+    override func paste(_ sender: Any?) {
         let pasteboard = UIPasteboard.general
         var celURL: String?
         if pasteboard.hasURLs {
