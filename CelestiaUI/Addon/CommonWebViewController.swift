@@ -153,7 +153,7 @@ public class CommonWebViewController: UIViewController {
 
 extension CommonWebViewController: WKNavigationDelegate {
     private func isURLAllowed(_ url: URL) -> Bool {
-        let comp1 = URLComponents(url: url, resolvingAgainstBaseURL: false)!
+        let comp1 = URLComponents(url: self.url, resolvingAgainstBaseURL: false)!
         let comp2 = URLComponents(url: url, resolvingAgainstBaseURL: false)!
         if comp1.host != comp2.host || comp1.path != comp2.path {
             return false
