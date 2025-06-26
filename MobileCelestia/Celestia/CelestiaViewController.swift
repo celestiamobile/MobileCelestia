@@ -52,7 +52,10 @@ class CelestiaViewController: UIViewController {
     private lazy var auxiliaryWindows = [UIScreen: UIWindow]()
 
     private(set) var appScreen: UIScreen
-    private(set) var displayScreen: UIScreen
+    var displayScreen: UIScreen? {
+        displayController.view.window?.windowScene?.screen
+    }
+
     private(set) var isMirroring: Bool
     private let subscriptionManager: SubscriptionManager
     private let core: AppCore
@@ -84,7 +87,6 @@ class CelestiaViewController: UIViewController {
 
     init(screen: UIScreen, executor: CelestiaExecutor, userDefaults: UserDefaults, subscriptionManager: SubscriptionManager, core: AppCore) {
         appScreen = screen
-        displayScreen = screen
         isMirroring = false
         self.subscriptionManager = subscriptionManager
         self.core = core
@@ -168,11 +170,6 @@ extension CelestiaViewController {
         if view.window == window {
             if appScreen != screen {
                 appScreen = screen
-            }
-        }
-        if displayController.view.window == window {
-            if displayScreen != screen {
-                setDisplayScreen(screen)
             }
         }
     }
@@ -297,7 +294,6 @@ extension CelestiaViewController {
         let dummyViewController = UIViewController()
         dummyViewController.view.backgroundColor = .black
         window.rootViewController = dummyViewController
-        setDisplayScreen(screen)
         dummyViewController.install(displayController, safeAreaEdges: safeAreaEdges)
         interactionController?.startMirroring()
         isMirroring = true
@@ -308,7 +304,6 @@ extension CelestiaViewController {
         guard let rootViewController = window.rootViewController, rootViewController.children.contains(displayController) else { return }
         displayController.remove()
         window.rootViewController = nil
-        setDisplayScreen(appScreen)
         install(displayController, safeAreaEdges: safeAreaEdges)
         view.sendSubviewToBack(displayController.view)
         isMirroring = false
@@ -335,11 +330,6 @@ extension CelestiaViewController {
         return true
     }
     #endif
-
-    private func setDisplayScreen(_ screen: UIScreen) {
-        displayScreen = screen
-        displayController.setScreen(screen)
-    }
 }
 
 extension CelestiaViewController: RenderingTargetInformationProvider {

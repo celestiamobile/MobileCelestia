@@ -1187,8 +1187,8 @@ Device Model: \(model)
                     executor.makeRenderContextCurrent()
                     return core.renderInfo
                 }
-            }, screenProvider: { [unowned self] in
-                return self.celestiaController.displayScreen
+            }, screenProvider: { [weak self] in
+                return self?.celestiaController.displayScreen
             }, subscriptionManager: subscriptionManager, openSubscriptionManagement: { [weak self] viewController in
                 guard let self else { return }
                 if #available(iOS 15, *) {

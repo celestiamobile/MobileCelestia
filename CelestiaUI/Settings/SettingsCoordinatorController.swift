@@ -72,7 +72,7 @@ public class SettingsCoordinatorController: UIViewController {
     private let textInputHandler: (_ viewController: UIViewController, _ title: String, _ keyboardType: UIKeyboardType) async -> String?
     private let rendererInfoProvider: () async -> String
     #if !os(visionOS)
-    private let screenProvider: () -> UIScreen
+    private let screenProvider: () -> UIScreen?
     private let subscriptionManager: SubscriptionManager
     private let openSubscriptionManagement: (UIViewController) -> Void
     #endif
@@ -124,7 +124,7 @@ public class SettingsCoordinatorController: UIViewController {
         dateInputHandler: @escaping (_ viewController: UIViewController, _ title: String, _ format: String) async -> Date?,
         textInputHandler: @escaping (_ viewController: UIViewController, _ title: String, _ keyboardType: UIKeyboardType) async -> String?,
         rendererInfoProvider: @escaping () async -> String,
-        screenProvider: @escaping () -> UIScreen,
+        screenProvider: @escaping () -> UIScreen?,
         subscriptionManager: SubscriptionManager,
         openSubscriptionManagement: @escaping (UIViewController) -> Void
     ) {

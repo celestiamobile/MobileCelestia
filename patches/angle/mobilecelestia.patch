@@ -1,5 +1,5 @@
 diff --git a/MobileCelestia.xcodeproj/project.pbxproj b/MobileCelestia.xcodeproj/project.pbxproj
-index d0a9a23..09ef473 100644
+index 4ffaaa8..c1e5670 100644
 --- a/MobileCelestia.xcodeproj/project.pbxproj
 +++ b/MobileCelestia.xcodeproj/project.pbxproj
 @@ -17,8 +17,8 @@
@@ -30,7 +30,7 @@ index d0a9a23..09ef473 100644
  				EA9039A12BA19CF100C982BC /* MWRequest */,
  				EAC20FE02CA0CB7C0098AABA /* Sentry */,
  			);
-@@ -1284,16 +1284,16 @@
+@@ -1286,16 +1286,16 @@
  /* End XCRemoteSwiftPackageReference section */
  
  /* Begin XCSwiftPackageProductDependency section */
@@ -53,7 +53,7 @@ index d0a9a23..09ef473 100644
  			isa = XCSwiftPackageProductDependency;
  			package = EAC20FDF2CA0CB7C0098AABA /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
 diff --git a/MobileCelestia/Celestia/CelestiaDisplayController.swift b/MobileCelestia/Celestia/CelestiaDisplayController.swift
-index 0391b30..ae52858 100644
+index 828b1c4..8e2233e 100644
 --- a/MobileCelestia/Celestia/CelestiaDisplayController.swift
 +++ b/MobileCelestia/Celestia/CelestiaDisplayController.swift
 @@ -9,7 +9,7 @@
@@ -75,7 +75,7 @@ index 0391b30..ae52858 100644
          let api = AsyncGLAPI.openGLES2
  #endif
 diff --git a/MobileCelestia/Celestia/CelestiaViewController.swift b/MobileCelestia/Celestia/CelestiaViewController.swift
-index a37a463..0d81003 100644
+index 4f3407a..e32c5d8 100644
 --- a/MobileCelestia/Celestia/CelestiaViewController.swift
 +++ b/MobileCelestia/Celestia/CelestiaViewController.swift
 @@ -9,7 +9,7 @@

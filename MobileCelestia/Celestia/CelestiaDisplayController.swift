@@ -68,7 +68,7 @@ class CelestiaDisplayController: AsyncGLViewController {
         self.core = core
         self.executor = executor
         self.userDefaults = userDefaults
-        super.init(msaaEnabled: msaaEnabled, screen: screen, initialFrameRate: frameRate, api: api, executor: executor)
+        super.init(msaaEnabled: msaaEnabled, initialFrameRate: frameRate, api: api, executor: executor)
 
         if #available(iOS 17, *) {
             registerForTraitChanges([UITraitDisplayScale.self, UITraitPreferredContentSizeCategory.self]) { (self: Self, _) in

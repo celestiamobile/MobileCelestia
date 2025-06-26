@@ -27,7 +27,7 @@ class SettingsFrameRateViewController: BaseTableViewController {
     private let userDefaultsKey: String
 
     private let frameRateUpdateHandler: (Int) -> Void
-    private let screen: UIScreen
+    private let screen: UIScreen?
 
     private lazy var numberFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
@@ -36,7 +36,7 @@ class SettingsFrameRateViewController: BaseTableViewController {
         return formatter
     }()
 
-    init(screen: UIScreen, userDefaults: UserDefaults, userDefaultsKey: String, frameRateUpdateHandler: @escaping (Int) -> Void) {
+    init(screen: UIScreen?, userDefaults: UserDefaults, userDefaultsKey: String, frameRateUpdateHandler: @escaping (Int) -> Void) {
         self.screen = screen
         self.userDefaults = userDefaults
         self.userDefaultsKey = userDefaultsKey
@@ -61,15 +61,22 @@ class SettingsFrameRateViewController: BaseTableViewController {
     }
 
     private func loadContents() {
-        let maxFrameRate = screen.maximumFramesPerSecond
+        let maxFrameRate = screen?.maximumFramesPerSecond
 
         var standardFrameRate = [
             FrameRateItem(frameRate: 60, isMaximum: false),
             FrameRateItem(frameRate: 30, isMaximum: false),
             FrameRateItem(frameRate: 20, isMaximum: false),
-        ].filter({ $0.frameRate <= maxFrameRate })
+        ].filter { item in
+            if let maxFrameRate, item.frameRate > maxFrameRate {
+                return false
+            }
+            return true
+        }
 
-        standardFrameRate.insert(FrameRateItem(frameRate: maxFrameRate, isMaximum: true), at: 0)
+        if let maxFrameRate {
+            standardFrameRate.insert(FrameRateItem(frameRate: maxFrameRate, isMaximum: true), at: 0)
+        }
 
         items = standardFrameRate
         tableView.reloadData()
