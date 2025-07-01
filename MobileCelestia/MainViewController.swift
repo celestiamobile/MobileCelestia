@@ -1408,11 +1408,23 @@ struct CelestiaAssetProvider: AssetProvider {
         case .loadingIcon:
             .loadingIcon
         case .browserTabDso:
-            .browserTabDso
+            if #available(iOS 26, *) {
+                .symbolGalaxy
+            } else {
+                .browserTabDso
+            }
         case .browserTabSso:
-            .browserTabSso
+            if #available(iOS 26, *) {
+                .symbolSun
+            } else {
+                .browserTabSso
+            }
         case .browserTabStar:
-            .browserTabStar
+            if #available(iOS 26, *) {
+                .symbolStar
+            } else {
+                .browserTabStar
+            }
         case .tutorialSwitchMode:
             .tutorialSwitchMode
         }
