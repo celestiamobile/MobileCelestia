@@ -732,6 +732,30 @@ extension CelestiaInteractionController: AppCoreDelegate {
             self.showError(error)
         }
     }
+    nonisolated func celestiaAppCoreRequestSystemAccess() -> Bool {
+        class SystemAccessRequestResult: @unchecked Sendable {
+            var granted: Bool
+
+            init(granted: Bool) {
+                self.granted = granted
+            }
+        }
+
+        let result = SystemAccessRequestResult(granted: false)
+        let dispatchGroup = DispatchGroup()
+        dispatchGroup.enter()
+        Task { @MainActor in
+            self.showOption(
+                CelestiaString("Script System Access", comment: "Alert title for scripts requesting system access"),
+                message: CelestiaString("This script requests permission to read/write files and execute external programs. Allowing this can be dangerous.\nDo you trust the script and want to allow this?", comment: "Alert message for scripts requesting system access")
+            ) { granted in
+                result.granted = granted
+                dispatchGroup.leave()
+            }
+        }
+        dispatchGroup.wait()
+        return result.granted
+    }
     nonisolated func celestiaAppCoreCursorShapeChanged(_ shape: CursorShape) {}
     nonisolated func celestiaAppCoreWatchedFlagsDidChange(_ changedFlags: WatcherFlags) {}
 }
