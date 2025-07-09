@@ -858,7 +858,7 @@ extension CelestiaInteractionController {
             guard motionManager.isDeviceMotionAvailable else { return }
             if !isObservingGyroscopeUpdates {
                 motionManager.startDeviceMotionUpdates(to: .main) { [weak self] deviceMotionData, error in
-                    guard let self = self, let deviceMotionData, error == nil else { return }
+                    guard let self, self.isObservingGyroscopeUpdates, let deviceMotionData, error == nil else { return }
 
                     let currentQuat = deviceMotionData.attitude.quaternion
                     guard let previousQuat = self.lastRotationQuaternion else {
