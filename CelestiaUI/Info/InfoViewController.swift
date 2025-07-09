@@ -48,6 +48,7 @@ final public class InfoViewController: UICollectionViewController {
         case description
         case link
         case button(ObjectAction)
+        case cockpit
     }
 
     private let core: AppCore
@@ -72,6 +73,20 @@ final public class InfoViewController: UICollectionViewController {
             case .link:
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LinkPreview", for: indexPath) as! LinkPreviewCell
                 cell.setMetaData(self.linkMetaData)
+                return cell
+            case .cockpit:
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Switch", for: indexPath) as! BodySwitchCell
+                cell.title = CelestiaString("Use as Cockpit", comment: "Option to use a spacecraft as cockpit")
+                let cockpit = self.info
+                cell.enabled = cockpit == self.core.simulation.activeObserver.cockpit
+                cell.toggleBlock = { [weak self] isEnabled in
+                    guard let self else { return }
+                    Task {
+                        await self.executor.run { core in
+                            core.simulation.activeObserver.cockpit = isEnabled ? cockpit : Selection()
+                        }
+                    }
+                }
                 return cell
             case let .button(action):
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Action", for: indexPath) as! BodyActionCell
@@ -153,6 +168,9 @@ final public class InfoViewController: UICollectionViewController {
         var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
         snapshot.appendSections([.content, .buttons])
         snapshot.appendItems([.description], toSection: .content)
+        if info.body?.canBeUsedAsCockpit == true {
+            snapshot.appendItems([.cockpit], toSection: .content)
+        }
         if linkMetaData != nil {
             snapshot.appendItems([.link], toSection: .content)
         }
@@ -217,6 +235,7 @@ private extension InfoViewController {
         collectionView.register(BodyDescriptionCell.self, forCellWithReuseIdentifier: "Description")
         collectionView.register(BodyActionCell.self, forCellWithReuseIdentifier: "Action")
         collectionView.register(LinkPreviewCell.self, forCellWithReuseIdentifier: "LinkPreview")
+        collectionView.register(BodySwitchCell.self, forCellWithReuseIdentifier: "Switch")
         collectionView.dataSource = dataSource
     }
 }
