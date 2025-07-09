@@ -14,6 +14,7 @@ import CelestiaFoundation
 import CelestiaUI
 #if !targetEnvironment(macCatalyst)
 import CoreMotion
+import simd
 #endif
 import UIKit
 
@@ -136,7 +137,7 @@ class CelestiaInteractionController: UIViewController {
         motionManager.deviceMotionUpdateInterval = 0.02
         return motionManager
     }()
-    var lastRotationQuaternion: CMQuaternion?
+    var lastRotationQuaternion: simd_quatd?
     #endif
 
     private var renderingTargetGeometry: RenderingTargetGeometry {
@@ -860,7 +861,24 @@ extension CelestiaInteractionController {
                 motionManager.startDeviceMotionUpdates(to: .main) { [weak self] deviceMotionData, error in
                     guard let self, self.isObservingGyroscopeUpdates, let deviceMotionData, error == nil else { return }
 
-                    let currentQuat = deviceMotionData.attitude.quaternion
+                    let deviceOrientation = self.view.window?.windowScene?.interfaceOrientation ?? .portrait
+
+                    let baseQuat = simd_quatd(deviceMotionData.attitude.quaternion)
+                    let currentQuat: simd_quatd
+                    switch deviceOrientation {
+                    case .portraitUpsideDown:
+                        currentQuat = simd_quatd(angle: .pi, axis: simd_double3(0, 0, 1)) * baseQuat
+                    case .landscapeLeft:
+                        currentQuat = simd_quatd(angle: -.pi / 2, axis: simd_double3(0, 0, 1)) * baseQuat
+                    case .landscapeRight:
+                        currentQuat = simd_quatd(angle: .pi / 2, axis: simd_double3(0, 0, 1)) * baseQuat
+                    case .unknown, .portrait:
+                        fallthrough
+                    @unknown default:
+                        currentQuat = baseQuat
+                        break
+                    }
+
                     guard let previousQuat = self.lastRotationQuaternion else {
                         self.lastRotationQuaternion = currentQuat
                         return
@@ -879,6 +897,12 @@ extension CelestiaInteractionController {
                 isObservingGyroscopeUpdates = false
             }
         }
+    }
+}
+
+private extension simd_quatd {
+    init(_ quaternion: CMQuaternion) {
+        self.init(ix: quaternion.x, iy: quaternion.y, iz: quaternion.z, r: -quaternion.w)
     }
 }
 #endif
