@@ -110,6 +110,7 @@ extension DataLocationSelectionViewController {
             cell.titleColor = UIColor.themeLabel
             #endif
             cell.selectionStyle = .default
+            cell.accessoryType = .none
             return cell
         default:
             fatalError()
