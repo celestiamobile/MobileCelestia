@@ -13,19 +13,21 @@ import LinkPresentation
 import UIKit
 
 final class LinkPreviewCell: UICollectionViewCell {
-    func setMetaData(_ linkMetaData: LPLinkMetadata) {
+    func setMetaData(_ linkMetaData: LPLinkMetadata?) {
         contentView.subviews.compactMap { $0 as? LPLinkView }.forEach { view in
             view.removeFromSuperview()
         }
-        let linkPreview = LPLinkView(metadata: linkMetaData)
-        linkPreview.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(linkPreview)
-        NSLayoutConstraint.activate([
-            linkPreview.topAnchor.constraint(equalTo: contentView.topAnchor),
-            linkPreview.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            linkPreview.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            linkPreview.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
-        ])
+        if let linkMetaData {
+            let linkPreview = LPLinkView(metadata: linkMetaData)
+            linkPreview.translatesAutoresizingMaskIntoConstraints = false
+            contentView.addSubview(linkPreview)
+            NSLayoutConstraint.activate([
+                linkPreview.topAnchor.constraint(equalTo: contentView.topAnchor),
+                linkPreview.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+                linkPreview.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+                linkPreview.bottomAnchor.constraint(equalTo: contentView.bottomAnchor)
+            ])
+        }
     }
 
     override func preferredLayoutAttributesFitting(_ layoutAttributes: UICollectionViewLayoutAttributes) -> UICollectionViewLayoutAttributes {

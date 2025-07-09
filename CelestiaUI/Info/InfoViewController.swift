@@ -15,7 +15,7 @@ import UIKit
 
 extension LPLinkMetadata: @unchecked @retroactive Sendable {}
 
-public enum ObjectAction {
+public enum ObjectAction: Hashable, Sendable {
     case select
     case web(url: URL)
     case wrapped(action: CelestiaAction)
@@ -39,6 +39,17 @@ final public class InfoViewController: UICollectionViewController {
         static let buttonSpacing: CGFloat = GlobalConstants.pageMediumGapHorizontal
     }
 
+    private enum Section {
+        case content
+        case buttons
+    }
+
+    private enum Item: Hashable {
+        case description
+        case link
+        case button(ObjectAction)
+    }
+
     private let core: AppCore
     private let executor: AsyncProviderExecutor
     private let showNavigationTitle: Bool
@@ -49,9 +60,40 @@ final public class InfoViewController: UICollectionViewController {
 
     public var selectionHandler: ((Selection, ExternalObjectAction) -> Void)?
 
-    private var actions: [ObjectAction] = []
-
     private var linkMetaData: LPLinkMetadata?
+
+    private lazy var dataSource: UICollectionViewDiffableDataSource<Section, Item> = {
+        let dataSource = UICollectionViewDiffableDataSource<Section, Item>(collectionView: collectionView) { [unowned self] collectionView, indexPath, itemIdentifier in
+            switch itemIdentifier {
+            case .description:
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Description", for: indexPath) as! BodyDescriptionCell
+                cell.update(with: self.bodyInfo, showTitle: !self.showNavigationTitle)
+                return cell
+            case .link:
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LinkPreview", for: indexPath) as! LinkPreviewCell
+                cell.setMetaData(self.linkMetaData)
+                return cell
+            case let .button(action):
+                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Action", for: indexPath) as! BodyActionCell
+                cell.title = action.description
+                switch action {
+                case .alternateSurfaces:
+                    cell.menu = self.menuForActions(alternativeSurfaceActions(selection: self.info))
+                case .mark:
+                    cell.menu = self.menuForActions(markActions(selection: self.info))
+                default:
+                    cell.menu = nil
+                    break
+                }
+                cell.actionHandler = { [weak self] sourceView in
+                    guard let self else { return }
+                    self.handleAction(selection: self.info, action: action, sourceView: sourceView)
+                }
+                return cell
+            }
+        }
+        return dataSource
+    }()
 
     public init(info: Selection, core: AppCore, executor: AsyncProviderExecutor, showNavigationTitle: Bool, backgroundColor: UIColor?) {
         self.core = core
@@ -98,7 +140,7 @@ final public class InfoViewController: UICollectionViewController {
         reload()
     }
 
-    private func reload() {
+    private func reload(fetchLinkData: Bool = true) {
         if bodyInfoNeedsUpdating {
             bodyInfo = BodyInfo(selection: info, core: core)
             if showNavigationTitle {
@@ -108,6 +150,12 @@ final public class InfoViewController: UICollectionViewController {
             bodyInfoNeedsUpdating = false
         }
 
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
+        snapshot.appendSections([.content, .buttons])
+        snapshot.appendItems([.description], toSection: .content)
+        if linkMetaData != nil {
+            snapshot.appendItems([.link], toSection: .content)
+        }
         var actions = ObjectAction.allCases
         if let urlString = info.webInfoURL, let url = URL(string: urlString) {
             actions.append(.web(url: url))
@@ -117,22 +165,28 @@ final public class InfoViewController: UICollectionViewController {
         }
         actions.append(.subsystem)
         actions.append(.mark)
-        self.actions = actions
+        snapshot.appendItems(actions.map { .button($0) }, toSection: .buttons)
 
-        collectionView.reloadData()
+        if #available(iOS 15, visionOS 1, *) {
+            dataSource.applySnapshotUsingReloadData(snapshot)
+        } else {
+            dataSource.apply(snapshot, animatingDifferences: false)
+        }
 
-        guard let urlString = info.webInfoURL, let url = URL(string: urlString) else { return }
+        if fetchLinkData {
+            guard let urlString = info.webInfoURL, let url = URL(string: urlString) else { return }
 
-        let current = info
-        let metaDataProvider = LPMetadataProvider()
-        Task { [weak self] in
-            do {
-                let metaData = try await metaDataProvider.startFetchingMetadata(for: url)
-                guard let self else { return }
-                guard self.info.isEqual(to: current) else { return }
-                self.linkMetaData = metaData
-                self.collectionView.reloadData()
-            } catch {}
+            let current = info
+            let metaDataProvider = LPMetadataProvider()
+            Task { [weak self] in
+                do {
+                    let metaData = try await metaDataProvider.startFetchingMetadata(for: url)
+                    guard let self else { return }
+                    guard self.info.isEqual(to: current) else { return }
+                    self.linkMetaData = metaData
+                    self.reload(fetchLinkData: false)
+                } catch {}
+            }
         }
     }
 
@@ -163,57 +217,11 @@ private extension InfoViewController {
         collectionView.register(BodyDescriptionCell.self, forCellWithReuseIdentifier: "Description")
         collectionView.register(BodyActionCell.self, forCellWithReuseIdentifier: "Action")
         collectionView.register(LinkPreviewCell.self, forCellWithReuseIdentifier: "LinkPreview")
+        collectionView.dataSource = dataSource
     }
 }
 
 extension InfoViewController {
-    public override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 2
-    }
-
-    public override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if section == 0 {
-            if linkMetaData != nil {
-                return 2
-            }
-            return 1
-        }
-        return actions.count
-    }
-
-    public override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        if indexPath.section == 0 {
-            if indexPath.item == 0 {
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Description", for: indexPath) as! BodyDescriptionCell
-                cell.update(with: bodyInfo, showTitle: !showNavigationTitle)
-                return cell
-            }
-            if let linkMetaData {
-                let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LinkPreview", for: indexPath) as! LinkPreviewCell
-                cell.setMetaData(linkMetaData)
-                return cell
-            }
-            fatalError()
-        }
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Action", for: indexPath) as! BodyActionCell
-        let action = actions[indexPath.item]
-        cell.title = action.description
-        switch action {
-        case .alternateSurfaces:
-            cell.menu = menuForActions(alternativeSurfaceActions(selection: info))
-        case .mark:
-            cell.menu = menuForActions(markActions(selection: info))
-        default:
-            cell.menu = nil
-            break
-        }
-        cell.actionHandler = { [weak self] sourceView in
-            guard let self else { return }
-            self.handleAction(selection: self.info, action: action, sourceView: view)
-        }
-        return cell
-    }
-
     private struct Action {
         let title: String
         let action: () -> Void
