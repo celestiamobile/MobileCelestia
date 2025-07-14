@@ -11,7 +11,7 @@
 
 import Foundation
 
-public enum GameControllerThumbstick {
+public enum GameControllerThumbstick: Sendable {
     case left
     case right
 }

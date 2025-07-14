@@ -12,7 +12,7 @@
 import CelestiaFoundation
 import Foundation
 
-public enum GameControllerButton {
+public enum GameControllerButton: Sendable {
     case A
     case B
     case X
