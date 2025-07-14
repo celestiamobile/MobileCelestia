@@ -883,9 +883,10 @@ extension CelestiaInteractionController {
                         self.lastRotationQuaternion = currentQuat
                         return
                     }
+                    let relative = simd_normalize(currentQuat * simd_inverse(previousQuat))
                     self.lastRotationQuaternion = currentQuat
                     self.executor.runAsynchronously { core in
-                        core.simulation.activeObserver.rotate(from: previousQuat, to: currentQuat)
+                        core.simulation.observerQuaternion = relative * core.simulation.observerQuaternion
                     }
                 }
                 isObservingGyroscopeUpdates = true
