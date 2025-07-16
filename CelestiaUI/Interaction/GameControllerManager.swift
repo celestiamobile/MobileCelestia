@@ -187,8 +187,8 @@ public class GameControllerManager: @unchecked Sendable {
             let shouldInvertY = self.axisInversion?(.Y) ?? false
             Task { @MainActor in
                 await self.executor.run { core in
-                    core.joystickAxis(.X, amount: shouldInvertX ? -xValue : xValue)
-                    core.joystickAxis(.Y, amount: shouldInvertY ? -yValue : yValue)
+                    core.joystickAxis(thumbstick == .right ? .rightX : .X, amount: shouldInvertX ? -xValue : xValue)
+                    core.joystickAxis(thumbstick == .right ? .rightY : .Y, amount: shouldInvertY ? -yValue : yValue)
                 }
             }
         }
