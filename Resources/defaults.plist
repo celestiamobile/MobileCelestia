@@ -180,6 +180,8 @@
 		<integer>1</integer>
 		<key>enableFocusZooming</key>
 		<integer>1</integer>
+		<key>enableAlignCameraToSurfaceOnLand</key>
+		<integer>1</integer>
 		<key>showDwarfPlanets</key>
 		<integer>1</integer>
 		<key>showAsteroids</key>

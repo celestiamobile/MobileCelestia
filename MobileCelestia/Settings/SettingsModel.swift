@@ -90,6 +90,28 @@ private let advanceSettingExtraItems = [
             )
         )
     ),
+    SettingItem(
+        name: CelestiaString("Camera", comment: "Settings for camera control"),
+        associatedItem: .common(item:
+            AssociatedCommonItem(
+                title: CelestiaString("Camera", comment: "Settings for camera control"),
+                sections: [
+                    .init(
+                        header: nil,
+                        rows: [
+                            SettingItem(
+                                name: CelestiaString("Align to Surface on Landing", comment: "Option to align camera to surface when landing"),
+                                associatedItem: .checkmark(item:
+                                    AssociatedCheckmarkItem(name: CelestiaString("Align to Surface on Landing", comment: "Option to align camera to surface when landing"), key: "enableAlignCameraToSurfaceOnLand", representation: .switch)
+                                )
+                            ),
+                        ],
+                        footer: nil
+                    ),
+                ]
+            )
+        )
+    ),
     gameControllerItem,
 ]
 
