@@ -357,6 +357,8 @@ extension MainViewController {
             Task {
                 await executor.receive(.home)
             }
+        case .showSearch:
+            showSearch()
         case .showGoto:
             presentGoTo()
         case .centerSelection:

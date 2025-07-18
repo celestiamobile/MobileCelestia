@@ -23,6 +23,7 @@ enum MenuBarAction: Hashable, Equatable {
     case captureImage
     case showAbout
     case selectSol
+    case showSearch
     case showGoto
     case centerSelection
     case followSelection
@@ -92,6 +93,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         .selector(#selector(captureImage)),
         .selector(#selector(showAbout)),
         .selector(#selector(selectSol)),
+        .selector(#selector(showSearch)),
         .selector(#selector(showGoto)),
         .selector(#selector(centerSelection)),
         .selector(#selector(gotoSelection)),
@@ -405,6 +407,7 @@ extension AppDelegate {
 
         let selectMenu = createMenuItemGroup(identifierSuffix: "select", actions: [
             MenuActionContext(title: CelestiaString("Select Sol", comment: ""), action: #selector(selectSol), input: "h"),
+            MenuActionContext(title: CelestiaString("Search…", comment: "Menu item to start searching"), action: #selector(showSearch)),
             MenuActionContext(title: CelestiaString("Go to Object", comment: ""), action: #selector(showGoto)),
         ])
         builder.insertSibling(selectMenu, afterMenu: getInfoMenu.identifier)
@@ -570,6 +573,10 @@ extension AppDelegate {
 
     @objc private func getInfo() {
         NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.getInfo])
+    }
+
+    @objc private func showSearch() {
+        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.showSearch])
     }
 
     @objc private func showGoto() {
