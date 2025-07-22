@@ -936,6 +936,11 @@ Device Model: \(model)
     }
 
     private func hideBottomToolbar() async {
+        if #available(iOS 26, *) {
+            navigationController?.setToolbarHidden(true, animated: true)
+            setToolbarItems([], animated: true)
+            return
+        }
         guard let bottomToolbar else { return }
         await UIViewPropertyAnimator.runningPropertyAnimator(withDuration: GlobalConstants.transitionDuration, delay: 0, options: [.curveLinear]) {
             bottomToolbar.view.alpha = 0
@@ -946,6 +951,71 @@ Device Model: \(model)
     }
 
     private func presentActionToolbar(for actions: [BottomControlAction]) async {
+        if #available(iOS 26, *) {
+            func createBarButtonItem(_ action: BottomControlAction) -> UIBarButtonItem {
+                let item: UIBarButtonItem
+                switch action {
+                case let .toolbarAction(celestiaAction):
+                    item = TouchDownUpBarButtonItem(image: action.image, touchDown: { [weak self] in
+                        guard let self else { return }
+                        if let ac = celestiaAction as? CelestiaContinuousAction {
+                            self.executor.runAsynchronously { core in
+                                core.keyDown(ac.rawValue)
+                            }
+                        }
+                    }, touchUp: { [weak self] inside in
+                        guard let self else { return }
+                        if let ac = celestiaAction as? CelestiaAction {
+                            if inside {
+                                Task {
+                                    await self.executor.receive(ac)
+                                }
+                            }
+                        } else if let ac = celestiaAction as? CelestiaContinuousAction {
+                            self.executor.runAsynchronously { core in
+                                core.keyUp(ac.rawValue)
+                            }
+                        }
+                    })
+                case let .groupedActions(_, actions):
+                    item = UIBarButtonItem(image: action.image)
+                    item.menu = UIMenu(children: actions.map({ action in
+                        UIAction(title: action.title ?? "") { [weak self] _ in
+                            guard let self else { return }
+                            if let ac = action as? CelestiaAction {
+                                Task {
+                                    await self.executor.receive(ac)
+                                }
+                            } else if let ac = action as? CelestiaContinuousAction {
+                                self.executor.runAsynchronously { core in
+                                    core.keyDown(ac.rawValue)
+                                    core.keyUp(ac.rawValue)
+                                }
+                            }
+                        }
+                    }))
+                case .close:
+                    item = UIBarButtonItem(image: action.image, primaryAction: UIAction(handler: { [weak self] _ in
+                        Task {
+                            await self?.hideBottomToolbar()
+                        }
+                    }))
+                case let .custom(type):
+                    item = UIBarButtonItem(image: action.image, primaryAction: UIAction(handler: { [weak self] _ in
+                        switch type {
+                        case .showTimeSettings:
+                            self?.showTimeSettings()
+                        }
+                    }))
+                }
+                item.accessibilityLabel = action.accessibilityLabel
+                return item
+            }
+
+            setToolbarItems((actions + [.close]).map({ createBarButtonItem($0) }) + [.flexibleSpace()], animated: true)
+            navigationController?.setToolbarHidden(false, animated: true)
+            return
+        }
         let newController = BottomControlViewController(actions: actions) { [unowned self] in
             Task {
                 await self.hideBottomToolbar()
