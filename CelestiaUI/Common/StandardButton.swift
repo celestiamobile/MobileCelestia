@@ -18,8 +18,10 @@ open class StandardButton: UIButton {
         get { return super.isHighlighted }
         set {
             super.isHighlighted = newValue
-            UIView.animate(withDuration: animationDuration) {
-                self.alpha = newValue ? 0.38 : 1
+            if #unavailable(iOS 26, visionOS 26) {
+                UIView.animate(withDuration: animationDuration) {
+                    self.alpha = newValue ? 0.38 : 1
+                }
             }
         }
     }
