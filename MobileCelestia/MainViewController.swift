@@ -954,6 +954,11 @@ Device Model: \(model)
     }
 
     private func hideBottomToolbar() async {
+        if #available(iOS 26, *) {
+            celestiaController.navigationController?.setToolbarHidden(true, animated: true)
+            celestiaController.setToolbarItems([], animated: true)
+            return
+        }
         guard let bottomToolbar else { return }
         await UIViewPropertyAnimator.runningPropertyAnimator(withDuration: GlobalConstants.transitionDuration, delay: 0, options: [.curveLinear]) {
             bottomToolbar.view.alpha = 0
@@ -963,43 +968,102 @@ Device Model: \(model)
         self.bottomToolbarSizeConstraints = []
     }
 
-    private func presentActionToolbar(for actions: [BottomControlAction], overflowActions: [OverflowItem] = []) async {
-        let newController = BottomControlViewController(actions: actions, overflowActions: overflowActions) { [unowned self] in
+    private func handleToolbarActionTouchDown(action: ToolbarAction) {
+        if let ac = action as? CelestiaContinuousAction {
             Task {
-                await self.hideBottomToolbar()
-            }
-        }
-        newController.touchUpHandler = { [unowned self] action, inside in
-            if let ac = action as? CelestiaAction {
-                if inside {
-                    Task {
-                        await self.executor.receive(ac)
-                    }
-                }
-            } else if let ac = action as? CelestiaContinuousAction {
-                self.executor.runAsynchronously { core in
-                    core.keyUp(ac.rawValue)
-                }
-            }
-        }
-        newController.touchDownHandler = { [unowned self] action in
-            if let ac = action as? CelestiaContinuousAction {
-                self.executor.runAsynchronously { core in
+                await self.executor.run { core in
                     core.keyDown(ac.rawValue)
                 }
             }
         }
-        newController.customActionHandler = { [unowned self] type in
-            switch type {
-            case .showTimeSettings:
-                self.showTimeSettings()
+    }
+
+    private func handleToolbarActionTouchUp(inside: Bool, action: ToolbarAction) {
+        if let ac = action as? CelestiaAction {
+            if inside {
+                Task {
+                    await executor.receive(ac)
+                }
+            }
+        } else if let ac = action as? CelestiaContinuousAction {
+            Task {
+                await executor.run { core in
+                    core.keyUp(ac.rawValue)
+                }
             }
         }
-        #if targetEnvironment(macCatalyst)
-        newController.touchBarActionConversionBlock = { (identifier) in
-            return CelestiaAction(identifier)
+    }
+
+    private func handleToolbarCustomAction(type: BottomControlAction.CustomActionType) {
+        switch type {
+        case .showTimeSettings:
+            showTimeSettings()
         }
-        #endif
+    }
+
+    private func presentActionToolbar(for actions: [BottomControlAction], overflowActions: [OverflowItem] = []) async {
+        if #available(iOS 26, *) {
+            func createBarButtonItem(_ action: BottomControlViewController.Item) -> UIBarButtonItem {
+                let item: UIBarButtonItem
+                switch action {
+                case let .toolbarAction(celestiaAction):
+                    item = TouchDownUpBarButtonItem(image: action.image, touchDown: { [weak self] in
+                        guard let self else { return }
+                        self.handleToolbarActionTouchDown(action: celestiaAction)
+                    }, touchUp: { [weak self] inside in
+                        guard let self else { return }
+                        self.handleToolbarActionTouchUp(inside: inside, action: celestiaAction)
+                    })
+                case .overflow:
+                    item = UIBarButtonItem(image: action.image, menu: UIMenu(children: overflowActions.map({ item in
+                        UIAction(title: item.title) { [weak self] _ in
+                            guard let self else { return }
+                            switch item.action {
+                            case let .custom(type):
+                                self.handleToolbarCustomAction(type: type)
+                            case let .toolbarAction(action):
+                                self.handleToolbarActionTouchDown(action: action)
+                                self.handleToolbarActionTouchUp(inside: true, action: action)
+                            }
+                        }
+                    }) + [UIAction(title: CelestiaString("Close", comment: ""), handler: { [weak self] _ in
+                        guard let self else { return }
+                        Task {
+                            await self.hideBottomToolbar()
+                        }
+                    })]))
+                case let .custom(type):
+                    item = UIBarButtonItem(image: action.image, primaryAction: UIAction(handler: { [weak self] _ in
+                        guard let self else { return }
+                        self.handleToolbarCustomAction(type: type)
+                    }))
+                }
+                item.accessibilityLabel = action.accessibilityLabel
+                return item
+            }
+
+            celestiaController.setToolbarItems((actions.map { BottomControlViewController.Item($0) } + [.overflow]).map({ createBarButtonItem($0) }) + [.flexibleSpace()], animated: true)
+            celestiaController.navigationController?.setToolbarHidden(false, animated: true)
+            return
+        }
+        let newController = BottomControlViewController(actions: actions, overflowActions: overflowActions) { [weak self] in
+            guard let self else { return }
+            Task {
+                await self.hideBottomToolbar()
+            }
+        }
+        newController.touchUpHandler = { [weak self] action, inside in
+            guard let self else { return }
+            self.handleToolbarActionTouchUp(inside: inside, action: action)
+        }
+        newController.touchDownHandler = { [weak self] action in
+            guard let self else { return }
+            self.handleToolbarActionTouchDown(action: action)
+        }
+        newController.customActionHandler = { [weak self] type in
+            guard let self else { return }
+            self.handleToolbarCustomAction(type: type)
+        }
 
         await hideBottomToolbar()
 
@@ -1421,23 +1485,6 @@ extension CelestiaAction: ToolbarAction {
 }
 
 extension CelestiaContinuousAction: ToolbarAction {}
-
-#if targetEnvironment(macCatalyst)
-extension CelestiaAction: ToolbarTouchBarAction {
-    var touchBarImage: UIImage? {
-        return image
-    }
-
-    var touchBarItemIdentifier: NSTouchBarItem.Identifier {
-        return NSTouchBarItem.Identifier(rawValue: "\(rawValue)")
-    }
-
-    init?(_ touchBarItemIdentifier: NSTouchBarItem.Identifier) {
-        guard let rawValue = Int8(touchBarItemIdentifier.rawValue) else { return nil }
-        self.init(rawValue: rawValue)
-    }
-}
-#endif
 
 extension MainViewController: @preconcurrency MFMailComposeViewControllerDelegate {
     func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
