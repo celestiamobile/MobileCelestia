@@ -159,9 +159,6 @@ final class CelestiaControlView: UIView {
         }
 
         backgroundColor = .clear
-        clipsToBounds = true
-        layer.cornerCurve = .continuous
-        layer.cornerRadius = Constants.cornerRadius
 
         let buttons = items.map { item in
             return ControlButton(button: item) { [weak self] action in
@@ -179,8 +176,18 @@ final class CelestiaControlView: UIView {
             }
         }
 
-        let style: UIBlurEffect.Style = .regular
-        let visualBackground = UIVisualEffectView(effect: UIBlurEffect(style: style))
+        let effect: UIVisualEffect
+        if #available(iOS 26, *) {
+            let glass = UIGlassEffect()
+            glass.isInteractive = true
+            effect = glass
+        } else {
+            effect = UIBlurEffect(style: .regular)
+            clipsToBounds = true
+            layer.cornerCurve = .continuous
+            layer.cornerRadius = Constants.cornerRadius
+        }
+        let visualBackground = UIVisualEffectView(effect: effect)
         visualBackground.translatesAutoresizingMaskIntoConstraints = false
         addSubview(visualBackground)
         NSLayoutConstraint.activate([

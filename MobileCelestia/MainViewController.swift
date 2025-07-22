@@ -911,7 +911,9 @@ Device Model: \(model)
 
     private func presentScriptToolbar() {
         Task {
-            await presentActionToolbar(for: [CelestiaAction.playpause, .cancelScript].map { .toolbarAction($0) })
+            await presentActionToolbar(for: [
+                [.toolbarAction(CelestiaAction.playpause), .toolbarAction(CelestiaAction.cancelScript)],
+            ])
         }
     }
 
@@ -931,7 +933,11 @@ Device Model: \(model)
             ]
         }
         Task {
-            await presentActionToolbar(for: (layoutDirectionDependentActions + [CelestiaAction.reverse]).map { .toolbarAction($0) } + [BottomControlAction.custom(type: .showTimeSettings)])
+            await presentActionToolbar(for: [
+                layoutDirectionDependentActions.map { .toolbarAction($0) },
+                [.toolbarAction(CelestiaAction.reverse)],
+                [.custom(type: .showTimeSettings)],
+            ])
         }
     }
 
@@ -950,7 +956,7 @@ Device Model: \(model)
         self.bottomToolbarSizeConstraints = []
     }
 
-    private func presentActionToolbar(for actions: [BottomControlAction]) async {
+    private func presentActionToolbar(for actions: [[BottomControlAction]]) async {
         if #available(iOS 26, *) {
             func createBarButtonItem(_ action: BottomControlAction) -> UIBarButtonItem {
                 let item: UIBarButtonItem
@@ -977,8 +983,8 @@ Device Model: \(model)
                             }
                         }
                     })
-                case let .groupedActions(_, actions):
-                    item = UIBarButtonItem(image: action.image)
+                case let .groupedActions(image, _, actions):
+                    item = UIBarButtonItem(image: image)
                     item.menu = UIMenu(children: actions.map({ action in
                         UIAction(title: action.title ?? "") { [weak self] _ in
                             guard let self else { return }
@@ -1012,11 +1018,16 @@ Device Model: \(model)
                 return item
             }
 
-            setToolbarItems((actions + [.close]).map({ createBarButtonItem($0) }) + [.flexibleSpace()], animated: true)
+            func createBarButtonItems(_ actions: [BottomControlAction]) -> [UIBarButtonItem] {
+                let items = actions.map { createBarButtonItem($0) }
+                return items
+            }
+
+            setToolbarItems((actions + [[.close]]).map({ createBarButtonItems($0) }).joined(separator: [.fixedSpace()]) + [.flexibleSpace()], animated: true)
             navigationController?.setToolbarHidden(false, animated: true)
             return
         }
-        let newController = BottomControlViewController(actions: actions) { [unowned self] in
+        let newController = BottomControlViewController(actions: actions.flatMap(\.self)) { [unowned self] in
             Task {
                 await self.hideBottomToolbar()
             }
@@ -1133,17 +1144,18 @@ Device Model: \(model)
         }
 
         Task {
-            await presentActionToolbar(for: layoutDirectionDependentActions.map { .toolbarAction($0) } + [
-                .toolbarAction(CelestiaAction.stop),
-                .toolbarAction(CelestiaAction.reverseSpeed),
-                .groupedActions(image: UIImage(systemName: "slider.horizontal.3"), accessibilityLabel: CelestiaString("Speed Presets", comment: "Action to show a list of presets in speed"), actions: [
+            await presentActionToolbar(for: [
+                layoutDirectionDependentActions.map { .toolbarAction($0) },
+                [.toolbarAction(CelestiaAction.stop)],
+                [.toolbarAction(CelestiaAction.reverseSpeed)],
+                [.groupedActions(image: UIImage(systemName: "slider.horizontal.3"), accessibilityLabel: CelestiaString("Speed Presets", comment: "Action to show a list of presets in speed"), actions: [
                     CelestiaContinuousAction.f2,
                     CelestiaContinuousAction.f3,
                     CelestiaContinuousAction.f4,
                     CelestiaContinuousAction.f5,
                     CelestiaContinuousAction.f6,
                     CelestiaContinuousAction.f7,
-                ])
+                ])]
             ])
         }
     }
