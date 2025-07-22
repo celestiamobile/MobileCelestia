@@ -15,14 +15,6 @@ protocol ToolbarAction {
     var title: String? { get }
 }
 
-#if targetEnvironment(macCatalyst)
-protocol ToolbarTouchBarAction: ToolbarAction {
-    var touchBarImage: UIImage? { get }
-    var touchBarItemIdentifier: NSTouchBarItem.Identifier { get }
-    init?(_ touchBarItemIdentifier: NSTouchBarItem.Identifier)
-}
-#endif
-
 extension ToolbarAction {
     var title: String? { return nil }
 }

@@ -73,11 +73,6 @@ class BottomControlViewController: UIViewController {
     private let actions: [Item]
     private let overflowActions: [OverflowItem]
 
-    #if targetEnvironment(macCatalyst)
-    private var touchBarActions: [ToolbarTouchBarAction]
-    var touchBarActionConversionBlock: ((NSTouchBarItem.Identifier) -> ToolbarTouchBarAction?)?
-    #endif
-
     private var selectedAction: ToolbarAction?
     private var hideAction: (() -> Void)?
 
@@ -88,14 +83,6 @@ class BottomControlViewController: UIViewController {
     init(actions: [BottomControlAction], overflowActions: [OverflowItem] = [], hideAction: (() -> Void)?) {
         self.actions = actions.map { Item($0) } + [.overflow]
         self.overflowActions = overflowActions
-        #if targetEnvironment(macCatalyst)
-        self.touchBarActions = (actions + overflowActions.map { $0.action }).compactMap { action in
-            if case .toolbarAction(let ac) = action, let ttba = ac as? ToolbarTouchBarAction {
-                return ttba
-            }
-            return nil
-        }
-        #endif
         self.hideAction = hideAction
         super.init(nibName: nil, bundle: nil)
     }
@@ -250,43 +237,6 @@ private extension BottomControlViewController {
         collectionView.dataSource = self
     }
 }
-
-#if targetEnvironment(macCatalyst)
-extension BottomControlViewController: NSTouchBarDelegate {
-    private var closeTouchBarIdentifier: NSTouchBarItem.Identifier {
-        return NSTouchBarItem.Identifier(rawValue: "close")
-    }
-
-    override func makeTouchBar() -> NSTouchBar? {
-        guard touchBarActions.count > 0 else { return nil }
-        let tbar = NSTouchBar()
-        tbar.defaultItemIdentifiers = touchBarActions.map { $0.touchBarItemIdentifier } + [closeTouchBarIdentifier]
-        tbar.delegate = self
-        return tbar
-    }
-
-    func touchBar(_ touchBar: NSTouchBar, makeItemForIdentifier identifier: NSTouchBarItem.Identifier) -> NSTouchBarItem? {
-        if identifier == closeTouchBarIdentifier {
-            return NSButtonTouchBarItem(identifier: identifier, image: UIImage(systemName: "xmark.circle.fill") ?? UIImage(), target: self, action: #selector(requestClose))
-        }
-        guard let action = touchBarActionConversionBlock?(identifier) else { return nil }
-        if let image = action.touchBarImage {
-            return NSButtonTouchBarItem(identifier: identifier, image: image, target: self, action: #selector(touchBarButtonItemClicked(_:)))
-        }
-        return NSButtonTouchBarItem(identifier: identifier, title: action.title ?? "", target: self, action: #selector(touchBarButtonItemClicked(_:)))
-    }
-
-    @objc private func touchBarButtonItemClicked(_ sender: NSTouchBarItem) {
-        guard let action = touchBarActionConversionBlock?(sender.identifier) else { return }
-        touchUpHandler?(action, true)
-    }
-
-    @objc private func requestClose() {
-        hideAction?()
-        hideAction = nil
-    }
-}
-#endif
 
 class BottomActionLayout: UICollectionViewFlowLayout {
     private let baseItemSize = CGSize(width: GlobalConstants.bottomControlViewDimension, height: GlobalConstants.bottomControlViewDimension)
