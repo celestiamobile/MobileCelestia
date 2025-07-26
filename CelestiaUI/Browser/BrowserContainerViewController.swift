@@ -265,15 +265,25 @@ private extension BrowserContainerViewController {
         ]
 
         let prefixes = ["SB", "S", "E", "Irr", "Neb", "Glob", "Open cluster"]
+        let objectTypeMapping: [DSOType: String]  = [
+            .globular: "Glob",
+            .openCluster: "Open cluster",
+            .nebula: "Neb",
+        ]
 
         var tempDict = [String: [String: BrowserItem]]()
 
         let catalog = universe.dsoCatalog
-        catalog.forEach({ (dso) in
-            let matchingType = prefixes.first(where: {dso.type.hasPrefix($0)}) ?? "Unknown"
+        for dso in catalog {
+            let matchingType: String
+            if let type = objectTypeMapping[dso.objectType] {
+                matchingType = type
+            } else {
+                matchingType = prefixes.first(where: { dso.type.hasPrefix($0) }) ?? "Unknown"
+            }
             let name = catalog.dsoName(dso)
             tempDict[matchingType, default: [:]][name] = BrowserItem(name: name, catEntry: dso, provider: universe)
-        })
+        }
 
         let results = prefixes.reduce(into: [String : BrowserItem]()) { partialResult, prefix in
             let info = typeMap[prefix]!
