@@ -41,6 +41,11 @@ protocol CelestiaControlViewDelegate: AnyObject {
 }
 
 class ControlButton: ImageButtonView<ControlButton.Configuration> {
+    private enum Constants {
+        static let buttonSize: CGFloat = 48
+        static let buttonPadding: CGFloat = 8
+    }
+
     struct Configuration: ImageProvider {
         var button: CelestiaControlButton
         var tap: ((CelestiaControlAction) -> Void)?
@@ -72,6 +77,7 @@ class ControlButton: ImageButtonView<ControlButton.Configuration> {
             uiButton.contentHorizontalAlignment = .fill
             uiButton.contentVerticalAlignment = .fill
             uiButton.tintColor = .secondaryLabel
+            uiButton.imageEdgeInsets = UIEdgeInsets(top: Constants.buttonPadding, left: Constants.buttonPadding, bottom: Constants.buttonPadding, right: Constants.buttonPadding)
             switch button {
             case .pressAndHold(_, _, let accessibilityLabel):
                 uiButton.accessibilityLabel = accessibilityLabel
@@ -81,7 +87,7 @@ class ControlButton: ImageButtonView<ControlButton.Configuration> {
                 uiButton.accessibilityLabel = accessibilityLabel
             }
             return uiButton
-        }(), boundingBoxSize: CGSize(width: 40, height: 40), configurationBuilder: Configuration(button: button, tap: tap, pressStart: pressStart, pressEnd: pressEnd, toggle: toggle))
+        }(), boundingBoxSize: CGSize(width: Constants.buttonSize, height: Constants.buttonSize), configurationBuilder: Configuration(button: button, tap: tap, pressStart: pressStart, pressEnd: pressEnd, toggle: toggle))
     }
 
     override func configurationUpdated(_ configuration: Configuration, button: UIButton) {
@@ -134,8 +140,8 @@ class ControlButton: ImageButtonView<ControlButton.Configuration> {
 
 final class CelestiaControlView: UIView {
     private enum Constants {
-        static let controlViewMargin: CGFloat = 8
-        static let controlViewSpacing: CGFloat = 6
+        static let controlViewMarginVertical: CGFloat = 4
+        static let controlViewSpacing: CGFloat = 0
         static let cornerRadius: CGFloat = 8
     }
 
@@ -191,10 +197,10 @@ final class CelestiaControlView: UIView {
 
         addSubview(stackView)
         NSLayoutConstraint.activate([
-            stackView.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.controlViewMargin),
-            stackView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Constants.controlViewMargin),
-            stackView.topAnchor.constraint(equalTo: topAnchor, constant: Constants.controlViewMargin),
-            stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Constants.controlViewMargin)
+            stackView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            stackView.topAnchor.constraint(equalTo: topAnchor, constant: Constants.controlViewMarginVertical),
+            stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Constants.controlViewMarginVertical)
         ])
     }
 

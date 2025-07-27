@@ -21,95 +21,43 @@ protocol ToolbarCell: AnyObject {
     var touchUpHandler: ((UIControl, Bool) -> Void)? { get set }
 }
 
-class ToolbarImageButton: ImageButtonView<ToolbarImageButton.Configuration> {
-    struct Configuration: ImageProvider {
-        var image: UIImage?
-        var accessibilityLabel: String?
-        var touchDownHandler: ((UIControl) -> Void)?
-        var touchUpHandler: ((UIControl, Bool) -> Void)?
-
-        var shouldScaleOnMacCatalyst: Bool {
-            return true
-        }
-
-        func provideImage() -> UIImage? {
-            return image
-        }
-    }
-
-    private var areActionsSetUp = false
-
-    init(image: UIImage? = nil, accessibilityLabel: String? = nil, touchDownHandler: ((UIControl) -> Void)?, touchUpHandler: ((UIControl, Bool) -> Void)?) {
-        super.init(buttonBuilder: {
-            let button = StandardButton()
-            button.imageView?.contentMode = .scaleAspectFit
-            button.contentHorizontalAlignment = .fill
-            button.contentVerticalAlignment = .fill
-            button.tintColor = .label
-            return button
-        }(), boundingBoxSize: CGSize(width: GlobalConstants.bottomControlViewItemDimension, height: GlobalConstants.bottomControlViewItemDimension), configurationBuilder: Configuration(image: image, accessibilityLabel: accessibilityLabel, touchDownHandler: touchDownHandler, touchUpHandler: touchUpHandler))
-    }
-
-    override func configurationUpdated(_ configuration: Configuration, button: UIButton) {
-        super.configurationUpdated(configuration, button: button)
-        if !areActionsSetUp {
-            button.addTarget(self, action: #selector(touchDown(_:)), for: .touchDown)
-            button.addTarget(self, action: #selector(touchUpInside(_:)), for: .touchUpInside)
-            button.addTarget(self, action: #selector(touchUpOutside(_:)), for: .touchUpOutside)
-            button.addTarget(self, action: #selector(touchCancelled(_:)), for: .touchCancel)
-            areActionsSetUp = true
-        }
-        button.accessibilityLabel = configuration.accessibilityLabel
-    }
-
-    @objc private func touchDown(_ sender: UIButton) {
-        configuration.configuration.touchDownHandler?(sender)
-    }
-
-    @objc private func touchUpInside(_ sender: UIButton) {
-        configuration.configuration.touchUpHandler?(sender, true)
-    }
-
-
-    @objc private func touchUpOutside(_ sender: UIButton) {
-        configuration.configuration.touchUpHandler?(sender, false)
-    }
-
-    @objc private func touchCancelled(_ sender: UIButton) {
-        configuration.configuration.touchUpHandler?(sender, false)
-    }
-}
-
 class ToolbarImageButtonCell: UICollectionViewCell, ToolbarCell {
     var itemTitle: String?
-    var itemImage: UIImage? { didSet { button.configuration.configuration.image = itemImage } }
-    var itemAccessibilityLabel: String? { didSet { button.configuration.configuration.accessibilityLabel = itemAccessibilityLabel } }
+    var itemImage: UIImage? { didSet { button.setImage(itemImage, for: .normal) } }
+    var itemAccessibilityLabel: String? { didSet { button.accessibilityLabel = itemAccessibilityLabel } }
     var touchDownHandler: ((UIControl) -> Void)?
     var touchUpHandler: ((UIControl, Bool) -> Void)?
 
-    private lazy var button = ToolbarImageButton { [weak self] button in
-        self?.touchDownHandler?(button)
-    } touchUpHandler: { [weak self] button, inside in
-        self?.touchUpHandler?(button, inside)
-    }
-
+    private lazy var button = StandardButton()
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        setup()
+        setUp()
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private func setup() {
+    private func setUp() {
+        button.imageView?.contentMode = .scaleAspectFit
+        button.contentHorizontalAlignment = .fill
+        button.contentVerticalAlignment = .fill
+        button.tintColor = .label
+        let padding = GlobalConstants.preferredUIElementScaling(for: traitCollection) * GlobalConstants.bottomControlViewItemPadding
+        button.imageEdgeInsets = UIEdgeInsets(top: padding, left: padding, bottom: padding, right: padding)
         contentView.addSubview(button)
         button.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
             button.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
             button.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            button.widthAnchor.constraint(equalTo: contentView.widthAnchor),
+            button.heightAnchor.constraint(equalTo: contentView.heightAnchor),
         ])
+        button.addTarget(self, action: #selector(touchDown(_:)), for: .touchDown)
+        button.addTarget(self, action: #selector(touchUpInside(_:)), for: .touchUpInside)
+        button.addTarget(self, action: #selector(touchUpOutside(_:)), for: .touchUpOutside)
+        button.addTarget(self, action: #selector(touchCancelled(_:)), for: .touchCancel)
     }
 
     @objc private func touchDown(_ sender: UIButton) {
@@ -119,7 +67,6 @@ class ToolbarImageButtonCell: UICollectionViewCell, ToolbarCell {
     @objc private func touchUpInside(_ sender: UIButton) {
         touchUpHandler?(sender, true)
     }
-
 
     @objc private func touchUpOutside(_ sender: UIButton) {
         touchUpHandler?(sender, false)

@@ -17,10 +17,11 @@ extension GlobalConstants {
 
     static let listItemSeparatorInsetLeading: CGFloat = 16
 
-    static let bottomControlViewItemDimension: CGFloat = 52
+    static let bottomControlViewItemDimension: CGFloat = 48
+    static let bottomControlViewItemPadding: CGFloat = 10
     static let bottomControlViewMarginHorizontal: CGFloat = 4
-    static let bottomControlViewMarginVertical: CGFloat = 2
-    static let bottomControlViewDimension: CGFloat = 60
+    static let bottomControlViewMarginVertical: CGFloat = 0
+    static let bottomControlViewDimension: CGFloat = 48
     static let bottomControlContainerCornerRadius: CGFloat = 8
 
     #if targetEnvironment(macCatalyst)
