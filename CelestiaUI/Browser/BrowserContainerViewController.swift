@@ -264,11 +264,11 @@ private extension BrowserContainerViewController {
             }
         }
 
-        let barredSpiralItems = SubItem(name: CelestiaString("Barred Spiral", comment: ""), items: [:])
-        let spiralItems = SubItem(name: CelestiaString("Spiral", comment: ""), items: [:])
-        let ellipticalItems = SubItem(name: CelestiaString("Elliptical", comment: ""), items: [:])
-        let lenticularItems = SubItem(name: CelestiaString("Lenticular", comment: ""), items: [:])
-        let irregularItems = SubItem(name: CelestiaString("Irregular", comment: ""), items: [:])
+        let barredSpiralItems = SubItem(name: CelestiaString("Barred Spiral Galaxies", comment: ""), items: [:])
+        let spiralItems = SubItem(name: CelestiaString("Spiral Galaxies", comment: ""), items: [:])
+        let ellipticalItems = SubItem(name: CelestiaString("Elliptical Galaxies", comment: ""), items: [:])
+        let lenticularItems = SubItem(name: CelestiaString("Lenticular Galaxies", comment: ""), items: [:])
+        let irregularItems = SubItem(name: CelestiaString("Irregular Galaxies", comment: ""), items: [:])
         let galaxyItems = [
             "SBa": barredSpiralItems,
             "SBb": barredSpiralItems,
@@ -287,14 +287,14 @@ private extension BrowserContainerViewController {
             "E7": ellipticalItems,
             "Irr": irregularItems,
         ]
-        let emissionItems = SubItem(name: CelestiaString("Emission", comment: ""), items: [:])
-        let reflectionItems = SubItem(name: CelestiaString("Reflection", comment: ""), items: [:])
-        let darkItems = SubItem(name: CelestiaString("Dark", comment: ""), items: [:])
-        let planetaryItems = SubItem(name: CelestiaString("Planetary", comment: ""), items: [:])
-        let supernovaRemnantItems = SubItem(name: CelestiaString("Supernova Remnant", comment: ""), items: [:])
-        let hiiRegionItems = SubItem(name: CelestiaString("H II Region", comment: ""), items: [:])
-        let protoplanetaryItems = SubItem(name: CelestiaString("Protoplanetary", comment: ""), items: [:])
-        let unknownItems = SubItem(name: CelestiaString("Unknown", comment: ""), items: [:])
+        let emissionItems = SubItem(name: CelestiaString("Emission Nebulae", comment: ""), items: [:])
+        let reflectionItems = SubItem(name: CelestiaString("Reflection Nebulae", comment: ""), items: [:])
+        let darkItems = SubItem(name: CelestiaString("Dark Nebulae", comment: ""), items: [:])
+        let planetaryItems = SubItem(name: CelestiaString("Planetary Nebulae", comment: ""), items: [:])
+        let supernovaRemnantItems = SubItem(name: CelestiaString("Supernova Remnants", comment: ""), items: [:])
+        let hiiRegionItems = SubItem(name: CelestiaString("H II Regions", comment: ""), items: [:])
+        let protoplanetaryItems = SubItem(name: CelestiaString("Protoplanetary Nebulae", comment: ""), items: [:])
+        let unknownItems = SubItem(name: CelestiaString("Unknown Nebulae", comment: ""), items: [:])
         let nebulaItems = [
             "Emission": emissionItems,
             "Reflection": reflectionItems,
