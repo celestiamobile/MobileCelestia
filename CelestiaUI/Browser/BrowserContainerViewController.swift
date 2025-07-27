@@ -332,7 +332,7 @@ private extension BrowserContainerViewController {
         }
         var results = [BrowserItemKeyValuePair]()
         var galaxyBrowserItems = [BrowserItemKeyValuePair]()
-        for subItem in [barredSpiralItems, spiralItems, ellipticalItems, lenticularItems] {
+        for subItem in [barredSpiralItems, spiralItems, ellipticalItems, lenticularItems, irregularItems] {
             if subItem.items.isEmpty { continue }
             galaxyBrowserItems.append(BrowserItemKeyValuePair(name: subItem.name, browserItem: BrowserItem(name: subItem.name, children: subItem.items)))
         }
