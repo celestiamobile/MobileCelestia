@@ -253,45 +253,109 @@ private extension BrowserContainerViewController {
         let universe = core.simulation.universe
         let galaxyCategory = CategoryInfo(category: "56FF5D9F-44F1-CE1D-0615-5655E3C851EF", isLeaf: true)
         let nebulaCategory = CategoryInfo(category: "3F7546F9-D225-5194-A228-C63281B5C6FD", isLeaf: true)
-        let typeMap: [String: (name: String, categoryInfo: CategoryInfo?)] = [
-            "SB": (CelestiaString("Galaxies (Barred Spiral)", comment: ""), galaxyCategory),
-            "S": (CelestiaString("Galaxies (Spiral)", comment: ""), galaxyCategory),
-            "E": (CelestiaString("Galaxies (Elliptical)", comment: ""), galaxyCategory),
-            "Irr": (CelestiaString("Galaxies (Irregular)", comment: ""), galaxyCategory),
-            "Neb": (CelestiaString("Nebulae", comment: ""), nebulaCategory),
-            "Glob": (CelestiaString("Globulars", comment: ""), nil),
-            "Open cluster": (CelestiaString("Open Clusters", comment: ""), nil),
-            "Unknown": (CelestiaString("Unknown", comment: ""), nil),
+
+        class SubItem {
+            let name: String
+            var items: [String: BrowserItem]
+
+            init(name: String, items: [String: BrowserItem]) {
+                self.name = name
+                self.items = items
+            }
+        }
+
+        let barredSpiralItems = SubItem(name: CelestiaString("Barred Spiral", comment: ""), items: [:])
+        let spiralItems = SubItem(name: CelestiaString("Spiral", comment: ""), items: [:])
+        let ellipticalItems = SubItem(name: CelestiaString("Elliptical", comment: ""), items: [:])
+        let lenticularItems = SubItem(name: CelestiaString("Lenticular", comment: ""), items: [:])
+        let irregularItems = SubItem(name: CelestiaString("Irregular", comment: ""), items: [:])
+        let galaxyItems = [
+            "SBa": barredSpiralItems,
+            "SBb": barredSpiralItems,
+            "SBc": barredSpiralItems,
+            "Sa": spiralItems,
+            "Sb": spiralItems,
+            "Sc": spiralItems,
+            "S0": lenticularItems,
+            "E0": ellipticalItems,
+            "E1": ellipticalItems,
+            "E2": ellipticalItems,
+            "E3": ellipticalItems,
+            "E4": ellipticalItems,
+            "E5": ellipticalItems,
+            "E6": ellipticalItems,
+            "E7": ellipticalItems,
+            "Irr": irregularItems,
+        ]
+        let emissionItems = SubItem(name: CelestiaString("Emission", comment: ""), items: [:])
+        let reflectionItems = SubItem(name: CelestiaString("Reflection", comment: ""), items: [:])
+        let darkItems = SubItem(name: CelestiaString("Dark", comment: ""), items: [:])
+        let planetaryItems = SubItem(name: CelestiaString("Planetary", comment: ""), items: [:])
+        let supernovaRemnantItems = SubItem(name: CelestiaString("Supernova Remnant", comment: ""), items: [:])
+        let hiiRegionItems = SubItem(name: CelestiaString("H II Region", comment: ""), items: [:])
+        let protoplanetaryItems = SubItem(name: CelestiaString("Protoplanetary", comment: ""), items: [:])
+        let unknownItems = SubItem(name: CelestiaString("Unknown", comment: ""), items: [:])
+        let nebulaItems = [
+            "Emission": emissionItems,
+            "Reflection": reflectionItems,
+            "Dark": darkItems,
+            "Planetary": planetaryItems,
+            "Supernova Remnant": supernovaRemnantItems,
+            "HII_Region": hiiRegionItems,
+            "Protoplanetary": protoplanetaryItems,
+            " ": unknownItems,
         ]
 
-        let prefixes = ["SB", "S", "E", "Irr", "Neb", "Glob", "Open cluster"]
-        let objectTypeMapping: [DSOType: String]  = [
-            .globular: "Glob",
-            .openCluster: "Open cluster",
-            .nebula: "Neb",
-        ]
-
-        var tempDict = [String: [String: BrowserItem]]()
+        var globularItems = [String: BrowserItem]()
+        var openClusterItems = [String: BrowserItem]()
 
         let catalog = universe.dsoCatalog
         for dso in catalog {
-            let matchingType: String
-            if let type = objectTypeMapping[dso.objectType] {
-                matchingType = type
-            } else {
-                matchingType = prefixes.first(where: { dso.type.hasPrefix($0) }) ?? "Unknown"
-            }
             let name = catalog.dsoName(dso)
-            tempDict[matchingType, default: [:]][name] = BrowserItem(name: name, catEntry: dso, provider: universe)
+
+            switch dso.objectType {
+            case .galaxy:
+                if let subItem = galaxyItems[dso.type] {
+                    subItem.items[name] = BrowserItem(name: name, catEntry: dso, provider: universe)
+                }
+            case .globular:
+                globularItems[name] = BrowserItem(name: name, catEntry: dso, provider: universe)
+            case .nebula:
+                if let subItem = nebulaItems[dso.type] {
+                    subItem.items[name] = BrowserItem(name: name, catEntry: dso, provider: universe)
+                }
+            case .openCluster:
+                openClusterItems[name] = BrowserItem(name: name, catEntry: dso, provider: universe)
+            @unknown default:
+                continue
+            }
+        }
+        var results = [BrowserItemKeyValuePair]()
+        var galaxyBrowserItems = [BrowserItemKeyValuePair]()
+        for subItem in [barredSpiralItems, spiralItems, ellipticalItems, lenticularItems] {
+            if subItem.items.isEmpty { continue }
+            galaxyBrowserItems.append(BrowserItemKeyValuePair(name: subItem.name, browserItem: BrowserItem(name: subItem.name, children: subItem.items)))
         }
 
-        let results = prefixes.reduce(into: [String : BrowserItem]()) { partialResult, prefix in
-            let info = typeMap[prefix]!
-            let item = BrowserPredefinedItem(name: info.name, children: tempDict[prefix] ?? [:])
-            item.categoryInfo = info.categoryInfo
-            partialResult[info.name] = item
+        let galaxy = BrowserPredefinedItem(name: CelestiaString("Galaxies", comment: ""), orderedChildren: galaxyBrowserItems)
+        galaxy.categoryInfo = galaxyCategory
+        results.append(BrowserItemKeyValuePair(name: CelestiaString("Galaxies", comment: ""), browserItem: galaxy))
+
+        results.append(BrowserItemKeyValuePair(name: CelestiaString("Globulars", comment: ""), browserItem: BrowserItem(name: CelestiaString("Globulars", comment: ""), children: globularItems)))
+
+        var nebulaBrowserItems: [BrowserItemKeyValuePair] = []
+        for subItem in [emissionItems, reflectionItems, darkItems, planetaryItems, supernovaRemnantItems, hiiRegionItems, protoplanetaryItems, unknownItems] {
+            if subItem.items.isEmpty { continue }
+            nebulaBrowserItems.append(BrowserItemKeyValuePair(name: subItem.name, browserItem: BrowserItem(name: subItem.name, children: subItem.items)))
         }
-        return BrowserItem(name: CelestiaString("Deep Sky Objects", comment: ""), alternativeName: CelestiaString("DSOs", comment: "Tab for deep sky objects in Star Browser"), children: results)
+
+        let nebula = BrowserPredefinedItem(name: CelestiaString("Nebulae", comment: ""), orderedChildren: nebulaBrowserItems)
+        nebula.categoryInfo = nebulaCategory
+        results.append(BrowserItemKeyValuePair(name: CelestiaString("Nebulae", comment: ""), browserItem: nebula))
+
+        results.append(BrowserItemKeyValuePair(name: CelestiaString("Open Clusters", comment: ""), browserItem: BrowserItem(name: CelestiaString("Open Clusters", comment: ""), children: openClusterItems)))
+
+        return BrowserItem(name: CelestiaString("Deep Sky Objects", comment: ""), alternativeName: CelestiaString("DSOs", comment: "Tab for deep sky objects in Star Browser"), orderedChildren: results)
     }
 
     nonisolated func createStarBrowserRootItem(kind: StarBrowserKind, title: String, ordered: Bool, core: AppCore, category: CategoryInfo?) -> BrowserItem {
