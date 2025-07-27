@@ -171,7 +171,7 @@
 		<key>scriptSystemAccessPolicy</key>
 		<integer>0</integer>
 		<key>starColors</key>
-		<integer>1</integer>
+		<integer>2</integer>
 		<key>tintSaturation</key>
 		<real>0.5</real>
 		<key>enableReverseWheel</key>
