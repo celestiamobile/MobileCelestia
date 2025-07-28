@@ -18,7 +18,7 @@ enum BottomControlAction {
     }
 
     case toolbarAction(_ toolbarAction: ToolbarAction)
-    case groupedActions(accessibilityLabel: String, actions: [ToolbarAction])
+    case groupedActions(image: UIImage?, accessibilityLabel: String, actions: [ToolbarAction])
     case close
     case custom(type: CustomActionType)
 
@@ -26,8 +26,8 @@ enum BottomControlAction {
         switch self {
         case .toolbarAction(let action):
             return action.image
-        case .groupedActions:
-            return UIImage(systemName: "ellipsis")
+        case let .groupedActions(image, _, _):
+            return image
         case .close:
             return UIImage(systemName: "chevron.down")?.withConfiguration(UIImage.SymbolConfiguration(weight: .black))
         case let .custom(type):
@@ -42,7 +42,7 @@ enum BottomControlAction {
         switch self {
         case .toolbarAction(let action):
             return action.title
-        case .groupedActions(let accessibilityLabel, _):
+        case .groupedActions(_, let accessibilityLabel, _):
             return accessibilityLabel
         case .close:
             return CelestiaString("Close", comment: "")
@@ -153,18 +153,17 @@ extension BottomControlViewController: UICollectionViewDataSource {
             cell.touchUpHandler = { [unowned self] _, inside in
                 self.touchUpHandler?(action, inside)
             }
-        case .groupedActions(_, let actions):
-            cell.touchUpHandler = { [unowned self] button, inside in
-                guard inside else { return }
-                self.showSelection(nil, options: actions.map { $0.title ?? "" }, source: .view(view: button, sourceRect: nil)) { [unowned self] selectedIndex in
-                    if let index = selectedIndex {
-                        let item = actions[index]
-                        self.touchDownHandler?(item)
-                        self.touchUpHandler?(item, true)
-                    }
-                }
-            }
+            cell.menu = nil
+        case .groupedActions(_, _, let actions):
+            cell.touchUpHandler = nil
             cell.touchDownHandler = nil
+            cell.menu = UIMenu(children: actions.map({ action in
+                UIAction(title: action.title ?? "") { [weak self] _ in
+                    guard let self else { return }
+                    self.touchDownHandler?(action)
+                    self.touchUpHandler?(action, true)
+                }
+            }))
         case .close:
             cell.touchUpHandler = { [unowned self] _, inside in
                 guard inside else { return }
@@ -172,12 +171,14 @@ extension BottomControlViewController: UICollectionViewDataSource {
                 self.hideAction = nil
             }
             cell.touchDownHandler = nil
+            cell.menu = nil
         case let .custom(type):
             cell.touchUpHandler = { [unowned self] _, inside in
                 guard inside else { return }
                 self.customActionHandler?(type)
             }
             cell.touchDownHandler = nil
+            cell.menu = nil
         }
         return cell
     }

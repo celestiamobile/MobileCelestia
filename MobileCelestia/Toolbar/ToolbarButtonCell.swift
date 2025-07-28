@@ -19,12 +19,14 @@ protocol ToolbarCell: AnyObject {
     var itemAccessibilityLabel: String? { get set }
     var touchDownHandler: ((UIControl) -> Void)? { get set }
     var touchUpHandler: ((UIControl, Bool) -> Void)? { get set }
+    var menu: UIMenu? { get set }
 }
 
 class ToolbarImageButtonCell: UICollectionViewCell, ToolbarCell {
     var itemTitle: String?
     var itemImage: UIImage? { didSet { button.setImage(itemImage, for: .normal) } }
     var itemAccessibilityLabel: String? { didSet { button.accessibilityLabel = itemAccessibilityLabel } }
+    var menu: UIMenu? { didSet { button.showsMenuAsPrimaryAction = menu != nil; button.menu = menu } }
     var touchDownHandler: ((UIControl) -> Void)?
     var touchUpHandler: ((UIControl, Bool) -> Void)?
 
@@ -123,6 +125,7 @@ class ToolbarImageTextButtonCell: UITableViewCell, ToolbarCell {
     var touchDownHandler: ((UIControl) -> Void)?
     var touchUpHandler: ((UIControl, Bool) -> Void)?
     var itemAccessibilityLabel: String?
+    var menu: UIMenu?
 
     private lazy var iconImageView: IconView = {
         let dimension = GlobalConstants.preferredUIElementScaling(for: traitCollection) * Constants.iconDimension

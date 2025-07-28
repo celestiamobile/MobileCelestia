@@ -1066,7 +1066,7 @@ Device Model: \(model)
             await presentActionToolbar(for: layoutDirectionDependentActions.map { .toolbarAction($0) } + [
                 .toolbarAction(CelestiaAction.stop),
                 .toolbarAction(CelestiaAction.reverseSpeed),
-                .groupedActions(accessibilityLabel: CelestiaString("Speed Presets", comment: "Action to show a list of presets in speed"), actions: [
+                .groupedActions(image: UIImage(systemName: "slider.horizontal.3"), accessibilityLabel: CelestiaString("Speed Presets", comment: "Action to show a list of presets in speed"), actions: [
                     CelestiaContinuousAction.f2,
                     CelestiaContinuousAction.f3,
                     CelestiaContinuousAction.f4,
