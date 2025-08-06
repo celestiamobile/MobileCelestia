@@ -1,5 +1,5 @@
 diff --git a/MobileCelestia.xcodeproj/project.pbxproj b/MobileCelestia.xcodeproj/project.pbxproj
-index 4ffaaa8..c1e5670 100644
+index 985a58c..a72997c 100644
 --- a/MobileCelestia.xcodeproj/project.pbxproj
 +++ b/MobileCelestia.xcodeproj/project.pbxproj
 @@ -17,8 +17,8 @@
@@ -53,19 +53,19 @@ index 4ffaaa8..c1e5670 100644
  			isa = XCSwiftPackageProductDependency;
  			package = EAC20FDF2CA0CB7C0098AABA /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
 diff --git a/MobileCelestia/Celestia/CelestiaDisplayController.swift b/MobileCelestia/Celestia/CelestiaDisplayController.swift
-index 828b1c4..8e2233e 100644
+index 6584e73..fbc7f7b 100644
 --- a/MobileCelestia/Celestia/CelestiaDisplayController.swift
 +++ b/MobileCelestia/Celestia/CelestiaDisplayController.swift
-@@ -9,7 +9,7 @@
+@@ -7,7 +7,7 @@
+ // as published by the Free Software Foundation; either version 2
  // of the License, or (at your option) any later version.
- //
  
 -import AsyncGL
 +import AsyncGLANGLE
  import CelestiaCore
  import CelestiaFoundation
  import CelestiaUI
-@@ -60,7 +60,7 @@ class CelestiaDisplayController: AsyncGLViewController {
+@@ -58,7 +58,7 @@ class CelestiaDisplayController: AsyncGLViewController {
  
      init(msaaEnabled: Bool, screen: UIScreen, initialFrameRate frameRate: Int, executor: CelestiaExecutor, subscriptionManager: SubscriptionManager, core: AppCore, userDefaults: UserDefaults) {
  #if targetEnvironment(macCatalyst)
@@ -75,12 +75,12 @@ index 828b1c4..8e2233e 100644
          let api = AsyncGLAPI.openGLES2
  #endif
 diff --git a/MobileCelestia/Celestia/CelestiaViewController.swift b/MobileCelestia/Celestia/CelestiaViewController.swift
-index 4f3407a..e32c5d8 100644
+index 7a5167e..6ff7f4f 100644
 --- a/MobileCelestia/Celestia/CelestiaViewController.swift
 +++ b/MobileCelestia/Celestia/CelestiaViewController.swift
-@@ -9,7 +9,7 @@
+@@ -7,7 +7,7 @@
+ // as published by the Free Software Foundation; either version 2
  // of the License, or (at your option) any later version.
- //
  
 -import AsyncGL
 +import AsyncGLANGLE
@@ -88,12 +88,12 @@ index 4f3407a..e32c5d8 100644
  import CelestiaFoundation
  import CelestiaUI
 diff --git a/MobileCelestia/Utils/Core/CelestiaExecutor.swift b/MobileCelestia/Utils/Core/CelestiaExecutor.swift
-index 8d25b97..ff1d661 100644
+index 1a43642..c45d96c 100644
 --- a/MobileCelestia/Utils/Core/CelestiaExecutor.swift
 +++ b/MobileCelestia/Utils/Core/CelestiaExecutor.swift
-@@ -9,7 +9,7 @@
+@@ -7,7 +7,7 @@
+ // as published by the Free Software Foundation; either version 2
  // of the License, or (at your option) any later version.
- //
  
 -import AsyncGL
 +import AsyncGLANGLE
