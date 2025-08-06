@@ -1,10 +1,11 @@
+// ICPCFooter.swift
 //
-//  ICPCFooter.swift
-//  Astroweather
+// Copyright (C) 2025, Celestia Development Team
 //
-//  Created by Levin Li on 2023/10/30.
-//  Copyright © 2023 Astroweather. All rights reserved.
-//
+// This program is free software; you can redistribute it and/or
+// modify it under the terms of the GNU General Public License
+// as published by the Free Software Foundation; either version 2
+// of the License, or (at your option) any later version.
 
 #if !targetEnvironment(macCatalyst)
 import UIKit
