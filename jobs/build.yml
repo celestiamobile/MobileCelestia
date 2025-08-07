@@ -8,7 +8,7 @@ jobs:
     sdk: ${{ parameters.sdk }}
     signing: ${{ parameters.signing }}
     backend: ${{ parameters.backend }}
-    contentCommitHash: ${{ 'daf483126b6be7da268f1dc175d915de4659e098' }}
+    contentCommitHash: ${{ 'fe433a479a366cde21441344c00cef4b7851e124' }}
     XC_VERSION: ${{ '16.4' }}
     XC_PROJECT: ${{ 'MobileCelestia/MobileCelestia.xcodeproj' }}
     XC_SCHEME: ${{ 'MobileCelestia' }}
