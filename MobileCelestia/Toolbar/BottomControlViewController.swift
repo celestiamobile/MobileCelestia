@@ -188,8 +188,13 @@ private extension BottomControlViewController {
             view.maximumContentSizeCategory = .extraExtraExtraLarge
         }
 
-        let style: UIBlurEffect.Style = .regular
-        let backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: style))
+        let effect: UIVisualEffect
+        if #available(iOS 26, *) {
+            effect = UIGlassEffect(style: .regular)
+        } else {
+            effect = UIBlurEffect(style: .regular)
+        }
+        let backgroundView = UIVisualEffectView(effect: effect)
         backgroundView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(backgroundView)
 

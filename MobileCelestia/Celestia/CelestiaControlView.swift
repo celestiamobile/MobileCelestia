@@ -177,8 +177,13 @@ final class CelestiaControlView: UIView {
             }
         }
 
-        let style: UIBlurEffect.Style = .regular
-        let visualBackground = UIVisualEffectView(effect: UIBlurEffect(style: style))
+        let effect: UIVisualEffect
+        if #available(iOS 26, *) {
+            effect = UIGlassEffect(style: .regular)
+        } else {
+            effect = UIBlurEffect(style: .regular)
+        }
+        let visualBackground = UIVisualEffectView(effect: effect)
         visualBackground.translatesAutoresizingMaskIntoConstraints = false
         addSubview(visualBackground)
         NSLayoutConstraint.activate([
