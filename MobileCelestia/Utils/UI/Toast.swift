@@ -30,8 +30,13 @@ class Toast {
         }
 
         private func setup() {
-            let style: UIBlurEffect.Style = .regular
-            let view = UIVisualEffectView(effect: UIBlurEffect(style: style))
+            let effect: UIVisualEffect
+            if #available(iOS 26, *) {
+                effect = UIGlassEffect(style: .regular)
+            } else {
+                effect = UIBlurEffect(style: .regular)
+            }
+            let view = UIVisualEffectView(effect: effect)
             view.translatesAutoresizingMaskIntoConstraints = false
             addSubview(view)
 
