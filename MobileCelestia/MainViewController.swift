@@ -264,7 +264,7 @@ extension MainViewController {
         let onboardMessageDisplayed: Bool? = userDefaults[.onboardMessageDisplayed]
         if onboardMessageDisplayed == nil {
             userDefaults[.onboardMessageDisplayed] = true
-            presentHelp()
+            presentHelp(prefersMediumDetent: true)
             cleanup()
             return
         }
@@ -292,7 +292,7 @@ extension MainViewController {
             let vc = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromGuide(guideItemID: guide, language: locale), requestHandler: requestHandler, actionHandler: commonWebActionHandler, matchingQueryKeys: ["guide"])
             let nav = BaseNavigationController(rootViewController: vc)
             nav.setNavigationBarHidden(true, animated: false)
-            showViewController(nav, key: guide, titleVisible: false)
+            showViewController(nav, key: guide, prefersMediumDetent: true, titleVisible: false)
             cleanup()
             return
         }
@@ -302,7 +302,7 @@ extension MainViewController {
                 do {
                     let item = try await requestHandler.getMetadata(id: addon, language: locale)
                     let nav = ToolbarNavigationContainerController(rootViewController: ResourceItemViewController(executor: executor, resourceManager: resourceManager, item: item, needsRefetchItem: false, requestHandler: requestHandler, actionHandler: commonWebActionHandler))
-                    self.showViewController(nav, key: addon, customToolbar: true)
+                    self.showViewController(nav, key: addon, prefersMediumDetent: true, customToolbar: true)
                 } catch {}
             }
             cleanup()
@@ -324,7 +324,7 @@ extension MainViewController {
                 }, matchingQueryKeys: ["guide"])
                 let nav = BaseNavigationController(rootViewController: vc)
                 nav.setNavigationBarHidden(true, animated: false)
-                self.showViewController(nav, key: item.id, titleVisible: false)
+                self.showViewController(nav, key: item.id, prefersMediumDetent: true, titleVisible: false)
             } catch {}
         }
     }
@@ -1098,9 +1098,9 @@ Device Model: \(model)
         showViewController(controller, customToolbar: true)
     }
 
-    @objc private func presentHelp() {
+    @objc private func presentHelp(prefersMediumDetent: Bool = false) {
         let vc = HelpViewController(executor: executor, resourceManager: resourceManager, requestHandler: requestHandler, assetProvider: assetProvider, actionHandler: commonWebActionHandler)
-        showViewController(vc, titleVisible: false)
+        showViewController(vc, prefersMediumDetent: prefersMediumDetent, titleVisible: false)
     }
 
     private func presentEventFinder() {
@@ -1315,6 +1315,7 @@ Device Model: \(model)
 
     private func showViewController(_ viewController: UIViewController,
                                     key: String? = nil,
+                                    prefersMediumDetent: Bool = false,
                                     iOSPreferredSize: CGSize = CGSize(width: 320, height: 320),
                                     macOSPreferredSize: CGSize = CGSize(width: 500, height: 600),
                                     titleVisible: Bool = true,
@@ -1325,8 +1326,8 @@ Device Model: \(model)
         viewController.preferredContentSize = iOSPreferredSize
         if #available(iOS 16, *), Self.canUseSystemSheetPresentationController, let sheet = viewController.sheetPresentationController {
             sheet.prefersGrabberVisible = true
-            sheet.detents = [.small(for: viewController), .medium(), .large()]
-            sheet.selectedDetentIdentifier = .large
+            sheet.detents = [.small(), .medium(), .large()]
+            sheet.selectedDetentIdentifier = prefersMediumDetent ? .medium : .large
             sheet.largestUndimmedDetentIdentifier = .large
             sheet.prefersEdgeAttachedInCompactHeight = true
             sheet.widthFollowsPreferredContentSizeWhenEdgeAttached = true
@@ -1334,7 +1335,6 @@ Device Model: \(model)
             sheet.setValue(true, forKey: "wantsBottomAttached")
             sheet.setValue(GlobalConstants.pageMediumMarginHorizontal, forKey: "marginInRegularWidthRegularHeight")
             sheet.setValue(GlobalConstants.pageMediumMarginHorizontal, forKey: "marginInCompactHeight")
-
         } else {
             viewController.modalPresentationStyle = .custom
             viewController.transitioningDelegate = endSlideInManager
@@ -1538,16 +1538,15 @@ struct CelestiaAssetProvider: AssetProvider {
     }
 }
 
-#if targetEnvironment(macCatalyst)
-#else
+#if !targetEnvironment(macCatalyst)
 @available(iOS 16.0, *)
 extension UISheetPresentationController.Detent {
     static let smallIdentifier = Identifier("\(Bundle.app.bundleIdentifier!).detents.small")
 
-    static func small(for viewController: UIViewController) -> UISheetPresentationController.Detent {
-        return custom(identifier: smallIdentifier) { [weak viewController] context in
-            guard let viewController else { return nil }
-            return viewController.minimumSheetHeight
+    static func small() -> UISheetPresentationController.Detent {
+        return custom(identifier: smallIdentifier) { context in
+            guard let value = UISheetPresentationController.Detent.medium().resolvedValue(in: context) else { return nil }
+            return value / 2
         }
     }
 }
