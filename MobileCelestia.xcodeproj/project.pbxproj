@@ -887,7 +887,7 @@
 		979D2F9A23FEB1A8005D2592 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = Celestia;
 				CODE_SIGN_ENTITLEMENTS = MobileCelestia/Celestia.entitlements;
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "MobileCelestia/Celestia-macOS.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -915,7 +915,7 @@
 		979D2F9B23FEB1A8005D2592 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = Celestia;
 				CODE_SIGN_ENTITLEMENTS = MobileCelestia/Celestia.entitlements;
 				"CODE_SIGN_ENTITLEMENTS[sdk=macosx*]" = "MobileCelestia/Celestia-macOS.entitlements";
 				CODE_SIGN_IDENTITY = "Apple Development";
