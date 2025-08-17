@@ -26,7 +26,7 @@ class PanelSceneDelegate: CommonSceneDelegate {
         Self.weakSessionTable.setObject(session, forKey: sessionKey as NSString)
 
         windowScene.titlebar?.titleVisibility = titleVisible ? .visible : .hidden
-        if #available(iOS 26, *), !titleVisible {
+        if #available(iOS 26, *), titleVisible {
             windowScene.titlebar?.toolbarStyle = .unified
         } else {
             windowScene.titlebar?.toolbarStyle = .unifiedCompact
