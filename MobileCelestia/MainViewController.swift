@@ -943,7 +943,13 @@ Device Model: \(model)
             ]
         }
         Task {
-            await presentActionToolbar(for: (layoutDirectionDependentActions + [CelestiaAction.reverse]).map { .toolbarAction($0) } + [BottomControlAction.custom(type: .showTimeSettings)])
+            await presentActionToolbar(
+                for: layoutDirectionDependentActions.map { .toolbarAction($0) },
+                overflowActions: [
+                    OverflowItem(title: CelestiaAction.reverse.title ?? "", action: .toolbarAction(CelestiaAction.reverse)),
+                    OverflowItem(title: CelestiaString("Settings", comment: ""), action: .custom(type: .showTimeSettings)),
+                ]
+            )
         }
     }
 
@@ -957,8 +963,8 @@ Device Model: \(model)
         self.bottomToolbarSizeConstraints = []
     }
 
-    private func presentActionToolbar(for actions: [BottomControlAction]) async {
-        let newController = BottomControlViewController(actions: actions) { [unowned self] in
+    private func presentActionToolbar(for actions: [BottomControlAction], overflowActions: [OverflowItem] = []) async {
+        let newController = BottomControlViewController(actions: actions, overflowActions: overflowActions) { [unowned self] in
             Task {
                 await self.hideBottomToolbar()
             }
@@ -1075,18 +1081,19 @@ Device Model: \(model)
         }
 
         Task {
-            await presentActionToolbar(for: layoutDirectionDependentActions.map { .toolbarAction($0) } + [
-                .toolbarAction(CelestiaAction.stop),
-                .toolbarAction(CelestiaAction.reverseSpeed),
-                .groupedActions(image: UIImage(systemName: "slider.horizontal.3"), accessibilityLabel: CelestiaString("Speed Presets", comment: "Action to show a list of presets in speed"), actions: [
+            await presentActionToolbar(
+                for: layoutDirectionDependentActions.map { .toolbarAction($0) } + [.toolbarAction(CelestiaAction.stop)],
+                overflowActions: [
+                    OverflowItem(title: CelestiaAction.reverseSpeed.title ?? "", action: .toolbarAction(CelestiaAction.reverseSpeed)),
+                ] + [
                     CelestiaContinuousAction.f2,
                     CelestiaContinuousAction.f3,
                     CelestiaContinuousAction.f4,
                     CelestiaContinuousAction.f5,
                     CelestiaContinuousAction.f6,
                     CelestiaContinuousAction.f7,
-                ])
-            ])
+                ].map { OverflowItem(title: $0.title ?? "", action: .toolbarAction($0)) }
+            )
         }
     }
 
