@@ -10,53 +10,68 @@
 import CelestiaUI
 import UIKit
 
+struct OverflowItem {
+    let title: String
+    let action: BottomControlAction
+}
+
 enum BottomControlAction {
     enum CustomActionType {
         case showTimeSettings
     }
 
     case toolbarAction(_ toolbarAction: ToolbarAction)
-    case groupedActions(image: UIImage?, accessibilityLabel: String, actions: [ToolbarAction])
-    case close
     case custom(type: CustomActionType)
-
-    var image: UIImage? {
-        switch self {
-        case .toolbarAction(let action):
-            return action.image
-        case let .groupedActions(image, _, _):
-            return image
-        case .close:
-            return UIImage(systemName: "chevron.down")?.withConfiguration(UIImage.SymbolConfiguration(weight: .black))
-        case let .custom(type):
-            switch type {
-            case .showTimeSettings:
-                return UIImage(systemName: "gear")?.withConfiguration(UIImage.SymbolConfiguration(weight: .bold))
-            }
-        }
-    }
-
-    var accessibilityLabel: String? {
-        switch self {
-        case .toolbarAction(let action):
-            return action.title
-        case .groupedActions(_, let accessibilityLabel, _):
-            return accessibilityLabel
-        case .close:
-            return CelestiaString("Close", comment: "")
-        case let .custom(type):
-            switch type {
-            case .showTimeSettings:
-                return CelestiaString("Settings", comment: "")
-            }
-        }
-    }
 }
 
 class BottomControlViewController: UIViewController {
+    enum Item {
+        case toolbarAction(_ toolbarAction: ToolbarAction)
+        case custom(type: BottomControlAction.CustomActionType)
+        case overflow
+
+        init(_ action: BottomControlAction) {
+            switch action {
+            case let .toolbarAction(toolbarAction):
+                self = .toolbarAction(toolbarAction)
+            case let .custom(type):
+                self = .custom(type: type)
+            }
+        }
+
+        var image: UIImage? {
+            switch self {
+            case .toolbarAction(let action):
+                return action.image
+            case .overflow:
+                return UIImage(systemName: "ellipsis")
+            case let .custom(type):
+                switch type {
+                case .showTimeSettings:
+                    return UIImage(systemName: "gear")?.withConfiguration(UIImage.SymbolConfiguration(weight: .bold))
+                }
+            }
+        }
+
+        var accessibilityLabel: String? {
+            switch self {
+            case .toolbarAction(let action):
+                return action.title
+            case .overflow:
+                return CelestiaString("More actions", comment: "Button to show more actions to in the bottom toolbar")
+            case let .custom(type):
+                switch type {
+                case .showTimeSettings:
+                    return CelestiaString("Settings", comment: "")
+                }
+            }
+        }
+    }
+
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: BottomActionLayout())
 
-    private let actions: [BottomControlAction]
+    private let actions: [Item]
+    private let overflowActions: [OverflowItem]
 
     #if targetEnvironment(macCatalyst)
     private var touchBarActions: [ToolbarTouchBarAction]
@@ -70,10 +85,11 @@ class BottomControlViewController: UIViewController {
     var touchDownHandler: ((ToolbarAction) -> Void)?
     var customActionHandler: ((BottomControlAction.CustomActionType) -> Void)?
 
-    init(actions: [BottomControlAction], hideAction: (() -> Void)?) {
-        self.actions = actions + [.close]
+    init(actions: [BottomControlAction], overflowActions: [OverflowItem] = [], hideAction: (() -> Void)?) {
+        self.actions = actions.map { Item($0) } + [.overflow]
+        self.overflowActions = overflowActions
         #if targetEnvironment(macCatalyst)
-        self.touchBarActions = actions.compactMap { action in
+        self.touchBarActions = (actions + overflowActions.map { $0.action }).compactMap { action in
             if case .toolbarAction(let ac) = action, let ttba = ac as? ToolbarTouchBarAction {
                 return ttba
             }
@@ -145,34 +161,38 @@ extension BottomControlViewController: UICollectionViewDataSource {
 
         switch action {
         case .toolbarAction(let action):
-            cell.touchDownHandler = { [unowned self] _ in
+            cell.touchDownHandler = { [weak self] _ in
+                guard let self else { return }
                 self.touchDownHandler?(action)
             }
-            cell.touchUpHandler = { [unowned self] _, inside in
+            cell.touchUpHandler = { [weak self] _, inside in
+                guard let self else { return }
                 self.touchUpHandler?(action, inside)
             }
             cell.menu = nil
-        case .groupedActions(_, _, let actions):
+        case .overflow:
             cell.touchUpHandler = nil
             cell.touchDownHandler = nil
-            cell.menu = UIMenu(children: actions.map({ action in
-                UIAction(title: action.title ?? "") { [weak self] _ in
+            var menuItems = overflowActions.map { item in
+                UIAction(title: item.title) { [weak self] _ in
                     guard let self else { return }
-                    self.touchDownHandler?(action)
-                    self.touchUpHandler?(action, true)
+                    switch item.action {
+                    case let .toolbarAction(action):
+                        self.touchDownHandler?(action)
+                        self.touchUpHandler?(action, true)
+                    case let .custom(type):
+                        self.customActionHandler?(type)
+                    }
                 }
-            }))
-        case .close:
-            cell.touchUpHandler = { [unowned self] _, inside in
-                guard inside else { return }
-                self.hideAction?()
-                self.hideAction = nil
             }
-            cell.touchDownHandler = nil
-            cell.menu = nil
+            menuItems.append(UIAction(title: CelestiaString("Close", comment: ""), handler: { [weak self] _ in
+                guard let self else { return }
+                self.hideAction?()
+            }))
+            cell.menu = UIMenu(children: menuItems)
         case let .custom(type):
-            cell.touchUpHandler = { [unowned self] _, inside in
-                guard inside else { return }
+            cell.touchUpHandler = { [weak self] _, inside in
+                guard inside, let self else { return }
                 self.customActionHandler?(type)
             }
             cell.touchDownHandler = nil
