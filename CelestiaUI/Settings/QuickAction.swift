@@ -92,7 +92,7 @@ public extension QuickAction {
     func image(with assetProvider: AssetProvider) -> UIImage? {
         switch self {
         case .mode:
-            return assetProvider.image(for: .tutorialSwitchMode)
+            return UIImage(systemName: "cube")
         case .info:
             return UIImage(systemName: "info.circle")
         case .search:
