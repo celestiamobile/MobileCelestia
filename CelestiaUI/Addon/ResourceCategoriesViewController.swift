@@ -76,7 +76,6 @@ private extension URL {
         var components = URLComponents(string: baseURL)!
         queryItems.append(contentsOf: [
             URLQueryItem(name: "lang", value: AppCore.language),
-            URLQueryItem(name: "theme", value: "dark"),
             URLQueryItem(name: "platform", value: platform),
             URLQueryItem(name: "api", value: "1"),
         ])
