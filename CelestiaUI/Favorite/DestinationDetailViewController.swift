@@ -15,13 +15,20 @@ class DestinationDetailViewController: UIViewController {
     private let goToHandler: () -> Void
 
     private lazy var scrollView = UIScrollView(frame: .zero)
-    private lazy var goToButton = ActionButtonHelper.newButton()
+    private lazy var goToButton: UIButton = {
+        if #available(iOS 26, *), traitCollection.userInterfaceIdiom != .mac {
+            return UIButton(configuration: .glass())
+        }
+        return ActionButtonHelper.newButton()
+    }()
 
     private lazy var descriptionLabel = UITextView()
 
     private lazy var contentStack = UIStackView(arrangedSubviews: [
         descriptionLabel,
     ])
+
+    private var bottomButtonContainerBoundsObservation: NSKeyValueObservation?
 
     init(destination: Destination, goToHandler: @escaping () -> Void) {
         self.destination = destination
@@ -57,7 +64,7 @@ private extension DestinationDetailViewController {
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: view.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor)
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
         ])
 
         let contentContainer = UIView()
@@ -99,7 +106,6 @@ private extension DestinationDetailViewController {
         view.addSubview(goToButton)
 
         NSLayoutConstraint.activate([
-            goToButton.topAnchor.constraint(equalTo: scrollView.bottomAnchor),
             goToButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -GlobalConstants.pageMediumMarginVertical),
             goToButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: GlobalConstants.pageMediumMarginHorizontal),
             goToButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -GlobalConstants.pageMediumMarginHorizontal),
@@ -108,5 +114,21 @@ private extension DestinationDetailViewController {
 
         descriptionLabel.text = destination.content
         goToButton.setTitle(CelestiaString("Go", comment: "Go to an object"), for: .normal)
+
+        if #available(iOS 26, *), traitCollection.userInterfaceIdiom != .mac {
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+            bottomButtonContainerBoundsObservation = goToButton.observe(\.bounds, options: [.initial, .new], changeHandler: { [weak self] _, _ in
+                MainActor.assumeIsolated {
+                    guard let self else { return }
+                    self.scrollView.contentInset.bottom = self.goToButton.bounds.height + GlobalConstants.pageMediumMarginVertical * 2
+                }
+            })
+            let edgeInteraction = UIScrollEdgeElementContainerInteraction()
+            edgeInteraction.scrollView = scrollView
+            edgeInteraction.edge = .bottom
+            goToButton.addInteraction(edgeInteraction)
+        } else {
+            goToButton.topAnchor.constraint(equalTo: scrollView.bottomAnchor).isActive = true
+        }
     }
 }

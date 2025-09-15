@@ -38,7 +38,12 @@ public class ResourceItemViewController: UIViewController {
             return UIProgressView(progressViewStyle: .bar)
         }
     }()
-    private lazy var statusButton = ActionButtonHelper.newButton()
+    private lazy var statusButton: UIButton = {
+        if #available(iOS 26, *), traitCollection.userInterfaceIdiom != .mac {
+            return UIButton(configuration: .glass())
+        }
+        return ActionButtonHelper.newButton()
+    }()
     private lazy var statusButtonContainer: UIView = {
         if traitCollection.userInterfaceIdiom == .mac {
             let stackView = UIStackView(arrangedSubviews: [progressView, statusButton])
@@ -50,7 +55,12 @@ public class ResourceItemViewController: UIViewController {
             return statusButton
         }
     }()
-    private lazy var goToButton = ActionButtonHelper.newButton()
+    private lazy var goToButton: UIButton = {
+        if #available(iOS 26, *), traitCollection.userInterfaceIdiom != .mac {
+            return UIButton(configuration: .glass())
+        }
+        return ActionButtonHelper.newButton()
+    }()
     private lazy var buttonStack = UIStackView(arrangedSubviews: [goToButton, statusButtonContainer])
 
     private let resourceManager: ResourceManager
@@ -69,6 +79,8 @@ public class ResourceItemViewController: UIViewController {
 
     private var viewIsVisible = false
     private var associatedUserActivity: NSUserActivity
+
+    private var bottomButtonContainerBoundsObservation: NSKeyValueObservation?
 
     private let executor: AsyncProviderExecutor
 
@@ -123,6 +135,19 @@ public class ResourceItemViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(handleWindowWillBecomeKey(_:)), name: Notification.Name("_UIWindowWillBecomeApplicationKeyNotification"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleWindowDidResignKey(_:)), name: Notification.Name("_UIWindowDidResignApplicationKeyNotification"), object: nil)
         #endif
+
+        if #available(iOS 26, *), traitCollection.userInterfaceIdiom != .mac {
+            bottomButtonContainerBoundsObservation = buttonStack.observe(\.bounds, options: [.initial, .new], changeHandler: { [weak self] _, _ in
+                MainActor.assumeIsolated {
+                    guard let self else { return }
+                    self.itemInfoController.additionalSafeAreaInsets.bottom = self.buttonStack.bounds.height + GlobalConstants.pageMediumMarginVertical * 2
+                }
+            })
+            let edgeInteraction = UIScrollEdgeElementContainerInteraction()
+            edgeInteraction.scrollView = itemInfoController.webView.scrollView
+            edgeInteraction.edge = .bottom
+            buttonStack.addInteraction(edgeInteraction)
+        }
 
         // Fetch the latest item, this is needed as user might come
         // here from Installed where the URL might be incorrect
@@ -246,7 +271,7 @@ private extension ResourceItemViewController {
 
         NSLayoutConstraint.activate([
             itemInfoController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            itemInfoController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            itemInfoController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
         ])
 
         if traitCollection.userInterfaceIdiom == .mac {
@@ -281,8 +306,13 @@ private extension ResourceItemViewController {
         buttonStack.spacing = GlobalConstants.pageLargeGapVertical
         buttonStack.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(buttonStack)
+        if #available(iOS 26, *), traitCollection.userInterfaceIdiom != .mac {
+            itemInfoController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
+        }
+        else {
+            buttonStack.topAnchor.constraint(equalTo: itemInfoController.view.bottomAnchor, constant: GlobalConstants.pageMediumGapVertical).isActive = true
+        }
         NSLayoutConstraint.activate([
-            buttonStack.topAnchor.constraint(equalTo: itemInfoController.view.bottomAnchor, constant: GlobalConstants.pageMediumGapVertical),
             buttonStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -GlobalConstants.pageMediumMarginVertical),
             buttonStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: GlobalConstants.pageMediumMarginHorizontal),
             buttonStack.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -GlobalConstants.pageMediumMarginHorizontal)
