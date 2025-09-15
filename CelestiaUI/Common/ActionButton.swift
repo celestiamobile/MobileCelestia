@@ -65,9 +65,9 @@ public class ActionButton: StandardButton {
 
 @MainActor
 public class ActionButtonHelper {
-    public static func newButton(liquidGlass: Bool = true, prominent: Bool = false, traitCollection: UITraitCollection) -> UIButton {
+    public static func newButton(liquidGlass: Bool = true, clear: Bool = false, prominent: Bool = false, traitCollection: UITraitCollection) -> UIButton {
         if #available(iOS 26, *), liquidGlass, traitCollection.userInterfaceIdiom != .mac {
-            let button = UIButton(configuration: prominent ? .prominentGlass() : .glass())
+            let button = UIButton(configuration: prominent ? .prominentGlass() : (clear ? .clearGlass() : .glass()))
             #if !targetEnvironment(macCatalyst)
             if prominent {
                 button.tintColor = .buttonBackground

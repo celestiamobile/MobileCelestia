@@ -18,7 +18,7 @@ class TutorialActionCell: UITableViewCell {
     var title: String? { didSet { button.setTitle(title, for: .normal) } }
     var actionHandler: (() -> Void)?
 
-    private lazy var button = ActionButtonHelper.newButton(liquidGlass: false, traitCollection: traitCollection)
+    private lazy var button = ActionButtonHelper.newButton(prominent: true, traitCollection: traitCollection)
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)

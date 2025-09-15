@@ -24,7 +24,7 @@ final class BodyActionCell: UICollectionViewCell {
     }
     var actionHandler: ((BodyActionCell) -> Void)?
 
-    private lazy var button = ActionButtonHelper.newButton(liquidGlass: false, traitCollection: traitCollection)
+    private lazy var button = ActionButtonHelper.newButton(prominent: true, traitCollection: traitCollection)
 
     override init(frame: CGRect) {
         super.init(frame: frame)
