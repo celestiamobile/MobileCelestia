@@ -68,21 +68,26 @@ final class PlanView: UIView {
         case .disabled:
             let text: String
             let hidden: Bool
+            let prominent: Bool
             switch action {
             case .upgrade:
                 text = CelestiaString("Upgrade", comment: "Upgrade subscription service")
                 hidden = false
+                prominent = true
             case .downgrade:
                 text = CelestiaString("Downgrade", comment: "Downgrade subscription service")
                 hidden = false
+                prominent = false
             case .get:
                 text = CelestiaString("Get", comment: "Purchase subscription service")
                 hidden = false
+                prominent = true
             case .empty:
                 text = ""
                 hidden = true
+                prominent = false
             }
-            let actionButton = ActionButtonHelper.newButton()
+            let actionButton = ActionButtonHelper.newButton(prominent: prominent, traitCollection: traitCollection)
             actionButton.setTitle(text, for: .normal)
             actionButton.addTarget(self, action: #selector(handleTap), for: .touchUpInside)
             actionButton.isHidden = hidden

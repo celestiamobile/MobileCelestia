@@ -38,12 +38,7 @@ public class ResourceItemViewController: UIViewController {
             return UIProgressView(progressViewStyle: .bar)
         }
     }()
-    private lazy var statusButton: UIButton = {
-        if #available(iOS 26, *), traitCollection.userInterfaceIdiom != .mac {
-            return UIButton(configuration: .glass())
-        }
-        return ActionButtonHelper.newButton()
-    }()
+    private lazy var statusButton = ActionButtonHelper.newButton(traitCollection: traitCollection)
     private lazy var statusButtonContainer: UIView = {
         if traitCollection.userInterfaceIdiom == .mac {
             let stackView = UIStackView(arrangedSubviews: [progressView, statusButton])
@@ -55,12 +50,7 @@ public class ResourceItemViewController: UIViewController {
             return statusButton
         }
     }()
-    private lazy var goToButton: UIButton = {
-        if #available(iOS 26, *), traitCollection.userInterfaceIdiom != .mac {
-            return UIButton(configuration: .glass())
-        }
-        return ActionButtonHelper.newButton()
-    }()
+    private lazy var goToButton = ActionButtonHelper.newButton(prominent: true, traitCollection: traitCollection)
     private lazy var buttonStack = UIStackView(arrangedSubviews: [goToButton, statusButtonContainer])
 
     private let resourceManager: ResourceManager

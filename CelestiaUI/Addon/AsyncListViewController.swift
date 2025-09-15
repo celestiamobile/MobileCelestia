@@ -20,7 +20,7 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
     class var alwaysRefreshOnAppear: Bool { return false }
 
     private lazy var activityIndicator = UIActivityIndicatorView(style: .large)
-    private lazy var refreshButton = ActionButtonHelper.newButton()
+    private lazy var refreshButton = ActionButtonHelper.newButton(traitCollection: traitCollection)
 
     var additionalItem: T?
 

@@ -15,12 +15,7 @@ class DestinationDetailViewController: UIViewController {
     private let goToHandler: () -> Void
 
     private lazy var scrollView = UIScrollView(frame: .zero)
-    private lazy var goToButton: UIButton = {
-        if #available(iOS 26, *), traitCollection.userInterfaceIdiom != .mac {
-            return UIButton(configuration: .glass())
-        }
-        return ActionButtonHelper.newButton()
-    }()
+    private lazy var goToButton = ActionButtonHelper.newButton(prominent: true, traitCollection: traitCollection)
 
     private lazy var descriptionLabel = UITextView()
 
