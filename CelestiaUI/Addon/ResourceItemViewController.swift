@@ -346,7 +346,7 @@ private extension ResourceItemViewController {
         } else {
             if currentState == .installed, let objectName = item.objectName {
                 Task {
-                    let exists = await executor.get { $0.simulation.findObject(from: objectName).isEmpty }
+                    let exists = await executor.get { !$0.simulation.findObject(from: objectName).isEmpty }
                     goToButton.isHidden = !exists
                 }
             } else {
