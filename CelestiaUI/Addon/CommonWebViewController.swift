@@ -83,7 +83,7 @@ public class CommonWebViewController: UIViewController {
         configuration.userContentController.add(handler, name: "iOSCelestia")
         webView = WKWebView(frame: .zero, configuration: configuration)
         webView.isOpaque = false
-        webView.backgroundColor = .black
+        webView.backgroundColor = .systemBackground
         super.init(nibName: nil, bundle: nil)
         handler.delegate = self
     }

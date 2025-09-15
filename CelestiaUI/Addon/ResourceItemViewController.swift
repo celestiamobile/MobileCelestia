@@ -104,7 +104,7 @@ public class ResourceItemViewController: UIViewController {
 
     public override func loadView() {
         view = UIView()
-        view.backgroundColor = .black
+        view.backgroundColor = .systemBackground
         setup()
     }
 

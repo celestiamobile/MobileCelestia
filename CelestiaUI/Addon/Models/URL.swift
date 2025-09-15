@@ -28,6 +28,7 @@ public extension URL {
             URLQueryItem(name: "guide", value: guideItemID),
             URLQueryItem(name: "lang", value: language),
             URLQueryItem(name: "platform", value: platform),
+            URLQueryItem(name: "transparentBackground", value: "true"),
         ]
         if let shareable = shareable {
             queryItems.append(URLQueryItem(name: "share", value: shareable ? "true" : "false"))
@@ -52,6 +53,7 @@ public extension URL {
         var queryItems = [
             URLQueryItem(name: "lang", value: language),
             URLQueryItem(name: "platform", value: platform),
+            URLQueryItem(name: "transparentBackground", value: "true"),
         ]
         if let shareable = shareable {
             queryItems.append(URLQueryItem(name: "share", value: shareable ? "true" : "false"))
@@ -77,6 +79,7 @@ public extension URL {
             URLQueryItem(name: "lang", value: language),
             URLQueryItem(name: "platform", value: platform),
             URLQueryItem(name: "titleVisibility", value: "collapsed"),
+            URLQueryItem(name: "transparentBackground", value: "true"),
         ]
         return components.url!
     }
