@@ -197,7 +197,9 @@ private extension BottomControlViewController {
 
         let effect: UIVisualEffect
         if #available(iOS 26, *) {
-            effect = UIGlassEffect(style: .regular)
+            let glassEffect = UIGlassEffect(style: .regular)
+            glassEffect.isInteractive = true
+            effect = glassEffect
         } else {
             effect = UIBlurEffect(style: .regular)
         }
@@ -212,9 +214,13 @@ private extension BottomControlViewController {
             backgroundView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -GlobalConstants.pageMediumMarginVertical)
         ])
 
-        backgroundView.layer.masksToBounds = true
-        backgroundView.layer.cornerRadius = GlobalConstants.bottomControlContainerCornerRadius
-        backgroundView.layer.cornerCurve = .continuous
+        if #available(iOS 26, *) {
+            backgroundView.cornerConfiguration = .corners(radius: .fixed(GlobalConstants.bottomControlContainerCornerRadius))
+        } else {
+            view.clipsToBounds = true
+            view.layer.cornerRadius = GlobalConstants.bottomControlContainerCornerRadius
+            view.layer.cornerCurve = .continuous
+        }
 
         let contentView = backgroundView.contentView
         contentView.addSubview(collectionView)
