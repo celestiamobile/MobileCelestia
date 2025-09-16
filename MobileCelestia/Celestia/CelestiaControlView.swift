@@ -156,11 +156,6 @@ final class CelestiaControlView: UIView {
             maximumContentSizeCategory = .extraExtraExtraLarge
         }
 
-        backgroundColor = .clear
-        clipsToBounds = true
-        layer.cornerCurve = .continuous
-        layer.cornerRadius = Constants.cornerRadius
-
         let buttons = items.map { item in
             return ControlButton(button: item) { [weak self] action in
                 guard let self = self else { return }
@@ -179,7 +174,9 @@ final class CelestiaControlView: UIView {
 
         let effect: UIVisualEffect
         if #available(iOS 26, *) {
-            effect = UIGlassEffect(style: .regular)
+            let glassEffect = UIGlassEffect(style: .regular)
+            glassEffect.isInteractive = true
+            effect = glassEffect
         } else {
             effect = UIBlurEffect(style: .regular)
         }
@@ -198,13 +195,21 @@ final class CelestiaControlView: UIView {
         stackView.axis = .vertical
         stackView.spacing = Constants.controlViewSpacing
 
-        addSubview(stackView)
+        visualBackground.contentView.addSubview(stackView)
         NSLayoutConstraint.activate([
-            stackView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: trailingAnchor),
-            stackView.topAnchor.constraint(equalTo: topAnchor, constant: Constants.controlViewMarginVertical),
-            stackView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Constants.controlViewMarginVertical)
+            stackView.leadingAnchor.constraint(equalTo: visualBackground.contentView.leadingAnchor),
+            stackView.trailingAnchor.constraint(equalTo: visualBackground.contentView.trailingAnchor),
+            stackView.topAnchor.constraint(equalTo: visualBackground.contentView.topAnchor, constant: Constants.controlViewMarginVertical),
+            stackView.bottomAnchor.constraint(equalTo: visualBackground.contentView.bottomAnchor, constant: -Constants.controlViewMarginVertical)
         ])
+
+        if #available(iOS 26, *) {
+            visualBackground.cornerConfiguration = .corners(radius: .fixed(Constants.cornerRadius))
+        } else {
+            clipsToBounds = true
+            layer.cornerCurve = .continuous
+            layer.cornerRadius = Constants.cornerRadius
+        }
     }
 
     required init?(coder: NSCoder) {
