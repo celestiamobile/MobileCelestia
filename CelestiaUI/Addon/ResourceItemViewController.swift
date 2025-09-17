@@ -126,7 +126,7 @@ public class ResourceItemViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(handleWindowDidResignKey(_:)), name: Notification.Name("_UIWindowDidResignApplicationKeyNotification"), object: nil)
         #endif
 
-        if #available(iOS 26, *), traitCollection.userInterfaceIdiom != .mac {
+        if #available(iOS 26, visionOS 26, *), traitCollection.userInterfaceIdiom != .mac {
             bottomButtonContainerBoundsObservation = buttonStack.observe(\.bounds, options: [.initial, .new], changeHandler: { [weak self] _, _ in
                 MainActor.assumeIsolated {
                     guard let self else { return }
@@ -296,7 +296,7 @@ private extension ResourceItemViewController {
         buttonStack.spacing = GlobalConstants.pageLargeGapVertical
         buttonStack.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(buttonStack)
-        if #available(iOS 26, *), traitCollection.userInterfaceIdiom != .mac {
+        if #available(iOS 26, visionOS 26, *), traitCollection.userInterfaceIdiom != .mac {
             itemInfoController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         }
         else {

@@ -66,6 +66,7 @@ public class ActionButton: StandardButton {
 @MainActor
 public class ActionButtonHelper {
     public static func newButton(liquidGlass: Bool = true, clear: Bool = false, prominent: Bool = false, traitCollection: UITraitCollection) -> UIButton {
+        #if !os(visionOS)
         if #available(iOS 26, *), liquidGlass, traitCollection.userInterfaceIdiom != .mac {
             let button = UIButton(configuration: prominent ? .prominentGlass() : (clear ? .clearGlass() : .glass()))
             #if !targetEnvironment(macCatalyst)
@@ -75,6 +76,7 @@ public class ActionButtonHelper {
             #endif
             return button
         }
+        #endif
         #if !targetEnvironment(macCatalyst)
         if #available(iOS 15, visionOS 1, *) {
             var configuration = UIButton.Configuration.filled()

@@ -110,7 +110,7 @@ private extension DestinationDetailViewController {
         descriptionLabel.text = destination.content
         goToButton.setTitle(CelestiaString("Go", comment: "Go to an object"), for: .normal)
 
-        if #available(iOS 26, *), traitCollection.userInterfaceIdiom != .mac {
+        if #available(iOS 26, visionOS 26, *), traitCollection.userInterfaceIdiom != .mac {
             scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
             bottomButtonContainerBoundsObservation = goToButton.observe(\.bounds, options: [.initial, .new], changeHandler: { [weak self] _, _ in
                 MainActor.assumeIsolated {
