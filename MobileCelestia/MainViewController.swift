@@ -1178,33 +1178,6 @@ Device Model: \(model)
         return controller
     }
 
-    private func showMarkMenu(with selection: Selection, with sender: UIView, viewController: UIViewController) {
-        let options = (0...MarkerRepresentation.crosshair.rawValue).map{ MarkerRepresentation(rawValue: $0)?.localizedTitle ?? "" } + [CelestiaString("Unmark", comment: "Unmark an object")]
-        viewController.showSelection(CelestiaString("Mark", comment: "Mark an object"), options: options, source: .view(view: sender, sourceRect: nil)) { [weak self] index in
-            guard let self = self, let index = index else { return }
-            if let marker = MarkerRepresentation(rawValue: UInt(index)) {
-                Task {
-                    await self.executor.mark(selection, markerType: marker)
-                }
-            } else {
-                self.executor.runAsynchronously { $0.simulation.universe.unmark(selection) }
-            }
-        }
-    }
-
-    private func showAlternateSurfaces(of selection: Selection, with sender: UIView, viewController: UIViewController) {
-        guard let alternativeSurfaces = selection.body?.alternateSurfaceNames, alternativeSurfaces.count > 0 else { return }
-        viewController.showSelection(CelestiaString("Alternate Surfaces", comment: "Alternative textures to display"), options: [CelestiaString("Default", comment: "")] + alternativeSurfaces, source: .view(view: sender, sourceRect: nil)) { [weak self] index in
-            guard let self = self, let index = index else { return }
-
-            if index == 0 {
-                self.executor.runAsynchronously { $0.simulation.activeObserver.displayedSurface = "" }
-                return
-            }
-            self.executor.runAsynchronously { $0.simulation.activeObserver.displayedSurface = alternativeSurfaces[index - 1] }
-        }
-    }
-
     private func showWeb(_ url: URL) {
         UIApplication.shared.open(url, options: [:], completionHandler: nil)
     }
