@@ -145,7 +145,7 @@ private struct ResourceItemView: View {
                                 .frame(maxWidth: .infinity)
                         }
                     }
-                    .glassButtonStyle()
+                    .glassButtonStyle(prominent: viewModel.state == .none)
                     #if targetEnvironment(macCatalyst)
                     .controlSize(.large)
                     #endif

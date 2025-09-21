@@ -36,15 +36,34 @@ extension View {
     }
 }
 
+@available(iOS 15, visionOS 1, *)
 extension View {
+    @ViewBuilder func glassButtonStyle(prominent: Bool) -> some View {
+        if prominent {
+            prominentGlassButtonStyle()
+        } else {
+            glassButtonStyle()
+        }
+    }
+
     func glassButtonStyle() -> some View {
         #if os(visionOS)
         return self
+            .buttonStyle(.borderedProminent)
+            .tint(Color(uiColor: .buttonBackground))
+        #elseif targetEnvironment(macCatalyst)
+        if #available(iOS 26, *) {
+            return self.buttonStyle(.glass)
+        } else {
+            return self.buttonStyle(.borderedProminent)
+        }
         #else
         if #available(iOS 26, *) {
             return self.buttonStyle(.glass)
         } else {
             return self
+                .buttonStyle(.borderedProminent)
+                .tint(Color(uiColor: .buttonBackground))
         }
         #endif
     }
@@ -52,15 +71,23 @@ extension View {
     func prominentGlassButtonStyle() -> some View {
         #if os(visionOS)
         return self
+            .buttonStyle(.borderedProminent)
+            .tint(Color(uiColor: .buttonBackground))
+        #elseif targetEnvironment(macCatalyst)
+        if #available(iOS 26, *) {
+            return self.buttonStyle(.glassProminent)
+        } else {
+            return self.buttonStyle(.borderedProminent)
+        }
         #else
         if #available(iOS 26, *) {
-            #if targetEnvironment(macCatalyst)
-            return self.buttonStyle(.glassProminent)
-            #else
-            return self.buttonStyle(.glassProminent).tint(Color(uiColor: .buttonBackground))
-            #endif
+            return self
+                .buttonStyle(.glassProminent)
+                .tint(Color(uiColor: .buttonBackground))
         } else {
             return self
+                .buttonStyle(.borderedProminent)
+                .tint(Color(uiColor: .buttonBackground))
         }
         #endif
     }
