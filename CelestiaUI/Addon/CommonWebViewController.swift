@@ -37,7 +37,7 @@ public class CommonWebViewController: UIViewController {
 
     weak var delegate: CommonWebViewControllerDelegate?
 
-    let webView: WKWebView
+    private let webView: WKWebView
 
     private lazy var goBackItem: UIBarButtonItem = {
         let isRTL = UIView.userInterfaceLayoutDirection(for: view.semanticContentAttribute) == .rightToLeft
