@@ -8,7 +8,98 @@
 // of the License, or (at your option) any later version.
 
 import CelestiaCore
+import SwiftUI
 import UIKit
+
+@available(iOS 15, visionOS 1, *)
+extension View {
+    func safeArea(ViewBuilder content: () -> some View) -> some View {
+        #if os(visionOS)
+        if #available(visionOS 26, *) {
+            return safeAreaBar(edge: .bottom, content: content)
+        } else {
+            return VStack {
+                self
+                Spacer()
+                content()
+            }
+        }
+        #else
+        if #available(iOS 26, *) {
+            return safeAreaBar(edge: .bottom, content: content)
+        } else {
+            return safeAreaInset(edge: .bottom) {
+                ZStack(content: content)
+                    .frame(maxWidth: .infinity)
+                    .background()
+            }
+        }
+        #endif
+    }
+}
+
+extension View {
+    func glassButtonStyle() -> some View {
+        #if os(visionOS)
+        return self
+        #else
+        if #available(iOS 26, *) {
+            return self.buttonStyle(.glass)
+        } else {
+            return self
+        }
+        #endif
+    }
+
+    func prominentGlassButtonStyle() -> some View {
+        #if os(visionOS)
+        return self
+        #else
+        if #available(iOS 26, *) {
+            #if targetEnvironment(macCatalyst)
+            return self.buttonStyle(.glassProminent)
+            #else
+            return self.buttonStyle(.glassProminent).tint(Color(uiColor: .buttonBackground))
+            #endif
+        } else {
+            return self
+        }
+        #endif
+    }
+}
+
+@available(iOS 15, visionOS 1, *)
+private struct DestinationDetailView: View {
+    let destination: Destination
+    let goToHandler: () -> Void
+
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading) {
+                Text(verbatim: destination.content)
+                    .textSelection(.enabled)
+                    .font(.body)
+                    .foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .padding(EdgeInsets(top: GlobalConstants.pageMediumMarginVertical, leading: GlobalConstants.pageMediumMarginHorizontal, bottom: GlobalConstants.pageMediumMarginVertical, trailing: GlobalConstants.pageMediumMarginHorizontal))
+        }
+        .safeArea {
+            Button {
+                goToHandler()
+            } label: {
+                Text(verbatim: CelestiaString("Go", comment: "Go to an object"))
+                    .frame(maxWidth: .infinity)
+            }
+            .padding(EdgeInsets(top: GlobalConstants.pageMediumMarginVertical, leading: GlobalConstants.pageMediumMarginHorizontal, bottom: GlobalConstants.pageMediumMarginVertical, trailing: GlobalConstants.pageMediumMarginHorizontal))
+            .prominentGlassButtonStyle()
+            #if targetEnvironment(macCatalyst)
+            .controlSize(.large)
+            #endif
+        }
+        .frame(maxWidth: .infinity)
+    }
+}
 
 class DestinationDetailViewController: UIViewController {
     private let destination: Destination
@@ -22,8 +113,6 @@ class DestinationDetailViewController: UIViewController {
     private lazy var contentStack = UIStackView(arrangedSubviews: [
         descriptionLabel,
     ])
-
-    private var bottomButtonContainerBoundsObservation: NSKeyValueObservation?
 
     init(destination: Destination, goToHandler: @escaping () -> Void) {
         self.destination = destination
@@ -40,8 +129,22 @@ class DestinationDetailViewController: UIViewController {
         #if !os(visionOS)
         view.backgroundColor = .systemBackground
         #endif
+    }
 
-        setup()
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        title = destination.name
+        windowTitle = title
+        if #available(iOS 15, visionOS 1, *) {
+            let vc = UIHostingController(rootView: DestinationDetailView(destination: destination, goToHandler: { [weak self] in
+                guard let self else { return }
+                self.goToHandler()
+            }))
+            install(vc)
+        } else {
+            setup()
+        }
     }
 
     @objc private func goToButtonClicked() {
@@ -51,9 +154,6 @@ class DestinationDetailViewController: UIViewController {
 
 private extension DestinationDetailViewController {
     func setup() {
-        title = destination.name
-        windowTitle = title
-
         view.addSubview(scrollView)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
@@ -104,26 +204,11 @@ private extension DestinationDetailViewController {
             goToButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -GlobalConstants.pageMediumMarginVertical),
             goToButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: GlobalConstants.pageMediumMarginHorizontal),
             goToButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -GlobalConstants.pageMediumMarginHorizontal),
+            goToButton.topAnchor.constraint(equalTo: scrollView.bottomAnchor),
         ])
         goToButton.addTarget(self, action: #selector(goToButtonClicked), for: .touchUpInside)
 
         descriptionLabel.text = destination.content
         goToButton.setTitle(CelestiaString("Go", comment: "Go to an object"), for: .normal)
-
-        if #available(iOS 26, visionOS 26, *), traitCollection.userInterfaceIdiom != .mac {
-            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-            bottomButtonContainerBoundsObservation = goToButton.observe(\.bounds, options: [.initial, .new], changeHandler: { [weak self] _, _ in
-                MainActor.assumeIsolated {
-                    guard let self else { return }
-                    self.scrollView.contentInset.bottom = self.goToButton.bounds.height + GlobalConstants.pageMediumMarginVertical * 2
-                }
-            })
-            let edgeInteraction = UIScrollEdgeElementContainerInteraction()
-            edgeInteraction.scrollView = scrollView
-            edgeInteraction.edge = .bottom
-            goToButton.addInteraction(edgeInteraction)
-        } else {
-            goToButton.topAnchor.constraint(equalTo: scrollView.bottomAnchor).isActive = true
-        }
     }
 }
