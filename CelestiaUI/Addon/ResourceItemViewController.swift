@@ -10,23 +10,170 @@
 import CelestiaCore
 import CoreSpotlight
 import MobileCoreServices
+import SwiftUI
 import UIKit
 
-public class ResourceItemViewController: UIViewController {
-    enum ResourceItemState {
-        case none
-        case downloading
-        case installed
-    }
+enum ResourceItemAction {
+    case go(selection: Selection)
+    case run(scriptPath: String)
+}
 
-    private let itemID: String
-    private var item: ResourceItem
+enum ResourceItemState {
+    case none
+    case downloading
+    case installed
+}
+
+@available(iOS 16, visionOS 1, *)
+private struct WebInfoView: UIViewControllerRepresentable {
+    let executor: AsyncProviderExecutor
+    let resourceManager: ResourceManager
+    let url: URL
+    let requestHandler: RequestHandler
+    let actionHandler: ((CommonWebViewController.WebAction, UIViewController) -> Void)?
+    let matchingQueryKeys: [String]
+    let contextDirectory: URL?
+    let filterURL: Bool
+    @Binding var bottomSafeAreaHeight: CGFloat
+
+    func updateUIViewController(_ uiViewController: CommonWebViewController, context: Context) {
+        uiViewController.additionalSafeAreaInsets.bottom = bottomSafeAreaHeight
+    }
+    
+    func makeUIViewController(context: Context) -> CommonWebViewController {
+        let vc = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: url, requestHandler: requestHandler, actionHandler: actionHandler, matchingQueryKeys: matchingQueryKeys, contextDirectory: contextDirectory)
+        return vc
+    }
+}
+
+private class ResourceItemViewModel: ObservableObject {
+    @Published var item: ResourceItem
+    @Published var state: ResourceItemState = .none
+    @Published var action: ResourceItemAction?
+    @Published var progress: Float = 0
+    let executor: AsyncProviderExecutor
+    let resourceManager: ResourceManager
+    let requestHandler: RequestHandler
+    let actionHandler: ((CommonWebViewController.WebAction, UIViewController) -> Void)?
+
+    init(
+        item: ResourceItem,
+        executor: AsyncProviderExecutor,
+        resourceManager: ResourceManager,
+        requestHandler: RequestHandler,
+        actionHandler: ((CommonWebViewController.WebAction, UIViewController) -> Void)?
+    ) {
+        self.item = item
+        self.executor = executor
+        self.resourceManager = resourceManager
+        self.requestHandler = requestHandler
+        self.actionHandler = actionHandler
+    }
+}
+
+@available(iOS 16, visionOS 1, *)
+private struct ResourceItemView: View {
+    @ObservedObject var viewModel: ResourceItemViewModel
+    @State var bottomSafeAreaHeight: CGFloat = 0
+    let statusButtonHandler: () -> Void
+    let actionButtonHandler: () -> Void
+
+    var body: some View {
+        ZStack(alignment: .top) {
+            WebInfoView(
+                executor: viewModel.executor,
+                resourceManager: viewModel.resourceManager,
+                url: .fromAddon(addonItemID: viewModel.item.id, language: AppCore.language),
+                requestHandler: viewModel.requestHandler,
+                actionHandler: viewModel.actionHandler,
+                matchingQueryKeys: ["item"],
+                contextDirectory: viewModel.resourceManager.contextDirectory(forAddon: viewModel.item),
+                filterURL: true,
+                bottomSafeAreaHeight: $bottomSafeAreaHeight
+            )
+            .ignoresSafeArea()
+            #if !os(iOS) || !targetEnvironment(macCatalyst)
+            if viewModel.state == .downloading {
+                ProgressView(value: viewModel.progress)
+                    .progressViewStyle(.linear)
+            }
+            #endif
+        }
+        .safeArea {
+            VStack(spacing: GlobalConstants.pageLargeGapVertical) {
+                if viewModel.state == .installed, let action = viewModel.action {
+                    Button {
+                        actionButtonHandler()
+                    } label: {
+                        switch action {
+                        case .go:
+                            Text(verbatim: CelestiaString("Go", comment: "Go to an object"))
+                                .frame(maxWidth: .infinity)
+                        case .run:
+                            Text(verbatim: CelestiaString("Run", comment: "Run a script"))
+                                .frame(maxWidth: .infinity)
+                        }
+                    }
+                    .prominentGlassButtonStyle()
+                    #if targetEnvironment(macCatalyst)
+                    .controlSize(.large)
+                    #endif
+                }
+
+                HStack(spacing: GlobalConstants.pageMediumGapHorizontal) {
+                    #if os(iOS) && targetEnvironment(macCatalyst)
+                    if viewModel.state == .downloading {
+                        ProgressView(value: viewModel.progress)
+                            .progressViewStyle(.linear)
+                    }
+                    #endif
+                    
+                    Button {
+                        statusButtonHandler()
+                    } label: {
+                        switch viewModel.state {
+                        case .none:
+                            Text(verbatim: CelestiaString("Install", comment: "Install an add-on"))
+                                .frame(maxWidth: .infinity)
+                        case .downloading:
+                            Text(verbatim: CelestiaString("Cancel", comment: ""))
+                            #if !os(iOS) || !targetEnvironment(macCatalyst)
+                                .frame(maxWidth: .infinity)
+                            #endif
+                        case .installed:
+                            Text(verbatim: CelestiaString("Uninstall", comment: "Uninstall an add-on"))
+                                .frame(maxWidth: .infinity)
+                        }
+                    }
+                    .glassButtonStyle()
+                    #if targetEnvironment(macCatalyst)
+                    .controlSize(.large)
+                    #endif
+                }
+            }
+            .padding(EdgeInsets(top: GlobalConstants.pageMediumMarginVertical, leading: GlobalConstants.pageMediumMarginHorizontal, bottom: GlobalConstants.pageMediumMarginVertical, trailing: GlobalConstants.pageMediumMarginHorizontal))
+            .onGeometryChange(for: CGSize.self) { proxy in
+                proxy.size
+            } action: { newValue in
+                #if os(visionOS)
+                if #available(visionOS 26, *) {
+                    bottomSafeAreaHeight = newValue.height
+                }
+                #else
+                bottomSafeAreaHeight = newValue.height
+                #endif
+            }
+        }
+    }
+}
+
+public class ResourceItemViewController: UIViewController {
     private let needsRefetchItem: Bool
 
     #if targetEnvironment(macCatalyst)
     private lazy var toolbarShareItem: NSSharingServicePickerToolbarItem = {
         let item = NSSharingServicePickerToolbarItem(itemIdentifier: .share)
-        item.activityItemsConfiguration = UIActivityItemsConfiguration(objects: [URL.fromAddonForSharing(addonItemID: itemID, language: AppCore.language) as NSURL])
+        item.activityItemsConfiguration = UIActivityItemsConfiguration(objects: [URL.fromAddonForSharing(addonItemID: viewModel.item.id, language: AppCore.language) as NSURL])
         return item
     }()
     #endif
@@ -53,37 +200,19 @@ public class ResourceItemViewController: UIViewController {
     private lazy var goToButton = ActionButtonHelper.newButton(prominent: true, traitCollection: traitCollection)
     private lazy var buttonStack = UIStackView(arrangedSubviews: [goToButton, statusButtonContainer])
 
-    private let resourceManager: ResourceManager
-
-    private let actionHandler: ((CommonWebViewController.WebAction, UIViewController) -> Void)?
-    private let requestHandler: RequestHandler
-
-    private lazy var itemInfoController: CommonWebViewController = {
-        return CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromAddon(addonItemID: itemID, language: AppCore.language), requestHandler: requestHandler, actionHandler: actionHandler, matchingQueryKeys: ["item"], contextDirectory: resourceManager.contextDirectory(forAddon: item))
-    }()
-
     private var scrollViewTopToViewTopConstrant: NSLayoutConstraint?
     private var scrollViewTopToProgressViewBottomConstrant: NSLayoutConstraint?
-
-    private var currentState: ResourceItemState = .none
 
     private var viewIsVisible = false
     private var associatedUserActivity: NSUserActivity
 
-    private var bottomButtonContainerBoundsObservation: NSKeyValueObservation?
-
-    private let executor: AsyncProviderExecutor
+    private let viewModel: ResourceItemViewModel
 
     public init(executor: AsyncProviderExecutor, resourceManager: ResourceManager, item: ResourceItem, needsRefetchItem: Bool, requestHandler: RequestHandler, actionHandler: ((CommonWebViewController.WebAction, UIViewController) -> Void)?) {
-        self.executor = executor
-        self.resourceManager = resourceManager
-        self.itemID = item.id
-        self.actionHandler = actionHandler
-        self.requestHandler = requestHandler
-        self.item = item
+        viewModel = ResourceItemViewModel(item: item, executor: executor, resourceManager: resourceManager, requestHandler: requestHandler, actionHandler: actionHandler)
         self.needsRefetchItem = needsRefetchItem
         let userActivity = NSUserActivity(activityType: "space.celestia.celestia.addon-user-activity")
-        userActivity.webpageURL = URL.fromAddonForSharing(addonItemID: itemID, language: AppCore.language)
+        userActivity.webpageURL = URL.fromAddonForSharing(addonItemID: item.id, language: AppCore.language)
         userActivity.title = item.name
         userActivity.isEligibleForHandoff = true
         userActivity.isEligibleForSearch = true
@@ -107,11 +236,23 @@ public class ResourceItemViewController: UIViewController {
     public override func loadView() {
         view = UIView()
         view.backgroundColor = .systemBackground
-        setup()
     }
 
     public override func viewDidLoad() {
         super.viewDidLoad()
+
+        if #available(iOS 16, visionOS 1, *) {
+            let vc = UIHostingController(rootView: ResourceItemView(viewModel: viewModel, statusButtonHandler: { [weak self] in
+                guard let self else { return }
+                self.statusButtonClicked()
+            }, actionButtonHandler: { [weak self] in
+                guard let self else { return }
+                self.goToButtonClicked()
+            }))
+            install(vc)
+        } else {
+            setup()
+        }
 
         updateUI()
 
@@ -125,19 +266,6 @@ public class ResourceItemViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(handleWindowWillBecomeKey(_:)), name: Notification.Name("_UIWindowWillBecomeApplicationKeyNotification"), object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(handleWindowDidResignKey(_:)), name: Notification.Name("_UIWindowDidResignApplicationKeyNotification"), object: nil)
         #endif
-
-        if #available(iOS 26, visionOS 26, *), traitCollection.userInterfaceIdiom != .mac {
-            bottomButtonContainerBoundsObservation = buttonStack.observe(\.bounds, options: [.initial, .new], changeHandler: { [weak self] _, _ in
-                MainActor.assumeIsolated {
-                    guard let self else { return }
-                    self.itemInfoController.additionalSafeAreaInsets.bottom = self.buttonStack.bounds.height + GlobalConstants.pageMediumMarginVertical * 2
-                }
-            })
-            let edgeInteraction = UIScrollEdgeElementContainerInteraction()
-            edgeInteraction.scrollView = itemInfoController.webView.scrollView
-            edgeInteraction.edge = .bottom
-            buttonStack.addInteraction(edgeInteraction)
-        }
 
         // Fetch the latest item, this is needed as user might come
         // here from Installed where the URL might be incorrect
@@ -169,8 +297,8 @@ public class ResourceItemViewController: UIViewController {
     private func refresh() {
         Task {
             do {
-                let item = try await requestHandler.getMetadata(id: itemID, language: AppCore.language)
-                self.item = item
+                let item = try await viewModel.requestHandler.getMetadata(id: viewModel.item.id, language: AppCore.language)
+                self.viewModel.item = item
                 self.title = item.name
                 self.windowTitle = self.title
                 self.associatedUserActivity.title = item.name
@@ -183,45 +311,34 @@ public class ResourceItemViewController: UIViewController {
     }
 
     @objc private func goToButtonClicked() {
-        if item.type == "script" {
-            guard let mainScriptName = item.mainScriptName else { return }
-            var isDir: ObjCBool = false
-            guard let path = resourceManager.contextDirectory(forAddon: item)?.appendingPathComponent(mainScriptName).path,
-                  FileManager.default.fileExists(atPath: path, isDirectory: &isDir),
-                  !isDir.boolValue else {
-                return
-            }
+        guard let action = viewModel.action else { return }
+
+        switch action {
+        case let .go(selection):
             Task {
-                await executor.run { appCore in
-                    appCore.runScript(at: path)
+                await viewModel.executor.run { core in
+                    core.simulation.selection = selection
+                    core.receive(.goTo)
                 }
             }
-            return
-        }
-        guard let objectName = item.objectName else { return }
-        Task {
-            let object = await executor.get { core in
-                return core.simulation.findObject(from: objectName)
-            }
-            if object.isEmpty {
-                showError(CelestiaString("Object not found", comment: ""))
-                return
-            }
-            await executor.run { core in
-                core.simulation.selection = object
-                core.receive(.goTo)
+        case let .run(scriptPath):
+            Task {
+                await viewModel.executor.run { appCore in
+                    appCore.runScript(at: scriptPath)
+                }
             }
         }
+
     }
 
     @objc private func statusButtonClicked() {
-        if resourceManager.isInstalled(item: item) {
+        if viewModel.resourceManager.isInstalled(item: viewModel.item) {
             // Already installed, offer option for uninstalling
             showOption(CelestiaString("Do you want to uninstall this add-on?", comment: "")) { [weak self] confirm in
                 guard confirm, let self = self else { return }
                 do {
-                    try self.resourceManager.uninstall(item: self.item)
-                    self.currentState = .none
+                    try self.viewModel.resourceManager.uninstall(item: self.viewModel.item)
+                    self.viewModel.state = .none
                 } catch {
                     self.showError(CelestiaString("Unable to uninstall add-on.", comment: ""))
                 }
@@ -231,29 +348,30 @@ public class ResourceItemViewController: UIViewController {
         }
 
         // Cancel if already downloading
-        if resourceManager.isDownloading(identifier: itemID) {
+        if viewModel.resourceManager.isDownloading(identifier: viewModel.item.id) {
             showOption(CelestiaString("Do you want to cancel this task?", comment: "Prompt to ask to cancel downloading an add-on")) { [weak self] confirm in
-                guard confirm, let self = self, self.resourceManager.isDownloading(identifier: self.itemID) else { return }
-                self.resourceManager.cancel(identifier: self.itemID)
-                self.currentState = .none
+                guard confirm, let self = self, self.viewModel.resourceManager.isDownloading(identifier: self.viewModel.item.id) else { return }
+                self.viewModel.resourceManager.cancel(identifier: self.viewModel.item.id)
+                self.viewModel.state = .none
                 self.updateUI()
             }
             return
         }
 
         // Download
-        resourceManager.download(item: item)
-        currentState = .downloading
+        viewModel.resourceManager.download(item: viewModel.item)
+        viewModel.state = .downloading
         updateUI()
     }
 
     @objc private func shareAddon(_ sender: UIBarButtonItem) {
-        showShareSheet(for: URL.fromAddonForSharing(addonItemID: itemID, language: AppCore.language), source: .barButtonItem(barButtonItem: sender))
+        showShareSheet(for: URL.fromAddonForSharing(addonItemID: viewModel.item.id, language: AppCore.language), source: .barButtonItem(barButtonItem: sender))
     }
 }
 
 private extension ResourceItemViewController {
     func setup() {
+        let itemInfoController = CommonWebViewController(executor: viewModel.executor, resourceManager: viewModel.resourceManager, url: .fromAddon(addonItemID: viewModel.item.id, language: AppCore.language), requestHandler: viewModel.requestHandler, actionHandler: viewModel.actionHandler, matchingQueryKeys: ["item"], contextDirectory: viewModel.resourceManager.contextDirectory(forAddon: viewModel.item))
         addChild(itemInfoController)
 
         itemInfoController.view.translatesAutoresizingMaskIntoConstraints = false
@@ -296,35 +414,31 @@ private extension ResourceItemViewController {
         buttonStack.spacing = GlobalConstants.pageLargeGapVertical
         buttonStack.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(buttonStack)
-        if #available(iOS 26, visionOS 26, *), traitCollection.userInterfaceIdiom != .mac {
-            itemInfoController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        }
-        else {
-            buttonStack.topAnchor.constraint(equalTo: itemInfoController.view.bottomAnchor, constant: GlobalConstants.pageMediumGapVertical).isActive = true
-        }
         NSLayoutConstraint.activate([
             buttonStack.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -GlobalConstants.pageMediumMarginVertical),
             buttonStack.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: GlobalConstants.pageMediumMarginHorizontal),
-            buttonStack.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -GlobalConstants.pageMediumMarginHorizontal)
+            buttonStack.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -GlobalConstants.pageMediumMarginHorizontal),
+            buttonStack.topAnchor.constraint(equalTo: itemInfoController.view.bottomAnchor, constant: GlobalConstants.pageMediumGapVertical),
         ])
         goToButton.addTarget(self, action: #selector(goToButtonClicked), for: .touchUpInside)
         statusButton.addTarget(self, action: #selector(statusButtonClicked), for: .touchUpInside)
     }
 
     private func updateUI() {
-        if resourceManager.isInstalled(item: item) {
-            currentState = .installed
+        if viewModel.resourceManager.isInstalled(item: viewModel.item) {
+            viewModel.state = .installed
         }
-        if resourceManager.isDownloading(identifier: itemID) {
-            currentState = .downloading
+        if viewModel.resourceManager.isDownloading(identifier: viewModel.item.id) {
+            viewModel.state = .downloading
         }
 
-        goToButton.setTitle(item.type == "script" ? CelestiaString("Run", comment: "Run a script") : CelestiaString("Go", comment: "Go to an object"), for: .normal)
+        goToButton.setTitle(viewModel.item.type == "script" ? CelestiaString("Run", comment: "Run a script") : CelestiaString("Go", comment: "Go to an object"), for: .normal)
 
-        switch currentState {
+        switch viewModel.state {
         case .none:
             progressView.isHidden = true
             progressView.progress = 0
+            viewModel.progress = 0
             statusButton.setTitle(CelestiaString("Install", comment: "Install an add-on"), for: .normal)
             if traitCollection.userInterfaceIdiom == .mac {
             } else {
@@ -342,6 +456,7 @@ private extension ResourceItemViewController {
         case .installed:
             progressView.isHidden = true
             progressView.progress = 0
+            viewModel.progress = 0
             statusButton.setTitle(CelestiaString("Uninstall", comment: "Uninstall an add-on"), for: .normal)
             if traitCollection.userInterfaceIdiom == .mac {
             } else {
@@ -350,26 +465,31 @@ private extension ResourceItemViewController {
             }
         }
 
-        if item.type == "script" {
-            if currentState == .installed, let mainScriptName = item.mainScriptName {
+        if viewModel.item.type == "script" {
+            if viewModel.state == .installed, let mainScriptName = viewModel.item.mainScriptName {
                 var isDir: ObjCBool = false
-                if let path = resourceManager.contextDirectory(forAddon: item)?.appendingPathComponent(mainScriptName).path,
+                if let path = viewModel.resourceManager.contextDirectory(forAddon: viewModel.item)?.appendingPathComponent(mainScriptName).path,
                    FileManager.default.fileExists(atPath: path, isDirectory: &isDir),
                    !isDir.boolValue {
+                    viewModel.action = nil
                     goToButton.isHidden = false
                 } else {
+                    viewModel.action = nil
                     goToButton.isHidden = true
                 }
             } else {
+                viewModel.action = nil
                 goToButton.isHidden = true
             }
         } else {
-            if currentState == .installed, let objectName = item.objectName {
+            if viewModel.state == .installed, let objectName = viewModel.item.objectName {
                 Task {
-                    let exists = await executor.get { !$0.simulation.findObject(from: objectName).isEmpty }
-                    goToButton.isHidden = !exists
+                    let selection = await viewModel.executor.get { $0.simulation.findObject(from: objectName) }
+                    viewModel.action = selection.isEmpty ? nil : .go(selection: selection)
+                    goToButton.isHidden = selection.isEmpty
                 }
             } else {
+                viewModel.action = nil
                 goToButton.isHidden = true
             }
         }
@@ -378,7 +498,7 @@ private extension ResourceItemViewController {
 
 private extension ResourceItemViewController {
     @objc private func downloadProgress(_ notification: Notification) {
-        guard let identifier = notification.userInfo?[ResourceManager.downloadIdentifierKey] as? String, identifier == itemID else {
+        guard let identifier = notification.userInfo?[ResourceManager.downloadIdentifierKey] as? String, identifier == viewModel.item.id else {
             return
         }
 
@@ -386,12 +506,13 @@ private extension ResourceItemViewController {
             return
         }
 
+        self.viewModel.progress = Float(progress)
         self.progressView.progress = Float(progress)
         self.updateUI()
     }
 
     @objc private func downloadSuccess(_ notification: Notification) {
-        guard let identifier = notification.userInfo?[ResourceManager.downloadIdentifierKey] as? String, identifier == itemID else {
+        guard let identifier = notification.userInfo?[ResourceManager.downloadIdentifierKey] as? String, identifier == viewModel.item.id else {
             return
         }
 
@@ -399,13 +520,13 @@ private extension ResourceItemViewController {
     }
 
     @objc private func resourceFetchError(_ notification: Notification) {
-        guard let identifier = notification.userInfo?[ResourceManager.downloadIdentifierKey] as? String, identifier == itemID else {
+        guard let identifier = notification.userInfo?[ResourceManager.downloadIdentifierKey] as? String, identifier == viewModel.item.id else {
             return
         }
         guard let error = notification.userInfo?[ResourceManager.resourceErrorKey] as? ResourceManager.ResourceError else {
             return
         }
-        self.currentState = .none
+        self.viewModel.state = .none
         self.updateUI()
 
         let message: String?
@@ -428,10 +549,10 @@ private extension ResourceItemViewController {
     }
 
     @objc private func unzipSuccess(_ notification: Notification) {
-        guard let identifier = notification.userInfo?[ResourceManager.downloadIdentifierKey] as? String, identifier == itemID else {
+        guard let identifier = notification.userInfo?[ResourceManager.downloadIdentifierKey] as? String, identifier == viewModel.item.id else {
             return
         }
-        self.currentState = .installed
+        self.viewModel.state = .installed
         self.updateUI()
     }
 }
