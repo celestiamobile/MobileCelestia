@@ -11,7 +11,7 @@ import CelestiaCore
 import SwiftUI
 import UIKit
 
-@available(iOS 15, visionOS 1, *)
+@available(iOS 26, visionOS 26, *)
 private struct DestinationDetailView: View {
     let destination: Destination
     let goToHandler: () -> Void
@@ -27,7 +27,7 @@ private struct DestinationDetailView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(EdgeInsets(top: GlobalConstants.pageMediumMarginVertical, leading: GlobalConstants.pageMediumMarginHorizontal, bottom: GlobalConstants.pageMediumMarginVertical, trailing: GlobalConstants.pageMediumMarginHorizontal))
         }
-        .safeArea {
+        .safeAreaBar(edge: .bottom) {
             Button {
                 goToHandler()
             } label: {
@@ -79,7 +79,7 @@ class DestinationDetailViewController: UIViewController {
 
         title = destination.name
         windowTitle = title
-        if #available(iOS 15, visionOS 1, *) {
+        if #available(iOS 26, visionOS 26, *) {
             let vc = UIHostingController(rootView: DestinationDetailView(destination: destination, goToHandler: { [weak self] in
                 guard let self else { return }
                 self.goToHandler()

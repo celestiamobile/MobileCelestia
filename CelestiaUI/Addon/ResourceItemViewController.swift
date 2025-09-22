@@ -24,7 +24,6 @@ enum ResourceItemState {
     case installed
 }
 
-@available(iOS 16, visionOS 1, *)
 private struct WebInfoView: UIViewControllerRepresentable {
     let executor: AsyncProviderExecutor
     let resourceManager: ResourceManager
@@ -71,7 +70,7 @@ private class ResourceItemViewModel: ObservableObject {
     }
 }
 
-@available(iOS 16, visionOS 1, *)
+@available(iOS 26, visionOS 26, *)
 private struct ResourceItemView: View {
     @ObservedObject var viewModel: ResourceItemViewModel
     @State var bottomSafeAreaHeight: CGFloat = 0
@@ -99,7 +98,7 @@ private struct ResourceItemView: View {
             }
             #endif
         }
-        .safeArea {
+        .safeAreaBar(edge: .bottom) {
             VStack(spacing: GlobalConstants.pageLargeGapVertical) {
                 if viewModel.state == .installed, let action = viewModel.action {
                     Button {
@@ -241,7 +240,7 @@ public class ResourceItemViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
 
-        if #available(iOS 16, visionOS 1, *) {
+        if #available(iOS 26, visionOS 26, *) {
             let vc = UIHostingController(rootView: ResourceItemView(viewModel: viewModel, statusButtonHandler: { [weak self] in
                 guard let self else { return }
                 self.statusButtonClicked()

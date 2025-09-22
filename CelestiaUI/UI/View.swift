@@ -9,34 +9,7 @@
 
 import SwiftUI
 
-@available(iOS 15, visionOS 1, *)
-extension View {
-    func safeArea(@ViewBuilder content: () -> some View) -> some View {
-        #if os(visionOS)
-        if #available(visionOS 26, *) {
-            return safeAreaBar(edge: .bottom, content: content)
-        } else {
-            return VStack {
-                self
-                Spacer()
-                content()
-            }
-        }
-        #else
-        if #available(iOS 26, *) {
-            return safeAreaBar(edge: .bottom, content: content)
-        } else {
-            return safeAreaInset(edge: .bottom) {
-                ZStack(content: content)
-                    .frame(maxWidth: .infinity)
-                    .background()
-            }
-        }
-        #endif
-    }
-}
-
-@available(iOS 15, visionOS 1, *)
+@available(iOS 26, visionOS 26, *)
 extension View {
     @ViewBuilder func glassButtonStyle(prominent: Bool) -> some View {
         if prominent {
@@ -51,20 +24,8 @@ extension View {
         return self
             .buttonStyle(.borderedProminent)
             .tint(Color(uiColor: .buttonBackground))
-        #elseif targetEnvironment(macCatalyst)
-        if #available(iOS 26, *) {
-            return self.buttonStyle(.glass)
-        } else {
-            return self.buttonStyle(.borderedProminent)
-        }
         #else
-        if #available(iOS 26, *) {
-            return self.buttonStyle(.glass)
-        } else {
-            return self
-                .buttonStyle(.borderedProminent)
-                .tint(Color(uiColor: .buttonBackground))
-        }
+        return self.buttonStyle(.glass)
         #endif
     }
 
@@ -74,21 +35,11 @@ extension View {
             .buttonStyle(.borderedProminent)
             .tint(Color(uiColor: .buttonBackground))
         #elseif targetEnvironment(macCatalyst)
-        if #available(iOS 26, *) {
-            return self.buttonStyle(.glassProminent)
-        } else {
-            return self.buttonStyle(.borderedProminent)
-        }
+        return self.buttonStyle(.glassProminent)
         #else
-        if #available(iOS 26, *) {
-            return self
-                .buttonStyle(.glassProminent)
-                .tint(Color(uiColor: .buttonBackground))
-        } else {
-            return self
-                .buttonStyle(.borderedProminent)
-                .tint(Color(uiColor: .buttonBackground))
-        }
+        return self
+            .buttonStyle(.glassProminent)
+            .tint(Color(uiColor: .buttonBackground))
         #endif
     }
 }
