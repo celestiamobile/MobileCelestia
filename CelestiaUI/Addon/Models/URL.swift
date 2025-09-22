@@ -12,7 +12,8 @@ import Foundation
 public extension URL {
     private static let apiPrefix = "https://celestia.mobi/api"
 
-    static func fromGuide(guideItemID: String, language: String, shareable: Bool? = nil) -> URL {
+    @MainActor
+    static func fromGuide(guideItemID: String, language: String, shareable: Bool? = nil, subscriptionManager: SubscriptionManager? = nil) -> URL {
         let baseURL = "https://celestia.mobi/resources/guide"
         var components = URLComponents(string: baseURL)!
         #if os(visionOS)
@@ -30,6 +31,15 @@ public extension URL {
             URLQueryItem(name: "platform", value: platform),
             URLQueryItem(name: "transparentBackground", value: "true"),
         ]
+        if #available(iOS 15, *), let subscriptionManager {
+            if let (transactionID, isSandbox) = subscriptionManager.transactionInfo() {
+                queryItems.append(URLQueryItem(name: "transactionIdApple", value: "\(transactionID)"))
+                queryItems.append(URLQueryItem(name: "isSandboxApple", value: isSandbox ? "1" : "0"))
+            } else {
+                queryItems.append(URLQueryItem(name: "transactionIdApple", value: ""))
+                queryItems.append(URLQueryItem(name: "isSandboxApple", value: "1"))
+            }
+        }
         if let shareable = shareable {
             queryItems.append(URLQueryItem(name: "share", value: shareable ? "true" : "false"))
         }

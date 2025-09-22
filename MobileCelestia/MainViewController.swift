@@ -289,7 +289,7 @@ extension MainViewController {
         if let guide = guideToOpen {
             // Need to wrap it in a NavVC without NavBar to make sure
             // the scrolling behavior is correct on macCatalyst
-            let vc = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromGuide(guideItemID: guide, language: locale), requestHandler: requestHandler, actionHandler: commonWebActionHandler, matchingQueryKeys: ["guide"])
+            let vc = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromGuide(guideItemID: guide, language: locale, subscriptionManager: subscriptionManager), requestHandler: requestHandler, actionHandler: commonWebActionHandler, matchingQueryKeys: ["guide"])
             let nav = BaseNavigationController(rootViewController: vc)
             nav.setNavigationBarHidden(true, animated: false)
             showViewController(nav, key: guide, prefersMediumDetent: true, titleVisible: false)
@@ -314,7 +314,7 @@ extension MainViewController {
             do {
                 let item = try await requestHandler.getLatestMetadata(language: locale)
                 if userDefaults[.lastNewsID] == item.id { return }
-                let vc = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromGuide(guideItemID: item.id, language: locale), requestHandler: requestHandler, actionHandler: { [weak self] action, viewController in
+                let vc = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromGuide(guideItemID: item.id, language: locale, subscriptionManager: subscriptionManager), requestHandler: requestHandler, actionHandler: { [weak self] action, viewController in
                     guard let self else { return }
                     if case let CommonWebViewController.WebAction.ack(id) = action, id == item.id {
                         self.userDefaults[.lastNewsID] = id
