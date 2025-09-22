@@ -8,39 +8,131 @@
 // of the License, or (at your option) any later version.
 
 import CelestiaCore
+import Observation
 import SwiftUI
 import UIKit
 
 @available(iOS 26, visionOS 26, *)
+@Observable
+class TextViewModel {
+    var text: String = ""
+    var safeAreaInsets: EdgeInsets = EdgeInsets()
+    var padding: EdgeInsets = EdgeInsets()
+    var color: UIColor = .label
+    var font: UIFont = .preferredFont(forTextStyle: .body)
+}
+
+@available(iOS 26, visionOS 26, *)
+private class ScrollableTextView: UIScrollView {
+    private let textView = UITextView()
+    private let viewModel: TextViewModel
+    private var topMarginConstraint: NSLayoutConstraint?
+    private var bottomMarginConstraint: NSLayoutConstraint?
+    private var leadingMarginConstraint: NSLayoutConstraint?
+    private var trailingMarginConstraint: NSLayoutConstraint?
+
+    init(frame: CGRect, viewModel: TextViewModel) {
+        self.viewModel = viewModel
+
+        super.init(frame: frame)
+
+        textView.backgroundColor = .clear
+        textView.textContainer.maximumNumberOfLines = 0
+        textView.textContainerInset = .zero
+        textView.textContainer.lineFragmentPadding = 0
+        textView.isScrollEnabled = false
+        textView.isEditable = false
+        textView.adjustsFontForContentSizeCategory = true
+        textView.textContainer.lineBreakMode = .byWordWrapping
+
+        addSubview(textView)
+        textView.translatesAutoresizingMaskIntoConstraints = false
+
+        topMarginConstraint = textView.topAnchor.constraint(equalTo: contentLayoutGuide.topAnchor)
+        bottomMarginConstraint = textView.bottomAnchor.constraint(equalTo: contentLayoutGuide.bottomAnchor)
+        leadingMarginConstraint = textView.leadingAnchor.constraint(equalTo: contentLayoutGuide.leadingAnchor)
+        trailingMarginConstraint = textView.trailingAnchor.constraint(equalTo: contentLayoutGuide.trailingAnchor)
+
+        NSLayoutConstraint.activate([
+            contentLayoutGuide.widthAnchor.constraint(equalTo: widthAnchor),
+        ])
+
+        NSLayoutConstraint.activate([topMarginConstraint, bottomMarginConstraint, leadingMarginConstraint, trailingMarginConstraint].compactMap { $0 })
+    }
+
+    override func updateProperties() {
+        super.updateProperties()
+
+        textView.text = viewModel.text
+        textView.textColor = viewModel.color
+        textView.font = viewModel.font
+    }
+
+    override func updateConstraints() {
+        topMarginConstraint?.constant = viewModel.padding.top + viewModel.safeAreaInsets.top
+        bottomMarginConstraint?.constant = -(viewModel.padding.bottom + viewModel.safeAreaInsets.bottom)
+        leadingMarginConstraint?.constant = viewModel.padding.leading + viewModel.safeAreaInsets.leading
+        trailingMarginConstraint?.constant = -(viewModel.padding.trailing + viewModel.safeAreaInsets.trailing)
+
+        super.updateConstraints()
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+}
+
+@available(iOS 26, visionOS 26, *)
+private struct ReadOnlyText: UIViewRepresentable {
+    let viewModel: TextViewModel
+
+    func makeUIView(context: Context) -> ScrollableTextView {
+        let view = ScrollableTextView(frame: .zero, viewModel: viewModel)
+        view.contentInsetAdjustmentBehavior = .never
+        return view
+    }
+
+    func updateUIView(_ uiView: ScrollableTextView, context: Context) {}
+}
+
+@available(iOS 26, visionOS 26, *)
 private struct DestinationDetailView: View {
-    let destination: Destination
-    let goToHandler: () -> Void
+    private let destination: Destination
+    private let viewModel: TextViewModel
+    private let goToHandler: () -> Void
+
+    init(destination: Destination, goToHandler: @escaping () -> Void) {
+        self.destination = destination
+        self.goToHandler = goToHandler
+        let viewModel = TextViewModel()
+        viewModel.text = destination.content
+        viewModel.font = UIFont.preferredFont(forTextStyle: .body)
+        viewModel.color = .secondaryLabel
+        viewModel.padding = EdgeInsets(top: GlobalConstants.pageMediumMarginVertical, leading: GlobalConstants.pageMediumMarginHorizontal, bottom: GlobalConstants.pageMediumMarginVertical, trailing: GlobalConstants.pageMediumMarginHorizontal)
+        self.viewModel = viewModel
+    }
 
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading) {
-                Text(verbatim: destination.content)
-                    .textSelection(.enabled)
-                    .font(.body)
-                    .foregroundStyle(.secondary)
+        ReadOnlyText(viewModel: viewModel)
+            .ignoresSafeArea()
+            .onGeometryChange(for: EdgeInsets.self) { proxy in
+                proxy.safeAreaInsets
+            } action: { newValue in
+                viewModel.safeAreaInsets = newValue
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .padding(EdgeInsets(top: GlobalConstants.pageMediumMarginVertical, leading: GlobalConstants.pageMediumMarginHorizontal, bottom: GlobalConstants.pageMediumMarginVertical, trailing: GlobalConstants.pageMediumMarginHorizontal))
-        }
-        .safeAreaBar(edge: .bottom) {
-            Button {
-                goToHandler()
-            } label: {
-                Text(verbatim: CelestiaString("Go", comment: "Go to an object"))
-                    .frame(maxWidth: .infinity)
+            .safeAreaBar(edge: .bottom) {
+                Button {
+                    goToHandler()
+                } label: {
+                    Text(verbatim: CelestiaString("Go", comment: "Go to an object"))
+                        .frame(maxWidth: .infinity)
+                }
+                .padding(EdgeInsets(top: GlobalConstants.pageMediumMarginVertical, leading: GlobalConstants.pageMediumMarginHorizontal, bottom: GlobalConstants.pageMediumMarginVertical, trailing: GlobalConstants.pageMediumMarginHorizontal))
+                .prominentGlassButtonStyle()
+                #if targetEnvironment(macCatalyst)
+                .controlSize(.large)
+                #endif
             }
-            .padding(EdgeInsets(top: GlobalConstants.pageMediumMarginVertical, leading: GlobalConstants.pageMediumMarginHorizontal, bottom: GlobalConstants.pageMediumMarginVertical, trailing: GlobalConstants.pageMediumMarginHorizontal))
-            .prominentGlassButtonStyle()
-            #if targetEnvironment(macCatalyst)
-            .controlSize(.large)
-            #endif
-        }
-        .frame(maxWidth: .infinity)
     }
 }
 
@@ -134,7 +226,8 @@ private extension DestinationDetailViewController {
         descriptionLabel.textColor = .secondaryLabel
         descriptionLabel.backgroundColor = .clear
         descriptionLabel.textContainer.maximumNumberOfLines = 0
-        descriptionLabel.textContainerInset = UIEdgeInsets(top: 0, left: -descriptionLabel.textContainer.lineFragmentPadding, bottom: 0, right: -descriptionLabel.textContainer.lineFragmentPadding)
+        descriptionLabel.textContainerInset = .zero
+        descriptionLabel.textContainer.lineFragmentPadding = 0
         descriptionLabel.isScrollEnabled = false
         descriptionLabel.isEditable = false
         descriptionLabel.adjustsFontForContentSizeCategory = true

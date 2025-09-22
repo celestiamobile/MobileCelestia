@@ -33,10 +33,10 @@ private struct WebInfoView: UIViewControllerRepresentable {
     let matchingQueryKeys: [String]
     let contextDirectory: URL?
     let filterURL: Bool
-    @Binding var bottomSafeAreaHeight: CGFloat
+    @Binding var additionalSafeAreaBottomInset: CGFloat
 
     func updateUIViewController(_ uiViewController: CommonWebViewController, context: Context) {
-        uiViewController.additionalSafeAreaInsets.bottom = bottomSafeAreaHeight
+        uiViewController.additionalSafeAreaInsets.bottom = additionalSafeAreaBottomInset
     }
     
     func makeUIViewController(context: Context) -> CommonWebViewController {
@@ -73,7 +73,7 @@ private class ResourceItemViewModel: ObservableObject {
 @available(iOS 26, visionOS 26, *)
 private struct ResourceItemView: View {
     @ObservedObject var viewModel: ResourceItemViewModel
-    @State var bottomSafeAreaHeight: CGFloat = 0
+    @State var additionalSafeAreaBottomInset: CGFloat = 0
     let statusButtonHandler: () -> Void
     let actionButtonHandler: () -> Void
 
@@ -88,7 +88,7 @@ private struct ResourceItemView: View {
                 matchingQueryKeys: ["item"],
                 contextDirectory: viewModel.resourceManager.contextDirectory(forAddon: viewModel.item),
                 filterURL: true,
-                bottomSafeAreaHeight: $bottomSafeAreaHeight
+                additionalSafeAreaBottomInset: $additionalSafeAreaBottomInset
             )
             .ignoresSafeArea()
             #if !os(iOS) || !targetEnvironment(macCatalyst)
@@ -154,13 +154,7 @@ private struct ResourceItemView: View {
             .onGeometryChange(for: CGSize.self) { proxy in
                 proxy.size
             } action: { newValue in
-                #if os(visionOS)
-                if #available(visionOS 26, *) {
-                    bottomSafeAreaHeight = newValue.height
-                }
-                #else
-                bottomSafeAreaHeight = newValue.height
-                #endif
+                additionalSafeAreaBottomInset = newValue.height
             }
         }
     }
