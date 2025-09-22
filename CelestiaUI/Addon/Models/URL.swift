@@ -30,6 +30,7 @@ public extension URL {
             URLQueryItem(name: "lang", value: language),
             URLQueryItem(name: "platform", value: platform),
             URLQueryItem(name: "transparentBackground", value: "true"),
+            URLQueryItem(name: "api", value: "2"),
         ]
         if #available(iOS 15, *), let subscriptionManager {
             if let (transactionID, isSandbox) = subscriptionManager.transactionInfo() {
@@ -64,6 +65,7 @@ public extension URL {
             URLQueryItem(name: "lang", value: language),
             URLQueryItem(name: "platform", value: platform),
             URLQueryItem(name: "transparentBackground", value: "true"),
+            URLQueryItem(name: "api", value: "2"),
         ]
         if let shareable = shareable {
             queryItems.append(URLQueryItem(name: "share", value: shareable ? "true" : "false"))
@@ -90,6 +92,7 @@ public extension URL {
             URLQueryItem(name: "platform", value: platform),
             URLQueryItem(name: "titleVisibility", value: "collapsed"),
             URLQueryItem(name: "transparentBackground", value: "true"),
+            URLQueryItem(name: "api", value: "2"),
         ]
         return components.url!
     }

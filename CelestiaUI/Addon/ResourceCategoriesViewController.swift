@@ -77,7 +77,7 @@ private extension URL {
         queryItems.append(contentsOf: [
             URLQueryItem(name: "lang", value: AppCore.language),
             URLQueryItem(name: "platform", value: platform),
-            URLQueryItem(name: "api", value: "1"),
+            URLQueryItem(name: "api", value: "2"),
             URLQueryItem(name: "transparentBackground", value: "true"),
         ])
         if let category {
