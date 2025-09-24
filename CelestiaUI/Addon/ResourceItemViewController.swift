@@ -234,7 +234,7 @@ public class ResourceItemViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
 
-        if #available(iOS 26, visionOS 26, *) {
+        if #available(iOS 26, visionOS 26, *), traitCollection.userInterfaceIdiom != .vision {
             let vc = UIHostingController(rootView: ResourceItemView(viewModel: viewModel, statusButtonHandler: { [weak self] in
                 guard let self else { return }
                 self.statusButtonClicked()
