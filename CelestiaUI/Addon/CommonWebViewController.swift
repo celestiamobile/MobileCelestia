@@ -79,6 +79,7 @@ public class CommonWebViewController: UIViewController {
         self.contextDirectory = contextDirectory
         self.filterURL = filterURL
         let configuration = WKWebViewConfiguration()
+        configuration.limitsNavigationsToAppBoundDomains = true
         let handler = CelestiaScriptHandler()
         configuration.userContentController.add(handler, name: "iOSCelestia")
         webView = WKWebView(frame: .zero, configuration: configuration)

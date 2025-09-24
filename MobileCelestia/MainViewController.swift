@@ -253,7 +253,7 @@ extension MainViewController {
         openURLOrScriptOrGreeting()
     }
 
-    private func openURLOrScriptOrGreeting() {
+    private func openURLOrScriptOrGreeting(prefersMediumDetent: Bool = false) {
         func cleanup() {
             // Just clean up everything, only the first message gets presented
             addonToOpen = nil
@@ -264,7 +264,7 @@ extension MainViewController {
         let onboardMessageDisplayed: Bool? = userDefaults[.onboardMessageDisplayed]
         if onboardMessageDisplayed == nil {
             userDefaults[.onboardMessageDisplayed] = true
-            presentHelp(prefersMediumDetent: true)
+            presentHelp(prefersMediumDetent: prefersMediumDetent)
             cleanup()
             return
         }
@@ -292,7 +292,7 @@ extension MainViewController {
             let vc = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromGuide(guideItemID: guide, language: locale, subscriptionManager: subscriptionManager), requestHandler: requestHandler, actionHandler: commonWebActionHandler, matchingQueryKeys: ["guide"])
             let nav = BaseNavigationController(rootViewController: vc)
             nav.setNavigationBarHidden(true, animated: false)
-            showViewController(nav, key: guide, prefersMediumDetent: true, titleVisible: false)
+            showViewController(nav, key: guide, prefersMediumDetent: prefersMediumDetent, titleVisible: false)
             cleanup()
             return
         }
@@ -302,7 +302,7 @@ extension MainViewController {
                 do {
                     let item = try await requestHandler.getMetadata(id: addon, language: locale)
                     let nav = ToolbarNavigationContainerController(rootViewController: ResourceItemViewController(executor: executor, resourceManager: resourceManager, item: item, needsRefetchItem: false, requestHandler: requestHandler, actionHandler: commonWebActionHandler))
-                    self.showViewController(nav, key: addon, prefersMediumDetent: true, customToolbar: true)
+                    self.showViewController(nav, key: addon, prefersMediumDetent: prefersMediumDetent, customToolbar: true)
                 } catch {}
             }
             cleanup()
@@ -324,7 +324,7 @@ extension MainViewController {
                 }, matchingQueryKeys: ["guide"])
                 let nav = BaseNavigationController(rootViewController: vc)
                 nav.setNavigationBarHidden(true, animated: false)
-                self.showViewController(nav, key: item.id, prefersMediumDetent: true, titleVisible: false)
+                self.showViewController(nav, key: item.id, prefersMediumDetent: prefersMediumDetent, titleVisible: false)
             } catch {}
         }
     }
@@ -584,15 +584,11 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     func celestiaControllerLoadingFailed(_ celestiaController: CelestiaViewController) {
-        print("loading failed")
-
         self.status = .loadingFailed
         self.loadingController.update(with: CelestiaString("Loading Celestia failed…", comment: "Celestia loading failed"))
     }
 
     func celestiaControllerLoadingSucceeded(_ celestiaController: CelestiaViewController) {
-        print("loading success")
-
         self.status = .loaded
         self.loadingController.remove()
         #if targetEnvironment(macCatalyst)
@@ -602,7 +598,7 @@ extension MainViewController: CelestiaControllerDelegate {
         UIMenuSystem.main.setNeedsRebuild()
         UIApplication.shared.isIdleTimerDisabled = true
 
-        self.openURLOrScriptOrGreeting()
+        openURLOrScriptOrGreeting(prefersMediumDetent: true)
     }
 
     func celestiaControllerRequestShowActionMenu(_ celestiaController: CelestiaViewController) {

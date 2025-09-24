@@ -227,5 +227,9 @@
 	</dict>
 	<key>UIUserInterfaceStyle</key>
 	<string>Dark</string>
+	<key>WKAppBoundDomains</key>
+	<array>
+		<string>celestia.mobi</string>
+	</array>
 </dict>
 </plist>
