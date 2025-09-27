@@ -12,6 +12,13 @@ import UIKit
 public final class TextViewController: UIViewController {
     private let text: String
 
+    private var topMarginConstraint: NSLayoutConstraint?
+    private var bottomMarginConstraint: NSLayoutConstraint?
+    private var leadingMarginConstraint: NSLayoutConstraint?
+    private var trailingMarginConstraint: NSLayoutConstraint?
+
+    private lazy var scrollView = UIScrollView()
+
     public init(title: String, text: String) {
         self.text = text
         super.init(nibName: nil, bundle: nil)
@@ -24,7 +31,7 @@ public final class TextViewController: UIViewController {
     }
 
     public override func loadView() {
-        view = UIView()
+        view = scrollView
         #if !os(visionOS)
         view.backgroundColor = .systemBackground
         #endif
@@ -35,31 +42,51 @@ public final class TextViewController: UIViewController {
 
         setUp()
     }
+
+    public override func updateViewConstraints() {
+        let rtl = view.effectiveUserInterfaceLayoutDirection == .rightToLeft
+        topMarginConstraint?.constant = GlobalConstants.pageMediumMarginVertical + view.safeAreaInsets.top
+        bottomMarginConstraint?.constant = -(GlobalConstants.pageMediumMarginVertical + view.safeAreaInsets.bottom)
+        leadingMarginConstraint?.constant = GlobalConstants.pageMediumMarginHorizontal + (rtl ? view.safeAreaInsets.right : view.safeAreaInsets.left)
+        trailingMarginConstraint?.constant = -(GlobalConstants.pageMediumMarginHorizontal + (rtl ? view.safeAreaInsets.left : view.safeAreaInsets.right))
+
+        super.updateViewConstraints()
+    }
+
+    public override func viewSafeAreaInsetsDidChange() {
+        super.viewSafeAreaInsetsDidChange()
+
+        view.setNeedsUpdateConstraints()
+    }
 }
 
 private extension TextViewController {
     func setUp() {
         let textView = UITextView()
         textView.backgroundColor = .clear
+        textView.textContainerInset = .zero
+        textView.textContainer.lineFragmentPadding = 0
+        textView.isScrollEnabled = false
         textView.isEditable = false
         textView.textColor = .label
-        textView.adjustsFontForContentSizeCategory = true
-        textView.contentInsetAdjustmentBehavior = .always
         textView.font = UIFont.preferredFont(forTextStyle: .footnote)
-        textView.contentInset = UIEdgeInsets(top: GlobalConstants.pageMediumMarginVertical, left: GlobalConstants.pageMediumMarginHorizontal, bottom: GlobalConstants.pageMediumMarginVertical, right: GlobalConstants.pageMediumMarginHorizontal)
-
-        textView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(textView)
-
-        NSLayoutConstraint.activate([
-            textView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            textView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            textView.topAnchor.constraint(equalTo: view.topAnchor),
-            textView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-        ])
-
+        textView.adjustsFontForContentSizeCategory = true
+        textView.textContainer.lineBreakMode = .byWordWrapping
         textView.text = text
 
-        edgesForExtendedLayout = []
+        scrollView.contentInsetAdjustmentBehavior = .never
+        scrollView.addSubview(textView)
+        textView.translatesAutoresizingMaskIntoConstraints = false
+
+        topMarginConstraint = textView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor)
+        bottomMarginConstraint = textView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor)
+        leadingMarginConstraint = textView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor)
+        trailingMarginConstraint = textView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor)
+
+        NSLayoutConstraint.activate([
+            scrollView.contentLayoutGuide.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+        ])
+
+        NSLayoutConstraint.activate([topMarginConstraint, bottomMarginConstraint, leadingMarginConstraint, trailingMarginConstraint].compactMap { $0 })
     }
 }
