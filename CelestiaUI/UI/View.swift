@@ -21,9 +21,7 @@ extension View {
 
     func glassButtonStyle() -> some View {
         #if os(visionOS)
-        return self
-            .buttonStyle(.borderedProminent)
-            .tint(Color(uiColor: .buttonBackground))
+        return self.buttonStyle(.borderedProminent)
         #else
         return self.buttonStyle(.glass)
         #endif
@@ -31,15 +29,9 @@ extension View {
 
     func prominentGlassButtonStyle() -> some View {
         #if os(visionOS)
-        return self
-            .buttonStyle(.borderedProminent)
-            .tint(Color(uiColor: .buttonBackground))
-        #elseif targetEnvironment(macCatalyst)
-        return self.buttonStyle(.glassProminent)
+        return self.buttonStyle(.borderedProminent)
         #else
-        return self
-            .buttonStyle(.glassProminent)
-            .tint(Color(uiColor: .buttonBackground))
+        return self.buttonStyle(.glassProminent)
         #endif
     }
 }

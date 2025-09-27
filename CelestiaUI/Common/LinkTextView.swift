@@ -47,9 +47,6 @@ public class LinkTextView: UIView {
         textView.isEditable = false
         textView.adjustsFontForContentSizeCategory = true
         textView.textContainer.lineBreakMode = .byWordWrapping
-        #if !targetEnvironment(macCatalyst)
-        textView.linkTextAttributes[.foregroundColor] = UIColor.themeLabel
-        #endif
 
         addSubview(textView)
         textView.translatesAutoresizingMaskIntoConstraints = false

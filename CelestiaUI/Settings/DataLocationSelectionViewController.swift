@@ -102,11 +102,7 @@ extension DataLocationSelectionViewController {
         case .action(let title):
             let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
             cell.title = title
-            #if targetEnvironment(macCatalyst)
             cell.titleColor = cell.tintColor
-            #else
-            cell.titleColor = UIColor.themeLabel
-            #endif
             cell.selectionStyle = .default
             cell.accessoryType = .none
             return cell

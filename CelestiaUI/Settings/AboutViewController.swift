@@ -115,11 +115,7 @@ extension AboutViewController {
         case .link(let title, _, _):
             let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
             cell.title = title
-            #if targetEnvironment(macCatalyst)
             cell.titleColor = cell.tintColor
-            #else
-            cell.titleColor = UIColor.themeLabel
-            #endif
             cell.selectionStyle = .default
             return cell
         case .action:

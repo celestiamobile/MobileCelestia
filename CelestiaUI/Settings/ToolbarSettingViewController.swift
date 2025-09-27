@@ -105,11 +105,7 @@ class ToolbarSettingViewController: SubscriptionBackingViewController {
             if indexPath.section == 1 {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Reset", for: indexPath) as! UICollectionViewListCell
                 var configuration = UIListContentConfiguration.celestiaCell()
-                #if targetEnvironment(macCatalyst)
                 configuration.textProperties.color = cell.tintColor
-                #else
-                configuration.textProperties.color = .themeLabel
-                #endif
                 configuration.text = CelestiaString("Reset to Default", comment: "Reset celestia.cfg, data directory location")
                 cell.contentConfiguration = configuration
                 return cell

@@ -179,18 +179,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
                 try? FileManager.default.removeItem(at: savedStateURL)
             }
         }
-        #else
-        UISlider.appearance().minimumTrackTintColor = .themeLabel
-        UISlider.appearance().maximumTrackTintColor = .systemFill
-        UISwitch.appearance().onTintColor = .themeLabel
-        UIBarButtonItem.appearance().tintColor = .themeLabel
-        UIButton.appearance().tintColor = .themeLabel
-        UITabBar.appearance().tintColor = .themeLabel
-        UISearchBar.appearance().tintColor = .themeLabel
-        UISegmentedControl.appearance().tintColor = .themeLabel
-        UIProgressView.appearance().trackTintColor = .progressBackground
-        UIProgressView.appearance().progressTintColor = .progressForeground
-        UIView.appearance(whenContainedInInstancesOf: [UIAlertController.self]).tintColor = .themeLabel
         #endif
 
         #if !targetEnvironment(macCatalyst)

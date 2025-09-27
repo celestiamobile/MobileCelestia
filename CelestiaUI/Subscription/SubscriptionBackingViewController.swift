@@ -125,9 +125,7 @@ open class SubscriptionBackingViewController: UIViewController {
                 var config = UIContentUnavailableConfiguration.empty()
                 config.text = CelestiaString("This feature is only available to Celestia PLUS users.", comment: "")
                 #if !targetEnvironment(macCatalyst)
-                var button = UIButton.Configuration.filled()
-                button.baseBackgroundColor = .buttonBackground
-                button.baseForegroundColor = .buttonForeground
+                let button = UIButton.Configuration.filled()
                 config.button = button
                 #endif
                 config.button.title = CelestiaString("Get Celestia PLUS", comment: "")

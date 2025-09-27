@@ -41,8 +41,8 @@ public class ActionButton: StandardButton {
         contentEdgeInsets = Constants.contentEdgeInsets(for: traitCollection)
         layer.cornerRadius = Constants.cornerRadius(for: traitCollection)
         layer.cornerCurve = .continuous
-        backgroundColor = .buttonBackground
-        setTitleColor(.buttonForeground, for: .normal)
+        backgroundColor = tintColor
+        setTitleColor(.label, for: .normal)
     }
 #else
     public override func didAddSubview(_ subview: UIView) {
@@ -69,19 +69,12 @@ public class ActionButtonHelper {
         #if !os(visionOS)
         if #available(iOS 26, *), liquidGlass, traitCollection.userInterfaceIdiom != .mac {
             let button = UIButton(configuration: prominent ? .prominentGlass() : (clear ? .clearGlass() : .glass()))
-            #if !targetEnvironment(macCatalyst)
-            if prominent {
-                button.tintColor = .buttonBackground
-            }
-            #endif
             return button
         }
         #endif
         #if !targetEnvironment(macCatalyst)
         if #available(iOS 15, visionOS 1, *) {
-            var configuration = UIButton.Configuration.filled()
-            configuration.baseBackgroundColor = .buttonBackground
-            configuration.baseForegroundColor = .buttonForeground
+            let configuration = UIButton.Configuration.filled()
             let button = UIButton(configuration: configuration)
             button.pointerStyleProvider = { button, _, _ in
                 return UIPointerStyle(effect: .highlight(UITargetedPreview(view: button)))

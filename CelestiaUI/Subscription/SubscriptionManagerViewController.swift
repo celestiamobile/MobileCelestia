@@ -221,9 +221,7 @@ private extension SubscriptionManagerViewController {
                 var config = UIContentUnavailableConfiguration.empty()
                 config.text = CelestiaString("We encountered an error.", comment: "Error loading the subscription page")
                 #if !targetEnvironment(macCatalyst)
-                var button = UIButton.Configuration.filled()
-                button.baseBackgroundColor = .buttonBackground
-                button.baseForegroundColor = .buttonForeground
+                let button = UIButton.Configuration.filled()
                 config.button = button
                 #endif
                 config.button.title = CelestiaString("Refresh", comment: "Button to refresh this list")

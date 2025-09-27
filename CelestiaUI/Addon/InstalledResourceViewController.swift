@@ -74,9 +74,7 @@ class InstalledResourceViewController: AsyncListViewController<ResourceItem> {
         var config = UIContentUnavailableConfiguration.empty()
         config.text = CelestiaString("Enhance Celestia with online add-ons", comment: "")
         #if !targetEnvironment(macCatalyst)
-        var button = UIButton.Configuration.filled()
-        button.baseBackgroundColor = .buttonBackground
-        button.baseForegroundColor = .buttonForeground
+        let button = UIButton.Configuration.filled()
         config.button = button
         #endif
         config.button.title = CelestiaString("Get Add-ons", comment: "Open webpage for downloading add-ons")
