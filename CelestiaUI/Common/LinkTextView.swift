@@ -42,7 +42,8 @@ public class LinkTextView: UIView {
     private func setUp() {
         textView.backgroundColor = .clear
         textView.textContainer.maximumNumberOfLines = 0
-        textView.textContainerInset = UIEdgeInsets(top: 0, left: -textView.textContainer.lineFragmentPadding, bottom: 0, right: -textView.textContainer.lineFragmentPadding)
+        textView.textContainerInset = .zero
+        textView.textContainer.lineFragmentPadding = 0
         textView.isScrollEnabled = false
         textView.isEditable = false
         textView.adjustsFontForContentSizeCategory = true

@@ -39,7 +39,8 @@ final class BodyDescriptionCell: UICollectionViewCell {
 
         descriptionLabel.backgroundColor = .clear
         descriptionLabel.textContainer.maximumNumberOfLines = 0
-        descriptionLabel.textContainerInset = UIEdgeInsets(top: 0, left: -descriptionLabel.textContainer.lineFragmentPadding, bottom: 0, right: -descriptionLabel.textContainer.lineFragmentPadding)
+        descriptionLabel.textContainerInset = .zero
+        descriptionLabel.textContainer.lineFragmentPadding = 0
         descriptionLabel.isScrollEnabled = false
         descriptionLabel.isEditable = false
         descriptionLabel.adjustsFontForContentSizeCategory = true
