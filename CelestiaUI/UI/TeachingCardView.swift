@@ -9,18 +9,10 @@
 
 import UIKit
 
-@MainActor
-protocol BaseContentConfiguration {
-    func makeContentView() -> UIView & BaseContentView
-}
+struct TeachingCardContentConfiguration: UIContentConfiguration, Hashable {
+    func updated(for state: any UIConfigurationState) -> TeachingCardContentConfiguration { self }
 
-@MainActor
-protocol BaseContentView: NSObjectProtocol {
-    var configuration: BaseContentConfiguration { get set }
-}
-
-struct TeachingCardContentConfiguration: BaseContentConfiguration, Hashable {
-    func makeContentView() -> UIView & BaseContentView {
+    func makeContentView() -> UIView & UIContentView {
         return TeachingCardContentView(configuration: self)
     }
 
@@ -33,7 +25,7 @@ struct TeachingCardContentConfiguration: BaseContentConfiguration, Hashable {
     }
 }
 
-class TeachingCardContentView: UIView, BaseContentView {
+class TeachingCardContentView: UIView, UIContentView {
     private var currentConfiguration: TeachingCardContentConfiguration?
 
     private lazy var titleLabel = UILabel(textStyle: .body)
@@ -41,7 +33,7 @@ class TeachingCardContentView: UIView, BaseContentView {
     private lazy var stackView = UIStackView(arrangedSubviews: [titleLabel, actionButton])
 
     var actionButtonTapped: (() -> Void)?
-    var configuration: BaseContentConfiguration {
+    var configuration: UIContentConfiguration {
         get { return currentConfiguration! }
         set {
             guard let configuration = newValue as? TeachingCardContentConfiguration else {
@@ -99,7 +91,7 @@ class TeachingCardContentView: UIView, BaseContentView {
 
 class TeachingCardView: UIView {
     var actionButtonTapped: (() -> Void)? = nil
-    var contentConfiguration: BaseContentConfiguration? {
+    var contentConfiguration: UIContentConfiguration? {
         didSet {
             update(oldConfiguration: oldValue, newConfiguration: contentConfiguration)
         }
@@ -134,8 +126,8 @@ class TeachingCardView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private func update(oldConfiguration: BaseContentConfiguration?, newConfiguration: BaseContentConfiguration?) {
-        if let currentContent = currentContentView as? BaseContentView, let old = oldConfiguration, let new = newConfiguration {
+    private func update(oldConfiguration: UIContentConfiguration?, newConfiguration: UIContentConfiguration?) {
+        if let currentContent = currentContentView as? UIContentView, let old = oldConfiguration, let new = newConfiguration {
             if type(of: old) == type(of: new) {
                 currentContent.configuration = new
                 return
