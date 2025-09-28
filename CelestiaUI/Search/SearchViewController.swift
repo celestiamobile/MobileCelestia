@@ -188,7 +188,7 @@ extension SearchViewController {
             return (completions, fullMatch)
         }
         let completions = results.completions
-        return ([SearchResultSection(title: nil, results: completions.map { SearchResult(completion: $0) })], completions, results.fullMatch)
+        return ([SearchResultSection(section: .main, results: completions.map { SearchResult(completion: $0) })], completions, results.fullMatch)
     }
 }
 

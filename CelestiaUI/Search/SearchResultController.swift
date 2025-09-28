@@ -11,12 +11,19 @@
 import CelestiaCore
 import UIKit
 
-struct SearchResult {
+struct SearchResult: Hashable {
+    var id: Int { completion.hashValue }
+
     let completion: Completion
 }
 
+enum SearchSection: Hashable {
+    var id: Self { self }
+    case main
+}
+
 struct SearchResultSection {
-    let title: String?
+    let section: SearchSection
     let results: [SearchResult]
 }
 
@@ -35,12 +42,45 @@ public class SearchResultViewController: UIViewController {
     private var contentViewController: SearchContentViewController?
     private var contentScrollView: UIScrollView?
 
-    private lazy var resultViewController: BaseTableViewController = {
-        return BaseTableViewController(style: .plain)
+    private lazy var resultViewController: UICollectionViewController = {
+        var config = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
+        config.headerMode = .supplementary
+        let layout = UICollectionViewCompositionalLayout.list(using: config)
+        return UICollectionViewController(collectionViewLayout: layout)
     }()
 
-    private var tableView: UITableView {
-        return resultViewController.tableView
+    private lazy var dataSource: UICollectionViewDiffableDataSource<SearchSection, SearchResult> = {
+        let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, SearchResult> { cell, _, itemIdentifier in
+            var configuration = UIListContentConfiguration.celestiaCell()
+            configuration.text = itemIdentifier.completion.name
+            cell.contentConfiguration = configuration
+        }
+        let dataSource = UICollectionViewDiffableDataSource<SearchSection, SearchResult>(collectionView: collectionView) { [weak self] collectionView, indexPath, itemIdentifier in
+            guard let self else { fatalError() }
+            return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: itemIdentifier)
+        }
+        let headerRegistration = UICollectionView.SupplementaryRegistration<UICollectionViewListCell>(elementKind: UICollectionView.elementKindSectionHeader) { [weak self] supplementaryView, _, indexPath in
+            guard let self else { fatalError() }
+            var configuration: UIListContentConfiguration
+            if #available(iOS 18.0, visionOS 2.0, *) {
+                configuration = UIListContentConfiguration.header()
+            } else {
+                configuration = UIListContentConfiguration.groupedHeader()
+            }
+            switch self.dataSource.snapshot().sectionIdentifiers[indexPath.section] {
+            case .main:
+                configuration.text = nil
+            }
+            supplementaryView.contentConfiguration = configuration
+        }
+        dataSource.supplementaryViewProvider = { [unowned self] collectionView, _, indexPath in
+            return collectionView.dequeueConfiguredReusableSupplementary(using: headerRegistration, for: indexPath)
+        }
+        return dataSource
+    }()
+
+    private var collectionView: UICollectionView {
+        return resultViewController.collectionView
     }
 
     enum State: Hashable {
@@ -120,7 +160,13 @@ public class SearchResultViewController: UIViewController {
     func updateResults(resultSections: [SearchResultSection], rawResults: [Completion]) {
         self.resultSections = resultSections
         self.rawResults = rawResults
-        tableView.reloadData()
+
+        var snapshot = NSDiffableDataSourceSnapshot<SearchSection, SearchResult>()
+        for resultSection in resultSections {
+            snapshot.appendSections([resultSection.section])
+            snapshot.appendItems(resultSection.results, toSection: resultSection.section)
+        }
+        dataSource.apply(snapshot)
     }
 
     private func updateContentScrollView(_ newContentScrollView: UIScrollView?) {
@@ -179,7 +225,7 @@ public class SearchResultViewController: UIViewController {
                 loadingView.startAnimating()
             }
         case .results(let empty):
-            updateContentScrollView(resultViewController.tableView)
+            updateContentScrollView(resultViewController.collectionView)
             resultViewController.view.isHidden = empty
             if #available(iOS 17, visionOS 1, *) {
             } else {
@@ -229,48 +275,23 @@ private extension SearchResultViewController {
         }
 
         #if !os(visionOS) && !targetEnvironment(macCatalyst)
-        tableView.keyboardDismissMode = .interactive
+        collectionView.keyboardDismissMode = .interactive
         #endif
 
-        tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
+        collectionView.register(UICollectionViewListCell.self, forCellWithReuseIdentifier: "Text")
 
-        tableView.dataSource = self
-        tableView.delegate = self
+        collectionView.dataSource = dataSource
+        collectionView.delegate = self
 
         reload()
     }
 }
 
-extension SearchResultViewController: UITableViewDataSource, UITableViewDelegate {
-    public func numberOfSections(in tableView: UITableView) -> Int {
-        return resultSections.count
-    }
+extension SearchResultViewController: UICollectionViewDelegate {
+    public func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
 
-    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return resultSections[section].results.count
-    }
-
-    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let result = resultSections[indexPath.section].results[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
-        cell.title = result.completion.name
-        return cell
-    }
-
-    public func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return resultSections[section].title
-    }
-
-    public func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
-    }
-
-    public func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-
-        guard indexPath.section < resultSections.count, indexPath.row < resultSections[indexPath.section].results.count else { return }
-
-        let selection = resultSections[indexPath.section].results[indexPath.row]
-        selected(self, selection.completion.name, selection.completion.selection)
+        guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
+        selected(self, item.completion.name, item.completion.selection)
     }
 }
