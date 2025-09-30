@@ -8,6 +8,7 @@ jobs:
     sdk: ${{ parameters.sdk }}
     signing: ${{ parameters.signing }}
     backend: ${{ parameters.backend }}
+    dependencyVersion: '1.0.7'
     contentCommitHash: ${{ '10bd43b0e8925f6ee9bb9687522708a95338d664' }}
     XC_VERSION: ${{ '26.0' }}
     XC_PROJECT: ${{ 'MobileCelestia/MobileCelestia.xcodeproj' }}
@@ -71,31 +72,14 @@ jobs:
     displayName: 'Checkout Content'
 
   - script: |
-      mkdir -p CelestiaCore/libs/dependency/ios
-      mkdir -p CelestiaCore/libs/dependency/catalyst
-    displayName: 'Creating Directories for Third Party Dependencies'
+      brew install gettext gperf node imagemagick wget
+    displayName: 'Install Dependencies'
 
-  - task: UniversalPackages@0
-    inputs:
-      command: 'download'
-      downloadDirectory: 'CelestiaCore/libs/dependency'
-      feedsToUse: 'internal'
-      vstsFeed: '9f9dcde1-dcba-4537-8214-71c8a03b99a0/14bb1031-e6b2-40ac-b287-73e7fcb5900e'
-      vstsFeedPackage: 'ef4b9b1c-43f9-4b15-91ae-8a601ae5ef45'
-      vstsPackageVersion: '0.0.28'
-    displayName: 'Download Catalyst Dependencies'
-    condition: eq( variables['sdk'], 'macosx' )
-
-  - task: UniversalPackages@0
-    inputs:
-      command: 'download'
-      downloadDirectory: 'CelestiaCore/libs/dependency'
-      feedsToUse: 'internal'
-      vstsFeed: '9f9dcde1-dcba-4537-8214-71c8a03b99a0/14bb1031-e6b2-40ac-b287-73e7fcb5900e'
-      vstsFeedPackage: '929aa8ac-b8eb-409b-afe7-30f2b73aebc8'
-      vstsPackageVersion: '0.0.28'
-    displayName: 'Download iOS Dependencies'
-    condition: eq( variables['sdk'], 'iphoneos' )
+  - script: |
+      wget https://github.com/celestiamobile/apple-android-dependencies/releases/download/$(dependencyVersion)/apple-dependencies.tar.gz -O /tmp/apple-dependencies.tar.gz
+      mkdir -p CelestiaCore/libs/dependency
+      tar -xzf /tmp/apple-dependencies.tar.gz -C CelestiaCore/libs/dependency
+    displayName: 'Download Pre-built Dependencies'
 
   - script: |
       cd CelestiaCore/libs/dependency
@@ -108,11 +92,6 @@ jobs:
       sudo xcode-select -s /Applications/Xcode_$XC_VERSION.app
       xcodebuild -version
     displayName: 'Select Latest Xcode'
-
-  - script: |
-      rm -rf /usr/local/bin/2to3* /usr/local/bin/idle3* /usr/local/bin/pydoc* /usr/local/bin/python* /usr/local/share/man/man1/python* /usr/local/lib/pkgconfig/python* /usr/local/Frameworks/Python.framework
-      brew install gettext gperf node imagemagick
-    displayName: 'Install Dependencies'
 
   - script: |
       sh $(System.DefaultWorkingDirectory)/CelestiaCore/downsize_textures.sh
