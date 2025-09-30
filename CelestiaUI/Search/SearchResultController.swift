@@ -278,8 +278,6 @@ private extension SearchResultViewController {
         collectionView.keyboardDismissMode = .interactive
         #endif
 
-        collectionView.register(UICollectionViewListCell.self, forCellWithReuseIdentifier: "Text")
-
         collectionView.dataSource = dataSource
         collectionView.delegate = self
 
