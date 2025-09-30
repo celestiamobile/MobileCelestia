@@ -58,7 +58,7 @@ public extension CelestiaAction {
         case .slower:
             return UIImage(systemName: "backward.fill")
         case .reverse, .reverseSpeed:
-            return UIImage(systemName: "repeat")?.withConfiguration(UIImage.SymbolConfiguration(weight: .black))
+            return UIImage(systemName: "arrow.left.arrow.right", withConfiguration: UIImage.SymbolConfiguration(weight: .bold))
         case .cancelScript, .stop:
             return UIImage(systemName: "stop.fill")
         default:

@@ -929,20 +929,21 @@ Device Model: \(model)
             layoutDirectionDependentActions = [
                 CelestiaAction.faster,
                 CelestiaAction.playpause,
-                CelestiaAction.slower
+                CelestiaAction.slower,
+                CelestiaAction.reverse,
             ]
         } else {
             layoutDirectionDependentActions = [
                 CelestiaAction.slower,
                 CelestiaAction.playpause,
-                CelestiaAction.faster
+                CelestiaAction.faster,
+                CelestiaAction.reverse,
             ]
         }
         Task {
             await presentActionToolbar(
                 for: layoutDirectionDependentActions.map { .toolbarAction($0) },
                 overflowActions: [
-                    OverflowItem(title: CelestiaAction.reverse.title ?? "", action: .toolbarAction(CelestiaAction.reverse)),
                     OverflowItem(title: CelestiaString("Settings", comment: ""), action: .custom(type: .showTimeSettings)),
                 ]
             )
@@ -1142,10 +1143,8 @@ Device Model: \(model)
 
         Task {
             await presentActionToolbar(
-                for: layoutDirectionDependentActions.map { .toolbarAction($0) } + [.toolbarAction(CelestiaAction.stop)],
+                for: layoutDirectionDependentActions.map { .toolbarAction($0) } + [.toolbarAction(CelestiaAction.stop), .toolbarAction(CelestiaAction.reverseSpeed)],
                 overflowActions: [
-                    OverflowItem(title: CelestiaAction.reverseSpeed.title ?? "", action: .toolbarAction(CelestiaAction.reverseSpeed)),
-                ] + [
                     CelestiaContinuousAction.f2,
                     CelestiaContinuousAction.f3,
                     CelestiaContinuousAction.f4,
