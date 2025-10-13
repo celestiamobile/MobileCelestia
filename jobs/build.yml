@@ -102,7 +102,7 @@ jobs:
     displayName: 'Running gperf'
 
   - script: |
-      brew install getsentry/tools/sentry-cli
+      brew install sentry-cli
     displayName: 'Install Sentry-CLI'
 
   - task: DownloadSecureFile@1
