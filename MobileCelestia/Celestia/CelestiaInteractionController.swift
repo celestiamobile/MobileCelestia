@@ -548,7 +548,7 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
     }
 
     private func contextMenuForLocation(location: CGPoint, interaction: UIContextMenuInteraction) -> UIDeferredMenuElement {
-        return UIDeferredMenuElement { [weak self, weak interaction] completion in
+        return UIDeferredMenuElement.uncachedCompat { [weak self, weak interaction] completion in
             guard let self else {
                 completion([])
                 interaction?.dismissMenu()
@@ -909,5 +909,16 @@ private extension simd_quatf {
 private extension CGPoint {
     func scale(by factor: CGFloat) -> CGPoint {
         return applying(CGAffineTransform(scaleX: factor, y: factor))
+    }
+}
+
+extension UIDeferredMenuElement {
+    static func uncachedCompat(_ elementProvider: @escaping (@escaping ([UIMenuElement]) -> Void) -> Void) -> Self {
+        if #available(iOS 15, visionOS 1, *) {
+            return uncached(elementProvider)
+        }
+        else {
+            return self.init(elementProvider)
+        }
     }
 }

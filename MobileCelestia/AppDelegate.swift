@@ -507,7 +507,7 @@ extension AppDelegate {
     private func createMenuItemGroupDeferred(title: String = "", identifierSuffix: String, options: UIMenu.Options = [], menuBuilder: @escaping @MainActor () async -> [UIAction]) -> UIMenu {
         let identifierPrefix = Bundle.app.bundleIdentifier! + "."
         let identifier = UIMenu.Identifier(identifierPrefix + identifierSuffix)
-        return UIMenu(title: title, identifier: identifier, options: options, children: [UIDeferredMenuElement { completion in
+        return UIMenu(title: title, identifier: identifier, options: options, children: [UIDeferredMenuElement.uncachedCompat { completion in
             Task { @MainActor in
                 let items = await menuBuilder()
                 completion(items)
