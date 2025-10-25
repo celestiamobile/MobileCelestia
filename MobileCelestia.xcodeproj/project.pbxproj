@@ -810,7 +810,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
-				SHARED_BUILD_NUMBER = 613;
+				SHARED_BUILD_NUMBER = 614;
 				SHARED_BUILD_VERSION = 1.9.2;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
@@ -875,7 +875,7 @@
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
 				SDKROOT = iphoneos;
-				SHARED_BUILD_NUMBER = 613;
+				SHARED_BUILD_NUMBER = 614;
 				SHARED_BUILD_VERSION = 1.9.2;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
@@ -1290,7 +1290,7 @@
 			repositoryURL = "https://github.com/levinli303/AsyncGL";
 			requirement = {
 				kind = exactVersion;
-				version = 1.1.1;
+				version = 1.1.2;
 			};
 		};
 		EA9039A02BA19CF100C982BC /* XCRemoteSwiftPackageReference "mwrequest" */ = {
@@ -1306,7 +1306,7 @@
 			repositoryURL = "https://github.com/getsentry/sentry-cocoa";
 			requirement = {
 				kind = exactVersion;
-				version = 8.53.1;
+				version = 8.57.0;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
