@@ -16,6 +16,7 @@ public struct ResourceItem: Codable {
     public let id: String
     let image: URL?
     let item: URL
+    let checksum: String?
     let authors: [String]?
     let publishTime: Date?
     let objectName: String?
