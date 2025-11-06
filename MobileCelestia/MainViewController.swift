@@ -301,7 +301,7 @@ extension MainViewController {
             Task {
                 do {
                     let item = try await requestHandler.getMetadata(id: addon, language: locale)
-                    let nav = ToolbarNavigationContainerController(rootViewController: ResourceItemViewController(executor: executor, resourceManager: resourceManager, item: item, needsRefetchItem: false, requestHandler: requestHandler, actionHandler: commonWebActionHandler))
+                    let nav = ToolbarNavigationContainerController(rootViewController: ResourceItemViewController(executor: executor, resourceManager: resourceManager, item: item, requestHandler: requestHandler, actionHandler: commonWebActionHandler))
                     self.showViewController(nav, key: addon, prefersMediumDetent: prefersMediumDetent, customToolbar: true)
                 } catch {}
             }

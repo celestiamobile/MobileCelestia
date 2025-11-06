@@ -50,6 +50,7 @@ private class ResourceItemViewModel: ObservableObject {
     @Published var state: ResourceItemState = .none
     @Published var action: ResourceItemAction?
     @Published var progress: Float = 0
+    @Published var installedAddonChecksum: String?
     let executor: AsyncProviderExecutor
     let resourceManager: ResourceManager
     let requestHandler: RequestHandler
@@ -76,6 +77,7 @@ private struct ResourceItemView: View {
     @State var additionalSafeAreaBottomInset: CGFloat = 0
     let statusButtonHandler: () -> Void
     let actionButtonHandler: () -> Void
+    let updateButtonHandler: () -> Void
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -119,6 +121,19 @@ private struct ResourceItemView: View {
                     #endif
                 }
 
+                if viewModel.state == .installed, viewModel.installedAddonChecksum != nil, viewModel.item.checksum != nil, viewModel.item.checksum != viewModel.installedAddonChecksum {
+                    Button {
+                        updateButtonHandler()
+                    } label: {
+                        Text(verbatim: CelestiaString("Update", comment: ""))
+                            .frame(maxWidth: .infinity)
+                    }
+                    .glassButtonStyle(prominent: true)
+                    #if targetEnvironment(macCatalyst)
+                    .controlSize(.large)
+                    #endif
+                }
+
                 HStack(spacing: GlobalConstants.pageMediumGapHorizontal) {
                     #if os(iOS) && targetEnvironment(macCatalyst)
                     if viewModel.state == .downloading {
@@ -126,7 +141,7 @@ private struct ResourceItemView: View {
                             .progressViewStyle(.linear)
                     }
                     #endif
-                    
+
                     Button {
                         statusButtonHandler()
                     } label: {
@@ -161,8 +176,6 @@ private struct ResourceItemView: View {
 }
 
 public class ResourceItemViewController: UIViewController {
-    private let needsRefetchItem: Bool
-
     #if targetEnvironment(macCatalyst)
     private lazy var toolbarShareItem: NSSharingServicePickerToolbarItem = {
         let item = NSSharingServicePickerToolbarItem(itemIdentifier: .share)
@@ -178,6 +191,7 @@ public class ResourceItemViewController: UIViewController {
             return UIProgressView(progressViewStyle: .bar)
         }
     }()
+    private lazy var updateButton = ActionButtonHelper.newButton(traitCollection: traitCollection)
     private lazy var statusButton = ActionButtonHelper.newButton(traitCollection: traitCollection)
     private lazy var statusButtonContainer: UIView = {
         if traitCollection.userInterfaceIdiom == .mac {
@@ -191,7 +205,7 @@ public class ResourceItemViewController: UIViewController {
         }
     }()
     private lazy var goToButton = ActionButtonHelper.newButton(prominent: true, traitCollection: traitCollection)
-    private lazy var buttonStack = UIStackView(arrangedSubviews: [goToButton, statusButtonContainer])
+    private lazy var buttonStack = UIStackView(arrangedSubviews: [goToButton, updateButton, statusButtonContainer])
 
     private var scrollViewTopToViewTopConstrant: NSLayoutConstraint?
     private var scrollViewTopToProgressViewBottomConstrant: NSLayoutConstraint?
@@ -201,9 +215,8 @@ public class ResourceItemViewController: UIViewController {
 
     private let viewModel: ResourceItemViewModel
 
-    public init(executor: AsyncProviderExecutor, resourceManager: ResourceManager, item: ResourceItem, needsRefetchItem: Bool, requestHandler: RequestHandler, actionHandler: ((CommonWebViewController.WebAction, UIViewController) -> Void)?) {
+    public init(executor: AsyncProviderExecutor, resourceManager: ResourceManager, item: ResourceItem, requestHandler: RequestHandler, actionHandler: ((CommonWebViewController.WebAction, UIViewController) -> Void)?) {
         viewModel = ResourceItemViewModel(item: item, executor: executor, resourceManager: resourceManager, requestHandler: requestHandler, actionHandler: actionHandler)
-        self.needsRefetchItem = needsRefetchItem
         let userActivity = NSUserActivity(activityType: "space.celestia.celestia.addon-user-activity")
         userActivity.webpageURL = URL.fromAddonForSharing(addonItemID: item.id, language: AppCore.language)
         userActivity.title = item.name
@@ -241,6 +254,9 @@ public class ResourceItemViewController: UIViewController {
             }, actionButtonHandler: { [weak self] in
                 guard let self else { return }
                 self.goToButtonClicked()
+            }, updateButtonHandler: { [weak self] in
+                guard let self else { return }
+                self.updateButtonClicked()
             }))
             install(vc)
         } else {
@@ -262,9 +278,8 @@ public class ResourceItemViewController: UIViewController {
 
         // Fetch the latest item, this is needed as user might come
         // here from Installed where the URL might be incorrect
-        if needsRefetchItem {
-            refresh()
-        }
+        reloadItemOnDisk()
+        reloadItemFromOnline()
     }
 
     public override func viewDidAppear(_ animated: Bool) {
@@ -287,7 +302,11 @@ public class ResourceItemViewController: UIViewController {
         associatedUserActivity.resignCurrent()
     }
 
-    private func refresh() {
+    private func reloadItemOnDisk() {
+        viewModel.installedAddonChecksum = viewModel.resourceManager.installedResource(item: viewModel.item)?.checksum
+    }
+
+    private func reloadItemFromOnline() {
         Task {
             do {
                 let item = try await viewModel.requestHandler.getMetadata(id: viewModel.item.id, language: AppCore.language)
@@ -301,6 +320,13 @@ public class ResourceItemViewController: UIViewController {
                 self.updateUI()
             } catch {}
         }
+    }
+
+    @objc private func updateButtonClicked() {
+        try? viewModel.resourceManager.uninstall(item: viewModel.item)
+        viewModel.resourceManager.download(item: viewModel.item)
+        viewModel.state = .downloading
+        updateUI()
     }
 
     @objc private func goToButtonClicked() {
@@ -403,6 +429,9 @@ private extension ResourceItemViewController {
         goToButton.isHidden = true
         goToButton.setTitle(CelestiaString("Go", comment: "Go to an object"), for: .normal)
 
+        updateButton.isHidden = true
+        updateButton.setTitle(CelestiaString("Update", comment: ""), for: .normal)
+
         buttonStack.axis = .vertical
         buttonStack.spacing = GlobalConstants.pageLargeGapVertical
         buttonStack.translatesAutoresizingMaskIntoConstraints = false
@@ -413,6 +442,7 @@ private extension ResourceItemViewController {
             buttonStack.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -GlobalConstants.pageMediumMarginHorizontal),
             buttonStack.topAnchor.constraint(equalTo: itemInfoController.view.bottomAnchor, constant: GlobalConstants.pageMediumGapVertical),
         ])
+        updateButton.addTarget(self, action: #selector(updateButtonClicked), for: .touchUpInside)
         goToButton.addTarget(self, action: #selector(goToButtonClicked), for: .touchUpInside)
         statusButton.addTarget(self, action: #selector(statusButtonClicked), for: .touchUpInside)
     }
@@ -429,6 +459,7 @@ private extension ResourceItemViewController {
 
         switch viewModel.state {
         case .none:
+            updateButton.isHidden = true
             progressView.isHidden = true
             progressView.progress = 0
             viewModel.progress = 0
@@ -439,6 +470,7 @@ private extension ResourceItemViewController {
                 scrollViewTopToViewTopConstrant?.isActive = true
             }
         case .downloading:
+            updateButton.isHidden = true
             progressView.isHidden = false
             statusButton.setTitle(CelestiaString("Cancel", comment: ""), for: .normal)
             if traitCollection.userInterfaceIdiom == .mac {
@@ -447,6 +479,7 @@ private extension ResourceItemViewController {
                 scrollViewTopToProgressViewBottomConstrant?.isActive = true
             }
         case .installed:
+            updateButton.isHidden = viewModel.installedAddonChecksum == nil || viewModel.item.checksum == nil || viewModel.installedAddonChecksum == viewModel.item.checksum
             progressView.isHidden = true
             progressView.progress = 0
             viewModel.progress = 0
@@ -545,8 +578,10 @@ private extension ResourceItemViewController {
         guard let identifier = notification.userInfo?[ResourceManager.downloadIdentifierKey] as? String, identifier == viewModel.item.id else {
             return
         }
-        self.viewModel.state = .installed
-        self.updateUI()
+        viewModel.installedAddonChecksum = nil
+        viewModel.state = .installed
+        updateUI()
+        reloadItemOnDisk()
     }
 }
 

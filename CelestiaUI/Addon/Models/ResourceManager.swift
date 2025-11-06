@@ -51,6 +51,15 @@ public final class ResourceManager: @unchecked Sendable {
         return extraAddonDirectory?.appendingPathComponent(item.id)
     }
 
+    func installedResource(item: ResourceItem) -> ResourceItem? {
+        guard let directory = contextDirectory(forAddon: item) else { return nil }
+        let descriptionFile = directory.appendingPathComponent("description.json")
+        if let data = try? Data(contentsOf: descriptionFile), let content = try? JSONDecoder().decode(ResourceItem.self, from: data) {
+           return content
+        }
+        return nil
+    }
+
     public nonisolated func installedResources() -> [ResourceItem] {
         var items = [ResourceItem]()
         let fm = FileManager.default

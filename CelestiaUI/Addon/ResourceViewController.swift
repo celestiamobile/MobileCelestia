@@ -35,6 +35,6 @@ public class ResourceViewController: ToolbarNavigationContainerController {
 
 private extension ResourceViewController {
     private func viewItem(_ item: ResourceItem) {
-        pushViewController(ResourceItemViewController(executor: executor, resourceManager: resourceManager, item: item, needsRefetchItem: true, requestHandler: requestHandler, actionHandler: actionHandler), animated: true)
+        pushViewController(ResourceItemViewController(executor: executor, resourceManager: resourceManager, item: item, requestHandler: requestHandler, actionHandler: actionHandler), animated: true)
     }
 }

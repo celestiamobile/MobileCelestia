@@ -251,7 +251,7 @@ extension CommonWebViewController: CelestiaScriptHandlerDelegate {
                 guard let navigationController else { return }
                 // Do not push another ResourceItemFragment if it is the top
                 if !(navigationController.topViewController is ResourceItemViewController) {
-                    navigationController.pushViewController(ResourceItemViewController(executor: self.executor, resourceManager: self.resourceManager, item: item, needsRefetchItem: false, requestHandler: requestHandler, actionHandler: self.actionHandler), animated: true)
+                    navigationController.pushViewController(ResourceItemViewController(executor: self.executor, resourceManager: self.resourceManager, item: item, requestHandler: requestHandler, actionHandler: self.actionHandler), animated: true)
                 }
             } catch {}
         }
