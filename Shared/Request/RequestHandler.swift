@@ -11,6 +11,18 @@ import Foundation
 import CelestiaUI
 import MWRequest
 
+extension GuideItem: @retroactive JSONDecodable {
+    public static let decoder: JSONDecoder? = nil
+}
+
+extension ResourceItem: @retroactive JSONDecodable {
+    public static let decoder: JSONDecoder? = {
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .secondsSince1970
+        return decoder
+    }()
+}
+
 final class RequestHandlerImpl: RequestHandler {
     public func getSubscriptionValidity(originalTransactionID: UInt64, sandbox: Bool) async throws -> Bool {
         struct ValidationResult: JSONDecodable {

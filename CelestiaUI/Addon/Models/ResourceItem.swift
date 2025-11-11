@@ -8,15 +8,8 @@
 // of the License, or (at your option) any later version.
 
 import Foundation
-import MWRequest
 
-public struct ResourceItem: Codable, JSONDecodable {
-    public static let decoder: JSONDecoder? = {
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .secondsSince1970
-        return decoder
-    }()
-
+public struct ResourceItem: Codable {
     public let name: String
     let description: String
     let type: String?

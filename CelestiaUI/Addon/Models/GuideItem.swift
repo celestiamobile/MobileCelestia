@@ -8,11 +8,8 @@
 // of the License, or (at your option) any later version.
 
 import Foundation
-import MWRequest
 
-public struct GuideItem: Codable, Sendable, JSONDecodable {
-    public static let decoder: JSONDecoder? = nil
-
+public struct GuideItem: Codable, Sendable {
     let title: String
     public let id: String
 }
