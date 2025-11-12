@@ -31,19 +31,18 @@ final class RequestHandlerImpl: RequestHandler {
             let valid: Bool
         }
 
-        let result: ValidationResult = try await AsyncJSONRequestHandler.get(url: "https://celestia.mobi/api/subscription/apple", parameters: [
+        let result: ValidationResult = try await AsyncJSONRequestHandler.get(url: URL.apiPrefixURL.appendingPathComponent("subscription/apple").absoluteString, parameters: [
             "originalTransactionId": "\(originalTransactionID)",
             "sandbox": sandbox ? "1" : "0",
-            "errorAsHttpStatus": "true",
         ])
         return result.valid
     }
 
     public func getMetadata(id: String, language: String) async throws -> ResourceItem {
-        return try await AsyncJSONRequestHandler.get(url: URL.addonMetadata.absoluteString, parameters: ["lang": language, "item": id, "errorAsHttpStatus": "true"])
+        return try await AsyncJSONRequestHandler.get(url: URL.addonMetadata.absoluteString, parameters: ["lang": language, "item": id])
     }
 
     func getLatestMetadata(language: String) async throws -> GuideItem {
-        return try await AsyncJSONRequestHandler.get(url: URL.latestGuideMetadata.absoluteString, parameters: ["lang": language, "type": "news", "errorAsHttpStatus": "true"])
+        return try await AsyncJSONRequestHandler.get(url: URL.latestGuideMetadata.absoluteString, parameters: ["lang": language, "type": "news"])
     }
 }

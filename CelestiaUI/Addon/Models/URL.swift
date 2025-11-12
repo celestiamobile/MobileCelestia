@@ -10,7 +10,7 @@
 import Foundation
 
 public extension URL {
-    private static let apiPrefix = "https://celestia.mobi/api"
+    static let apiPrefixURL = URL(string: "https://celestia.mobi/api/2")!
 
     @MainActor
     static func fromGuide(guideItemID: String, language: String, shareable: Bool? = nil, subscriptionManager: SubscriptionManager? = nil) -> URL {
@@ -107,6 +107,6 @@ public extension URL {
         return components.url!
     }
 
-    static let addonMetadata = URL(string: apiPrefix)!.appendingPathComponent("resource/item")
-    static let latestGuideMetadata = URL(string: apiPrefix)!.appendingPathComponent("resource/latest")
+    static let addonMetadata = apiPrefixURL.appendingPathComponent("resource/item")
+    static let latestGuideMetadata = apiPrefixURL.appendingPathComponent("resource/latest")
 }
