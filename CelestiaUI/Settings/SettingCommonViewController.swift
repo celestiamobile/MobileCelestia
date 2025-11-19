@@ -76,6 +76,7 @@ extension SettingCommonViewController {
             let key = item.key
             let cell = tableView.dequeueReusableCell(withIdentifier: "Slider", for: indexPath) as! SliderCell
             cell.title = row.name
+            cell.subtitle = nil
             cell.value = ((core.value(forKey: key) as! Double) - minValue) / (maxValue - minValue)
             cell.valueChangeBlock = { [weak self] (value) in
                 guard let self = self else { return }
@@ -92,10 +93,12 @@ extension SettingCommonViewController {
         case .action:
             let cell = tableView.dequeueReusableCell(withIdentifier: "Action", for: indexPath) as! TextCell
             cell.title = row.name
+            cell.subtitle = nil
             return cell
         case .custom:
             let cell = tableView.dequeueReusableCell(withIdentifier: "Custom", for: indexPath) as! TextCell
             cell.title = row.name
+            cell.subtitle = nil
             return cell
         case .checkmark(let item):
             let enabled = core.value(forKey: item.key) as? Bool ?? false
@@ -125,6 +128,7 @@ extension SettingCommonViewController {
             let selectedIndex = core.value(forKey: item.key) as? Int ?? 0
             let cell = tableView.dequeueReusableCell(withIdentifier: "Checkmark", for: indexPath) as! TextCell
             cell.title = row.name
+            cell.subtitle = nil
             cell.accessoryType = selectedIndex == item.index ? .checkmark : .none
             return cell
         case .prefSwitch(let item):

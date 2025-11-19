@@ -28,16 +28,6 @@ public class TextCell: UITableViewCell {
         }
     }
 
-
-    public override func prepareForReuse() {
-        super.prepareForReuse()
-
-        label.text = nil
-        detailLabel.text = nil
-        subtitleLabel.text = nil
-        label.textColor = .label
-    }
-
     public override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
 

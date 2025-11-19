@@ -124,6 +124,8 @@ extension EventFinderInputViewController {
             cell.detail = objectName
         } else if let it = item as? DateItem {
             cell.detail = displayDateFormatter.string(from: it.isStartTime ? startTime : endTime)
+        } else {
+            cell.detail = nil
         }
 
         return cell

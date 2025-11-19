@@ -96,12 +96,14 @@ extension DataLocationSelectionViewController {
             let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
             cell.title = title
             cell.detail = detail
+            cell.titleColor = .label
             cell.selectionStyle = .default
             cell.accessoryType = indexPath.section == 0 ? .disclosureIndicator : .none
             return cell
         case .action(let title):
             let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
             cell.title = title
+            cell.detail = nil
             cell.titleColor = cell.tintColor
             cell.selectionStyle = .default
             cell.accessoryType = .none

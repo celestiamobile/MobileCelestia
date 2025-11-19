@@ -104,6 +104,7 @@ extension AboutViewController {
         case .short(let title, let detail):
             let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
             cell.title = title
+            cell.titleColor = .label
             cell.detail = detail
             cell.selectionStyle = .none
             return cell
@@ -115,6 +116,7 @@ extension AboutViewController {
         case .link(let title, _, _):
             let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
             cell.title = title
+            cell.detail = nil
             cell.titleColor = cell.tintColor
             cell.selectionStyle = .default
             return cell
