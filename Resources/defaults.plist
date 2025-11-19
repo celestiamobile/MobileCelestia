@@ -38,6 +38,8 @@
 		<integer>1</integer>
 		<key>showChasmaLabels</key>
 		<integer>1</integer>
+		<key>showCollumLabels</key>
+		<integer>1</integer>
 		<key>showCityLabels</key>
 		<integer>1</integer>
 		<key>showCloudMaps</key>
