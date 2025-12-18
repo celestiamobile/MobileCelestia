@@ -9,8 +9,8 @@ jobs:
     signing: ${{ parameters.signing }}
     backend: ${{ parameters.backend }}
     dependencyVersion: '1.0.22'
-    contentCommitHash: ${{ 'e707d64080558860ea647f72f25571f3f9b05f53' }}
-    XC_VERSION: ${{ '26.0' }}
+    contentCommitHash: ${{ 'b6d3daa2260cdbd251336264eb62334a4d6e62c6' }}
+    XC_VERSION: ${{ '26.1' }}
     XC_PROJECT: ${{ 'MobileCelestia/MobileCelestia.xcodeproj' }}
     XC_SCHEME: ${{ 'MobileCelestia' }}
     XC_ARCHIVE_PARENT_PATH: ${{ '$(system.defaultworkingdirectory)/archive' }}
