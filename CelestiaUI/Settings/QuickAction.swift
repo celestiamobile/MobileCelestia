@@ -65,7 +65,6 @@ public enum QuickAction: Int, CaseIterable {
     }
 }
 
-@available(iOS 15, *)
 public extension QuickAction {
     var title: String {
         switch self {

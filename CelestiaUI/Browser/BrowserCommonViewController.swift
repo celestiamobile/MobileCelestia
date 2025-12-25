@@ -30,7 +30,7 @@ class BrowserCommonViewController: BaseTableViewController {
 
     class BrowserDataSource: UITableViewDiffableDataSource<Section, Item> {
         override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-            if let identifier = sectionIdentifierCompat(for: section), identifier == .subsystem {
+            if let identifier = sectionIdentifier(for: section), identifier == .subsystem {
                 return CelestiaString("Subsystem", comment: "Subsystem of an object (e.g. planetarium system)")
             }
             return nil
@@ -120,7 +120,7 @@ extension BrowserCommonViewController {
     }
 
     override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        guard let sectionIdentifier = dataSource.sectionIdentifierCompat(for: section), let categoryInfo, sectionIdentifier == .categoryCard else { return nil }
+        guard let sectionIdentifier = dataSource.sectionIdentifier(for: section), let categoryInfo, sectionIdentifier == .categoryCard else { return nil }
 
         let cell = tableView.dequeueReusableHeaderFooterView(withIdentifier: "TeachingCard") as! TeachingCardCell
         cell.teachingCard.contentConfiguration = TeachingCardContentConfiguration(title: CelestiaString("Enhance Celestia with online add-ons", comment: ""), actionButtonTitle: CelestiaString("Get Add-ons", comment: "Open webpage for downloading add-ons"))
@@ -129,19 +129,5 @@ extension BrowserCommonViewController {
             self.showAddonCategory(categoryInfo)
         }
         return cell
-    }
-}
-
-extension UITableViewDiffableDataSource {
-    func sectionIdentifierCompat(for index: Int) -> SectionIdentifierType? {
-        if #available(iOS 15, visionOS 1, *) {
-            return sectionIdentifier(for: index)
-        } else {
-            let sectionIdentifiers = snapshot().sectionIdentifiers
-            if sectionIdentifiers.count > index {
-                return sectionIdentifiers[index]
-            }
-            return nil
-        }
     }
 }

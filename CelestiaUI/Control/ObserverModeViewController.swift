@@ -83,9 +83,7 @@ private extension ObserverModeViewController {
         navigationItem.backButtonTitle = ""
         title = CelestiaString("Flight Mode", comment: "")
         windowTitle = title
-        if #available(iOS 15, visionOS 1, *) {
-            tableView.register(SelectionCell.self, forCellReuseIdentifier: "Selection")
-        }
+        tableView.register(SelectionCell.self, forCellReuseIdentifier: "Selection")
         tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         tableView.register(LinkFooterView.self, forHeaderFooterViewReuseIdentifier: "Footer")
         #if !os(visionOS)
@@ -107,7 +105,7 @@ extension ObserverModeViewController {
 
     public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let row = rows[indexPath.row]
-        if #available(iOS 15, visionOS 1, *), row == .coordinateSystem {
+        if row == .coordinateSystem {
             let cell = tableView.dequeueReusableCell(withIdentifier: "Selection", for: indexPath) as! SelectionCell
             cell.title = CelestiaString("Coordinate System", comment: "Used in Flight Mode")
             cell.selectionData = SelectionCell.SelectionData(options: supportedCoordinateSystems.map { $0.name }, selectedIndex: supportedCoordinateSystems.firstIndex(of: coordinateSystem) ?? -1)
@@ -161,16 +159,7 @@ extension ObserverModeViewController {
         tableView.deselectRow(at: indexPath, animated: true)
         switch rows[indexPath.row] {
         case .coordinateSystem:
-            if #available(iOS 15, visionOS 1, *) {
-            } else {
-                let vc = SelectionViewController(title: CelestiaString("Coordinate System", comment: "Used in Flight Mode"), options: supportedCoordinateSystems.map { $0.name }, selectedIndex: supportedCoordinateSystems.firstIndex(of: coordinateSystem), selectionChange: { [weak self] index in
-                    guard let self = self else { return }
-                    self.coordinateSystem = self.supportedCoordinateSystems[index]
-                    self.updateRows()
-                    self.tableView.reloadData()
-                })
-                navigationController?.pushViewController(vc, animated: true)
-            }
+            break
         case .referenceObjectName:
             let searchController = SearchViewController(executor: executor) { [weak self] _, displayName, object in
                 guard let self else { return }

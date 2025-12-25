@@ -76,10 +76,6 @@
     [button setEnabled:NO];
 }
 
-+ (void)disableTabbingForAllWindows {
-    [NSWindow setAllowsAutomaticWindowTabbing:NO];
-}
-
 + (void)showTextInputSheetForWindow:(NSWindow *)window title:(NSString *)title message:(nullable NSString *)message text:(nullable NSString *)text placeholder:(nullable NSString *)placeholder okButtonTitle:(NSString *)okButtonTitle cancelButtonTitle:(NSString *)cancelButtonTitle completionHandler:(void (^)(NSString * _Nullable))completionHandler {
     const CGFloat alertTextInputWidth = 228;
     const CGFloat alertTextInputDefaultHeight = 21;

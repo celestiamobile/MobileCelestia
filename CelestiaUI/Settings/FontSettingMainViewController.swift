@@ -24,7 +24,6 @@ public struct FontSettingContext {
     }
 }
 
-@available(iOS 15, *)
 final class FontSettingMainViewController: SubscriptionBackingViewController {
     init(context: FontSettingContext, userDefaults: UserDefaults, subscriptionManager: SubscriptionManager, openSubscriptionManagement: @escaping () -> Void) {
         super.init(
