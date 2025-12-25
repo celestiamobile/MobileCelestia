@@ -145,9 +145,8 @@ class ToolbarImageTextButtonCell: UITableViewCell, ToolbarCell {
     }
 
     private func setUp() {
-        if #available(iOS 15, *) {
-            background.focusEffect = UIFocusEffect()
-        }
+        background.focusEffect = UIFocusEffect()
+
         background.translatesAutoresizingMaskIntoConstraints = false
         background.addTarget(self, action: #selector(touchDown(_:)), for: .touchDown)
         background.addTarget(self, action: #selector(touchUpInside(_:)), for: .touchUpInside)

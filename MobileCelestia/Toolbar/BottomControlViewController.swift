@@ -191,9 +191,7 @@ extension BottomControlViewController: UICollectionViewDataSource {
 
 private extension BottomControlViewController {
     func setUp() {
-        if #available(iOS 15, *) {
-            view.maximumContentSizeCategory = .extraExtraExtraLarge
-        }
+        view.maximumContentSizeCategory = .extraExtraExtraLarge
 
         let effect: UIVisualEffect
         if #available(iOS 26, *) {

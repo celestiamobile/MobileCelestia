@@ -37,9 +37,7 @@ public class SearchViewController: UIViewController {
             self.selected(self, display, selection)
         }, contentScrollViewChanged: { [weak self] scrollView in
             guard let self else { return }
-            if #available(iOS 15, visionOS 1, *) {
-                self.setContentScrollView(scrollView)
-            }
+            self.setContentScrollView(scrollView)
         })
     }()
 
@@ -106,14 +104,6 @@ private extension SearchViewController {
         install(resultViewController)
 
         #if !targetEnvironment(macCatalyst)
-        if #available(iOS 15, visionOS 1, *) {
-        } else {
-            let appearance = UINavigationBarAppearance()
-            appearance.configureWithDefaultBackground()
-            navigationItem.standardAppearance = appearance
-            navigationItem.compactAppearance = appearance
-            navigationItem.scrollEdgeAppearance = appearance
-        }
         // Configure search bar
         let searchBar = searchController.searchBar
         navigationItem.searchController = searchController

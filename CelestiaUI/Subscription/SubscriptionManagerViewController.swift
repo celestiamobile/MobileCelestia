@@ -10,7 +10,6 @@
 import StoreKit
 import UIKit
 
-@available(iOS 15, *)
 public class SubscriptionManagerViewController: UIViewController {
     private let subscriptionManager: SubscriptionManager
     private let assetProvider: AssetProvider
@@ -186,7 +185,6 @@ public class SubscriptionManagerViewController: UIViewController {
     }
 }
 
-@available(iOS 15, *)
 private extension SubscriptionManagerViewController {
     func reloadData() {
         status = .empty

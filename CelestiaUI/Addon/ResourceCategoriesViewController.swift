@@ -49,14 +49,12 @@ private extension URL {
     @MainActor
     static func categoryURL(category: CategoryInfo?, subscriptionManager: SubscriptionManager) -> URL {
         var queryItems = [URLQueryItem]()
-        if #available(iOS 15, *) {
-            if let (transactionID, isSandbox) = subscriptionManager.transactionInfo() {
-                queryItems.append(URLQueryItem(name: "transactionIdApple", value: "\(transactionID)"))
-                queryItems.append(URLQueryItem(name: "isSandboxApple", value: isSandbox ? "1" : "0"))
-            } else {
-                queryItems.append(URLQueryItem(name: "transactionIdApple", value: ""))
-                queryItems.append(URLQueryItem(name: "isSandboxApple", value: "1"))
-            }
+        if let (transactionID, isSandbox) = subscriptionManager.transactionInfo() {
+            queryItems.append(URLQueryItem(name: "transactionIdApple", value: "\(transactionID)"))
+            queryItems.append(URLQueryItem(name: "isSandboxApple", value: isSandbox ? "1" : "0"))
+        } else {
+            queryItems.append(URLQueryItem(name: "transactionIdApple", value: ""))
+            queryItems.append(URLQueryItem(name: "isSandboxApple", value: "1"))
         }
         let baseURL: String
         if let category, category.isLeaf {

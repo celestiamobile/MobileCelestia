@@ -41,9 +41,7 @@ enum AppToolbarAction: String {
 
     static var persistentAction: [[AppToolbarAction]] {
         var actions: [[AppToolbarAction]] = [[.setting], [.share, .search, .home, .paperplane], [.camera, .time, .script, .speedometer], [.browse, .favorite, .event], [.addons, .download, .newsarchive], [.feedback, .help]]
-        if #available(iOS 15, *) {
-            actions.insert([.plus], at: 0)
-        }
+        actions.insert([.plus], at: 0)
         return actions
     }
 }
@@ -108,9 +106,7 @@ extension ToolbarViewController: UITableViewDataSource {
         let action = actions[indexPath.section][indexPath.row]
         cell.itemImage = action.image
         cell.itemTitle = action.title
-        if #available(iOS 15, *) {
-            cell.focusEffect = UIFocusEffect()
-        }
+        cell.focusEffect = UIFocusEffect()
         cell.touchUpHandler = { [unowned self] _, inside in
             guard inside else { return }
             if self.finishOnSelection {
@@ -171,9 +167,7 @@ private extension ToolbarViewController {
         tableView.dataSource = self
         tableView.delegate = self
 
-        if #available(iOS 15, *) {
-            view.maximumContentSizeCategory = .extraExtraExtraLarge
-        }
+        view.maximumContentSizeCategory = .extraExtraExtraLarge
     }
 }
 

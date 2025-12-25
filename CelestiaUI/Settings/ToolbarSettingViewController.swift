@@ -9,7 +9,6 @@
 
 import UIKit
 
-@available(iOS 15, *)
 class ToolbarSettingViewController: SubscriptionBackingViewController {
     private class ContentViewController: UICollectionViewController {
         private let userDefaults: UserDefaults

@@ -82,9 +82,7 @@ class MainViewController: UIViewController {
         guard let self else { return }
         switch action {
         case .showSubscription:
-            if #available(iOS 15, *) {
-                self.showSubscription(for: viewController)
-            }
+            self.showSubscription(for: viewController)
         case .ack:
             break
         }
@@ -124,12 +122,10 @@ class MainViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        if #available(iOS 15, *) {
-            Task {
-                await subscriptionManager.checkSubscriptionStatus()
-            }
-            subscriptionUpdateTask = subscriptionManager.checkPurchaseUpdates()
+        Task {
+            await subscriptionManager.checkSubscriptionStatus()
         }
+        subscriptionUpdateTask = subscriptionManager.checkPurchaseUpdates()
 
         view.backgroundColor = .systemBackground
 
@@ -468,9 +464,7 @@ extension MainViewController {
         case .suggestFeature:
             suggestFeature()
         case .celestiaPlus:
-            if #available(iOS 15, *) {
-                showSubscription()
-            }
+            showSubscription()
         case .getInfo:
             Task {
                 let selection = await executor.get({ $0.simulation.selection })
@@ -688,13 +682,10 @@ extension MainViewController: CelestiaControllerDelegate {
         case .feedback:
             sendFeedback()
         case .plus:
-            if #available(iOS 15, *) {
-                showSubscription()
-            }
+            showSubscription()
         }
     }
 
-    @available(iOS 15, *)
     private func showSubscription(for viewController: UIViewController? = nil) {
         let vc = SubscriptionManagerViewController(subscriptionManager: subscriptionManager, assetProvider: assetProvider)
         let nav = BaseNavigationController(rootViewController: vc)
@@ -765,12 +756,10 @@ extension MainViewController: CelestiaControllerDelegate {
             vc.addAttachmentData(addonInfoData, mimeType: "text/plain", fileName: "addoninfo.txt")
         }
 
-        if #available(iOS 15, *) {
-            if let (transactionID, isSandbox) = subscriptionManager.transactionInfo() {
-                let info = "\(transactionID) \(isSandbox)"
-                if let infoData = info.data(using: .utf8) {
-                    vc.addAttachmentData(infoData, mimeType: "text/plain", fileName: "transactionid.txt")
-                }
+        if let (transactionID, isSandbox) = subscriptionManager.transactionInfo() {
+            let info = "\(transactionID) \(isSandbox)"
+            if let infoData = info.data(using: .utf8) {
+                vc.addAttachmentData(infoData, mimeType: "text/plain", fileName: "transactionid.txt")
             }
         }
 
@@ -825,12 +814,10 @@ Device Model: \(model)
         vc.setToRecipients([Constants.feedbackEmailAddress])
         vc.setSubject(CelestiaString("Feature suggestion for Celestia", comment: "Default email title for feature suggestion"))
         vc.setMessageBody(CelestiaString("Please describe the feature you want to see in Celestia.", comment: "Default email body for feature suggestion"), isHTML: false)
-        if #available(iOS 15, *) {
-            if let (transactionID, isSandbox) = subscriptionManager.transactionInfo() {
-                let info = "\(transactionID) \(isSandbox)"
-                if let infoData = info.data(using: .utf8) {
-                    vc.addAttachmentData(infoData, mimeType: "text/plain", fileName: "transactionid.txt")
-                }
+        if let (transactionID, isSandbox) = subscriptionManager.transactionInfo() {
+            let info = "\(transactionID) \(isSandbox)"
+            if let infoData = info.data(using: .utf8) {
+                vc.addAttachmentData(infoData, mimeType: "text/plain", fileName: "transactionid.txt")
             }
         }
         presentAfterDismissCurrent(vc, animated: true)
@@ -1244,9 +1231,7 @@ Device Model: \(model)
                 return self?.celestiaController.displayScreen
             }, subscriptionManager: subscriptionManager, openSubscriptionManagement: { [weak self] viewController in
                 guard let self else { return }
-                if #available(iOS 15, *) {
-                    self.showSubscription(for: viewController)
-                }
+                self.showSubscription(for: viewController)
             }
         )
         #if targetEnvironment(macCatalyst)

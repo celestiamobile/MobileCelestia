@@ -167,11 +167,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         UserDefaults.standard.register(defaults: ["NSApplicationCrashOnExceptions": true])
 
-        if #available(iOS 15, *) {
-        } else {
-            MacBridge.disableTabbingForAllWindows()
-        }
-
         // Avoid reading saved state
         if let libraryURL = URL.library() {
             let savedStateURL = libraryURL.appendingPathComponent("Saved Application State")
@@ -212,7 +207,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             #endif
             options.tracesSampleRate = 0
             options.enableAutoPerformanceTracing = false
-            options.enablePerformanceV2 = false
         }
 
         #if targetEnvironment(macCatalyst)
@@ -345,17 +339,11 @@ extension AppDelegate {
         )
         builder.insertChild(aboutMenu, atStartOfMenu: .application)
 
-        let menuBeforeSetting: UIMenu
-        if #available(iOS 15, *) {
-            let celestiaPlusMenu = createMenuItem(identifierSuffix: "celestiaplus", action: MenuActionContext(title: CelestiaString("Celestia PLUS", comment: "Name for the subscription service"), action: #selector(showCelestiaPlus)))
-            builder.insertSibling(celestiaPlusMenu, afterMenu: aboutMenu.identifier)
-            menuBeforeSetting = celestiaPlusMenu
-        } else {
-            menuBeforeSetting = aboutMenu
-        }
+        let celestiaPlusMenu = createMenuItem(identifierSuffix: "celestiaplus", action: MenuActionContext(title: CelestiaString("Celestia PLUS", comment: "Name for the subscription service"), action: #selector(showCelestiaPlus)))
+        builder.insertSibling(celestiaPlusMenu, afterMenu: aboutMenu.identifier)
 
         let settingsMenu = createMenuItem(identifierSuffix: "preferences", action: MenuActionContext(title: settingsTitle, action: #selector(showPreferences), input: ",", modifierFlags: .command))
-        builder.insertSibling(settingsMenu, afterMenu: menuBeforeSetting.identifier)
+        builder.insertSibling(settingsMenu, afterMenu: celestiaPlusMenu.identifier)
 
         let runScriptMenu = createMenuItem(identifierSuffix: "open", action: MenuActionContext(title: CelestiaString("Run Script…", comment: ""), action: #selector(openScriptFile), input: "O", modifierFlags: .command))
         builder.insertChild(runScriptMenu, atStartOfMenu: .file)
@@ -507,7 +495,7 @@ extension AppDelegate {
     private func createMenuItemGroupDeferred(title: String = "", identifierSuffix: String, options: UIMenu.Options = [], menuBuilder: @escaping @MainActor () async -> [UIAction]) -> UIMenu {
         let identifierPrefix = Bundle.app.bundleIdentifier! + "."
         let identifier = UIMenu.Identifier(identifierPrefix + identifierSuffix)
-        return UIMenu(title: title, identifier: identifier, options: options, children: [UIDeferredMenuElement.uncachedCompat { completion in
+        return UIMenu(title: title, identifier: identifier, options: options, children: [UIDeferredMenuElement.uncached { completion in
             Task { @MainActor in
                 let items = await menuBuilder()
                 completion(items)
@@ -715,10 +703,6 @@ class MacBridge {
 
     static func disableFullScreenForNSWindow(_ nsWindow: NSObject) {
         clazz.perform(NSSelectorFromString("disableFullScreenForNSWindow:"), with: nsWindow)
-    }
-
-    static func disableTabbingForAllWindows() {
-        clazz.perform(NSSelectorFromString("disableTabbingForAllWindows"))
     }
 
     static func showTextInputSheetForWindow(_ window: NSObject, title: String, message: String? = nil, text: String? = nil, placeholder: String? = nil, okButtonTitle: String, cancelButtonTitle: String, completion: @escaping (String?) -> Void) {

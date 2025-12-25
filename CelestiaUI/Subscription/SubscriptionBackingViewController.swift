@@ -9,7 +9,6 @@
 
 import UIKit
 
-@available(iOS 15, *)
 open class SubscriptionBackingViewController: UIViewController {
     private let subscriptionManager: SubscriptionManager
     private let viewControllerBuilder: (SubscriptionBackingViewController) async -> UIViewController

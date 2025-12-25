@@ -233,12 +233,7 @@ extension CelestiaDisplayController {
         #endif
 
         let viewSafeAreaInsets = self.view.safeAreaInsets
-        let hasCelestiaPlus: Bool
-        if #available(iOS 15, *) {
-            hasCelestiaPlus = subscriptionManager.transactionInfo() != nil
-        } else {
-            hasCelestiaPlus = false
-        }
+        let hasCelestiaPlus = subscriptionManager.transactionInfo() != nil
         var customNormalFont: CustomFont?
         var customBoldFont: CustomFont?
         if hasCelestiaPlus {
