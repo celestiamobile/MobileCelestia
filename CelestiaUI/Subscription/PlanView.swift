@@ -10,7 +10,6 @@
 import StoreKit
 import UIKit
 
-@available(iOS 15, *)
 final class PlanView: UIView {
     enum Action {
         case upgrade

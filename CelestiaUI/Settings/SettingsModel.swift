@@ -848,7 +848,6 @@ public func rendererSettings(extraItems: [SettingItem]) -> SettingSection {
 }
 
 #if !os(visionOS)
-@available(iOS 15, *)
 public func celestiaPlusSettings() -> SettingSection {
     var items = [
         SettingItem(name: CelestiaString("Font", comment: ""),  associatedItem: .other(type: .font)),

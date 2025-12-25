@@ -76,7 +76,7 @@ class CelestiaInteractionController: UIViewController {
 
     #if !targetEnvironment(macCatalyst)
     private lazy var controlViewActions: [QuickAction] = {
-        if #available(iOS 15, *), subscriptionManager.transactionInfo() != nil, let stringValue: String = userDefaults[UserDefaultsKey.toolbarItems] {
+        if subscriptionManager.transactionInfo() != nil, let stringValue: String = userDefaults[UserDefaultsKey.toolbarItems] {
             var actions = QuickAction.from(stringValue) ?? QuickAction.defaultItems
             if !actions.contains(.menu) {
                 actions.append(.menu)
@@ -146,19 +146,15 @@ class CelestiaInteractionController: UIViewController {
         return targetProvider?.targetContents
     }
 
-    @available(iOS 15, *)
     final class FocusableView: UIView {
         override var canBecomeFocused: Bool { return true }
         override var canBecomeFirstResponder: Bool { return true }
     }
 
     private lazy var targetInteractionView: UIView = {
-        if #available(iOS 15, *) {
-            let view = FocusableView()
-            view.focusEffect = nil
-            return view
-        }
-        return UIView()
+        let view = FocusableView()
+        view.focusEffect = nil
+        return view
     }()
     private lazy var auxillaryContextMenuPreviewView = UIView()
     private var mirroringDisplayLink: CADisplayLink?
@@ -548,7 +544,7 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
     }
 
     private func contextMenuForLocation(location: CGPoint, interaction: UIContextMenuInteraction) -> UIDeferredMenuElement {
-        return UIDeferredMenuElement.uncachedCompat { [weak self, weak interaction] completion in
+        return UIDeferredMenuElement.uncached { [weak self, weak interaction] completion in
             guard let self else {
                 completion([])
                 interaction?.dismissMenu()
@@ -909,16 +905,5 @@ private extension simd_quatf {
 private extension CGPoint {
     func scale(by factor: CGFloat) -> CGPoint {
         return applying(CGAffineTransform(scaleX: factor, y: factor))
-    }
-}
-
-extension UIDeferredMenuElement {
-    static func uncachedCompat(_ elementProvider: @escaping (@escaping ([UIMenuElement]) -> Void) -> Void) -> Self {
-        if #available(iOS 15, visionOS 1, *) {
-            return uncached(elementProvider)
-        }
-        else {
-            return self.init(elementProvider)
-        }
     }
 }

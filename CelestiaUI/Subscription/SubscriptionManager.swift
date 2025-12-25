@@ -31,7 +31,6 @@ public class SubscriptionManager {
         case xcode
     }
 
-    @available(iOS 15, *)
     public struct Plan {
         let product: Product
         let name: String
@@ -60,7 +59,6 @@ public class SubscriptionManager {
         }
     }
 
-    @available(iOS 15, *)
     public func transactionInfo() -> (originalTransactionID: UInt64, isSandbox: Bool)? {
         if let transactionInfoCache {
             return (transactionInfoCache.originalTransactionID, transactionInfoCache.isSandbox)
@@ -68,7 +66,6 @@ public class SubscriptionManager {
         return nil
     }
 
-    @available(iOS 15, *)
     @discardableResult public func checkSubscriptionStatus() async -> SubscriptionStatus {
         let monthlyStatus = subscriptionStatus(for: await Transaction.currentEntitlement(for: monthlySubscriptionId))
         let yearlyStatus = subscriptionStatus(for: await Transaction.currentEntitlement(for: yearlySubscriptionId))
@@ -95,7 +92,6 @@ public class SubscriptionManager {
         return newStatus
     }
 
-    @available(iOS 15, *)
     nonisolated public func checkPurchaseUpdates() -> Task<Void, Error> {
         return .detached {
             for await verificationResult in Transaction.updates {
@@ -113,7 +109,6 @@ public class SubscriptionManager {
         }
     }
 
-    @available(iOS 15, *)
     private func updateStatus(_ status: SubscriptionStatus) {
         guard status != self.status else { return }
 
@@ -136,7 +131,6 @@ public class SubscriptionManager {
         NotificationCenter.default.post(name: .subscriptionStatusChanged, object: self)
     }
 
-    @available(iOS 15, *)
     func fetchSubscriptionProducts() async throws -> [Plan] {
         let products = try await Product.products(for: [yearlySubscriptionId, monthlySubscriptionId])
         return products.compactMap { product in
@@ -150,7 +144,6 @@ public class SubscriptionManager {
         }
     }
 
-    @available(iOS 15, *)
     func purchase(_ product: Product, scene: UIWindowScene) async throws -> SubscriptionStatus {
         #if os(visionOS)
         let result = try await product.purchase(confirmIn: scene)
@@ -182,12 +175,10 @@ public class SubscriptionManager {
         return status
     }
 
-    @available(iOS 15, *)
     private func performServerVerification(originalTransactionID: UInt64, environment: SubscriptionEnvironment) async throws -> Bool {
         return try await requestHandler.getSubscriptionValidity(originalTransactionID: originalTransactionID, sandbox: environment == .production)
     }
 
-    @available(iOS 15, *)
     private func subscriptionStatus(for entitlement: VerificationResult<Transaction>?) -> SubscriptionStatus {
         switch entitlement {
         case .unverified:
@@ -206,7 +197,6 @@ public class SubscriptionManager {
     }
 }
 
-@available(iOS 15, *)
 extension SubscriptionManager.SubscriptionEnvironment {
     init(transaction: Transaction) {
         if #available(iOS 16, *) {

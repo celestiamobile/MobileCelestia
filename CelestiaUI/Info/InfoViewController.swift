@@ -183,11 +183,7 @@ final public class InfoViewController: UICollectionViewController {
         actions.append(.mark)
         snapshot.appendItems(actions.map { .button($0) }, toSection: .buttons)
 
-        if #available(iOS 15, visionOS 1, *) {
-            dataSource.applySnapshotUsingReloadData(snapshot)
-        } else {
-            dataSource.apply(snapshot, animatingDifferences: false)
-        }
+        dataSource.applySnapshotUsingReloadData(snapshot)
 
         if fetchLinkData {
             guard let urlString = info.webInfoURL, let url = URL(string: urlString) else { return }

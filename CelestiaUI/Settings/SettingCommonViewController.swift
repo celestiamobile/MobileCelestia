@@ -44,10 +44,7 @@ private extension SettingCommonViewController {
         tableView.register(TextCell.self, forCellReuseIdentifier: "Checkmark")
         tableView.register(TextCell.self, forCellReuseIdentifier: "Custom")
         tableView.register(SwitchCell.self, forCellReuseIdentifier: "Switch")
-        tableView.register(TextCell.self, forCellReuseIdentifier: "Selection")
-        if #available(iOS 15, visionOS 1, *) {
-            tableView.register(SelectionCell.self, forCellReuseIdentifier: "Selection15")
-        }
+        tableView.register(SelectionCell.self, forCellReuseIdentifier: "Selection")
         title = item.title
         windowTitle = title
     }
@@ -143,47 +140,31 @@ extension SettingCommonViewController {
             return cell
         case .prefSelection(let item):
             let currentValue = self.userDefaults[item.key] ?? item.defaultOption
-            if #available(iOS 15, visionOS 1, *) {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "Selection15", for: indexPath) as! SelectionCell
-                cell.title = row.name
-                cell.subtitle = row.subtitle
-                cell.selectionData = SelectionCell.SelectionData(options: item.options.map { $0.name }, selectedIndex: item.options.firstIndex(where: { $0.value == currentValue }) ?? -1)
-                cell.selectionChange = { [weak self] index in
-                    guard let self else { return }
-                    self.userDefaults[item.key] = item.options[index].value
-                }
-                return cell
-            }
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Selection", for: indexPath) as! TextCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Selection", for: indexPath) as! SelectionCell
             cell.title = row.name
             cell.subtitle = row.subtitle
-            cell.detail = item.options.first(where: { $0.value == currentValue })?.name ?? ""
-            cell.accessoryType = .disclosureIndicator
+            cell.selectionData = SelectionCell.SelectionData(options: item.options.map { $0.name }, selectedIndex: item.options.firstIndex(where: { $0.value == currentValue }) ?? -1)
+            cell.selectionChange = { [weak self] index in
+                guard let self else { return }
+                self.userDefaults[item.key] = item.options[index].value
+            }
             return cell
         case .selection(let item):
             let currentValue = core.value(forKey: item.key) as? Int ?? item.defaultOption
-            if #available(iOS 15, visionOS 1, *) {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "Selection15", for: indexPath) as! SelectionCell
-                cell.title = row.name
-                cell.subtitle = row.subtitle
-                cell.selectionData = SelectionCell.SelectionData(options: item.options.map { $0.name }, selectedIndex: item.options.firstIndex(where: { $0.value == currentValue }) ?? -1)
-                cell.selectionChange = { [weak self] index in
-                    guard let self else { return }
-                    Task {
-                        let value = item.options[index].value
-                        await self.executor.run {
-                            $0.setValue(value, forKey: item.key)
-                        }
-                        self.userDefaults.setValue(value, forKey: item.key)
-                    }
-                }
-                return cell
-            }
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Selection", for: indexPath) as! TextCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: "Selection", for: indexPath) as! SelectionCell
             cell.title = row.name
             cell.subtitle = row.subtitle
-            cell.detail = item.options.first(where: { $0.value == currentValue })?.name ?? ""
-            cell.accessoryType = .disclosureIndicator
+            cell.selectionData = SelectionCell.SelectionData(options: item.options.map { $0.name }, selectedIndex: item.options.firstIndex(where: { $0.value == currentValue }) ?? -1)
+            cell.selectionChange = { [weak self] index in
+                guard let self else { return }
+                Task {
+                    let value = item.options[index].value
+                    await self.executor.run {
+                        $0.setValue(value, forKey: item.key)
+                    }
+                    self.userDefaults.setValue(value, forKey: item.key)
+                }
+            }
             return cell
         case .prefSlider(let item):
             let maxValue = item.maxValue
@@ -236,34 +217,10 @@ extension SettingCommonViewController {
                     item.block($0)
                 }
             }
-        case .prefSelection(let item):
-            if #available(iOS 15, visionOS 1, *) {
-                break
-            }
-            let currentValue = userDefaults[item.key] ?? item.defaultOption
-            let vc = SelectionViewController(title: row.name, options: item.options.map { $0.name }, selectedIndex: item.options.firstIndex(where: { $0.value == currentValue })) { [weak self] newIndex in
-                guard let self else { return }
-                self.userDefaults[item.key] = item.options[newIndex].value
-                self.tableView.reloadData()
-            }
-            navigationController?.pushViewController(vc, animated: true)
-        case .selection(let item):
-            if #available(iOS 15, visionOS 1, *) {
-                break
-            }
-            let currentValue = core.value(forKey: item.key) as? Int ?? item.defaultOption
-            let vc = SelectionViewController(title: row.name, options: item.options.map { $0.name }, selectedIndex: item.options.firstIndex(where: { $0.value == currentValue })) { [weak self] newIndex in
-                guard let self else { return }
-                Task {
-                    let value = item.options[newIndex].value
-                    await self.executor.run {
-                        $0.setValue(value, forKey: item.key)
-                    }
-                    self.userDefaults.set(value, forKey: item.key)
-                    self.tableView.reloadData()
-                }
-            }
-            navigationController?.pushViewController(vc, animated: true)
+        case .prefSelection:
+            break
+        case .selection:
+            break
         default:
             break
         }

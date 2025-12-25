@@ -170,9 +170,7 @@ public class SearchResultViewController: UIViewController {
     }
 
     private func updateContentScrollView(_ newContentScrollView: UIScrollView?) {
-        if #available(iOS 15, visionOS 1, *) {
-            setContentScrollView(newContentScrollView)
-        }
+        setContentScrollView(newContentScrollView)
         if contentScrollView != newContentScrollView {
             contentScrollView = newContentScrollView
             contentScrollViewChanged(newContentScrollView)

@@ -73,21 +73,18 @@ public class ActionButtonHelper {
         }
         #endif
         #if !targetEnvironment(macCatalyst)
-        if #available(iOS 15, visionOS 1, *) {
-            let configuration = UIButton.Configuration.filled()
-            let button = UIButton(configuration: configuration)
-            button.pointerStyleProvider = { button, _, _ in
-                return UIPointerStyle(effect: .highlight(UITargetedPreview(view: button)))
-            }
-            return button
+        let configuration = UIButton.Configuration.filled()
+        let button = UIButton(configuration: configuration)
+        button.pointerStyleProvider = { button, _, _ in
+            return UIPointerStyle(effect: .highlight(UITargetedPreview(view: button)))
         }
-        #endif
+        return button
+        #else
         let button = ActionButton(type: .system)
-        #if targetEnvironment(macCatalyst)
         if #available(iOS 17, *) {
             button.traitOverrides.toolbarItemPresentationSize = .large
         }
-        #endif
         return button
+        #endif
     }
 }

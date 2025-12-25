@@ -145,9 +145,7 @@ let mainSetting: [SettingSection] = {
         ]),
         advancedSettings(extraItems: advanceSettingExtraItems),
     ]
-    if #available(iOS 15, *) {
-        items.append(celestiaPlusSettings())
-    }
+    items.append(celestiaPlusSettings())
     items.append(miscSettings())
     return items
 }()

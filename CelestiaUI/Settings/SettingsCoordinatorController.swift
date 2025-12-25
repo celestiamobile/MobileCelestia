@@ -199,23 +199,15 @@ private extension SettingsCoordinatorController {
                         self?.actionHandler(.refreshFrameRate(newFrameRate: newFrameRate))
                     })
                 case .font:
-                    if #available(iOS 15, *) {
-                        viewController = FontSettingMainViewController(context: fontContext, userDefaults: userDefaults, subscriptionManager: subscriptionManager, openSubscriptionManagement: { [weak self] in
-                            guard let self else { return }
-                            self.openSubscriptionManagement(self)
-                        })
-                    } else {
-                        fatalError()
-                    }
+                    viewController = FontSettingMainViewController(context: fontContext, userDefaults: userDefaults, subscriptionManager: subscriptionManager, openSubscriptionManagement: { [weak self] in
+                        guard let self else { return }
+                        self.openSubscriptionManagement(self)
+                    })
                 case .toolbar:
-                    if #available(iOS 15, *) {
-                        viewController = ToolbarSettingViewController(context: toolbarContext, userDefaults: userDefaults, subscriptionManager: subscriptionManager, assetProvider: assetProvider, openSubscriptionManagement: { [weak self] in
-                            guard let self else { return }
-                            self.openSubscriptionManagement(self)
-                        })
-                    } else {
-                        fatalError()
-                    }
+                    viewController = ToolbarSettingViewController(context: toolbarContext, userDefaults: userDefaults, subscriptionManager: subscriptionManager, assetProvider: assetProvider, openSubscriptionManagement: { [weak self] in
+                        guard let self else { return }
+                        self.openSubscriptionManagement(self)
+                    })
 #endif
                 }
             case .slider, .prefSwitch, .checkmark, .action, .custom, .keyedSelection, .prefSelection, .selection, .prefSlider:

@@ -152,9 +152,7 @@ final class CelestiaControlView: UIView {
 
         super.init(frame: .zero)
 
-        if #available(iOS 15, *) {
-            maximumContentSizeCategory = .extraExtraExtraLarge
-        }
+        maximumContentSizeCategory = .extraExtraExtraLarge
 
         let buttons = items.map { item in
             return ControlButton(button: item) { [weak self] action in

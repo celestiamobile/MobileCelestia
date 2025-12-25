@@ -32,7 +32,7 @@ public extension URL {
             URLQueryItem(name: "transparentBackground", value: "true"),
             URLQueryItem(name: "api", value: "2"),
         ]
-        if #available(iOS 15, *), let subscriptionManager {
+        if let subscriptionManager {
             if let (transactionID, isSandbox) = subscriptionManager.transactionInfo() {
                 queryItems.append(URLQueryItem(name: "transactionIdApple", value: "\(transactionID)"))
                 queryItems.append(URLQueryItem(name: "isSandboxApple", value: isSandbox ? "1" : "0"))

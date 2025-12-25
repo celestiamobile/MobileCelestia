@@ -9,7 +9,6 @@
 
 import UIKit
 
-@available(iOS 15, visionOS 1, *)
 public class SelectionCell: UITableViewCell {
     private lazy var label = UILabel(textStyle: .body)
     private lazy var subtitleLabel = UILabel(textStyle: .footnote)
@@ -58,7 +57,6 @@ public class SelectionCell: UITableViewCell {
     }
 }
 
-@available(iOS 15, visionOS 1, *)
 private extension SelectionCell {
     func setUp() {
         selectionStyle = .none

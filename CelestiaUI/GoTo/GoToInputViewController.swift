@@ -41,51 +41,14 @@ class GoToInputViewController: BaseTableViewController {
         static let defaultDistance: Double = 8
     }
 
-    struct DoubleValueItem: GoToInputItem {
-        enum ValueType {
-            case distance
-        }
-        let title: String
-        let value: Double?
-        let valueString: String?
-        let formatter: NumberFormatter
-        let type: ValueType
-
-        var detail: String { return valueString ?? "" }
-    }
-
-    struct FloatValueItem: GoToInputItem {
-        enum ValueType {
-            case longitude
-            case latitude
-        }
-        let title: String
-        let value: Float?
-        let valueString: String?
-        let formatter: NumberFormatter
-        let type: ValueType
-
-        var detail: String { return valueString ?? "" }
-    }
-
-    @available(iOS 15, visionOS 1, *)
     struct LonLatItem: GoToInputItem {
         var title: String { return "" }
         var detail: String { return "" }
     }
 
-    @available(iOS 15, visionOS 1, *)
     struct DistanceItem: GoToInputItem {
         var title: String { return "" }
         var detail: String { return "" }
-    }
-
-    struct UnitItem: GoToInputItem {
-        var title: String { "" }
-
-        var detail: String { unit.name }
-
-        let unit: DistanceUnit
     }
 
     struct ObjectNameItem: GoToInputItem {
@@ -197,10 +160,8 @@ private extension GoToInputViewController {
         tableView.keyboardDismissMode = .interactive
         #endif
         tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
-        if #available(iOS 15, visionOS 1, *) {
-            tableView.register(LongitudeLatitudeInputCell.self, forCellReuseIdentifier: "LonLat")
-            tableView.register(DistanceInputCell.self, forCellReuseIdentifier: "Distance")
-        }
+        tableView.register(LongitudeLatitudeInputCell.self, forCellReuseIdentifier: "LonLat")
+        tableView.register(DistanceInputCell.self, forCellReuseIdentifier: "Distance")
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: CelestiaString("Go", comment: "Go to an object"), style: .plain, target: self, action: #selector(go))
 
@@ -218,21 +179,10 @@ private extension GoToInputViewController {
     private func reload() {
         let distanceSection: Section
         let coordinateSection: Section
-        if #available(iOS 15, visionOS 1, *) {
-            distanceSection = Section(title: CelestiaString("Distance", comment: "Distance to the object (in Go to)"), items: [DistanceItem()])
-            coordinateSection = Section(title: CelestiaString("Coordinates", comment: "Longitude and latitude (in Go to)"), items: [
-                LonLatItem(),
-            ])
-        } else {
-            distanceSection = Section(title: nil, items: [
-                DoubleValueItem(title: CelestiaString("Distance", comment: "Distance to the object (in Go to)"), value: distance, valueString: distanceString, formatter: numberFormatter, type: .distance),
-                UnitItem(unit: unit),
-            ])
-            coordinateSection = Section(title: CelestiaString("Coordinates", comment: "Longitude and latitude (in Go to)"), items: [
-                FloatValueItem(title: CelestiaString("Latitude", comment: "Coordinates"), value: latitude, valueString: latitudeString, formatter: numberFormatter, type: .latitude),
-                FloatValueItem(title: CelestiaString("Longitude", comment: "Coordinates"), value: longitude, valueString: longitudeString, formatter: numberFormatter, type: .longitude),
-            ])
-        }
+        distanceSection = Section(title: CelestiaString("Distance", comment: "Distance to the object (in Go to)"), items: [DistanceItem()])
+        coordinateSection = Section(title: CelestiaString("Coordinates", comment: "Longitude and latitude (in Go to)"), items: [
+            LonLatItem(),
+        ])
         allSections = [
             Section(title: nil, items: [ObjectNameItem(name: displayName)]),
             coordinateSection,
@@ -253,7 +203,7 @@ extension GoToInputViewController {
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = allSections[indexPath.section].items[indexPath.row]
-        if #available(iOS 15, visionOS 1, *), item is LonLatItem {
+        if item is LonLatItem {
             let cell = tableView.dequeueReusableCell(withIdentifier: "LonLat", for: indexPath) as! LongitudeLatitudeInputCell
             cell.model = LongitudeLatitudeInputCell.Model(longitude: longitude, latitude: latitude, longitudeString: longitudeString, latitudeString: latitudeString)
             cell.coordinatesChanged = { [weak self] longitude, latitude, longitudeString, latitudeString in
@@ -266,7 +216,7 @@ extension GoToInputViewController {
             }
             return cell
         }
-        if #available(iOS 15, visionOS 1, *), item is DistanceItem {
+        if item is DistanceItem {
             let cell = tableView.dequeueReusableCell(withIdentifier: "Distance", for: indexPath) as! DistanceInputCell
             cell.model = DistanceInputCell.Model(
                 units: DistanceUnit.allCases.map({ $0.name }),
@@ -288,11 +238,7 @@ extension GoToInputViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
         cell.title = item.title
         cell.detail = item.detail
-        if item is DoubleValueItem || item is FloatValueItem {
-            cell.accessoryType = .none
-        } else {
-            cell.accessoryType = .disclosureIndicator
-        }
+        cell.accessoryType = .disclosureIndicator
         return cell
     }
 
@@ -309,44 +255,6 @@ extension GoToInputViewController {
         let item = allSections[indexPath.section].items[indexPath.row]
         if item is ObjectNameItem {
             objectNameHandler(self)
-        } else if item is UnitItem {
-            let vc = SelectionViewController(title: CelestiaString("Distance Unit", comment: ""), options: DistanceUnit.allCases.map { $0.name }, selectedIndex: DistanceUnit.allCases.firstIndex(of: unit), selectionChange: { [weak self] index in
-                guard let self = self else { return }
-                self.unit = DistanceUnit.allCases[index]
-                self.reload()
-            })
-            navigationController?.pushViewController(vc, animated: true)
-        } else if let valueItem = item as? DoubleValueItem {
-            Task {
-                if let text = await textInputHandler(self, item.title, item.detail, .decimalPad), let value = self.numberFormatter.number(from: text)?.doubleValue, value >= 0.0 {
-                    switch valueItem.type {
-                    case .distance:
-                        self.distance = value
-                        self.distanceString = self.numberFormatter.string(from: value)
-                    }
-                    self.validate()
-                    self.reload()
-                }
-            }
-        } else if let valueItem = item as? FloatValueItem {
-            Task {
-                if let text = await textInputHandler(self, item.title, item.detail, .decimalPad), let value = self.numberFormatter.number(from: text)?.floatValue {
-                    switch valueItem.type {
-                    case .longitude:
-                        if value >= -180.0 && value <= 180.0 {
-                            self.longitude = value
-                            self.longitudeString = self.numberFormatter.string(from: value)
-                        }
-                    case .latitude:
-                        if value >= -90.0 && value <= 90.0 {
-                            self.latitude = value
-                            self.latitudeString = self.numberFormatter.string(from: value)
-                        }
-                    }
-                    self.validate()
-                    self.reload()
-                }
-            }
         }
     }
 }
