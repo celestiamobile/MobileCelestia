@@ -23,6 +23,7 @@ public class CommonWebViewController: UIViewController {
         case ack(id: String)
     }
 
+    private var hasLoadedInitialPage = false
     private var url: URL
     private let matchingQueryKeys: [String]
     private let contextDirectory: URL?
@@ -107,18 +108,7 @@ public class CommonWebViewController: UIViewController {
     public override func viewDidLoad() {
         super.viewDidLoad()
 
-        activityIndicator.startAnimating()
-        webView.load(URLRequest(url: url))
-        webView.navigationDelegate = self
-        #if DEBUG
-        if #available(iOS 16.4, visionOS 1, *) {
-            webView.isInspectable = true
-        }
-        #endif
-
         navigationItem.leftBarButtonItem = goBackItem
-        updateNavigation()
-
         titleObservation = webView.observe(\.title, options: .new, changeHandler: { [weak self] webView, _ in
             guard let self else { return }
             Task.detached { @MainActor in
@@ -126,6 +116,25 @@ public class CommonWebViewController: UIViewController {
                 self.windowTitle = self.title
             }
         })
+    }
+
+    public override func viewIsAppearing(_ animated: Bool) {
+        super.viewIsAppearing(animated)
+
+        if !hasLoadedInitialPage {
+            hasLoadedInitialPage = true
+            webView.frame = view.bounds /// WebView's frame might be not decided yet
+            activityIndicator.startAnimating()
+            webView.load(URLRequest(url: url))
+            webView.navigationDelegate = self
+            #if DEBUG
+            if #available(iOS 16.4, visionOS 1, *) {
+                webView.isInspectable = true
+            }
+            #endif
+
+            updateNavigation()
+        }
     }
 
     private func updateNavigation() {
