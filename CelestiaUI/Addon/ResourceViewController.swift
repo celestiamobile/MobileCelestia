@@ -15,7 +15,7 @@ public class ResourceViewController: ToolbarNavigationContainerController {
     private let actionHandler: ((CommonWebViewController.WebAction, UIViewController) -> Void)?
     private let requestHandler: RequestHandler
 
-    public init(executor: AsyncProviderExecutor, resourceManager: ResourceManager, requestHandler: RequestHandler, actionHandler: ((CommonWebViewController.WebAction, UIViewController) -> Void)?, getAddonHandler: @escaping () -> Void) {
+    public init(executor: AsyncProviderExecutor, resourceManager: ResourceManager, addonUpdateManager: AddonUpdateManager, subscriptionManager: SubscriptionManager, requestHandler: RequestHandler, actionHandler: ((CommonWebViewController.WebAction, UIViewController) -> Void)?, getAddonHandler: @escaping () -> Void, openSubscriptionManagement: @escaping (UIViewController) -> Void) {
         self.executor = executor
         self.resourceManager = resourceManager
         self.actionHandler = actionHandler
@@ -24,7 +24,16 @@ public class ResourceViewController: ToolbarNavigationContainerController {
         setViewControllers([
             InstalledResourceViewController(resourceManager: resourceManager, selection: { [weak self] item in
                 self?.viewItem(item)
-            }, getAddonsHandler: getAddonHandler)
+            }, getAddonsHandler: getAddonHandler, showUpdatesHandler: { [weak self] in
+                guard let self else { return }
+                let vc = AddonUpdateListContainerViewController(addonUpdateManager: addonUpdateManager, resourceManager: resourceManager, subscriptionManager: subscriptionManager, openAddon: { [weak self] addon in
+                    self?.viewItem(addon)
+                }) { [weak self] in
+                    guard let self else { return }
+                    openSubscriptionManagement(self)
+                }
+                self.pushViewController(vc, animated: true)
+            })
         ], animated: false)
     }
 

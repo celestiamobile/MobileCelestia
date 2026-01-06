@@ -273,6 +273,25 @@ extension NSToolbarItem {
         setValue(button, forKey: "view")
     }
 
+    convenience init(itemIdentifier: NSToolbarItem.Identifier, systemImageName: String, accessibilityDescription: String, target: Any, action: Selector) {
+        self.init(itemIdentifier: itemIdentifier)
+        let imageClass = NSClassFromString("NSImage") as! NSObject.Type
+        typealias ImageCreationMethod = @convention(c) (NSObject.Type, Selector, NSString, NSString?) -> NSObject
+        let imageCreationSelector = NSSelectorFromString("imageWithSystemSymbolName:accessibilityDescription:")
+        let imageCreationMethodIMP = imageClass.method(for: imageCreationSelector)
+        let imageCreationMethod = unsafeBitCast(imageCreationMethodIMP, to: ImageCreationMethod.self)
+        let image = imageCreationMethod(imageClass, imageCreationSelector, systemImageName as NSString, accessibilityDescription as NSString)
+
+        let buttonClass = NSClassFromString("NSButton") as! NSObject.Type
+        typealias ButtonCreationMethod = @convention(c) (NSObject.Type, Selector, NSObject, Any, Selector) -> NSObject
+        let selector = NSSelectorFromString("buttonWithImage:target:action:")
+        let methodIMP = buttonClass.method(for: selector)
+        let method = unsafeBitCast(methodIMP, to: ButtonCreationMethod.self)
+        let button = method(buttonClass, selector, image, target, action)
+        button.setValue(11, forKey: "bezelStyle") // textureRounded
+        setValue(button, forKey: "view")
+    }
+
     convenience init(backItemIdentifier: NSToolbarItem.Identifier, target: Any, action: Selector) {
         self.init(itemIdentifier: backItemIdentifier)
         let imageClass = NSClassFromString("NSImage") as! NSObject.Type
