@@ -289,6 +289,8 @@ extension NSToolbarItem {
         let method = unsafeBitCast(methodIMP, to: ButtonCreationMethod.self)
         let button = method(buttonClass, selector, image, target, action)
         button.setValue(11, forKey: "bezelStyle") // textureRounded
+        toolTip = accessibilityDescription
+        label = accessibilityDescription
         setValue(button, forKey: "view")
     }
 
