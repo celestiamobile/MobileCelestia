@@ -106,6 +106,9 @@ final class AddonUpdateListViewController: UICollectionViewController {
             } else {
                 self.refreshControl.endRefreshing()
             }
+            if #available(iOS 17, visionOS 1, *) {
+                setNeedsUpdateContentUnavailableConfiguration()
+            }
         }
         .store(in: &cancellables)
         #endif
@@ -131,6 +134,20 @@ final class AddonUpdateListViewController: UICollectionViewController {
         } else {
             var config = UIContentUnavailableConfiguration.empty()
             config.text = CelestiaString("No Update Available", comment: "Hint that there is no update for installed add-ons.")
+            #if !targetEnvironment(macCatalyst)
+            if !addonUpdateManager.isCheckingUpdates {
+                if #available(iOS 26, visionOS 26, *) {
+                    config.button = .prominentGlass()
+                } else {
+                    config.button = .filled()
+                }
+                config.button.title = CelestiaString("Refresh", comment: "Button to refresh this list")
+                config.buttonProperties.primaryAction = UIAction { [weak self] _ in
+                    guard let self else { return }
+                    self.refreshTriggered()
+                }
+            }
+            #endif
             contentUnavailableConfiguration = config
         }
     }
