@@ -323,8 +323,7 @@ public class ResourceItemViewController: UIViewController {
     }
 
     @objc private func updateButtonClicked() {
-        try? viewModel.resourceManager.uninstall(item: viewModel.item)
-        viewModel.resourceManager.download(item: viewModel.item)
+        try? viewModel.resourceManager.reinstall(item: viewModel.item)
         viewModel.state = .downloading
         updateUI()
     }

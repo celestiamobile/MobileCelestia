@@ -60,6 +60,7 @@ class MainViewController: UIViewController {
     private let assetProvider = CelestiaAssetProvider()
 
     private let resourceManager = ResourceManager(extraAddonDirectory: UserDefaults.extraAddonDirectory, extraScriptDirectory: UserDefaults.extraScriptDirectory)
+    private lazy var addonUpdateManager = AddonUpdateManager(requestHandler: requestHandler, resourceManager: resourceManager)
 
     private var viewControllerStack: [UIViewController] = []
 
@@ -1099,9 +1100,12 @@ Device Model: \(model)
     }
 
     private func presentInstalledAddons() {
-        let controller = ResourceViewController(executor: executor, resourceManager: resourceManager, requestHandler: requestHandler, actionHandler: commonWebActionHandler) { [weak self] in
+        let controller = ResourceViewController(executor: executor, resourceManager: resourceManager, addonUpdateManager: addonUpdateManager, subscriptionManager: subscriptionManager, requestHandler: requestHandler, actionHandler: commonWebActionHandler) { [weak self] in
             guard let self else { return }
             self.showOnlineAddons(category: nil)
+        } openSubscriptionManagement: { [weak self] viewController in
+            guard let self else { return }
+            self.showSubscription(for: viewController)
         }
         showViewController(controller, customToolbar: true)
     }

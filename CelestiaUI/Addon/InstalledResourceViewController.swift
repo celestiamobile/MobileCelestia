@@ -22,6 +22,7 @@ extension ResourceItem: AsyncListItem, @unchecked Sendable {
 class InstalledResourceViewController: AsyncListViewController<ResourceItem> {
     private let resourceManager: ResourceManager
     private let getAddonsHandler: () -> Void
+    private let showUpdatesHandler: () -> Void
 
     private lazy var emptyView: UIView = {
         let view = EmptyHintView()
@@ -36,9 +37,10 @@ class InstalledResourceViewController: AsyncListViewController<ResourceItem> {
 
     override class var alwaysRefreshOnAppear: Bool { return true }
 
-    init(resourceManager: ResourceManager, selection: @escaping (ResourceItem) -> Void, getAddonsHandler: @escaping () -> Void) {
+    init(resourceManager: ResourceManager, selection: @escaping (ResourceItem) -> Void, getAddonsHandler: @escaping () -> Void, showUpdatesHandler: @escaping () -> Void) {
         self.resourceManager = resourceManager
         self.getAddonsHandler = getAddonsHandler
+        self.showUpdatesHandler = showUpdatesHandler
         super.init(selection: selection)
     }
     
@@ -51,6 +53,10 @@ class InstalledResourceViewController: AsyncListViewController<ResourceItem> {
 
         title = CelestiaString("Installed", comment: "Title for the list of installed add-ons")
         windowTitle = title
+
+        #if !os(visionOS)
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: CelestiaString("Updates", comment: "View the list of add-ons that have pending updates."), style: .plain, target: self, action: #selector(showUpdates))
+        #endif
     }
 
     override func loadItems(pageStart: Int, pageSize: Int) async throws -> [ResourceItem] {
@@ -85,3 +91,29 @@ class InstalledResourceViewController: AsyncListViewController<ResourceItem> {
         return config
     }
 }
+
+private extension InstalledResourceViewController {
+    @objc private func showUpdates() {
+        showUpdatesHandler()
+    }
+}
+
+#if targetEnvironment(macCatalyst)
+extension NSToolbarItem.Identifier {
+    private static let prefix = Bundle(for: InstalledResourceViewController.self).bundleIdentifier!
+    fileprivate static let updates = NSToolbarItem.Identifier.init("\(prefix).addons.updates")
+}
+
+extension InstalledResourceViewController: ToolbarAwareViewController {
+    func supportedToolbarItemIdentifiers(for toolbarContainerViewController: ToolbarContainerViewController) -> [NSToolbarItem.Identifier] {
+        return [.updates]
+    }
+
+    func toolbarContainerViewController(_ toolbarContainerViewController: ToolbarContainerViewController, itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier) -> NSToolbarItem? {
+        if itemIdentifier == .updates {
+            return NSToolbarItem(itemIdentifier: itemIdentifier, buttonTitle: CelestiaString("Updates", comment: "View the list of add-ons that have pending updates."), target: self, action: #selector(showUpdates))
+        }
+        return nil
+    }
+}
+#endif

@@ -20,6 +20,7 @@ public final class ResourceManager: @unchecked Sendable {
     static let downloadSuccess = Notification.Name("ResourceDownloadManagerDownloadSuccess")
     static let resourceError = Notification.Name("ResourceDownloadManagerResourceError")
     static let unzipSuccess = Notification.Name("ResourceDownloadManagerUnzipSuccess")
+    static let uninstallSuccess = Notification.Name("ResourceDownloadManagerUninstallSuccess")
 
     // Notification user info keys
     static let downloadIdentifierKey = "ResourceDownloadManagerDownloadIdentifierKey"
@@ -89,8 +90,18 @@ public final class ResourceManager: @unchecked Sendable {
     }
 
     func uninstall(item: ResourceItem) throws {
+        try uninstallInternally(item: item)
+        NotificationCenter.default.post(name: Self.uninstallSuccess, object: nil, userInfo: [Self.downloadIdentifierKey: item.id])
+    }
+
+    private func uninstallInternally(item: ResourceItem) throws {
         guard let folder = contextDirectory(forAddon: item) else { return }
         try FileManager.default.removeItem(at: folder)
+    }
+
+    func reinstall(item: ResourceItem) throws {
+        try uninstallInternally(item: item)
+        download(item: item)
     }
 
     func download(item: ResourceItem) {
