@@ -148,8 +148,7 @@ jobs:
       TO_REPLACE="SENTRY-IOS-DSN"
       NEW_STRING=$(SENTRY-IOS-DSN)
       sed -ie "s#${TO_REPLACE}#${NEW_STRING}#g" MobileCelestia/AppDelegate.swift
-      echo "New Content:"
-      cat MobileCelestia/AppDelegate.swift
+      rm MobileCelestia/AppDelegate.swifte
     workingDirectory: '$(System.DefaultWorkingDirectory)/MobileCelestia'
     displayName: 'Replace Sentry Placeholders'
 
