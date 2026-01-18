@@ -13,6 +13,7 @@ import UIKit
 public class SubscriptionManagerViewController: UIViewController {
     private let subscriptionManager: SubscriptionManager
     private let assetProvider: AssetProvider
+    private let stringProvider: StringProvider
 
     private enum Constants {
         static let boxCornerRadius: CGFloat = 12
@@ -68,9 +69,10 @@ public class SubscriptionManagerViewController: UIViewController {
     private lazy var planStack = UIStackView(arrangedSubviews: [])
     private lazy var containerView = UIView()
 
-    public init(subscriptionManager: SubscriptionManager, assetProvider: AssetProvider) {
+    public init(subscriptionManager: SubscriptionManager, assetProvider: AssetProvider, stringProvider: StringProvider) {
         self.subscriptionManager = subscriptionManager
         self.assetProvider = assetProvider
+        self.stringProvider = stringProvider
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -192,7 +194,7 @@ private extension SubscriptionManagerViewController {
 
         Task {
             do {
-                let plans = try await subscriptionManager.fetchSubscriptionProducts().sorted(by: { $0.product.price > $1.product.price })
+                let plans = try await subscriptionManager.fetchSubscriptionProducts(stringProvider: stringProvider).sorted(by: { $0.product.price > $1.product.price })
                 let status = await self.subscriptionManager.checkSubscriptionStatus()
                 self.status = .status(status: status, plans: plans)
                 reloadViews()

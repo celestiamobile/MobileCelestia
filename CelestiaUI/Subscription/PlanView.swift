@@ -42,10 +42,21 @@ final class PlanView: UIView {
         priceLabel.textColor = .secondaryLabel
         priceLabel.numberOfLines = 0
 
-        nameLabel.text = plan.name
-        priceLabel.text = product.displayPrice
+        let secondaryPriceLabel: UILabel?
+        if let formattedPriceLine2 = plan.formattedPriceLine2 {
+            let label = UILabel(textStyle: .footnote)
+            label.textColor = .secondaryLabel
+            label.numberOfLines = 0
+            label.attributedText = NSAttributedString(formattedPriceLine2)
+            secondaryPriceLabel = label
+        } else {
+            secondaryPriceLabel = nil
+        }
 
-        let stack = UIStackView(arrangedSubviews: [nameLabel, priceLabel])
+        nameLabel.text = plan.name
+        priceLabel.attributedText = NSAttributedString(plan.formattedPriceLine1)
+
+        let stack = UIStackView(arrangedSubviews: [nameLabel, priceLabel, secondaryPriceLabel].compactMap { $0 })
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .vertical
         stack.spacing = GlobalConstants.pageSmallGapVertical

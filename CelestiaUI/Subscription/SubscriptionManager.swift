@@ -34,6 +34,15 @@ public class SubscriptionManager {
     public struct Plan {
         let product: Product
         let name: String
+        let formattedPriceLine1: AttributedString
+        let formattedPriceLine2: AttributedString?
+
+        init(product: Product, subscription: Product.SubscriptionInfo, name: String, stringProvider: StringProvider) async {
+            self.product = product
+            self.name = name
+            self.formattedPriceLine1 = await stringProvider.formattedPriceLine1(for: product, subscription: subscription)
+            self.formattedPriceLine2 = await stringProvider.formattedPriceLine2(for: product, subscription: subscription)
+        }
     }
 
     private(set) var status: SubscriptionStatus = .unknown
@@ -131,17 +140,23 @@ public class SubscriptionManager {
         NotificationCenter.default.post(name: .subscriptionStatusChanged, object: self)
     }
 
-    func fetchSubscriptionProducts() async throws -> [Plan] {
+    func fetchSubscriptionProducts(stringProvider: StringProvider) async throws -> [Plan] {
         let products = try await Product.products(for: [yearlySubscriptionId, monthlySubscriptionId])
-        return products.compactMap { product in
+        var plans = [Plan]()
+        for product in products {
+            guard let subscription = product.subscription else { continue }
+
+            let plan: Plan
             if product.id == yearlySubscriptionId {
-                return Plan(product: product, name: CelestiaString("Yearly", comment: "Yearly subscription"))
+                plan = await Plan(product: product, subscription: subscription, name: CelestiaString("Yearly", comment: "Yearly subscription"), stringProvider: stringProvider)
             } else if product.id == monthlySubscriptionId {
-                return Plan(product: product, name: CelestiaString("Monthly", comment: "Monthly subscription"))
+                plan = await Plan(product: product, subscription: subscription, name: CelestiaString("Monthly", comment: "Monthly subscription"), stringProvider: stringProvider)
             } else {
-                return nil
+                continue
             }
+            plans.append(plan)
         }
+        return plans
     }
 
     func purchase(_ product: Product, scene: UIWindowScene) async throws -> SubscriptionStatus {

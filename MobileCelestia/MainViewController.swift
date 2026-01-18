@@ -12,6 +12,7 @@ import CelestiaFoundation
 import CelestiaUI
 import LinkPresentation
 import MessageUI
+import StoreKit
 import UniformTypeIdentifiers
 import UIKit
 
@@ -58,6 +59,7 @@ class MainViewController: UIViewController {
     private let userDefaults: UserDefaults
     private let requestHandler = RequestHandlerImpl()
     private let assetProvider = CelestiaAssetProvider()
+    private let stringProvider = CelestiaStringProvider()
 
     private let resourceManager = ResourceManager(extraAddonDirectory: UserDefaults.extraAddonDirectory, extraScriptDirectory: UserDefaults.extraScriptDirectory)
     private lazy var addonUpdateManager = AddonUpdateManager(requestHandler: requestHandler, resourceManager: resourceManager)
@@ -688,7 +690,7 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     private func showSubscription(for viewController: UIViewController? = nil) {
-        let vc = SubscriptionManagerViewController(subscriptionManager: subscriptionManager, assetProvider: assetProvider)
+        let vc = SubscriptionManagerViewController(subscriptionManager: subscriptionManager, assetProvider: assetProvider, stringProvider: stringProvider)
         let nav = BaseNavigationController(rootViewController: vc)
         nav.setNavigationBarHidden(true, animated: false)
         showViewController(nav, titleVisible: false)
@@ -1491,6 +1493,50 @@ struct CelestiaAssetProvider: AssetProvider {
             }
         case .tutorialSwitchMode:
             .tutorialSwitchMode
+        }
+    }
+}
+
+struct CelestiaStringProvider: StringProvider {
+    func formattedPriceLine1(for product: Product, subscription: Product.SubscriptionInfo) async -> AttributedString {
+        if let introductoryOffer = subscription.introductoryOffer, await subscription.isEligibleForIntroOffer {
+            return switch introductoryOffer.period.unit {
+            case .day:
+                AttributedString(localized: "\(displayCyclePrice(displayPrice: introductoryOffer.displayPrice, unit: introductoryOffer.period.unit)) for ^[\(introductoryOffer.periodCount) day](inflect: true)")
+            case .week:
+                AttributedString(localized: "\(displayCyclePrice(displayPrice: introductoryOffer.displayPrice, unit: introductoryOffer.period.unit)) for ^[\(introductoryOffer.periodCount) week](inflect: true)")
+            case .month:
+                AttributedString(localized: "\(displayCyclePrice(displayPrice: introductoryOffer.displayPrice, unit: introductoryOffer.period.unit)) for ^[\(introductoryOffer.periodCount) month](inflect: true)")
+            case .year:
+                AttributedString(localized: "\(displayCyclePrice(displayPrice: introductoryOffer.displayPrice, unit: introductoryOffer.period.unit)) for ^[\(introductoryOffer.periodCount) year](inflect: true)")
+            @unknown default:
+                fatalError()
+            }
+        } else {
+            return AttributedString(product.displayPrice)
+        }
+    }
+
+    func formattedPriceLine2(for product: Product, subscription: Product.SubscriptionInfo) async -> AttributedString? {
+        if subscription.introductoryOffer != nil, await subscription.isEligibleForIntroOffer {
+            return AttributedString(localized: "then \(displayCyclePrice(displayPrice: product.displayPrice, unit: subscription.subscriptionPeriod.unit)) thereafter")
+        } else {
+            return nil
+        }
+    }
+
+    private func displayCyclePrice(displayPrice: String, unit: Product.SubscriptionPeriod.Unit) -> AttributedString {
+        return switch unit {
+        case .day:
+            AttributedString(localized: "\(displayPrice)/day")
+        case .week:
+            AttributedString(localized: "\(displayPrice)/week")
+        case .month:
+            AttributedString(localized: "\(displayPrice)/mo")
+        case .year:
+            AttributedString(localized: "\(displayPrice)/year")
+        @unknown default:
+            fatalError()
         }
     }
 }
