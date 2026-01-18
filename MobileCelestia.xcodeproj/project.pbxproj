@@ -1290,7 +1290,7 @@
 			repositoryURL = "https://github.com/levinli303/AsyncGL";
 			requirement = {
 				kind = exactVersion;
-				version = 1.1.5;
+				version = 1.1.6;
 			};
 		};
 		EA9039A02BA19CF100C982BC /* XCRemoteSwiftPackageReference "mwrequest" */ = {
