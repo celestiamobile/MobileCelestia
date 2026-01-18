@@ -136,11 +136,15 @@ final class AddonUpdateListViewController: UICollectionViewController {
             config.text = CelestiaString("No Update Available", comment: "Hint that there is no update for installed add-ons.")
             #if !targetEnvironment(macCatalyst)
             if !addonUpdateManager.isCheckingUpdates {
+                #if os(visionOS)
+                config.button = .filled()
+                #else
                 if #available(iOS 26, visionOS 26, *) {
                     config.button = .prominentGlass()
                 } else {
                     config.button = .filled()
                 }
+                #endif
                 config.button.title = CelestiaString("Refresh", comment: "Button to refresh this list")
                 config.buttonProperties.primaryAction = UIAction { [weak self] _ in
                     guard let self else { return }

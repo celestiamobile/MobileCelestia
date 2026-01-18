@@ -15,6 +15,20 @@ public class ResourceViewController: ToolbarNavigationContainerController {
     private let actionHandler: ((CommonWebViewController.WebAction, UIViewController) -> Void)?
     private let requestHandler: RequestHandler
 
+    #if os(visionOS)
+    public init(executor: AsyncProviderExecutor, resourceManager: ResourceManager, requestHandler: RequestHandler, actionHandler: ((CommonWebViewController.WebAction, UIViewController) -> Void)?, getAddonHandler: @escaping () -> Void) {
+        self.executor = executor
+        self.resourceManager = resourceManager
+        self.actionHandler = actionHandler
+        self.requestHandler = requestHandler
+        super.init(rootViewController: UIViewController())
+        setViewControllers([
+            InstalledResourceViewController(resourceManager: resourceManager, selection: { [weak self] item in
+                self?.viewItem(item)
+            }, getAddonsHandler: getAddonHandler)
+        ], animated: false)
+    }
+    #else
     public init(executor: AsyncProviderExecutor, resourceManager: ResourceManager, addonUpdateManager: AddonUpdateManager, subscriptionManager: SubscriptionManager, requestHandler: RequestHandler, actionHandler: ((CommonWebViewController.WebAction, UIViewController) -> Void)?, getAddonHandler: @escaping () -> Void, openSubscriptionManagement: @escaping (UIViewController) -> Void) {
         self.executor = executor
         self.resourceManager = resourceManager
@@ -36,6 +50,7 @@ public class ResourceViewController: ToolbarNavigationContainerController {
             })
         ], animated: false)
     }
+    #endif
 
     public required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")

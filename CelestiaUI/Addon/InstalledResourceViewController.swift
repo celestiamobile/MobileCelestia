@@ -22,7 +22,9 @@ extension ResourceItem: AsyncListItem, @unchecked Sendable {
 class InstalledResourceViewController: AsyncListViewController<ResourceItem> {
     private let resourceManager: ResourceManager
     private let getAddonsHandler: () -> Void
+    #if !os(visionOS)
     private let showUpdatesHandler: () -> Void
+    #endif
 
     private lazy var emptyView: UIView = {
         let view = EmptyHintView()
@@ -37,12 +39,20 @@ class InstalledResourceViewController: AsyncListViewController<ResourceItem> {
 
     override class var alwaysRefreshOnAppear: Bool { return true }
 
+    #if os(visionOS)
+    init(resourceManager: ResourceManager, selection: @escaping (ResourceItem) -> Void, getAddonsHandler: @escaping () -> Void) {
+        self.resourceManager = resourceManager
+        self.getAddonsHandler = getAddonsHandler
+        super.init(selection: selection)
+    }
+    #else
     init(resourceManager: ResourceManager, selection: @escaping (ResourceItem) -> Void, getAddonsHandler: @escaping () -> Void, showUpdatesHandler: @escaping () -> Void) {
         self.resourceManager = resourceManager
         self.getAddonsHandler = getAddonsHandler
         self.showUpdatesHandler = showUpdatesHandler
         super.init(selection: selection)
     }
+    #endif
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -92,11 +102,13 @@ class InstalledResourceViewController: AsyncListViewController<ResourceItem> {
     }
 }
 
+#if !os(visionOS)
 private extension InstalledResourceViewController {
     @objc private func showUpdates() {
         showUpdatesHandler()
     }
 }
+#endif
 
 #if targetEnvironment(macCatalyst)
 extension NSToolbarItem.Identifier {

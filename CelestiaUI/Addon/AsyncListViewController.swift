@@ -73,11 +73,15 @@ class AsyncListViewController<T: AsyncListItem>: BaseTableViewController {
         } else if !isFreshLoadSuccessful {
             var config = UIContentUnavailableConfiguration.empty()
             #if !targetEnvironment(macCatalyst)
+            #if os(visionOS)
+            config.button = .filled()
+            #else
             if #available(iOS 26, visionOS 26, *) {
                 config.button = .prominentGlass()
             } else {
                 config.button = .filled()
             }
+            #endif
             #endif
             config.button.title = CelestiaString("Refresh", comment: "Button to refresh this list")
             config.buttonProperties.primaryAction = UIAction { [weak self] _ in
