@@ -1033,6 +1033,6 @@ public func miscSettings() -> SettingSection {
                     )
                 )
             ),
-            SettingItem(name: CelestiaString("About", comment: "About Celstia..."), associatedItem: .other(type: .about))
+            SettingItem(name: CelestiaString("About", comment: "About Celestia"), associatedItem: .other(type: .about))
         ])
 }

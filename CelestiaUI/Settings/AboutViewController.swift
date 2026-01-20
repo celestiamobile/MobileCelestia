@@ -84,7 +84,7 @@ private extension AboutViewController {
         #if !targetEnvironment(macCatalyst)
         tableView.register(ICPCFooter.self, forHeaderFooterViewReuseIdentifier: "ICPC")
         #endif
-        title = CelestiaString("About", comment: "About Celstia...")
+        title = CelestiaString("About", comment: "About Celestia")
         windowTitle = title
     }
 }
