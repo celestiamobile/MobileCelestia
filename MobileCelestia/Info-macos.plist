@@ -116,7 +116,7 @@
 	<key>LSSupportsOpeningDocumentsInPlace</key>
 	<true/>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright (C) 2001-2025, the Celestia Development Team</string>
+	<string>Copyright (C) 2001-2026, the Celestia Development Team</string>
 	<key>NSPhotoLibraryAddUsageDescription</key>
 	<string>Permission is needed to save screenshots to Photo Library.</string>
 	<key>UIApplicationSceneManifest</key>
