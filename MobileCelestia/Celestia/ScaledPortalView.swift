@@ -21,6 +21,7 @@ final class ScaledPortalView: UIView {
     private static var portalViewClass = NSClassFromString("_UIPortalView") as? NSObject.Type
 
     static var canBeUsed: Bool = {
+        guard #available(iOS 999, *) else { return false } // Disable for all because of flickering
         guard let portalViewClass else { return false }
         guard let portalLayerClass = NSClassFromString("CAPortalLayer") as? NSObject.Type else { return false }
         return portalViewClass.instancesRespond(to: NSSelectorFromString("initWithSourceView:")) && portalViewClass.instancesRespond(to: NSSelectorFromString("portalLayer")) && portalLayerClass.instancesRespond(to: NSSelectorFromString("setCrossDisplay:"))
