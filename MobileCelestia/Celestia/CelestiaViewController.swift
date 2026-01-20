@@ -338,6 +338,10 @@ extension CelestiaViewController: RenderingTargetInformationProvider {
     var targetContents: Any? {
         return displayController.screenshot()
     }
+
+    var targetView: UIView {
+        return displayController.view
+    }
 }
 
 private extension UIKey {

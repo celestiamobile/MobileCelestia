@@ -510,7 +510,10 @@ extension MainViewController {
         guard currentWindowSceneForMirroring == nil else { return }
 
         currentWindowSceneForMirroring = windowScene
-        showOption(CelestiaString("An external screen is connected, do you want to display Celestia on the external screen?", comment: "")) { [weak self] choice in
+        showOption(
+            CelestiaString("External screen connected", comment: ""),
+            message: CelestiaString("An external screen is connected, do you want to display Celestia on the external screen?", comment: "")
+        ) { [weak self] choice in
             guard choice, let self = self else { return }
             self.currentWindowSceneForMirroring = nil
 

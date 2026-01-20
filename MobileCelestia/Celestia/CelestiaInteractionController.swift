@@ -31,6 +31,7 @@ protocol CelestiaInteractionControllerDelegate: AnyObject {
 protocol RenderingTargetInformationProvider: AnyObject {
     var targetGeometry: RenderingTargetGeometry { get }
     var targetContents: Any? { get }
+    var targetView: UIView { get }
 }
 
 extension UIKeyModifierFlags: @unchecked @retroactive Sendable {}
@@ -151,6 +152,7 @@ class CelestiaInteractionController: UIViewController {
         override var canBecomeFirstResponder: Bool { return true }
     }
 
+    private var portalView: ScaledPortalView?
     private lazy var targetInteractionView: UIView = {
         let view = FocusableView()
         view.focusEffect = nil
@@ -761,16 +763,35 @@ extension CelestiaInteractionController {
     }
 
     func startMirroring() {
-        let displayLink = CADisplayLink(target: self, selector: #selector(mirroringDisplayLinkHandler))
-        displayLink.add(to: .main, forMode: .common)
-        mirroringDisplayLink = displayLink
+        guard let targetProvider else { return }
+
+        if ScaledPortalView.canBeUsed {
+            let portalView = ScaledPortalView(sourceView: targetProvider.targetView)
+            portalView.translatesAutoresizingMaskIntoConstraints = false
+            view.insertSubview(portalView, belowSubview: targetInteractionView)
+            NSLayoutConstraint.activate([
+                portalView.topAnchor.constraint(equalTo: view.topAnchor),
+                portalView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+                portalView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                portalView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            ])
+            self.portalView = portalView
+        } else {
+            let displayLink = CADisplayLink(target: self, selector: #selector(mirroringDisplayLinkHandler))
+            displayLink.add(to: .main, forMode: .common)
+            mirroringDisplayLink = displayLink
+        }
         isMirroring = true
     }
 
     func stopMirroring() {
-        mirroringDisplayLink?.invalidate()
-        mirroringDisplayLink = nil
-        targetInteractionView.layer.contents = nil
+        if ScaledPortalView.canBeUsed {
+            portalView?.removeFromSuperview()
+        } else {
+            mirroringDisplayLink?.invalidate()
+            mirroringDisplayLink = nil
+            targetInteractionView.layer.contents = nil
+        }
         isMirroring = false
     }
 }
