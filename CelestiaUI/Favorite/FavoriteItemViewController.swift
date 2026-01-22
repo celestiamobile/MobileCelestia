@@ -422,7 +422,6 @@ private extension FavoriteItemViewController {
         } else {
             if itemList.count == 0, let emptyHint = itemList.emptyHint {
                 let view = EmptyHintView()
-                view.layer.zPosition = 1024
                 view.title = emptyHint
                 collectionView.backgroundView = view
             } else {

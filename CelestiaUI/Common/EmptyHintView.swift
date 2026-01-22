@@ -9,7 +9,7 @@
 
 import UIKit
 
-class EmptyHintView: UIView {
+public class EmptyHintView: UIView {
     var title: String? {
         get { textLabel.text }
         set { textLabel.text = newValue }
@@ -57,7 +57,7 @@ class EmptyHintView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func updateConstraints() {
+    public override func updateConstraints() {
         if actionButton.isHidden {
             NSLayoutConstraint.deactivate(actionButtonVisibleConstraints)
             NSLayoutConstraint.activate(actionButtonHiddenConstraints)

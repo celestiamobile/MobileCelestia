@@ -10,21 +10,35 @@
 import CelestiaCore
 import UIKit
 
-extension ResourceItem: AsyncListItem, @unchecked Sendable {
-    var imageURL: (URL, String)? {
-        if let image = self.image {
-            return (image, id)
-        }
-        return nil
-    }
-}
-
-class InstalledResourceViewController: AsyncListViewController<ResourceItem> {
+class InstalledResourceViewController: UICollectionViewController {
     private let resourceManager: ResourceManager
     private let getAddonsHandler: () -> Void
     #if !os(visionOS)
     private let showUpdatesHandler: () -> Void
     #endif
+    private let selection: (ResourceItem) -> Void
+
+    private var isLoading = false
+
+    private enum Section {
+        case single
+    }
+
+    private lazy var dataSource: UICollectionViewDiffableDataSource<Section, ResourceItem> = {
+        let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, ResourceItem> { cell, indexPath, itemIdentifier in
+            var contentConfiguration = UIListContentConfiguration.cell()
+            contentConfiguration.text = itemIdentifier.name
+            contentConfiguration.directionalLayoutMargins = NSDirectionalEdgeInsets(top: GlobalConstants.listItemMediumMarginVertical, leading: GlobalConstants.listItemMediumMarginHorizontal, bottom: GlobalConstants.listItemMediumMarginVertical, trailing: GlobalConstants.listItemMediumMarginHorizontal)
+            cell.contentConfiguration = contentConfiguration
+            cell.accessories = [.disclosureIndicator()]
+        }
+        let dataSource = UICollectionViewDiffableDataSource<Section, ResourceItem>(collectionView: collectionView) { collectionView, indexPath, item in
+            return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: item)
+        }
+        return dataSource
+    }()
+
+    private lazy var items: [ResourceItem] = []
 
     private lazy var emptyView: UIView = {
         let view = EmptyHintView()
@@ -37,20 +51,20 @@ class InstalledResourceViewController: AsyncListViewController<ResourceItem> {
         return view
     }()
 
-    override class var alwaysRefreshOnAppear: Bool { return true }
-
     #if os(visionOS)
     init(resourceManager: ResourceManager, selection: @escaping (ResourceItem) -> Void, getAddonsHandler: @escaping () -> Void) {
         self.resourceManager = resourceManager
         self.getAddonsHandler = getAddonsHandler
-        super.init(selection: selection)
+        self.selection = selection
+        super.init(collectionViewLayout: UICollectionViewCompositionalLayout.list(using: UICollectionLayoutListConfiguration(appearance: .defaultGrouped)))
     }
     #else
     init(resourceManager: ResourceManager, selection: @escaping (ResourceItem) -> Void, getAddonsHandler: @escaping () -> Void, showUpdatesHandler: @escaping () -> Void) {
         self.resourceManager = resourceManager
         self.getAddonsHandler = getAddonsHandler
         self.showUpdatesHandler = showUpdatesHandler
-        super.init(selection: selection)
+        self.selection = selection
+        super.init(collectionViewLayout: UICollectionViewCompositionalLayout.list(using: UICollectionLayoutListConfiguration(appearance: .defaultGrouped)))
     }
     #endif
     
@@ -64,29 +78,77 @@ class InstalledResourceViewController: AsyncListViewController<ResourceItem> {
         title = CelestiaString("Installed", comment: "Title for the list of installed add-ons")
         windowTitle = title
 
+        collectionView.dataSource = dataSource
+
         #if !os(visionOS)
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: CelestiaString("Updates", comment: "View the list of add-ons that have pending updates."), style: .plain, target: self, action: #selector(showUpdates))
         #endif
+
+        NotificationCenter.default.addObserver(self, selector: #selector(unzipSuccess(_:)), name: ResourceManager.unzipSuccess, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(uninstallSuccess(_:)), name: ResourceManager.uninstallSuccess, object: nil)
+
+        reload()
     }
 
-    override func loadItems(pageStart: Int, pageSize: Int) async throws -> [ResourceItem] {
-        let resourceManager = self.resourceManager
-        return await Task.detached(priority: .background) {
-            let items = resourceManager.installedResources()
-            if pageStart >= items.count {
-                return []
+    @available(iOS 17.0, visionOS 1, *)
+    override func updateContentUnavailableConfiguration(using state: UIContentUnavailableConfigurationState) {
+        if items.isEmpty {
+            if isLoading {
+                contentUnavailableConfiguration = UIContentUnavailableConfiguration.loading()
             } else {
-                return Array(items[pageStart..<min(items.count, pageStart + pageSize)])
+                var config = UIContentUnavailableConfiguration.empty()
+                config.text = CelestiaString("Enhance Celestia with online add-ons", comment: "")
+                #if !targetEnvironment(macCatalyst)
+                let button = UIButton.Configuration.filled()
+                config.button = button
+                #endif
+                config.button.title = CelestiaString("Get Add-ons", comment: "Open webpage for downloading add-ons")
+                config.buttonProperties.primaryAction = UIAction { [weak self] _ in
+                    guard let self else { return }
+                    self.getAddonsHandler()
+                }
+                contentUnavailableConfiguration = config
             }
-        }.value
+        } else {
+            contentUnavailableConfiguration = nil
+        }
     }
 
-    override func emptyHintView() -> UIView? {
-        return emptyView
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
+        selection(item)
+    }
+
+    private func reload() {
+        isLoading = true
+        if #available(iOS 17, *) {
+            setNeedsUpdateContentUnavailableConfiguration()
+        }
+        Task {
+            let resourceManager = self.resourceManager
+            let items = await Task.detached(priority: .background) {
+                resourceManager.installedResources()
+            }.value
+            reloadUI(items)
+            isLoading = false
+        }
+    }
+
+    private func reloadUI(_ items: [ResourceItem]) {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, ResourceItem>()
+        snapshot.appendSections([.single])
+        snapshot.appendItems(items, toSection: .single)
+        dataSource.applySnapshotUsingReloadData(snapshot)
+        self.items = items
+        if #available(iOS 17, visionOS 1, *) {
+            setNeedsUpdateContentUnavailableConfiguration()
+        } else {
+            collectionView.backgroundView = items.isEmpty ? emptyView : nil
+        }
     }
 
     @available(iOS 17, visionOS 1, *)
-    override func emptyViewConfiguration() -> UIContentUnavailableConfiguration? {
+    private func emptyViewConfiguration() -> UIContentUnavailableConfiguration? {
         var config = UIContentUnavailableConfiguration.empty()
         config.text = CelestiaString("Enhance Celestia with online add-ons", comment: "")
         #if !targetEnvironment(macCatalyst)
@@ -99,6 +161,16 @@ class InstalledResourceViewController: AsyncListViewController<ResourceItem> {
             self.getAddonsHandler()
         }
         return config
+    }
+}
+
+extension InstalledResourceViewController {
+    @objc private func unzipSuccess(_ notification: Notification) {
+        reload()
+    }
+
+    @objc private func uninstallSuccess(_ notification: Notification) {
+        reload()
     }
 }
 
