@@ -1,4 +1,4 @@
-// StepperCell.swift
+// StepperView.swift
 //
 // Copyright (C) 2025, Celestia Development Team
 //
@@ -235,16 +235,13 @@ class FallbackStepper: UIControl {
 }
 #endif
 
-class StepperCell: UITableViewCell {
-    private lazy var label = UILabel(textStyle: .body)
+class StepperView: UIView {
     #if targetEnvironment(macCatalyst) || os(visionOS)
     private lazy var stepper = FallbackStepper()
     #else
     private lazy var stepper = UIStepper()
     private var stepperValue: Double = 0
     #endif
-
-    var title: String? { didSet { label.text = title }  }
 
     var changeBlock: ((Bool) -> Void)?
     var stopBlock: (() -> Void)?
@@ -254,8 +251,8 @@ class StepperCell: UITableViewCell {
         case minus
     }
 
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override init(frame: CGRect) {
+        super.init(frame: frame)
 
         setup()
     }
@@ -265,28 +262,15 @@ class StepperCell: UITableViewCell {
     }
 }
 
-private extension StepperCell {
+private extension StepperView {
     func setup() {
-        selectionStyle = .none
-
-        label.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(label)
-        label.textColor = .label
-        label.numberOfLines = 0
-
-        NSLayoutConstraint.activate([
-            label.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: GlobalConstants.listItemMediumMarginHorizontal),
-            label.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            label.topAnchor.constraint(greaterThanOrEqualTo: contentView.topAnchor, constant: GlobalConstants.listItemMediumMarginVertical),
-        ])
-
         stepper.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(stepper)
+        addSubview(stepper)
         NSLayoutConstraint.activate([
-            stepper.leadingAnchor.constraint(equalTo: label.trailingAnchor, constant: GlobalConstants.listItemGapHorizontal),
-            stepper.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -GlobalConstants.listItemMediumMarginHorizontal),
-            stepper.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            stepper.topAnchor.constraint(greaterThanOrEqualTo: contentView.topAnchor, constant: GlobalConstants.listItemAccessoryMinMarginVertical),
+            stepper.leadingAnchor.constraint(equalTo: leadingAnchor),
+            stepper.topAnchor.constraint(equalTo: topAnchor),
+            stepper.centerXAnchor.constraint(equalTo: centerXAnchor),
+            stepper.centerYAnchor.constraint(equalTo: centerYAnchor),
         ])
 
         #if !targetEnvironment(macCatalyst) && !os(visionOS)
