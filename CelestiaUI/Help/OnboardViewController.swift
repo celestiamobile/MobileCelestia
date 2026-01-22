@@ -41,8 +41,6 @@ class OnboardViewController: UIViewController {
 
 private extension OnboardViewController {
     func setup() {
-        view.backgroundColor = .secondarySystemBackground
-
         let welcomeView = UILabel(textStyle: .largeTitle)
         welcomeView.text = CelestiaString("Welcome to Celestia", comment: "Welcome message")
         welcomeView.textColor = .label

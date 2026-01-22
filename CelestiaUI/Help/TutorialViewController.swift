@@ -14,7 +14,7 @@ enum TutorialAction {
     case runDemo
 }
 
-class TutorialViewController: BaseTableViewController {
+class TutorialViewController: UICollectionViewController {
     private struct TutorialDescriptionItem {
         let image: UIImage?
         let text: String
@@ -73,7 +73,10 @@ class TutorialViewController: BaseTableViewController {
         self.assetProvider = assetProvider
         self.actionHandler = actionHandler
         self.urlHandler = urlHandler
-        super.init(style: .plain)
+        var configuration = UICollectionLayoutListConfiguration(appearance: .plain)
+        configuration.showsSeparators = false
+        configuration.backgroundColor = .clear
+        super.init(collectionViewLayout: UICollectionViewCompositionalLayout.list(using: configuration))
     }
 
     required init?(coder: NSCoder) {
@@ -89,50 +92,43 @@ class TutorialViewController: BaseTableViewController {
 
 private extension TutorialViewController {
     func setup() {
-        tableView.backgroundColor = .clear
-        tableView.separatorStyle = .none
-
-        tableView.register(TutorialDescriptionCell.self, forCellReuseIdentifier: "Description")
-        tableView.register(TutorialActionCell.self, forCellReuseIdentifier: "Action")
-        tableView.register(TutorialActionCell.self, forCellReuseIdentifier: "URL")
+        collectionView.register(TutorialDescriptionCell.self, forCellWithReuseIdentifier: "Description")
+        collectionView.register(TutorialActionCell.self, forCellWithReuseIdentifier: "Action")
+        collectionView.register(TutorialActionCell.self, forCellWithReuseIdentifier: "URL")
     }
 }
 
 extension TutorialViewController {
-    override func numberOfSections(in tableView: UITableView) -> Int {
+    override func numberOfSections(in collectionView: UICollectionView) -> Int {
         return tutorialItems.count
     }
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return tutorialItems[section].count
     }
 
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let item = tutorialItems[indexPath.section][indexPath.row]
         switch item {
         case .description(let desc):
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Description", for: indexPath) as! TutorialDescriptionCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Description", for: indexPath) as! TutorialDescriptionCell
             cell.title = desc.text
             cell.img = desc.image
             return cell
         case .action(let action):
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Action", for: indexPath) as! TutorialActionCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Action", for: indexPath) as! TutorialActionCell
             cell.title = action.title
             cell.actionHandler = { [unowned self] in
                 self.actionHandler?(action.object)
             }
             return cell
         case .url(let url):
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Action", for: indexPath) as! TutorialActionCell
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Action", for: indexPath) as! TutorialActionCell
             cell.title = url.title
             cell.actionHandler = { [unowned self] in
                 self.urlHandler?(url.url)
             }
             return cell
         }
-    }
-
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
     }
 }
