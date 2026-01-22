@@ -29,7 +29,7 @@ private extension FavoriteItemType {
     }
 }
 
-class FavoriteViewController: BaseTableViewController {
+class FavoriteViewController: UICollectionViewController {
     private let selected: @MainActor (FavoriteItemType) async -> Void
     private var currentSelection: FavoriteItemType?
 
