@@ -10,25 +10,54 @@
 import CelestiaCore
 import UIKit
 
-protocol EventFinderInputItem {
-    var title: String { get }
-}
-
-class EventFinderInputViewController: BaseTableViewController {
-    struct DateItem: EventFinderInputItem {
-        let title: String
-        let isStartTime: Bool
+class EventFinderInputViewController: UICollectionViewController {
+    private enum Section {
+        case time
+        case object
     }
 
-    struct ObjectItem: EventFinderInputItem {
-        let title = CelestiaString("Object", comment: "In eclipse finder, object to find eclipse with, or in go to")
+    private enum Item {
+        case startTime
+        case endTime
+        case object
     }
 
-    private let allSections: [[EventFinderInputItem]] = [
-                [DateItem(title: CelestiaString("Start Time", comment: "In eclipse finder, range of time to find eclipse in"), isStartTime: true),
-                DateItem(title: CelestiaString("End Time", comment: "In eclipse finder, range of time to find eclipse in"), isStartTime: false)],
-                [ObjectItem()],
-    ]
+    private lazy var dataSource: UICollectionViewDiffableDataSource<Section, Item> = {
+        let displayDateFormatter: DateFormatter = {
+            let formatter = DateFormatter()
+            formatter.dateStyle = .short
+            formatter.timeStyle = .short
+            return formatter
+        }()
+        let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, Item> { [weak self] cell, indexPath, itemIdentifier in
+            var contentConfiguration = UIListContentConfiguration.valueCell()
+            let text: String
+            var secondaryText: String?
+            switch itemIdentifier {
+            case .startTime:
+                text = CelestiaString("Start Time", comment: "In eclipse finder, range of time to find eclipse in")
+                if let self {
+                    secondaryText = displayDateFormatter.string(from: self.startTime)
+                }
+            case .endTime:
+                text = CelestiaString("End Time", comment: "In eclipse finder, range of time to find eclipse in")
+                if let self {
+                    secondaryText = displayDateFormatter.string(from: self.endTime)
+                }
+            case .object:
+                text = CelestiaString("Object", comment: "In eclipse finder, object to find eclipse with, or in go to")
+                secondaryText = self?.objectName
+            }
+            contentConfiguration.text = text
+            contentConfiguration.secondaryText = secondaryText
+            contentConfiguration.directionalLayoutMargins = NSDirectionalEdgeInsets(top: GlobalConstants.listItemMediumMarginVertical, leading: GlobalConstants.listItemMediumMarginHorizontal, bottom: GlobalConstants.listItemMediumMarginVertical, trailing: GlobalConstants.listItemMediumMarginHorizontal)
+            cell.contentConfiguration = contentConfiguration
+        }
+        let dataSource = UICollectionViewDiffableDataSource<Section, Item>(collectionView: collectionView) { collectionView, indexPath, item in
+            return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: item)
+        }
+        return dataSource
+    }()
 
     private let selectableObjects: [(displayName: String, objectPath: String)] = [(LocalizedString("Earth", "celestia-data"), "Sol/Earth"), (LocalizedString("Jupiter", "celestia-data"), "Sol/Jupiter")]
 
@@ -39,13 +68,6 @@ class EventFinderInputViewController: BaseTableViewController {
     private var objectPath = "Sol/Earth"
 
     private let executor: AsyncProviderExecutor
-
-    private lazy var displayDateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .short
-        formatter.timeStyle = .short
-        return formatter
-    }()
 
     private let resultHandler: (([Eclipse]) -> Void)
     private let textInputHandler: (_ viewController: UIViewController, _ title: String) async -> String?
@@ -62,7 +84,7 @@ class EventFinderInputViewController: BaseTableViewController {
         self.textInputHandler = textInputHandler
         self.dateInputHandler = dateInputHandler
 
-        super.init(style: .defaultGrouped)
+        super.init(collectionViewLayout: UICollectionViewCompositionalLayout.list(using: UICollectionLayoutListConfiguration(appearance: .defaultGrouped)))
     }
 
     required init?(coder: NSCoder) {
@@ -80,9 +102,14 @@ private extension EventFinderInputViewController {
     func setup() {
         title = CelestiaString("Eclipse Finder", comment: "")
         windowTitle = title
-        tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: CelestiaString("Find", comment: "Find (eclipses)"), style: .plain, target: self, action: #selector(findEclipse))
+
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
+        snapshot.appendSections([.time, .object])
+        snapshot.appendItems([.startTime, .endTime], toSection: .time)
+        snapshot.appendItems([.object], toSection: .object)
+        dataSource.applySnapshotUsingReloadData(snapshot)
     }
 
     @objc private func findEclipse() {
@@ -107,38 +134,11 @@ private extension EventFinderInputViewController {
 }
 
 extension EventFinderInputViewController {
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return allSections.count
-    }
-
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return allSections[section].count
-    }
-
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let item = allSections[indexPath.section][indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
-        cell.title = item.title
-
-        if item is ObjectItem {
-            cell.detail = objectName
-        } else if let it = item as? DateItem {
-            cell.detail = displayDateFormatter.string(from: it.isStartTime ? startTime : endTime)
-        } else {
-            cell.detail = nil
-        }
-
-        return cell
-    }
-
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
-    }
-
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        let item = allSections[indexPath.section][indexPath.row]
-        if let it = item as? DateItem {
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+        guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
+        switch item {
+        case .startTime, .endTime:
             let preferredFormat = DateFormatter.dateFormat(fromTemplate: "yyyyMMddHHmmss", options: 0, locale: Locale.current) ?? "yyyy/MM/dd HH:mm:ss"
             Task {
                 let title = String.localizedStringWithFormat(CelestiaString("Please enter the time in \"%@\" format.", comment: ""), preferredFormat)
@@ -146,15 +146,18 @@ extension EventFinderInputViewController {
                     self.showError(CelestiaString("Unrecognized time string.", comment: "String not in correct format"))
                     return
                 }
-                if it.isStartTime {
+                if item == .startTime {
                     self.startTime = date
                 } else {
                     self.endTime = date
                 }
-                tableView.reloadData()
+    
+                var snapshot = dataSource.snapshot()
+                snapshot.reloadItems([item])
+                await self.dataSource.apply(snapshot)
             }
-        } else if item is ObjectItem {
-            if let cell = tableView.cellForRow(at: indexPath) {
+        case .object:
+            if let cell = collectionView.cellForItem(at: indexPath) {
                 showSelection(CelestiaString("Please choose an object.", comment: "In eclipse finder, choose an object to find eclipse wth"),
                               options: selectableObjects.map { $0.displayName } + [CelestiaString("Other", comment: "Other location labels; Android/iOS, Other objects to choose from in Eclipse Finder")],
                               source: .view(view: cell, sourceRect: nil)) { [weak self] index in
@@ -165,14 +168,20 @@ extension EventFinderInputViewController {
                             if let text = await self.textInputHandler(self, CelestiaString("Please enter an object name.", comment: "In Go to; Android/iOS, Enter the name of an object in Eclipse Finder")) {
                                 self.objectName = text
                                 self.objectPath = text
-                                tableView.reloadData()
+
+                                var snapshot = dataSource.snapshot()
+                                snapshot.reloadItems([item])
+                                await self.dataSource.apply(snapshot)
                             }
                         }
                         return
                     }
                     self.objectName = self.selectableObjects[index].displayName
                     self.objectPath = self.selectableObjects[index].objectPath
-                    tableView.reloadData()
+
+                    var snapshot = dataSource.snapshot()
+                    snapshot.reloadItems([item])
+                    self.dataSource.apply(snapshot)
                 }
             }
         }
