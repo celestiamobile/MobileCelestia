@@ -54,10 +54,9 @@ final class AddonUpdateListViewController: UICollectionViewController {
         dateFormatter.dateStyle = .medium
         dateFormatter.timeStyle = .none
         let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, AddonUpdateManager.PendingAddonUpdate> { cell, indexPath, itemIdentifier in
-            var contentConfiguration = UIListContentConfiguration.cell()
+            var contentConfiguration = UIListContentConfiguration.celestiaCell()
             contentConfiguration.text = itemIdentifier.addon.name
             contentConfiguration.secondaryText = dateFormatter.string(from: itemIdentifier.update.modificationDate)
-            contentConfiguration.directionalLayoutMargins = NSDirectionalEdgeInsets(top: GlobalConstants.listItemMediumMarginVertical, leading: GlobalConstants.listItemMediumMarginHorizontal, bottom: GlobalConstants.listItemMediumMarginVertical, trailing: GlobalConstants.listItemMediumMarginHorizontal)
             cell.contentConfiguration = contentConfiguration
             cell.accessories = [.disclosureIndicator()]
         }

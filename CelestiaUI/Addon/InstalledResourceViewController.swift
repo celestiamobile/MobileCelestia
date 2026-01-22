@@ -26,9 +26,8 @@ class InstalledResourceViewController: UICollectionViewController {
 
     private lazy var dataSource: UICollectionViewDiffableDataSource<Section, ResourceItem> = {
         let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, ResourceItem> { cell, indexPath, itemIdentifier in
-            var contentConfiguration = UIListContentConfiguration.cell()
+            var contentConfiguration = UIListContentConfiguration.celestiaCell()
             contentConfiguration.text = itemIdentifier.name
-            contentConfiguration.directionalLayoutMargins = NSDirectionalEdgeInsets(top: GlobalConstants.listItemMediumMarginVertical, leading: GlobalConstants.listItemMediumMarginHorizontal, bottom: GlobalConstants.listItemMediumMarginVertical, trailing: GlobalConstants.listItemMediumMarginHorizontal)
             cell.contentConfiguration = contentConfiguration
             cell.accessories = [.disclosureIndicator()]
         }

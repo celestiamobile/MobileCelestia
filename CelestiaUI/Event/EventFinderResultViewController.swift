@@ -26,10 +26,9 @@ class EventFinderResultViewController: UICollectionViewController {
             return formatter
         }()
         let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, Eclipse> { cell, indexPath, itemIdentifier in
-            var contentConfiguration = UIListContentConfiguration.valueCell()
+            var contentConfiguration = UIListContentConfiguration.celestiaValueCell()
             contentConfiguration.text = "\(itemIdentifier.occulter.name) -> \(itemIdentifier.receiver.name)"
             contentConfiguration.secondaryText = displayDateFormatter.string(from: itemIdentifier.startTime)
-            contentConfiguration.directionalLayoutMargins = NSDirectionalEdgeInsets(top: GlobalConstants.listItemMediumMarginVertical, leading: GlobalConstants.listItemMediumMarginHorizontal, bottom: GlobalConstants.listItemMediumMarginVertical, trailing: GlobalConstants.listItemMediumMarginHorizontal)
             cell.contentConfiguration = contentConfiguration
         }
         let dataSource = UICollectionViewDiffableDataSource<Section, Eclipse>(collectionView: collectionView) { collectionView, indexPath, item in
