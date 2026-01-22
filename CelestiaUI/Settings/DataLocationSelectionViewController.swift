@@ -83,7 +83,7 @@ class DataLocationSelectionViewController: UICollectionViewController {
         
         dataSource.supplementaryViewProvider = { [weak self] collectionView, kind, indexPath in
             guard let self, kind == UICollectionView.elementKindSectionFooter else { return nil }
-            let section = dataSource.snapshot().sectionIdentifiers[indexPath.section]
+            let section = self.dataSource.sectionIdentifier(for: indexPath.section)
             if section == .locations {
                 return collectionView.dequeueConfiguredReusableSupplementary(using: footerRegistration, for: indexPath)
             }
