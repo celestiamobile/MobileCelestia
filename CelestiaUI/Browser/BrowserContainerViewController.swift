@@ -176,7 +176,7 @@ private extension BrowserContainerViewController {
 }
 
 #if targetEnvironment(macCatalyst)
-class BrowserSidebarController: BaseTableViewController {
+class BrowserSidebarController: UICollectionViewController {
     enum Section {
         case single
     }
@@ -186,16 +186,16 @@ class BrowserSidebarController: BaseTableViewController {
         let image: UIImage
     }
 
-    private lazy var dataSource: UITableViewDiffableDataSource<Section, Item> = {
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Cell")
-        let dataSource = UITableViewDiffableDataSource<Section, Item>(tableView: tableView) { (view, indexPath, item) -> UITableViewCell? in
-            let cell = view.dequeueReusableCell(withIdentifier: "Cell", for: indexPath)
+    private lazy var dataSource: UICollectionViewDiffableDataSource<Section, Item> = {
+        let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, Item> { cell, indexPath, item in
             var contentConfiguration = UIListContentConfiguration.sidebarCell()
             contentConfiguration.text = item.item.alternativeName ?? item.item.name
             contentConfiguration.image = item.image
             contentConfiguration.imageProperties.reservedLayoutSize = CGSize(width: UIListContentConfiguration.ImageProperties.standardDimension, height: UIListContentConfiguration.ImageProperties.standardDimension)
             cell.contentConfiguration = contentConfiguration
-            return cell
+        }
+        let dataSource = UICollectionViewDiffableDataSource<Section, Item>(collectionView: collectionView) { (collectionView, indexPath, item) -> UICollectionViewCell? in
+            return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: item)
         }
         return dataSource
     }()
@@ -206,7 +206,7 @@ class BrowserSidebarController: BaseTableViewController {
     init(browserRoots: [(item: BrowserItem, image: UIImage)], handler: @escaping (BrowserItem) -> Void) {
         self.browserRoots = browserRoots.map { Item(item: $0.item, image: $0.image) }
         self.handler = handler
-        super.init(style: .grouped)
+        super.init(collectionViewLayout: UICollectionViewCompositionalLayout.list(using: UICollectionLayoutListConfiguration(appearance: .sidebar)))
     }
 
     required init?(coder: NSCoder) {
@@ -216,16 +216,16 @@ class BrowserSidebarController: BaseTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        collectionView.dataSource = dataSource
         var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
         snapshot.appendSections([.single])
         snapshot.appendItems(browserRoots, toSection: .single)
-        tableView.dataSource = dataSource
-        tableView.rowHeight = UITableView.automaticDimension
-        dataSource.apply(snapshot, animatingDifferences: false, completion: nil)
+        dataSource.applySnapshotUsingReloadData(snapshot)
     }
 
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        handler(browserRoots[indexPath.row].item)
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
+        handler(item.item)
     }
 }
 #endif
