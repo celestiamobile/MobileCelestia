@@ -17,7 +17,7 @@ struct TeachingCardContentConfiguration: UIContentConfiguration {
     }
 
     var title: String?
-    var directionalLayoutMargins: NSDirectionalEdgeInsets = .zero
+    var directionalLayoutMargins: NSDirectionalEdgeInsets
     var actionButtonTitle: String?
     var actionHandler: (() -> Void)?
 
