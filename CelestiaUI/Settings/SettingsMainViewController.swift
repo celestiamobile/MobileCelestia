@@ -9,7 +9,7 @@
 
 import UIKit
 
-class SettingsMainViewController: BaseTableViewController {
+class SettingsMainViewController: UICollectionViewController {
     private let sections: [SettingSection]
     private let selection: (SettingItem) async -> Void
 

@@ -12,14 +12,23 @@ import MobileCoreServices
 import UIKit
 import UniformTypeIdentifiers
 
-class DataLocationSelectionViewController: BaseTableViewController {
+class DataLocationSelectionViewController: UICollectionViewController {
+    private enum Section: Hashable {
+        case locations
+        case actions
+    }
+
+    private enum Item: Hashable {
+        case dataDirectory
+        case configFile
+        case reset
+    }
+
     private let userDefaults: UserDefaults
     private let dataDirectoryUserDefaultsKey: String
     private let configFileUserDefaultsKey: String
     private let defaultDataDirectoryURL: URL
     private let defaultConfigFileURL: URL
-
-    private var items: [[TextItem]] = []
 
     private enum Location: Int {
         case dataDirectory
@@ -28,13 +37,78 @@ class DataLocationSelectionViewController: BaseTableViewController {
 
     private var currentPicker: Location?
 
+    private lazy var dataSource: UICollectionViewDiffableDataSource<Section, Item> = {
+        let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, Item> { [weak self] cell, indexPath, itemIdentifier in
+            var contentConfiguration = UIListContentConfiguration.valueCell()
+            let text: String
+            var secondaryText: String?
+            var accessories: [UICellAccessory] = []
+            
+            switch itemIdentifier {
+            case .dataDirectory:
+                text = CelestiaString("Data Directory", comment: "Directory to load data from")
+                if let self {
+                    secondaryText = self.userDefaults.url(for: self.dataDirectoryUserDefaultsKey, defaultValue: self.defaultDataDirectoryURL).url == self.defaultDataDirectoryURL ? CelestiaString("Default", comment: "") : CelestiaString("Custom", comment: "")
+                }
+                accessories = [.disclosureIndicator()]
+            case .configFile:
+                text = CelestiaString("Config File", comment: "celestia.cfg")
+                if let self {
+                    secondaryText = self.userDefaults.url(for: self.configFileUserDefaultsKey, defaultValue: self.defaultConfigFileURL).url == self.defaultConfigFileURL ? CelestiaString("Default", comment: "") : CelestiaString("Custom", comment: "")
+                }
+                accessories = [.disclosureIndicator()]
+            case .reset:
+                text = CelestiaString("Reset to Default", comment: "Reset celestia.cfg, data directory location")
+                secondaryText = nil
+            }
+            
+            contentConfiguration.text = text
+            contentConfiguration.secondaryText = secondaryText
+            if itemIdentifier == .reset {
+                contentConfiguration.textProperties.color = cell.tintColor
+            }
+            contentConfiguration.directionalLayoutMargins = NSDirectionalEdgeInsets(top: GlobalConstants.listItemMediumMarginVertical, leading: GlobalConstants.listItemMediumMarginHorizontal, bottom: GlobalConstants.listItemMediumMarginVertical, trailing: GlobalConstants.listItemMediumMarginHorizontal)
+            cell.contentConfiguration = contentConfiguration
+            cell.accessories = accessories
+        }
+        
+        let footerRegistration = UICollectionView.SupplementaryRegistration<UICollectionViewListCell>(elementKind: UICollectionView.elementKindSectionFooter) { supplementaryView, elementKind, indexPath in
+            var contentConfiguration = UIListContentConfiguration.groupedFooter()
+            contentConfiguration.text = CelestiaString("Configuration will take effect after a restart.", comment: "Change requires a restart")
+            supplementaryView.contentConfiguration = contentConfiguration
+        }
+        
+        let dataSource = UICollectionViewDiffableDataSource<Section, Item>(collectionView: collectionView) { collectionView, indexPath, item in
+            return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: item)
+        }
+        
+        dataSource.supplementaryViewProvider = { [weak self] collectionView, kind, indexPath in
+            guard let self, kind == UICollectionView.elementKindSectionFooter else { return nil }
+            let section = dataSource.snapshot().sectionIdentifiers[indexPath.section]
+            if section == .locations {
+                return collectionView.dequeueConfiguredReusableSupplementary(using: footerRegistration, for: indexPath)
+            }
+            return nil
+        }
+        
+        return dataSource
+    }()
+
     init(userDefaults: UserDefaults, dataDirectoryUserDefaultsKey: String, configFileUserDefaultsKey: String, defaultDataDirectoryURL: URL, defaultConfigFileURL: URL) {
         self.userDefaults = userDefaults
         self.dataDirectoryUserDefaultsKey = dataDirectoryUserDefaultsKey
         self.configFileUserDefaultsKey = configFileUserDefaultsKey
         self.defaultConfigFileURL = defaultConfigFileURL
         self.defaultDataDirectoryURL = defaultDataDirectoryURL
-        super.init(style: .defaultGrouped)
+        
+        let layout = UICollectionViewCompositionalLayout { sectionIndex, layoutEnvironment in
+            var listConfiguration = UICollectionLayoutListConfiguration(appearance: .defaultGrouped)
+            if sectionIndex == 0 { // .locations section
+                listConfiguration.footerMode = .supplementary
+            }
+            return NSCollectionLayoutSection.list(using: listConfiguration, layoutEnvironment: layoutEnvironment)
+        }
+        super.init(collectionViewLayout: layout)
     }
 
     required init?(coder: NSCoder) {
@@ -54,91 +128,40 @@ class DataLocationSelectionViewController: BaseTableViewController {
     }
 
     private func loadContents() {
-        var totalItems = [[TextItem]]()
-
-        totalItems.append([
-            TextItem.short(title: CelestiaString("Data Directory", comment: "Directory to load data from"),
-                           detail: userDefaults.url(for: dataDirectoryUserDefaultsKey, defaultValue: defaultDataDirectoryURL).url == defaultDataDirectoryURL ? CelestiaString("Default", comment: "") : CelestiaString("Custom", comment: "")),
-            TextItem.short(title: CelestiaString("Config File", comment: "celestia.cfg"),
-                           detail: userDefaults.url(for: configFileUserDefaultsKey, defaultValue: defaultConfigFileURL).url == defaultConfigFileURL ? CelestiaString("Default", comment: "") : CelestiaString("Custom", comment: "")),
-        ])
-
-        totalItems.append([
-            TextItem.action(title: CelestiaString("Reset to Default", comment: "Reset celestia.cfg, data directory location")),
-        ])
-
-        items = totalItems
-        tableView.reloadData()
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
+        snapshot.appendSections([.locations, .actions])
+        snapshot.appendItems([.dataDirectory, .configFile], toSection: .locations)
+        snapshot.appendItems([.reset], toSection: .actions)
+        dataSource.applySnapshotUsingReloadData(snapshot)
     }
 }
 
 private extension DataLocationSelectionViewController {
     func setUp() {
-        tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         title = CelestiaString("Data Location", comment: "Title for celestia.cfg, data location setting")
         windowTitle = title
     }
 }
 
 extension DataLocationSelectionViewController {
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return items.count
-    }
-
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return items[section].count
-    }
-
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let item = items[indexPath.section][indexPath.row]
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+        guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
+        
         switch item {
-        case .short(let title, let detail):
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
-            cell.title = title
-            cell.detail = detail
-            cell.titleColor = .label
-            cell.selectionStyle = .default
-            cell.accessoryType = indexPath.section == 0 ? .disclosureIndicator : .none
-            return cell
-        case .action(let title):
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
-            cell.title = title
-            cell.detail = nil
-            cell.titleColor = cell.tintColor
-            cell.selectionStyle = .default
-            cell.accessoryType = .none
-            return cell
-        default:
-            fatalError()
-        }
-    }
-
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
-    }
-
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        if indexPath.section == 1 {
+        case .reset:
             userDefaults.setValue(nil, forKey: dataDirectoryUserDefaultsKey)
             userDefaults.setValue(nil, forKey: configFileUserDefaultsKey)
-
             loadContents()
-        } else {
+        case .dataDirectory, .configFile:
             let types = [UTType.folder, UTType.data]
-            let browser = UIDocumentPickerViewController(forOpeningContentTypes: [types[indexPath.row]])
-            currentPicker = Location(rawValue: indexPath.row)
+            let typeIndex = item == .dataDirectory ? 0 : 1
+            let browser = UIDocumentPickerViewController(forOpeningContentTypes: [types[typeIndex]])
+            currentPicker = Location(rawValue: typeIndex)
             browser.allowsMultipleSelection = false
             browser.delegate = self
             present(browser, animated: true, completion: nil)
         }
-    }
-
-    override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        if section == 0 {
-            return CelestiaString("Configuration will take effect after a restart.", comment: "Change requires a restart")
-        }
-        return nil
     }
 }
 
