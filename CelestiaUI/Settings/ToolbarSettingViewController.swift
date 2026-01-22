@@ -23,8 +23,6 @@ class ToolbarSettingViewController: SubscriptionBackingViewController {
             self.toolbarActionsKey = toolbarActionsKey
             self.assetProvider = assetProvider
 
-            var configuration = UICollectionLayoutListConfiguration(appearance: .defaultGrouped)
-            configuration.footerMode = .supplementary
             super.init(collectionViewLayout: UICollectionViewCompositionalLayout(sectionProvider: { section, environment in
                 if section == 1 {
                     var configuration = UICollectionLayoutListConfiguration(appearance: .defaultGrouped)
