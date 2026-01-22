@@ -67,8 +67,10 @@ public class SearchResultViewController: UIViewController {
             } else {
                 configuration = UIListContentConfiguration.groupedHeader()
             }
-            switch self.dataSource.snapshot().sectionIdentifiers[indexPath.section] {
+            switch self.dataSource.sectionIdentifier(for: indexPath.section) {
             case .main:
+                configuration.text = nil
+            case nil:
                 configuration.text = nil
             }
             supplementaryView.contentConfiguration = configuration

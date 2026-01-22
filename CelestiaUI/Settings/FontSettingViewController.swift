@@ -9,12 +9,12 @@
 
 import UIKit
 
-struct DisplayFont: Sendable {
+struct DisplayFont: Sendable, Hashable {
     let font: CustomFont
     let name: String
 }
 
-public struct CustomFont: Codable, Sendable {
+public struct CustomFont: Codable, Sendable, Hashable {
     public let path: String
     public let ttcIndex: Int
 
@@ -24,7 +24,7 @@ public struct CustomFont: Codable, Sendable {
     }
 }
 
-final class FontSettingViewController: BaseTableViewController {
+final class FontSettingViewController: UICollectionViewController {
     private let userDefaults: UserDefaults
     private let normalFontPathKey: String
     private let normalFontIndexKey: String
@@ -36,51 +36,73 @@ final class FontSettingViewController: BaseTableViewController {
     private var normalFont: CustomFont?
     private var boldFont: CustomFont?
 
-    private class SegmentedHeader: UITableViewHeaderFooterView {
-        private lazy var segmentedControl = UISegmentedControl()
-        private var ignoreChanges = false
-        var isBold = false {
-            didSet {
-                if ignoreChanges || isBold == oldValue { return }
-                segmentedControl.selectedSegmentIndex = isBold ? 1 : 0
-            }
-        }
-        var selectionChange: ((Bool) -> Void)?
-
-        override init(reuseIdentifier: String?) {
-            super.init(reuseIdentifier: reuseIdentifier)
-            setUp()
-        }
-
-        required init?(coder: NSCoder) {
-            fatalError("init(coder:) has not been implemented")
-        }
-
-        private func setUp() {
-            segmentedControl.insertSegment(withTitle: CelestiaString("Normal", comment: "Normal font style"), at: segmentedControl.numberOfSegments, animated: false)
-            segmentedControl.insertSegment(withTitle: CelestiaString("Bold", comment: "Bold font style"), at: segmentedControl.numberOfSegments, animated: false)
-            contentView.addSubview(segmentedControl)
-            segmentedControl.translatesAutoresizingMaskIntoConstraints = false
-            segmentedControl.selectedSegmentIndex = isBold ? 1 : 0
-            segmentedControl.addTarget(self, action: #selector(segmentedControlSelectionChanged), for: .valueChanged)
-            NSLayoutConstraint.activate([
-                segmentedControl.topAnchor.constraint(equalTo: contentView.topAnchor, constant: GlobalConstants.listItemMediumMarginVertical),
-                segmentedControl.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-                segmentedControl.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -GlobalConstants.listItemMediumMarginVertical),
-                segmentedControl.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            ])
-        }
-
-        @objc private func segmentedControlSelectionChanged() {
-            let oldValue = isBold
-            let newValue = segmentedControl.selectedSegmentIndex == 1
-            guard oldValue != newValue else { return }
-            ignoreChanges = true
-            isBold = newValue
-            ignoreChanges = false
-            selectionChange?(newValue)
-        }
+    enum Section {
+        case `default`
+        case custom
     }
+
+    enum Item: Hashable {
+        case `default`
+        case custom(DisplayFont)
+    }
+
+    private lazy var dataSource: UICollectionViewDiffableDataSource<Section, Item> = {
+        let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, Item> { [unowned self] cell, indexPath, itemIdentifier in
+            var contentConfiguration = UIListContentConfiguration.celestiaCell()
+            var accessories: [UICellAccessory] = []
+            let text: String
+            let current = self.isBold ? self.boldFont : self.normalFont
+            switch itemIdentifier {
+            case .default:
+                text = CelestiaString("Default", comment: "")
+                if current == nil {
+                    accessories = [.checkmark()]
+                }
+            case let .custom(font):
+                text = font.name
+                if current?.path == font.font.path && current?.ttcIndex == font.font.ttcIndex {
+                    accessories = [.checkmark()]
+                }
+            }
+            contentConfiguration.text = text
+            cell.contentConfiguration = contentConfiguration
+            cell.accessories = accessories
+        }
+
+        let footerRegistration = UICollectionView.SupplementaryRegistration<UICollectionViewListCell>(elementKind: UICollectionView.elementKindSectionFooter) { supplementaryView, elementKind, indexPath in
+            var contentConfiguration = UIListContentConfiguration.groupedFooter()
+            contentConfiguration.text = CelestiaString("Configuration will take effect after a restart.", comment: "Change requires a restart")
+            supplementaryView.contentConfiguration = contentConfiguration
+        }
+        let headerRegistration = UICollectionView.SupplementaryRegistration<UICollectionViewListCell>(elementKind: UICollectionView.elementKindSectionHeader) { [unowned self] supplementaryView, elementKind, indexPath in
+            supplementaryView.contentConfiguration = SegmentedControlConfiguration(segmentTitles: [
+                CelestiaString("Normal", comment: "Normal font style"),
+                CelestiaString("Bold", comment: "Bold font style")
+            ], selectedSegmentIndex: self.isBold ? 1 : 0, selectedIndexChanged: { [weak self] index in
+                guard let self else { return }
+                self.isBold = index == 1
+                self.reload()
+            })
+        }
+
+        let dataSource = UICollectionViewDiffableDataSource<Section, Item>(collectionView: collectionView) { collectionView, indexPath, item in
+            return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: item)
+        }
+
+        dataSource.supplementaryViewProvider = { [weak self] collectionView, kind, indexPath in
+            guard let self else { return nil }
+            let section = self.dataSource.sectionIdentifier(for: indexPath.section)
+            if section == .custom, kind == UICollectionView.elementKindSectionFooter {
+                return collectionView.dequeueConfiguredReusableSupplementary(using: footerRegistration, for: indexPath)
+            }
+            if section == .default, kind == UICollectionView.elementKindSectionHeader {
+                return collectionView.dequeueConfiguredReusableSupplementary(using: headerRegistration, for: indexPath)
+            }
+            return nil
+        }
+
+        return dataSource
+    }()
 
     init(userDefaults: UserDefaults, normalFontPathKey: String, normalFontIndexKey: String, boldFontPathKey: String, boldFontIndexKey: String, customFonts: [DisplayFont]) {
         self.userDefaults = userDefaults
@@ -89,7 +111,18 @@ final class FontSettingViewController: BaseTableViewController {
         self.boldFontPathKey = boldFontPathKey
         self.boldFontIndexKey = boldFontIndexKey
         self.customFonts = customFonts
-        super.init(style: .defaultGrouped)
+
+        let layout = UICollectionViewCompositionalLayout { sectionIndex, layoutEnvironment in
+            var listConfiguration = UICollectionLayoutListConfiguration(appearance: .defaultGrouped)
+            if sectionIndex == 0 { // regular/bold switch
+                listConfiguration.headerMode = .supplementary
+            }
+            if sectionIndex == 1 { // custom font, restart hint
+                listConfiguration.footerMode = .supplementary
+            }
+            return NSCollectionLayoutSection.list(using: listConfiguration, layoutEnvironment: layoutEnvironment)
+        }
+        super.init(collectionViewLayout: layout)
 
         if let normalFontPath = userDefaults.string(forKey: normalFontPathKey) {
             let normalFontIndex = userDefaults.integer(forKey: normalFontIndexKey)
@@ -108,72 +141,43 @@ final class FontSettingViewController: BaseTableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        tableView.sectionHeaderHeight = UITableView.automaticDimension
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.register(SegmentedHeader.self, forHeaderFooterViewReuseIdentifier: "Header")
-        tableView.register(TextCell.self, forCellReuseIdentifier: "Cell")
+        collectionView.dataSource = self
+        reload()
+    }
+
+    private func reload() {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
+        snapshot.appendSections([.default, .custom])
+        snapshot.appendItems([.default], toSection: .default)
+        snapshot.appendItems(customFonts.map { .custom($0) }, toSection: .custom)
+        dataSource.applySnapshotUsingReloadData(snapshot)
     }
 }
 
 extension FontSettingViewController {
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
-    }
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if section == 0 {
-            return 1
+        guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
+
+        let customFont: DisplayFont?
+        switch item {
+        case let .custom(font):
+            customFont = font
+        case .default:
+            customFont = nil
         }
-        return customFonts.count
-    }
 
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! TextCell
-        let current = isBold ? boldFont : normalFont
-        if indexPath.section == 0 {
-            cell.title = CelestiaString("Default", comment: "")
-            cell.accessoryType = current == nil ? .checkmark : .none
-        } else {
-            let font = customFonts[indexPath.row]
-            cell.title = font.name
-            cell.accessoryType = (current?.path == font.font.path && current?.ttcIndex == font.font.ttcIndex) ? .checkmark : .none
-        }
-        return cell
-    }
-
-    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        if section == 0 {
-            let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "Header") as! SegmentedHeader
-            header.isBold = isBold
-            header.selectionChange = { [weak self] isBold in
-                guard let self else { return }
-                self.isBold = isBold
-                self.tableView.reloadData()
-            }
-            return header
-        }
-        return nil
-    }
-
-    override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        if section == 1 {
-            return CelestiaString("Configuration will take effect after a restart.", comment: "Change requires a restart")
-        }
-        return nil
-    }
-
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        let font = indexPath.section != 0 ? customFonts[indexPath.row] : nil
         if isBold {
-            boldFont = font?.font
-            userDefaults.setValue(font?.font.path, forKey: boldFontPathKey)
-            userDefaults.setValue(font?.font.ttcIndex, forKey: boldFontIndexKey)
+            boldFont = customFont?.font
+            userDefaults.setValue(customFont?.font.path, forKey: boldFontPathKey)
+            userDefaults.setValue(customFont?.font.ttcIndex, forKey: boldFontIndexKey)
         } else {
-            normalFont = font?.font
-            userDefaults.setValue(font?.font.path, forKey: normalFontPathKey)
-            userDefaults.setValue(font?.font.ttcIndex, forKey: normalFontIndexKey)
+            normalFont = customFont?.font
+            userDefaults.setValue(customFont?.font.path, forKey: normalFontPathKey)
+            userDefaults.setValue(customFont?.font.ttcIndex, forKey: normalFontIndexKey)
         }
-        tableView.reloadData()
+
+        reload()
     }
 }
