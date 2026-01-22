@@ -39,7 +39,7 @@ class DataLocationSelectionViewController: UICollectionViewController {
 
     private lazy var dataSource: UICollectionViewDiffableDataSource<Section, Item> = {
         let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, Item> { [weak self] cell, indexPath, itemIdentifier in
-            var contentConfiguration = UIListContentConfiguration.valueCell()
+            var contentConfiguration = UIListContentConfiguration.celestiaValueCell()
             let text: String
             var secondaryText: String?
             var accessories: [UICellAccessory] = []
@@ -67,7 +67,6 @@ class DataLocationSelectionViewController: UICollectionViewController {
             if itemIdentifier == .reset {
                 contentConfiguration.textProperties.color = cell.tintColor
             }
-            contentConfiguration.directionalLayoutMargins = NSDirectionalEdgeInsets(top: GlobalConstants.listItemMediumMarginVertical, leading: GlobalConstants.listItemMediumMarginHorizontal, bottom: GlobalConstants.listItemMediumMarginVertical, trailing: GlobalConstants.listItemMediumMarginHorizontal)
             cell.contentConfiguration = contentConfiguration
             cell.accessories = accessories
         }

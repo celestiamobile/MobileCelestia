@@ -30,7 +30,7 @@ class EventFinderInputViewController: UICollectionViewController {
             return formatter
         }()
         let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, Item> { [weak self] cell, indexPath, itemIdentifier in
-            var contentConfiguration = UIListContentConfiguration.valueCell()
+            var contentConfiguration = UIListContentConfiguration.celestiaValueCell()
             let text: String
             var secondaryText: String?
             switch itemIdentifier {
@@ -50,7 +50,6 @@ class EventFinderInputViewController: UICollectionViewController {
             }
             contentConfiguration.text = text
             contentConfiguration.secondaryText = secondaryText
-            contentConfiguration.directionalLayoutMargins = NSDirectionalEdgeInsets(top: GlobalConstants.listItemMediumMarginVertical, leading: GlobalConstants.listItemMediumMarginHorizontal, bottom: GlobalConstants.listItemMediumMarginVertical, trailing: GlobalConstants.listItemMediumMarginHorizontal)
             cell.contentConfiguration = contentConfiguration
         }
         let dataSource = UICollectionViewDiffableDataSource<Section, Item>(collectionView: collectionView) { collectionView, indexPath, item in
