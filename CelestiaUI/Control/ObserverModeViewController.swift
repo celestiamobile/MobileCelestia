@@ -10,7 +10,7 @@
 import CelestiaCore
 import UIKit
 
-public class ObserverModeViewController: BaseTableViewController {
+public class ObserverModeViewController: UICollectionViewController {
     private let executor: AsyncProviderExecutor
 
     private let supportedCoordinateSystems: [CoordinateSystem] = [
@@ -27,17 +27,95 @@ public class ObserverModeViewController: BaseTableViewController {
     private var referenceObject = Selection()
     private var targetObject = Selection()
 
-    private enum Row {
+    private enum Section {
+        case single
+    }
+
+    private enum Item {
         case coordinateSystem
         case referenceObjectName
         case targetObjectName
     }
 
-    private var rows: [Row] = [.coordinateSystem, .referenceObjectName, .targetObjectName]
+    private lazy var dataSource: UICollectionViewDiffableDataSource<Section, Item> = {
+        let cellRegistration = UICollectionView.CellRegistration<SelectableListCell, Item> { [unowned self] cell, _, itemIdentifier in
+            var configuration = UIListContentConfiguration.celestiaValueCell()
+            let text: String
+            var secondaryText: String?
+            var selectable = true
+            let accessories: [UICellAccessory]
+            switch itemIdentifier {
+            case .coordinateSystem:
+                text = CelestiaString("Coordinate System", comment: "Used in Flight Mode")
+                selectable = false
+                if #available(iOS 16, *) {
+                    accessories = [.label(text: self.coordinateSystem.name), .popUpMenu(UIMenu(children: self.supportedCoordinateSystems.map { coordinateSystem in
+                        UIAction(title: coordinateSystem.name, state: self.coordinateSystem == coordinateSystem ? .on : .off) { [weak self] _ in
+                            guard let self else { return }
+                            self.coordinateSystem = coordinateSystem
+                            self.reload()
+                        }
+                    }))]
+                } else {
+                    let button = UIButton(configuration: .plain())
+                    button.showsMenuAsPrimaryAction = true
+                    button.changesSelectionAsPrimaryAction = true
+                    button.menu = UIMenu(children: self.supportedCoordinateSystems.map({ coordinateSystem in
+                        UIAction(title: coordinateSystem.name, state: self.coordinateSystem == coordinateSystem ? .on : .off) { [weak self] _ in
+                            guard let self else { return }
+                            self.coordinateSystem = coordinateSystem
+                            self.reload()
+                        }
+                    }))
+                    accessories = [
+                        .customView(configuration: UICellAccessory.CustomViewConfiguration(customView: button, placement: .trailing(displayed: .always))),
+                    ]
+                }
+            case .referenceObjectName:
+                text = CelestiaString("Reference Object", comment: "Used in Flight Mode")
+                secondaryText = self.referenceObjectName
+                accessories = [.disclosureIndicator()]
+            case .targetObjectName:
+                text = CelestiaString("Target Object", comment: "Used in Flight Mode")
+                secondaryText = self.targetObjectName
+                accessories = [.disclosureIndicator()]
+            }
+            configuration.text = text
+            configuration.secondaryText = secondaryText
+            cell.contentConfiguration = configuration
+            cell.selectable = selectable
+            cell.accessories = accessories
+        }
+        let dataSource = UICollectionViewDiffableDataSource<Section, Item>(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
+            return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: itemIdentifier)
+        }
+        let footerRegistration = UICollectionView.SupplementaryRegistration<UICollectionViewListCell>(elementKind: UICollectionView.elementKindSectionFooter) { supplementaryView, elementKind, indexPath in
+            supplementaryView.contentConfiguration = LinkTextConfiguration(
+                info: LinkTextConfiguration.LinkInfo(text: CelestiaString("Flight mode decides how you move around in Celestia. Learn more…", comment: ""), links: [LinkTextConfiguration.Link(text: CelestiaString("Learn more…", comment: "Text for the link in Flight mode decides how you move around in Celestia. Learn more…"), link: "https://celestia.mobi/help/flight-mode?lang=\(AppCore.language)")]),
+                directionalLayoutMargins: NSDirectionalEdgeInsets(top: GlobalConstants.listItemMediumMarginVertical, leading: GlobalConstants.listItemMediumMarginHorizontal, bottom: GlobalConstants.listItemMediumMarginVertical, trailing: GlobalConstants.listItemMediumMarginHorizontal)
+            )
+        }
+
+        dataSource.supplementaryViewProvider = { [weak self] collectionView, kind, indexPath in
+            guard let self else { return nil }
+            let section = self.dataSource.sectionIdentifier(for: indexPath.section)
+            if kind == UICollectionView.elementKindSectionFooter {
+                return collectionView.dequeueConfiguredReusableSupplementary(using: footerRegistration, for: indexPath)
+            }
+            return nil
+        }
+
+        return dataSource
+    }()
 
     public init(executor: AsyncProviderExecutor) {
         self.executor = executor
-        super.init(style: .defaultGrouped)
+        super.init(collectionViewLayout: UICollectionViewFlowLayout())
+        collectionView.collectionViewLayout = UICollectionViewCompositionalLayout(sectionProvider: { sectionIndex, environment in
+            var configuration = UICollectionLayoutListConfiguration(appearance: .defaultGrouped)
+            configuration.footerMode = .supplementary
+            return .list(using: configuration, layoutEnvironment: environment)
+        })
     }
 
     public required init?(coder: NSCoder) {
@@ -62,102 +140,45 @@ public class ObserverModeViewController: BaseTableViewController {
         }
     }
 
-    private func updateRows() {
+    private func reload() {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
+        snapshot.appendSections([.single])
         switch coordinateSystem {
         case .universal:
-            rows = [.coordinateSystem]
+            snapshot.appendItems([.coordinateSystem], toSection: .single)
         case .ecliptical, .bodyFixed, .chase:
-            rows = [.coordinateSystem, .referenceObjectName]
+            snapshot.appendItems([.coordinateSystem, .referenceObjectName], toSection: .single)
         case .phaseLock:
-            rows = [.coordinateSystem, .referenceObjectName, .targetObjectName]
+            snapshot.appendItems([.coordinateSystem, .referenceObjectName, .targetObjectName], toSection: .single)
         default:
-            rows = [.coordinateSystem]
+            snapshot.appendItems([.coordinateSystem], toSection: .single)
         }
+        dataSource.applySnapshotUsingReloadData(snapshot)
     }
 }
 
 private extension ObserverModeViewController {
     func setUp() {
-        updateRows()
-
         navigationItem.backButtonTitle = ""
         title = CelestiaString("Flight Mode", comment: "")
         windowTitle = title
-        tableView.register(SelectionCell.self, forCellReuseIdentifier: "Selection")
-        tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
-        tableView.register(LinkFooterView.self, forHeaderFooterViewReuseIdentifier: "Footer")
         #if !os(visionOS)
-        tableView.keyboardDismissMode = .interactive
+        collectionView.keyboardDismissMode = .interactive
         #endif
 
+        collectionView.dataSource = dataSource
+
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: CelestiaString("OK", comment: ""), style: .plain, target: self, action: #selector(applyObserverMode))
+
+        reload()
     }
 }
 
 extension ObserverModeViewController {
-    public override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
-    }
-
-    public override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return rows.count
-    }
-
-    public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let row = rows[indexPath.row]
-        if row == .coordinateSystem {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Selection", for: indexPath) as! SelectionCell
-            cell.title = CelestiaString("Coordinate System", comment: "Used in Flight Mode")
-            cell.selectionData = SelectionCell.SelectionData(options: supportedCoordinateSystems.map { $0.name }, selectedIndex: supportedCoordinateSystems.firstIndex(of: coordinateSystem) ?? -1)
-            cell.selectionChange = { [weak self] index in
-                guard let self else { return }
-                self.coordinateSystem = self.supportedCoordinateSystems[index]
-                self.updateRows()
-                self.tableView.reloadData()
-            }
-            return cell
-        }
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
-        let title: String
-        let detail: String
-        let type: UITableViewCell.AccessoryType
-        switch row {
-        case .coordinateSystem:
-            title = CelestiaString("Coordinate System", comment: "Used in Flight Mode")
-            detail = coordinateSystem.name
-            type = .none
-        case .referenceObjectName:
-            title = CelestiaString("Reference Object", comment: "Used in Flight Mode")
-            detail = referenceObjectName
-            type = .disclosureIndicator
-        case .targetObjectName:
-            title = CelestiaString("Target Object", comment: "Used in Flight Mode")
-            detail = targetObjectName
-            type = .disclosureIndicator
-        }
-        cell.title = title
-        cell.detail = detail
-        cell.accessoryType = type
-        return cell
-    }
-
-    public override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
-    }
-
-    public override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        let footer = tableView.dequeueReusableHeaderFooterView(withIdentifier: "Footer") as! LinkFooterView
-        footer.info = LinkTextView.LinkInfo(text: CelestiaString("Flight mode decides how you move around in Celestia. Learn more…", comment: ""), links: [LinkTextView.Link(text: CelestiaString("Learn more…", comment: "Text for the link in Flight mode decides how you move around in Celestia. Learn more…"), link: "https://celestia.mobi/help/flight-mode?lang=\(AppCore.language)")])
-        return footer
-    }
-
-    public override func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return UITableView.automaticDimension
-    }
-
-    public override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        switch rows[indexPath.row] {
+    public override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+        guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
+        switch item {
         case .coordinateSystem:
             break
         case .referenceObjectName:
@@ -166,7 +187,7 @@ extension ObserverModeViewController {
                 self.navigationController?.popViewController(animated: true)
                 self.referenceObjectName = displayName
                 self.referenceObject = object
-                self.tableView.reloadData()
+                self.reload()
             }
             navigationController?.pushViewController(searchController, animated: true)
         case .targetObjectName:
@@ -175,7 +196,7 @@ extension ObserverModeViewController {
                 self.navigationController?.popViewController(animated: true)
                 self.targetObjectName = displayName
                 self.targetObject = object
-                self.tableView.reloadData()
+                self.reload()
             }
             navigationController?.pushViewController(searchController, animated: true)
         }

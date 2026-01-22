@@ -9,34 +9,62 @@
 
 import UIKit
 
-public class LinkTextView: UIView {
-    private var textView = UITextView()
-
-    public struct Link {
+@MainActor
+struct LinkTextConfiguration: UIContentConfiguration {
+    struct Link: Hashable {
         let text: String
         let link: String
     }
 
-    public struct LinkInfo {
+    struct LinkInfo: Hashable {
         let text: String
         let links: [Link]
     }
 
-    public var info: LinkInfo? {
-        didSet {
-            updateTextView()
+    var info: LinkInfo
+    var directionalLayoutMargins: NSDirectionalEdgeInsets
+
+    init(info: LinkInfo, directionalLayoutMargins: NSDirectionalEdgeInsets = .zero) {
+        self.info = info
+        self.directionalLayoutMargins = directionalLayoutMargins
+    }
+
+    func makeContentView() -> UIView & UIContentView {
+        return LinkTextView(configuration: self)
+    }
+
+    nonisolated func updated(for state: UIConfigurationState) -> LinkTextConfiguration {
+        return self
+    }
+}
+
+class LinkTextView: UIView, UIContentView {
+    private var textView = UITextView()
+
+    private var currentConfiguration: LinkTextConfiguration!
+
+    var configuration: UIContentConfiguration {
+        get {
+            currentConfiguration
+        }
+        set {
+            guard let newConfiguration = newValue as? LinkTextConfiguration else {
+                return
+            }
+
+            apply(configuration: newConfiguration)
         }
     }
 
-    public override init(frame: CGRect) {
-        super.init(frame: frame)
-
-        setUp()
-        updateTextView()
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
-    public required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    init(configuration: LinkTextConfiguration) {
+        super.init(frame: .zero)
+
+        setUp()
+        apply(configuration: configuration)
     }
 
     private func setUp() {
@@ -52,28 +80,25 @@ public class LinkTextView: UIView {
         addSubview(textView)
         textView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            textView.topAnchor.constraint(equalTo: topAnchor),
-            textView.bottomAnchor.constraint(equalTo: bottomAnchor),
-            textView.leadingAnchor.constraint(equalTo: leadingAnchor),
-            textView.trailingAnchor.constraint(equalTo: trailingAnchor)
+            textView.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor),
+            textView.bottomAnchor.constraint(equalTo: layoutMarginsGuide.bottomAnchor),
+            textView.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
+            textView.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor)
         ])
     }
 
-    func updateTextView() {
-        guard let info else {
-            textView.text = nil
-            textView.attributedText = nil
-            return
-        }
-        let attributedString = NSMutableAttributedString(string: info.text)
-        for link in info.links {
-            let linkTextRange = (info.text as NSString).range(of: link.text)
+    private func apply(configuration: LinkTextConfiguration) {
+        currentConfiguration = configuration
+        directionalLayoutMargins = configuration.directionalLayoutMargins
+        let attributedString = NSMutableAttributedString(string: configuration.info.text)
+        for link in configuration.info.links {
+            let linkTextRange = (configuration.info.text as NSString).range(of: link.text)
             guard linkTextRange.location != NSNotFound else {
                 textView.text = nil
                 textView.attributedText = nil
                 return
             }
-            attributedString.addAttributes([.foregroundColor: UIColor.label, .font: UIFont.preferredFont(forTextStyle: .footnote)], range: NSMakeRange(0, info.text.count))
+            attributedString.addAttributes([.foregroundColor: UIColor.label, .font: UIFont.preferredFont(forTextStyle: .footnote)], range: NSMakeRange(0, configuration.info.text.count))
             attributedString.addAttributes([.link: link.link], range: linkTextRange)
         }
         textView.attributedText = attributedString

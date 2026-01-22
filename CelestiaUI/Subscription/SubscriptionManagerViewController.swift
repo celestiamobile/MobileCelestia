@@ -111,11 +111,10 @@ public class SubscriptionManagerViewController: UIViewController {
         let eulaText = CelestiaString("End User License Agreements (EULA)", comment: "")
         let privacyText = CelestiaString("Privacy Policy and Service Agreement", comment: "Privacy Policy and Service Agreement")
 
-        let linkView = LinkTextView()
-        linkView.info = LinkTextView.LinkInfo(text: ListFormatter.localizedString(byJoining: [eulaText, privacyText]), links: [
-            LinkTextView.Link(text: eulaText, link: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/"),
-            LinkTextView.Link(text: privacyText, link: "https://celestia.mobi/privacy"),
-        ])
+        let linkView = LinkTextConfiguration(info: LinkTextConfiguration.LinkInfo(text: ListFormatter.localizedString(byJoining: [eulaText, privacyText]), links: [
+            LinkTextConfiguration.Link(text: eulaText, link: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/"),
+            LinkTextConfiguration.Link(text: privacyText, link: "https://celestia.mobi/privacy"),
+        ])).makeContentView()
 
         let contents = [(appIconView, false), (titleLabel, false), (featureView, true), (statusLabel, true), (planStack, true), (linkView, true), (button, true)]
         var previousView: UIView?
