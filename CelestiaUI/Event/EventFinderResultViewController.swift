@@ -10,21 +10,38 @@
 import CelestiaCore
 import UIKit
 
-class EventFinderResultViewController: BaseTableViewController {
-    private lazy var displayDateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .short
-        formatter.timeStyle = .short
-        return formatter
-    }()
-
+class EventFinderResultViewController: UICollectionViewController {
     private let eventHandler: ((Eclipse) -> Void)
     private let events: [Eclipse]
+
+    private enum Section {
+        case single
+    }
+
+    private lazy var dataSource: UICollectionViewDiffableDataSource<Section, Eclipse> = {
+        let displayDateFormatter: DateFormatter = {
+            let formatter = DateFormatter()
+            formatter.dateStyle = .short
+            formatter.timeStyle = .short
+            return formatter
+        }()
+        let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, Eclipse> { cell, indexPath, itemIdentifier in
+            var contentConfiguration = UIListContentConfiguration.valueCell()
+            contentConfiguration.text = "\(itemIdentifier.occulter.name) -> \(itemIdentifier.receiver.name)"
+            contentConfiguration.secondaryText = displayDateFormatter.string(from: itemIdentifier.startTime)
+            contentConfiguration.directionalLayoutMargins = NSDirectionalEdgeInsets(top: GlobalConstants.listItemMediumMarginVertical, leading: GlobalConstants.listItemMediumMarginHorizontal, bottom: GlobalConstants.listItemMediumMarginVertical, trailing: GlobalConstants.listItemMediumMarginHorizontal)
+            cell.contentConfiguration = contentConfiguration
+        }
+        let dataSource = UICollectionViewDiffableDataSource<Section, Eclipse>(collectionView: collectionView) { collectionView, indexPath, item in
+            return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: item)
+        }
+        return dataSource
+    }()
 
     init(results: [Eclipse], eventHandler: @escaping ((Eclipse) -> Void)) {
         self.eventHandler = eventHandler
         self.events = results
-        super.init(style: .defaultGrouped)
+        super.init(collectionViewLayout: UICollectionViewCompositionalLayout.list(using: UICollectionLayoutListConfiguration(appearance: .defaultGrouped)))
     }
 
     required init?(coder: NSCoder) {
@@ -40,9 +57,15 @@ class EventFinderResultViewController: BaseTableViewController {
 
 private extension EventFinderResultViewController {
     func setUp() {
-        tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         title = CelestiaString("Eclipse Finder", comment: "")
         windowTitle = title
+
+        collectionView.dataSource = dataSource
+
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Eclipse>()
+        snapshot.appendSections([.single])
+        snapshot.appendItems(events, toSection: .single)
+        dataSource.applySnapshotUsingReloadData(snapshot)
 
         if events.isEmpty {
             if #available(iOS 17, visionOS 1, *) {
@@ -52,34 +75,17 @@ private extension EventFinderResultViewController {
             } else {
                 let view = EmptyHintView()
                 view.title = CelestiaString("No eclipse is found for the given object in the time range", comment: "")
-                tableView.backgroundView = view
+                collectionView.backgroundView = view
             }
         }
     }
 }
 
 extension EventFinderResultViewController {
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return events.count
-    }
-
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let event = events[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
-        cell.title = "\(event.occulter.name) -> \(event.receiver.name)"
-        cell.detail = displayDateFormatter.string(from: event.startTime)
-
-        return cell
-    }
-
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
-    }
-
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-
-        eventHandler(events[indexPath.row])
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+        guard let eclipse = dataSource.itemIdentifier(for: indexPath) else { return }
+        eventHandler(eclipse)
     }
 }
 
