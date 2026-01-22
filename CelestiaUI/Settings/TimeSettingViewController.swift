@@ -10,23 +10,63 @@
 import CelestiaCore
 import UIKit
 
-public class TimeSettingViewController: BaseTableViewController {
+public class TimeSettingViewController: UICollectionViewController {
+    private enum Section {
+        case time
+    }
+
+    private enum Item {
+        case selectTime
+        case julianDay
+        case setToCurrent
+    }
+
     private let core: AppCore
     private let executor: AsyncProviderExecutor
     private let dateInputHandler: (_ viewController: UIViewController, _ title: String, _ format: String) async -> Date?
     private let textInputHandler: (_ viewController: UIViewController, _ title: String, _ keyboardType: UIKeyboardType) async -> String?
 
-    private lazy var displayDateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .short
-        formatter.timeStyle = .short
-        return formatter
-    }()
-    private lazy var displayNumberFormatter: NumberFormatter = {
-        let formatter = NumberFormatter()
-        formatter.maximumFractionDigits = 4
-        formatter.usesGroupingSeparator = false
-        return formatter
+    private lazy var dataSource: UICollectionViewDiffableDataSource<Section, Item> = {
+        let displayDateFormatter: DateFormatter = {
+            let formatter = DateFormatter()
+            formatter.dateStyle = .short
+            formatter.timeStyle = .short
+            return formatter
+        }()
+        let displayNumberFormatter: NumberFormatter = {
+            let formatter = NumberFormatter()
+            formatter.maximumFractionDigits = 4
+            formatter.usesGroupingSeparator = false
+            return formatter
+        }()
+        let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, Item> { [weak self] cell, indexPath, itemIdentifier in
+            var contentConfiguration = UIListContentConfiguration.valueCell()
+            let text: String
+            var secondaryText: String?
+            switch itemIdentifier {
+            case .selectTime:
+                text = CelestiaString("Select Time", comment: "Select simulation time")
+                if let self {
+                    secondaryText = displayDateFormatter.string(from: self.core.simulation.time)
+                }
+            case .julianDay:
+                text = CelestiaString("Julian Day", comment: "Select time via entering Julian day")
+                if let self {
+                    secondaryText = displayNumberFormatter.string(from: (self.core.simulation.time as NSDate).julianDay)
+                }
+            case .setToCurrent:
+                text = CelestiaString("Set to Current Time", comment: "Set simulation time to device")
+                secondaryText = nil
+            }
+            contentConfiguration.text = text
+            contentConfiguration.secondaryText = secondaryText
+            contentConfiguration.directionalLayoutMargins = NSDirectionalEdgeInsets(top: GlobalConstants.listItemMediumMarginVertical, leading: GlobalConstants.listItemMediumMarginHorizontal, bottom: GlobalConstants.listItemMediumMarginVertical, trailing: GlobalConstants.listItemMediumMarginHorizontal)
+            cell.contentConfiguration = contentConfiguration
+        }
+        let dataSource = UICollectionViewDiffableDataSource<Section, Item>(collectionView: collectionView) { collectionView, indexPath, item in
+            return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: item)
+        }
+        return dataSource
     }()
 
     public init(
@@ -39,7 +79,7 @@ public class TimeSettingViewController: BaseTableViewController {
         self.executor = executor
         self.dateInputHandler = dateInputHandler
         self.textInputHandler = textInputHandler
-        super.init(style: .defaultGrouped)
+        super.init(collectionViewLayout: UICollectionViewCompositionalLayout.list(using: UICollectionLayoutListConfiguration(appearance: .defaultGrouped)))
     }
     
     required init?(coder: NSCoder) {
@@ -55,35 +95,22 @@ public class TimeSettingViewController: BaseTableViewController {
 
 private extension TimeSettingViewController {
     func setUp() {
-        tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         title = CelestiaString("Current Time", comment: "")
         windowTitle = title
+
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
+        snapshot.appendSections([.time])
+        snapshot.appendItems([.selectTime, .julianDay, .setToCurrent], toSection: .time)
+        dataSource.applySnapshotUsingReloadData(snapshot)
     }
 }
 
 extension TimeSettingViewController {
-    public override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
-    }
-
-    public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
-        if indexPath.row == 0 {
-            cell.title = CelestiaString("Select Time", comment: "Select simulation time")
-            cell.detail = displayDateFormatter.string(from: core.simulation.time)
-        } else if indexPath.row == 1 {
-            cell.title = CelestiaString("Julian Day", comment: "Select time via entering Julian day")
-            cell.detail = displayNumberFormatter.string(from: (core.simulation.time as NSDate).julianDay)
-        } else {
-            cell.title = CelestiaString("Set to Current Time", comment: "Set simulation time to device")
-            cell.detail = nil
-        }
-        return cell
-    }
-
-    public override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        if indexPath.row == 0 {
+    public override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+        guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
+        switch item {
+        case .selectTime:
             let preferredFormat = DateFormatter.dateFormat(fromTemplate: "yyyyMMddHHmmss", options: 0, locale: Locale.current) ?? "yyyy/MM/dd HH:mm:ss"
             let title = String.localizedStringWithFormat(CelestiaString("Please enter the time in \"%@\" format.", comment: ""), preferredFormat)
             Task {
@@ -94,9 +121,11 @@ extension TimeSettingViewController {
                 await self.executor.run { core in
                     core.simulation.time = date
                 }
-                self.tableView.reloadData()
+                var snapshot = dataSource.snapshot()
+                snapshot.reloadItems([.selectTime, .julianDay])
+                await self.dataSource.apply(snapshot)
             }
-        } else if indexPath.row == 1 {
+        case .julianDay:
             Task {
                 guard let text = await textInputHandler(self, CelestiaString("Please enter Julian day.", comment: "In time settings, enter Julian day for the simulation"), .decimalPad) else {
                     return
@@ -110,19 +139,19 @@ extension TimeSettingViewController {
                 await self.executor.run { core in
                     core.simulation.time = NSDate(julian: value) as Date
                 }
-                self.tableView.reloadData()
+                var snapshot = dataSource.snapshot()
+                snapshot.reloadItems([.selectTime, .julianDay])
+                await self.dataSource.apply(snapshot)
             }
-        } else if indexPath.row == 2 {
+        case .setToCurrent:
             Task {
                 await executor.run {
                     $0.receive(.currentTime)
                 }
-                self.tableView.reloadData()
+                var snapshot = dataSource.snapshot()
+                snapshot.reloadItems([.selectTime, .julianDay])
+                await self.dataSource.apply(snapshot)
             }
         }
-    }
-
-    public override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
     }
 }
