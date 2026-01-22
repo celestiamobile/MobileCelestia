@@ -10,36 +10,63 @@
 #if !os(visionOS)
 import UIKit
 
-class SettingsFrameRateViewController: BaseTableViewController {
-    private struct FrameRateItem {
-        let frameRate: Int
-        let isMaximum: Bool
-
-        var frameRateValue: Int {
-            return isMaximum ? -1 : frameRate
-        }
+class SettingsFrameRateViewController: UICollectionViewController {
+    public enum FrameRate: Hashable {
+        case fixed(Int)
+        case maximum
     }
 
-    private var items: [FrameRateItem] = []
+    public enum Section {
+        case single
+    }
+
+    private lazy var dataSource: UICollectionViewDiffableDataSource<Section, FrameRate> = {
+        let numberFormatter: NumberFormatter = {
+            let formatter = NumberFormatter()
+            formatter.numberStyle = .decimal
+            formatter.usesGroupingSeparator = true
+            return formatter
+        }()
+        let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, FrameRate> { [unowned self] cell, indexPath, itemIdentifier in
+            var contentConfiguration = UIListContentConfiguration.celestiaCell()
+            let selectedFrameRate: Int = self.userDefaults.value(forKey: self.userDefaultsKey) as? Int ?? 60
+            let text: String
+            let accessories: [UICellAccessory]
+            switch itemIdentifier {
+            case let .fixed(value):
+                text = String.localizedStringWithFormat(CelestiaString("%@ FPS", comment: ""), numberFormatter.string(from: value))
+                accessories = value == selectedFrameRate ? [.checkmark()] : []
+            case .maximum:
+                if let screen = self.screen {
+                    text = String.localizedStringWithFormat(CelestiaString("Maximum (%@ FPS)", comment: ""), numberFormatter.string(from: screen.maximumFramesPerSecond))
+                    accessories = -1 == selectedFrameRate ? [.checkmark()] : []
+                } else {
+                    text = ""
+                    accessories = []
+                }
+            }
+            contentConfiguration.text = text
+            cell.contentConfiguration = contentConfiguration
+            cell.accessories = accessories
+        }
+        let dataSource = UICollectionViewDiffableDataSource<Section, FrameRate>(collectionView: collectionView) { collectionView, indexPath, item in
+            return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: item)
+        }
+        return dataSource
+    }()
+
     private let userDefaults: UserDefaults
     private let userDefaultsKey: String
 
     private let frameRateUpdateHandler: (Int) -> Void
     private let screen: UIScreen?
 
-    private lazy var numberFormatter: NumberFormatter = {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        formatter.usesGroupingSeparator = true
-        return formatter
-    }()
-
     init(screen: UIScreen?, userDefaults: UserDefaults, userDefaultsKey: String, frameRateUpdateHandler: @escaping (Int) -> Void) {
         self.screen = screen
         self.userDefaults = userDefaults
         self.userDefaultsKey = userDefaultsKey
         self.frameRateUpdateHandler = frameRateUpdateHandler
-        super.init(style: .defaultGrouped)
+        super.init(collectionViewLayout: UICollectionViewCompositionalLayout.list(using: UICollectionLayoutListConfiguration(appearance: .defaultGrouped)))
     }
 
     required init?(coder: NSCoder) {
@@ -61,58 +88,44 @@ class SettingsFrameRateViewController: BaseTableViewController {
     private func loadContents() {
         let maxFrameRate = screen?.maximumFramesPerSecond
 
-        var standardFrameRate = [
-            FrameRateItem(frameRate: 60, isMaximum: false),
-            FrameRateItem(frameRate: 30, isMaximum: false),
-            FrameRateItem(frameRate: 20, isMaximum: false),
-        ].filter { item in
-            if let maxFrameRate, item.frameRate > maxFrameRate {
-                return false
+        var snapshot = NSDiffableDataSourceSnapshot<Section, FrameRate>()
+        snapshot.appendSections([.single])
+        for fixedFrameRate in [60, 30, 20] {
+            if let maxFrameRate, fixedFrameRate > maxFrameRate {
+                continue
             }
-            return true
+            snapshot.appendItems([.fixed(fixedFrameRate)], toSection: .single)
         }
 
-        if let maxFrameRate {
-            standardFrameRate.insert(FrameRateItem(frameRate: maxFrameRate, isMaximum: true), at: 0)
+        if maxFrameRate != nil {
+            snapshot.appendItems([.maximum], toSection: .single)
         }
-
-        items = standardFrameRate
-        tableView.reloadData()
+        dataSource.applySnapshotUsingReloadData(snapshot)
     }
 }
 
 private extension SettingsFrameRateViewController {
     func setUp() {
-        tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
         title = CelestiaString("Frame Rate", comment: "Frame rate of simulation")
         windowTitle = title
+
+        collectionView.dataSource = dataSource
     }
 }
 
 extension SettingsFrameRateViewController {
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return items.count
-    }
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
 
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let selectedFrameRate: Int = userDefaults.value(forKey: userDefaultsKey) as? Int ?? 60
-        let item = items[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
+        guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
 
-        cell.title = String.localizedStringWithFormat(item.isMaximum ? CelestiaString("Maximum (%@ FPS)", comment: "") : CelestiaString("%@ FPS", comment: ""), numberFormatter.string(from: item.frameRate))
-        cell.accessoryType = item.frameRateValue == selectedFrameRate ? .checkmark : .none
-        return cell
-    }
-
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
-    }
-
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        let item = items[indexPath.row]
-        frameRateUpdateHandler(item.frameRateValue)
-        tableView.reloadData()
+        switch item {
+        case let .fixed(value):
+            frameRateUpdateHandler(value)
+        case .maximum:
+            frameRateUpdateHandler(-1)
+        }
+        loadContents()
     }
 }
 #endif
