@@ -85,8 +85,8 @@ final class FontSettingViewController: UICollectionViewController {
             })
         }
 
-        let dataSource = UICollectionViewDiffableDataSource<Section, Item>(collectionView: collectionView) { collectionView, indexPath, item in
-            return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: item)
+        let dataSource = UICollectionViewDiffableDataSource<Section, Item>(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
+            return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: itemIdentifier)
         }
 
         dataSource.supplementaryViewProvider = { [weak self] collectionView, kind, indexPath in
@@ -112,17 +112,22 @@ final class FontSettingViewController: UICollectionViewController {
         self.boldFontIndexKey = boldFontIndexKey
         self.customFonts = customFonts
 
-        let layout = UICollectionViewCompositionalLayout { sectionIndex, layoutEnvironment in
+        super.init(collectionViewLayout: UICollectionViewFlowLayout())
+
+        collectionView.collectionViewLayout = UICollectionViewCompositionalLayout { [weak self] sectionIndex, layoutEnvironment in
             var listConfiguration = UICollectionLayoutListConfiguration(appearance: .defaultGrouped)
-            if sectionIndex == 0 { // regular/bold switch
-                listConfiguration.headerMode = .supplementary
-            }
-            if sectionIndex == 1 { // custom font, restart hint
-                listConfiguration.footerMode = .supplementary
+            if let self {
+                switch dataSource.sectionIdentifier(for: sectionIndex) {
+                case .default:
+                    listConfiguration.headerMode = .supplementary
+                case .custom:
+                    listConfiguration.footerMode = .supplementary
+                case nil:
+                    break
+                }
             }
             return NSCollectionLayoutSection.list(using: listConfiguration, layoutEnvironment: layoutEnvironment)
         }
-        super.init(collectionViewLayout: layout)
 
         if let normalFontPath = userDefaults.string(forKey: normalFontPathKey) {
             let normalFontIndex = userDefaults.integer(forKey: normalFontIndexKey)

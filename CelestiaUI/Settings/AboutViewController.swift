@@ -120,14 +120,14 @@ public final class AboutViewController: UICollectionViewController {
         } else {
             showFooter = Locale.current.regionCode == "CN"
         }
-        let layout = UICollectionViewCompositionalLayout { sectionIndex, layoutEnvironment in
+        super.init(collectionViewLayout: UICollectionViewFlowLayout())
+        collectionView.collectionViewLayout = UICollectionViewCompositionalLayout { [weak self] sectionIndex, layoutEnvironment in
             var listConfiguration = UICollectionLayoutListConfiguration(appearance: .defaultGrouped)
-            if sectionIndex == 4, showFooter { // .links2 section
+            if let self, showFooter, self.dataSource.sectionIdentifier(for: sectionIndex) == .links2 {
                 listConfiguration.footerMode = .supplementary
             }
             return NSCollectionLayoutSection.list(using: listConfiguration, layoutEnvironment: layoutEnvironment)
         }
-        super.init(collectionViewLayout: layout)
         #endif
     }
 

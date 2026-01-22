@@ -55,8 +55,7 @@ public class SearchResultViewController: UIViewController {
             configuration.text = itemIdentifier.completion.name
             cell.contentConfiguration = configuration
         }
-        let dataSource = UICollectionViewDiffableDataSource<SearchSection, SearchResult>(collectionView: collectionView) { [weak self] collectionView, indexPath, itemIdentifier in
-            guard let self else { fatalError() }
+        let dataSource = UICollectionViewDiffableDataSource<SearchSection, SearchResult>(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: itemIdentifier)
         }
         let headerRegistration = UICollectionView.SupplementaryRegistration<UICollectionViewListCell>(elementKind: UICollectionView.elementKindSectionHeader) { [weak self] supplementaryView, _, indexPath in
