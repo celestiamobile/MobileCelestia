@@ -9,7 +9,7 @@
 
 import UIKit
 
-class TutorialDescriptionCell: UITableViewCell {
+class TutorialDescriptionCell: SelectableListCell {
     private enum Constants {
         static let iconDimension: CGFloat = 44
         static let gapHorizontal: CGFloat = 16
@@ -24,9 +24,8 @@ class TutorialDescriptionCell: UITableViewCell {
     var img: UIImage? { didSet { iv.configuration.image = img?.withRenderingMode(.alwaysTemplate) } }
     var title: String? { didSet { label.text = title }  }
 
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         setup()
     }
 
@@ -37,8 +36,8 @@ class TutorialDescriptionCell: UITableViewCell {
 
 private extension TutorialDescriptionCell {
     func setup() {
-        selectionStyle = .none
-        backgroundColor = .clear
+        selectable = false
+        backgroundStyle = .clear
 
         iv.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(iv)

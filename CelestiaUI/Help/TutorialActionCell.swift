@@ -9,7 +9,7 @@
 
 import UIKit
 
-class TutorialActionCell: UITableViewCell {
+class TutorialActionCell: SelectableListCell {
     private enum Constants {
         static let iconDimension: CGFloat = 44
         static let gapHorizontal: CGFloat = 16
@@ -20,9 +20,8 @@ class TutorialActionCell: UITableViewCell {
 
     private lazy var button = ActionButtonHelper.newButton(prominent: true, traitCollection: traitCollection)
 
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-
+    override init(frame: CGRect) {
+        super.init(frame: frame)
         setup()
     }
 
@@ -33,8 +32,8 @@ class TutorialActionCell: UITableViewCell {
 
 private extension TutorialActionCell {
     private func setup() {
-        backgroundColor = .clear
-        selectionStyle = .none
+        backgroundStyle = .clear
+        selectable = false
 
         contentView.addSubview(button)
         button.translatesAutoresizingMaskIntoConstraints = false
