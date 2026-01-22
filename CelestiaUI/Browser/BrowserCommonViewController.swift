@@ -10,7 +10,7 @@
 import CelestiaCore
 import UIKit
 
-class BrowserCommonViewController: BaseTableViewController {
+class BrowserCommonViewController: UICollectionViewController {
     private let item: BrowserItem
 
     private let selection: (BrowserItem, Bool) -> Void
@@ -26,37 +26,70 @@ class BrowserCommonViewController: BaseTableViewController {
 
     enum Item: Hashable {
         case item(item: BrowserItem, isMain: Bool)
+        case categoryCard
     }
 
-    class BrowserDataSource: UITableViewDiffableDataSource<Section, Item> {
-        override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-            if let identifier = sectionIdentifier(for: section), identifier == .subsystem {
-                return CelestiaString("Subsystem", comment: "Subsystem of an object (e.g. planetarium system)")
+    private lazy var dataSource: UICollectionViewDiffableDataSource<Section, Item> = {
+        let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, Item> { [unowned self] cell, _, itemIdentifier in
+            var configuration: any UIContentConfiguration
+            switch itemIdentifier {
+            case let .item(item, isMain):
+                var cellConfiguration = UIListContentConfiguration.celestiaCell()
+                cellConfiguration.text = item.name
+                configuration = cellConfiguration
+                if isMain {
+                    cell.accessories = []
+                } else {
+                    cell.accessories = item.entry != nil && item.children.isEmpty ? [] : [.disclosureIndicator()]
+                }
+            case .categoryCard:
+                configuration = TeachingCardContentConfiguration(title: CelestiaString("Enhance Celestia with online add-ons", comment: ""), directionalLayoutMargins: NSDirectionalEdgeInsets(top: GlobalConstants.listItemMediumMarginVertical, leading: GlobalConstants.listItemMediumMarginHorizontal, bottom: GlobalConstants.listItemMediumMarginVertical, trailing: GlobalConstants.listItemMediumMarginHorizontal), actionButtonTitle: CelestiaString("Get Add-ons", comment: "Open webpage for downloading add-ons"), actionHandler: { [weak self] in
+                    guard let self, let categoryInfo = self.categoryInfo else { return }
+                    self.showAddonCategory(categoryInfo)
+                })
+            }
+            cell.contentConfiguration = configuration
+        }
+        let dataSource = UICollectionViewDiffableDataSource<Section, Item>(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
+            return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: itemIdentifier)
+        }
+        let headerRegistration = UICollectionView.SupplementaryRegistration<UICollectionViewListCell>(elementKind: UICollectionView.elementKindSectionHeader) { supplementaryView, elementKind, indexPath in
+            var contentConfiguration = UIListContentConfiguration.groupedFooter()
+            contentConfiguration.text = CelestiaString("Subsystem", comment: "Subsystem of an object (e.g. planetarium system)")
+            supplementaryView.contentConfiguration = contentConfiguration
+        }
+
+        dataSource.supplementaryViewProvider = { [weak self] collectionView, kind, indexPath in
+            guard let self else { return nil }
+            let section = self.dataSource.sectionIdentifier(for: indexPath.section)
+            if section == .subsystem, kind == UICollectionView.elementKindSectionHeader {
+                return collectionView.dequeueConfiguredReusableSupplementary(using: headerRegistration, for: indexPath)
             }
             return nil
         }
-    }
 
-    private lazy var dataSource = BrowserDataSource(tableView: tableView) { tableView, indexPath, itemIdentifier in
-        switch itemIdentifier {
-        case .item(let item, let isMain):
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
-            cell.title = item.name
-            if isMain {
-                cell.accessoryType = .none
-            } else {
-                cell.accessoryType = item.entry != nil && item.children.isEmpty ? .none : .disclosureIndicator
-            }
-            return cell
-        }
-    }
+        return dataSource
+    }()
 
     init(item: BrowserItem, selection: @escaping (BrowserItem, Bool) -> Void, showAddonCategory: @escaping (CategoryInfo) -> Void) {
         self.item = item
         self.selection = selection
         self.showAddonCategory = showAddonCategory
-        self.categoryInfo = (item as? BrowserPredefinedItem)?.categoryInfo
-        super.init(style: .defaultGrouped)
+        let categoryInfo = (item as? BrowserPredefinedItem)?.categoryInfo
+        self.categoryInfo = categoryInfo
+
+        super.init(collectionViewLayout: UICollectionViewFlowLayout())
+
+        collectionView.collectionViewLayout = UICollectionViewCompositionalLayout(sectionProvider: { [unowned self] sectionIndex, environment in
+            var config = UICollectionLayoutListConfiguration(appearance: .defaultGrouped)
+            if let section = self.dataSource.sectionIdentifier(for: sectionIndex) {
+                if section == .subsystem {
+                    config.headerMode = .supplementary
+                }
+            }
+            return .list(using: config, layoutEnvironment: environment)
+        })
+
         title = item.alternativeName ?? item.name
         windowTitle = title
     }
@@ -74,9 +107,6 @@ class BrowserCommonViewController: BaseTableViewController {
 
 private extension BrowserCommonViewController {
     func setUp() {
-        tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
-        tableView.register(TeachingCardCell.self, forHeaderFooterViewReuseIdentifier: "TeachingCard")
-
         var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
 
         if item.entry != nil {
@@ -92,42 +122,29 @@ private extension BrowserCommonViewController {
 
         if categoryInfo != nil {
             snapshot.appendSections([.categoryCard])
+            snapshot.appendItems([.categoryCard], toSection: .categoryCard)
         }
-
-        tableView.dataSource = dataSource
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.sectionFooterHeight = UITableView.automaticDimension
-        dataSource.apply(snapshot, animatingDifferences: false, completion: nil)
+        dataSource.applySnapshotUsingReloadData(snapshot)
     }
 }
 
 extension BrowserCommonViewController {
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
         switch item {
         case let .item(item, isMain):
             if isMain {
-                tableView.deselectRow(at: indexPath, animated: true)
+                collectionView.deselectItem(at: indexPath, animated: true)
                 selection(item, true)
             } else {
                 let isLeaf = item.entry != nil && item.children.isEmpty
                 if isLeaf {
-                    tableView.deselectRow(at: indexPath, animated: true)
+                    collectionView.deselectItem(at: indexPath, animated: true)
                 }
                 selection(item, isLeaf)
             }
+        case .categoryCard:
+            break
         }
-    }
-
-    override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        guard let sectionIdentifier = dataSource.sectionIdentifier(for: section), let categoryInfo, sectionIdentifier == .categoryCard else { return nil }
-
-        let cell = tableView.dequeueReusableHeaderFooterView(withIdentifier: "TeachingCard") as! TeachingCardCell
-        cell.teachingCard.contentConfiguration = TeachingCardContentConfiguration(title: CelestiaString("Enhance Celestia with online add-ons", comment: ""), actionButtonTitle: CelestiaString("Get Add-ons", comment: "Open webpage for downloading add-ons"))
-        cell.teachingCard.actionButtonTapped = { [weak self] in
-            guard let self else { return }
-            self.showAddonCategory(categoryInfo)
-        }
-        return cell
     }
 }

@@ -99,15 +99,15 @@ class DataLocationSelectionViewController: UICollectionViewController {
         self.configFileUserDefaultsKey = configFileUserDefaultsKey
         self.defaultConfigFileURL = defaultConfigFileURL
         self.defaultDataDirectoryURL = defaultDataDirectoryURL
-        
-        let layout = UICollectionViewCompositionalLayout { sectionIndex, layoutEnvironment in
+
+        super.init(collectionViewLayout: UICollectionViewFlowLayout())
+        collectionView.collectionViewLayout = UICollectionViewCompositionalLayout { [weak self] sectionIndex, layoutEnvironment in
             var listConfiguration = UICollectionLayoutListConfiguration(appearance: .defaultGrouped)
-            if sectionIndex == 0 { // .locations section
+            if let self, self.dataSource.sectionIdentifier(for: sectionIndex) == .locations {
                 listConfiguration.footerMode = .supplementary
             }
             return NSCollectionLayoutSection.list(using: listConfiguration, layoutEnvironment: layoutEnvironment)
         }
-        super.init(collectionViewLayout: layout)
     }
 
     required init?(coder: NSCoder) {
