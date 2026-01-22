@@ -9,7 +9,7 @@
 
 import Foundation
 
-public struct ResourceItem: Codable, Hashable {
+public struct ResourceItem: Codable, Hashable, Sendable {
     public let name: String
     let description: String
     let type: String?
