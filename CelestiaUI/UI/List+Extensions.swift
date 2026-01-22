@@ -1,4 +1,4 @@
-// UITableView+Extensions.swift
+// List+Extensions.swift
 //
 // Copyright (C) 2025, Celestia Development Team
 //
@@ -8,16 +8,6 @@
 // of the License, or (at your option) any later version.
 
 import UIKit
-
-public extension UITableView.Style {
-    static var defaultGrouped: Self {
-        #if targetEnvironment(macCatalyst)
-        return .insetGrouped
-        #else
-        return .grouped
-        #endif
-    }
-}
 
 public extension UICollectionLayoutListConfiguration.Appearance {
     static var defaultGrouped: Self {

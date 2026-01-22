@@ -11,7 +11,7 @@ import CelestiaCore
 import CelestiaFoundation
 import UIKit
 
-class SettingCommonViewController: BaseTableViewController {
+class SettingCommonViewController: UICollectionViewController {
     private let item: SettingCommonItem
 
     private let core: AppCore
@@ -23,7 +23,17 @@ class SettingCommonViewController: BaseTableViewController {
         self.core = core
         self.executor = executor
         self.userDefaults = userDefaults
-        super.init(style: .defaultGrouped)
+
+        super.init(collectionViewLayout: UICollectionViewCompositionalLayout(sectionProvider: { sectionIndex, environment in
+            var configuration = UICollectionLayoutListConfiguration(appearance: .defaultGrouped)
+            if item.sections[sectionIndex].header != nil {
+                configuration.headerMode = .supplementary
+            }
+            if item.sections[sectionIndex].footer != nil {
+                configuration.footerMode = .supplementary
+            }
+            return .list(using: configuration, layoutEnvironment: environment)
+        }))
     }
 
     required init?(coder: NSCoder) {
@@ -39,23 +49,21 @@ class SettingCommonViewController: BaseTableViewController {
 
 private extension SettingCommonViewController {
     func setUp() {
-        tableView.register(SliderCell.self, forCellReuseIdentifier: "Slider")
-        tableView.register(TextCell.self, forCellReuseIdentifier: "Action")
-        tableView.register(TextCell.self, forCellReuseIdentifier: "Checkmark")
-        tableView.register(TextCell.self, forCellReuseIdentifier: "Custom")
-        tableView.register(SwitchCell.self, forCellReuseIdentifier: "Switch")
-        tableView.register(SelectionCell.self, forCellReuseIdentifier: "Selection")
         title = item.title
         windowTitle = title
+
+        collectionView.register(SelectableListCell.self, forCellWithReuseIdentifier: "Cell")
+        collectionView.register(UICollectionViewListCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: "Header")
+        collectionView.register(UICollectionViewListCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "Footer")
     }
 }
 
 extension SettingCommonViewController {
-    override func numberOfSections(in tableView: UITableView) -> Int {
+    override func numberOfSections(in collectionView: UICollectionView) -> Int {
         return item.sections.count
     }
 
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return item.sections[section].rows.count
     }
 
@@ -63,145 +71,208 @@ extension SettingCommonViewController {
         fatalError("Wrong associated item \(item.base)")
     }
 
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let row = item.sections[indexPath.section].rows[indexPath.row]
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let row = item.sections[indexPath.section].rows[indexPath.item]
 
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! SelectableListCell
+
+        let configuration: any UIContentConfiguration
+        var accessories: [UICellAccessory] = []
+        var selectable = false
         switch row.associatedItem {
-        case .slider(let item):
+        case let .slider(item):
             let maxValue = item.maxValue
             let minValue = item.minValue
             let key = item.key
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Slider", for: indexPath) as! SliderCell
-            cell.title = row.name
-            cell.subtitle = nil
-            cell.value = ((core.value(forKey: key) as! Double) - minValue) / (maxValue - minValue)
-            cell.valueChangeBlock = { [weak self] (value) in
+            var listConfiguration = UIListContentConfiguration.celestiaCell()
+            listConfiguration.text = row.name
+            let value = ((core.value(forKey: key) as! Double) - minValue) / (maxValue - minValue)
+            configuration = SliderConfiguration(
+                listContent: listConfiguration,
+                value: value
+            ) { [weak self] newValue in
                 guard let self = self else { return }
-                let transformed = value * (maxValue - minValue) + minValue
+                let transformed = newValue * (maxValue - minValue) + minValue
                 Task {
                     await self.executor.run {
                         $0.setValue(transformed, forKey: key)
                     }
                     self.userDefaults.set(transformed, forKey: key)
-                    self.tableView.reloadData()
                 }
             }
-            return cell
         case .action:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Action", for: indexPath) as! TextCell
-            cell.title = row.name
-            cell.subtitle = nil
-            return cell
+            var cellConfiguration = UIListContentConfiguration.celestiaCell()
+            cellConfiguration.text = row.name
+            configuration = cellConfiguration
+            selectable = true
         case .custom:
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Custom", for: indexPath) as! TextCell
-            cell.title = row.name
-            cell.subtitle = nil
-            return cell
-        case .checkmark(let item):
+            var cellConfiguration = UIListContentConfiguration.celestiaCell()
+            cellConfiguration.text = row.name
+            configuration = cellConfiguration
+            selectable = true
+        case let .checkmark(item):
             let enabled = core.value(forKey: item.key) as? Bool ?? false
+            var cellConfiguration = UIListContentConfiguration.celestiaCell()
+            cellConfiguration.text = row.name
+            cellConfiguration.secondaryText = row.subtitle
+            configuration = cellConfiguration
             if item.representation == .switch {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "Switch", for: indexPath) as! SwitchCell
-                cell.title = row.name
-                cell.subtitle = row.subtitle
-                cell.enabled = enabled
-                cell.toggleBlock = { [weak self] newValue in
-                    guard let self else { return }
+                let toggle = UISwitch()
+                toggle.isOn = enabled
+                toggle.addAction(UIAction { [weak self] action in
+                    guard let self, let sender = action.sender as? UISwitch else { return }
+                    let newValue = sender.isOn
                     Task {
                         await self.executor.run {
                             $0.setValue(newValue, forKey: item.key)
                         }
                         self.userDefaults.setValue(newValue, forKey: item.key)
                     }
-                }
-                return cell
+                }, for: .valueChanged)
+                accessories = [.customView(configuration: UICellAccessory.CustomViewConfiguration(customView: toggle, placement: .trailing(displayed: .always)))]
             } else {
-                let cell = tableView.dequeueReusableCell(withIdentifier: "Checkmark", for: indexPath) as! TextCell
-                cell.title = row.name
-                cell.subtitle = row.subtitle
-                cell.accessoryType = enabled ? .checkmark : .none
-                return cell
+                accessories = enabled ? [.checkmark()] : []
+                selectable = true
             }
-        case .keyedSelection(let item):
+        case let .keyedSelection(item):
             let selectedIndex = core.value(forKey: item.key) as? Int ?? 0
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Checkmark", for: indexPath) as! TextCell
-            cell.title = row.name
-            cell.subtitle = nil
-            cell.accessoryType = selectedIndex == item.index ? .checkmark : .none
-            return cell
-        case .prefSwitch(let item):
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Switch", for: indexPath) as! SwitchCell
-            cell.enabled = userDefaults[item.key] ?? item.defaultOn
-            cell.title = row.name
-            cell.subtitle = row.subtitle
-            cell.toggleBlock = { [weak self] enabled in
-                guard let self else { return }
-                self.userDefaults[item.key] = enabled
-            }
-            return cell
-        case .prefSelection(let item):
-            let currentValue = self.userDefaults[item.key] ?? item.defaultOption
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Selection", for: indexPath) as! SelectionCell
-            cell.title = row.name
-            cell.subtitle = row.subtitle
-            cell.selectionData = SelectionCell.SelectionData(options: item.options.map { $0.name }, selectedIndex: item.options.firstIndex(where: { $0.value == currentValue }) ?? -1)
-            cell.selectionChange = { [weak self] index in
-                guard let self else { return }
-                self.userDefaults[item.key] = item.options[index].value
-            }
-            return cell
-        case .selection(let item):
-            let currentValue = core.value(forKey: item.key) as? Int ?? item.defaultOption
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Selection", for: indexPath) as! SelectionCell
-            cell.title = row.name
-            cell.subtitle = row.subtitle
-            cell.selectionData = SelectionCell.SelectionData(options: item.options.map { $0.name }, selectedIndex: item.options.firstIndex(where: { $0.value == currentValue }) ?? -1)
-            cell.selectionChange = { [weak self] index in
-                guard let self else { return }
+            var cellConfiguration = UIListContentConfiguration.celestiaCell()
+            cellConfiguration.text = row.name
+            configuration = cellConfiguration
+            accessories = selectedIndex == item.index ? [.checkmark()] : []
+            selectable = true
+        case let .prefSwitch(item):
+            let enabled = userDefaults[item.key] ?? item.defaultOn
+            var cellConfiguration = UIListContentConfiguration.celestiaCell()
+            cellConfiguration.text = row.name
+            cellConfiguration.secondaryText = row.subtitle
+            configuration = cellConfiguration
+
+            let toggle = UISwitch()
+            toggle.isOn = enabled
+            toggle.addAction(UIAction { [weak self] action in
+                guard let self, let sender = action.sender as? UISwitch else { return }
+                let newValue = sender.isOn
                 Task {
-                    let value = item.options[index].value
-                    await self.executor.run {
-                        $0.setValue(value, forKey: item.key)
-                    }
-                    self.userDefaults.setValue(value, forKey: item.key)
+                    self.userDefaults[item.key] = newValue
                 }
+            }, for: .valueChanged)
+            accessories = [.customView(configuration: UICellAccessory.CustomViewConfiguration(customView: toggle, placement: .trailing(displayed: .always)))]
+        case let .prefSelection(item):
+            let currentValue = self.userDefaults[item.key] ?? item.defaultOption
+            var cellConfiguration = UIListContentConfiguration.celestiaCell()
+            cellConfiguration.text = row.name
+            cellConfiguration.secondaryText = row.subtitle
+            configuration = cellConfiguration
+
+            if #available(iOS 16, *) {
+                if let selectedIndex = item.options.firstIndex(where: { $0.value == currentValue }) {
+                    accessories.append(.label(text: item.options[selectedIndex].name))
+                }
+                accessories.append(.popUpMenu(UIMenu(children: item.options.map { option in
+                    UIAction(title: option.name, state: currentValue == option.value ? .on : .off) { [weak self] _ in
+                        guard let self else { return }
+                        self.userDefaults[item.key] = option.value
+                        self.collectionView.reloadData()
+                    }
+                })))
+            } else {
+                let button = UIButton(configuration: .plain())
+                button.showsMenuAsPrimaryAction = true
+                button.changesSelectionAsPrimaryAction = true
+                button.menu = UIMenu(children: item.options.map({ option in
+                    UIAction(title: option.name, state: currentValue == option.value ? .on : .off) { [weak self] _ in
+                        guard let self else { return }
+                        self.userDefaults[item.key] = option.value
+                    }
+                }))
+                accessories = [
+                    .customView(configuration: UICellAccessory.CustomViewConfiguration(customView: button, placement: .trailing(displayed: .always))),
+                ]
             }
-            return cell
-        case .prefSlider(let item):
+        case let .selection(item):
+            let currentValue = core.value(forKey: item.key) as? Int ?? item.defaultOption
+            var cellConfiguration = UIListContentConfiguration.celestiaCell()
+            cellConfiguration.text = row.name
+            cellConfiguration.secondaryText = row.subtitle
+            configuration = cellConfiguration
+
+            if #available(iOS 16, *) {
+                if let selectedIndex = item.options.firstIndex(where: { $0.value == currentValue }) {
+                    accessories.append(.label(text: item.options[selectedIndex].name))
+                }
+                accessories.append(.popUpMenu(UIMenu(children: item.options.map { option in
+                    UIAction(title: option.name, state: currentValue == option.value ? .on : .off) { [weak self] _ in
+                        guard let self else { return }
+                        Task {
+                            await self.executor.run {
+                                $0.setValue(option.value, forKey: item.key)
+                            }
+                            self.userDefaults.setValue(option.value, forKey: item.key)
+                            self.collectionView.reloadData()
+                        }
+                    }
+                })))
+            } else {
+                let button = UIButton(configuration: .plain())
+                button.showsMenuAsPrimaryAction = true
+                button.changesSelectionAsPrimaryAction = true
+                button.menu = UIMenu(children: item.options.map({ option in
+                    UIAction(title: option.name, state: currentValue == option.value ? .on : .off) { [weak self] _ in
+                        guard let self else { return }
+                        Task {
+                            await self.executor.run {
+                                $0.setValue(option.value, forKey: item.key)
+                            }
+                            self.userDefaults.setValue(option.value, forKey: item.key)
+                        }
+                    }
+                }))
+                accessories = [
+                    .customView(configuration: UICellAccessory.CustomViewConfiguration(customView: button, placement: .trailing(displayed: .always))),
+                ]
+            }
+        case let .prefSlider(item):
             let maxValue = item.maxValue
             let minValue = item.minValue
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Slider", for: indexPath) as! SliderCell
-            cell.title = row.name
+            var listConfiguration = UIListContentConfiguration.celestiaCell()
+            listConfiguration.text = row.name
+            listConfiguration.secondaryText = row.subtitle
             let currentValue = self.userDefaults[item.key] ?? item.defaultValue
-            let transformedValue = (currentValue - minValue) / (maxValue - minValue)
-            cell.value = transformedValue
-            cell.subtitle = row.subtitle
-            cell.valueChangeBlock = { [weak self] (value) in
+            let value = (currentValue - minValue) / (maxValue - minValue)
+            configuration = SliderConfiguration(
+                listContent: listConfiguration,
+                value: value
+            ) { [weak self] newValue in
                 guard let self = self else { return }
-                let transformed = value * (maxValue - minValue) + minValue
+                let transformed = newValue * (maxValue - minValue) + minValue
                 self.userDefaults[item.key] = transformed
             }
-            return cell
         case .common, .other:
             fatalError("SettingCommonViewController cannot handle this type of item")
         }
+
+        cell.contentConfiguration = configuration
+        cell.accessories = accessories
+        cell.selectable = selectable
+        return cell
     }
 
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
 
         let row = item.sections[indexPath.section].rows[indexPath.row]
         switch row.associatedItem {
         case .action(let item):
             core.charEnter(item.action)
         case .checkmark(let item):
-            guard let cell = tableView.cellForRow(at: indexPath) else { break }
-            let checked = cell.accessoryType == .checkmark
             Task {
+                let checked = core.value(forKey: item.key) as? Bool ?? false
                 await executor.run {
                     $0.setValue(!checked, forKey: item.key)
                 }
                 self.userDefaults.set(!checked, forKey: item.key)
-                self.tableView.reloadData()
+                self.collectionView.reloadData()
             }
         case .keyedSelection(let item):
             Task {
@@ -209,7 +280,7 @@ extension SettingCommonViewController {
                     $0.setValue(item.index, forKey: item.key)
                 }
                 self.userDefaults.set(item.index, forKey: item.key)
-                self.tableView.reloadData()
+                self.collectionView.reloadData()
             }
         case .custom(let item):
             Task {
@@ -226,15 +297,20 @@ extension SettingCommonViewController {
         }
     }
 
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
-    }
-
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return item.sections[section].header
-    }
-
-    override func tableView(_ tableView: UITableView, titleForFooterInSection section: Int) -> String? {
-        return item.sections[section].footer
+    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        if kind == UICollectionView.elementKindSectionHeader {
+            let cell = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Header", for: indexPath) as! UICollectionViewListCell
+            var contentConfiguration = UIListContentConfiguration.groupedHeader()
+            contentConfiguration.text = item.sections[indexPath.section].header
+            cell.contentConfiguration = contentConfiguration
+            return cell
+        } else if kind == UICollectionView.elementKindSectionFooter {
+            let cell = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Footer", for: indexPath) as! UICollectionViewListCell
+            var contentConfiguration = UIListContentConfiguration.groupedFooter()
+            contentConfiguration.text = item.sections[indexPath.section].footer
+            cell.contentConfiguration = contentConfiguration
+            return cell
+        }
+        fatalError()
     }
 }
