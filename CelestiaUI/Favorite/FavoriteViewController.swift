@@ -33,14 +33,36 @@ class FavoriteViewController: UICollectionViewController {
     private let selected: @MainActor (FavoriteItemType) async -> Void
     private var currentSelection: FavoriteItemType?
 
+    private enum Section {
+        case single
+    }
+
+    private lazy var dataSource: UICollectionViewDiffableDataSource<Section, FavoriteItemType> = {
+        let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, FavoriteItemType> { cell, indexPath, item in
+            #if targetEnvironment(macCatalyst)
+            var configuration = UIListContentConfiguration.sidebarCell()
+            #else
+            cell.accessories = [.disclosureIndicator()]
+            var configuration = UIListContentConfiguration.celestiaCell()
+            #endif
+            configuration.text = item.description
+            cell.contentConfiguration = configuration
+        }
+        let dataSource = UICollectionViewDiffableDataSource<Section, FavoriteItemType>(collectionView: collectionView) { (collectionView, indexPath, item) -> UICollectionViewCell? in
+            return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: item)
+        }
+        return dataSource
+    }()
+
     init(currentSelection: FavoriteItemType?, selected: @MainActor @escaping (FavoriteItemType) async -> Void) {
         self.currentSelection = currentSelection
         self.selected = selected
         #if targetEnvironment(macCatalyst)
-        super.init(style: .grouped)
+        let configuration = UICollectionLayoutListConfiguration(appearance: .grouped)
         #else
-        super.init(style: .defaultGrouped)
+        let configuration = UICollectionLayoutListConfiguration(appearance: .defaultGrouped)
         #endif
+        super.init(collectionViewLayout: UICollectionViewCompositionalLayout.list(using: configuration))
     }
 
     required init?(coder: NSCoder) {
@@ -53,14 +75,16 @@ class FavoriteViewController: UICollectionViewController {
         setup()
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewIsAppearing(_ animated: Bool) {
+        super.viewIsAppearing(animated)
 
         if let selection = currentSelection {
             currentSelection = nil
-            tableView.selectRow(at: IndexPath(row: selection.rawValue, section: 0), animated: false, scrollPosition: .none)
-            Task {
-                await selected(selection)
+            if let indexPath = dataSource.indexPath(for: selection) {
+                collectionView.selectItem(at: indexPath, animated: false, scrollPosition: [])
+                Task {
+                    await selected(selection)
+                }
             }
         }
     }
@@ -68,42 +92,21 @@ class FavoriteViewController: UICollectionViewController {
 
 private extension FavoriteViewController {
     func setup() {
-        #if targetEnvironment(macCatalyst)
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "Text")
-        #else
-        tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
-        #endif
         title = CelestiaString("Favorites", comment: "Favorites (currently bookmarks and scripts)")
         windowTitle = title
+
+        collectionView.dataSource = dataSource
+
+        var snapshot = NSDiffableDataSourceSnapshot<Section, FavoriteItemType>()
+        snapshot.appendSections([.single])
+        snapshot.appendItems([.bookmark, .script, .destination], toSection: .single)
+        dataSource.applySnapshotUsingReloadData(snapshot)
     }
 }
 
 extension FavoriteViewController {
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 3
-    }
-
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let type = FavoriteItemType(rawValue: indexPath.row)
-        #if targetEnvironment(macCatalyst)
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath)
-        var configuration = UIListContentConfiguration.sidebarCell()
-        configuration.text = type?.description
-        cell.contentConfiguration = configuration
-        #else
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
-        cell.title = type?.description
-        cell.accessoryType = .disclosureIndicator
-        #endif
-        return cell
-    }
-
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
-    }
-
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let selectedType = FavoriteItemType(rawValue: indexPath.row) else { return }
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let selectedType = dataSource.itemIdentifier(for: indexPath) else { return }
         Task {
             await selected(selectedType)
         }
