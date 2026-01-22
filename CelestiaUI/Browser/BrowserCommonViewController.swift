@@ -32,23 +32,26 @@ class BrowserCommonViewController: UICollectionViewController {
     private lazy var dataSource: UICollectionViewDiffableDataSource<Section, Item> = {
         let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, Item> { [unowned self] cell, _, itemIdentifier in
             var configuration: any UIContentConfiguration
+            let accessories: [UICellAccessory]
             switch itemIdentifier {
             case let .item(item, isMain):
                 var cellConfiguration = UIListContentConfiguration.celestiaCell()
                 cellConfiguration.text = item.name
                 configuration = cellConfiguration
                 if isMain {
-                    cell.accessories = []
+                    accessories = []
                 } else {
-                    cell.accessories = item.entry != nil && item.children.isEmpty ? [] : [.disclosureIndicator()]
+                    accessories = item.entry != nil && item.children.isEmpty ? [] : [.disclosureIndicator()]
                 }
             case .categoryCard:
                 configuration = TeachingCardContentConfiguration(title: CelestiaString("Enhance Celestia with online add-ons", comment: ""), directionalLayoutMargins: NSDirectionalEdgeInsets(top: GlobalConstants.listItemMediumMarginVertical, leading: GlobalConstants.listItemMediumMarginHorizontal, bottom: GlobalConstants.listItemMediumMarginVertical, trailing: GlobalConstants.listItemMediumMarginHorizontal), actionButtonTitle: CelestiaString("Get Add-ons", comment: "Open webpage for downloading add-ons"), actionHandler: { [weak self] in
                     guard let self, let categoryInfo = self.categoryInfo else { return }
                     self.showAddonCategory(categoryInfo)
                 })
+                accessories = []
             }
             cell.contentConfiguration = configuration
+            cell.accessories = accessories
         }
         let dataSource = UICollectionViewDiffableDataSource<Section, Item>(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
             return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: itemIdentifier)

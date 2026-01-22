@@ -10,11 +10,6 @@
 import CelestiaCore
 import UIKit
 
-protocol GoToInputItem {
-    var title: String { get }
-    var detail: String { get }
-}
-
 extension DistanceUnit: @retroactive CaseIterable {
     public static let allCases: [DistanceUnit] = [.radii, .KM, .AU]
 }
@@ -34,34 +29,23 @@ private extension DistanceUnit {
     }
 }
 
-class GoToInputViewController: BaseTableViewController {
+class GoToInputViewController: UICollectionViewController {
     private enum Constants {
         static let defaultLatitude: Float = 0
         static let defaultLongitude: Float = 0
         static let defaultDistance: Double = 8
     }
 
-    struct LonLatItem: GoToInputItem {
-        var title: String { return "" }
-        var detail: String { return "" }
+    private enum Section {
+        case object
+        case coordinates
+        case distance
     }
 
-    struct DistanceItem: GoToInputItem {
-        var title: String { return "" }
-        var detail: String { return "" }
-    }
-
-    struct ObjectNameItem: GoToInputItem {
-        var title: String { CelestiaString("Object", comment: "In eclipse finder, object to find eclipse with, or in go to") }
-
-        var detail: String { name }
-
-        let name: String
-    }
-
-    struct Section {
-        let title: String?
-        let items: [GoToInputItem]
+    private enum Item {
+        case object
+        case coordinates
+        case distance
     }
 
     private let locationHandler: ((GoToLocation) -> Void)
@@ -80,8 +64,6 @@ class GoToInputViewController: BaseTableViewController {
 
     private var unit: DistanceUnit = .radii
 
-    private var allSections: [Section] = []
-
     private let executor: AsyncProviderExecutor
 
 #if targetEnvironment(macCatalyst)
@@ -94,6 +76,86 @@ class GoToInputViewController: BaseTableViewController {
         let formatter = NumberFormatter()
         formatter.usesGroupingSeparator = false
         return formatter
+    }()
+
+    private lazy var dataSource: UICollectionViewDiffableDataSource<Section, Item> = {
+        let cellRegistration = UICollectionView.CellRegistration<SelectableListCell, Item> { [unowned self] cell, _, itemIdentifier in
+            var configuration: any UIContentConfiguration  = UIListContentConfiguration.celestiaValueCell()
+            var selectable = false
+            let accessories: [UICellAccessory]
+            switch itemIdentifier {
+            case .object:
+                var cellConfiguration = UIListContentConfiguration.celestiaValueCell()
+                cellConfiguration.text = CelestiaString("Object", comment: "In eclipse finder, object to find eclipse with, or in go to")
+                cellConfiguration.secondaryText = self.displayName
+                configuration = cellConfiguration
+                selectable = true
+                accessories = [.disclosureIndicator()]
+            case .distance:
+                configuration = DistanceInputConfiguration(
+                    model: DistanceInputConfiguration.Model(
+                        units: DistanceUnit.allCases.map({ $0.name }),
+                        selectedUnitIndex: DistanceUnit.allCases.firstIndex(of: unit)!,
+                        distanceValue: self.distance,
+                        distanceString: self.distanceString
+                    ),
+                    directionalLayoutMargins: NSDirectionalEdgeInsets(top: GlobalConstants.listItemMediumMarginVertical, leading: GlobalConstants.listItemMediumMarginHorizontal, bottom: GlobalConstants.listItemMediumMarginVertical, trailing: GlobalConstants.listItemMediumMarginHorizontal)
+                ) { [weak self] unitIndex in
+                    guard let self else { return }
+                    self.unit = DistanceUnit.allCases[unitIndex]
+                } distanceChanged: { [weak self] distanceValue, distanceString in
+                    guard let self else { return }
+                    self.distance = distanceValue
+                    self.distanceString = distanceString
+                    self.validate()
+                }
+                accessories = []
+            case .coordinates:
+                configuration = LongitudeLatitudeInputConfiguration(
+                    model: LongitudeLatitudeInputConfiguration.Model(longitude: self.longitude, latitude: self.latitude, longitudeString: self.longitudeString, latitudeString: self.latitudeString),
+                    directionalLayoutMargins: NSDirectionalEdgeInsets(top: GlobalConstants.listItemMediumMarginVertical, leading: GlobalConstants.listItemMediumMarginHorizontal, bottom: GlobalConstants.listItemMediumMarginVertical, trailing: GlobalConstants.listItemMediumMarginHorizontal),
+                    coordinatesChanged: { [weak self] longitude, latitude, longitudeString, latitudeString in
+                        guard let self else { return }
+                        self.longitude = longitude
+                        self.latitude = latitude
+                        self.longitudeString = longitudeString
+                        self.latitudeString = latitudeString
+                        self.validate()
+                    })
+                accessories = []
+            }
+            cell.contentConfiguration = configuration
+            cell.selectable = selectable
+            cell.accessories = accessories
+        }
+        let dataSource = UICollectionViewDiffableDataSource<Section, Item>(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
+            return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: itemIdentifier)
+        }
+        let headerRegistration = UICollectionView.SupplementaryRegistration<UICollectionViewListCell>(elementKind: UICollectionView.elementKindSectionHeader) { [weak self] supplementaryView, _, indexPath in
+            var configuration = UIListContentConfiguration.groupedHeader()
+            if let self, let section = self.dataSource.sectionIdentifier(for: indexPath.section) {
+                switch section {
+                case .object:
+                    break
+                case .coordinates:
+                    configuration.text = CelestiaString("Coordinates", comment: "Longitude and latitude (in Go to)")
+                case .distance:
+                    configuration.text = CelestiaString("Distance", comment: "Distance to the object (in Go to)")
+                }
+            }
+            supplementaryView.contentConfiguration = configuration
+        }
+
+        dataSource.supplementaryViewProvider = { [weak self] collectionView, kind, indexPath in
+            guard let self else { return nil }
+            let section = self.dataSource.sectionIdentifier(for: indexPath.section)
+            if kind == UICollectionView.elementKindSectionHeader {
+                return collectionView.dequeueConfiguredReusableSupplementary(using: headerRegistration, for: indexPath)
+            }
+            return nil
+        }
+
+        return dataSource
     }()
 
     init(
@@ -109,7 +171,21 @@ class GoToInputViewController: BaseTableViewController {
         self.objectNameHandler = objectNameHandler
         self.locationHandler = locationHandler
         self.textInputHandler = textInputHandler
-        super.init(style: .defaultGrouped)
+        super.init(collectionViewLayout: UICollectionViewFlowLayout())
+        collectionView.collectionViewLayout = UICollectionViewCompositionalLayout(sectionProvider: { [weak self] sectionIndex, environment in
+            var configuration = UICollectionLayoutListConfiguration(appearance: .defaultGrouped)
+            if let self, let section = self.dataSource.sectionIdentifier(for: sectionIndex) {
+                switch section {
+                case .object:
+                    configuration.headerMode = .none
+                case .coordinates:
+                    configuration.headerMode = .supplementary
+                case .distance:
+                    configuration.headerMode = .supplementary
+                }
+            }
+            return .list(using: configuration, layoutEnvironment: environment)
+        })
         self.distanceString = numberFormatter.string(from: Constants.defaultDistance)
         self.longitudeString = numberFormatter.string(from: Constants.defaultLongitude)
         self.latitudeString = numberFormatter.string(from: Constants.defaultLatitude)
@@ -153,16 +229,12 @@ extension GoToInputViewController: ToolbarAwareViewController {
 #endif
 
 private extension GoToInputViewController {
-    func setUp() {
+    private func setUp() {
         title = CelestiaString("Go to Object", comment: "")
         windowTitle = title
         #if !os(visionOS)
-        tableView.keyboardDismissMode = .interactive
+        collectionView.keyboardDismissMode = .interactive
         #endif
-        tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
-        tableView.register(LongitudeLatitudeInputCell.self, forCellReuseIdentifier: "LonLat")
-        tableView.register(DistanceInputCell.self, forCellReuseIdentifier: "Distance")
-
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: CelestiaString("Go", comment: "Go to an object"), style: .plain, target: self, action: #selector(go))
 
         reload()
@@ -177,84 +249,23 @@ private extension GoToInputViewController {
     }
 
     private func reload() {
-        let distanceSection: Section
-        let coordinateSection: Section
-        distanceSection = Section(title: CelestiaString("Distance", comment: "Distance to the object (in Go to)"), items: [DistanceItem()])
-        coordinateSection = Section(title: CelestiaString("Coordinates", comment: "Longitude and latitude (in Go to)"), items: [
-            LonLatItem(),
-        ])
-        allSections = [
-            Section(title: nil, items: [ObjectNameItem(name: displayName)]),
-            coordinateSection,
-            distanceSection,
-        ]
-        tableView.reloadData()
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
+        snapshot.appendSections([.object, .coordinates, .distance])
+        snapshot.appendItems([.object], toSection: .object)
+        snapshot.appendItems([.coordinates], toSection: .coordinates)
+        snapshot.appendItems([.distance], toSection: .distance)
+        dataSource.applySnapshotUsingReloadData(snapshot)
     }
 }
 
 extension GoToInputViewController {
-    override func numberOfSections(in tableView: UITableView) -> Int {
-        return allSections.count
-    }
-
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return allSections[section].items.count
-    }
-
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let item = allSections[indexPath.section].items[indexPath.row]
-        if item is LonLatItem {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "LonLat", for: indexPath) as! LongitudeLatitudeInputCell
-            cell.model = LongitudeLatitudeInputCell.Model(longitude: longitude, latitude: latitude, longitudeString: longitudeString, latitudeString: latitudeString)
-            cell.coordinatesChanged = { [weak self] longitude, latitude, longitudeString, latitudeString in
-                guard let self else { return }
-                self.longitude = longitude
-                self.latitude = latitude
-                self.longitudeString = longitudeString
-                self.latitudeString = latitudeString
-                self.validate()
-            }
-            return cell
-        }
-        if item is DistanceItem {
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Distance", for: indexPath) as! DistanceInputCell
-            cell.model = DistanceInputCell.Model(
-                units: DistanceUnit.allCases.map({ $0.name }),
-                selectedUnitIndex: DistanceUnit.allCases.firstIndex(of: unit)!,
-                distanceValue: distance,
-                distanceString: distanceString
-            )
-            cell.unitChanged = { [weak self] unitIndex in
-                self?.unit = DistanceUnit.allCases[unitIndex]
-            }
-            cell.distanceChanged = { [weak self] distanceValue, distanceString in
-                guard let self else { return }
-                self.distance = distanceValue
-                self.distanceString = distanceString
-                self.validate()
-            }
-            return cell
-        }
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
-        cell.title = item.title
-        cell.detail = item.detail
-        cell.accessoryType = .disclosureIndicator
-        return cell
-    }
-
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
-    }
-
-    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return allSections[section].title
-    }
-
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        let item = allSections[indexPath.section].items[indexPath.row]
-        if item is ObjectNameItem {
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
+        switch item {
+        case .object:
             objectNameHandler(self)
+        default:
+            break
         }
     }
 }

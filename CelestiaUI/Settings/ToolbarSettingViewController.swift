@@ -120,9 +120,10 @@ class ToolbarSettingViewController: SubscriptionBackingViewController {
             configuration.imageProperties.tintColor = .label
             configuration.imageProperties.maximumSize = CGSize(width: GlobalConstants.listItemIconSize, height: GlobalConstants.listItemIconSize)
             cell.contentConfiguration = configuration
+            let accessories: [UICellAccessory]
             if indexPath.item < addedActions.count {
                 if action.deletable {
-                    cell.accessories = [.delete(displayed: .whenEditing, actionHandler: { [weak self] in
+                    accessories = [.delete(displayed: .whenEditing, actionHandler: { [weak self] in
                         guard let self else { return }
                         guard let item = self.addedActions.firstIndex(of: action) else { return }
                         let indexPath = IndexPath(item: item, section: 0)
@@ -136,10 +137,10 @@ class ToolbarSettingViewController: SubscriptionBackingViewController {
                         }
                     }), .reorder(displayed: .whenEditing)]
                 } else {
-                    cell.accessories = [.reorder(displayed: .whenEditing)]
+                    accessories = [.reorder(displayed: .whenEditing)]
                 }
             } else {
-                cell.accessories = [.insert(displayed: .whenEditing, actionHandler: { [weak self] in
+                accessories = [.insert(displayed: .whenEditing, actionHandler: { [weak self] in
                     guard let self else { return }
                     guard let item = self.otherActions.firstIndex(of: action) else { return }
                     let indexPath = IndexPath(item: addedActions.count + item, section: 0)
@@ -151,6 +152,7 @@ class ToolbarSettingViewController: SubscriptionBackingViewController {
                     }
                 })]
             }
+            cell.accessories = accessories
             return cell
         }
 
