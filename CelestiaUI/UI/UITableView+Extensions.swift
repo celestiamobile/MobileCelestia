@@ -37,7 +37,7 @@ public extension UIListContentConfiguration {
     }
 
     static func celestiaValueCell() -> Self {
-        var configuration = cell()
+        var configuration = valueCell()
         configuration.directionalLayoutMargins = NSDirectionalEdgeInsets(top: GlobalConstants.listItemMediumMarginVertical, leading: GlobalConstants.listItemMediumMarginHorizontal, bottom: GlobalConstants.listItemMediumMarginVertical, trailing: GlobalConstants.listItemMediumMarginHorizontal)
         return configuration
     }

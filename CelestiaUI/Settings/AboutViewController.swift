@@ -11,19 +11,124 @@ import CelestiaCore
 import CelestiaFoundation
 import UIKit
 
-public final class AboutViewController: BaseTableViewController {
+public final class AboutViewController: UICollectionViewController {
     private let officialWebsiteURL = URL(string: "https://celestia.mobi")!
     private let aboutCelestiaURL = URL(string: "https://celestia.mobi/about")!
-
-    private var items: [[TextItem]] = []
 
     private let bundle: Bundle
     private let defaultDirectoryURL: URL
 
+    enum Section {
+        case version
+        case authors
+        case translators
+        case links1
+        case links2
+    }
+
+    enum Item {
+        case version
+        case authors
+        case translators
+        case development
+        case dependencies
+        case privacyPolicy
+        case website
+        case about
+    }
+
+    private var authorText: String?
+    private var translatorText: String?
+
+    private lazy var dataSource: UICollectionViewDiffableDataSource<Section, Item> = {
+        let cellRegistration = UICollectionView.CellRegistration<SelectableListCell, Item> { [unowned self] cell, indexPath, itemIdentifier in
+            let text: String
+            var secondaryText: String?
+            var useValueCell = false
+            var tinted = false
+            var selectable = true
+            switch itemIdentifier {
+            case .version:
+                text = CelestiaString("Version", comment: "")
+                secondaryText = "\(self.bundle.shortVersion)(\(self.bundle.build))"
+                useValueCell = true
+                selectable = false
+            case .authors:
+                text = CelestiaString("Authors", comment: "Authors for Celestia")
+                secondaryText = self.authorText
+                selectable = false
+            case .translators:
+                text = CelestiaString("Translators", comment: "Translators for Celestia")
+                secondaryText = self.translatorText
+                selectable = false
+            case .development:
+                text = CelestiaString("Development", comment: "URL for Development wiki")
+                tinted = true
+            case .dependencies:
+                text = CelestiaString("Third Party Dependencies", comment: "URL for Third Party Dependencies wiki")
+                tinted = true
+            case .privacyPolicy:
+                text = CelestiaString("Privacy Policy and Service Agreement", comment: "Privacy Policy and Service Agreement")
+                tinted = true
+            case .website:
+                text = CelestiaString("Official Website", comment: "")
+                tinted = true
+            case .about:
+                text = CelestiaString("About Celestia", comment: "System menu item")
+                tinted = true
+            }
+            var contentConfiguration = useValueCell ? UIListContentConfiguration.celestiaValueCell() : UIListContentConfiguration.celestiaCell()
+            if tinted {
+                contentConfiguration.textProperties.color = cell.tintColor
+            }
+            contentConfiguration.text = text
+            contentConfiguration.secondaryText = secondaryText
+            cell.contentConfiguration = contentConfiguration
+            cell.selectable = selectable
+        }
+
+        let dataSource = UICollectionViewDiffableDataSource<Section, Item>(collectionView: collectionView) { collectionView, indexPath, item in
+            return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: item)
+        }
+
+        #if !targetEnvironment(macCatalyst)
+        let footerRegistration = UICollectionView.SupplementaryRegistration<UICollectionViewListCell>(elementKind: UICollectionView.elementKindSectionFooter) { supplementaryView, _, _ in
+            supplementaryView.contentConfiguration = ICPCConfiguration(text: "苏ICP备2023039249号-4A")
+        }
+        dataSource.supplementaryViewProvider = { [weak self] collectionView, kind, indexPath in
+            guard let self, kind == UICollectionView.elementKindSectionFooter else { return nil }
+            let section = self.dataSource.sectionIdentifier(for: indexPath.section)
+            if section == .links2 {
+                return collectionView.dequeueConfiguredReusableSupplementary(using: footerRegistration, for: indexPath)
+            }
+            return nil
+        }
+        #endif
+        return dataSource
+    }()
+
     public init(bundle: Bundle, defaultDirectoryURL: URL) {
         self.bundle = bundle
         self.defaultDirectoryURL = defaultDirectoryURL
-        super.init(style: .defaultGrouped)
+
+        #if targetEnvironment(macCatalyst)
+        super.init(collectionViewLayout: UICollectionViewCompositionalLayout.list(using: UICollectionLayoutListConfiguration(appearance: .defaultGrouped)))
+        #else
+        let showFooter: Bool
+        if #available(iOS 16, visionOS 1, *) {
+            showFooter = Locale.current.region == .chinaMainland
+        } else {
+            showFooter = Locale.current.regionCode == "CN"
+        }
+        let layout = UICollectionViewCompositionalLayout { sectionIndex, layoutEnvironment in
+            var listConfiguration = UICollectionLayoutListConfiguration(appearance: .defaultGrouped)
+            if sectionIndex == 4, showFooter { // .links2 section
+                listConfiguration.footerMode = .supplementary
+            }
+            return NSCollectionLayoutSection.list(using: listConfiguration, layoutEnvironment: layoutEnvironment)
+        }
+        super.init(collectionViewLayout: layout)
+        #endif
     }
 
     required init?(coder: NSCoder) {
@@ -34,138 +139,89 @@ public final class AboutViewController: BaseTableViewController {
         super.viewDidLoad()
 
         setUp()
-
         loadContents()
     }
 
     private func loadContents() {
-        var totalItems = [[TextItem]]()
-
-        let versionItem = TextItem.short(title: CelestiaString("Version", comment: ""), detail: "\(bundle.shortVersion)(\(bundle.build))")
-
-        totalItems.append([versionItem])
-
         let authorsPath = defaultDirectoryURL.appendingPathComponent("AUTHORS").path
         if let text = try? String(contentsOfFile: authorsPath) {
-            totalItems.append([
-                TextItem.short(title: CelestiaString("Authors", comment: "Authors for Celestia"), detail: ""),
-                TextItem.long(content: text)
-            ])
+            authorText = text
         }
 
         let translatorsPath = defaultDirectoryURL.appendingPathComponent("TRANSLATORS").path
         if let text = try? String(contentsOfFile: translatorsPath) {
-            totalItems.append([
-                TextItem.short(title: CelestiaString("Translators", comment: "Translators for Celestia"), detail: ""),
-                TextItem.long(content: text)
-            ])
+            translatorText = text
         }
 
-        totalItems.append([
-            TextItem.link(title: CelestiaString("Development", comment: "URL for Development wiki"), url: URL(string: "https://celestia.mobi/help/development")!, localizable: false),
-            TextItem.link(title: CelestiaString("Third Party Dependencies", comment: "URL for Third Party Dependencies wiki"), url: URL(string: "https://celestia.mobi/help/dependencies")!, localizable: true),
-            TextItem.link(title: CelestiaString("Privacy Policy and Service Agreement", comment: "Privacy Policy and Service Agreement"), url: URL(string: "https://celestia.mobi/privacy")!, localizable: true)
-        ])
+        collectionView.dataSource = dataSource
 
-        totalItems.append([
-            TextItem.link(title: CelestiaString("Official Website", comment: ""), url: officialWebsiteURL, localizable: true),
-            TextItem.link(title: CelestiaString("About Celestia", comment: "System menu item"), url: aboutCelestiaURL, localizable: true),
-        ])
-
-        items = totalItems
-        tableView.reloadData()
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
+        snapshot.appendSections([.version])
+        snapshot.appendItems([.version], toSection: .version)
+        if authorText != nil {
+            snapshot.appendSections([.authors])
+            snapshot.appendItems([.authors], toSection: .authors)
+        }
+        if translatorText != nil {
+            snapshot.appendSections([.translators])
+            snapshot.appendItems([.translators], toSection: .translators)
+        }
+        snapshot.appendSections([.links1, .links2])
+        snapshot.appendItems([.development, .dependencies, .privacyPolicy], toSection: .links1)
+        snapshot.appendItems([.website, .about], toSection: .links2)
+        dataSource.applySnapshotUsingReloadData(snapshot)
     }
 }
 
 private extension AboutViewController {
     func setUp() {
-        tableView.register(TextCell.self, forCellReuseIdentifier: "Text")
-        tableView.register(MultiLineTextCell.self, forCellReuseIdentifier: "MultiLine")
-        #if !targetEnvironment(macCatalyst)
-        tableView.register(ICPCFooter.self, forHeaderFooterViewReuseIdentifier: "ICPC")
-        #endif
         title = CelestiaString("About", comment: "About Celestia")
         windowTitle = title
+
+        collectionView.dataSource = dataSource
     }
 }
 
 extension AboutViewController {
-    public override func numberOfSections(in tableView: UITableView) -> Int {
-        return items.count
-    }
+    public override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+        guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
 
-    public override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return items[section].count
-    }
-
-    public override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let item = items[indexPath.section][indexPath.row]
+        let url: URL
+        let localizable: Bool
         switch item {
-        case .short(let title, let detail):
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
-            cell.title = title
-            cell.titleColor = .label
-            cell.detail = detail
-            cell.selectionStyle = .none
-            return cell
-        case .long(let content):
-            let cell = tableView.dequeueReusableCell(withIdentifier: "MultiLine", for: indexPath) as! MultiLineTextCell
-            cell.title = content
-            cell.selectionStyle = .none
-            return cell
-        case .link(let title, _, _):
-            let cell = tableView.dequeueReusableCell(withIdentifier: "Text", for: indexPath) as! TextCell
-            cell.title = title
-            cell.detail = nil
-            cell.titleColor = cell.tintColor
-            cell.selectionStyle = .default
-            return cell
-        case .action:
-            fatalError()
+        case .version, .authors, .translators:
+            return
+        case .development:
+            url = URL(string: "https://celestia.mobi/help/development")!
+            localizable = false
+        case .dependencies:
+            url = URL(string: "https://celestia.mobi/help/dependencies")!
+            localizable = true
+        case .privacyPolicy:
+            url = URL(string: "https://celestia.mobi/privacy")!
+            localizable = true
+        case .website:
+            url = officialWebsiteURL
+            localizable = true
+        case .about:
+            url = aboutCelestiaURL
+            localizable = true
         }
-    }
 
-    public override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
-    }
-
-    public override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        let item = items[indexPath.section][indexPath.row]
-        switch item {
-        case .link(_, let url, let localizable):
-            let urlToOpen: URL
-            if localizable {
-                if var components = URLComponents(url: url, resolvingAgainstBaseURL: false) {
-                    var queryItems = components.queryItems ?? []
-                    queryItems.append(URLQueryItem(name: "lang", value: AppCore.language))
-                    components.queryItems = queryItems
-                    urlToOpen = components.url ?? url
-                } else {
-                    urlToOpen = url
-                }
+        let urlToOpen: URL
+        if localizable {
+            if var components = URLComponents(url: url, resolvingAgainstBaseURL: false) {
+                var queryItems = components.queryItems ?? []
+                queryItems.append(URLQueryItem(name: "lang", value: AppCore.language))
+                components.queryItems = queryItems
+                urlToOpen = components.url ?? url
             } else {
                 urlToOpen = url
             }
-            UIApplication.shared.open(urlToOpen, options: [:], completionHandler: nil)
-        default:
-            break
-        }
-    }
-
-    #if !targetEnvironment(macCatalyst)
-    public override func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        let showFooter: Bool
-        if section == items.count - 1 {
-            if #available(iOS 16, visionOS 1, *) {
-                showFooter = Locale.current.region == .chinaMainland
-            } else {
-                showFooter = Locale.current.regionCode == "CN"
-            }
         } else {
-            showFooter = false
+            urlToOpen = url
         }
-        return showFooter ? tableView.dequeueReusableHeaderFooterView(withIdentifier: "ICPC") : nil
+        UIApplication.shared.open(urlToOpen)
     }
-    #endif
 }
