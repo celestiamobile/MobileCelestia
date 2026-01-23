@@ -139,7 +139,7 @@ extension BottomControlViewController: UICollectionViewDataSource {
     }
 
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! (ToolbarCell & UICollectionViewCell)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! BottomToolbarImageButtonCell
 
         cell.backgroundColor = .clear
         let action = actions[indexPath.item]
@@ -236,7 +236,7 @@ private extension BottomControlViewController {
         collectionView.backgroundColor = .clear
         collectionView.alwaysBounceVertical = false
 
-        collectionView.register(ToolbarImageButtonCell.self, forCellWithReuseIdentifier: "Cell")
+        collectionView.register(BottomToolbarImageButtonCell.self, forCellWithReuseIdentifier: "Cell")
 
         collectionView.dataSource = self
     }

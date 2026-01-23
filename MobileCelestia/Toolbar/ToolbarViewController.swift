@@ -46,13 +46,10 @@ enum AppToolbarAction: String {
     }
 }
 
-class ToolbarViewController: UIViewController {
+class ToolbarViewController: UICollectionViewController {
     enum Constants {
         static let width: CGFloat = 220
-        static let separatorContainerHeight: CGFloat = 6
     }
-
-    private lazy var tableView = UITableView(frame: .zero, style: .grouped)
 
     private let actions: [[ToolbarAction]]
 
@@ -65,15 +62,23 @@ class ToolbarViewController: UIViewController {
     init(actions: [[ToolbarAction]], finishOnSelection: Bool = true) {
         self.actions = actions
         self.finishOnSelection = finishOnSelection
-        super.init(nibName: nil, bundle: nil)
+        let footer = NSCollectionLayoutBoundarySupplementaryItem(layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(SeparatorView.Constants.separatorContainerHeight)), elementKind: UICollectionView.elementKindSectionFooter, alignment: .bottom)
+        footer.pinToVisibleBounds = false
+        super.init(collectionViewLayout: UICollectionViewCompositionalLayout(sectionProvider: { sectionIndex, environment in
+            var configuration = UICollectionLayoutListConfiguration(appearance: .plain)
+            configuration.showsSeparators = false
+            configuration.backgroundColor = .clear
+            configuration.footerMode = sectionIndex == actions.count - 1 ? .none : .supplementary
+            let section = NSCollectionLayoutSection.list(using: configuration, layoutEnvironment: environment)
+            if configuration.footerMode == .supplementary {
+                section.boundarySupplementaryItems = [footer]
+            }
+            return section
+        }))
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
-    }
-
-    override func loadView() {
-        view = UIView()
     }
 
     override func viewDidLoad() {
@@ -90,24 +95,22 @@ class ToolbarViewController: UIViewController {
     }
 }
 
-extension ToolbarViewController: UITableViewDataSource {
-    func numberOfSections(in tableView: UITableView) -> Int {
+extension ToolbarViewController {
+    override func numberOfSections(in collectionView: UICollectionView) -> Int {
         return actions.count
     }
 
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return actions[section].count
     }
 
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "Cell", for: indexPath) as! (UITableViewCell & ToolbarCell)
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! UICollectionViewListCell
 
-        cell.backgroundColor = .clear
-        let action = actions[indexPath.section][indexPath.row]
-        cell.itemImage = action.image
-        cell.itemTitle = action.title
-        cell.focusEffect = UIFocusEffect()
-        cell.touchUpHandler = { [unowned self] _, inside in
+        cell.backgroundConfiguration = .clear()
+        let action = actions[indexPath.section][indexPath.item]
+        var contentConfiguration = ToolbarEntryConfiguration(itemTitle: action.title, itemImage: action.image)
+        contentConfiguration.touchUpHandler = { [unowned self] _, inside in
             guard inside else { return }
             if self.finishOnSelection {
                 self.dismiss(animated: true) {
@@ -117,55 +120,29 @@ extension ToolbarViewController: UITableViewDataSource {
                 self.selectionHandler?(action)
             }
         }
+        cell.contentConfiguration = contentConfiguration
+        cell.focusEffect = UIFocusEffect()
 
         return cell
     }
-}
 
-extension ToolbarViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return nil
-    }
-
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return .leastNonzeroMagnitude
-    }
-
-    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        if section == actions.count - 1 { return nil }
-        return tableView.dequeueReusableHeaderFooterView(withIdentifier: "Separator")
-    }
-
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        if section == actions.count - 1 { return CGFloat.leastNonzeroMagnitude }
-        return Constants.separatorContainerHeight
+    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        if kind == UICollectionView.elementKindSectionFooter {
+            let cell = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Separator", for: indexPath) as! UICollectionViewListCell
+            cell.contentConfiguration = SeparatorConfiguration()
+            return cell
+        }
+        fatalError()
     }
 }
+
 
 private extension ToolbarViewController {
     func setUp() {
-        tableView.tableHeaderView = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 0, height: CGFloat.leastNonzeroMagnitude)))
-        tableView.tableFooterView = UIView(frame: CGRect(origin: .zero, size: CGSize(width: 0, height: CGFloat.leastNonzeroMagnitude)))
-        tableView.separatorStyle = .none
-        tableView.estimatedRowHeight = GlobalConstants.baseCellHeight
-        tableView.rowHeight = UITableView.automaticDimension
-        tableView.translatesAutoresizingMaskIntoConstraints = false
+        collectionView.register(UICollectionViewListCell.self, forCellWithReuseIdentifier: "Cell")
+        collectionView.register(UICollectionViewListCell.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: "Separator")
 
-        view.addSubview(tableView)
-        NSLayoutConstraint.activate([
-            tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            tableView.topAnchor.constraint(equalTo: view.topAnchor),
-            tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-        ])
-
-        tableView.showsVerticalScrollIndicator = false
-        tableView.backgroundColor = .clear
-
-        tableView.register(ToolbarSeparatorCell.self, forHeaderFooterViewReuseIdentifier: "Separator")
-        tableView.register(ToolbarImageTextButtonCell.self, forCellReuseIdentifier: "Cell")
-        tableView.dataSource = self
-        tableView.delegate = self
+        collectionView.showsVerticalScrollIndicator = false
 
         view.maximumContentSizeCategory = .extraExtraExtraLarge
     }
