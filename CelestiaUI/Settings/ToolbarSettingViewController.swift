@@ -156,10 +156,6 @@ class ToolbarSettingViewController: SubscriptionBackingViewController {
             return cell
         }
 
-        override func collectionView(_ collectionView: UICollectionView, shouldHighlightItemAt indexPath: IndexPath) -> Bool {
-            return indexPath.item == 1
-        }
-
         override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
             collectionView.deselectItem(at: indexPath, animated: true)
             guard indexPath.section == 1, indexPath.item == 0 else { return }
