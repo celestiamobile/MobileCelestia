@@ -38,101 +38,124 @@ protocol CelestiaControlViewDelegate: AnyObject {
     func celestiaControlView(_ celestiaControlView: CelestiaControlView, didToggleTo action: CelestiaControlAction)
 }
 
-class ControlButton: ImageButtonView<ControlButton.Configuration> {
+class ControlButtonView: UIView, UIContentSizeCategoryAdjusting {
     private enum Constants {
-        static let buttonSize: CGFloat = 48
         static let buttonPadding: CGFloat = 8
     }
 
-    struct Configuration: ImageProvider {
+    private struct Configuration {
         var button: CelestiaControlButton
         var tap: ((CelestiaControlAction) -> Void)?
         var pressStart: ((CelestiaControlAction) -> Void)?
         var pressEnd: ((CelestiaControlAction) -> Void)?
         var toggle: ((CelestiaControlAction) -> Void)?
         var on: Bool = false
+    }
 
-        var shouldScaleOnMacCatalyst: Bool { return false }
+    var adjustsFontForContentSizeCategory = true
 
-        func provideImage() -> UIImage? {
-            switch button {
-            case .pressAndHold(let image, _, _):
-                return image?.withRenderingMode(.alwaysTemplate)
-            case .tap(let image, _, _):
-                return image?.withRenderingMode(.alwaysTemplate)
-            case .toggle(_, let offImage, _, _, _, _, _):
-                return offImage?.withRenderingMode(.alwaysTemplate)
-            }
+    private var configuration: Configuration {
+        didSet {
+            configurationUpdated(configuration)
         }
     }
 
-    private var areActionsSetUp = false
+    private var uiButton: UIButton?
 
-    init(button: CelestiaControlButton, tap: ((CelestiaControlAction) -> Void)?, pressStart: ((CelestiaControlAction) -> Void)?, pressEnd: ((CelestiaControlAction) -> Void)?, toggle: ((CelestiaControlAction) -> Void)?) {
-        super.init(buttonBuilder: {
-            let uiButton = StandardButton()
-            uiButton.imageView?.contentMode = .scaleAspectFit
-            uiButton.contentHorizontalAlignment = .fill
-            uiButton.contentVerticalAlignment = .fill
-            uiButton.tintColor = .secondaryLabel
-            uiButton.imageEdgeInsets = UIEdgeInsets(top: Constants.buttonPadding, left: Constants.buttonPadding, bottom: Constants.buttonPadding, right: Constants.buttonPadding)
-            switch button {
-            case .pressAndHold(_, _, let accessibilityLabel):
-                uiButton.accessibilityLabel = accessibilityLabel
-            case .tap(_, _, let accessibilityLabel):
-                uiButton.accessibilityLabel = accessibilityLabel
-            case .toggle(let accessibilityLabel, _, _, _, _, _, _):
-                uiButton.accessibilityLabel = accessibilityLabel
-            }
-            return uiButton
-        }(), boundingBoxSize: CGSize(width: Constants.buttonSize, height: Constants.buttonSize), configurationBuilder: Configuration(button: button, tap: tap, pressStart: pressStart, pressEnd: pressEnd, toggle: toggle))
+    init(
+        button: CelestiaControlButton,
+        tap: ((CelestiaControlAction) -> Void)?,
+        pressStart: ((CelestiaControlAction) -> Void)?,
+        pressEnd: ((CelestiaControlAction) -> Void)?,
+        toggle: ((CelestiaControlAction) -> Void)?
+    ) {
+        configuration = Configuration(button: button, tap: tap, pressStart: pressStart, pressEnd: pressEnd, toggle: toggle)
+        super.init(frame: .zero)
+        configurationUpdated(configuration)
     }
 
-    override func configurationUpdated(_ configuration: Configuration, button: UIButton) {
-        super.configurationUpdated(configuration, button: button)
-        if !areActionsSetUp {
-            switch configuration.button {
-            case .pressAndHold:
-                button.addTarget(self, action: #selector(pressDidStart(_:)), for: .touchDown)
-                button.addTarget(self, action: #selector(pressDidEnd(_:)), for: .touchUpInside)
-                button.addTarget(self, action: #selector(pressDidEnd(_:)), for: .touchUpOutside)
-                button.addTarget(self, action: #selector(pressDidEnd(_:)), for: .touchCancel)
-            case .tap:
-                button.addTarget(self, action: #selector(didTap(_:)), for: .touchUpInside)
-            case .toggle:
-                button.addTarget(self, action: #selector(didToggle(_:)), for: .touchUpInside)
-            }
-            areActionsSetUp = true
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    private func createButton(_ button: CelestiaControlButton) -> UIButton {
+        var configuration = UIButton.Configuration.plain()
+        configuration.contentInsets = NSDirectionalEdgeInsets(top: Constants.buttonPadding, leading: Constants.buttonPadding, bottom: Constants.buttonPadding, trailing: Constants.buttonPadding)
+        configuration.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(textStyle: .title3)
+        switch button {
+        case let .pressAndHold(image, _, _):
+            configuration.image = image?.withRenderingMode(.alwaysTemplate)
+        case let .tap(image, _, _):
+            configuration.image = image?.withRenderingMode(.alwaysTemplate)
+        case .toggle:
+            break
+        }
+        let uiButton = StandardButton(configuration: configuration)
+        uiButton.tintColor = .secondaryLabel
+        uiButton.adjustsImageSizeForAccessibilityContentSizeCategory = true
+        switch button {
+        case let .pressAndHold(_, _, accessibilityLabel):
+            uiButton.accessibilityLabel = accessibilityLabel
+
+            uiButton.addTarget(self, action: #selector(pressDidStart(_:)), for: .touchDown)
+            uiButton.addTarget(self, action: #selector(pressDidEnd(_:)), for: .touchUpInside)
+            uiButton.addTarget(self, action: #selector(pressDidEnd(_:)), for: .touchUpOutside)
+            uiButton.addTarget(self, action: #selector(pressDidEnd(_:)), for: .touchCancel)
+        case let .tap(_, _, accessibilityLabel):
+            uiButton.accessibilityLabel = accessibilityLabel
+
+            uiButton.addTarget(self, action: #selector(didTap(_:)), for: .touchUpInside)
+        case .toggle:
+            uiButton.addTarget(self, action: #selector(didToggle(_:)), for: .touchUpInside)
+        }
+        return uiButton
+    }
+
+    private func configurationUpdated(_ configuration: Configuration) {
+        let button: UIButton
+        if let uiButton {
+            button = uiButton
+        } else {
+            button = createButton(configuration.button)
+            uiButton = button
+            button.translatesAutoresizingMaskIntoConstraints = false
+            addSubview(button)
+            NSLayoutConstraint.activate([
+                button.leadingAnchor.constraint(equalTo: leadingAnchor),
+                button.trailingAnchor.constraint(equalTo: trailingAnchor),
+                button.topAnchor.constraint(equalTo: topAnchor),
+                button.bottomAnchor.constraint(equalTo: bottomAnchor),
+            ])
         }
         switch configuration.button {
         case .toggle(_, let offImage, _, let offAccessibilityValue, let onImage, _, let onAccessibilityValue):
-            button.setImage(configuration.on ? onImage : offImage, for: .normal)
+            button.configuration?.image = (configuration.on ? onImage : offImage)?.withRenderingMode(.alwaysTemplate)
             button.accessibilityValue = configuration.on ? offAccessibilityValue : onAccessibilityValue
-            button.addTarget(self, action: #selector(didToggle(_:)), for: .touchUpInside)
         default:
             break
         }
     }
 
     @objc private func didTap(_ sender: UIButton) {
-        guard case CelestiaControlButton.tap(_, let action, _) = configuration.configuration.button else { return }
-        configuration.configuration.tap?(action)
+        guard case CelestiaControlButton.tap(_, let action, _) = configuration.button else { return }
+        configuration.tap?(action)
     }
 
     @objc private func pressDidStart(_ sender: UIButton) {
-        guard case CelestiaControlButton.pressAndHold(_, let action, _) = configuration.configuration.button else { return }
-        configuration.configuration.pressStart?(action)
+        guard case CelestiaControlButton.pressAndHold(_, let action, _) = configuration.button else { return }
+        configuration.pressStart?(action)
     }
 
     @objc private func pressDidEnd(_ sender: UIButton) {
-        guard case CelestiaControlButton.pressAndHold(_, let action, _) = configuration.configuration.button else { return }
-        configuration.configuration.pressEnd?(action)
+        guard case CelestiaControlButton.pressAndHold(_, let action, _) = configuration.button else { return }
+        configuration.pressEnd?(action)
     }
 
     @objc private func didToggle(_ sender: UIButton) {
-        guard case CelestiaControlButton.toggle(_, _, let offAction, _, _, let onAction, _) = configuration.configuration.button else { return }
-        configuration.configuration.on = !configuration.configuration.on
-        configuration.configuration.toggle?(configuration.configuration.on ? onAction : offAction)
+        guard case CelestiaControlButton.toggle(_, _, let offAction, _, _, let onAction, _) = configuration.button else { return }
+        let on = configuration.on
+        configuration.on = !on
+        configuration.toggle?(configuration.on ? onAction : offAction)
     }
 }
 
@@ -155,7 +178,7 @@ final class CelestiaControlView: UIView {
         maximumContentSizeCategory = .extraExtraExtraLarge
 
         let buttons = items.map { item in
-            return ControlButton(button: item) { [weak self] action in
+            return ControlButtonView(button: item) { [weak self] action in
                 guard let self = self else { return }
                 self.delegate?.celestiaControlView(self, didTapWith: action)
             } pressStart: {  [weak self] action in

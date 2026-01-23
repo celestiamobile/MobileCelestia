@@ -14,13 +14,13 @@ import UIKit
 
 class BottomToolbarImageButtonCell: UICollectionViewCell {
     var itemTitle: String?
-    var itemImage: UIImage? { didSet { button.setImage(itemImage, for: .normal) } }
+    var itemImage: UIImage? { didSet { button.configuration?.image = itemImage } }
     var itemAccessibilityLabel: String? { didSet { button.accessibilityLabel = itemAccessibilityLabel } }
     var menu: UIMenu? { didSet { button.showsMenuAsPrimaryAction = menu != nil; button.menu = menu } }
     var touchDownHandler: ((UIControl) -> Void)?
     var touchUpHandler: ((UIControl, Bool) -> Void)?
 
-    private lazy var button = StandardButton()
+    private lazy var button = StandardButton(configuration: .plain())
 
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -32,12 +32,11 @@ class BottomToolbarImageButtonCell: UICollectionViewCell {
     }
 
     private func setUp() {
-        button.imageView?.contentMode = .scaleAspectFit
-        button.contentHorizontalAlignment = .fill
-        button.contentVerticalAlignment = .fill
         button.tintColor = .label
         let padding = GlobalConstants.preferredUIElementScaling(for: traitCollection) * GlobalConstants.bottomControlViewItemPadding
-        button.imageEdgeInsets = UIEdgeInsets(top: padding, left: padding, bottom: padding, right: padding)
+        button.configuration?.contentInsets = NSDirectionalEdgeInsets(top: padding, leading: padding, bottom: padding, trailing: padding)
+        button.configuration?.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(textStyle: .title3)
+        button.adjustsImageSizeForAccessibilityContentSizeCategory = true
         contentView.addSubview(button)
         button.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
