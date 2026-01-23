@@ -138,7 +138,7 @@ class ToolbarEntryView: UIView, UIContentView {
         ])
         label.textColor = .label
 
-        var optionalConstraints = [
+        let optionalConstraints = [
             iconImageView.topAnchor.constraint(equalTo: background.topAnchor, constant: GlobalConstants.listItemAccessoryMinMarginVertical),
             label.topAnchor.constraint(equalTo: background.topAnchor, constant: GlobalConstants.listItemMediumMarginVertical),
         ]
