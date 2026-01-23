@@ -11,73 +11,22 @@ import CelestiaUI
 import UIKit
 
 @MainActor
-protocol ToolbarCell: AnyObject {
-    var itemTitle: String? { get set }
-    var itemImage: UIImage? { get set }
-    var itemAccessibilityLabel: String? { get set }
-    var touchDownHandler: ((UIControl) -> Void)? { get set }
-    var touchUpHandler: ((UIControl, Bool) -> Void)? { get set }
-    var menu: UIMenu? { get set }
-}
-
-class ToolbarImageButtonCell: UICollectionViewCell, ToolbarCell {
+struct ToolbarEntryConfiguration: UIContentConfiguration {
     var itemTitle: String?
-    var itemImage: UIImage? { didSet { button.setImage(itemImage, for: .normal) } }
-    var itemAccessibilityLabel: String? { didSet { button.accessibilityLabel = itemAccessibilityLabel } }
-    var menu: UIMenu? { didSet { button.showsMenuAsPrimaryAction = menu != nil; button.menu = menu } }
+    var itemImage: UIImage?
     var touchDownHandler: ((UIControl) -> Void)?
     var touchUpHandler: ((UIControl, Bool) -> Void)?
 
-    private lazy var button = StandardButton()
-
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        setUp()
+    func makeContentView() -> UIView & UIContentView {
+        return ToolbarEntryView(configuration: self)
     }
 
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-
-    private func setUp() {
-        button.imageView?.contentMode = .scaleAspectFit
-        button.contentHorizontalAlignment = .fill
-        button.contentVerticalAlignment = .fill
-        button.tintColor = .label
-        let padding = GlobalConstants.preferredUIElementScaling(for: traitCollection) * GlobalConstants.bottomControlViewItemPadding
-        button.imageEdgeInsets = UIEdgeInsets(top: padding, left: padding, bottom: padding, right: padding)
-        contentView.addSubview(button)
-        button.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            button.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
-            button.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            button.widthAnchor.constraint(equalTo: contentView.widthAnchor),
-            button.heightAnchor.constraint(equalTo: contentView.heightAnchor),
-        ])
-        button.addTarget(self, action: #selector(touchDown(_:)), for: .touchDown)
-        button.addTarget(self, action: #selector(touchUpInside(_:)), for: .touchUpInside)
-        button.addTarget(self, action: #selector(touchUpOutside(_:)), for: .touchUpOutside)
-        button.addTarget(self, action: #selector(touchCancelled(_:)), for: .touchCancel)
-    }
-
-    @objc private func touchDown(_ sender: UIButton) {
-        touchDownHandler?(sender)
-    }
-
-    @objc private func touchUpInside(_ sender: UIButton) {
-        touchUpHandler?(sender, true)
-    }
-
-    @objc private func touchUpOutside(_ sender: UIButton) {
-        touchUpHandler?(sender, false)
-    }
-
-    @objc private func touchCancelled(_ sender: UIButton) {
-        touchUpHandler?(sender, false)
+    nonisolated func updated(for state: UIConfigurationState) -> ToolbarEntryConfiguration {
+        return self
     }
 }
 
-class ToolbarImageTextButtonCell: UITableViewCell, ToolbarCell {
+class ToolbarEntryView: UIView, UIContentView {
     private enum Constants {
         static let iconDimension: CGFloat = 24
         static let highlightAnimationDuration: TimeInterval = 0.1
@@ -118,13 +67,6 @@ class ToolbarImageTextButtonCell: UITableViewCell, ToolbarCell {
         }
     }
 
-    var itemTitle: String? { didSet { label.text = itemTitle } }
-    var itemImage: UIImage? { didSet { iconImageView.configuration.image = itemImage?.withRenderingMode(.alwaysTemplate) } }
-    var touchDownHandler: ((UIControl) -> Void)?
-    var touchUpHandler: ((UIControl, Bool) -> Void)?
-    var itemAccessibilityLabel: String?
-    var menu: UIMenu?
-
     private lazy var iconImageView: IconView = {
         let dimension = GlobalConstants.preferredUIElementScaling(for: traitCollection) * Constants.iconDimension
         return IconView(baseSize: CGSize(width: dimension, height: dimension)) { imageView in
@@ -134,14 +76,30 @@ class ToolbarImageTextButtonCell: UITableViewCell, ToolbarCell {
     }()
     private lazy var label = UILabel(textStyle: .body)
     private lazy var background = SelectionView(frame: .zero)
+    private var currentConfiguration: ToolbarEntryConfiguration!
 
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
-        setUp()
+    var configuration: UIContentConfiguration {
+        get {
+            currentConfiguration
+        }
+        set {
+            guard let newConfiguration = newValue as? ToolbarEntryConfiguration else {
+                return
+            }
+
+            apply(configuration: newConfiguration)
+        }
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    init(configuration: ToolbarEntryConfiguration) {
+        super.init(frame: .zero)
+
+        setUp()
+        apply(configuration: configuration)
     }
 
     private func setUp() {
@@ -153,12 +111,12 @@ class ToolbarImageTextButtonCell: UITableViewCell, ToolbarCell {
         background.addTarget(self, action: #selector(touchUpOutside(_:)), for: .touchUpOutside)
         background.addTarget(self, action: #selector(touchCancelled(_:)), for: .touchCancel)
 
-        contentView.addSubview(background)
+        addSubview(background)
         NSLayoutConstraint.activate([
-            background.topAnchor.constraint(equalTo: contentView.topAnchor),
-            background.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            background.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            background.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            background.topAnchor.constraint(equalTo: topAnchor),
+            background.bottomAnchor.constraint(equalTo: bottomAnchor),
+            background.leadingAnchor.constraint(equalTo: leadingAnchor),
+            background.trailingAnchor.constraint(equalTo: trailingAnchor),
         ])
 
         background.addSubview(iconImageView)
@@ -179,52 +137,99 @@ class ToolbarImageTextButtonCell: UITableViewCell, ToolbarCell {
             label.topAnchor.constraint(greaterThanOrEqualTo: background.topAnchor, constant: GlobalConstants.listItemMediumMarginVertical),
         ])
         label.textColor = .label
+
+        var optionalConstraints = [
+            iconImageView.topAnchor.constraint(equalTo: background.topAnchor, constant: GlobalConstants.listItemAccessoryMinMarginVertical),
+            label.topAnchor.constraint(equalTo: background.topAnchor, constant: GlobalConstants.listItemMediumMarginVertical),
+        ]
+        for optionalConstraint in optionalConstraints {
+            optionalConstraint.priority = .defaultLow
+        }
+        NSLayoutConstraint.activate(optionalConstraints)
+    }
+
+    private func apply(configuration: ToolbarEntryConfiguration) {
+        currentConfiguration = configuration
+        label.text = configuration.itemTitle
+        iconImageView.configuration.image = configuration.itemImage?.withRenderingMode(.alwaysTemplate)
     }
 
     @objc private func touchDown(_ sender: UIButton) {
-        touchDownHandler?(sender)
+        currentConfiguration.touchDownHandler?(sender)
     }
 
     @objc private func touchUpInside(_ sender: UIButton) {
-        touchUpHandler?(sender, true)
+        currentConfiguration.touchUpHandler?(sender, true)
     }
 
-
     @objc private func touchUpOutside(_ sender: UIButton) {
-        touchUpHandler?(sender, false)
+        currentConfiguration.touchUpHandler?(sender, false)
     }
 
     @objc private func touchCancelled(_ sender: UIButton) {
-        touchUpHandler?(sender, false)
+        currentConfiguration.touchUpHandler?(sender, false)
     }
 }
 
-class ToolbarSeparatorCell: UITableViewHeaderFooterView {
-    private enum Constants {
-        static let separatorInsetLeading: CGFloat = 32
+@MainActor
+struct SeparatorConfiguration: UIContentConfiguration {
+    func makeContentView() -> UIView & UIContentView {
+        return SeparatorView(configuration: self)
     }
 
-    let sep = UIView()
+    nonisolated func updated(for state: UIConfigurationState) -> SeparatorConfiguration {
+        return self
+    }
+}
 
-    override init(reuseIdentifier: String?) {
-        super.init(reuseIdentifier: reuseIdentifier)
+class SeparatorView: UIView, UIContentView {
+    enum Constants {
+        static let separatorInsetLeading: CGFloat = 32
+        static let separatorContainerHeight: CGFloat = 6
+    }
 
-        setUp()
+    private let separator = UIView()
+
+    private var currentConfiguration: SeparatorConfiguration!
+
+    var configuration: UIContentConfiguration {
+        get {
+            currentConfiguration
+        }
+        set {
+            guard let newConfiguration = newValue as? SeparatorConfiguration else {
+                return
+            }
+
+            apply(configuration: newConfiguration)
+        }
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
+    init(configuration: SeparatorConfiguration) {
+        super.init(frame: .zero)
+
+        setUp()
+        apply(configuration: configuration)
+    }
+
+    private func apply(configuration: SeparatorConfiguration) {
+        currentConfiguration = configuration
+    }
+
     private func setUp() {
-        sep.backgroundColor = .separator
-        sep.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubview(sep)
+        separator.backgroundColor = .separator
+        separator.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(separator)
         NSLayoutConstraint.activate([
-            sep.heightAnchor.constraint(equalToConstant: 1 / sep.traitCollection.displayScale),
-            sep.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            sep.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: Constants.separatorInsetLeading),
-            sep.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            separator.heightAnchor.constraint(equalToConstant: 1 / separator.traitCollection.displayScale),
+            separator.centerYAnchor.constraint(equalTo: centerYAnchor),
+            separator.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.separatorInsetLeading),
+            separator.trailingAnchor.constraint(equalTo: trailingAnchor),
+            heightAnchor.constraint(equalToConstant: Constants.separatorContainerHeight),
         ])
     }
 }
