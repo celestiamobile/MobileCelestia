@@ -48,29 +48,23 @@ public class ObserverModeViewController: UICollectionViewController {
             case .coordinateSystem:
                 text = CelestiaString("Coordinate System", comment: "Used in Flight Mode")
                 selectable = false
-                if #available(iOS 16, *) {
-                    accessories = [.label(text: self.coordinateSystem.name), .popUpMenu(UIMenu(children: self.supportedCoordinateSystems.map { coordinateSystem in
-                        UIAction(title: coordinateSystem.name, state: self.coordinateSystem == coordinateSystem ? .on : .off) { [weak self] _ in
-                            guard let self else { return }
-                            self.coordinateSystem = coordinateSystem
-                            self.reload()
-                        }
-                    }))]
-                } else {
-                    let button = UIButton(configuration: .plain())
-                    button.showsMenuAsPrimaryAction = true
-                    button.changesSelectionAsPrimaryAction = true
-                    button.menu = UIMenu(children: self.supportedCoordinateSystems.map({ coordinateSystem in
-                        UIAction(title: coordinateSystem.name, state: self.coordinateSystem == coordinateSystem ? .on : .off) { [weak self] _ in
-                            guard let self else { return }
-                            self.coordinateSystem = coordinateSystem
-                            self.reload()
-                        }
-                    }))
-                    accessories = [
-                        .customView(configuration: UICellAccessory.CustomViewConfiguration(customView: button, placement: .trailing(displayed: .always))),
-                    ]
-                }
+                #if targetEnvironment(macCatalyst)
+                let button = UIButton(type: .system)
+                #else
+                let button = UIButton(configuration: .plain())
+                #endif
+                button.showsMenuAsPrimaryAction = true
+                button.changesSelectionAsPrimaryAction = true
+                button.menu = UIMenu(children: self.supportedCoordinateSystems.map({ coordinateSystem in
+                    UIAction(title: coordinateSystem.name, state: self.coordinateSystem == coordinateSystem ? .on : .off) { [weak self] _ in
+                        guard let self else { return }
+                        self.coordinateSystem = coordinateSystem
+                        self.reload()
+                    }
+                }))
+                accessories = [
+                    .customView(configuration: UICellAccessory.CustomViewConfiguration(customView: button, placement: .trailing(displayed: .always))),
+                ]
             case .referenceObjectName:
                 text = CelestiaString("Reference Object", comment: "Used in Flight Mode")
                 secondaryText = self.referenceObjectName

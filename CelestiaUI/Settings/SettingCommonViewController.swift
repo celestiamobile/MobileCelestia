@@ -165,31 +165,22 @@ extension SettingCommonViewController {
             cellConfiguration.secondaryText = row.subtitle
             configuration = cellConfiguration
 
-            if #available(iOS 16, *) {
-                if let selectedIndex = item.options.firstIndex(where: { $0.value == currentValue }) {
-                    accessories.append(.label(text: item.options[selectedIndex].name))
+            #if targetEnvironment(macCatalyst)
+            let button = UIButton(type: .system)
+            #else
+            let button = UIButton(configuration: .plain())
+            #endif
+            button.showsMenuAsPrimaryAction = true
+            button.changesSelectionAsPrimaryAction = true
+            button.menu = UIMenu(children: item.options.map({ option in
+                UIAction(title: option.name, state: currentValue == option.value ? .on : .off) { [weak self] _ in
+                    guard let self else { return }
+                    self.userDefaults[item.key] = option.value
                 }
-                accessories.append(.popUpMenu(UIMenu(children: item.options.map { option in
-                    UIAction(title: option.name, state: currentValue == option.value ? .on : .off) { [weak self] _ in
-                        guard let self else { return }
-                        self.userDefaults[item.key] = option.value
-                        self.collectionView.reloadData()
-                    }
-                })))
-            } else {
-                let button = UIButton(configuration: .plain())
-                button.showsMenuAsPrimaryAction = true
-                button.changesSelectionAsPrimaryAction = true
-                button.menu = UIMenu(children: item.options.map({ option in
-                    UIAction(title: option.name, state: currentValue == option.value ? .on : .off) { [weak self] _ in
-                        guard let self else { return }
-                        self.userDefaults[item.key] = option.value
-                    }
-                }))
-                accessories = [
-                    .customView(configuration: UICellAccessory.CustomViewConfiguration(customView: button, placement: .trailing(displayed: .always))),
-                ]
-            }
+            }))
+            accessories = [
+                .customView(configuration: UICellAccessory.CustomViewConfiguration(customView: button, placement: .trailing(displayed: .always))),
+            ]
         case let .selection(item):
             let currentValue = core.value(forKey: item.key) as? Int ?? item.defaultOption
             var cellConfiguration = UIListContentConfiguration.celestiaCell()
@@ -197,41 +188,27 @@ extension SettingCommonViewController {
             cellConfiguration.secondaryText = row.subtitle
             configuration = cellConfiguration
 
-            if #available(iOS 16, *) {
-                if let selectedIndex = item.options.firstIndex(where: { $0.value == currentValue }) {
-                    accessories.append(.label(text: item.options[selectedIndex].name))
+            #if targetEnvironment(macCatalyst)
+            let button = UIButton(type: .system)
+            #else
+            let button = UIButton(configuration: .plain())
+            #endif
+            button.showsMenuAsPrimaryAction = true
+            button.changesSelectionAsPrimaryAction = true
+            button.menu = UIMenu(children: item.options.map({ option in
+                UIAction(title: option.name, state: currentValue == option.value ? .on : .off) { [weak self] _ in
+                    guard let self else { return }
+                    Task {
+                        await self.executor.run {
+                            $0.setValue(option.value, forKey: item.key)
+                        }
+                        self.userDefaults.setValue(option.value, forKey: item.key)
+                    }
                 }
-                accessories.append(.popUpMenu(UIMenu(children: item.options.map { option in
-                    UIAction(title: option.name, state: currentValue == option.value ? .on : .off) { [weak self] _ in
-                        guard let self else { return }
-                        Task {
-                            await self.executor.run {
-                                $0.setValue(option.value, forKey: item.key)
-                            }
-                            self.userDefaults.setValue(option.value, forKey: item.key)
-                            self.collectionView.reloadData()
-                        }
-                    }
-                })))
-            } else {
-                let button = UIButton(configuration: .plain())
-                button.showsMenuAsPrimaryAction = true
-                button.changesSelectionAsPrimaryAction = true
-                button.menu = UIMenu(children: item.options.map({ option in
-                    UIAction(title: option.name, state: currentValue == option.value ? .on : .off) { [weak self] _ in
-                        guard let self else { return }
-                        Task {
-                            await self.executor.run {
-                                $0.setValue(option.value, forKey: item.key)
-                            }
-                            self.userDefaults.setValue(option.value, forKey: item.key)
-                        }
-                    }
-                }))
-                accessories = [
-                    .customView(configuration: UICellAccessory.CustomViewConfiguration(customView: button, placement: .trailing(displayed: .always))),
-                ]
-            }
+            }))
+            accessories = [
+                .customView(configuration: UICellAccessory.CustomViewConfiguration(customView: button, placement: .trailing(displayed: .always))),
+            ]
         case let .prefSlider(item):
             let maxValue = item.maxValue
             let minValue = item.minValue
