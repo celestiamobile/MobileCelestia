@@ -60,7 +60,7 @@ final class BodyActionCell: UICollectionViewCell {
             verticalFittingPriority: UILayoutPriority.defaultLow)
         let height: CGFloat
         if traitCollection.userInterfaceIdiom == .mac {
-            height = fittingSize.height
+            height = layoutAttributes.size.height > 2 ? layoutAttributes.size.height : fittingSize.height
         } else {
             height = max(fittingSize.height, layoutAttributes.size.height)
         }
