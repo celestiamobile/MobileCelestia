@@ -98,7 +98,7 @@ class LinkTextView: UIView, UIContentView {
                 textView.attributedText = nil
                 return
             }
-            attributedString.addAttributes([.foregroundColor: UIColor.label, .font: UIFont.preferredFont(forTextStyle: .footnote)], range: NSMakeRange(0, configuration.info.text.count))
+            attributedString.addAttributes([.foregroundColor: UIColor.secondaryLabel, .font: UIFont.preferredFont(forTextStyle: .footnote)], range: NSMakeRange(0, configuration.info.text.count))
             attributedString.addAttributes([.link: link.link], range: linkTextRange)
         }
         textView.attributedText = attributedString
