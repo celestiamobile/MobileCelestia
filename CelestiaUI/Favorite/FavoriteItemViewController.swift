@@ -228,7 +228,7 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: UICollectionViewCo
             let item = item[indexPath.item]
             if item.canBeRenamed {
                 actions.append(
-                    UIContextualAction(style: .normal, title: CelestiaString("Edit", comment: "Enter edit mode for favorite items")) { [weak self] (_, _, completionHandler) in
+                    UIContextualAction(style: .normal, title: CelestiaString("Rename", comment: "Rename a favorite item (currently bookmark)")) { [weak self] (_, _, completionHandler) in
                         if let self {
                             self.requestRenameObject(at: indexPath.item, completionHandler: completionHandler)
                         } else {
@@ -326,7 +326,7 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: UICollectionViewCo
             let item = self.itemList[indexPath.item]
             if item.canBeRenamed {
                 actions.append(
-                    UIAction(title: CelestiaString("Edit", comment: "Enter edit mode for favorite items"), image: UIImage(systemName: "square.and.pencil"), identifier: nil) { (_) in
+                    UIAction(title: CelestiaString("Rename", comment: "Rename a favorite item (currently bookmark)"), image: UIImage(systemName: "square.and.pencil"), identifier: nil) { (_) in
                         self.requestRenameObject(at: indexPath.item)
                     }
                 )
