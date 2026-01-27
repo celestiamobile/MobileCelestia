@@ -10,6 +10,79 @@
 import UIKit
 
 #if targetEnvironment(macCatalyst) || os(visionOS)
+#if targetEnvironment(macCatalyst)
+class MacOSStepper: UIView {
+    private static let imageClass: AnyClass? = NSClassFromString("NSImage")
+    private static let imageInitSelector = NSSelectorFromString("imageWithSystemSymbolName:accessibilityDescription:")
+    private static let imageInitMethod = class_getClassMethod(imageClass, imageInitSelector)
+    private static let imageInitImp = unsafeBitCast(method_getImplementation(imageInitMethod!), to: (@convention(c) (AnyClass, Selector, String, String?) -> NSObject).self)
+
+    private static let segmentedControlClass: AnyClass? = NSClassFromString("NSSegmentedControl")
+    private static let segmentedControlInitSelector = NSSelectorFromString("segmentedControlWithImages:trackingMode:target:action:")
+    private static let segmentedControlInitMethod = class_getClassMethod(segmentedControlClass, segmentedControlInitSelector)
+    private static let segmentedControlInitImp = unsafeBitCast(method_getImplementation(segmentedControlInitMethod!), to: (@convention(c) (AnyClass, Selector, [NSObject], UInt, Any?, Selector?) -> NSObject).self)
+
+    private static let uiNsViewClass = NSClassFromString("_UINSView") as? UIView.Type
+    private static let uiNsViewAllocSelector = NSSelectorFromString("alloc")
+    private static let uiNsViewInitSelector = NSSelectorFromString("initWithContentNSView:")
+    private static let uiNsViewAllocMethod = class_getClassMethod(uiNsViewClass, uiNsViewAllocSelector)
+    private static let uiNsViewInitMethod = class_getInstanceMethod(uiNsViewClass, uiNsViewInitSelector)
+    private static let uiNsViewAllocIMP = unsafeBitCast(method_getImplementation(uiNsViewAllocMethod!), to: (@convention(c) (UIView.Type, Selector) -> UIView).self)
+    private static let uiNsViewInitIMP = unsafeBitCast(method_getImplementation(uiNsViewInitMethod!), to: (@convention(c) (UIView, Selector, NSObject) -> UIView).self)
+
+    static let canBeUsed: Bool = imageClass != nil && imageInitMethod != nil && segmentedControlClass != nil && segmentedControlInitMethod != nil && uiNsViewClass != nil && uiNsViewAllocMethod != nil && uiNsViewInitMethod != nil
+
+    private var nsSegmentedControl: NSObject?
+    private var currentSegment = -1
+
+    var changeBlock: ((Bool) -> Void)?
+    var stopBlock: (() -> Void)?
+
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+
+        let minusImage = Self.imageInitImp(Self.imageClass!, Self.imageInitSelector, "minus", nil)
+        let plusImage = Self.imageInitImp(Self.imageClass!, Self.imageInitSelector, "plus", nil)
+        let segmentedControl = Self.segmentedControlInitImp(Self.segmentedControlClass!, Self.segmentedControlInitSelector, [minusImage, plusImage], 3, self, #selector(actionTriggered(_:))) // momentaryAccelerator
+        segmentedControl.setValue(true, forKey: "continuous")
+        segmentedControl.setValue(3, forKey: "controlSize") // large
+
+        nsSegmentedControl = segmentedControl
+
+        let containerView = Self.uiNsViewInitIMP(Self.uiNsViewAllocIMP(Self.uiNsViewClass!, Self.uiNsViewAllocSelector), Self.uiNsViewInitSelector, segmentedControl)
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(containerView)
+
+        NSLayoutConstraint.activate([
+            containerView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            containerView.trailingAnchor.constraint(equalTo: trailingAnchor),
+            containerView.topAnchor.constraint(equalTo: topAnchor),
+            containerView.bottomAnchor.constraint(equalTo: bottomAnchor),
+        ])
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    @objc private func actionTriggered(_ sender: Any) {
+        guard let selectedSegment = nsSegmentedControl?.value(forKey: "selectedSegment") as? Int else { return }
+
+        if selectedSegment != currentSegment {
+            currentSegment = selectedSegment
+
+            if selectedSegment == 0 {
+                changeBlock?(false)
+            } else if selectedSegment == 1 {
+                changeBlock?(true)
+            } else {
+                stopBlock?()
+            }
+        }
+    }
+}
+#endif
+
 // Recreate the iOS 13 stepper
 class FallbackStepper: UIControl {
     private enum Constants {
@@ -237,7 +310,11 @@ class FallbackStepper: UIControl {
 
 class StepperView: UIView {
     #if targetEnvironment(macCatalyst) || os(visionOS)
+    #if targetEnvironment(macCatalyst)
+    private lazy var stepper = MacOSStepper.canBeUsed ? MacOSStepper() : FallbackStepper()
+    #else
     private lazy var stepper = FallbackStepper()
+    #endif
     #else
     private lazy var stepper = UIStepper()
     private var stepperValue: Double = 0
@@ -280,7 +357,24 @@ private extension StepperView {
         stepper.addTarget(self, action: #selector(handleTouchUp(_:)), for: .touchUpOutside)
         stepper.addTarget(self, action: #selector(handleTouchUp(_:)), for: .touchCancel)
         #endif
+        #if targetEnvironment(macCatalyst)
+        if let control = stepper as? UIControl {
+            control.addTarget(self, action: #selector(handleChange(_:)), for: .valueChanged)
+        } else if let macOSStepper = stepper as? MacOSStepper {
+            macOSStepper.changeBlock = { [weak self] plus  in
+                guard let self else { return }
+                self.changeBlock?(plus)
+            }
+            macOSStepper.stopBlock = { [weak self] in
+                guard let self else { return }
+                self.stopBlock?()
+            }
+        } else {
+            fatalError()
+        }
+        #else
         stepper.addTarget(self, action: #selector(handleChange(_:)), for: .valueChanged)
+        #endif
     }
 
     #if targetEnvironment(macCatalyst) || os(visionOS)
