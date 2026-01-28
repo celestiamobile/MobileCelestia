@@ -119,12 +119,16 @@ private extension EventFinderInputViewController {
                 return
             }
 
+            var aborted = false
             let finder = EclipseFinder(body: body)
             let alert = showLoading(CelestiaString("Calculating…", comment: "Calculating for eclipses")) {
                 finder.abort()
+                aborted = true
             }
 
             let results = await finder.search(kind: [.lunar, .solar], from: self.startTime, to: self.endTime)
+
+            guard !aborted else { return }
             alert.dismiss(animated: true) {
                 self.resultHandler(results)
             }
