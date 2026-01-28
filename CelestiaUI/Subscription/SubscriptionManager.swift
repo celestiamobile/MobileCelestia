@@ -191,7 +191,7 @@ public class SubscriptionManager {
     }
 
     private func performServerVerification(originalTransactionID: UInt64, environment: SubscriptionEnvironment) async throws -> Bool {
-        return try await requestHandler.getSubscriptionValidity(originalTransactionID: originalTransactionID, sandbox: environment == .production)
+        return try await requestHandler.getSubscriptionValidity(originalTransactionID: originalTransactionID, sandbox: environment != .production)
     }
 
     private func subscriptionStatus(for entitlement: VerificationResult<Transaction>?) -> SubscriptionStatus {
