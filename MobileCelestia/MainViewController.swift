@@ -869,7 +869,7 @@ Device Model: \(model)
                 executor.prepare {
                     core.draw()
                 } resolve: {
-                    success = core.screenshot(to: url.path, type: .JPEG)
+                    success = core.screenshot(to: url.path, type: .PNG)
                 }
                 return success
             }
