@@ -496,7 +496,7 @@ private extension ResourceItemViewController {
                 if let path = viewModel.resourceManager.contextDirectory(forAddon: viewModel.item)?.appendingPathComponent(mainScriptName).path,
                    FileManager.default.fileExists(atPath: path, isDirectory: &isDir),
                    !isDir.boolValue {
-                    viewModel.action = nil
+                    viewModel.action = .run(scriptPath: path)
                     goToButton.isHidden = false
                 } else {
                     viewModel.action = nil
