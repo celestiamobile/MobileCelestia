@@ -737,9 +737,19 @@ extension MainViewController: CelestiaControllerDelegate {
 
         let screenshotURL = parentURL.appendingPathComponent("screenshot.png")
         let executor = self.executor
+
+
         let (renderInfo, url, screenshotSuccess) = await executor.get { core in
-            executor.makeRenderContextCurrent()
-            return (core.renderInfo, core.currentURL, core.screenshot(to: screenshotURL.path, type: .PNG))
+            nonisolated(unsafe) var renderInfo = ""
+            nonisolated(unsafe) var success = false
+            let url = core.currentURL
+            executor.prepare {
+                renderInfo = core.renderInfo
+                core.draw()
+            } resolve: {
+                success = core.screenshot(to: screenshotURL.path, type: .PNG)
+            }
+            return (renderInfo, url, success)
         }
         let imageData = screenshotSuccess ? try? Data(contentsOf: screenshotURL) : nil
         let addonInfo = resourceManager.installedResources().map { "\($0.name)/\($0.id)" }.joined(separator: "\n")
@@ -855,8 +865,13 @@ Device Model: \(model)
         let executor = self.executor
         Task {
             let success = await executor.get { core in
-                executor.makeRenderContextCurrent()
-                return core.screenshot(to: url.path, type: .JPEG)
+                nonisolated(unsafe) var success = false
+                executor.prepare {
+                    core.draw()
+                } resolve: {
+                    success = core.screenshot(to: url.path, type: .JPEG)
+                }
+                return success
             }
 
             if success {
