@@ -136,6 +136,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }()
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        CelestiaActor.underlyingExecutor = executor
 
         AppCore.setUpLocale()
 
