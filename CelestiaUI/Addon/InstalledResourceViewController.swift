@@ -97,9 +97,14 @@ class InstalledResourceViewController: UICollectionViewController {
             } else {
                 var config = UIContentUnavailableConfiguration.empty()
                 config.text = CelestiaString("Enhance Celestia with online add-ons", comment: "")
-                #if !targetEnvironment(macCatalyst)
-                let button = UIButton.Configuration.filled()
-                config.button = button
+                #if !os(visionOS)
+                config.button = .filled()
+                #else
+                if #available(iOS 26, *) {
+                    config.button = .prominentGlass()
+                } else {
+                    config.button = .filled()
+                }
                 #endif
                 config.button.title = CelestiaString("Get Add-ons", comment: "Open webpage for downloading add-ons")
                 config.buttonProperties.primaryAction = UIAction { [weak self] _ in
@@ -144,22 +149,6 @@ class InstalledResourceViewController: UICollectionViewController {
         } else {
             collectionView.backgroundView = items.isEmpty ? emptyView : nil
         }
-    }
-
-    @available(iOS 17, visionOS 1, *)
-    private func emptyViewConfiguration() -> UIContentUnavailableConfiguration? {
-        var config = UIContentUnavailableConfiguration.empty()
-        config.text = CelestiaString("Enhance Celestia with online add-ons", comment: "")
-        #if !targetEnvironment(macCatalyst)
-        let button = UIButton.Configuration.filled()
-        config.button = button
-        #endif
-        config.button.title = CelestiaString("Get Add-ons", comment: "Open webpage for downloading add-ons")
-        config.buttonProperties.primaryAction = UIAction { [weak self] _ in
-            guard let self else { return }
-            self.getAddonsHandler()
-        }
-        return config
     }
 }
 

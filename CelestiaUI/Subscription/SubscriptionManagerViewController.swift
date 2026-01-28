@@ -219,9 +219,14 @@ private extension SubscriptionManagerViewController {
             if #available(iOS 17, *) {
                 var config = UIContentUnavailableConfiguration.empty()
                 config.text = CelestiaString("We encountered an error.", comment: "Error loading the subscription page")
-                #if !targetEnvironment(macCatalyst)
-                let button = UIButton.Configuration.filled()
-                config.button = button
+                #if os(visionOS)
+                config.button = .filled()
+                #else
+                if #available(iOS 26, *) {
+                    config.button = .prominentGlass()
+                } else {
+                    config.button = .filled()
+                }
                 #endif
                 config.button.title = CelestiaString("Refresh", comment: "Button to refresh this list")
                 config.buttonProperties.primaryAction = UIAction { [weak self] _ in

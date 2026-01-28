@@ -138,7 +138,7 @@ final class AddonUpdateListViewController: UICollectionViewController {
                 #if os(visionOS)
                 config.button = .filled()
                 #else
-                if #available(iOS 26, visionOS 26, *) {
+                if #available(iOS 26, *) {
                     config.button = .prominentGlass()
                 } else {
                     config.button = .filled()

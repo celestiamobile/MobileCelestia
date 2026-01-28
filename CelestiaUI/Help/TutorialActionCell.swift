@@ -18,7 +18,7 @@ class TutorialActionCell: SelectableListCell {
     var title: String? { didSet { button.setTitle(title, for: .normal) } }
     var actionHandler: (() -> Void)?
 
-    private lazy var button = ActionButtonHelper.newButton(prominent: true, traitCollection: traitCollection)
+    private lazy var button = ActionButtonHelper.newButton(liquidGlass: false, prominent: true, traitCollection: traitCollection)
 
     override init(frame: CGRect) {
         super.init(frame: frame)
