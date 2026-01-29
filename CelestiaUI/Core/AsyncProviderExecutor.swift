@@ -11,6 +11,7 @@ import CelestiaCore
 import Foundation
 
 public protocol AsyncProviderExecutor: Sendable {
+    var appCore: AppCore { get }
     func runAsynchronously(_ task: @escaping @Sendable (AppCore) -> Void)
 }
 
@@ -38,6 +39,13 @@ public extension AsyncProviderExecutor {
     static public var underlyingExecutor: AsyncProviderExecutor? {
         get { CelestiaSerialExecutor.shared.underlyingExecutor }
         set { CelestiaSerialExecutor.shared.underlyingExecutor = newValue }
+    }
+
+    static public var appCore: AppCore {
+        guard let underlyingExecutor else {
+            fatalError("underlyingExecutor is not set on CelestiaSerialExecutor")
+        }
+        return underlyingExecutor.appCore
     }
 
     nonisolated public var unownedExecutor: UnownedSerialExecutor {

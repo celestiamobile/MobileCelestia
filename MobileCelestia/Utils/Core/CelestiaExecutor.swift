@@ -13,7 +13,9 @@ import CelestiaUI
 import Foundation
 
 final class CelestiaExecutor: AsyncGLExecutor, AsyncProviderExecutor, @unchecked Sendable {
-    let core: AppCore
+    var appCore: AppCore { core }
+
+    private let core: AppCore
 
     init(core: AppCore) {
         self.core = core
@@ -23,23 +25,6 @@ final class CelestiaExecutor: AsyncGLExecutor, AsyncProviderExecutor, @unchecked
         Task {
             runTaskAsynchronously {
                 task(self.core)
-            }
-        }
-    }
-
-    func run(_ task: @escaping @Sendable (AppCore) -> Void) async {
-        await withCheckedContinuation { (continuation: CheckedContinuation<Void, Never>) in
-            self.runTaskAsynchronously {
-                task(self.core)
-                continuation.resume(returning: ())
-            }
-        }
-    }
-
-    func get<T>(_ task: @escaping @Sendable (AppCore) -> T) async -> T {
-        return await withCheckedContinuation { continuation in
-            self.runTaskAsynchronously {
-                continuation.resume(returning: task(self.core))
             }
         }
     }
