@@ -40,6 +40,9 @@ class ToolbarSettingViewController: SubscriptionBackingViewController {
         override func viewDidLoad() {
             super.viewDidLoad()
 
+            navigationItem.title = CelestiaString("Toolbar", comment: "Toolbar customization entry in Settings")
+            windowTitle = navigationItem.title
+
             if let savedValue = userDefaults.string(forKey: toolbarActionsKey) {
                 addedActions = QuickAction.from(savedValue) ?? QuickAction.defaultItems
                 if !addedActions.contains(.menu) {
@@ -180,8 +183,6 @@ class ToolbarSettingViewController: SubscriptionBackingViewController {
             containerViewController.navigationItem.rightBarButtonItem = containerViewController.editButtonItem
             return ContentViewController(userDefaults: userDefaults, toolbarActionsKey: context.toolbarActionsKey, assetProvider: assetProvider)
         }
-        title = CelestiaString("Toolbar", comment: "Toolbar customization entry in Settings")
-        windowTitle = title
     }
 
     override func setEditing(_ editing: Bool, animated: Bool) {
@@ -192,5 +193,12 @@ class ToolbarSettingViewController: SubscriptionBackingViewController {
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    override func configureEmptyNavigationBar() {
+        super.configureEmptyNavigationBar()
+
+        navigationItem.title = CelestiaString("Toolbar", comment: "Toolbar customization entry in Settings")
+        windowTitle = navigationItem.title
     }
 }

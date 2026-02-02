@@ -43,12 +43,17 @@ final class FontSettingMainViewController: SubscriptionBackingViewController {
                 )
             }
         )
-        title = CelestiaString("Font", comment: "")
-        windowTitle = title
     }
     
     required public init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    override func configureEmptyNavigationBar() {
+        super.configureEmptyNavigationBar()
+
+        navigationItem.title = CelestiaString("Font", comment: "")
+        windowTitle = navigationItem.title
     }
 }
 

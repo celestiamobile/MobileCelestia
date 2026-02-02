@@ -18,24 +18,17 @@ final class AddonUpdateListContainerViewController: SubscriptionBackingViewContr
         super.init(subscriptionManager: subscriptionManager, openSubscriptionManagement: openSubscriptionManagement) { _ in
             AddonUpdateListViewController(addonUpdateManager: addonUpdateManager, resourceManager: resourceManager, subscriptionManager: subscriptionManager, openAddon: openAddon)
         }
-
-        title = CelestiaString("Updates", comment: "View the list of add-ons that have pending updates.")
-        windowTitle = title
-        navigationItem.rightBarButtonItem = UIBarButtonItem.init(image: UIImage(systemName: "questionmark.circle"), style: .plain, target: self, action: #selector(showHelp))
     }
 
     required public init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    @objc private func showHelp() {
-        guard let vc = currentViewController as? AddonUpdateListViewController else { return }
-        vc.showHelp()
-    }
+    override func configureEmptyNavigationBar() {
+        super.configureEmptyNavigationBar()
 
-    @objc private func refreshTriggered() {
-        guard let vc = currentViewController as? AddonUpdateListViewController else { return }
-        vc.refreshTriggered()
+        navigationItem.title = CelestiaString("Updates", comment: "View the list of add-ons that have pending updates.")
+        windowTitle = navigationItem.title
     }
 }
 
@@ -86,8 +79,10 @@ final class AddonUpdateListViewController: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = CelestiaString("Updates", comment: "View the list of add-ons that have pending updates.")
-        windowTitle = title
+        navigationItem.title = CelestiaString("Updates", comment: "View the list of add-ons that have pending updates.")
+        windowTitle = navigationItem.title
+
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "questionmark.circle"), style: .plain, target: self, action: #selector(showHelp))
 
         collectionView.dataSource = dataSource
 
@@ -162,7 +157,7 @@ final class AddonUpdateListViewController: UICollectionViewController {
 }
 
 extension AddonUpdateListViewController {
-    func showHelp() {
+    @objc private func showHelp() {
         showError(
             CelestiaString("Add-on Updates", comment: ""),
             detail: CelestiaString("Add-on updates are only supported for add-ons installed on version 1.9.3 or above.", comment: "Hint for requirement for updating add-ons.")
@@ -216,7 +211,7 @@ extension NSToolbarItem.Identifier {
     fileprivate static let refresh = NSToolbarItem.Identifier.init("\(prefix).addons.updates.refresh")
 }
 
-extension AddonUpdateListContainerViewController: ToolbarAwareViewController {
+extension AddonUpdateListViewController: ToolbarAwareViewController {
     func supportedToolbarItemIdentifiers(for toolbarContainerViewController: ToolbarContainerViewController) -> [NSToolbarItem.Identifier] {
         return [.refresh, .help]
     }

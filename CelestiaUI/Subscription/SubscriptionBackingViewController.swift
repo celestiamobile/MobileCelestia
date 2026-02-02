@@ -17,6 +17,7 @@ open class SubscriptionBackingViewController: UIViewController {
     var currentViewController: UIViewController?
 
     private lazy var loadingView = UIActivityIndicatorView(style: .large)
+    private lazy var observations: Set<NSKeyValueObservation> = []
 
     private lazy var emptyHintView: EmptyHintView = {
         let view = EmptyHintView()
@@ -73,6 +74,7 @@ open class SubscriptionBackingViewController: UIViewController {
     open override func viewDidLoad() {
         super.viewDidLoad()
 
+        configureEmptyNavigationBar()
         Task {
             await reload()
 
@@ -92,6 +94,11 @@ open class SubscriptionBackingViewController: UIViewController {
         openSubscriptionManagement()
     }
 
+    open func configureEmptyNavigationBar() {
+        navigationItem.leftBarButtonItem = nil
+        navigationItem.rightBarButtonItem = nil
+    }
+
     @objc private func handleSubscriptionStatusChanged() {
         switch subscriptionManager.status {
         case .verified:
@@ -109,6 +116,7 @@ open class SubscriptionBackingViewController: UIViewController {
     private func reload() async {
         currentViewController?.remove()
         currentViewController = nil
+        observations = []
 
         if #available(iOS 17, visionOS 1, *) {
             contentUnavailableConfiguration = UIContentUnavailableConfiguration.loading()
@@ -143,6 +151,7 @@ open class SubscriptionBackingViewController: UIViewController {
                 loadingView.isHidden = true
                 emptyViewContainer.isHidden = false
             }
+            configureEmptyNavigationBar()
         } else {
             let viewController = await viewControllerBuilder(self)
             if #available(iOS 17, visionOS 1, *) {
@@ -151,10 +160,50 @@ open class SubscriptionBackingViewController: UIViewController {
                 loadingView.stopAnimating()
                 loadingView.isHidden = true
             }
+            observations.insert(viewController.navigationItem.observe(\.title, options: [.initial, .new]) { [weak self] item, _ in
+                MainActor.assumeIsolated {
+                    guard let self else { return }
+                    self.navigationItem.title = item.title
+                }
+            })
+            observations.insert(viewController.observe(\.windowTitle, options: [.initial, .new]) { [weak self] viewController, _ in
+                MainActor.assumeIsolated {
+                    guard let self else { return }
+                    self.windowTitle = viewController.windowTitle
+                }
+            })
+            observations.insert(viewController.navigationItem.observe(\.leftBarButtonItem, options: [.initial, .new]) { [weak self] item, _ in
+                MainActor.assumeIsolated {
+                    guard let self else { return }
+                    self.navigationItem.leftBarButtonItem = item.leftBarButtonItem
+                }
+            })
+            observations.insert(viewController.navigationItem.observe(\.rightBarButtonItem, options: [.initial, .new]) { [weak self] item, _ in
+                MainActor.assumeIsolated {
+                    guard let self else { return }
+                    self.navigationItem.rightBarButtonItem = item.rightBarButtonItem
+                }
+            })
             install(viewController)
             observeWindowTitle(for: viewController)
             view.sendSubviewToBack(viewController.view)
             currentViewController = viewController
         }
+
+        #if targetEnvironment(macCatalyst)
+        updateToolbarIfNeeded()
+        #endif
     }
 }
+
+#if targetEnvironment(macCatalyst)
+extension SubscriptionBackingViewController: ToolbarAwareViewController {
+    public func supportedToolbarItemIdentifiers(for toolbarContainerViewController: ToolbarContainerViewController) -> [NSToolbarItem.Identifier] {
+        return (currentViewController as? ToolbarAwareViewController)?.supportedToolbarItemIdentifiers(for: toolbarContainerViewController) ?? []
+    }
+
+    public func toolbarContainerViewController(_ toolbarContainerViewController: ToolbarContainerViewController, itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier) -> NSToolbarItem? {
+        return (currentViewController as? ToolbarAwareViewController)?.toolbarContainerViewController(toolbarContainerViewController, itemForItemIdentifier: itemIdentifier)
+    }
+}
+#endif

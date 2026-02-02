@@ -146,6 +146,9 @@ final class FontSettingViewController: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        navigationItem.title = CelestiaString("Font", comment: "")
+        windowTitle = navigationItem.title
+
         collectionView.dataSource = self
         reload()
     }
