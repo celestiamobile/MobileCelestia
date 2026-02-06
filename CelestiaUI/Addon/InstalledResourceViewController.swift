@@ -97,7 +97,7 @@ class InstalledResourceViewController: UICollectionViewController {
             } else {
                 var config = UIContentUnavailableConfiguration.empty()
                 config.text = CelestiaString("Enhance Celestia with online add-ons", comment: "")
-                #if !os(visionOS)
+                #if os(visionOS)
                 config.button = .filled()
                 #else
                 if #available(iOS 26, *) {
