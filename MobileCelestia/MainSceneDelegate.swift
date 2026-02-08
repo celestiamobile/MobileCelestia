@@ -15,11 +15,14 @@ import UIKit
 class MainSceneDelegate: CommonSceneDelegate {
     var window: UIWindow?
 
+    #if targetEnvironment(macCatalyst)
     static var mainWindowSessionIdentifier: String?
+    #endif
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = scene as? UIWindowScene else { return }
 
+        #if targetEnvironment(macCatalyst)
         if Self.mainWindowSessionIdentifier != nil {
             let window = UIWindow(windowScene: windowScene)
             window.rootViewController = UnsupportedViewController()
@@ -29,6 +32,7 @@ class MainSceneDelegate: CommonSceneDelegate {
         }
 
         Self.mainWindowSessionIdentifier = scene.session.persistentIdentifier
+        #endif
 
         #if targetEnvironment(macCatalyst)
         windowScene.titlebar?.autoHidesToolbarInFullScreen = true
@@ -87,12 +91,15 @@ class MainSceneDelegate: CommonSceneDelegate {
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
+        #if targetEnvironment(macCatalyst)
         if scene.session.persistentIdentifier != Self.mainWindowSessionIdentifier {
             return
         }
         exit(0)
+        #endif
     }
 
+    #if targetEnvironment(macCatalyst)
     // Temporary workaround for multiple windows
     class UnsupportedViewController: UIViewController {
         override func loadView() {
@@ -112,4 +119,5 @@ class MainSceneDelegate: CommonSceneDelegate {
             view = containerView
         }
     }
+    #endif
 }
