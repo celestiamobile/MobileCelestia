@@ -7,7 +7,7 @@
 // as published by the Free Software Foundation; either version 2
 // of the License, or (at your option) any later version.
 
-
+import AppIntents
 import CelestiaCore
 import CelestiaFoundation
 #if targetEnvironment(macCatalyst)
@@ -137,6 +137,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         CelestiaActor.underlyingExecutor = executor
+
+        if #available(iOS 16, *) {
+            let stateManager = StateManager.shared
+            AppDependencyManager.shared.add(dependency: stateManager)
+        }
 
         AppCore.setUpLocale()
 
