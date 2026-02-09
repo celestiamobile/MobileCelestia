@@ -19,6 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)disableFullScreenForNSWindow:(NSWindow *)window;
 + (void)disableRestorationForNSWindow:(NSWindow *)window;
 + (void)openFolder:(NSURL *)folderURL;
++ (void)terminateApp;
 
 @end
 

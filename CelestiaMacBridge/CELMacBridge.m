@@ -108,4 +108,12 @@
     [[NSWorkspace sharedWorkspace] openURL:folderURL];
 }
 
++ (void)terminateApp {
+    for (NSWindow *window in [NSApp windows])
+    {
+        [window close];
+    }
+    [NSApp terminate:nil];
+}
+
 @end

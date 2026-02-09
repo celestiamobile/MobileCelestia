@@ -90,14 +90,14 @@ class MainSceneDelegate: CommonSceneDelegate {
         }
     }
 
+    #if targetEnvironment(macCatalyst)
     func sceneDidDisconnect(_ scene: UIScene) {
-        #if targetEnvironment(macCatalyst)
         if scene.session.persistentIdentifier != Self.mainWindowSessionIdentifier {
             return
         }
-        exit(0)
-        #endif
+        MacBridge.terminateApp()
     }
+    #endif
 
     #if targetEnvironment(macCatalyst)
     // Temporary workaround for multiple windows

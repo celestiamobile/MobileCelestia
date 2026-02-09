@@ -729,6 +729,10 @@ class MacBridge {
     static func openFolderURL(_ folderURL: URL) {
         clazz.perform(NSSelectorFromString("openFolder:"), with: folderURL)
     }
+
+    static func terminateApp() {
+        clazz.perform(NSSelectorFromString("terminateApp"))
+    }
 }
 
 extension UIWindow {
