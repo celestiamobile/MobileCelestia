@@ -193,8 +193,18 @@ private extension SubscriptionManagerViewController {
 
         Task {
             do {
-                let plans = try await subscriptionManager.fetchSubscriptionProducts(stringProvider: stringProvider).sorted(by: { $0.product.price > $1.product.price })
+                var plans = try await subscriptionManager.fetchSubscriptionProducts(stringProvider: stringProvider)
                 let status = await self.subscriptionManager.checkSubscriptionStatus()
+                if let lastPlan = plans.last, lastPlan.cycle == .weekly {
+                    plans.removeLast()
+                    var isOnWeeklyPlan = false
+                    if case let .verified(_, _, cycle, _, _) = status, cycle == .weekly {
+                        isOnWeeklyPlan = true
+                    }
+                    if isOnWeeklyPlan || lastPlan.offersFreeTrial {
+                        plans.insert(lastPlan, at: 0)
+                    }
+                }
                 self.status = .status(status: status, plans: plans)
                 reloadViews()
             } catch {
@@ -264,31 +274,35 @@ private extension SubscriptionManagerViewController {
             planStack.removeArrangedSubview(planView)
             planView.removeFromSuperview()
         }
-        let currentPlanIndex: Int?
+        let currentPlanCycle: SubscriptionManager.Plan.Cycle?
         let allDisabled: Bool
         switch subscriptionStatus {
-        case .verified(_, let productID, _, _):
-            currentPlanIndex = plans.firstIndex(where: { $0.product.id == productID })
+        case let .verified(_, _, cycle, _, _):
+            currentPlanCycle = cycle
             statusLabel.text = CelestiaString("Congratulations, you are a Celestia PLUS user", comment: "")
             allDisabled = false
         case .pending:
-            currentPlanIndex = nil
+            currentPlanCycle = nil
             statusLabel.text = CelestiaString("Your purchase is pending", comment: "")
             allDisabled = true
         default:
-            currentPlanIndex = nil
+            currentPlanCycle = nil
             statusLabel.text = CelestiaString("Choose one of the plans below to get Celestia PLUS", comment: "")
             allDisabled = false
         }
-        for (index, plan) in plans.enumerated() {
+        for plan in plans {
             let product = plan.product
             let action: PlanView.Action
-            if let currentPlanIndex {
-                if index == currentPlanIndex {
+            if let currentPlanCycle {
+                if plan.cycle == currentPlanCycle {
                     action = .empty
-                } else if index < currentPlanIndex {
+                } else if currentPlanCycle.rawValue < plan.cycle.rawValue {
                     action = .upgrade
                 } else {
+                    if plan.cycle == .weekly {
+                        // Block downgrading to weekly
+                        continue
+                    }
                     action = .downgrade
                 }
             } else {
@@ -314,7 +328,7 @@ private extension SubscriptionManagerViewController {
                         self.status = .empty
                          self.status = .inProgress(status: subscriptionStatus, plans: plans, pendingProduct: product)
                         self.reloadViews()
-                        let newStatus = try await self.subscriptionManager.purchase(product, scene: scene)
+                        let newStatus = try await self.subscriptionManager.purchase(product, cycle: plan.cycle, scene: scene)
                         self.status = .status(status: newStatus, plans: plans)
                         self.reloadViews()
                     } catch {

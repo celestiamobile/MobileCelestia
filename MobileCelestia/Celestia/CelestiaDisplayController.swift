@@ -180,14 +180,20 @@ extension CelestiaDisplayController {
         }
 
         core.layoutDirection = isRTL ? .RTL : .LTR
-        let (viewSpec, hasPendingRequests) = DispatchQueue.main.sync {
-            return (self.getViewSpec(), stateManager.hasPendingRequests)
+        let (viewSpec, fonts, hasPendingRequests) = DispatchQueue.main.sync {
+            return (getViewSpec(), getFonts(), stateManager.hasPendingRequests)
         }
         if let sensitivityValue: Double = userDefaults[UserDefaultsKey.pickSensitivity] {
             self.sensitivity = sensitivityValue
         }
         let sensitivity = self.sensitivity
-        updateContentScale(viewSpec: viewSpec, sensitivity: sensitivity, core: core, executor: executor)
+        updateContentScale(viewSpec: viewSpec, sensitivity: sensitivity, core: core)
+
+        core.setHudFont(fonts.normal.path, collectionIndex: fonts.normal.ttcIndex, fontSize: 9)
+        core.setHudTitleFont(fonts.bold.path, collectionIndex: fonts.bold.ttcIndex, fontSize: 15)
+        core.setRendererFont(fonts.normal.path, collectionIndex: fonts.normal.ttcIndex, fontSize: 9, fontStyle: .normal)
+        core.setRendererFont(fonts.bold.path, collectionIndex: fonts.bold.ttcIndex, fontSize: 15, fontStyle: .large)
+
         core.tick()
         core.start()
 
@@ -222,14 +228,11 @@ private extension AppCore {
 }
 
 extension CelestiaDisplayController {
-    struct ViewSpec {
+    private struct ViewSpec {
         let viewSafeAreaInsets: UIEdgeInsets
         let viewScale: CGFloat
         let applicationScalingFactor: CGFloat
-        let customNormalFont: CustomFont?
-        let customBoldFont: CustomFont?
-        let normalFontPointSize: Int
-        let boldFontPointSize: Int
+        let textScaleFactor: CGFloat
     }
 
     private func displayScaleOrContentSizeCategoryChanged() {
@@ -240,7 +243,7 @@ extension CelestiaDisplayController {
         let executor = self.executor
         let sensitivity = self.sensitivity
         executor.runAsynchronously { _ in
-            self.updateContentScale(viewSpec: viewSpec, sensitivity: sensitivity, core: core, executor: executor)
+            self.updateContentScale(viewSpec: viewSpec, sensitivity: sensitivity, core: core)
         }
     }
 
@@ -255,7 +258,20 @@ extension CelestiaDisplayController {
         applicationScalingFactor = ProcessInfo.processInfo.isiOSAppOnMac ? 0.77 : 1
         #endif
 
-        let viewSafeAreaInsets = self.view.safeAreaInsets
+        return ViewSpec(
+            viewSafeAreaInsets: view.safeAreaInsets,
+            viewScale: viewScale,
+            applicationScalingFactor: applicationScalingFactor,
+            textScaleFactor: UIFontMetrics.default.scaledValue(for: 10000, compatibleWith: traitCollection) / 10000
+        )
+    }
+
+    private struct Fonts {
+        let normal: CustomFont
+        let bold: CustomFont
+    }
+
+    private func getFonts() -> Fonts {
         let hasCelestiaPlus = subscriptionManager.transactionInfo() != nil
         var customNormalFont: CustomFont?
         var customBoldFont: CustomFont?
@@ -269,35 +285,22 @@ extension CelestiaDisplayController {
                 customBoldFont = CustomFont(path: customBoldFontPath, ttcIndex: fontIndex)
             }
         }
-        return ViewSpec(
-            viewSafeAreaInsets: viewSafeAreaInsets,
-            viewScale: viewScale,
-            applicationScalingFactor: applicationScalingFactor,
-            customNormalFont: customNormalFont,
-            customBoldFont: customBoldFont,
-            normalFontPointSize: Int(scaledValue(for: 9)),
-            boldFontPointSize: Int(scaledValue(for: 15))
-        )
-    }
-
-    nonisolated private func updateContentScale(viewSpec: ViewSpec, sensitivity: CGFloat, core: AppCore, executor: CelestiaExecutor) {
-        core.setDPI(Int(96.0 * viewSpec.viewScale / viewSpec.applicationScalingFactor))
-        core.setSafeAreaInsets(viewSpec.viewSafeAreaInsets.scale(by: viewSpec.viewScale))
-        core.setPickTolerance(sensitivity * viewSpec.viewScale / viewSpec.applicationScalingFactor)
-
-        executor.makeRenderContextCurrent()
 
         var (normalFont, boldFont) = getInstalledFontFor(locale: AppCore.language)
-        if let customNormalFont = viewSpec.customNormalFont {
+        if let customNormalFont = customNormalFont {
             normalFont = customNormalFont
         }
-        if let customBoldFont = viewSpec.customBoldFont {
+        if let customBoldFont = customBoldFont {
             boldFont = customBoldFont
         }
-        core.setHudFont(normalFont.path, collectionIndex: normalFont.ttcIndex, fontSize: viewSpec.normalFontPointSize)
-        core.setHudTitleFont(boldFont.path, collectionIndex: boldFont.ttcIndex, fontSize: viewSpec.boldFontPointSize)
-        core.setRendererFont(normalFont.path, collectionIndex: normalFont.ttcIndex, fontSize: viewSpec.normalFontPointSize, fontStyle: .normal)
-        core.setRendererFont(boldFont.path, collectionIndex: boldFont.ttcIndex, fontSize: viewSpec.boldFontPointSize, fontStyle: .large)
+        return Fonts(normal: normalFont, bold: boldFont)
+    }
+
+    nonisolated private func updateContentScale(viewSpec: ViewSpec, sensitivity: CGFloat, core: AppCore) {
+        core.screenDPI = Int(96.0 * viewSpec.viewScale / viewSpec.applicationScalingFactor)
+        core.setSafeAreaInsets(viewSpec.viewSafeAreaInsets.scale(by: viewSpec.viewScale))
+        core.setPickTolerance(sensitivity * viewSpec.viewScale / viewSpec.applicationScalingFactor)
+        core.textScaleFactor = viewSpec.textScaleFactor
     }
 }
 
