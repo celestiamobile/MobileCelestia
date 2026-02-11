@@ -330,7 +330,11 @@ private extension SubscriptionManagerViewController {
                         self.reloadViews()
                         let newStatus = try await self.subscriptionManager.purchase(product, cycle: plan.cycle, scene: scene)
                         self.status = .status(status: newStatus, plans: plans)
-                        self.reloadViews()
+                        if case .verified = newStatus {
+                            self.reloadData()
+                        } else {
+                            self.reloadViews()
+                        }
                     } catch {
                         self.status = .error
                         self.reloadViews()
