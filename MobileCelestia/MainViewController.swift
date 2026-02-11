@@ -1520,13 +1520,13 @@ struct CelestiaStringProvider: StringProvider {
         if let introductoryOffer = subscription.introductoryOffer, await subscription.isEligibleForIntroOffer {
             return switch introductoryOffer.period.unit {
             case .day:
-                AttributedString(localized: "\(displayCyclePrice(displayPrice: introductoryOffer.displayPrice, unit: introductoryOffer.period.unit)) for ^[\(introductoryOffer.periodCount) day](inflect: true)")
+                AttributedString(localized: "\(displayCyclePrice(displayPrice: introductoryOffer.displayPrice, price: introductoryOffer.price, unit: introductoryOffer.period.unit)) for ^[\(introductoryOffer.periodCount) day](inflect: true)")
             case .week:
-                AttributedString(localized: "\(displayCyclePrice(displayPrice: introductoryOffer.displayPrice, unit: introductoryOffer.period.unit)) for ^[\(introductoryOffer.periodCount) week](inflect: true)")
+                AttributedString(localized: "\(displayCyclePrice(displayPrice: introductoryOffer.displayPrice, price: introductoryOffer.price, unit: introductoryOffer.period.unit)) for ^[\(introductoryOffer.periodCount) week](inflect: true)")
             case .month:
-                AttributedString(localized: "\(displayCyclePrice(displayPrice: introductoryOffer.displayPrice, unit: introductoryOffer.period.unit)) for ^[\(introductoryOffer.periodCount) month](inflect: true)")
+                AttributedString(localized: "\(displayCyclePrice(displayPrice: introductoryOffer.displayPrice, price: introductoryOffer.price, unit: introductoryOffer.period.unit)) for ^[\(introductoryOffer.periodCount) month](inflect: true)")
             case .year:
-                AttributedString(localized: "\(displayCyclePrice(displayPrice: introductoryOffer.displayPrice, unit: introductoryOffer.period.unit)) for ^[\(introductoryOffer.periodCount) year](inflect: true)")
+                AttributedString(localized: "\(displayCyclePrice(displayPrice: introductoryOffer.displayPrice, price: introductoryOffer.price, unit: introductoryOffer.period.unit)) for ^[\(introductoryOffer.periodCount) year](inflect: true)")
             @unknown default:
                 fatalError()
             }
@@ -1537,13 +1537,16 @@ struct CelestiaStringProvider: StringProvider {
 
     func formattedPriceLine2(for product: Product, subscription: Product.SubscriptionInfo) async -> AttributedString? {
         if subscription.introductoryOffer != nil, await subscription.isEligibleForIntroOffer {
-            return AttributedString(localized: "then \(displayCyclePrice(displayPrice: product.displayPrice, unit: subscription.subscriptionPeriod.unit)) thereafter")
+            return AttributedString(localized: "then \(displayCyclePrice(displayPrice: product.displayPrice, price: product.price, unit: subscription.subscriptionPeriod.unit)) thereafter")
         } else {
             return nil
         }
     }
 
-    private func displayCyclePrice(displayPrice: String, unit: Product.SubscriptionPeriod.Unit) -> AttributedString {
+    private func displayCyclePrice(displayPrice: String, price: Decimal, unit: Product.SubscriptionPeriod.Unit) -> AttributedString {
+        if price == 0 {
+            return AttributedString(CelestiaString("Free", comment: "Subscription price indicating the subscription is free"))
+        }
         return switch unit {
         case .day:
             AttributedString(localized: "\(displayPrice)/day")

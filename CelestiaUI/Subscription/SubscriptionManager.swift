@@ -20,7 +20,7 @@ public class SubscriptionManager {
         case unknown
         case empty
         case pending
-        case verified(originalTransactionID: UInt64, productID: String, expirationDate: Date?, environment: SubscriptionEnvironment)
+        case verified(originalTransactionID: UInt64, productID: String, cycle: Plan.Cycle, expirationDate: Date?, environment: SubscriptionEnvironment)
         case expired
         case revoked
     }
@@ -32,16 +32,65 @@ public class SubscriptionManager {
     }
 
     public struct Plan {
+        public enum Cycle: Int, Hashable, Sendable {
+            case yearly = 2
+            case monthly = 1
+            case weekly = 0
+
+            init?(id: String) {
+                switch id {
+                case "space.celestia.mobilecelestia.plus.weekly":
+                    self = .weekly
+                case "space.celestia.mobilecelestia.plus.monthly":
+                    self = .monthly
+                case "space.celestia.mobilecelestia.plus.yearly":
+                    self = .yearly
+                default:
+                    return nil
+                }
+            }
+
+            var name: String {
+                switch self {
+                case .yearly:
+                    CelestiaString("Yearly", comment: "Yearly subscription")
+                case .monthly:
+                    CelestiaString("Monthly", comment: "Monthly subscription")
+                case .weekly:
+                    CelestiaString("Weekly", comment: "Weekly subscription")
+                }
+            }
+
+            var id: String {
+                switch self {
+                case .yearly:
+                    "space.celestia.mobilecelestia.plus.yearly"
+                case .monthly:
+                    "space.celestia.mobilecelestia.plus.monthly"
+                case .weekly:
+                    "space.celestia.mobilecelestia.plus.weekly"
+                }
+            }
+        }
+
         let product: Product
         let name: String
         let formattedPriceLine1: AttributedString
         let formattedPriceLine2: AttributedString?
+        let cycle: Cycle
+        let offersFreeTrial: Bool
 
-        init(product: Product, subscription: Product.SubscriptionInfo, name: String, stringProvider: StringProvider) async {
+        init(product: Product, subscription: Product.SubscriptionInfo, cycle: Cycle, name: String, stringProvider: StringProvider) async {
             self.product = product
+            self.cycle = cycle
             self.name = name
             self.formattedPriceLine1 = await stringProvider.formattedPriceLine1(for: product, subscription: subscription)
             self.formattedPriceLine2 = await stringProvider.formattedPriceLine2(for: product, subscription: subscription)
+            if let introductoryOffer = subscription.introductoryOffer, await subscription.isEligibleForIntroOffer {
+                offersFreeTrial = introductoryOffer.price == 0
+            } else {
+                offersFreeTrial = false
+            }
         }
     }
 
@@ -56,8 +105,6 @@ public class SubscriptionManager {
         let isSandbox: Bool
     }
 
-    private let monthlySubscriptionId = "space.celestia.mobilecelestia.plus.monthly"
-    private let yearlySubscriptionId = "space.celestia.mobilecelestia.plus.yearly"
     private let cacheKey = "celestia-plus"
 
     public init(userDefaults: UserDefaults, requestHandler: RequestHandler) {
@@ -76,18 +123,36 @@ public class SubscriptionManager {
     }
 
     @discardableResult public func checkSubscriptionStatus() async -> SubscriptionStatus {
-        let monthlyStatus = subscriptionStatus(for: await Transaction.currentEntitlement(for: monthlySubscriptionId))
-        let yearlyStatus = subscriptionStatus(for: await Transaction.currentEntitlement(for: yearlySubscriptionId))
-        var newStatus: SubscriptionStatus
-        if case SubscriptionStatus.verified(_, _, let yearlyExpiration, _) = yearlyStatus, case SubscriptionStatus.verified(_, _, let monthlyExpiration, _) = monthlyStatus, let yearlyExpiration, let monthlyExpiration, monthlyExpiration > yearlyExpiration {
-            newStatus = monthlyStatus
-        } else if case SubscriptionStatus.verified(_, _, _, _) = monthlyStatus {
-            newStatus = monthlyStatus
-        } else {
-            // Prefer yearly status when only one status exists
-            newStatus = yearlyStatus
+        let weeklyStatus = subscriptionStatus(for: await Transaction.currentEntitlement(for: Plan.Cycle.weekly.id), cycle: .weekly)
+        let monthlyStatus = subscriptionStatus(for: await Transaction.currentEntitlement(for: Plan.Cycle.monthly.id), cycle: .monthly)
+        let yearlyStatus = subscriptionStatus(for: await Transaction.currentEntitlement(for: Plan.Cycle.yearly.id), cycle: .yearly)
+
+        var newStatus: SubscriptionStatus = yearlyStatus // Fallback to yearly status
+        var expiration: Date?
+        for status in [yearlyStatus, monthlyStatus, weeklyStatus] {
+            if case SubscriptionStatus.verified(_, _, _, let newExpiration, _) = status {
+                if let newExpiration {
+                    // Prefer status with latest expiration date
+                    if let currentExpiration = expiration {
+                        if newExpiration > currentExpiration {
+                            newStatus = status
+                            expiration = newExpiration
+                        }
+                    } else {
+                        newStatus = status
+                        expiration = newExpiration
+                    }
+                }
+                else {
+                    // If no expiration date is given, set it to the last verified status
+                    if expiration == nil {
+                        newStatus = status
+                    }
+                }
+            }
         }
-        if case SubscriptionStatus.verified(let originalTransactionID, _, _, let environment) = newStatus {
+
+        if case SubscriptionStatus.verified(let originalTransactionID, _, _, _, let environment) = newStatus {
             do {
                 if try await !performServerVerification(originalTransactionID: originalTransactionID, environment: environment) {
                     // Server verification failure, reset to empty
@@ -108,11 +173,11 @@ public class SubscriptionManager {
                 case .unverified:
                     break
                 case .verified(let transaction):
-                    if transaction.productID != self.monthlySubscriptionId && transaction.productID != self.yearlySubscriptionId {
+                    guard let cycle = Plan.Cycle(id: transaction.productID) else {
                         continue
                     }
                     await transaction.finish()
-                    await self.updateStatus(.verified(originalTransactionID: transaction.originalID, productID: transaction.productID, expirationDate: transaction.expirationDate, environment: SubscriptionEnvironment(transaction: transaction)))
+                    await self.updateStatus(.verified(originalTransactionID: transaction.originalID, productID: transaction.productID, cycle: cycle, expirationDate: transaction.expirationDate, environment: SubscriptionEnvironment(transaction: transaction)))
                 }
             }
         }
@@ -123,7 +188,7 @@ public class SubscriptionManager {
 
         let newTransactionInfo: CacheTransactionInfo?
         switch status {
-        case .verified(let originalTransactionID, _, _, let environment):
+        case .verified(let originalTransactionID, _, _, _, let environment):
             newTransactionInfo = CacheTransactionInfo(originalTransactionID: originalTransactionID, isSandbox: environment != .production)
         default:
             newTransactionInfo = nil
@@ -141,25 +206,28 @@ public class SubscriptionManager {
     }
 
     func fetchSubscriptionProducts(stringProvider: StringProvider) async throws -> [Plan] {
-        let products = try await Product.products(for: [yearlySubscriptionId, monthlySubscriptionId])
-        var plans = [Plan]()
+        let products = try await Product.products(for: [Plan.Cycle.yearly.id, Plan.Cycle.monthly.id, Plan.Cycle.weekly.id])
+        var yearlyPlan: Plan?
+        var monthlyPlan: Plan?
+        var weeklyPlan: Plan?
         for product in products {
             guard let subscription = product.subscription else { continue }
+            guard let cycle = Plan.Cycle(id: product.id) else { continue }
 
-            let plan: Plan
-            if product.id == yearlySubscriptionId {
-                plan = await Plan(product: product, subscription: subscription, name: CelestiaString("Yearly", comment: "Yearly subscription"), stringProvider: stringProvider)
-            } else if product.id == monthlySubscriptionId {
-                plan = await Plan(product: product, subscription: subscription, name: CelestiaString("Monthly", comment: "Monthly subscription"), stringProvider: stringProvider)
-            } else {
-                continue
+            let plan = await Plan(product: product, subscription: subscription, cycle: cycle, name: cycle.name, stringProvider: stringProvider)
+            switch cycle {
+            case .yearly:
+                yearlyPlan = plan
+            case .monthly:
+                monthlyPlan = plan
+            case .weekly:
+                weeklyPlan = plan
             }
-            plans.append(plan)
         }
-        return plans
+        return [yearlyPlan, monthlyPlan, weeklyPlan].compactMap { $0 }
     }
 
-    func purchase(_ product: Product, scene: UIWindowScene) async throws -> SubscriptionStatus {
+    func purchase(_ product: Product, cycle: Plan.Cycle, scene: UIWindowScene) async throws -> SubscriptionStatus {
         #if os(visionOS)
         let result = try await product.purchase(confirmIn: scene)
         #else
@@ -177,7 +245,7 @@ public class SubscriptionManager {
                 break
             case .verified(let transaction):
                 await transaction.finish()
-                updateStatus(.verified(originalTransactionID: transaction.originalID, productID: transaction.productID, expirationDate: transaction.expirationDate, environment: SubscriptionEnvironment(transaction: transaction)))
+                updateStatus(.verified(originalTransactionID: transaction.originalID, productID: transaction.productID, cycle: cycle, expirationDate: transaction.expirationDate, environment: SubscriptionEnvironment(transaction: transaction)))
             }
         case .userCancelled:
             break
@@ -194,7 +262,7 @@ public class SubscriptionManager {
         return try await requestHandler.getSubscriptionValidity(originalTransactionID: originalTransactionID, sandbox: environment != .production)
     }
 
-    private func subscriptionStatus(for entitlement: VerificationResult<Transaction>?) -> SubscriptionStatus {
+    private func subscriptionStatus(for entitlement: VerificationResult<Transaction>?, cycle: Plan.Cycle) -> SubscriptionStatus {
         switch entitlement {
         case .unverified:
             return .empty
@@ -205,7 +273,7 @@ public class SubscriptionManager {
             if let expirationDate = transaction.expirationDate, expirationDate < Date() {
                 return .expired
             }
-            return .verified(originalTransactionID: transaction.originalID, productID: transaction.productID, expirationDate: transaction.expirationDate, environment: SubscriptionEnvironment(transaction: transaction))
+            return .verified(originalTransactionID: transaction.originalID, productID: transaction.productID, cycle: cycle, expirationDate: transaction.expirationDate, environment: SubscriptionEnvironment(transaction: transaction))
         case .none:
             return .empty
         }
