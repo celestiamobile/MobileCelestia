@@ -27,7 +27,7 @@ final class PlanView: UIView {
     private let product: Product
     private let handler: () -> Void
 
-    init(plan: SubscriptionManager.Plan, action: Action, state: State, handler: @escaping () -> Void) {
+    init(plan: SubscriptionManager.Plan, action: Action, state: State, showPrice: Bool, handler: @escaping () -> Void) {
         self.product = plan.product
         self.handler = handler
 
@@ -35,28 +35,31 @@ final class PlanView: UIView {
 
         backgroundColor = .systemFill
 
+        var labels = [UILabel]()
         let nameLabel = UILabel(textStyle: .body)
         nameLabel.numberOfLines = 0
         nameLabel.textColor = .label
-        let priceLabel = UILabel(textStyle: .body)
-        priceLabel.textColor = .secondaryLabel
-        priceLabel.numberOfLines = 0
+        nameLabel.text = plan.name
+        labels.append(nameLabel)
 
-        let secondaryPriceLabel: UILabel?
-        if let formattedPriceLine2 = plan.formattedPriceLine2 {
-            let label = UILabel(textStyle: .footnote)
-            label.textColor = .secondaryLabel
-            label.numberOfLines = 0
-            label.attributedText = NSAttributedString(formattedPriceLine2)
-            secondaryPriceLabel = label
-        } else {
-            secondaryPriceLabel = nil
+        if showPrice {
+            let priceLabel = UILabel(textStyle: .body)
+            priceLabel.textColor = .secondaryLabel
+            priceLabel.numberOfLines = 0
+            priceLabel.attributedText = NSAttributedString(plan.formattedPriceLine1)
+            labels.append(priceLabel)
+
+            if let formattedPriceLine2 = plan.formattedPriceLine2 {
+                let secondaryPriceLabel = UILabel(textStyle: .footnote)
+                secondaryPriceLabel.textColor = .secondaryLabel
+                secondaryPriceLabel.numberOfLines = 0
+                secondaryPriceLabel.attributedText = NSAttributedString(formattedPriceLine2)
+                labels.append(secondaryPriceLabel)
+            }
         }
 
-        nameLabel.text = plan.name
-        priceLabel.attributedText = NSAttributedString(plan.formattedPriceLine1)
 
-        let stack = UIStackView(arrangedSubviews: [nameLabel, priceLabel, secondaryPriceLabel].compactMap { $0 })
+        let stack = UIStackView(arrangedSubviews: labels)
         stack.translatesAutoresizingMaskIntoConstraints = false
         stack.axis = .vertical
         stack.spacing = GlobalConstants.pageSmallGapVertical

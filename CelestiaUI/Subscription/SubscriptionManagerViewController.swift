@@ -292,10 +292,12 @@ private extension SubscriptionManagerViewController {
         }
         for plan in plans {
             let product = plan.product
+            var showPrice = true
             let action: PlanView.Action
             if let currentPlanCycle {
                 if plan.cycle == currentPlanCycle {
                     action = .empty
+                    showPrice = false
                 } else if currentPlanCycle.rawValue < plan.cycle.rawValue {
                     action = .upgrade
                 } else {
@@ -320,7 +322,7 @@ private extension SubscriptionManagerViewController {
             } else {
                 state = .normal
             }
-            let planView = PlanView(plan: plan, action: action, state: state) { [weak self] in
+            let planView = PlanView(plan: plan, action: action, state: state, showPrice: showPrice) { [weak self] in
                 guard let self else { return }
                 guard let scene = self.view.window?.windowScene else { return }
                 Task {
