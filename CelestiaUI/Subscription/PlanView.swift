@@ -27,7 +27,7 @@ final class PlanView: UIView {
     private let product: Product
     private let handler: () -> Void
 
-    init(plan: SubscriptionManager.Plan, action: Action, state: State, showPrice: Bool, handler: @escaping () -> Void) {
+    init(plan: SubscriptionManager.Plan, action: Action, state: State, isCurrent: Bool, handler: @escaping () -> Void) {
         self.product = plan.product
         self.handler = handler
 
@@ -39,10 +39,10 @@ final class PlanView: UIView {
         let nameLabel = UILabel(textStyle: .body)
         nameLabel.numberOfLines = 0
         nameLabel.textColor = .label
-        nameLabel.text = plan.name
+        nameLabel.text = isCurrent ? String.localizedStringWithFormat(CelestiaString("%@ (Current)", comment: "Subscription plan name when the plan is the current plan user owns"), plan.name) : plan.name
         labels.append(nameLabel)
 
-        if showPrice {
+        if !isCurrent {
             let priceLabel = UILabel(textStyle: .body)
             priceLabel.textColor = .secondaryLabel
             priceLabel.numberOfLines = 0
@@ -58,6 +58,7 @@ final class PlanView: UIView {
             }
         }
 
+        let verticalPadding = isCurrent ? GlobalConstants.pageMediumMarginVertical : GlobalConstants.pageSmallMarginVertical
 
         let stack = UIStackView(arrangedSubviews: labels)
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -67,7 +68,7 @@ final class PlanView: UIView {
         NSLayoutConstraint.activate([
             stack.leadingAnchor.constraint(equalTo: leadingAnchor, constant: GlobalConstants.pageSmallMarginHorizontal),
             stack.centerYAnchor.constraint(equalTo: centerYAnchor),
-            stack.topAnchor.constraint(greaterThanOrEqualTo: topAnchor, constant: GlobalConstants.pageSmallMarginVertical),
+            stack.topAnchor.constraint(greaterThanOrEqualTo: topAnchor, constant: verticalPadding),
         ])
 
         let trailingView: UIView
@@ -115,12 +116,12 @@ final class PlanView: UIView {
             trailingView.leadingAnchor.constraint(greaterThanOrEqualTo: stack.trailingAnchor, constant: GlobalConstants.pageSmallGapHorizontal),
             trailingView.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -GlobalConstants.pageSmallMarginHorizontal),
             trailingView.centerYAnchor.constraint(equalTo: centerYAnchor),
-            trailingView.topAnchor.constraint(greaterThanOrEqualTo: topAnchor, constant: GlobalConstants.pageSmallMarginVertical)
+            trailingView.topAnchor.constraint(greaterThanOrEqualTo: topAnchor, constant: verticalPadding)
         ])
 
         let optionalConstraints = [
-            stack.topAnchor.constraint(equalTo: topAnchor, constant: GlobalConstants.pageSmallMarginVertical),
-            trailingView.topAnchor.constraint(equalTo: topAnchor, constant: GlobalConstants.pageSmallMarginVertical)
+            stack.topAnchor.constraint(equalTo: topAnchor, constant: verticalPadding),
+            trailingView.topAnchor.constraint(equalTo: topAnchor, constant: verticalPadding)
         ]
         for constraint in optionalConstraints {
             constraint.priority = .defaultLow
