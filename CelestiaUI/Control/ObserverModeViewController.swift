@@ -215,3 +215,23 @@ private extension CoordinateSystem {
         }
     }
 }
+
+#if targetEnvironment(macCatalyst)
+extension NSToolbarItem.Identifier {
+    private static let prefix = Bundle(for: ObserverModeViewController.self).bundleIdentifier!
+    fileprivate static let confirmObserverMode = NSToolbarItem.Identifier.init("\(prefix).observermode.confirm")
+}
+
+extension ObserverModeViewController: ToolbarAwareViewController {
+    public func supportedToolbarItemIdentifiers(for toolbarContainerViewController: ToolbarContainerViewController) -> [NSToolbarItem.Identifier] {
+        return [.confirmObserverMode]
+    }
+
+    public func toolbarContainerViewController(_ toolbarContainerViewController: ToolbarContainerViewController, itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier) -> NSToolbarItem? {
+        if itemIdentifier == .confirmObserverMode {
+            return NSToolbarItem(itemIdentifier: itemIdentifier, buttonTitle: CelestiaString("OK", comment: ""), target: self, action: #selector(applyObserverMode))
+        }
+        return nil
+    }
+}
+#endif
