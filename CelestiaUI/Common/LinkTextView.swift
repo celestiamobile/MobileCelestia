@@ -76,6 +76,7 @@ class LinkTextView: UIView, UIContentView {
         textView.isEditable = false
         textView.adjustsFontForContentSizeCategory = true
         textView.textContainer.lineBreakMode = .byWordWrapping
+        textView.setContentHuggingPriority(.required, for: .vertical)
 
         addSubview(textView)
         textView.translatesAutoresizingMaskIntoConstraints = false

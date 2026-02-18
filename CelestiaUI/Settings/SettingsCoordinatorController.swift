@@ -185,7 +185,7 @@ private extension SettingsCoordinatorController {
             case .other(let otherType):
                 switch otherType {
                 case .about:
-                    viewController = AboutViewController(bundle: bundle, defaultDirectoryURL: self.defaultDataDirectory)
+                    viewController = AboutViewController(bundle: self.bundle, assetProvider: self.assetProvider)
                 case .render:
                     let renderInfo = await self.rendererInfoProvider()
                     viewController = TextViewController(title: item.name, text: renderInfo)

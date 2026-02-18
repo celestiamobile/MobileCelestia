@@ -11,165 +11,146 @@ import CelestiaCore
 import CelestiaFoundation
 import UIKit
 
-public final class AboutViewController: UICollectionViewController {
-    private let officialWebsiteURL = URL(string: "https://celestia.mobi")!
-    private let aboutCelestiaURL = URL(string: "https://celestia.mobi/about")!
+public final class AboutViewController: UIViewController {
+    private enum Constants {
+        static let appIconDimension: CGFloat = 128
+    }
 
     private let bundle: Bundle
-    private let defaultDirectoryURL: URL
+    private let assetProvider: AssetProvider
 
-    enum Section {
-        case version
-        case authors
-        case translators
-        case links1
-        case links2
-    }
+    private var topMarginConstraint: NSLayoutConstraint?
+    private var bottomMarginConstraint: NSLayoutConstraint?
+    private var leadingMarginConstraint: NSLayoutConstraint?
+    private var trailingMarginConstraint: NSLayoutConstraint?
 
-    enum Item {
-        case version
-        case authors
-        case translators
-        case development
-        case dependencies
-        case privacyPolicy
-        case website
-        case about
-    }
-
-    private var authorText: String?
-    private var translatorText: String?
-
-    private lazy var dataSource: UICollectionViewDiffableDataSource<Section, Item> = {
-        let cellRegistration = UICollectionView.CellRegistration<SelectableListCell, Item> { [unowned self] cell, indexPath, itemIdentifier in
-            let text: String
-            var secondaryText: String?
-            var useValueCell = false
-            var tinted = false
-            var selectable = true
-            switch itemIdentifier {
-            case .version:
-                text = CelestiaString("Version", comment: "")
-                secondaryText = "\(self.bundle.shortVersion)(\(self.bundle.build))"
-                useValueCell = true
-                selectable = false
-            case .authors:
-                text = CelestiaString("Authors", comment: "Authors for Celestia")
-                secondaryText = self.authorText
-                selectable = false
-            case .translators:
-                text = CelestiaString("Translators", comment: "Translators for Celestia")
-                secondaryText = self.translatorText
-                selectable = false
-            case .development:
-                text = CelestiaString("Development", comment: "URL for Development wiki")
-                tinted = true
-            case .dependencies:
-                text = CelestiaString("Third Party Dependencies", comment: "URL for Third Party Dependencies wiki")
-                tinted = true
-            case .privacyPolicy:
-                text = CelestiaString("Privacy Policy and Service Agreement", comment: "Privacy Policy and Service Agreement")
-                tinted = true
-            case .website:
-                text = CelestiaString("Official Website", comment: "")
-                tinted = true
-            case .about:
-                text = CelestiaString("About Celestia", comment: "System menu item")
-                tinted = true
-            }
-            var contentConfiguration = useValueCell ? UIListContentConfiguration.celestiaValueCell() : UIListContentConfiguration.celestiaCell()
-            if tinted {
-                contentConfiguration.textProperties.color = cell.tintColor
-            }
-            contentConfiguration.text = text
-            contentConfiguration.secondaryText = secondaryText
-            cell.contentConfiguration = contentConfiguration
-            cell.selectable = selectable
-        }
-
-        let dataSource = UICollectionViewDiffableDataSource<Section, Item>(collectionView: collectionView) { collectionView, indexPath, item in
-            return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: item)
-        }
-
-        #if !targetEnvironment(macCatalyst)
-        let footerRegistration = UICollectionView.SupplementaryRegistration<UICollectionViewListCell>(elementKind: UICollectionView.elementKindSectionFooter) { supplementaryView, _, _ in
-            supplementaryView.contentConfiguration = ICPCConfiguration(text: "苏ICP备2023039249号-4A")
-        }
-        dataSource.supplementaryViewProvider = { [weak self] collectionView, kind, indexPath in
-            guard let self, kind == UICollectionView.elementKindSectionFooter else { return nil }
-            let section = self.dataSource.sectionIdentifier(for: indexPath.section)
-            if section == .links2 {
-                return collectionView.dequeueConfiguredReusableSupplementary(using: footerRegistration, for: indexPath)
-            }
-            return nil
-        }
-        #endif
-        return dataSource
-    }()
-
-    public init(bundle: Bundle, defaultDirectoryURL: URL) {
+    public init(bundle: Bundle, assetProvider: AssetProvider) {
         self.bundle = bundle
-        self.defaultDirectoryURL = defaultDirectoryURL
+        self.assetProvider = assetProvider
 
-        #if targetEnvironment(macCatalyst)
-        super.init(collectionViewLayout: UICollectionViewCompositionalLayout.list(using: UICollectionLayoutListConfiguration(appearance: .defaultGrouped)))
-        #else
-        let showFooter: Bool
-        if #available(iOS 16, visionOS 1, *) {
-            showFooter = Locale.current.region == .chinaMainland
-        } else {
-            showFooter = Locale.current.regionCode == "CN"
-        }
-        super.init(collectionViewLayout: UICollectionViewFlowLayout())
-        collectionView.collectionViewLayout = UICollectionViewCompositionalLayout { [weak self] sectionIndex, layoutEnvironment in
-            var listConfiguration = UICollectionLayoutListConfiguration(appearance: .defaultGrouped)
-            if let self, showFooter, self.dataSource.sectionIdentifier(for: sectionIndex) == .links2 {
-                listConfiguration.footerMode = .supplementary
-            }
-            return NSCollectionLayoutSection.list(using: listConfiguration, layoutEnvironment: layoutEnvironment)
-        }
-        #endif
+        super.init(nibName: nil, bundle: nil)
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
+    public override func loadView() {
+        let scrollView = UIScrollView()
+        scrollView.contentInsetAdjustmentBehavior = .never
+
+        let contentView = UIView()
+        let scaling = GlobalConstants.preferredUIElementScaling(for: contentView.traitCollection)
+        let iconView = IconView(image: assetProvider.image(for: .loadingIcon), baseSize: CGSize(width: Constants.appIconDimension * scaling, height: Constants.appIconDimension * scaling)) { imageView in
+            imageView.contentMode = .scaleAspectFit
+        }
+
+        contentView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.addSubview(contentView)
+        NSLayoutConstraint.activate([
+            scrollView.contentLayoutGuide.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            scrollView.contentLayoutGuide.heightAnchor.constraint(greaterThanOrEqualTo: scrollView.heightAnchor),
+        ])
+
+        topMarginConstraint = contentView.topAnchor.constraint(equalTo: scrollView.contentLayoutGuide.topAnchor)
+        bottomMarginConstraint = contentView.bottomAnchor.constraint(equalTo: scrollView.contentLayoutGuide.bottomAnchor)
+        leadingMarginConstraint = contentView.leadingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.leadingAnchor)
+        trailingMarginConstraint = contentView.trailingAnchor.constraint(equalTo: scrollView.contentLayoutGuide.trailingAnchor)
+
+        NSLayoutConstraint.activate([topMarginConstraint, bottomMarginConstraint, leadingMarginConstraint, trailingMarginConstraint].compactMap({ $0 }))
+
+        let optionalConstraint = scrollView.contentLayoutGuide.heightAnchor.constraint(equalTo: scrollView.heightAnchor)
+        optionalConstraint.priority = .defaultLow
+        optionalConstraint.isActive = true
+
+        let versionLabel = UILabel(textStyle: .body)
+        versionLabel.text = "Celestia \(bundle.shortVersion) (\(self.bundle.build))"
+
+        var links = [
+            LinkTextConfiguration.Link(text: "https://celestia.mobi", link: "https://celestia.mobi?lang=\(AppCore.language)")
+        ]
+
+#if !targetEnvironment(macCatalyst)
+        let showICPC: Bool
+        if #available(iOS 16, visionOS 1, *) {
+            showICPC = Locale.current.region == .chinaMainland
+        } else {
+            showICPC = Locale.current.regionCode == "CN"
+        }
+#else
+        let showICPC = false
+#endif
+        if showICPC {
+            links.append(LinkTextConfiguration.Link(text: "苏ICP备2023039249号-4A", link: "https://beian.miit.gov.cn"))
+        }
+
+        let linksView = LinkTextConfiguration(info: LinkTextConfiguration.LinkInfo(text: links.map(\.text).joined(separator: " | "), links: links)).makeContentView()
+
+
+        let topView = UIView()
+        let bottomView = UIStackView(arrangedSubviews: [versionLabel, linksView])
+
+        topView.setContentHuggingPriority(.defaultLow, for: .vertical)
+        bottomView.setContentHuggingPriority(.required, for: .vertical)
+        versionLabel.setContentHuggingPriority(.required, for: .vertical)
+        linksView.setContentHuggingPriority(.required, for: .vertical)
+
+        bottomView.axis = .vertical
+        bottomView.spacing = GlobalConstants.pageSmallGapVertical
+        bottomView.alignment = .center
+
+        topView.translatesAutoresizingMaskIntoConstraints = false
+        bottomView.translatesAutoresizingMaskIntoConstraints = false
+
+        contentView.addSubview(topView)
+        contentView.addSubview(bottomView)
+
+        iconView.translatesAutoresizingMaskIntoConstraints = false
+        topView.addSubview(iconView)
+
+        NSLayoutConstraint.activate([
+            iconView.topAnchor.constraint(greaterThanOrEqualTo: topView.topAnchor, constant: GlobalConstants.pageMediumMarginVertical),
+
+            iconView.centerXAnchor.constraint(equalTo: topView.centerXAnchor),
+            iconView.centerYAnchor.constraint(equalTo: topView.centerYAnchor),
+
+            topView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            topView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            topView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+
+            bottomView.topAnchor.constraint(equalTo: topView.bottomAnchor, constant: GlobalConstants.pageMediumGapVertical),
+            bottomView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            bottomView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            bottomView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+        ])
+
+        let optionalIconViewConstraint = iconView.topAnchor.constraint(equalTo: topView.topAnchor, constant: GlobalConstants.pageMediumMarginVertical)
+        optionalIconViewConstraint.priority = .defaultHigh
+        optionalIconViewConstraint.isActive = true
+
+        view = scrollView
+    }
+
     public override func viewDidLoad() {
         super.viewDidLoad()
 
         setUp()
-        loadContents()
     }
 
-    private func loadContents() {
-        let authorsPath = defaultDirectoryURL.appendingPathComponent("AUTHORS").path
-        if let text = try? String(contentsOfFile: authorsPath) {
-            authorText = text
-        }
+    public override func updateViewConstraints() {
+        let rtl = view.effectiveUserInterfaceLayoutDirection == .rightToLeft
+        topMarginConstraint?.constant = GlobalConstants.pageMediumMarginVertical + view.safeAreaInsets.top
+        bottomMarginConstraint?.constant = -(GlobalConstants.pageMediumMarginVertical + view.safeAreaInsets.bottom)
+        leadingMarginConstraint?.constant = GlobalConstants.pageMediumMarginHorizontal + (rtl ? view.safeAreaInsets.right : view.safeAreaInsets.left)
+        trailingMarginConstraint?.constant = -(GlobalConstants.pageMediumMarginHorizontal + (rtl ? view.safeAreaInsets.left : view.safeAreaInsets.right))
 
-        let translatorsPath = defaultDirectoryURL.appendingPathComponent("TRANSLATORS").path
-        if let text = try? String(contentsOfFile: translatorsPath) {
-            translatorText = text
-        }
+        super.updateViewConstraints()
+    }
 
-        collectionView.dataSource = dataSource
+    public override func viewSafeAreaInsetsDidChange() {
+        super.viewSafeAreaInsetsDidChange()
 
-        var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
-        snapshot.appendSections([.version])
-        snapshot.appendItems([.version], toSection: .version)
-        if authorText != nil {
-            snapshot.appendSections([.authors])
-            snapshot.appendItems([.authors], toSection: .authors)
-        }
-        if translatorText != nil {
-            snapshot.appendSections([.translators])
-            snapshot.appendItems([.translators], toSection: .translators)
-        }
-        snapshot.appendSections([.links1, .links2])
-        snapshot.appendItems([.development, .dependencies, .privacyPolicy], toSection: .links1)
-        snapshot.appendItems([.website, .about], toSection: .links2)
-        dataSource.applySnapshotUsingReloadData(snapshot)
+        view.setNeedsUpdateConstraints()
     }
 }
 
@@ -177,51 +158,5 @@ private extension AboutViewController {
     func setUp() {
         title = CelestiaString("About", comment: "About Celestia")
         windowTitle = title
-
-        collectionView.dataSource = dataSource
-    }
-}
-
-extension AboutViewController {
-    public override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        collectionView.deselectItem(at: indexPath, animated: true)
-        guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
-
-        let url: URL
-        let localizable: Bool
-        switch item {
-        case .version, .authors, .translators:
-            return
-        case .development:
-            url = URL(string: "https://celestia.mobi/help/development")!
-            localizable = false
-        case .dependencies:
-            url = URL(string: "https://celestia.mobi/help/dependencies")!
-            localizable = true
-        case .privacyPolicy:
-            url = URL(string: "https://celestia.mobi/privacy")!
-            localizable = true
-        case .website:
-            url = officialWebsiteURL
-            localizable = true
-        case .about:
-            url = aboutCelestiaURL
-            localizable = true
-        }
-
-        let urlToOpen: URL
-        if localizable {
-            if var components = URLComponents(url: url, resolvingAgainstBaseURL: false) {
-                var queryItems = components.queryItems ?? []
-                queryItems.append(URLQueryItem(name: "lang", value: AppCore.language))
-                components.queryItems = queryItems
-                urlToOpen = components.url ?? url
-            } else {
-                urlToOpen = url
-            }
-        } else {
-            urlToOpen = url
-        }
-        UIApplication.shared.open(urlToOpen)
     }
 }

@@ -362,7 +362,7 @@ extension MainViewController {
         case .captureImage:
             shareImage()
         case .showAbout:
-            let vc = AboutViewController(bundle: .app, defaultDirectoryURL: UserDefaults.defaultDataDirectory)
+            let vc = AboutViewController(bundle: .app, assetProvider: assetProvider)
             showViewController(ToolbarNavigationContainerController(rootViewController: vc), customToolbar: true)
         case .selectSol:
             Task {
