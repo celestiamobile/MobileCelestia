@@ -161,6 +161,10 @@ extension SearchViewController: UISearchBarDelegate {
         searchBar.resignFirstResponder()
         searchTextReturned(searchBar.text)
     }
+
+    public func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        searchTextUpdated(nil)
+    }
 }
 
 extension SearchViewController: UISearchResultsUpdating {

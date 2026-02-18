@@ -187,17 +187,22 @@ public class SearchResultViewController: UIViewController {
 
         if let contentViewController {
             if !isSearchActive {
-                updateContentScrollView(contentViewController.contentScrollView)
-                if #available(iOS 17, visionOS 1, *) {
+                if state == .empty {
+                    contentViewController.remove()
+                    self.contentViewController = nil
                 } else {
-                    loadingView.stopAnimating()
-                    emptyViewContainer.isHidden = true
-                    loadingViewContainer.isHidden = true
+                    updateContentScrollView(contentViewController.contentScrollView)
+                    if #available(iOS 17, visionOS 1, *) {
+                    } else {
+                        loadingView.stopAnimating()
+                        emptyViewContainer.isHidden = true
+                        loadingViewContainer.isHidden = true
+                    }
+                    resultViewController.view.isHidden = true
+                    contentViewController.view.isHidden = false
+                    view.sendSubviewToBack(contentViewController.view)
+                    return
                 }
-                resultViewController.view.isHidden = true
-                contentViewController.view.isHidden = false
-                view.sendSubviewToBack(contentViewController.view)
-                return
             } else {
                 contentViewController.view.isHidden = true
             }
