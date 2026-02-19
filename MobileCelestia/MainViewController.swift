@@ -1173,7 +1173,7 @@ Device Model: \(model)
     }
 
     private func createSelectionInfoViewController(with selection: Selection, showNavigationTitle: Bool, backgroundColor: UIColor) -> InfoViewController {
-        let controller = InfoViewController(info: selection, core: core, executor: executor, showNavigationTitle: showNavigationTitle, backgroundColor: backgroundColor)
+        let controller = InfoViewController(info: selection, core: core, showNavigationTitle: showNavigationTitle, backgroundColor: backgroundColor)
         controller.selectionHandler = { [weak self] selection, action in
             guard let self else { return }
             switch action {

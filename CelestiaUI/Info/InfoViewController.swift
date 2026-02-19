@@ -50,7 +50,6 @@ final public class InfoViewController: UICollectionViewController {
     }
 
     private let core: AppCore
-    private let executor: AsyncProviderExecutor
     private let showNavigationTitle: Bool
     private let backgroundColor: UIColor?
     private var info: Selection
@@ -92,10 +91,8 @@ final public class InfoViewController: UICollectionViewController {
                 cell.toggleBlock = { [weak self] isEnabled in
                     guard let self else { return }
                     self.cockpitStatus = isEnabled
-                    Task {
-                        await self.executor.run { core in
-                            core.simulation.activeObserver.cockpit = isEnabled ? cockpit : Selection()
-                        }
+                    Task { @CelestiaActor in
+                        CelestiaActor.appCore.simulation.activeObserver.cockpit = isEnabled ? cockpit : Selection()
                     }
                 }
                 return cell
@@ -121,9 +118,8 @@ final public class InfoViewController: UICollectionViewController {
         return dataSource
     }()
 
-    public init(info: Selection, core: AppCore, executor: AsyncProviderExecutor, showNavigationTitle: Bool, backgroundColor: UIColor?) {
+    public init(info: Selection, core: AppCore, showNavigationTitle: Bool, backgroundColor: UIColor?) {
         self.core = core
-        self.executor = executor
         self.info = info
         self.showNavigationTitle = showNavigationTitle
         self.backgroundColor = backgroundColor
@@ -315,17 +311,15 @@ extension InfoViewController {
             return Action(title: option) { [weak self] in
                 guard let self else { return }
                 if let marker = MarkerRepresentation(rawValue: UInt(index)) {
-                    Task {
-                        await self.executor.run { core in
-                            core.simulation.universe.mark(selection, with: marker)
-                            core.showMarkers = true
-                        }
+                    Task { @CelestiaActor in
+                        let core = CelestiaActor.appCore
+                        core.simulation.universe.mark(selection, with: marker)
+                        core.showMarkers = true
                     }
                 } else {
-                    Task {
-                        await self.executor.run { core in
-                            core.simulation.universe.unmark(selection)
-                        }
+                    Task { @CelestiaActor in
+                        let core = CelestiaActor.appCore
+                        core.simulation.universe.unmark(selection)
                     }
                 }
             }
@@ -341,13 +335,15 @@ extension InfoViewController {
                 return Action(title: option) { [weak self] in
                     guard let self else { return }
                     if index == 0 {
-                        Task {
-                            await self.executor.run { $0.simulation.activeObserver.displayedSurface = "" }
+                        Task { @CelestiaActor in
+                            let core = CelestiaActor.appCore
+                            core.simulation.activeObserver.displayedSurface = ""
                         }
                         return
                     }
-                    Task {
-                        await self.executor.run { $0.simulation.activeObserver.displayedSurface = alternativeSurfaces[index - 1] }
+                    Task { @CelestiaActor in
+                        let core = CelestiaActor.appCore
+                        core.simulation.activeObserver.displayedSurface = alternativeSurfaces[index - 1]
                     }
                 }
             }
@@ -357,15 +353,15 @@ extension InfoViewController {
     private func handleAction(selection: Selection, action: ObjectAction, sourceView: UIView) {
         switch action {
         case .select:
-            Task {
-                await self.executor.run { $0.simulation.selection = selection }
+            Task { @CelestiaActor in
+                let core = CelestiaActor.appCore
+                core.simulation.selection = selection
             }
         case .wrapped(let cac):
-            Task {
-                await self.executor.run { core in
-                    core.simulation.selection = selection
-                    core.receive(cac)
-                }
+            Task { @CelestiaActor in
+                let core = CelestiaActor.appCore
+                core.simulation.selection = selection
+                core.receive(cac)
             }
         case .web:
             if let url = infoContext?.url {
