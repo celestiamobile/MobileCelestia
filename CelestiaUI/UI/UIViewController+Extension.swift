@@ -171,9 +171,9 @@ public extension UIViewController {
         return alert
     }
 
-    @discardableResult func showOption(_ title: String, message: String? = nil, source: PopoverSource? = nil, completion: ((Bool) -> Void)? = nil) -> UIAlertController {
+    @discardableResult func showOption(_ title: String, message: String? = nil, confirmButtonTitle: String? = nil, source: PopoverSource? = nil, completion: ((Bool) -> Void)? = nil) -> UIAlertController {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        let confirmAction = UIAlertAction(title: CelestiaString("OK", comment: ""), style: .default, handler: { (_) in
+        let confirmAction = UIAlertAction(title: confirmButtonTitle ?? CelestiaString("OK", comment: ""), style: .default, handler: { (_) in
             completion?(true)
         })
         alert.addAction(confirmAction)

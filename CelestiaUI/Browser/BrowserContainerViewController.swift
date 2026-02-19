@@ -244,7 +244,7 @@ private extension BrowserContainerViewController {
         let simulation = core.simulation
         let universe = simulation.universe
         if let sol = simulation.findObject(from: "Sol").star {
-            let item = BrowserPredefinedItem(name: universe.starCatalog.starName(sol), alternativeName: CelestiaString("Solar System", comment: "Tab for solar system in Star Browser"), catEntry: sol, provider: universe)
+            let item = BrowserPredefinedItem(name: universe.starCatalog.starName(sol, localized: true), alternativeName: CelestiaString("Solar System", comment: "Tab for solar system in Star Browser"), catEntry: sol, provider: universe)
             item.categoryInfo = CategoryInfo(category: "B2E44BE0-9DF7-FAB9-92D4-F8D323D31250", isLeaf: false)
             return item
         }
@@ -313,7 +313,7 @@ private extension BrowserContainerViewController {
 
         let catalog = universe.dsoCatalog
         for dso in catalog {
-            let name = catalog.dsoName(dso)
+            let name = catalog.dsoName(dso, localized: true)
 
             switch dso.objectType {
             case .galaxy:
@@ -366,12 +366,12 @@ private extension BrowserContainerViewController {
         let observer = simulation.activeObserver
 
         func updateAccumulation(result: inout [String : BrowserItem], star: Star) {
-            let name = universe.starCatalog.starName(star)
+            let name = universe.starCatalog.starName(star, localized: true)
             result[name] = BrowserItem(name: name, catEntry: star, provider: universe)
         }
 
         func updateAccumulationOrdered(result: inout [BrowserItemKeyValuePair], star: Star) {
-            let name = universe.starCatalog.starName(star)
+            let name = universe.starCatalog.starName(star, localized: true)
             result.append(BrowserItemKeyValuePair(name: name, browserItem: BrowserItem(name: name, catEntry: star, provider: universe)))
         }
 

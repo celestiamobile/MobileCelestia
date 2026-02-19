@@ -20,6 +20,9 @@ public enum ObjectAction: Hashable, Sendable {
     case subsystem
     case alternateSurfaces
     case mark
+    #if !os(visionOS)
+    case relatedAddons
+    #endif
 }
 
 public enum ExternalObjectAction {
@@ -49,16 +52,48 @@ final public class InfoViewController: UICollectionViewController {
         case cockpit
     }
 
+    public struct Configuration {
+        let info: Selection
+        let core: AppCore
+        let showNavigationTitle: Bool
+        let backgroundColor: UIColor?
+        #if !os(visionOS)
+        let openRelatedAddons: @MainActor (UIViewController, String) -> Void
+        #endif
+
+        #if !os(visionOS)
+        public init(info: Selection, core: AppCore, showNavigationTitle: Bool, backgroundColor: UIColor?, openRelatedAddons: @escaping @MainActor (UIViewController, String) -> Void) {
+            self.info = info
+            self.core = core
+            self.showNavigationTitle = showNavigationTitle
+            self.backgroundColor = backgroundColor
+            self.openRelatedAddons = openRelatedAddons
+        }
+        #else
+        public init(info: Selection, core: AppCore, showNavigationTitle: Bool, backgroundColor: UIColor?) {
+            self.info = info
+            self.core = core
+            self.showNavigationTitle = showNavigationTitle
+            self.backgroundColor = backgroundColor
+        }
+        #endif
+    }
+
     private let core: AppCore
     private let showNavigationTitle: Bool
     private let backgroundColor: UIColor?
     private var info: Selection
+
+    #if !os(visionOS)
+    private let openRelatedAddons: (UIViewController, String) -> Void
+    #endif
 
     struct InfoContextObject: Sendable {
         let bodyInfo: BodyInfo
         let actions: [ObjectAction]
         let url: URL?
         let alternativeSurfaceNames: [String]?
+        let objectPath: String?
     }
 
     private var infoContext: InfoContextObject?
@@ -118,11 +153,15 @@ final public class InfoViewController: UICollectionViewController {
         return dataSource
     }()
 
-    public init(info: Selection, core: AppCore, showNavigationTitle: Bool, backgroundColor: UIColor?) {
-        self.core = core
-        self.info = info
-        self.showNavigationTitle = showNavigationTitle
-        self.backgroundColor = backgroundColor
+    public init(configuration: Configuration) {
+        self.core = configuration.core
+        self.info = configuration.info
+        self.showNavigationTitle = configuration.showNavigationTitle
+        self.backgroundColor = configuration.backgroundColor
+        #if !os(visionOS)
+        self.openRelatedAddons = configuration.openRelatedAddons
+        #endif
+
         let layout = InfoCollectionLayout()
         layout.sectionInsetReference = .fromSafeArea
 
@@ -188,6 +227,24 @@ final public class InfoViewController: UICollectionViewController {
     @CelestiaActor
     private func getContext(_ selection: Selection) -> (InfoContextObject, Bool?) {
         var actions = ObjectAction.allCases
+        let objectPath: String?
+        let object = selection.object
+        if let body = object as? Body {
+            objectPath = body.path(with: core.simulation.universe.starCatalog)
+        } else if let star = object as? Star {
+            objectPath = core.simulation.universe.starCatalog.starName(star, localized: false)
+        } else if let dso = object as? DSO {
+            objectPath = core.simulation.universe.dsoCatalog.dsoName(dso, localized: false)
+        } else {
+            objectPath = nil
+        }
+
+        #if !os(visionOS)
+        if let objectPath, !objectPath.isEmpty, !objectPath.starts(with: " ") {
+            actions.append(.relatedAddons)
+        }
+        #endif
+
         var contextURL: URL?
         if let urlString = selection.webInfoURL, let url = URL(string: urlString) {
             actions.append(.web)
@@ -206,7 +263,8 @@ final public class InfoViewController: UICollectionViewController {
                 bodyInfo: BodyInfo(selection: selection, core: core),
                 actions: actions,
                 url: contextURL,
-                alternativeSurfaceNames: contextAlternateSurfaceNames
+                alternativeSurfaceNames: contextAlternateSurfaceNames,
+                objectPath: objectPath
             ),
             selection.body?.canBeUsedAsCockpit == true ? core.simulation.activeObserver.cockpit == selection : nil
         )
@@ -308,8 +366,7 @@ extension InfoViewController {
     private func markActions(selection: Selection) -> [Action] {
         let options = (0...MarkerRepresentation.crosshair.rawValue).map{ MarkerRepresentation(rawValue: $0)?.localizedTitle ?? "" } + [CelestiaString("Unmark", comment: "Unmark an object")]
         return options.enumerated().map { index, option in
-            return Action(title: option) { [weak self] in
-                guard let self else { return }
+            return Action(title: option) {
                 if let marker = MarkerRepresentation(rawValue: UInt(index)) {
                     Task { @CelestiaActor in
                         let core = CelestiaActor.appCore
@@ -332,8 +389,7 @@ extension InfoViewController {
             []
         } else {
             ([CelestiaString("Default", comment: "")] + alternativeSurfaces).enumerated().map { index, option in
-                return Action(title: option) { [weak self] in
-                    guard let self else { return }
+                return Action(title: option) {
                     if index == 0 {
                         Task { @CelestiaActor in
                             let core = CelestiaActor.appCore
@@ -375,6 +431,12 @@ extension InfoViewController {
             }
         case .mark:
             showActionSheet(title: CelestiaString("Mark", comment: "Mark an object"), actions: markActions(selection: selection), from: sourceView)
+        #if !os(visionOS)
+        case .relatedAddons:
+            if let objectPath = infoContext?.objectPath {
+                openRelatedAddons(self, objectPath)
+            }
+        #endif
         }
     }
 
@@ -464,6 +526,10 @@ private extension ObjectAction {
             return CelestiaString("Alternate Surfaces", comment: "Alternative textures to display")
         case .mark:
             return CelestiaString("Mark", comment: "Mark an object")
+        #if !os(visionOS)
+        case .relatedAddons:
+            return CelestiaString("Add-ons", comment: "Add-ons for Celestia app")
+        #endif
         }
     }
 }

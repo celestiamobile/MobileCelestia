@@ -1173,7 +1173,24 @@ Device Model: \(model)
     }
 
     private func createSelectionInfoViewController(with selection: Selection, showNavigationTitle: Bool, backgroundColor: UIColor) -> InfoViewController {
-        let controller = InfoViewController(info: selection, core: core, showNavigationTitle: showNavigationTitle, backgroundColor: backgroundColor)
+        let controller = InfoViewController(configuration: InfoViewController.Configuration(info: selection, core: core, showNavigationTitle: showNavigationTitle, backgroundColor: backgroundColor, openRelatedAddons: { [weak self] viewController, objectPath in
+            guard let self else { return }
+            guard self.subscriptionManager.transactionInfo() != nil else {
+                viewController.showOption(
+                    CelestiaString("Related Add-ons", comment: "Alert title for add-ons that are related to an object"),
+                    message: CelestiaString("To access related add-ons, you need to have an active Celestia PLUS subscription.", comment: "Alert message for requiring Celestia PLUS to access add-ons that are related to an object"),
+                    confirmButtonTitle: CelestiaString("Get Celestia PLUS", comment: "Action button to get Celestia PLUS"),
+                    completion: { [weak self, weak viewController] selected in
+                        guard let self, let viewController, selected else { return }
+                        self.showSubscription(for: viewController)
+                    }
+                )
+                return
+            }
+
+            let viewController = RelatedAddonsViewController(objectPath: objectPath, executor: self.executor, resourceManager: self.resourceManager, subscriptionManager: self.subscriptionManager, requestHandler: self.requestHandler, actionHandler: self.commonWebActionHandler)
+            self.showViewController(viewController, key: objectPath, customToolbar: true)
+        }))
         controller.selectionHandler = { [weak self] selection, action in
             guard let self else { return }
             switch action {

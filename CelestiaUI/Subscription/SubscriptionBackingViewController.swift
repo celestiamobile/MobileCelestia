@@ -22,7 +22,7 @@ open class SubscriptionBackingViewController: UIViewController {
     private lazy var emptyHintView: EmptyHintView = {
         let view = EmptyHintView()
         view.title = CelestiaString("This feature is only available to Celestia PLUS users.", comment: "")
-        view.actionText = CelestiaString("Get Celestia PLUS", comment: "")
+        view.actionText = CelestiaString("Get Celestia PLUS", comment: "Action button to get Celestia PLUS")
         view.action = { [weak self] in
             guard let self else { return }
             self.requestOpenSubscriptionManagement()
@@ -140,7 +140,7 @@ open class SubscriptionBackingViewController: UIViewController {
                     config.button = .filled()
                 }
                 #endif
-                config.button.title = CelestiaString("Get Celestia PLUS", comment: "")
+                config.button.title = CelestiaString("Get Celestia PLUS", comment: "Action button to get Celestia PLUS")
                 config.buttonProperties.primaryAction = UIAction { [weak self] _ in
                     guard let self else { return }
                     self.requestOpenSubscriptionManagement()
