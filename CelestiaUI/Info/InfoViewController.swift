@@ -15,7 +15,7 @@ extension LPLinkMetadata: @unchecked @retroactive Sendable {}
 
 public enum ObjectAction: Hashable, Sendable {
     case select
-    case web(url: URL)
+    case web
     case wrapped(action: CelestiaAction)
     case subsystem
     case alternateSurfaces
@@ -54,8 +54,18 @@ final public class InfoViewController: UICollectionViewController {
     private let showNavigationTitle: Bool
     private let backgroundColor: UIColor?
     private var info: Selection
-    private var bodyInfo: BodyInfo
-    private var bodyInfoNeedsUpdating = false
+
+    struct InfoContextObject: Sendable {
+        let bodyInfo: BodyInfo
+        let actions: [ObjectAction]
+        let url: URL?
+        let alternativeSurfaceNames: [String]?
+    }
+
+    private var infoContext: InfoContextObject?
+    private var cockpitStatus: Bool?
+
+    private lazy var emptyLoadingView = EmptyLoadingView()
 
     public var selectionHandler: ((Selection, ExternalObjectAction) -> Void)?
 
@@ -66,7 +76,9 @@ final public class InfoViewController: UICollectionViewController {
             switch itemIdentifier {
             case .description:
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Description", for: indexPath) as! BodyDescriptionCell
-                cell.update(with: self.bodyInfo, showTitle: !self.showNavigationTitle)
+                if let info = self.infoContext?.bodyInfo {
+                    cell.update(with: info, showTitle: !self.showNavigationTitle)
+                }
                 return cell
             case .link:
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "LinkPreview", for: indexPath) as! LinkPreviewCell
@@ -76,9 +88,10 @@ final public class InfoViewController: UICollectionViewController {
                 let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Switch", for: indexPath) as! BodySwitchCell
                 cell.title = CelestiaString("Use as Cockpit", comment: "Option to use a spacecraft as cockpit")
                 let cockpit = self.info
-                cell.enabled = cockpit == self.core.simulation.activeObserver.cockpit
+                cell.enabled  = self.cockpitStatus == true
                 cell.toggleBlock = { [weak self] isEnabled in
                     guard let self else { return }
+                    self.cockpitStatus = isEnabled
                     Task {
                         await self.executor.run { core in
                             core.simulation.activeObserver.cockpit = isEnabled ? cockpit : Selection()
@@ -91,7 +104,7 @@ final public class InfoViewController: UICollectionViewController {
                 cell.title = action.description
                 switch action {
                 case .alternateSurfaces:
-                    cell.menu = self.menuForActions(alternativeSurfaceActions(selection: self.info))
+                    cell.menu = self.menuForActions(alternativeSurfaceActions(selection: self.info, alternativeSurfaceNames: self.infoContext?.alternativeSurfaceNames))
                 case .mark:
                     cell.menu = self.menuForActions(markActions(selection: self.info))
                 default:
@@ -114,16 +127,16 @@ final public class InfoViewController: UICollectionViewController {
         self.info = info
         self.showNavigationTitle = showNavigationTitle
         self.backgroundColor = backgroundColor
-        self.bodyInfo = BodyInfo(selection: info, core: core)
         let layout = InfoCollectionLayout()
         layout.sectionInsetReference = .fromSafeArea
 
         super.init(collectionViewLayout: layout)
 
+        let name = core.simulation.universe.name(for: info)
         if showNavigationTitle {
-            title = bodyInfo.name
+            title = name
         }
-        windowTitle = bodyInfo.name
+        windowTitle = name
 
         if #available(iOS 17, visionOS 1, *) {
             registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { (self: Self, _) in
@@ -140,66 +153,113 @@ final public class InfoViewController: UICollectionViewController {
         super.viewDidLoad()
 
         setup()
-        reload()
+        reloadCollectionView()
+
+        Task {
+            await reload()
+        }
+    }
+
+    @available(iOS 17, visionOS 1, *)
+    public override func updateContentUnavailableConfiguration(using state: UIContentUnavailableConfigurationState) {
+        if infoContext == nil {
+            contentUnavailableConfiguration = UIContentUnavailableConfiguration.loading()
+        } else {
+            contentUnavailableConfiguration = nil
+        }
     }
 
     public func setSelection(_ selection: Selection) {
         guard !info.isEqual(to: selection) else {
             return
         }
-        linkMetaData = nil
+
         info = selection
-        bodyInfoNeedsUpdating = true
-        reload()
+        let name = core.simulation.universe.name(for: selection)
+        if showNavigationTitle {
+            title = name
+        }
+        windowTitle = name
+
+        linkMetaData = nil
+        infoContext = nil
+        reloadCollectionView()
+        Task {
+            await reload()
+        }
     }
 
-    private func reload(fetchLinkData: Bool = true) {
-        if bodyInfoNeedsUpdating {
-            bodyInfo = BodyInfo(selection: info, core: core)
-            if showNavigationTitle {
-                title = bodyInfo.name
-            }
-            windowTitle = bodyInfo.name
-            bodyInfoNeedsUpdating = false
-        }
-
-        var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
-        snapshot.appendSections([.content, .buttons])
-        snapshot.appendItems([.description], toSection: .content)
-        if info.body?.canBeUsedAsCockpit == true {
-            snapshot.appendItems([.cockpit], toSection: .content)
-        }
-        if linkMetaData != nil {
-            snapshot.appendItems([.link], toSection: .content)
-        }
+    @CelestiaActor
+    private func getContext(_ selection: Selection) -> (InfoContextObject, Bool?) {
         var actions = ObjectAction.allCases
-        if let urlString = info.webInfoURL, let url = URL(string: urlString) {
-            actions.append(.web(url: url))
+        var contextURL: URL?
+        if let urlString = selection.webInfoURL, let url = URL(string: urlString) {
+            actions.append(.web)
+            contextURL = url
         }
-        if let surfaces = info.body?.alternateSurfaceNames, surfaces.count > 0 {
+        var contextAlternateSurfaceNames: [String]?
+        if let surfaces = selection.body?.alternateSurfaceNames, surfaces.count > 0 {
             actions.append(.alternateSurfaces)
+            contextAlternateSurfaceNames = surfaces
         }
         actions.append(.subsystem)
         actions.append(.mark)
-        snapshot.appendItems(actions.map { .button($0) }, toSection: .buttons)
 
-        dataSource.applySnapshotUsingReloadData(snapshot)
+        return (
+            InfoContextObject(
+                bodyInfo: BodyInfo(selection: selection, core: core),
+                actions: actions,
+                url: contextURL,
+                alternativeSurfaceNames: contextAlternateSurfaceNames
+            ),
+            selection.body?.canBeUsedAsCockpit == true ? core.simulation.activeObserver.cockpit == selection : nil
+        )
+    }
 
-        if fetchLinkData {
-            guard let urlString = info.webInfoURL, let url = URL(string: urlString) else { return }
+    private func reload(fetchLinkData: Bool = true) async {
+        let (newInfoContext, newCockpitStatus) = await getContext(info)
+        cockpitStatus = newCockpitStatus
+        infoContext = newInfoContext
 
+        reloadCollectionView()
+
+        if fetchLinkData, let url = newInfoContext.url {
             let current = info
             let metaDataProvider = LPMetadataProvider()
-            Task { [weak self] in
-                do {
-                    let metaData = try await metaDataProvider.startFetchingMetadata(for: url)
-                    guard let self else { return }
-                    guard self.info.isEqual(to: current) else { return }
-                    self.linkMetaData = metaData
-                    self.reload(fetchLinkData: false)
-                } catch {}
+            do {
+                let metaData = try await metaDataProvider.startFetchingMetadata(for: url)
+                guard info.isEqual(to: current) else { return }
+                linkMetaData = metaData
+                reloadCollectionView()
+            } catch {}
+        }
+    }
+
+    private func reloadCollectionView() {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
+        if let infoContext {
+            snapshot.appendSections([.content, .buttons])
+            snapshot.appendItems([.description], toSection: .content)
+            if cockpitStatus != nil {
+                snapshot.appendItems([.cockpit], toSection: .content)
+            }
+            if linkMetaData != nil {
+                snapshot.appendItems([.link], toSection: .content)
+            }
+            snapshot.appendItems(infoContext.actions.map { .button($0) }, toSection: .buttons)
+        }
+        if #available(iOS 17, visionOS 1, *) {
+            setNeedsUpdateContentUnavailableConfiguration()
+        } else {
+            if infoContext == nil {
+                collectionView.backgroundView = emptyLoadingView
+                emptyLoadingView.startsAnimating()
+            } else {
+                collectionView.backgroundView = nil
+                emptyLoadingView.stopAnimating()
             }
         }
+        dataSource.applySnapshotUsingReloadData(snapshot)
     }
 
     public override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -272,8 +332,8 @@ extension InfoViewController {
         }
     }
 
-    private func alternativeSurfaceActions(selection: Selection) -> [Action] {
-        let alternativeSurfaces = selection.body?.alternateSurfaceNames ?? []
+    private func alternativeSurfaceActions(selection: Selection, alternativeSurfaceNames: [String]?) -> [Action] {
+        let alternativeSurfaces = alternativeSurfaceNames ?? []
         return if alternativeSurfaces.isEmpty {
             []
         } else {
@@ -307,12 +367,16 @@ extension InfoViewController {
                     core.receive(cac)
                 }
             }
-        case .web(let url):
-            UIApplication.shared.open(url)
+        case .web:
+            if let url = infoContext?.url {
+                UIApplication.shared.open(url)
+            }
         case .subsystem:
             selectionHandler?(selection, .subsystem)
         case .alternateSurfaces:
-            showActionSheet(title: CelestiaString("Alternate Surfaces", comment: "Alternative textures to display"), actions: alternativeSurfaceActions(selection: selection), from: sourceView)
+            if let alternativeSurfaceNames = infoContext?.alternativeSurfaceNames {
+                showActionSheet(title: CelestiaString("Alternate Surfaces", comment: "Alternative textures to display"), actions: alternativeSurfaceActions(selection: selection, alternativeSurfaceNames: alternativeSurfaceNames), from: sourceView)
+            }
         case .mark:
             showActionSheet(title: CelestiaString("Mark", comment: "Mark an object"), actions: markActions(selection: selection), from: sourceView)
         }
@@ -342,6 +406,8 @@ class InfoCollectionLayout: UICollectionViewFlowLayout {
         super.prepare()
 
         guard let dataSource = collectionView.dataSource else { return }
+        guard (dataSource.numberOfSections?(in: collectionView) ?? 1) > twoColumnSection else { return }
+
         let numberOfItems = dataSource.collectionView(collectionView, numberOfItemsInSection: twoColumnSection)
         var previousAttributes: UICollectionViewLayoutAttributes?
         for item in 0..<numberOfItems {
@@ -392,7 +458,7 @@ private extension ObjectAction {
         switch self {
         case .select:
             return CelestiaString("Select", comment: "Select an object")
-        case .web(_):
+        case .web:
             return CelestiaString("Web Info", comment: "Web info for an object")
         case .wrapped(let action):
             return action.description
