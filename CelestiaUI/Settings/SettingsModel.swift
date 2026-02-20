@@ -10,6 +10,7 @@
 import CelestiaCore
 import CelestiaFoundation
 import Foundation
+import UIKit
 
 public enum OtherSettingType: Sendable {
     case about
@@ -20,6 +21,9 @@ public enum OtherSettingType: Sendable {
     case frameRate
     case font
     case toolbar
+    #if !targetEnvironment(macCatalyst)
+    case appIcon
+    #endif
     #endif
 }
 
@@ -848,12 +852,16 @@ public func rendererSettings(extraItems: [SettingItem]) -> SettingSection {
 }
 
 #if !os(visionOS)
+@MainActor
 public func celestiaPlusSettings() -> SettingSection {
     var items = [
         SettingItem(name: CelestiaString("Font", comment: ""),  associatedItem: .other(type: .font)),
     ]
     #if !targetEnvironment(macCatalyst)
     items.insert(SettingItem(name: CelestiaString("Toolbar", comment: "Toolbar customization entry in Settings"), associatedItem: .other(type: .toolbar)), at: 0)
+    if UIApplication.shared.supportsAlternateIcons {
+        items.append(SettingItem(name: CelestiaString("App Icon", comment: "App icon customization entry in Settings"), associatedItem: .other(type: .appIcon)))
+    }
     #endif
     return SettingSection(title: CelestiaString("Celestia PLUS", comment: "Name for the subscription service"), items: items)
 }

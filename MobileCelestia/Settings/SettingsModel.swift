@@ -113,6 +113,7 @@ private let advanceSettingExtraItems = [
     gameControllerItem,
 ]
 
+@MainActor
 let mainSetting: [SettingSection] = {
     var items = [
         displaySettings(),

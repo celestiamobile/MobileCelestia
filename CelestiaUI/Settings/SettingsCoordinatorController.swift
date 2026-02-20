@@ -208,6 +208,13 @@ private extension SettingsCoordinatorController {
                         guard let self else { return }
                         self.openSubscriptionManagement(self)
                     })
+                #if !targetEnvironment(macCatalyst)
+                case .appIcon:
+                    viewController = AppIconSettingViewController(subscriptionManager: subscriptionManager, assetProvider: assetProvider, openSubscriptionManagement: { [weak self] in
+                        guard let self else { return }
+                        self.openSubscriptionManagement(self)
+                    })
+                #endif
 #endif
                 }
             case .slider, .prefSwitch, .checkmark, .action, .custom, .keyedSelection, .prefSelection, .selection, .prefSlider:

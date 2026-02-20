@@ -15,6 +15,10 @@ public enum AssetImage {
     case browserTabSso
     case browserTabStar
     case tutorialSwitchMode
+    #if !os(visionOS) && !targetEnvironment(macCatalyst)
+    case defaultIcon
+    case classicIcon
+    #endif
 }
 
 @MainActor

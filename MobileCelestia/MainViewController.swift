@@ -80,6 +80,7 @@ class MainViewController: UIViewController {
 
     private lazy var subscriptionManager = SubscriptionManager(userDefaults: userDefaults, requestHandler: requestHandler)
     private var subscriptionUpdateTask: Task<Void, Error>?
+    private var isObservingSubscriptionChange = false
 
     private lazy var commonWebActionHandler = { [weak self] (action: CommonWebViewController.WebAction, viewController: UIViewController) in
         guard let self else { return }
@@ -152,18 +153,24 @@ class MainViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(requestOpenBookmark(_:)), name: requestOpenBookmarkNotificationName, object: nil)
     }
 
-    #if !targetEnvironment(macCatalyst)
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
+        #if !targetEnvironment(macCatalyst)
         if #available(iOS 16, *), Self.canUseSystemSheetPresentationController, !disabledScalingBehindSheets {
             if let sheet = view.window?.value(forKey: "rootPresentationController") as? UISheetPresentationController {
                 sheet.setValue(false, forKey: "shouldScaleDownBehindDescendantSheets")
                 disabledScalingBehindSheets = true
             }
         }
+        #endif
+
+        if !isObservingSubscriptionChange {
+            isObservingSubscriptionChange = true
+            subscriptionStatusChanged()
+            NotificationCenter.default.addObserver(self, selector: #selector(subscriptionStatusChanged), name: .subscriptionStatusChanged, object: nil)
+        }
     }
-    #endif
 
     override var prefersHomeIndicatorAutoHidden: Bool {
          return true
@@ -199,6 +206,17 @@ class MainViewController: UIViewController {
 
         view.setNeedsUpdateConstraints()
         view.updateConstraintsIfNeeded()
+    }
+}
+
+extension MainViewController {
+    @objc private func subscriptionStatusChanged() {
+        #if !targetEnvironment(macCatalyst)
+        let app = UIApplication.shared
+        if app.supportsAlternateIcons, subscriptionManager.transactionInfo() == nil, app.alternateIconName != nil {
+            app.setAlternateIconName(nil, completionHandler: nil)
+        }
+        #endif
     }
 }
 
@@ -1528,6 +1546,12 @@ struct CelestiaAssetProvider: AssetProvider {
             }
         case .tutorialSwitchMode:
             .tutorialSwitchMode
+        #if !targetEnvironment(macCatalyst)
+        case .defaultIcon:
+            .defaultIconPreview
+        case .classicIcon:
+            .classicIconPreview
+        #endif
         }
     }
 }
