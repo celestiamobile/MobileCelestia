@@ -92,15 +92,13 @@ class LinkTextView: UIView, UIContentView {
         currentConfiguration = configuration
         directionalLayoutMargins = configuration.directionalLayoutMargins
         let attributedString = NSMutableAttributedString(string: configuration.info.text)
+        attributedString.addAttributes([.foregroundColor: UIColor.secondaryLabel, .font: UIFont.preferredFont(forTextStyle: .footnote)], range: NSMakeRange(0, configuration.info.text.count))
         for link in configuration.info.links {
             let linkTextRange = (configuration.info.text as NSString).range(of: link.text)
             guard linkTextRange.location != NSNotFound else {
-                textView.text = nil
-                textView.attributedText = nil
-                return
+                continue
             }
-            attributedString.addAttributes([.foregroundColor: UIColor.secondaryLabel, .font: UIFont.preferredFont(forTextStyle: .footnote)], range: NSMakeRange(0, configuration.info.text.count))
-            attributedString.addAttributes([.link: link.link], range: linkTextRange)
+            attributedString.addAttributes([.link: link.link, .underlineStyle: NSUnderlineStyle.single.rawValue], range: linkTextRange)
         }
         textView.attributedText = attributedString
     }
