@@ -238,6 +238,17 @@ extension MainViewController {
                 guard let id = components.queryItems?.first(where: { $0.name == "guide" })?.value else { return }
                 guideToOpen = id
             }
+        } else if url.url.scheme == "celestia" {
+            guard let components = URLComponents(url: url.url, resolvingAgainstBaseURL: false) else { return }
+            if components.host == "article" {
+                if let id = components.path.split(separator: "/").filter({ $0.isEmpty }).first {
+                    guideToOpen = String(id)
+                }
+            } else if components.host == "addon" {
+                if let id = components.path.split(separator: "/").filter({ $0.isEmpty }).first {
+                    addonToOpen = String(id)
+                }
+            }
         }
     }
 
