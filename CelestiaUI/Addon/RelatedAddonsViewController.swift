@@ -74,6 +74,7 @@ private extension URL {
             URLQueryItem(name: "lang", value: AppCore.language),
             URLQueryItem(name: "platform", value: platform),
             URLQueryItem(name: "transparentBackground", value: "true"),
+            URLQueryItem(name: "api", value: "2"),
         ])
         components.queryItems = queryItems
         return components.url!

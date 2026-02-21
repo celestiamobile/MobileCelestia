@@ -12,10 +12,10 @@ import UIKit
 
 public class ResourceCategoriesViewController: ToolbarNavigationContainerController {
     private let webViewController: CommonWebViewController
-    private let subscriptionManager: SubscriptionManager
+    private let subscriptionManager: SubscriptionManager?
     private let category: CategoryInfo?
 
-    public init(category: CategoryInfo?, executor: AsyncProviderExecutor, resourceManager: ResourceManager, subscriptionManager: SubscriptionManager, requestHandler: RequestHandler, actionHandler: ((CommonWebViewController.WebAction, UIViewController) -> Void)?) {
+    public init(category: CategoryInfo?, executor: AsyncProviderExecutor, resourceManager: ResourceManager, subscriptionManager: SubscriptionManager?, requestHandler: RequestHandler, actionHandler: ((CommonWebViewController.WebAction, UIViewController) -> Void)?) {
         self.category = category
         self.webViewController = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .categoryURL(category: category,subscriptionManager: subscriptionManager), requestHandler: requestHandler, actionHandler: actionHandler, filterURL: false)
         self.subscriptionManager = subscriptionManager
@@ -33,6 +33,8 @@ public class ResourceCategoriesViewController: ToolbarNavigationContainerControl
     }
 
     @objc private func handleSubscriptionStatusChanged() {
+        guard let subscriptionManager else { return }
+
         switch subscriptionManager.status {
         case .verified:
             // We only handle not subscribed -> subscribed here
@@ -47,14 +49,16 @@ public class ResourceCategoriesViewController: ToolbarNavigationContainerControl
 
 private extension URL {
     @MainActor
-    static func categoryURL(category: CategoryInfo?, subscriptionManager: SubscriptionManager) -> URL {
+    static func categoryURL(category: CategoryInfo?, subscriptionManager: SubscriptionManager?) -> URL {
         var queryItems = [URLQueryItem]()
-        if let (transactionID, isSandbox) = subscriptionManager.transactionInfo() {
-            queryItems.append(URLQueryItem(name: "transactionIdApple", value: "\(transactionID)"))
-            queryItems.append(URLQueryItem(name: "isSandboxApple", value: isSandbox ? "1" : "0"))
-        } else {
-            queryItems.append(URLQueryItem(name: "transactionIdApple", value: ""))
-            queryItems.append(URLQueryItem(name: "isSandboxApple", value: "1"))
+        if let subscriptionManager {
+            if let (transactionID, isSandbox) = subscriptionManager.transactionInfo() {
+                queryItems.append(URLQueryItem(name: "transactionIdApple", value: "\(transactionID)"))
+                queryItems.append(URLQueryItem(name: "isSandboxApple", value: isSandbox ? "1" : "0"))
+            } else {
+                queryItems.append(URLQueryItem(name: "transactionIdApple", value: ""))
+                queryItems.append(URLQueryItem(name: "isSandboxApple", value: "1"))
+            }
         }
         let baseURL: String
         if let category, category.isLeaf {
