@@ -74,6 +74,7 @@ class MainViewController: UIViewController {
     private var scriptOrCelURL: UniformedURL?
     private var addonToOpen: String?
     private var guideToOpen: String?
+    private var objectPathToOpen: String?
 
     private var bottomToolbar: BottomControlViewController?
     private var bottomToolbarSizeConstraints = [NSLayoutConstraint]()
@@ -241,12 +242,17 @@ extension MainViewController {
         } else if url.url.scheme == "celestia" {
             guard let components = URLComponents(url: url.url, resolvingAgainstBaseURL: false) else { return }
             if components.host == "article" {
-                if let id = components.path.split(separator: "/").filter({ $0.isEmpty }).first {
+                if let id = components.path.split(separator: "/").filter({ !$0.isEmpty }).first {
                     guideToOpen = String(id)
                 }
             } else if components.host == "addon" {
-                if let id = components.path.split(separator: "/").filter({ $0.isEmpty }).first {
+                if let id = components.path.split(separator: "/").filter({ !$0.isEmpty }).first {
                     addonToOpen = String(id)
+                }
+            } else if components.host == "object" {
+                let path = components.path.split(separator: "/").filter({ !$0.isEmpty }).joined(separator: "/")
+                if !path.isEmpty {
+                    objectPathToOpen = path
                 }
             }
         }
@@ -287,6 +293,7 @@ extension MainViewController {
             addonToOpen = nil
             guideToOpen = nil
             scriptOrCelURL = nil
+            objectPathToOpen = nil
         }
 
         let onboardMessageDisplayed: Bool? = userDefaults[.onboardMessageDisplayed]
@@ -333,6 +340,19 @@ extension MainViewController {
                     self.showViewController(nav, key: addon, prefersMediumDetent: prefersMediumDetent, customToolbar: true)
                 } catch {}
             }
+            cleanup()
+            return
+        }
+
+        if let objectPathToOpen {
+            Task {
+                let selection = await Task { @CelestiaActor in
+                    CelestiaActor.appCore.simulation.findObject(from: objectPathToOpen)
+                }.value
+                guard !selection.isEmpty else { return }
+                self.showSelectionInfo(with: selection)
+            }
+
             cleanup()
             return
         }
