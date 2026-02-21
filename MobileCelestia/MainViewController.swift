@@ -275,12 +275,33 @@ extension MainViewController {
                     let nav = BaseNavigationController(rootViewController: vc)
                     nav.setNavigationBarHidden(true, animated: false)
                     showViewController(nav, key: id, prefersMediumDetent: prefersMediumDetent, titleVisible: false)
-                case .object(let path):
+                case let .object(path, action):
                     Task {
-                        let selection = await Task { @CelestiaActor in
-                            CelestiaActor.appCore.simulation.findObject(from: path)
+                        let selection: Selection? = await Task { @CelestiaActor in
+                            let core = CelestiaActor.appCore
+                            let selection = core.simulation.findObject(from: path)
+                            guard !selection.isEmpty else { return nil }
+
+                            if let action {
+                                let objectAction = ObjectAction(action)
+                                switch objectAction {
+                                case .select:
+                                    core.simulation.selection = selection
+                                case let .wrapped(action):
+                                    core.simulation.selection = selection
+                                    core.receive(action)
+                                default:
+                                    break
+                                }
+
+                                // Already handled
+                                return nil
+                            }
+
+                            return selection
                         }.value
-                        guard !selection.isEmpty else { return }
+
+                        guard let selection else { return }
                         self.showSelectionInfo(with: selection)
                     }
                 }

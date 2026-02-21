@@ -15,7 +15,19 @@ import UIKit
 @MainActor public enum WindowURL: Codable, Hashable, Sendable {
     case addon(id: String)
     case guide(id: String)
-    case object(path: String)
+    case object(path: String, action: ObjectURLAction?)
+}
+
+@MainActor public enum ObjectURLAction: String, Codable, Hashable, Sendable {
+    case select
+    case go
+    case center
+    case follow
+    case chase
+    case track
+    case syncOrbit
+    case lock
+    case land
 }
 
 @MainActor public enum AppURL: Codable, Hashable, Sendable {
@@ -75,7 +87,13 @@ import UIKit
                 } else if components.host == "object" {
                     let path = components.path.split(separator: "/").filter({ !$0.isEmpty }).joined(separator: "/")
                     if !path.isEmpty {
-                        appURL = .windowURL(url: .object(path: path), universal: false)
+                        let action: ObjectURLAction?
+                        if let value = components.queryItems?.first(where: { $0.name == "action" })?.value {
+                            action = ObjectURLAction(rawValue: value)
+                        } else {
+                            action = nil
+                        }
+                        appURL = .windowURL(url: .object(path: path, action: action), universal: false)
                     }
                 }
             }

@@ -133,11 +133,11 @@ public class GameControllerManager: @unchecked Sendable {
                     await self.executor.run { pressed ? $0.joystickButtonDown(.button1) : $0.joystickButtonUp(.button1) }
                 case .stopSpeed:
                     if !pressed {
-                        await self.executor.run { $0.charEnter(115) }
+                        await self.executor.run { $0.receive(.stop) }
                     }
                 case .reverseSpeed:
                     if !pressed {
-                        await self.executor.run { $0.charEnter(113) }
+                        await self.executor.run { $0.receive(.reverseSpeed) }
                     }
                 case .reverseOrientation:
                     if !pressed {
@@ -151,11 +151,11 @@ public class GameControllerManager: @unchecked Sendable {
                     }
                 case .goTo:
                     if !pressed {
-                        await self.executor.run { $0.charEnter(103) }
+                        await self.executor.run { $0.receive(.goTo) }
                     }
                 case .esc:
                     if !pressed {
-                        await self.executor.run { $0.charEnter(27) }
+                        await self.executor.run { $0.receive(.cancelScript) }
                     }
                 case .pitchUp:
                     await self.executor.run { pressed ? $0.keyDown(26) : $0.keyUp(26) }

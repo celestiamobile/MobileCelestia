@@ -8,6 +8,7 @@
 // of the License, or (at your option) any later version.
 
 import CelestiaCore
+import CelestiaFoundation
 import LinkPresentation
 import UIKit
 
@@ -598,6 +599,31 @@ public extension MarkerRepresentation {
             return CelestiaString("Square", comment: "Marker")
         @unknown default:
             return CelestiaString("Unknown", comment: "")
+        }
+    }
+}
+
+public extension ObjectAction {
+    init(_ action: ObjectURLAction) {
+        switch action {
+        case .select:
+            self = .select
+        case .go:
+            self = .wrapped(action: .goTo)
+        case .center:
+            self = .wrapped(action: .center)
+        case .follow:
+            self = .wrapped(action: .follow)
+        case .chase:
+            self = .wrapped(action: .chase)
+        case .track:
+            self = .wrapped(action: .track)
+        case .syncOrbit:
+            self = .wrapped(action: .syncOrbit)
+        case .lock:
+            self = .wrapped(action: .lock)
+        case .land:
+            self = .wrapped(action: .goToSurface)
         }
     }
 }
