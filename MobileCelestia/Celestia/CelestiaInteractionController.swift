@@ -819,11 +819,11 @@ extension CelestiaInteractionController {
         executor.runAsynchronously { $0.keyUp(with: input, modifiers: modifiers) }
     }
 
-    func openURL(_ url: UniformedURL) {
-        if url.url.isFileURL {
-            executor.runAsynchronously { $0.runScript(at: url.url.path) }
+    func openURL(_ url: URL) {
+        if url.isFileURL {
+            executor.runAsynchronously { $0.runScript(at: url.path) }
         } else {
-            executor.runAsynchronously { $0.go(to: url.url.absoluteString) }
+            executor.runAsynchronously { $0.go(to: url.absoluteString) }
         }
     }
 }

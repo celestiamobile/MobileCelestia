@@ -17,8 +17,7 @@ class CommonSceneDelegate: UIResponder, UIWindowSceneDelegate {
 
     func scene(_ scene: UIScene, openURLContexts URLContexts: Set<UIOpenURLContext>) {
         guard let urlContext = URLContexts.first else { return }
-        NotificationCenter.default.post(name: newURLOpenedNotificationName, object: nil, userInfo: [
-            newURLOpenedNotificationURLKey: UniformedURL(url: urlContext.url, securityScoped: urlContext.url.isFileURL && urlContext.options.openInPlace)
-        ])
+        guard let url = AppURL.from(urlContext: urlContext) else { return }
+        NotificationCenter.default.post(name: newURLOpenedNotificationName, object: nil, userInfo: [newURLOpenedNotificationURLKey: url])
     }
 }

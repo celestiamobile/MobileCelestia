@@ -45,9 +45,9 @@ class MainSceneDelegate: CommonSceneDelegate {
         }
         #endif
         let window = UIWindow(windowScene: windowScene)
-        var launchURL: UniformedURL?
-        if let url = connectionOptions.urlContexts.first {
-            launchURL = UniformedURL(url: url.url, securityScoped: url.url.isFileURL && url.options.openInPlace)
+        var launchURL: AppURL?
+        if let urlContext = connectionOptions.urlContexts.first {
+            launchURL = AppURL.from(urlContext: urlContext)
         }
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let vc = MainViewController(initialURL: launchURL, screen: windowScene.screen, core: appDelegate.core, executor: appDelegate.executor, userDefaults: appDelegate.userDefaults)

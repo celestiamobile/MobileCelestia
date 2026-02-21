@@ -71,10 +71,7 @@ class MainViewController: UIViewController {
     private var disabledScalingBehindSheets: Bool = false
     #endif
 
-    private var scriptOrCelURL: UniformedURL?
-    private var addonToOpen: String?
-    private var guideToOpen: String?
-    private var objectPathToOpen: String?
+    private var urlToOpen: AppURL?
 
     private var bottomToolbar: BottomControlViewController?
     private var bottomToolbarSizeConstraints = [NSLayoutConstraint]()
@@ -93,7 +90,7 @@ class MainViewController: UIViewController {
         }
     }
 
-    init(initialURL: UniformedURL?, screen: UIScreen, core: AppCore, executor: CelestiaExecutor, userDefaults: UserDefaults) {
+    init(initialURL: AppURL?, screen: UIScreen, core: AppCore, executor: CelestiaExecutor, userDefaults: UserDefaults) {
         self.core = core
         self.executor = executor
         self.userDefaults = userDefaults
@@ -140,8 +137,6 @@ class MainViewController: UIViewController {
         install(loadingController)
 
         NotificationCenter.default.addObserver(self, selector: #selector(newURLOpened(_:)), name: newURLOpenedNotificationName, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(newAddonOpened(_:)), name: newAddonOpenedNotificationName, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(newGuideOpened(_:)), name: newGuideOpenedNotificationName, object: nil)
         #if !targetEnvironment(macCatalyst)
         NotificationCenter.default.addObserver(self, selector: #selector(newScreenConnected(_:)), name: newScreenConnectedNotificationName, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(screenDisconnected(_:)), name: screenDisconnectedNotificationName, object: nil)
@@ -222,40 +217,8 @@ extension MainViewController {
 }
 
 extension MainViewController {
-    private func receivedURL(_ url: UniformedURL) {
-        if url.url.isFileURL {
-            scriptOrCelURL = url
-        } else if url.url.scheme == "cel" {
-            scriptOrCelURL = url
-        } else if url.url.scheme == "celaddon" {
-            guard let components = URLComponents(url: url.url, resolvingAgainstBaseURL: false) else { return }
-            if components.host == "item" {
-                guard let id = components.queryItems?.first(where: { $0.name == "item" })?.value else { return }
-                addonToOpen = id
-            }
-        } else if url.url.scheme == "celguide" {
-            guard let components = URLComponents(url: url.url, resolvingAgainstBaseURL: false) else { return }
-            if components.host == "guide" {
-                guard let id = components.queryItems?.first(where: { $0.name == "guide" })?.value else { return }
-                guideToOpen = id
-            }
-        } else if url.url.scheme == "celestia" {
-            guard let components = URLComponents(url: url.url, resolvingAgainstBaseURL: false) else { return }
-            if components.host == "article" {
-                if let id = components.path.split(separator: "/").filter({ !$0.isEmpty }).first {
-                    guideToOpen = String(id)
-                }
-            } else if components.host == "addon" {
-                if let id = components.path.split(separator: "/").filter({ !$0.isEmpty }).first {
-                    addonToOpen = String(id)
-                }
-            } else if components.host == "object" {
-                let path = components.path.split(separator: "/").filter({ !$0.isEmpty }).joined(separator: "/")
-                if !path.isEmpty {
-                    objectPathToOpen = path
-                }
-            }
-        }
+    private func receivedURL(_ url: AppURL) {
+        urlToOpen = url
     }
 
     @objc private func requestOpenFile() {
@@ -267,93 +230,62 @@ extension MainViewController {
     }
 
     @objc private func newURLOpened(_ notification: Notification) {
-        guard let url = notification.userInfo?[newURLOpenedNotificationURLKey] as? UniformedURL else { return }
+        guard let url = notification.userInfo?[newURLOpenedNotificationURLKey] as? AppURL else { return }
         receivedURL(url)
         guard status == .loaded else { return }
         openURLOrScriptOrGreeting()
     }
 
-    @objc private func newAddonOpened(_ notification: Notification) {
-        guard let addon = notification.userInfo?[newAddonOpenedNotificationIDKey] as? String else { return }
-        addonToOpen = addon
-        guard status == .loaded else { return }
-        openURLOrScriptOrGreeting()
-    }
-
-    @objc private func newGuideOpened(_ notification: Notification) {
-        guard let guide = notification.userInfo?[newGuideOpenedNotificationIDKey] as? String else { return }
-        guideToOpen = guide
-        guard status == .loaded else { return }
-        openURLOrScriptOrGreeting()
-    }
-
     private func openURLOrScriptOrGreeting(prefersMediumDetent: Bool = false) {
-        func cleanup() {
-            // Just clean up everything, only the first message gets presented
-            addonToOpen = nil
-            guideToOpen = nil
-            scriptOrCelURL = nil
-            objectPathToOpen = nil
-        }
-
         let onboardMessageDisplayed: Bool? = userDefaults[.onboardMessageDisplayed]
         if onboardMessageDisplayed == nil {
             userDefaults[.onboardMessageDisplayed] = true
             presentHelp(prefersMediumDetent: prefersMediumDetent)
-            cleanup()
-            return
-        }
-
-        if let url = scriptOrCelURL {
-            if url.url.isFileURL {
-                front?.showOption(CelestiaString("Run script?", comment: "Request user consent to run a script")) { [unowned self] (confirmed) in
-                    guard confirmed else { return }
-                    self.celestiaController.openURL(url)
-                }
-            } else if url.url.scheme == "cel" {
-                front?.showOption(CelestiaString("Open URL?", comment: "Request user consent to open a URL")) { [unowned self] (confirmed) in
-                    guard confirmed else { return }
-                    self.celestiaController.openURL(url)
-                }
-            }
-            cleanup()
+            urlToOpen = nil
             return
         }
 
         let locale = AppCore.language
-        if let guide = guideToOpen {
-            // Need to wrap it in a NavVC without NavBar to make sure
-            // the scrolling behavior is correct on macCatalyst
-            let vc = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromGuide(guideItemID: guide, language: locale, subscriptionManager: subscriptionManager), requestHandler: requestHandler, actionHandler: commonWebActionHandler, matchingQueryKeys: ["guide"])
-            let nav = BaseNavigationController(rootViewController: vc)
-            nav.setNavigationBarHidden(true, animated: false)
-            showViewController(nav, key: guide, prefersMediumDetent: prefersMediumDetent, titleVisible: false)
-            cleanup()
-            return
-        }
-
-        if let addon = addonToOpen {
-            Task {
-                do {
-                    let item = try await requestHandler.getMetadata(id: addon, language: locale)
-                    let nav = ToolbarNavigationContainerController(rootViewController: ResourceItemViewController(executor: executor, resourceManager: resourceManager, item: item, requestHandler: requestHandler, actionHandler: commonWebActionHandler))
-                    self.showViewController(nav, key: addon, prefersMediumDetent: prefersMediumDetent, customToolbar: true)
-                } catch {}
+        if let urlToOpen {
+            switch urlToOpen {
+            case .celScript(let url):
+                front?.showOption(CelestiaString("Run script?", comment: "Request user consent to run a script")) { [unowned self] (confirmed) in
+                    guard confirmed else { return }
+                    self.celestiaController.openURL(url)
+                }
+            case .celURL(let url):
+                front?.showOption(CelestiaString("Open URL?", comment: "Request user consent to open a URL")) { [unowned self] (confirmed) in
+                    guard confirmed else { return }
+                    self.celestiaController.openURL(url)
+                }
+            case .windowURL(let windowURL, _):
+                switch windowURL {
+                case .addon(let id):
+                    Task {
+                        do {
+                            let item = try await requestHandler.getMetadata(id: id, language: locale)
+                            let nav = ToolbarNavigationContainerController(rootViewController: ResourceItemViewController(executor: executor, resourceManager: resourceManager, item: item, requestHandler: requestHandler, actionHandler: commonWebActionHandler))
+                            self.showViewController(nav, key: id, prefersMediumDetent: prefersMediumDetent, customToolbar: true)
+                        } catch {}
+                    }
+                case .guide(let id):
+                    // Need to wrap it in a NavVC without NavBar to make sure
+                    // the scrolling behavior is correct on macCatalyst
+                    let vc = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromGuide(guideItemID: id, language: locale, subscriptionManager: subscriptionManager), requestHandler: requestHandler, actionHandler: commonWebActionHandler, matchingQueryKeys: ["guide"])
+                    let nav = BaseNavigationController(rootViewController: vc)
+                    nav.setNavigationBarHidden(true, animated: false)
+                    showViewController(nav, key: id, prefersMediumDetent: prefersMediumDetent, titleVisible: false)
+                case .object(let path):
+                    Task {
+                        let selection = await Task { @CelestiaActor in
+                            CelestiaActor.appCore.simulation.findObject(from: path)
+                        }.value
+                        guard !selection.isEmpty else { return }
+                        self.showSelectionInfo(with: selection)
+                    }
+                }
             }
-            cleanup()
-            return
-        }
-
-        if let objectPathToOpen {
-            Task {
-                let selection = await Task { @CelestiaActor in
-                    CelestiaActor.appCore.simulation.findObject(from: objectPathToOpen)
-                }.value
-                guard !selection.isEmpty else { return }
-                self.showSelectionInfo(with: selection)
-            }
-
-            cleanup()
+            self.urlToOpen = nil
             return
         }
 
@@ -533,14 +465,14 @@ extension MainViewController {
     @objc private func requestRunScript(_ notification: Notification) {
         guard let script = notification.userInfo?[requestRunScriptNotificationKey] as? Script else { return }
 
-        celestiaController.openURL(UniformedURL(url: URL(fileURLWithPath: script.filename), securityScoped: false))
+        celestiaController.openURL(URL(fileURLWithPath: script.filename))
     }
 
     @objc private func requestOpenBookmark(_ notification: Notification) {
         guard let bookmark = notification.userInfo?[requestOpenBookmarkNotificationKey] as? BookmarkNode else { return }
         guard let url = URL(string: bookmark.url) else { return }
 
-        celestiaController.openURL(UniformedURL(url: url, securityScoped: false))
+        celestiaController.openURL(url)
     }
 
     private func openFolder(_ url: URL?) {
@@ -610,7 +542,24 @@ extension MainViewController: UIDocumentPickerDelegate {
         MacBridge.addRecentURL(url)
         #endif
 
-        scriptOrCelURL = UniformedURL(url: url, securityScoped: true)
+        var resultURL: URL?
+        if url.startAccessingSecurityScopedResource() {
+            if let tempDirectory = try? URL.temp(for: url) {
+                var tempURL = tempDirectory.appendingPathComponent(UUID().uuidString)
+                let fileExtension = url.pathExtension
+                if !fileExtension.isEmpty {
+                    tempURL = tempURL.appendingPathExtension(fileExtension)
+                }
+                do {
+                    try FileManager.default.copyItem(at: url, to: tempURL)
+                    resultURL = tempURL
+                } catch {}
+            }
+            url.stopAccessingSecurityScopedResource()
+        }
+        guard let resultURL else { return }
+
+        urlToOpen = .celScript(url: resultURL)
         openURLOrScriptOrGreeting()
     }
 }
@@ -957,7 +906,7 @@ Device Model: \(model)
             return UserDefaults.extraScriptDirectory?.path
         }, selected: { [unowned self] object in
             if let url = object as? URL {
-                self.celestiaController.openURL(UniformedURL(url: url, securityScoped: false))
+                self.celestiaController.openURL(url)
             } else if let destination = object as? Destination {
                 self.executor.runAsynchronously { $0.simulation.goToDestination(destination) }
             }

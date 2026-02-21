@@ -57,10 +57,6 @@ enum MenuBarAction: Hashable, Equatable {
 
 let newURLOpenedNotificationName = Notification.Name("NewURLOpenedNotificationName")
 let newURLOpenedNotificationURLKey = "NewURLOpenedNotificationURLKey"
-let newAddonOpenedNotificationName = Notification.Name("NewAddonOpenedNotificationName")
-let newAddonOpenedNotificationIDKey = "NewAddonOpenedNotificationIDKey"
-let newGuideOpenedNotificationName = Notification.Name("NewGuideOpenedNotificationName")
-let newGuideOpenedNotificationIDKey = "NewGuideOpenedNotificationIDKey"
 let showHelpNotificationName = Notification.Name("ShowHelpNotificationName")
 let showPreferencesNotificationName = Notification.Name("ShowPreferencesNotificationName")
 let requestOpenFileNotificationName = Notification.Name("RequestOpenFileNotificationName")
@@ -222,13 +218,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
-    func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-        NotificationCenter.default.post(name: newURLOpenedNotificationName, object: nil, userInfo: [
-            newURLOpenedNotificationURLKey: UniformedURL(url: url, securityScoped: url.isFileURL && options[.openInPlace] as? Bool == true),
-        ])
-        return true
-    }
-
     func application(_ application: UIApplication, shouldSaveApplicationState coder: NSCoder) -> Bool {
         return false
     }
@@ -278,22 +267,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     #endif
 
     @discardableResult static func handleUserActivity(_ userActivity: NSUserActivity) -> Bool {
-        guard let url = userActivity.webpageURL else { return false }
-        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false) else { return false }
-        if components.path == "/resources/item" {
-            // Handle shared add-on
-            guard let id = components.queryItems?.first(where: { $0.name == "item" })?.value else { return false }
+        guard let url = AppURL.from(userActivity: userActivity) else { return false }
 
-            NotificationCenter.default.post(name: newAddonOpenedNotificationName, object: nil, userInfo: [newAddonOpenedNotificationIDKey: id])
-            return true
-        } else if components.path == "/resources/guide" {
-            // Handle shared add-on
-            guard let id = components.queryItems?.first(where: { $0.name == "guide" })?.value else { return false }
-
-            NotificationCenter.default.post(name: newGuideOpenedNotificationName, object: nil, userInfo: [newGuideOpenedNotificationIDKey: id])
-            return true
-        }
-        return false
+        NotificationCenter.default.post(name: newURLOpenedNotificationName, object: nil, userInfo: [newURLOpenedNotificationURLKey: url])
+        return true
     }
 
     override func validate(_ command: UICommand) {

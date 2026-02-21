@@ -277,7 +277,7 @@ extension CelestiaViewController: CelestiaDisplayControllerDelegate {
 }
 
 extension CelestiaViewController {
-    func openURL(_ url: UniformedURL) {
+    func openURL(_ url: URL) {
         interactionController?.openURL(url)
     }
 
