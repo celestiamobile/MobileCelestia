@@ -46,25 +46,49 @@ final class FontSettingViewController: UICollectionViewController {
         case custom(DisplayFont)
     }
 
+    private var cachedFonts: [DisplayFont: UIFont] = [:]
+
     private lazy var dataSource: UICollectionViewDiffableDataSource<Section, Item> = {
         let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, Item> { [unowned self] cell, indexPath, itemIdentifier in
             var contentConfiguration = UIListContentConfiguration.celestiaCell()
             var accessories: [UICellAccessory] = []
             let text: String
+            let secondaryTextFont: UIFont?
             let current = self.isBold ? self.boldFont : self.normalFont
             switch itemIdentifier {
             case .default:
                 text = CelestiaString("Default", comment: "")
+                secondaryTextFont = nil
                 if current == nil {
                     accessories = [.checkmark()]
                 }
             case let .custom(font):
                 text = font.name
+                if let cachedFont = cachedFonts[font] {
+                    secondaryTextFont = cachedFont
+                } else {
+                    secondaryTextFont = nil
+                    Task { @MainActor [weak self] in
+                        let uiFont = await Task.detached {
+                            Self.loadFont(font, textStyle: .body)
+                        }.value
+                        guard let self, let uiFont else { return }
+                        self.cachedFonts[font] = uiFont
+                        var snapshot = self.dataSource.snapshot()
+                        snapshot.reconfigureItems([itemIdentifier])
+                        await self.dataSource.apply(snapshot, animatingDifferences: false)
+                    }
+                }
+
                 if current?.path == font.font.path && current?.ttcIndex == font.font.ttcIndex {
                     accessories = [.checkmark()]
                 }
             }
             contentConfiguration.text = text
+            if let secondaryTextFont {
+                contentConfiguration.secondaryText = "The quick brown fox jumps over the lazy dog"
+                contentConfiguration.secondaryTextProperties.font = secondaryTextFont
+            }
             cell.contentConfiguration = contentConfiguration
             cell.accessories = accessories
         }
@@ -151,6 +175,16 @@ final class FontSettingViewController: UICollectionViewController {
 
         collectionView.dataSource = self
         reload()
+    }
+
+    private nonisolated static func loadFont(_ font: DisplayFont, textStyle: UIFont.TextStyle) -> UIFont? {
+        guard let fontDescriptors = CTFontManagerCreateFontDescriptorsFromURL(URL(fileURLWithPath: font.font.path) as CFURL) as? [UIFontDescriptor] else { return nil }
+        guard fontDescriptors.count > font.font.ttcIndex else { return nil }
+        let metrics = UIFontMetrics(forTextStyle: textStyle)
+        return metrics.scaledFont(for: UIFont(
+            descriptor: fontDescriptors[font.font.ttcIndex],
+            size: UIFontDescriptor.preferredFontDescriptor(withTextStyle: textStyle).pointSize
+        ))
     }
 
     private func reload() {
