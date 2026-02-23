@@ -189,10 +189,12 @@ extension CelestiaDisplayController {
         let sensitivity = self.sensitivity
         updateContentScale(viewSpec: viewSpec, sensitivity: sensitivity, core: core)
 
-        core.setHudFont(fonts.normal.path, collectionIndex: fonts.normal.ttcIndex, fontSize: 9)
-        core.setHudTitleFont(fonts.bold.path, collectionIndex: fonts.bold.ttcIndex, fontSize: 15)
-        core.setRendererFont(fonts.normal.path, collectionIndex: fonts.normal.ttcIndex, fontSize: 9, fontStyle: .normal)
-        core.setRendererFont(fonts.bold.path, collectionIndex: fonts.bold.ttcIndex, fontSize: 15, fontStyle: .large)
+        if let fonts {
+            core.setHudFont(fonts.normal.path, collectionIndex: fonts.normal.ttcIndex, fontSize: 9)
+            core.setHudTitleFont(fonts.bold.path, collectionIndex: fonts.bold.ttcIndex, fontSize: 15)
+            core.setRendererFont(fonts.normal.path, collectionIndex: fonts.normal.ttcIndex, fontSize: 9, fontStyle: .normal)
+            core.setRendererFont(fonts.bold.path, collectionIndex: fonts.bold.ttcIndex, fontSize: 15, fontStyle: .large)
+        }
 
         core.tick()
         core.start()
@@ -271,7 +273,7 @@ extension CelestiaDisplayController {
         let bold: CustomFont
     }
 
-    private func getFonts() -> Fonts {
+    private func getFonts() -> Fonts? {
         let hasCelestiaPlus = subscriptionManager.transactionInfo() != nil
         var customNormalFont: CustomFont?
         var customBoldFont: CustomFont?
@@ -286,7 +288,7 @@ extension CelestiaDisplayController {
             }
         }
 
-        var (normalFont, boldFont) = getInstalledFontFor(locale: AppCore.language)
+        guard var (normalFont, boldFont) = getInstalledFontFor(locale: AppCore.language) else { return nil }
         if let customNormalFont = customNormalFont {
             normalFont = customNormalFont
         }
@@ -312,8 +314,8 @@ extension CelestiaDisplayController {
 
 typealias FallbackFont = (filePath: String, collectionIndex: Int)
 
-private func getInstalledFontFor(locale: String) -> (font: CustomFont, boldFont: CustomFont) {
-    let fontDir = Bundle.app.path(forResource: "Fonts", ofType: nil)!
+private func getInstalledFontFor(locale: String) -> (font: CustomFont, boldFont: CustomFont)? {
+    guard let fontDir = Bundle.app.path(forResource: "Fonts", ofType: nil) else { return nil }
     let fontFallback = [
         "ja": (
             font: CustomFont(path: "\(fontDir)/NotoSansCJK-Regular.ttc", ttcIndex: 0),
