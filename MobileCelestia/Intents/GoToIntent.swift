@@ -50,17 +50,10 @@ struct GoToIntent: AppIntent {
 
     @Parameter(
         title: "Object",
-        description: "The name of the celestial object to go to.",
+        description: "The name or the path of the celestial object to go to.",
         requestValueDialog: IntentDialog("Which celestial body would you like to visit?")
     )
     var object: String
-
-    @Parameter(
-        title: "Host Star",
-        description: "The star system's name. Leave empty if the 'Object' above is the star itself.",
-        requestValueDialog: IntentDialog("What is the host star? (Skip if you are going to a star)")
-    )
-    var hostStar: String?
 
     @Parameter(
         title: "Latitude",
@@ -107,34 +100,18 @@ struct GoToIntent: AppIntent {
     var travelDuration: Double
 
     static var parameterSummary: some ParameterSummary {
-        When(\.$hostStar, .hasNoValue) {
-            Summary("Go to \(\.$object)") {
-                \.$hostStar
-                \.$latitude
-                \.$longitude
-                \.$distanceValue
-                \.$distanceUnit
-                \.$travelDuration
-            }
-        } otherwise: {
-            Summary("Go to \(\.$object) of \(\.$hostStar)") {
-                \.$latitude
-                \.$longitude
-                \.$distanceValue
-                \.$distanceUnit
-                \.$travelDuration
-            }
+        Summary("Go to \(\.$object)") {
+            \.$latitude
+            \.$longitude
+            \.$distanceValue
+            \.$distanceUnit
+            \.$travelDuration
         }
     }
 
     @MainActor
     func perform() async throws -> some IntentResult {
-        let objectPath: String
-        if let hostStar {
-            objectPath = "\(hostStar)/\(object)"
-        } else {
-            objectPath = object
-        }
+        let objectPath = object
         try await stateManager.waitForInitialization(.goTo(objectPath: objectPath, latitude: Float(latitude), longitude: Float(longitude), distance: distanceValue, distanceUnit: distanceUnit.unit, travelDuration: travelDuration))
         return .result()
     }

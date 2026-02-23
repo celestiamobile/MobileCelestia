@@ -10,11 +10,13 @@
 //
 
 import CelestiaCore
+import CelestiaFoundation
 import CelestiaUI
 import Foundation
 
 enum AppRequest {
     case goTo(objectPath: String, latitude: Float, longitude: Float, distance: Double, distanceUnit: DistanceUnit, travelDuration: Double)
+    case perform(objectPath: String, action: ObjectURLAction)
 }
 
 enum AppRequestError: Error {
@@ -107,6 +109,23 @@ class StateManager {
                     appCore.tick()
                     location.duration = travelDuration
                     appCore.simulation.go(to: location)
+                }
+            case let .perform(objectPath, action: action):
+                let selection = appCore.simulation.findObject(from: objectPath)
+                if selection.isEmpty {
+                    throw AppRequestError.objectNotFound(objectPath: objectPath)
+                } else {
+                    appCore.tick()
+                    let objectAction = ObjectAction(action)
+                    switch objectAction {
+                    case .select:
+                        appCore.simulation.selection = selection
+                    case let .wrapped(action):
+                        appCore.simulation.selection = selection
+                        appCore.receive(action)
+                    default:
+                        break
+                    }
                 }
             }
         }.value
