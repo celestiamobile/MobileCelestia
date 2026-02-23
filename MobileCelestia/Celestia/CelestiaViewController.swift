@@ -42,7 +42,7 @@ protocol CelestiaControllerDelegate: AnyObject {
 }
 
 class CelestiaViewController: UIViewController {
-    weak var delegate: CelestiaControllerDelegate!
+    weak var delegate: CelestiaControllerDelegate?
 
     private let displayController: CelestiaDisplayController
     private var interactionController: CelestiaInteractionController?
@@ -264,14 +264,16 @@ extension CelestiaViewController: CelestiaDisplayControllerDelegate {
     }
 
     nonisolated func celestiaDisplayControllerLoadingFailed(_ celestiaDisplayController: CelestiaDisplayController) {
-        Task.detached { @MainActor in
+        Task.detached { @MainActor [weak self] in
+            guard let self else { return }
             self.delegate?.celestiaControllerLoadingFailed(self)
         }
     }
 
     nonisolated func celestiaDisplayController(_ celestiaDisplayController: CelestiaDisplayController, loadingStatusUpdated status: String) {
-        Task.detached { @MainActor in
-            self.delegate.celestiaController(self, loadingStatusUpdated: status)
+        Task.detached { @MainActor [weak self] in
+            guard let self else { return }
+            self.delegate?.celestiaController(self, loadingStatusUpdated: status)
         }
     }
 }
