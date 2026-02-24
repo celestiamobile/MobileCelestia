@@ -420,6 +420,10 @@ extension MainViewController {
             Task {
                 await executor.receive(.reverse)
             }
+        case .currentTime:
+            Task {
+                await executor.receive(.currentTime)
+            }
         case .showTimeSetting:
             showTimeSettings()
         case .splitHorizontally:

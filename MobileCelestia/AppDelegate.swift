@@ -36,6 +36,7 @@ enum MenuBarAction: Hashable, Equatable {
     case freezeTime
     case realTime
     case reverseTime
+    case currentTime
     case showTimeSetting
     case splitHorizontally
     case splitVertically
@@ -102,6 +103,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         .selector(#selector(freezeTime)),
         .selector(#selector(realTime)),
         .selector(#selector(reverseTime)),
+        .selector(#selector(currentTime)),
         .selector(#selector(showTimeSetting)),
         .selector(#selector(splitHorizontally)),
         .selector(#selector(splitVertically)),
@@ -409,7 +411,11 @@ extension AppDelegate {
             MenuActionContext(title: CelestiaString("Reverse Time", comment: ""), action: #selector(reverseTime), input: "j"),
         ])
         builder.insertChild(quickTimeSettingMenu, atStartOfMenu: timeMenu.identifier)
-        builder.insertSibling(createMenuItem(identifierSuffix: "time.select", action: MenuActionContext(title: CelestiaString("Set Time…", comment: "Select simulation time"), action: #selector(showTimeSetting))), afterMenu: quickTimeSettingMenu.identifier)
+        builder.insertSibling(createMenuItemGroup(
+            identifierSuffix: "time.select", actions: [
+                MenuActionContext(title: CelestiaString("Set to Current Time", comment: "Set simulation time to device"), action: #selector(currentTime), input: "!"),
+                MenuActionContext(title: CelestiaString("Set Time…", comment: "Select simulation time"), action: #selector(showTimeSetting)),
+        ]), afterMenu: quickTimeSettingMenu.identifier)
 
         let bookmarkMenu = createMenuItemGroup(title: CelestiaString("Bookmarks", comment: "URL bookmarks"), identifierSuffix: "bookmarks", actions: [], options: [])
         builder.insertSibling(bookmarkMenu, afterMenu: timeMenu.identifier)
@@ -586,6 +592,10 @@ extension AppDelegate {
 
     @objc private func realTime() {
         NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.realTime])
+    }
+
+    @objc private func currentTime() {
+        NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.currentTime])
     }
 
     @objc private func reverseTime() {
