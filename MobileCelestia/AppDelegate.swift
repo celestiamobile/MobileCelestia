@@ -81,8 +81,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     private var menuActions: [MenuAction] = [
         .selector(#selector(showHelp(_:))),
-        .selector(#selector(copy(_:))),
-        .selector(#selector(paste(_:))),
         .selector(#selector(showPreferences)),
         .selector(#selector(openScriptFile)),
         .selector(#selector(captureImage)),
@@ -303,7 +301,6 @@ extension AppDelegate {
         guard builder.system == .main else { return }
 
         builder.remove(menu: .newScene)
-        builder.remove(menu: .edit)
         builder.remove(menu: .preferences)
         builder.remove(menu: .about)
         builder.remove(menu: .format)
@@ -350,14 +347,9 @@ extension AppDelegate {
         }
         builder.insertSibling(scriptsMenu, beforeMenu: .close)
         builder.insertSibling(captureImageMenu, afterMenu: scriptsMenu.identifier)
-        let copyPasteMenu = createMenuItemGroup(identifierSuffix: "copypaste", actions: [
-            MenuActionContext(title: CelestiaString("Copy", comment: "Copy current URL to pasteboard"), action: #selector(copy(_:)), input: "c", modifierFlags: .command),
-            MenuActionContext(title: CelestiaString("Paste", comment: "Paste URL from pasteboard"), action: #selector(paste(_:)), input: "v", modifierFlags: .command),
-        ])
-        builder.insertSibling(copyPasteMenu, afterMenu: captureImageMenu.identifier)
 
         let navigationMenu = createMenuItemGroup(title: CelestiaString("Navigation", comment: "Navigation menu"), identifierSuffix: "navigation", actions: [], options: [])
-        builder.insertSibling(navigationMenu, afterMenu: .file)
+        builder.insertSibling(navigationMenu, afterMenu: .edit)
 
         let getInfoMenu = createMenuItemGroup(identifierSuffix: "getinfo", actions: [
             MenuActionContext(title: CelestiaString("Get Info", comment: "Action for getting info about current selected object"), action: #selector(getInfo)),

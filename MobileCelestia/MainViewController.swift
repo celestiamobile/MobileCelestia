@@ -339,6 +339,11 @@ extension MainViewController {
         }
     }
 
+    @available(iOS 16, *)
+    override func find(_ sender: Any?) {
+        showSearch()
+    }
+
     override func paste(_ sender: Any?) {
         let pasteboard = UIPasteboard.general
         var celURL: String?
@@ -353,6 +358,19 @@ extension MainViewController {
         }
         if let url = celURL {
             executor.runAsynchronously { $0.go(to: url) }
+        }
+    }
+
+    override func validate(_ command: UICommand) {
+        super.validate(command)
+        if !core.isInitialized {
+            if command.action == #selector(copy(_:)) || command.action == #selector(paste(_:)) {
+                command.attributes.insert(.disabled)
+            } else if #available(iOS 16, *) {
+                if command.action == #selector(find(_:)) {
+                    command.attributes.insert(.disabled)
+                }
+            }
         }
     }
 
