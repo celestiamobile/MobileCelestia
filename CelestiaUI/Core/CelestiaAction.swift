@@ -19,6 +19,7 @@ public enum CelestiaAction: Int8, Sendable {
     case slower = 107
     case faster = 108
     case currentTime = 33
+    case realTime = 92
     case syncOrbit = 121
     case lock = 58
     case chase = 34
@@ -102,6 +103,8 @@ public extension CelestiaAction {
             return CelestiaString("Stop", comment: "Interupt the process of finding eclipse/Set traveling speed to 0")
         case .reverseSpeed:
             return CelestiaString("Reverse Direction", comment: "Reverse camera direction, reverse travel direction")
+        case .realTime:
+            return CelestiaString("Real Time", comment: "Reset time speed to 1x")
         }
     }
 }

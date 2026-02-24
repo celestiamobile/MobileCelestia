@@ -414,7 +414,7 @@ extension MainViewController {
             }
         case .realTime:
             Task {
-                await executor.receive(.currentTime)
+                await executor.receive(.realTime)
             }
         case .reverseTime:
             Task {

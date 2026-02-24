@@ -405,7 +405,7 @@ extension AppDelegate {
             MenuActionContext(title: CelestiaString("10x Faster", comment: "10x time speed"), action: #selector(tenTimesFaster), input: "l"),
             MenuActionContext(title: CelestiaString("10x Slower", comment: "0.1x time speed"), action: #selector(tenTimesSlower), input: "k"),
             MenuActionContext(title: CelestiaString("Freeze", comment: "Freeze time"), action: #selector(freezeTime), input: " "),
-            MenuActionContext(title: CelestiaString("Real Time", comment: "Reset time speed to 1x"), action: #selector(realTime)),
+            MenuActionContext(title: CelestiaString("Real Time", comment: "Reset time speed to 1x"), action: #selector(realTime), input: "\\"),
             MenuActionContext(title: CelestiaString("Reverse Time", comment: ""), action: #selector(reverseTime), input: "j"),
         ])
         builder.insertChild(quickTimeSettingMenu, atStartOfMenu: timeMenu.identifier)
