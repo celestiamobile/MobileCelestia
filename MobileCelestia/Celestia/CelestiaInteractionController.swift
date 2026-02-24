@@ -583,22 +583,45 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
             }
         ]))
 
-        actions.append(UIMenu(options: .displayInline, children: CelestiaAction.allCases.map { action in
-            return UIAction(title: action.description) { [weak self] _ in
-                guard let self else { return }
-                Task {
-                    await self.executor.selectAndReceive(selection, action: action)
+        actions.append(UIMenu(options: .displayInline, children: [UIAction(title: CelestiaString("Select", comment: "Select an object"), handler: { _ in
+            Task { @CelestiaActor in
+                let core = CelestiaActor.appCore
+                core.simulation.selection = selection
+            }
+        })] + CelestiaAction.allCases.map { action in
+            return UIAction(title: action.description) { _ in
+                Task { @CelestiaActor in
+                    let core = CelestiaActor.appCore
+                    core.simulation.selection = selection
+                    core.receive(action)
                 }
             }
         }))
 
         if let entry = selection.object {
             let browserItem = BrowserItem(name: core.simulation.universe.name(for: selection), catEntry: entry, provider: core.simulation.universe)
-            actions.append(UIMenu(options: .displayInline, children: browserItem.children.compactMap { $0.createMenuItems(object: entry, additionalItemName: CelestiaString("Go", comment: "Go to an object"), additionalItemHandler: { [weak self] selection in
-                guard let self else { return }
-                Task {
-                    await self.executor.selectAndReceive(selection, action: .goTo)
+            actions.append(UIMenu(options: .displayInline, children: browserItem.children.compactMap { $0.createMenuItems(object: entry, additionalItemsProvider: { selection in
+                let actions = [UIAction(title: CelestiaString("Select", comment: "Select an object"), handler: { _ in
+                    Task { @CelestiaActor in
+                        let core = CelestiaActor.appCore
+                        core.simulation.selection = selection
+                    }
+                })] + CelestiaAction.allCases.map { action in
+                    return UIAction(title: action.description) { _ in
+                        Task { @CelestiaActor in
+                            let core = CelestiaActor.appCore
+                            core.simulation.selection = selection
+                            core.receive(action)
+                        }
+                    }
                 }
+                return [
+                    UIAction(title: CelestiaString("Get Info", comment: "Action for getting info about current selected object"), handler: { [weak self] _ in
+                        guard let self else { return }
+                        self.delegate?.celestiaInteractionController(self, requestShowInfoWithSelection: selection)
+                    }),
+                    UIMenu(options: .displayInline, children: actions)
+                ]
             }) { [weak self] selection in
                 guard let self else { return }
                 self.delegate?.celestiaInteractionController(self, requestShowSubsystemWithSelection: selection)
@@ -658,16 +681,15 @@ extension UIContextMenuInteraction {
 
 extension BrowserItem {
     @MainActor
-    func createMenuItems(object: AstroObject, additionalItemName: String, additionalItemHandler: @escaping (Selection) -> Void, showMoreHandler: @escaping (Selection) -> Void) -> UIMenu? {
+    func createMenuItems(object: AstroObject, additionalItemsProvider: (Selection) -> [UIMenuElement]?, showMoreHandler: @escaping (Selection) -> Void) -> UIMenu? {
         var items = [UIMenuElement]()
         var parent = object
         if let entry {
             parent = entry
-            items.append(UIAction(title: additionalItemName, handler: { _ in
-                let selection = Selection(object: entry)
-                guard !selection.isEmpty else { return }
-                additionalItemHandler(selection)
-            }))
+            let selection = Selection(object: entry)
+            if !selection.isEmpty, let additionalItems = additionalItemsProvider(selection) {
+                items.append(contentsOf: additionalItems)
+            }
         }
 
         var childItems = [UIMenuElement]()
@@ -679,7 +701,7 @@ extension BrowserItem {
             }
             let subItemName = childName(at: Int(i))!
             let child = child(with: subItemName)!
-            if let childMenu = child.createMenuItems(object: parent, additionalItemName: additionalItemName, additionalItemHandler: additionalItemHandler, showMoreHandler: showMoreHandler) {
+            if let childMenu = child.createMenuItems(object: parent, additionalItemsProvider: additionalItemsProvider, showMoreHandler: showMoreHandler) {
                 childItems.append(childMenu)
             }
         }
