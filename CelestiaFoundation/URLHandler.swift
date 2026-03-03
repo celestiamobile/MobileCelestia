@@ -117,7 +117,6 @@ import UIKit
 
     public static func from(userActivity: NSUserActivity) -> AppURL? {
         guard let url = userActivity.webpageURL else { return nil }
-        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false) else { return nil }
         return from(url: url, openInPlace: false)
     }
 }
