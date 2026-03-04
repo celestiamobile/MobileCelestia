@@ -29,27 +29,80 @@ public class SubscriptionManagerViewController: UIViewController {
 
     private var status = Status.empty
 
+    private lazy var descriptiveLabel = UILabel(textStyle: .body, weight: .medium)
+    private lazy var carouselPageControl: UIPageControl = {
+        let pageControl = UIPageControl()
+        pageControl.isUserInteractionEnabled = false
+        pageControl.numberOfPages = carouselItems.count
+        pageControl.currentPage = 0
+        pageControl.pageIndicatorTintColor = .tertiaryLabel
+        pageControl.currentPageIndicatorTintColor = .tintColor
+        return pageControl
+    }()
+
+    private lazy var pageViewController: UIPageViewController = {
+        let vc = UIPageViewController(transitionStyle: .scroll, navigationOrientation: .horizontal)
+        vc.dataSource = self
+        vc.delegate = self
+        return vc
+    }()
+
     private lazy var featureView: UIView = {
         let view = UIView()
-        view.backgroundColor = .systemFill
-        let features = [
-            FeatureView(image: UIImage(systemName: "paintpalette"), description: CelestiaString("Customize the visual appearance of Celestia.", comment: "Benefits of Celestia PLUS")),
-            FeatureView(image: UIImage(systemName: "clock.arrow.circlepath"), description: CelestiaString("Get latest add-ons, updates, and trending add-ons.", comment: "Benefits of Celestia PLUS")),
-            FeatureView(image: UIImage(systemName: "checkmark.bubble"), description: CelestiaString("Receive timely feedback on feature requests and bug reports.", comment: "Benefits of Celestia PLUS")),
-            FeatureView(image: UIImage(systemName: "heart"), description: CelestiaString("Support the developer community and keep the project going.", comment: "Benefits of Celestia PLUS")),
-        ]
-        let stackView = UIStackView(arrangedSubviews: features)
-        stackView.axis = .vertical
-        stackView.spacing = GlobalConstants.pageMediumGapVertical
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(stackView)
+        descriptiveLabel.numberOfLines = 0
+        descriptiveLabel.textAlignment = .center
+        addChild(pageViewController)
+        let pageVCView = pageViewController.view!
+        pageVCView.backgroundColor = .clear
+        if let firstItem = carouselItems.first {
+            pageViewController.setViewControllers(
+                [CarouselItemViewController(index: 0, item: firstItem)],
+                direction: .forward,
+                animated: false
+            )
+        }
+        pageViewController.didMove(toParent: self)
+
+        view.addSubview(pageVCView)
+        view.addSubview(descriptiveLabel)
+        view.addSubview(carouselPageControl)
+        pageVCView.translatesAutoresizingMaskIntoConstraints = false
+        descriptiveLabel.translatesAutoresizingMaskIntoConstraints = false
+        carouselPageControl.translatesAutoresizingMaskIntoConstraints = false
+
         NSLayoutConstraint.activate([
-            stackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: GlobalConstants.pageMediumMarginHorizontal),
-            stackView.topAnchor.constraint(equalTo: view.topAnchor, constant: GlobalConstants.pageMediumMarginVertical),
-            stackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -GlobalConstants.pageMediumMarginHorizontal),
-            stackView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -GlobalConstants.pageMediumMarginVertical),
+            pageVCView.topAnchor.constraint(equalTo: view.topAnchor),
+            pageVCView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            pageVCView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            pageVCView.heightAnchor.constraint(equalTo: pageVCView.widthAnchor, multiplier: 9.0/16.0),
+            descriptiveLabel.topAnchor.constraint(equalTo: pageVCView.bottomAnchor, constant: GlobalConstants.pageMediumGapVertical),
+            descriptiveLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            descriptiveLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            carouselPageControl.topAnchor.constraint(equalTo: descriptiveLabel.bottomAnchor, constant: GlobalConstants.pageSmallGapVertical),
+            carouselPageControl.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            carouselPageControl.bottomAnchor.constraint(equalTo: view.bottomAnchor),
         ])
+        updateDescriptiveLabel(for: 0)
         return view
+    }()
+
+    private lazy var carouselItems: [CarouselCollectionViewCell.ItemType] = {
+        var items: [CarouselCollectionViewCell.ItemType] = []
+        #if !targetEnvironment(macCatalyst)
+        items.append(.video("Toolbar-iOS", CelestiaString("Toolbar Customization", comment: "Description for toolbar customization video")))
+        #endif
+        items.append(.video("Font", CelestiaString("Custom Fonts", comment: "Description for custom font video")))
+        items.append(.video("Search", CelestiaString("Search Add-ons", comment: "Description for search add-ons video")))
+        items.append(.video("Addon-Updates", CelestiaString("Add-on Updates", comment: "Description for addon updates video")))
+        #if !targetEnvironment(macCatalyst)
+        items.append(.video("App-Icon", CelestiaString("Custom App Icon", comment: "Description for custom app icon video")))
+        #endif
+        items.append(.support(
+            CelestiaString("Support the Project", comment: "Description for support project card"),
+            CelestiaString("By subscribing to Celestia PLUS, you directly support the developers and keep this project alive. You'll also receive timely feedback on feature requests and bug reports!", comment: "Message on support project card"),
+            assetProvider
+        ))
+        return items
     }()
 
     private lazy var statusLabel = UILabel(textStyle: .body)
@@ -75,11 +128,11 @@ public class SubscriptionManagerViewController: UIViewController {
         self.stringProvider = stringProvider
         super.init(nibName: nil, bundle: nil)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     public override func loadView() {
         #if !os(visionOS)
         containerView.backgroundColor = .systemBackground
@@ -101,8 +154,6 @@ public class SubscriptionManagerViewController: UIViewController {
 
         planStack.axis = .vertical
         planStack.spacing = GlobalConstants.pageMediumGapVertical
-
-        featureView.layer.cornerRadius = Constants.boxCornerRadius
 
         let button = ActionButtonHelper.newButton(prominent: true, traitCollection: traitCollection)
         button.setTitle(CelestiaString("Restore Purchase", comment: "Refresh purchase status"), for: .normal)
@@ -187,6 +238,17 @@ public class SubscriptionManagerViewController: UIViewController {
 }
 
 private extension SubscriptionManagerViewController {
+    func updateDescriptiveLabel(for page: Int) {
+        guard carouselItems.indices.contains(page) else { return }
+        let item = carouselItems[page]
+        switch item {
+        case let .video(_, title):
+            descriptiveLabel.text = title
+        case let .support(title, _, _):
+            descriptiveLabel.text = title
+        }
+    }
+
     func reloadData() {
         status = .empty
         reloadViews()
@@ -287,7 +349,7 @@ private extension SubscriptionManagerViewController {
             allDisabled = true
         default:
             currentPlanCycle = nil
-            statusLabel.text = CelestiaString("Choose one of the plans below to get Celestia PLUS", comment: "")
+            statusLabel.text = CelestiaString("Choose one of the plans below to get access to all the features.", comment: "")
             allDisabled = false
         }
         for plan in plans {
@@ -355,5 +417,60 @@ private extension SubscriptionManagerViewController {
                 reloadData()
             } catch {}
         }
+    }
+}
+
+extension SubscriptionManagerViewController: UIPageViewControllerDataSource {
+    public func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
+        guard let vc = viewController as? CarouselItemViewController else { return nil }
+        let prevIndex = vc.index - 1
+        guard prevIndex >= 0 else { return nil }
+        return CarouselItemViewController(index: prevIndex, item: carouselItems[prevIndex])
+    }
+
+    public func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
+        guard let vc = viewController as? CarouselItemViewController else { return nil }
+        let nextIndex = vc.index + 1
+        guard nextIndex < carouselItems.count else { return nil }
+        return CarouselItemViewController(index: nextIndex, item: carouselItems[nextIndex])
+    }
+}
+
+extension SubscriptionManagerViewController: UIPageViewControllerDelegate {
+    public func pageViewController(_ pageViewController: UIPageViewController, didFinishAnimating finished: Bool, previousViewControllers: [UIViewController], transitionCompleted completed: Bool) {
+        guard completed, let vc = pageViewController.viewControllers?.first as? CarouselItemViewController else { return }
+        carouselPageControl.currentPage = vc.index
+        updateDescriptiveLabel(for: vc.index)
+    }
+}
+
+private class CarouselItemViewController: UIViewController {
+    let index: Int
+    let item: CarouselCollectionViewCell.ItemType
+
+    init(index: Int, item: CarouselCollectionViewCell.ItemType) {
+        self.index = index
+        self.item = item
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .clear
+        let cell = CarouselCollectionViewCell(frame: .zero)
+        cell.configure(with: item)
+        cell.backgroundColor = .clear
+        cell.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(cell)
+        NSLayoutConstraint.activate([
+            cell.topAnchor.constraint(equalTo: view.topAnchor),
+            cell.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            cell.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            cell.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+        ])
     }
 }

@@ -163,7 +163,13 @@
 				Classic.icon = (
 					ios,
 				);
+				"Resources/App-Icon.mp4" = (
+					ios,
+				);
 				Resources/IconAssets.xcassets = (
+					ios,
+				);
+				"Resources/Toolbar-iOS.mp4" = (
 					ios,
 				);
 			};
