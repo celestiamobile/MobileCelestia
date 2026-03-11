@@ -99,15 +99,28 @@ import UIKit
             }
         } else if url.scheme == "http" || url.scheme == "https" {
             if let components = URLComponents(url: url, resolvingAgainstBaseURL: false) {
-                if components.path == "/resources/item" {
-                    // Handle shared add-on
-                    if let id = components.queryItems?.first(where: { $0.name == "item" })?.value {
-                        appURL = .windowURL(url: .addon(id: id), universal: true)
-                    }
-                } else if components.path == "/resources/guide" {
-                    // Handle shared add-on
-                    if let id = components.queryItems?.first(where: { $0.name == "guide" })?.value {
-                        appURL = .windowURL(url: .guide(id: id), universal: true)
+                let pathComponents = components.path.split(separator: "/")
+                if pathComponents.count >= 2, pathComponents[0] == "resources" {
+                    if pathComponents[1] == "item" {
+                        // Handle shared add-on
+                        let id = if pathComponents.count > 2 {
+                            String(pathComponents[2])
+                        } else {
+                            components.queryItems?.first(where: { $0.name == "item" })?.value
+                        }
+                        if let id {
+                            appURL = .windowURL(url: .addon(id: id), universal: true)
+                        }
+                    } else if pathComponents[1] == "guide" {
+                        // Handle shared article
+                        let id = if pathComponents.count > 2 {
+                            String(pathComponents[2])
+                        } else {
+                            components.queryItems?.first(where: { $0.name == "guide" })?.value
+                        }
+                        if let id {
+                            appURL = .windowURL(url: .guide(id: id), universal: true)
+                        }
                     }
                 }
             }
