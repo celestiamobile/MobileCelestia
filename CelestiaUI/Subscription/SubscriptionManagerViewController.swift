@@ -86,8 +86,8 @@ public class SubscriptionManagerViewController: UIViewController {
         return view
     }()
 
-    private lazy var carouselItems: [CarouselCollectionViewCell.ItemType] = {
-        var items: [CarouselCollectionViewCell.ItemType] = []
+    private lazy var carouselItems: [CarouselItemViewController.ItemType] = {
+        var items: [CarouselItemViewController.ItemType] = []
         #if !targetEnvironment(macCatalyst)
         items.append(.video("Toolbar-iOS", CelestiaString("Toolbar Customization", comment: "Description for toolbar customization video")))
         #endif
@@ -445,10 +445,20 @@ extension SubscriptionManagerViewController: UIPageViewControllerDelegate {
 }
 
 private class CarouselItemViewController: UIViewController {
-    let index: Int
-    let item: CarouselCollectionViewCell.ItemType
+    enum ItemType {
+        case video(String, String)
+        case support(String, String, AssetProvider)
+    }
 
-    init(index: Int, item: CarouselCollectionViewCell.ItemType) {
+    let index: Int
+    let item: ItemType
+
+    private let videoView = CarouselVideoView()
+    private let supportView = UIView()
+    private let floatingIconsView = FloatingIconsView()
+    private let messageLabel = UILabel(textStyle: .body, weight: .medium)
+
+    init(index: Int, item: ItemType) {
         self.index = index
         self.item = item
         super.init(nibName: nil, bundle: nil)
@@ -461,16 +471,58 @@ private class CarouselItemViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .clear
-        let cell = CarouselCollectionViewCell(frame: .zero)
-        cell.configure(with: item)
-        cell.backgroundColor = .clear
-        cell.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(cell)
+
+        supportView.addSubview(floatingIconsView)
+        supportView.addSubview(messageLabel)
+        view.addSubview(videoView)
+        view.addSubview(supportView)
+
+        videoView.translatesAutoresizingMaskIntoConstraints = false
+        supportView.translatesAutoresizingMaskIntoConstraints = false
+        floatingIconsView.translatesAutoresizingMaskIntoConstraints = false
+        messageLabel.translatesAutoresizingMaskIntoConstraints = false
+
+        supportView.backgroundColor = .secondarySystemFill
+        supportView.layer.cornerRadius = 24
+        supportView.clipsToBounds = true
+        videoView.layer.cornerRadius = 24
+        videoView.clipsToBounds = true
+
+        messageLabel.numberOfLines = 0
+        messageLabel.textAlignment = .center
+        messageLabel.textColor = .label
+
         NSLayoutConstraint.activate([
-            cell.topAnchor.constraint(equalTo: view.topAnchor),
-            cell.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            cell.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            cell.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            videoView.topAnchor.constraint(equalTo: view.topAnchor),
+            videoView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            videoView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            videoView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+
+            supportView.topAnchor.constraint(equalTo: view.topAnchor),
+            supportView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            supportView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            supportView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+
+            floatingIconsView.topAnchor.constraint(equalTo: supportView.topAnchor),
+            floatingIconsView.leadingAnchor.constraint(equalTo: supportView.leadingAnchor),
+            floatingIconsView.trailingAnchor.constraint(equalTo: supportView.trailingAnchor),
+            floatingIconsView.bottomAnchor.constraint(equalTo: supportView.bottomAnchor),
+
+            messageLabel.centerYAnchor.constraint(equalTo: supportView.centerYAnchor),
+            messageLabel.leadingAnchor.constraint(equalTo: supportView.leadingAnchor, constant: GlobalConstants.pageMediumMarginHorizontal),
+            messageLabel.trailingAnchor.constraint(equalTo: supportView.trailingAnchor, constant: -GlobalConstants.pageMediumMarginHorizontal),
         ])
+
+        switch item {
+        case .video(let videoName, _):
+            videoView.isHidden = false
+            supportView.isHidden = true
+            videoView.load(videoName: videoName)
+        case .support(_, let message, let assetProvider):
+            videoView.isHidden = true
+            supportView.isHidden = false
+            messageLabel.text = message
+            floatingIconsView.startAnimating(assetProvider: assetProvider)
+        }
     }
 }
