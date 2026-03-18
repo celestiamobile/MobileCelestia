@@ -110,4 +110,5 @@ public extension URL {
     static let addonMetadata = apiPrefixURL.appendingPathComponent("resource/item")
     static let latestGuideMetadata = apiPrefixURL.appendingPathComponent("resource/latest")
     static let updates = apiPrefixURL.appendingPathComponent("resource/updates")
+    static let features = apiPrefixURL.appendingPathComponent("resource/features")
 }

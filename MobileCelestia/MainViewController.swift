@@ -63,6 +63,19 @@ class MainViewController: UIViewController {
 
     private let resourceManager = ResourceManager(extraAddonDirectory: UserDefaults.extraAddonDirectory, extraScriptDirectory: UserDefaults.extraScriptDirectory)
     private lazy var addonUpdateManager = AddonUpdateManager(requestHandler: requestHandler, resourceManager: resourceManager)
+    private lazy var featureFlagsManager: FeatureFlagsManager = {
+        #if os(visionOS)
+        let platform = "visionos"
+        #else
+        #if targetEnvironment(macCatalyst)
+        let platform = "catalyst"
+        #else
+        let platform = "ios"
+        #endif
+        #endif
+        return FeatureFlagsManager(requestHandler: requestHandler, userDefaults: userDefaults, platform: platform)
+    }()
+    private lazy var featureFlags = featureFlagsManager.get()
 
     private var viewControllerStack: [UIViewController] = []
 
@@ -640,6 +653,10 @@ extension MainViewController: CelestiaControllerDelegate {
         UIApplication.shared.isIdleTimerDisabled = true
 
         openURLOrScriptOrGreeting(prefersMediumDetent: true)
+
+        Task {
+            await featureFlagsManager.update(language: AppCore.language)
+        }
     }
 
     func celestiaControllerRequestShowActionMenu(_ celestiaController: CelestiaViewController) {

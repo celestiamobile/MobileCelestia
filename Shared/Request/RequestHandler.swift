@@ -23,12 +23,18 @@ extension ResourceItem: @retroactive JSONDecodable {
     }()
 }
 
-extension [String: AddonUpdate]: @retroactive JSONDecodable {
+extension AddonUpdate: @retroactive JSONDecodable {
     public static let decoder: JSONDecoder? = {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .secondsSince1970
         return decoder
     }()
+}
+
+extension Dictionary: @retroactive JSONDecodable where Key == String, Value: Decodable {
+    public static var decoder: JSONDecoder? {
+        (Value.self as? any JSONDecodable.Type)?.decoder
+    }
 }
 
 final class RequestHandlerImpl: RequestHandler {
@@ -63,5 +69,9 @@ final class RequestHandlerImpl: RequestHandler {
 
     func getUpdates(addonIds: [String], language: String, originalTransactionID: UInt64, sandbox: Bool) async throws -> [String: AddonUpdate] {
         return try await AsyncJSONRequestHandler.post(url: URL.updates.absoluteString, json: UpdateRequest(lang: language, items: addonIds, transactionIdApple: "\(originalTransactionID)", isSandboxApple: sandbox))
+    }
+
+    func getFeatureFlags(platform: String, language: String) async throws -> [String: Double] {
+        return try await AsyncJSONRequestHandler.get(url: URL.features.absoluteString, parameters: ["platform": platform, "lang": language])
     }
 }
