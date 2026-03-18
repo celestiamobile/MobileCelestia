@@ -63,19 +63,8 @@ class MainViewController: UIViewController {
 
     private let resourceManager = ResourceManager(extraAddonDirectory: UserDefaults.extraAddonDirectory, extraScriptDirectory: UserDefaults.extraScriptDirectory)
     private lazy var addonUpdateManager = AddonUpdateManager(requestHandler: requestHandler, resourceManager: resourceManager)
-    private lazy var featureFlagsManager: FeatureFlagsManager = {
-        #if os(visionOS)
-        let platform = "visionos"
-        #else
-        #if targetEnvironment(macCatalyst)
-        let platform = "catalyst"
-        #else
-        let platform = "ios"
-        #endif
-        #endif
-        return FeatureFlagsManager(requestHandler: requestHandler, userDefaults: userDefaults, platform: platform)
-    }()
-    private lazy var featureFlags = featureFlagsManager.get()
+    private let featureFlagsManager: FeatureFlagsManager
+    private let featureFlags: FeatureFlags
 
     private var viewControllerStack: [UIViewController] = []
 
@@ -107,7 +96,21 @@ class MainViewController: UIViewController {
         self.core = core
         self.executor = executor
         self.userDefaults = userDefaults
+
+        #if os(visionOS)
+        let platform = "visionos"
+        #else
+        #if targetEnvironment(macCatalyst)
+        let platform = "catalyst"
+        #else
+        let platform = "ios"
+        #endif
+        #endif
+        featureFlagsManager = FeatureFlagsManager(requestHandler: requestHandler, userDefaults: userDefaults, platform: platform)
+        featureFlags = featureFlagsManager.get()
+
         super.init(nibName: nil, bundle: nil)
+
         celestiaController = CelestiaViewController(screen: screen, executor: executor, userDefaults: userDefaults, subscriptionManager: subscriptionManager, core: core)
 
         #if targetEnvironment(macCatalyst)
