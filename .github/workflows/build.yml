@@ -38,7 +38,7 @@ env:
 jobs:
   build:
     name: 'Build ${{ matrix.name }}'
-    runs-on: macos-15
+    runs-on: macos-26
 
     strategy:
       fail-fast: false
@@ -298,12 +298,14 @@ jobs:
         with:
           name: '${{ matrix.sdk }}-${{ matrix.signing }}-${{ matrix.backend }}-product'
           path: '${{ runner.temp }}/artifacts/product'
+          retention-days: 90
 
       - name: Upload Archive Artifacts
         uses: actions/upload-artifact@v4
         with:
           name: '${{ matrix.sdk }}-${{ matrix.signing }}-${{ matrix.backend }}-archive'
           path: '${{ runner.temp }}/artifacts/archive'
+          retention-days: 90
 
       - name: Upload Symbols (iOS)
         if: matrix.sdk == 'iphoneos'
