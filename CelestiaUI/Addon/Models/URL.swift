@@ -98,10 +98,9 @@ public extension URL {
     }
 
     static func fromAddonForSharing(addonItemID: String, language: String) -> URL {
-        let baseURL = "https://celestia.mobi/resources/item"
+        let baseURL = "https://celestia.mobi/resources/item/\(addonItemID)"
         var components = URLComponents(string: baseURL)!
         components.queryItems = [
-            URLQueryItem(name: "item", value: addonItemID),
             URLQueryItem(name: "lang", value: language),
         ]
         return components.url!
