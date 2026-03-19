@@ -32,9 +32,6 @@ env:
   XC_VERSION: '26.3'
   XC_PROJECT: 'MobileCelestia/MobileCelestia.xcodeproj'
   XC_SCHEME: 'MobileCelestia'
-  IOS_PROVISIONING_PROFILE_UUID: '61ac6d7c-5dea-4b7e-8a69-43491626686e'
-  MAC_APP_STORE_PROVISIONING_PROFILE_UUID: '15ce2562-5fe5-4bd7-9295-f393542ef86a'
-  MAC_DEVELOPER_ID_PROVISIONING_PROFILE_UUID: '05aab2eb-1c4c-4e55-a63d-e0721011273d'
   DISTRIBUTION_IDENTITY: 'Apple Distribution: Linfeng Li (22NR5428TD)'
   DEVELOPER_ID_IDENTITY: 'Developer ID Application: Linfeng Li (22NR5428TD)'
 
@@ -183,9 +180,33 @@ jobs:
       - name: Install Provisioning Profiles
         run: |
           mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
-          echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/ios_distribution.mobileprovision
-          echo "${{ secrets.MAC_APP_STORE_PROVISIONING_PROFILE_BASE64 }}" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/mac_distribution.provisionprofile
-          echo "${{ secrets.MAC_DEVELOPER_ID_PROVISIONING_PROFILE_BASE64 }}" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/mac_developer_id.provisionprofile
+
+          echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | base64 --decode > $RUNNER_TEMP/ios_distribution.mobileprovision
+          security cms -D -i $RUNNER_TEMP/ios_distribution.mobileprovision > $RUNNER_TEMP/ios_profile.plist
+          IOS_UUID=$(/usr/libexec/PlistBuddy -c 'Print :UUID' $RUNNER_TEMP/ios_profile.plist)
+          cp $RUNNER_TEMP/ios_distribution.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/${IOS_UUID}.mobileprovision
+          echo "IOS_PROVISIONING_PROFILE_UUID=${IOS_UUID}" >> $GITHUB_ENV
+
+          echo "${{ secrets.MAC_APP_STORE_PROVISIONING_PROFILE_BASE64 }}" | base64 --decode > $RUNNER_TEMP/mac_distribution.provisionprofile
+          security cms -D -i $RUNNER_TEMP/mac_distribution.provisionprofile > $RUNNER_TEMP/mac_app_store_profile.plist
+          MAC_APP_STORE_UUID=$(/usr/libexec/PlistBuddy -c 'Print :UUID' $RUNNER_TEMP/mac_app_store_profile.plist)
+          cp $RUNNER_TEMP/mac_distribution.provisionprofile ~/Library/MobileDevice/Provisioning\ Profiles/${MAC_APP_STORE_UUID}.provisionprofile
+          echo "MAC_APP_STORE_PROVISIONING_PROFILE_UUID=${MAC_APP_STORE_UUID}" >> $GITHUB_ENV
+
+          echo "${{ secrets.MAC_DEVELOPER_ID_PROVISIONING_PROFILE_BASE64 }}" | base64 --decode > $RUNNER_TEMP/mac_developer_id.provisionprofile
+          security cms -D -i $RUNNER_TEMP/mac_developer_id.provisionprofile > $RUNNER_TEMP/mac_developer_id_profile.plist
+          MAC_DEVELOPER_ID_UUID=$(/usr/libexec/PlistBuddy -c 'Print :UUID' $RUNNER_TEMP/mac_developer_id_profile.plist)
+          cp $RUNNER_TEMP/mac_developer_id.provisionprofile ~/Library/MobileDevice/Provisioning\ Profiles/${MAC_DEVELOPER_ID_UUID}.provisionprofile
+          echo "MAC_DEVELOPER_ID_PROVISIONING_PROFILE_UUID=${MAC_DEVELOPER_ID_UUID}" >> $GITHUB_ENV
+
+      - name: Patch ExportOptions Plists
+        run: |
+          IOS_BUNDLE_ID=$(/usr/libexec/PlistBuddy -c 'Print :Entitlements:application-identifier' $RUNNER_TEMP/ios_profile.plist | sed 's/^[^.]*\.//')
+          MAC_BUNDLE_ID=$(/usr/libexec/PlistBuddy -c 'Print :Entitlements:com.apple.application-identifier' $RUNNER_TEMP/mac_app_store_profile.plist | sed 's/^[^.]*\.//')
+          MAC_DEV_ID_BUNDLE_ID=$(/usr/libexec/PlistBuddy -c 'Print :Entitlements:com.apple.application-identifier' $RUNNER_TEMP/mac_developer_id_profile.plist | sed 's/^[^.]*\.//')
+          /usr/libexec/PlistBuddy -c "Set :provisioningProfiles:${IOS_BUNDLE_ID} ${IOS_PROVISIONING_PROFILE_UUID}" MobileCelestia/ExportOptions-iphoneos-appStore.plist
+          /usr/libexec/PlistBuddy -c "Set :provisioningProfiles:${MAC_BUNDLE_ID} ${MAC_APP_STORE_PROVISIONING_PROFILE_UUID}" MobileCelestia/ExportOptions-macosx-appStore.plist
+          /usr/libexec/PlistBuddy -c "Set :provisioningProfiles:${MAC_DEV_ID_BUNDLE_ID} ${MAC_DEVELOPER_ID_PROVISIONING_PROFILE_UUID}" MobileCelestia/ExportOptions-macosx-developerID.plist
 
       - name: Install Certificates (Mac Installer)
         run: |
