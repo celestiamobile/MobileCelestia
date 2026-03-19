@@ -71,7 +71,6 @@ jobs:
     env:
       XC_ARCHIVE_PARENT_PATH: '${{ github.workspace }}/archive'
       XC_ARCHIVE_PATH: '${{ github.workspace }}/archive/MobileCelestia.xcarchive'
-      XC_EXPORT_PATH: '${{ runner.temp }}/output'
 
     steps:
       - name: Checkout MobileCelestia
@@ -247,7 +246,7 @@ jobs:
 
       - name: Export Archive
         run: |
-          /usr/bin/xcodebuild -exportArchive -archivePath "$XC_ARCHIVE_PATH" -exportOptionsPlist "MobileCelestia/ExportOptions-${{ matrix.sdk }}-${{ matrix.signing }}.plist" -exportPath "$XC_EXPORT_PATH"
+          /usr/bin/xcodebuild -exportArchive -archivePath "$XC_ARCHIVE_PATH" -exportOptionsPlist "MobileCelestia/ExportOptions-${{ matrix.sdk }}-${{ matrix.signing }}.plist" -exportPath "$RUNNER_TEMP/output"
 
       - name: Create Artifact Folders
         run: |
@@ -261,16 +260,16 @@ jobs:
 
       - name: Copy .ipa
         if: matrix.sdk == 'iphoneos'
-        run: find ${{ env.XC_EXPORT_PATH }} -name "*.ipa" -exec cp {} $RUNNER_TEMP/artifacts/product/ \;
+        run: find $RUNNER_TEMP/output -name "*.ipa" -exec cp {} $RUNNER_TEMP/artifacts/product/ \;
 
       - name: Copy .pkg
         if: matrix.sdk == 'macosx' && matrix.signing == 'appStore'
-        run: find ${{ env.XC_EXPORT_PATH }} -name "*.pkg" -exec cp {} $RUNNER_TEMP/artifacts/product/ \;
+        run: find $RUNNER_TEMP/output -name "*.pkg" -exec cp {} $RUNNER_TEMP/artifacts/product/ \;
 
       - name: Create .zip Archive for .app
         if: matrix.sdk == 'macosx' && matrix.signing == 'developerID'
         run: |
-          cd ${{ env.XC_EXPORT_PATH }}
+          cd $RUNNER_TEMP/output
           zip -r -v -y $RUNNER_TEMP/artifacts/product/App.zip *.app
 
       - name: Upload Product Artifacts
