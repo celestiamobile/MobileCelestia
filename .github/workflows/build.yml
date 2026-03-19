@@ -1,0 +1,308 @@
+# Required secrets:
+#   P12_PASSWORD                            - Password for all .p12 certificate files
+#   MAC_INSTALLER_P12_BASE64                - Base64-encoded MacInstallerDistribution20260524.p12
+#   DISTRIBUTION_P12_BASE64                 - Base64-encoded AppleDistribution20260524.p12
+#   DEVELOPER_ID_P12_BASE64                 - Base64-encoded DeveloperIDApplication20270202.p12
+#   IOS_PROVISIONING_PROFILE_BASE64         - Base64-encoded iOSDistribution20260524.mobileprovision
+#   MAC_APP_STORE_PROVISIONING_PROFILE_BASE64 - Base64-encoded MacDistribution20260524.provisionprofile
+#   MAC_DEVELOPER_ID_PROVISIONING_PROFILE_BASE64 - Base64-encoded DeveloperIDApplication20270202.provisionprofile
+#   SENTRY_AUTH_TOKEN                       - Sentry auth token
+#   SENTRY_CATALYST_DSN                     - Sentry DSN for Catalyst
+#   SENTRY_IOS_DSN                          - Sentry DSN for iOS
+#   AC_ACCOUNT_NAME                         - Apple ID for notarization
+#   AC_ACCOUNT_PASSWORD                     - App-specific password for notarization
+
+name: Build
+
+on:
+  push:
+    branches:
+      - 'releases/*'
+      - main
+      - develop
+  pull_request:
+    branches:
+      - 'releases/*'
+      - main
+      - develop
+
+env:
+  DEPENDENCY_VERSION: '1.0.51'
+  CONTENT_COMMIT_HASH: '54e4760132be3617e4782fee8eefcfce6694f4ff'
+  XC_VERSION: '26.3'
+  XC_PROJECT: 'MobileCelestia/MobileCelestia.xcodeproj'
+  XC_SCHEME: 'MobileCelestia'
+  IOS_PROVISIONING_PROFILE_UUID: '61ac6d7c-5dea-4b7e-8a69-43491626686e'
+  MAC_APP_STORE_PROVISIONING_PROFILE_UUID: '15ce2562-5fe5-4bd7-9295-f393542ef86a'
+  MAC_DEVELOPER_ID_PROVISIONING_PROFILE_UUID: '05aab2eb-1c4c-4e55-a63d-e0721011273d'
+  DISTRIBUTION_IDENTITY: 'Apple Distribution: Linfeng Li (22NR5428TD)'
+  DEVELOPER_ID_IDENTITY: 'Developer ID Application: Linfeng Li (22NR5428TD)'
+
+jobs:
+  build:
+    name: 'Build ${{ matrix.name }}'
+    runs-on: macos-15
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - sdk: iphoneos
+            signing: appStore
+            backend: openGL
+            name: iOS
+          - sdk: iphoneos
+            signing: appStore
+            backend: angle
+            name: iOS (ANGLE)
+          - sdk: macosx
+            signing: developerID
+            backend: angle
+            name: Catalyst (Developer ID, ANGLE)
+          - sdk: macosx
+            signing: developerID
+            backend: openGL
+            name: Catalyst (Developer ID, OpenGL)
+          - sdk: macosx
+            signing: appStore
+            backend: openGL
+            name: Catalyst (App Store)
+
+    env:
+      XC_ARCHIVE_PARENT_PATH: '${{ github.workspace }}/archive'
+      XC_ARCHIVE_PATH: '${{ github.workspace }}/archive/MobileCelestia.xcarchive'
+      XC_EXPORT_PATH: '${{ runner.temp }}/output'
+
+    steps:
+      - name: Checkout MobileCelestia
+        uses: actions/checkout@v4
+        with:
+          path: MobileCelestia
+          fetch-depth: 0
+
+      - name: Checkout Celestia
+        uses: actions/checkout@v4
+        with:
+          repository: celestiamobile/Celestia
+          path: Celestia
+          fetch-depth: 0
+
+      - name: Checkout CelestiaCore
+        uses: actions/checkout@v4
+        with:
+          repository: celestiamobile/CelestiaCore
+          path: CelestiaCore
+          fetch-depth: 0
+
+      - name: Checkout CelestiaContent
+        uses: actions/checkout@v4
+        with:
+          repository: CelestiaProject/CelestiaContent
+          path: CelestiaContent
+          fetch-depth: 0
+
+      - name: Checkout CelestiaLocalization
+        uses: actions/checkout@v4
+        with:
+          repository: celestiamobile/CelestiaLocalization
+          path: CelestiaLocalization
+          fetch-depth: 0
+
+      - name: Checkout Branch
+        if: github.event_name != 'pull_request'
+        run: |
+          cd Celestia
+          git checkout origin/${{ github.ref_name }}
+          cd ../CelestiaCore
+          git checkout origin/${{ github.ref_name }}
+          cd ../CelestiaLocalization
+          git checkout origin/${{ github.ref_name }}
+
+      - name: Checkout Branch (PR)
+        if: github.event_name == 'pull_request'
+        run: |
+          cd Celestia
+          git checkout origin/${{ github.event.pull_request.base.ref }}
+          cd ../CelestiaCore
+          git checkout origin/${{ github.event.pull_request.base.ref }}
+          cd ../CelestiaLocalization
+          git checkout origin/${{ github.event.pull_request.base.ref }}
+
+      - name: Apply ANGLE Patches (1)
+        if: matrix.backend == 'angle'
+        run: |
+          cd CelestiaCore
+          git apply ../MobileCelestia/patches/angle/celestiacore.patch --ignore-whitespace --whitespace=nowarn
+
+      - name: Apply ANGLE Patches (2)
+        if: matrix.backend == 'angle'
+        run: |
+          cd MobileCelestia
+          git apply patches/angle/mobilecelestia.patch --ignore-whitespace --whitespace=nowarn
+
+      - name: Checkout Content
+        run: |
+          cd CelestiaContent
+          git checkout ${{ env.CONTENT_COMMIT_HASH }}
+
+      - name: Install Dependencies
+        run: brew install gettext gperf node imagemagick wget
+
+      - name: Download Pre-built Dependencies
+        run: |
+          wget https://github.com/celestiamobile/apple-android-dependencies/releases/download/${{ env.DEPENDENCY_VERSION }}/apple-dependencies.tar.gz -O /tmp/apple-dependencies.tar.gz
+          mkdir -p CelestiaCore/libs/dependency
+          tar -xzf /tmp/apple-dependencies.tar.gz -C CelestiaCore/libs/dependency
+
+      - name: Use libepoxy with ANGLE
+        if: matrix.backend == 'angle'
+        run: |
+          cd CelestiaCore/libs/dependency
+          rm -rf libepoxy.xcframework
+          mv libepoxy_angle.xcframework libepoxy.xcframework
+
+      - name: Select Latest Xcode
+        run: |
+          sudo xcode-select -s /Applications/Xcode_${{ env.XC_VERSION }}.app
+          xcodebuild -version
+
+      - name: Running imagemagick
+        run: sh $GITHUB_WORKSPACE/CelestiaCore/downsize_textures.sh
+
+      - name: Running gperf
+        run: sh $GITHUB_WORKSPACE/CelestiaCore/run_gperf.sh $GITHUB_WORKSPACE/Celestia
+
+      - name: Install Sentry-CLI
+        run: brew install sentry-cli
+
+      - name: Replace Sentry Placeholders
+        working-directory: '${{ github.workspace }}/MobileCelestia'
+        run: |
+          sed -i '' "s#SENTRY-CATALYST-DSN#${{ secrets.SENTRY_CATALYST_DSN }}#g" MobileCelestia/AppDelegate.swift
+          sed -i '' "s#SENTRY-IOS-DSN#${{ secrets.SENTRY_IOS_DSN }}#g" MobileCelestia/AppDelegate.swift
+
+      - name: Install Provisioning Profiles
+        run: |
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          echo "${{ secrets.IOS_PROVISIONING_PROFILE_BASE64 }}" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/ios_distribution.mobileprovision
+          echo "${{ secrets.MAC_APP_STORE_PROVISIONING_PROFILE_BASE64 }}" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/mac_distribution.provisionprofile
+          echo "${{ secrets.MAC_DEVELOPER_ID_PROVISIONING_PROFILE_BASE64 }}" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/mac_developer_id.provisionprofile
+
+      - name: Install Certificates (Mac Installer)
+        run: |
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing-mac-installer.keychain-db
+          KEYCHAIN_PASSWORD=temppassword
+          echo "${{ secrets.MAC_INSTALLER_P12_BASE64 }}" | base64 --decode > $RUNNER_TEMP/mac_installer.p12
+          security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          security import "$RUNNER_TEMP/mac_installer.p12" -P "${{ secrets.P12_PASSWORD }}" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          security list-keychains -d user -s $(security list-keychains -d user | sed -e s/\"//g) $KEYCHAIN_PATH
+
+      - name: Install Certificates (Apple Distribution)
+        run: |
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing-distribution.keychain-db
+          KEYCHAIN_PASSWORD=temppassword
+          echo "${{ secrets.DISTRIBUTION_P12_BASE64 }}" | base64 --decode > $RUNNER_TEMP/distribution.p12
+          security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          security import "$RUNNER_TEMP/distribution.p12" -P "${{ secrets.P12_PASSWORD }}" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          security list-keychains -d user -s $(security list-keychains -d user | sed -e s/\"//g) $KEYCHAIN_PATH
+
+      - name: Install Certificates (Developer ID)
+        run: |
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing-developer-id.keychain-db
+          KEYCHAIN_PASSWORD=temppassword
+          echo "${{ secrets.DEVELOPER_ID_P12_BASE64 }}" | base64 --decode > $RUNNER_TEMP/developer_id.p12
+          security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          security import "$RUNNER_TEMP/developer_id.p12" -P "${{ secrets.P12_PASSWORD }}" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          security list-keychains -d user -s $(security list-keychains -d user | sed -e s/\"//g) $KEYCHAIN_PATH
+
+      - name: Build Archive (iOS)
+        if: matrix.sdk == 'iphoneos'
+        run: |
+          sed -i '' 's/CODE_SIGN_STYLE = Automatic;/CODE_SIGN_STYLE = Manual;/g' $XC_PROJECT/project.pbxproj
+          sed -i '' "s/PROVISIONING_PROFILE_SPECIFIER = \"\";/PROVISIONING_PROFILE_SPECIFIER = \"${IOS_PROVISIONING_PROFILE_UUID}\";/g" $XC_PROJECT/project.pbxproj
+          sed -i '' "s/CODE_SIGN_IDENTITY = \"Apple Development\";/CODE_SIGN_IDENTITY = \"${DISTRIBUTION_IDENTITY}\";/g" $XC_PROJECT/project.pbxproj
+          /usr/bin/xcodebuild archive -project "$XC_PROJECT" -scheme "$XC_SCHEME" -configuration "Release" -destination "generic/platform=iOS" -archivePath "$XC_ARCHIVE_PATH" SHARED_BUILD_NUMBER=$((6661 + ${{ github.run_number }}))
+
+      - name: Build Archive (Mac, App Store)
+        if: matrix.sdk == 'macosx' && matrix.signing == 'appStore'
+        run: |
+          sed -i '' 's/CODE_SIGN_STYLE = Automatic;/CODE_SIGN_STYLE = Manual;/g' $XC_PROJECT/project.pbxproj
+          sed -i '' "s/PROVISIONING_PROFILE_SPECIFIER = \"\";/PROVISIONING_PROFILE_SPECIFIER = \"${MAC_APP_STORE_PROVISIONING_PROFILE_UUID}\";/g" $XC_PROJECT/project.pbxproj
+          sed -i '' "s/CODE_SIGN_IDENTITY = \"Apple Development\";/CODE_SIGN_IDENTITY = \"${DISTRIBUTION_IDENTITY}\";/g" $XC_PROJECT/project.pbxproj
+          /usr/bin/xcodebuild archive -project "$XC_PROJECT" -scheme "$XC_SCHEME" -configuration "Release" -destination "platform=macOS,variant=Mac Catalyst" -archivePath "$XC_ARCHIVE_PATH" SHARED_BUILD_NUMBER=$((6661 + ${{ github.run_number }}))
+
+      - name: Build Archive (Mac, Developer ID)
+        if: matrix.sdk == 'macosx' && matrix.signing == 'developerID'
+        run: |
+          sed -i '' 's/CODE_SIGN_STYLE = Automatic;/CODE_SIGN_STYLE = Manual;/g' $XC_PROJECT/project.pbxproj
+          sed -i '' "s/PROVISIONING_PROFILE_SPECIFIER = \"\";/PROVISIONING_PROFILE_SPECIFIER = \"${MAC_DEVELOPER_ID_PROVISIONING_PROFILE_UUID}\";/g" $XC_PROJECT/project.pbxproj
+          sed -i '' "s/CODE_SIGN_IDENTITY = \"Apple Development\";/CODE_SIGN_IDENTITY = \"${DEVELOPER_ID_IDENTITY}\";/g" $XC_PROJECT/project.pbxproj
+          /usr/bin/xcodebuild archive -project "$XC_PROJECT" -scheme "$XC_SCHEME" -configuration "Release" -destination "platform=macOS,variant=Mac Catalyst" -archivePath "$XC_ARCHIVE_PATH" SHARED_BUILD_NUMBER=$((6661 + ${{ github.run_number }}))
+
+      - name: Export Archive
+        run: |
+          /usr/bin/xcodebuild -exportArchive -archivePath "$XC_ARCHIVE_PATH" -exportOptionsPlist "MobileCelestia/ExportOptions-${{ matrix.sdk }}-${{ matrix.signing }}.plist" -exportPath "$XC_EXPORT_PATH"
+
+      - name: Create Artifact Folders
+        run: |
+          mkdir -p $RUNNER_TEMP/artifacts/archive
+          mkdir -p $RUNNER_TEMP/artifacts/product
+
+      - name: Create .zip for .xcarchive
+        run: |
+          cd ${{ env.XC_ARCHIVE_PARENT_PATH }}
+          zip -r -v -y $RUNNER_TEMP/artifacts/archive/Archive.zip *.xcarchive
+
+      - name: Copy .ipa
+        if: matrix.sdk == 'iphoneos'
+        run: find ${{ env.XC_EXPORT_PATH }} -name "*.ipa" -exec cp {} $RUNNER_TEMP/artifacts/product/ \;
+
+      - name: Copy .pkg
+        if: matrix.sdk == 'macosx' && matrix.signing == 'appStore'
+        run: find ${{ env.XC_EXPORT_PATH }} -name "*.pkg" -exec cp {} $RUNNER_TEMP/artifacts/product/ \;
+
+      - name: Create .zip Archive for .app
+        if: matrix.sdk == 'macosx' && matrix.signing == 'developerID'
+        run: |
+          cd ${{ env.XC_EXPORT_PATH }}
+          zip -r -v -y $RUNNER_TEMP/artifacts/product/App.zip *.app
+
+      - name: Upload Product Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: '${{ matrix.sdk }}-${{ matrix.signing }}-${{ matrix.backend }}-product'
+          path: '${{ runner.temp }}/artifacts/product'
+
+      - name: Upload Archive Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: '${{ matrix.sdk }}-${{ matrix.signing }}-${{ matrix.backend }}-archive'
+          path: '${{ runner.temp }}/artifacts/archive'
+
+      - name: Upload Symbols (iOS)
+        if: matrix.sdk == 'iphoneos'
+        env:
+          SENTRY_ORG: celestia-vs
+          SENTRY_PROJECT: apple-ios
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        run: sentry-cli debug-files upload --include-sources ${{ env.XC_ARCHIVE_PATH }}/dSYMs
+
+      - name: Upload Symbols (Mac)
+        if: matrix.sdk == 'macosx'
+        env:
+          SENTRY_ORG: celestia-vs
+          SENTRY_PROJECT: apple-catalyst
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+        run: sentry-cli debug-files upload --include-sources ${{ env.XC_ARCHIVE_PATH }}/dSYMs
+
+      - name: Notarize App
+        if: matrix.sdk == 'macosx' && matrix.signing == 'developerID'
+        run: |
+          xcrun notarytool store-credentials "AC_PASSWORD" --apple-id ${{ secrets.AC_ACCOUNT_NAME }} --team-id 22NR5428TD --password ${{ secrets.AC_ACCOUNT_PASSWORD }}
+          xcrun notarytool submit "$RUNNER_TEMP/artifacts/product/App.zip" --keychain-profile "AC_PASSWORD" --wait
