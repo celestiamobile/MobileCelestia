@@ -106,7 +106,7 @@ class MainViewController: UIViewController {
         let platform = "ios"
         #endif
         #endif
-        featureFlagsManager = FeatureFlagsManager(requestHandler: requestHandler, userDefaults: userDefaults, platform: platform)
+        featureFlagsManager = FeatureFlagsManager(requestHandler: requestHandler, userDefaults: userDefaults, platform: platform, bundle: Bundle.app)
         featureFlags = featureFlagsManager.get()
 
         super.init(nibName: nil, bundle: nil)

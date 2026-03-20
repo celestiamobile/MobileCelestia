@@ -19,16 +19,18 @@ public final class FeatureFlagsManager: @unchecked Sendable {
     private let requestHandler: RequestHandler
     private let userDefaults: UserDefaults
     private let platform: String
+    private let bundle: Bundle
 
-    public init(requestHandler: RequestHandler, userDefaults: UserDefaults, platform: String) {
+    public init(requestHandler: RequestHandler, userDefaults: UserDefaults, platform: String, bundle: Bundle) {
         self.requestHandler = requestHandler
         self.userDefaults = userDefaults
         self.platform = platform
+        self.bundle = bundle
     }
 
     public func update(language: String) async {
         do {
-            let result = try await requestHandler.getFeatureFlags(platform: platform, language: language)
+            let result = try await requestHandler.getFeatureFlags(platform: platform, language: language, version: bundle.shortVersion)
 
             let deviceId: String
             if let stored = userDefaults.string(forKey: Self.deviceIDKey) {

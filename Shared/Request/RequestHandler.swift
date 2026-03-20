@@ -71,7 +71,7 @@ final class RequestHandlerImpl: RequestHandler {
         return try await AsyncJSONRequestHandler.post(url: URL.updates.absoluteString, json: UpdateRequest(lang: language, items: addonIds, transactionIdApple: "\(originalTransactionID)", isSandboxApple: sandbox))
     }
 
-    func getFeatureFlags(platform: String, language: String) async throws -> [String: Double] {
-        return try await AsyncJSONRequestHandler.get(url: URL.features.absoluteString, parameters: ["platform": platform, "lang": language])
+    func getFeatureFlags(platform: String, language: String, version: String) async throws -> [String: Double] {
+        return try await AsyncJSONRequestHandler.get(url: URL.features.absoluteString, parameters: ["platform": platform, "lang": language, "version": version])
     }
 }
