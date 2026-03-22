@@ -83,14 +83,21 @@ class CelestiaViewController: UIViewController {
     private var gyroscopeSettingsSubscription: Set<AnyCancellable> = []
     #endif
 
-    init(screen: UIScreen, executor: CelestiaExecutor, userDefaults: UserDefaults, subscriptionManager: SubscriptionManager, core: AppCore) {
+    init(
+        screen: UIScreen,
+        executor: CelestiaExecutor,
+        userDefaults: UserDefaults,
+        subscriptionManager: SubscriptionManager,
+        core: AppCore,
+        featureFlags: FeatureFlags
+    ) {
         appScreen = screen
         isMirroring = false
         self.subscriptionManager = subscriptionManager
         self.core = core
         self.executor = executor
         self.userDefaults = userDefaults
-        displayController = CelestiaDisplayController(msaaEnabled: userDefaults[.msaa] == true, screen: screen, initialFrameRate: userDefaults[.frameRate] ?? 60, executor: executor, subscriptionManager: subscriptionManager, core: core, userDefaults: userDefaults)
+        displayController = CelestiaDisplayController(msaaEnabled: userDefaults[.msaa] == true, screen: screen, initialFrameRate: userDefaults[.frameRate] ?? 60, executor: executor, subscriptionManager: subscriptionManager, core: core, userDefaults: userDefaults, featureFlags: featureFlags)
         super.init(nibName: nil, bundle: nil)
     }
 

@@ -57,11 +57,20 @@ class CelestiaDisplayController: AsyncGLViewController {
     private nonisolated(unsafe) var sensitivity: Double = 10.0
     #endif
 
-    init(msaaEnabled: Bool, screen: UIScreen, initialFrameRate frameRate: Int, executor: CelestiaExecutor, subscriptionManager: SubscriptionManager, core: AppCore, userDefaults: UserDefaults) {
+    init(
+        msaaEnabled: Bool,
+        screen: UIScreen,
+        initialFrameRate frameRate: Int,
+        executor: CelestiaExecutor,
+        subscriptionManager: SubscriptionManager,
+        core: AppCore,
+        userDefaults: UserDefaults,
+        featureFlags: FeatureFlags
+    ) {
 #if targetEnvironment(macCatalyst)
         let api = AsyncGLAPI.openGLLegacy
 #else
-        let api = AsyncGLAPI.openGLES2
+        let api = featureFlags.iosGLESV3 ? AsyncGLAPI.openGLES3 : AsyncGLAPI.openGLES2
 #endif
         self.subscriptionManager = subscriptionManager
         self.core = core

@@ -111,7 +111,7 @@ class MainViewController: UIViewController {
 
         super.init(nibName: nil, bundle: nil)
 
-        celestiaController = CelestiaViewController(screen: screen, executor: executor, userDefaults: userDefaults, subscriptionManager: subscriptionManager, core: core)
+        celestiaController = CelestiaViewController(screen: screen, executor: executor, userDefaults: userDefaults, subscriptionManager: subscriptionManager, core: core, featureFlags: featureFlags)
 
         #if targetEnvironment(macCatalyst)
         let splitViewController = ToolbarSplitContainerController()
