@@ -54,6 +54,7 @@ public class SettingsCoordinatorController: UIViewController {
     private let executor: AsyncProviderExecutor
     private let userDefaults: UserDefaults
     private let bundle: Bundle
+    private let featureFlags: FeatureFlags
     private let defaultDataDirectory: URL
     private let settings: [SettingSection]
     #if !os(visionOS)
@@ -82,6 +83,7 @@ public class SettingsCoordinatorController: UIViewController {
         executor: AsyncProviderExecutor,
         userDefaults: UserDefaults,
         bundle: Bundle,
+        featureFlags: FeatureFlags,
         defaultDataDirectory: URL,
         settings: [SettingSection],
         dataLocationContext: DataLocationSettingContext,
@@ -95,6 +97,7 @@ public class SettingsCoordinatorController: UIViewController {
         self.executor = executor
         self.userDefaults = userDefaults
         self.bundle = bundle
+        self.featureFlags = featureFlags
         self.defaultDataDirectory = defaultDataDirectory
         self.settings = settings
         self.dataLocationContext = dataLocationContext
@@ -111,6 +114,7 @@ public class SettingsCoordinatorController: UIViewController {
         executor: AsyncProviderExecutor,
         userDefaults: UserDefaults,
         bundle: Bundle,
+        featureFlags: FeatureFlags,
         defaultDataDirectory: URL,
         settings: [SettingSection],
         frameRateContext: FrameRateSettingContext,
@@ -130,6 +134,7 @@ public class SettingsCoordinatorController: UIViewController {
         self.executor = executor
         self.userDefaults = userDefaults
         self.bundle = bundle
+        self.featureFlags = featureFlags
         self.defaultDataDirectory = defaultDataDirectory
         self.settings = settings
         self.frameRateContext = frameRateContext
@@ -190,7 +195,11 @@ private extension SettingsCoordinatorController {
                     let renderInfo = await self.rendererInfoProvider()
                     viewController = TextViewController(title: item.name, text: renderInfo)
                 case .time:
-                    viewController = TimeSettingViewController(core: core, executor: executor, dateInputHandler: self.dateInputHandler, textInputHandler: self.textInputHandler)
+                    if #available(iOS 16, visionOS 1, *), featureFlags.swiftUITimeSettings {
+                        viewController = TimeSettingSUIViewController(dateInputHandler: self.dateInputHandler, textInputHandler: self.textInputHandler)
+                    } else {
+                        viewController = TimeSettingViewController(core: core, executor: executor, dateInputHandler: self.dateInputHandler, textInputHandler: self.textInputHandler)
+                    }
                 case .dataLocation:
                     viewController = DataLocationSelectionViewController(userDefaults: dataLocationContext.userDefaults, dataDirectoryUserDefaultsKey: dataLocationContext.dataDirectoryUserDefaultsKey, configFileUserDefaultsKey: dataLocationContext.configFileUserDefaultsKey, defaultDataDirectoryURL: dataLocationContext.defaultDataDirectoryURL, defaultConfigFileURL: dataLocationContext.defaultConfigFileURL)
 #if !os(visionOS)
