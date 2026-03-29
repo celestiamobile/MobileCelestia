@@ -29,7 +29,7 @@ on:
 env:
   DEPENDENCY_VERSION: '1.0.51'
   CONTENT_COMMIT_HASH: 'df1419776e81d2cb1e7607161883cab2db200318'
-  XC_VERSION: '26.3'
+  XC_VERSION: '26.4'
   XC_PROJECT: 'MobileCelestia/MobileCelestia.xcodeproj'
   XC_SCHEME: 'MobileCelestia'
   DISTRIBUTION_IDENTITY: 'Apple Distribution: Linfeng Li (22NR5428TD)'

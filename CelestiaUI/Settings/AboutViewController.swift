@@ -77,12 +77,10 @@ public final class AboutViewController: UIViewController {
         } else {
             showICPC = Locale.current.regionCode == "CN"
         }
-#else
-        let showICPC = false
-#endif
         if showICPC {
             links.append(LinkTextConfiguration.Link(text: "苏ICP备2023039249号-4A", link: "https://beian.miit.gov.cn"))
         }
+#endif
 
         let linksView = LinkTextConfiguration(info: LinkTextConfiguration.LinkInfo(text: links.map(\.text).joined(separator: " | "), links: links)).makeContentView()
 

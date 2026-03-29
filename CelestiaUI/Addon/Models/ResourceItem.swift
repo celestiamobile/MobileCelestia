@@ -14,10 +14,8 @@ public struct ResourceItem: Codable, Hashable, Sendable {
     let description: String
     let type: String?
     public let id: String
-    let image: URL?
     let item: URL
     let checksum: String?
-    let authors: [String]?
     let publishTime: Date?
     let objectName: String?
     let mainScriptName: String?

@@ -7,9 +7,9 @@
 // as published by the Free Software Foundation; either version 2
 // of the License, or (at your option) any later version.
 
+import AsyncRequest
 import Foundation
 import CelestiaUI
-import MWRequest
 
 extension GuideItem: @retroactive JSONDecodable {
     public static let decoder: JSONDecoder? = nil
@@ -48,16 +48,16 @@ final class RequestHandlerImpl: RequestHandler {
         let result: ValidationResult = try await AsyncJSONRequestHandler.get(url: URL.apiPrefixURL.appendingPathComponent("subscription/apple").absoluteString, parameters: [
             "originalTransactionId": "\(originalTransactionID)",
             "sandbox": sandbox ? "1" : "0",
-        ])
+        ], httpClient: URLSession.shared)
         return result.valid
     }
 
     public func getMetadata(id: String, language: String) async throws -> ResourceItem {
-        return try await AsyncJSONRequestHandler.get(url: URL.addonMetadata.absoluteString, parameters: ["lang": language, "item": id])
+        return try await AsyncJSONRequestHandler.get(url: URL.addonMetadata.absoluteString, parameters: ["lang": language, "item": id], httpClient: URLSession.shared)
     }
 
     func getLatestMetadata(language: String) async throws -> GuideItem {
-        return try await AsyncJSONRequestHandler.get(url: URL.latestGuideMetadata.absoluteString, parameters: ["lang": language, "type": "news"])
+        return try await AsyncJSONRequestHandler.get(url: URL.latestGuideMetadata.absoluteString, parameters: ["lang": language, "type": "news"], httpClient: URLSession.shared)
     }
 
     private struct UpdateRequest: Encodable {
@@ -68,10 +68,10 @@ final class RequestHandlerImpl: RequestHandler {
     }
 
     func getUpdates(addonIds: [String], language: String, originalTransactionID: UInt64, sandbox: Bool) async throws -> [String: AddonUpdate] {
-        return try await AsyncJSONRequestHandler.post(url: URL.updates.absoluteString, json: UpdateRequest(lang: language, items: addonIds, transactionIdApple: "\(originalTransactionID)", isSandboxApple: sandbox))
+        return try await AsyncJSONRequestHandler.post(url: URL.updates.absoluteString, json: UpdateRequest(lang: language, items: addonIds, transactionIdApple: "\(originalTransactionID)", isSandboxApple: sandbox), httpClient: URLSession.shared)
     }
 
     func getFeatureFlags(platform: String, language: String, version: String) async throws -> [String: Double] {
-        return try await AsyncJSONRequestHandler.get(url: URL.features.absoluteString, parameters: ["platform": platform, "lang": language, "version": version])
+        return try await AsyncJSONRequestHandler.get(url: URL.features.absoluteString, parameters: ["platform": platform, "lang": language, "version": version], httpClient: URLSession.shared)
     }
 }

@@ -1,57 +1,47 @@
 diff --git a/MobileCelestia.xcodeproj/project.pbxproj b/MobileCelestia.xcodeproj/project.pbxproj
-index 2091ebf..0622e08 100644
+index 5dc3800..d48ea15 100644
 --- a/MobileCelestia.xcodeproj/project.pbxproj
 +++ b/MobileCelestia.xcodeproj/project.pbxproj
-@@ -17,8 +17,8 @@
+@@ -17,7 +17,7 @@
  		EA4E2D862A56B5E10046D62E /* CelestiaFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA4E2D752A56B4570046D62E /* CelestiaFoundation.framework */; };
  		EA50E7642A505627005E7D7A /* CelestiaUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA50E75E2A505627005E7D7A /* CelestiaUI.framework */; };
  		EA7BF37C27033AE40058F704 /* GameController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA7BF37B27033AE40058F704 /* GameController.framework */; };
 -		EA9039792BA19B1300C982BC /* AsyncGL in Frameworks */ = {isa = PBXBuildFile; productRef = EA9039782BA19B1300C982BC /* AsyncGL */; };
- 		EA9039A22BA19CF100C982BC /* MWRequest in Frameworks */ = {isa = PBXBuildFile; productRef = EA9039A12BA19CF100C982BC /* MWRequest */; };
 +		EA9039A92BA19F0900C982BC /* AsyncGLANGLE in Frameworks */ = {isa = PBXBuildFile; productRef = EA9039A82BA19F0900C982BC /* AsyncGLANGLE */; };
  		EA9A426D288CD7FE00AF3BD6 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA9A426C288CD7FE00AF3BD6 /* AVFoundation.framework */; };
  		EA9A426F288CD80300AF3BD6 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA9A426E288CD80200AF3BD6 /* AudioToolbox.framework */; };
  		EAA7D6B92B88446300D57718 /* ZipUtils.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA86F8052B7A4A8500419451 /* ZipUtils.framework */; };
-@@ -207,7 +207,7 @@
+@@ -248,7 +248,7 @@
+ 		979D2F7723FEB1A6005D2592 /* Frameworks */ = {
  			isa = PBXFrameworksBuildPhase;
- 			buildActionMask = 2147483647;
  			files = (
 -				EA9039792BA19B1300C982BC /* AsyncGL in Frameworks */,
 +				EA9039A92BA19F0900C982BC /* AsyncGLANGLE in Frameworks */,
  				979D2FAD23FEB2B4005D2592 /* libbz2.tbd in Frameworks */,
  				EA4E2D7C2A56B46B0046D62E /* CelestiaFoundation.framework in Frameworks */,
  				EA9A426D288CD7FE00AF3BD6 /* AVFoundation.framework in Frameworks */,
-@@ -372,7 +372,7 @@
+@@ -395,7 +395,7 @@
  			);
  			name = MobileCelestia;
  			packageProductDependencies = (
 -				EA9039782BA19B1300C982BC /* AsyncGL */,
 +				EA9039A82BA19F0900C982BC /* AsyncGLANGLE */,
- 				EA9039A12BA19CF100C982BC /* MWRequest */,
  				EAC20FE02CA0CB7C0098AABA /* Sentry */,
+ 				EA0854A12F78E04B00A01B46 /* AsyncRequest */,
  			);
-@@ -1330,16 +1330,16 @@
- /* End XCRemoteSwiftPackageReference section */
- 
- /* Begin XCSwiftPackageProductDependency section */
--		EA9039782BA19B1300C982BC /* AsyncGL */ = {
--			isa = XCSwiftPackageProductDependency;
--			package = EA9039772BA19B1300C982BC /* XCRemoteSwiftPackageReference "AsyncGL" */;
--			productName = AsyncGL;
--		};
- 		EA9039A12BA19CF100C982BC /* MWRequest */ = {
- 			isa = XCSwiftPackageProductDependency;
- 			package = EA9039A02BA19CF100C982BC /* XCRemoteSwiftPackageReference "mwrequest" */;
- 			productName = MWRequest;
+@@ -1313,10 +1313,10 @@
+ 			package = EA0854A02F78E04B00A01B46 /* XCRemoteSwiftPackageReference "async-request" */;
+ 			productName = AsyncRequest;
  		};
+-		EA9039782BA19B1300C982BC /* AsyncGL */ = {
 +		EA9039A82BA19F0900C982BC /* AsyncGLANGLE */ = {
-+			isa = XCSwiftPackageProductDependency;
-+			package = EA9039772BA19B1300C982BC /* XCRemoteSwiftPackageReference "AsyncGL" */;
+ 			isa = XCSwiftPackageProductDependency;
+ 			package = EA9039772BA19B1300C982BC /* XCRemoteSwiftPackageReference "AsyncGL" */;
+-			productName = AsyncGL;
 +			productName = AsyncGLANGLE;
-+		};
+ 		};
  		EAC20FE02CA0CB7C0098AABA /* Sentry */ = {
  			isa = XCSwiftPackageProductDependency;
- 			package = EAC20FDF2CA0CB7C0098AABA /* XCRemoteSwiftPackageReference "sentry-cocoa" */;
 diff --git a/MobileCelestia/Celestia/CelestiaDisplayController.swift b/MobileCelestia/Celestia/CelestiaDisplayController.swift
 index 99bcf2a..8dcb2d7 100644
 --- a/MobileCelestia/Celestia/CelestiaDisplayController.swift
