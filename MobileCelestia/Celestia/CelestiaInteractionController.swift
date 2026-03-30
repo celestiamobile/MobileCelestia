@@ -125,6 +125,8 @@ class CelestiaInteractionController: UIViewController {
 
     #if targetEnvironment(macCatalyst)
     private var zoomByDistance = false
+    private lazy var hideCursorDuringDragging = userDefaults[.hideCursorDuringDragging] ?? true
+    private lazy var infiniteDragging = hideCursorDuringDragging && (userDefaults[.infiniteDragging] ?? true)
     #endif
 
     private var zoomTimer: Timer?
@@ -426,8 +428,12 @@ extension CelestiaInteractionController {
             break
         case .began:
             #if targetEnvironment(macCatalyst)
-            currentPanStartPoint = MacBridge.currentMouseLocation
-            NSCursor.hide()
+            if infiniteDragging {
+                currentPanStartPoint = MacBridge.currentMouseLocation
+            }
+            if hideCursorDuringDragging {
+                NSCursor.hide()
+            }
             #endif
             currentPanPoint = location
             executor.runAsynchronously { $0.mouseButtonDown(at: location, modifiers: UInt(modifiers.rawValue), with: button) }
@@ -449,7 +455,9 @@ extension CelestiaInteractionController {
                 CGWarpMouseCursorPosition(startLocation)
                 currentPanStartPoint = nil
             }
-            NSCursor.unhide()
+            if hideCursorDuringDragging {
+                NSCursor.unhide()
+            }
             #endif
             executor.runAsynchronously { $0.mouseButtonUp(at: location, modifiers: UInt(modifiers.rawValue), with: button) }
             currentPanPoint = nil

@@ -52,6 +52,8 @@ public enum UserDefaultsKey: String, Sendable {
     case configFile
     #if targetEnvironment(macCatalyst)
     case pinchZoom
+    case hideCursorDuringDragging
+    case infiniteDragging
     #else
     case contextMenu
     #endif

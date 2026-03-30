@@ -50,6 +50,20 @@ private let sharedInteractionItems: [SettingItem] = [
 #if targetEnvironment(macCatalyst)
 private let interactionItems = sharedInteractionItems + [
     SettingItem(
+        name: CelestiaString("Hide Cursor During Dragging", comment: ""),
+        subtitle: CelestiaString("Hide the mouse cursor during dragging", comment: ""),
+        associatedItem: .prefSwitch(
+            item: AssociatedPreferenceSwitchItem(key: .hideCursorDuringDragging, defaultOn: true)
+        )
+    ),
+    SettingItem(
+        name: CelestiaString("Infinite Dragging", comment: ""),
+        subtitle: CelestiaString("Mouse cursor is warped to the location when the dragging starts. Only effective when the cursor is hidden during dragging", comment: ""),
+        associatedItem: .prefSwitch(
+            item: AssociatedPreferenceSwitchItem(key: .infiniteDragging, defaultOn: true)
+        )
+    ),
+    SettingItem(
         name: CelestiaString("Pinch Zoom", comment: "Settings for whether to pinch to zoom by FOV or by distance"),
         subtitle: CelestiaString("Adjust view with pinch gestures by changing FOV or distance", comment: "Description for Pinch Zoom setting"),
         associatedItem: .prefSelection(item:
@@ -58,7 +72,7 @@ private let interactionItems = sharedInteractionItems + [
                 .init(name: CelestiaString("Distance", context: "Pinch Zoom", comment: "Pinch zoom setting option"), value: 1)
             ], defaultOption: 0)
         )
-    )
+    ),
 ]
 #else
 private let interactionItems = sharedInteractionItems + [
