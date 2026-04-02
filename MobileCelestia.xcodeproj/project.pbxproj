@@ -13,6 +13,7 @@
 		979D2FAF23FEB2BD005D2592 /* libz.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 979D2FAE23FEB2B9005D2592 /* libz.tbd */; };
 		EA0854A22F78E04B00A01B46 /* AsyncRequest in Frameworks */ = {isa = PBXBuildFile; productRef = EA0854A12F78E04B00A01B46 /* AsyncRequest */; };
 		EA1823F027C08D3D00E0F5E4 /* CelestiaHelper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA1823EA27C08D3D00E0F5E4 /* CelestiaHelper.framework */; platformFilter = maccatalyst; };
+		EA34287A2F7F0284002C15B3 /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EA3428782F7F0272002C15B3 /* libiconv.tbd */; };
 		EA4E2D7C2A56B46B0046D62E /* CelestiaFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA4E2D752A56B4570046D62E /* CelestiaFoundation.framework */; };
 		EA4E2D862A56B5E10046D62E /* CelestiaFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA4E2D752A56B4570046D62E /* CelestiaFoundation.framework */; };
 		EA50E7642A505627005E7D7A /* CelestiaUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA50E75E2A505627005E7D7A /* CelestiaUI.framework */; };
@@ -118,7 +119,7 @@
 		979D2FAC23FEB2AE005D2592 /* libbz2.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libbz2.tbd; path = usr/lib/libbz2.tbd; sourceTree = SDKROOT; };
 		979D2FAE23FEB2B9005D2592 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		EA1823EA27C08D3D00E0F5E4 /* CelestiaHelper.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CelestiaHelper.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		EA3AF20F2D8132FC0029ACA4 /* libiconv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX15.2.sdk/usr/lib/libiconv.tbd; sourceTree = DEVELOPER_DIR; };
+		EA3428782F7F0272002C15B3 /* libiconv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.tbd; path = usr/lib/libiconv.tbd; sourceTree = SDKROOT; };
 		EA4E2D752A56B4570046D62E /* CelestiaFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CelestiaFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA50E75E2A505627005E7D7A /* CelestiaUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CelestiaUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA7BF37B27033AE40058F704 /* GameController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameController.framework; path = System/Library/Frameworks/GameController.framework; sourceTree = SDKROOT; };
@@ -252,6 +253,7 @@
 				979D2FAD23FEB2B4005D2592 /* libbz2.tbd in Frameworks */,
 				EA4E2D7C2A56B46B0046D62E /* CelestiaFoundation.framework in Frameworks */,
 				EA9A426D288CD7FE00AF3BD6 /* AVFoundation.framework in Frameworks */,
+				EA34287A2F7F0284002C15B3 /* libiconv.tbd in Frameworks */,
 				EA9A426F288CD80300AF3BD6 /* AudioToolbox.framework in Frameworks */,
 				EA0854A22F78E04B00A01B46 /* AsyncRequest in Frameworks */,
 				EA7BF37C27033AE40058F704 /* GameController.framework in Frameworks */,
@@ -335,6 +337,7 @@
 		979D2FA523FEB1DD005D2592 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				EA3428782F7F0272002C15B3 /* libiconv.tbd */,
 				EA9A426E288CD80200AF3BD6 /* AudioToolbox.framework */,
 				EA9A426C288CD7FE00AF3BD6 /* AVFoundation.framework */,
 				EA7BF37B27033AE40058F704 /* GameController.framework */,
