@@ -219,6 +219,20 @@ class MainViewController: UIViewController {
         view.setNeedsUpdateConstraints()
         view.updateConstraintsIfNeeded()
     }
+
+    #if !targetEnvironment(macCatalyst)
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        if let presentedViewController, presentedViewController.isAdaptiveBottomSheet {
+            if view.frame.width > 1024 {
+                presentedViewController.preferredContentSize = CGSize(width: 393, height: 393)
+            } else {
+                presentedViewController.preferredContentSize = CGSize(width: 320, height: 320)
+            }
+        }
+    }
+    #endif
 }
 
 extension MainViewController {
@@ -1381,14 +1395,14 @@ Device Model: \(model)
     private func showViewController(_ viewController: UIViewController,
                                     key: String? = nil,
                                     prefersMediumDetent: Bool = false,
-                                    iOSPreferredSize: CGSize = CGSize(width: 320, height: 320),
                                     macOSPreferredSize: CGSize = CGSize(width: 500, height: 600),
                                     titleVisible: Bool = true,
                                     customToolbar: Bool = false) {
         #if targetEnvironment(macCatalyst)
         PanelSceneDelegate.present(viewController, key: key, preferredSize: macOSPreferredSize, titleVisible: titleVisible, customToolbar: customToolbar)
         #else
-        viewController.preferredContentSize = iOSPreferredSize
+        viewController.isAdaptiveBottomSheet = true
+        viewController.preferredContentSize = view.frame.width > 1024 ? CGSize(width: 393, height: 393) : CGSize(width: 320, height: 320)
         if #available(iOS 16, *), Self.canUseSystemSheetPresentationController, let sheet = viewController.sheetPresentationController {
             sheet.prefersGrabberVisible = true
             sheet.detents = [.small(), .medium(), .large()]
@@ -1697,6 +1711,22 @@ extension UISheetPresentationController.Detent {
             guard let value = UISheetPresentationController.Detent.medium().resolvedValue(in: context) else { return nil }
             return value / 2
         }
+    }
+}
+
+private struct UIViewControllerAssociatedKeys {
+    @MainActor
+    static var isAdaptiveBottomSheet: UInt8 = 0
+}
+
+extension UIViewController {
+    public var isAdaptiveBottomSheet: Bool {
+      get {
+        objc_getAssociatedObject(self, &UIViewControllerAssociatedKeys.isAdaptiveBottomSheet) as? Bool ?? false
+      }
+      set {
+          objc_setAssociatedObject(self, &UIViewControllerAssociatedKeys.isAdaptiveBottomSheet, newValue, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+      }
     }
 }
 #endif
