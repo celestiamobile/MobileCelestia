@@ -155,19 +155,19 @@ public func storeBookmarks(_ bookmarks: [BookmarkNode]) {
 
 // MARK: Overview
 public extension AppCore {
-    func overviewForSelection(_ selection: Selection) -> String {
+    func overviewForSelection(_ selection: Selection) -> NSAttributedString {
         if let body = selection.body {
             return overviewForBody(body)
         } else if let star = selection.star {
-            return overviewForStar(star)
+            return NSAttributedString(string: overviewForStar(star))
         } else if let dso = selection.dso {
-            return overviewForDSO(dso)
+            return NSAttributedString(string: overviewForDSO(dso))
         } else {
-            return CelestiaString("No overview available.", comment: "No overview for an object")
+            return NSAttributedString(string: CelestiaString("No overview available.", comment: "No overview for an object"))
         }
     }
 
-    private func overviewForBody(_ body: Body) -> String {
+    private func overviewForBody(_ body: Body) -> NSAttributedString {
         var lines = [String]()
 
         let formatter = NumberFormatter()
@@ -241,6 +241,8 @@ public extension AppCore {
             lines.append(CelestiaString("Has atmosphere", comment: "Indicate that an object has atmosphere"))
         }
 
+        let result = NSMutableAttributedString(string: lines.joined(separator: "\n"))
+
         let timeline = body.timeline
         if timeline.phaseCount > 0 {
             let startTime = timeline.phase(at: 0).startTime
@@ -251,14 +253,34 @@ public extension AppCore {
             dateFormatter.timeStyle = .short
 
             if let startTime {
-                lines.append(String.localizedStringWithFormat(CelestiaString("Start time: %@", comment: "Template for the start time of a body, usually a spacecraft"), dateFormatter.string(from: startTime)))
+                let timeString = dateFormatter.string(from: startTime)
+                let line = String.localizedStringWithFormat(CelestiaString("Start time: %@", comment: "Template for the start time of a body, usually a spacecraft"), timeString)
+                if !result.string.isEmpty {
+                    result.append(NSAttributedString(string: "\n"))
+                }
+                let lineAttr = NSMutableAttributedString(string: line)
+                let julianDay = (startTime as NSDate).julianDay
+                if let range = line.range(of: timeString) {
+                    lineAttr.addAttribute(.link, value: "celestia://settime?julianDay=\(julianDay)", range: NSRange(range, in: line))
+                }
+                result.append(lineAttr)
             }
             if let endTime {
-                lines.append(String.localizedStringWithFormat(CelestiaString("End time: %@", comment: "Template for the end time of a body, usually a spacecraft"), dateFormatter.string(from: endTime)))
+                let timeString = dateFormatter.string(from: endTime)
+                let line = String.localizedStringWithFormat(CelestiaString("End time: %@", comment: "Template for the end time of a body, usually a spacecraft"), timeString)
+                if !result.string.isEmpty {
+                    result.append(NSAttributedString(string: "\n"))
+                }
+                let lineAttr = NSMutableAttributedString(string: line)
+                let julianDay = (endTime as NSDate).julianDay
+                if let range = line.range(of: timeString) {
+                    lineAttr.addAttribute(.link, value: "celestia://settime?julianDay=\(julianDay)", range: NSRange(range, in: line))
+                }
+                result.append(lineAttr)
             }
         }
 
-        return lines.joined(separator: "\n")
+        return result
     }
 
     private func overviewForStar(_ star: Star) -> String {

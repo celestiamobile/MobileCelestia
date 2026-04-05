@@ -68,7 +68,9 @@ extension BodyDescriptionCell {
             gap.lineSpacing = GlobalConstants.pageMediumGapVertical
             attributedString.append(NSAttributedString(string: "\n", attributes: [.paragraphStyle: gap]))
         }
-        attributedString.append(NSAttributedString(string: info.overview, attributes: [.foregroundColor: UIColor.secondaryLabel, .font: UIFont.preferredFont(forTextStyle: .body)]))
+        let overview = NSMutableAttributedString(attributedString: info.overview)
+        overview.addAttributes([.foregroundColor: UIColor.secondaryLabel, .font: UIFont.preferredFont(forTextStyle: .body)], range: NSRange(location: 0, length: overview.length))
+        attributedString.append(overview)
         descriptionLabel.attributedText = attributedString
     }
 }

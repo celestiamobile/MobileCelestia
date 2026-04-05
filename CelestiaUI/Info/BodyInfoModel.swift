@@ -11,9 +11,9 @@ import Foundation
 
 import CelestiaCore
 
-struct BodyInfo {
+struct BodyInfo: @unchecked Sendable {
     let name: String
-    let overview: String
+    let overview: NSAttributedString
 
     fileprivate let selection: Selection
 }
