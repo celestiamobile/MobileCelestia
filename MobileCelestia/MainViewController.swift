@@ -334,6 +334,10 @@ extension MainViewController {
                         guard let selection else { return }
                         self.showSelectionInfo(with: selection)
                     }
+                case let .setTime(julianDay):
+                    Task { @CelestiaActor in
+                        CelestiaActor.appCore.simulation.time = NSDate(julian: julianDay) as Date
+                    }
                 }
             }
             self.urlToOpen = nil

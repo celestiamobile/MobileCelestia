@@ -16,6 +16,7 @@ import UIKit
     case addon(id: String)
     case guide(id: String)
     case object(path: String, action: ObjectURLAction?)
+    case setTime(julianDay: Double)
 }
 
 @MainActor public enum ObjectURLAction: String, Codable, Hashable, Sendable {
@@ -94,6 +95,11 @@ import UIKit
                             action = nil
                         }
                         appURL = .windowURL(url: .object(path: path, action: action), universal: false)
+                    }
+                } else if components.host == "settime" {
+                    if let julianDayString = components.queryItems?.first(where: { $0.name == "julianDay" })?.value,
+                       let julianDay = Double(julianDayString) {
+                        appURL = .windowURL(url: .setTime(julianDay: julianDay), universal: false)
                     }
                 }
             }
