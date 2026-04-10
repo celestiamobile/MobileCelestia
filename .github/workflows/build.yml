@@ -28,7 +28,7 @@ on:
 
 env:
   DEPENDENCY_VERSION: '1.0.51'
-  CONTENT_COMMIT_HASH: 'df1419776e81d2cb1e7607161883cab2db200318'
+  CONTENT_COMMIT_HASH: '9f34ed77b4e7117458734affaefd5015bf38c6ff'
   XC_VERSION: '26.4'
   XC_PROJECT: 'MobileCelestia/MobileCelestia.xcodeproj'
   XC_SCHEME: 'MobileCelestia'
@@ -142,7 +142,9 @@ jobs:
           git checkout ${{ env.CONTENT_COMMIT_HASH }}
 
       - name: Install Dependencies
-        run: brew install gettext gperf node imagemagick wget
+        run: |
+          brew update
+          brew install gettext gperf node imagemagick wget
 
       - name: Download Pre-built Dependencies
         run: |
