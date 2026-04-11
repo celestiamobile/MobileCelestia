@@ -60,7 +60,7 @@ public struct TimeSettings: View {
 
                             let newTime = await Task.detached { @CelestiaActor in
                                 let appCore = CelestiaActor.appCore
-                                appCore.simulation.time = NSDate(julian: value) as Date
+                                appCore.simulation.julianDay = value
                                 return appCore.simulation.time
                             }.value
                             self.currentTime = newTime
@@ -248,7 +248,7 @@ extension TimeSettingViewController {
                     return
                 }
                 await self.executor.run { core in
-                    core.simulation.time = NSDate(julian: value) as Date
+                    core.simulation.julianDay = value
                 }
                 var snapshot = dataSource.snapshot()
                 snapshot.reloadItems([.selectTime, .julianDay])

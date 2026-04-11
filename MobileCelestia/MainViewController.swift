@@ -336,7 +336,7 @@ extension MainViewController {
                     }
                 case let .setTime(julianDay):
                     Task { @CelestiaActor in
-                        CelestiaActor.appCore.simulation.time = NSDate(julian: julianDay) as Date
+                        CelestiaActor.appCore.simulation.julianDay = julianDay
                     }
                 }
             }
