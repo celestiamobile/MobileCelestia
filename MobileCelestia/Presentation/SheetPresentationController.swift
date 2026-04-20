@@ -57,6 +57,7 @@ class SheetPresentationController: UIPresentationController {
         configuration.image = UIImage(systemName: "xmark")
         configuration.contentInsets = NSDirectionalEdgeInsets(top: Constants.sheetCloseButtonPadding, leading: Constants.sheetCloseButtonPadding, bottom: Constants.sheetCloseButtonPadding, trailing: Constants.sheetCloseButtonPadding)
         let button = StandardButton(configuration: configuration)
+        button.accessibilityLabel = CelestiaString("Close", comment: "")
         button.adjustsImageSizeForAccessibilityContentSizeCategory = true
         button.tintColor = .secondaryLabel
         button.addTarget(self, action: #selector(dismissPresentedViewController), for: .touchUpInside)
