@@ -75,6 +75,7 @@ struct CelestiaXRApp: App {
         static let windowSize = CGSize(width: 700, height: 800)
     }
 
+    @UIApplicationDelegateAdaptor var appDelegate: AppDelegate
     @Environment(\.openWindow) private var openWindow
     @State var immersionStyle: (any ImmersionStyle)
 
@@ -163,6 +164,7 @@ struct CelestiaXRApp: App {
         self.renderer.prepare()
         self.featureFlagsManager = FeatureFlagsManager(requestHandler: requestHandler, userDefaults: userDefaults, platform: "visionos", bundle: bundle)
         self.featureFlags = featureFlagsManager.get()
+        self.appDelegate.urlManager = urlManager
     }
 
     var body: some Scene {
@@ -177,16 +179,6 @@ struct CelestiaXRApp: App {
                 .environment(renderer)
                 .environment(interactionManager)
                 .environment(windowManager)
-                .onOpenURL { url in
-                    if let appURL = AppURL.from(url: url, openInPlace: url.isFileURL) {
-                        urlManager.savedURL = appURL
-                    }
-                }
-                .onContinueUserActivity("space.celestia.celestia.addon-user-activity") { userActivity in
-                    if let appURL = AppURL.from(userActivity: userActivity) {
-                        urlManager.savedURL = appURL
-                    }
-                }
         }
         .defaultSize(CGSize(width: 640, height: 1000))
         .onChange(of: renderer.rendererStatus) { _, newValue in
@@ -244,7 +236,6 @@ struct CelestiaXRApp: App {
 
             openWindow(id: "SystemAccessRequestWindow")
         }
-        .handlesExternalEvents(matching: ["celguide", "celaddon", "http", "https", "celestia"])
 
         WindowGroup(id: "Tool") {
             ToolView(
@@ -270,7 +261,6 @@ struct CelestiaXRApp: App {
             })
         }
         .defaultSize(Constants.windowSize)
-        .handlesExternalEvents(matching: [])
 
         WindowGroup(id: "SubsystemWindow", for: UUID.self) { $id in
             SubsystemBrowserWindow(id: id ?? UUID())
@@ -279,7 +269,6 @@ struct CelestiaXRApp: App {
                 .environment(browserItemStore)
         }
         .defaultSize(Constants.windowSize)
-        .handlesExternalEvents(matching: [])
 
         WindowGroup(id: "AddonWindow", for: String.self) { $id in
             AddonWindow(id: id ?? "", resourceManager: resourceManager, requestHandler: requestHandler)
@@ -287,7 +276,6 @@ struct CelestiaXRApp: App {
                 .environment(renderer)
         }
         .defaultSize(Constants.windowSize)
-        .handlesExternalEvents(matching: [])
 
         WindowGroup(id: "AddonCategoryWindow", for: CategoryInfo.self) { $id in
             AddonCategoriesView(resourceManager: resourceManager, requestHandler: requestHandler, category: id)
@@ -295,7 +283,6 @@ struct CelestiaXRApp: App {
                 .environment(renderer)
         }
         .defaultSize(Constants.windowSize)
-        .handlesExternalEvents(matching: [])
 
         WindowGroup(id: "ObjectInfoWindow", for: String.self) { $path in
             ObjectInfoWindow(objectPath: path ?? "")
@@ -304,7 +291,6 @@ struct CelestiaXRApp: App {
                 .environment(browserItemStore)
         }
         .defaultSize(Constants.windowSize)
-        .handlesExternalEvents(matching: [])
 
         WindowGroup(id: "GuideWindow", for: String.self) { $id in
             GuideView(id: id ?? "", resourceManager: resourceManager, requestHandler: requestHandler, actionHandler: nil)
@@ -312,7 +298,6 @@ struct CelestiaXRApp: App {
                 .environment(renderer)
         }
         .defaultSize(Constants.windowSize)
-        .handlesExternalEvents(matching: [])
 
         WindowGroup(id: "LastGuideWindow", for: String.self) { $id in
             GuideView(id: id ?? "", resourceManager: resourceManager, requestHandler: requestHandler, actionHandler: { action in
@@ -327,7 +312,6 @@ struct CelestiaXRApp: App {
             .environment(renderer)
         }
         .defaultSize(Constants.windowSize)
-        .handlesExternalEvents(matching: [])
 
         WindowGroup(id: "InfoWindow") {
             InfoWindow()
@@ -342,7 +326,6 @@ struct CelestiaXRApp: App {
                 })
         }
         .defaultSize(Constants.windowSize)
-        .handlesExternalEvents(matching: [])
 
         WindowGroup(id: "AlertWindow", for: AlertContent.self) { $content in
             AlertWindow(content: content)
@@ -350,7 +333,6 @@ struct CelestiaXRApp: App {
                 .environment(renderer)
         }
         .defaultSize(CGSize(width: 1, height: 1))
-        .handlesExternalEvents(matching: [])
 
         WindowGroup(id: "SystemAccessRequestWindow") {
             SystemAccessRequestWindow { granted in
@@ -361,7 +343,6 @@ struct CelestiaXRApp: App {
             }
         }
         .defaultSize(CGSize(width: 1, height: 1))
-        .handlesExternalEvents(matching: [])
 
         ImmersiveSpace(id: "ImmersiveSpace") {
             CompositorLayer(configuration: MetalLayerConfiguration(foveatedRendering: foveatedRendering)) { layerRenderer in
@@ -372,7 +353,6 @@ struct CelestiaXRApp: App {
             }
         }
         .immersionStyle(selection: $immersionStyle, in: .mixed, .full)
-        .handlesExternalEvents(matching: [])
     }
 
     private func handleURL(_ appURL: AppURL) {
