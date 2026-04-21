@@ -128,13 +128,13 @@ jobs:
         if: matrix.backend == 'angle'
         run: |
           cd CelestiaCore
-          git apply ../MobileCelestia/patches/angle/celestiacore.patch --ignore-whitespace --whitespace=nowarn
+          git apply ../MobileCelestia/patches/angle/celestiacore.patch --ignore-whitespace --whitespace=nowarn -3
 
       - name: Apply ANGLE Patches (2)
         if: matrix.backend == 'angle'
         run: |
           cd MobileCelestia
-          git apply patches/angle/mobilecelestia.patch --ignore-whitespace --whitespace=nowarn
+          git apply patches/angle/mobilecelestia.patch --ignore-whitespace --whitespace=nowarn -3
 
       - name: Checkout Content
         run: |
