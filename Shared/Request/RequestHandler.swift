@@ -57,7 +57,16 @@ final class RequestHandlerImpl: RequestHandler {
     }
 
     func getLatestMetadata(language: String) async throws -> GuideItem {
-        return try await AsyncJSONRequestHandler.get(url: URL.latestGuideMetadata.absoluteString, parameters: ["lang": language, "type": "news"], httpClient: URLSession.shared)
+#if os(visionOS)
+        let platform = "visionos"
+#else
+#if targetEnvironment(macCatalyst)
+        let platform = "catalyst"
+#else
+        let platform = "ios"
+#endif
+#endif
+        return try await AsyncJSONRequestHandler.get(url: URL.latestGuideMetadata.absoluteString, parameters: ["lang": language, "type": "news", "platform": platform], httpClient: URLSession.shared)
     }
 
     private struct UpdateRequest: Encodable {
