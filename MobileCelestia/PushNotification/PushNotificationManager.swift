@@ -120,7 +120,7 @@ final class PushNotificationManager {
         )
         do {
             try await AsyncEmptyRequestHandler.post(
-                url: "http://10.20.7.16:9000/api/2/users/register",
+                url: URL.apiPrefixURL.appendingPathComponent("users/register").absoluteString,
                 json: request,
                 httpClient: URLSession.shared
             )
