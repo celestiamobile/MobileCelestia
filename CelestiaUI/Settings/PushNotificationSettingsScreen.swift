@@ -84,13 +84,11 @@ struct PushNotificationSettingsScreen: View {
             newStatus = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
             if granted {
                 UIApplication.shared.registerForRemoteNotifications()
-                onSave()
             }
         } else if hasObservedStatus,
                   newStatus != status,
                   newStatus == .authorized || newStatus == .provisional {
             UIApplication.shared.registerForRemoteNotifications()
-            onSave()
         }
         status = newStatus
         hasObservedStatus = true
