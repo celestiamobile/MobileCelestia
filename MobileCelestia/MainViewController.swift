@@ -1341,11 +1341,83 @@ Device Model: \(model)
         let executor = self.executor
         var settings = mainSetting
         #if !os(visionOS) && !targetEnvironment(macCatalyst)
-        if featureFlags.pushNotificationIOS {
+        let pushNotificationsEnabled = featureFlags.pushNotificationIOS
+        if pushNotificationsEnabled {
             settings.append(notificationsSettingSection)
         }
         #endif
-        let controller = SettingsCoordinatorController(
+        let dataLocationContext = DataLocationSettingContext(
+            userDefaults: userDefaults,
+            dataDirectoryUserDefaultsKey: UserDefaultsKey.dataDirPath.rawValue,
+            configFileUserDefaultsKey: UserDefaultsKey.configFile.rawValue,
+            defaultDataDirectoryURL: UserDefaults.defaultDataDirectory,
+            defaultConfigFileURL: UserDefaults.defaultConfigFile
+        )
+        let fontContext = FontSettingContext(
+            normalFontPathKey: UserDefaultsKey.normalFontPath.rawValue,
+            normalFontIndexKey: UserDefaultsKey.normalFontIndex.rawValue,
+            boldFontPathKey: UserDefaultsKey.boldFontPath.rawValue,
+            boldFontIndexKey: UserDefaultsKey.boldFontIndex.rawValue
+        )
+        let toolbarContext = ToolbarSettingContext(toolbarActionsKey: UserDefaultsKey.toolbarItems.rawValue)
+        let frameRateContext = FrameRateSettingContext(frameRateUserDefaultsKey: UserDefaultsKey.frameRate.rawValue)
+        let controller: SettingsCoordinatorController
+        #if !os(visionOS) && !targetEnvironment(macCatalyst)
+        if pushNotificationsEnabled {
+            controller = SettingsCoordinatorController(
+                core: core,
+                executor: executor,
+                userDefaults: userDefaults,
+                bundle: .app,
+                featureFlags: featureFlags,
+                defaultDataDirectory: UserDefaults.defaultDataDirectory,
+                settings: settings,
+                frameRateContext: frameRateContext,
+                dataLocationContext: dataLocationContext,
+                fontContext: fontContext,
+                toolbarContext: toolbarContext,
+                pushNotificationContext: PushNotificationSettingContext(saveHandler: { [weak self] in
+                    self?.notifyPushManagerOfRegistrationStateChange()
+                }),
+                assetProvider: assetProvider,
+                actionHandler: { [weak self] settingsAction in
+                    guard let self else { return }
+                    switch settingsAction {
+                    case .refreshFrameRate(let newFrameRate):
+                        self.userDefaults[.frameRate] = newFrameRate
+                        self.celestiaController.updateFrameRate(newFrameRate)
+                    }
+                },
+                dateInputHandler: { viewController, title, format in
+                    return await viewController.getDateInputDifferentiated(title, format: format)
+                },
+                textInputHandler: { viewController, title, keyboardType in
+                    return await viewController.getTextInputDifferentiated(title, keyboardType: keyboardType)
+                },
+                rendererInfoProvider: {
+                    return await executor.get { core in
+                        executor.makeRenderContextCurrent()
+                        return core.renderInfo
+                    }
+                },
+                screenProvider: { [weak self] in
+                    return self?.celestiaController.displayScreen
+                },
+                subscriptionManager: subscriptionManager,
+                openSubscriptionManagement: { [weak self] viewController in
+                    guard let self else { return }
+                    self.showSubscription(for: viewController)
+                }
+            )
+            #if targetEnvironment(macCatalyst)
+            showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600), customToolbar: true)
+            #else
+            showViewController(controller)
+            #endif
+            return
+        }
+        #endif
+        controller = SettingsCoordinatorController(
             core: core,
             executor: executor,
             userDefaults: userDefaults,
@@ -1353,21 +1425,10 @@ Device Model: \(model)
             featureFlags: featureFlags,
             defaultDataDirectory: UserDefaults.defaultDataDirectory,
             settings: settings,
-            frameRateContext: FrameRateSettingContext(frameRateUserDefaultsKey: UserDefaultsKey.frameRate.rawValue),
-            dataLocationContext: DataLocationSettingContext(
-                userDefaults: userDefaults,
-                dataDirectoryUserDefaultsKey: UserDefaultsKey.dataDirPath.rawValue,
-                configFileUserDefaultsKey: UserDefaultsKey.configFile.rawValue,
-                defaultDataDirectoryURL: UserDefaults.defaultDataDirectory,
-                defaultConfigFileURL: UserDefaults.defaultConfigFile
-            ),
-            fontContext: FontSettingContext(
-                normalFontPathKey: UserDefaultsKey.normalFontPath.rawValue,
-                normalFontIndexKey: UserDefaultsKey.normalFontIndex.rawValue,
-                boldFontPathKey: UserDefaultsKey.boldFontPath.rawValue,
-                boldFontIndexKey: UserDefaultsKey.boldFontIndex.rawValue
-            ),
-            toolbarContext: ToolbarSettingContext(toolbarActionsKey: UserDefaultsKey.toolbarItems.rawValue),
+            frameRateContext: frameRateContext,
+            dataLocationContext: dataLocationContext,
+            fontContext: fontContext,
+            toolbarContext: toolbarContext,
             assetProvider: assetProvider,
             actionHandler: { [weak self]
                 settingsAction in
@@ -1393,13 +1454,6 @@ Device Model: \(model)
                 self.showSubscription(for: viewController)
             }
         )
-        #if !os(visionOS) && !targetEnvironment(macCatalyst)
-        if featureFlags.pushNotificationIOS {
-            controller.setPushNotificationContext(PushNotificationSettingContext(saveHandler: { [weak self] in
-                self?.notifyPushManagerOfRegistrationStateChange()
-            }))
-        }
-        #endif
         #if targetEnvironment(macCatalyst)
         showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600), customToolbar: true)
         #else

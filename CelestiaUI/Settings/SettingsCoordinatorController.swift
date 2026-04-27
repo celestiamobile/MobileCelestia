@@ -75,7 +75,7 @@ public class SettingsCoordinatorController: UIViewController {
     private let fontContext: FontSettingContext
     private let toolbarContext: ToolbarSettingContext
     #if !targetEnvironment(macCatalyst)
-    private var pushNotificationContext: PushNotificationSettingContext?
+    private let pushNotificationContext: PushNotificationSettingContext?
     #endif
     #endif
 
@@ -162,14 +162,58 @@ public class SettingsCoordinatorController: UIViewController {
         self.subscriptionManager = subscriptionManager
         self.openSubscriptionManagement = openSubscriptionManagement
         self.assetProvider = assetProvider
+        #if !targetEnvironment(macCatalyst)
+        self.pushNotificationContext = nil
+        #endif
         super.init(nibName: nil, bundle: nil)
     }
-
-    #if !targetEnvironment(macCatalyst)
-    public func setPushNotificationContext(_ context: PushNotificationSettingContext?) {
-        self.pushNotificationContext = context
-    }
     #endif
+
+    #if !os(visionOS) && !targetEnvironment(macCatalyst)
+    public init(
+        core: AppCore,
+        executor: AsyncProviderExecutor,
+        userDefaults: UserDefaults,
+        bundle: Bundle,
+        featureFlags: FeatureFlags,
+        defaultDataDirectory: URL,
+        settings: [SettingSection],
+        frameRateContext: FrameRateSettingContext,
+        dataLocationContext: DataLocationSettingContext,
+        fontContext: FontSettingContext,
+        toolbarContext: ToolbarSettingContext,
+        pushNotificationContext: PushNotificationSettingContext,
+        assetProvider: AssetProvider,
+        actionHandler: @escaping ((SettingAction) -> Void),
+        dateInputHandler: @escaping (_ viewController: UIViewController, _ title: String, _ format: String) async -> Date?,
+        textInputHandler: @escaping (_ viewController: UIViewController, _ title: String, _ keyboardType: UIKeyboardType) async -> String?,
+        rendererInfoProvider: @escaping () async -> String,
+        screenProvider: @escaping () -> UIScreen?,
+        subscriptionManager: SubscriptionManager,
+        openSubscriptionManagement: @escaping (UIViewController) -> Void
+    ) {
+        self.core = core
+        self.executor = executor
+        self.userDefaults = userDefaults
+        self.bundle = bundle
+        self.featureFlags = featureFlags
+        self.defaultDataDirectory = defaultDataDirectory
+        self.settings = settings
+        self.frameRateContext = frameRateContext
+        self.dataLocationContext = dataLocationContext
+        self.toolbarContext = toolbarContext
+        self.fontContext = fontContext
+        self.pushNotificationContext = pushNotificationContext
+        self.actionHandler = actionHandler
+        self.dateInputHandler = dateInputHandler
+        self.textInputHandler = textInputHandler
+        self.rendererInfoProvider = rendererInfoProvider
+        self.screenProvider = screenProvider
+        self.subscriptionManager = subscriptionManager
+        self.openSubscriptionManagement = openSubscriptionManagement
+        self.assetProvider = assetProvider
+        super.init(nibName: nil, bundle: nil)
+    }
     #endif
 
     required init?(coder: NSCoder) {
