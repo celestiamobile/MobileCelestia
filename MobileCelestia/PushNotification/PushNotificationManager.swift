@@ -107,7 +107,7 @@ final class PushNotificationManager {
             timezone: TimeZone.current.identifier,
             contentTypes: userDefaults.enabledPushContentTypes(),
             api: pushAPIVersion,
-            platform: "ios",
+            platform: currentPlatform,
             distribution: nil,
             lastShownNewsID: userDefaults[.lastNewsID] as String?
         )
@@ -151,6 +151,14 @@ final class PushNotificationManager {
         return "apns-sandbox"
 #else
         return "apns"
+#endif
+    }
+
+    private var currentPlatform: String {
+#if targetEnvironment(macCatalyst)
+        return "catalyst"
+#else
+        return "ios"
 #endif
     }
 
