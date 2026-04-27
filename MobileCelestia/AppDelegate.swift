@@ -690,9 +690,7 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         let userInfo = response.notification.request.content.userInfo
         let articleID = userInfo["article-id"] as? String
         let addonID = userInfo["addon-id"] as? String
-        Task.detached { @MainActor in
-            self.pushManager.handleTap(articleID: articleID, addonID: addonID)
-        }
+        pushManager.handleTap(articleID: articleID, addonID: addonID)
     }
 }
 #endif
