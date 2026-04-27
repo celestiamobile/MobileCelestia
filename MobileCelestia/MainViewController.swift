@@ -1361,7 +1361,9 @@ Device Model: \(model)
         var settings = mainSetting
         #if !targetEnvironment(macCatalyst)
         if featureFlags.pushNotificationIOS {
-            settings.append(notificationsSettingSection)
+            // Insert just above the trailing Celestia PLUS + misc sections.
+            let insertIndex = max(0, settings.count - 2)
+            settings.insert(notificationsSettingSection, at: insertIndex)
         }
         #endif
         let controller = SettingsCoordinatorController(
