@@ -16,6 +16,7 @@ import UserNotifications
 
 struct PushNotificationSettingsScreen: View {
     @State private var status: UNAuthorizationStatus = .notDetermined
+    @State private var hasObservedStatus = false
     @State private var weeklyAddon: Bool
     @State private var latestNews: Bool
     @State private var featuredAddon: Bool
@@ -73,13 +74,17 @@ struct PushNotificationSettingsScreen: View {
     private func refreshStatus() async {
         let settings = await UNUserNotificationCenter.current().notificationSettings()
         let newStatus = settings.authorizationStatus
-        if newStatus != status && (newStatus == .authorized || newStatus == .provisional) {
-            // User came back from system settings with permission granted —
-            // sync prefs to the server so the row is accurate.
+        // Only react to a transition that we observed — on first appearance
+        // status starts as .notDetermined, which would otherwise spuriously
+        // look like a fresh permission grant.
+        if hasObservedStatus,
+           newStatus != status,
+           newStatus == .authorized || newStatus == .provisional {
             UIApplication.shared.registerForRemoteNotifications()
             onSave()
         }
         status = newStatus
+        hasObservedStatus = true
     }
 }
 
