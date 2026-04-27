@@ -73,13 +73,22 @@ struct PushNotificationSettingsScreen: View {
 
     private func refreshStatus() async {
         let settings = await UNUserNotificationCenter.current().notificationSettings()
-        let newStatus = settings.authorizationStatus
-        // Only react to a transition that we observed — on first appearance
-        // status starts as .notDetermined, which would otherwise spuriously
-        // look like a fresh permission grant.
-        if hasObservedStatus,
-           newStatus != status,
-           newStatus == .authorized || newStatus == .provisional {
+        var newStatus = settings.authorizationStatus
+
+        // First time the screen appears and the user has never been asked at
+        // the OS level — surface the system prompt right here so they don't
+        // have to bounce out to system Settings.
+        if !hasObservedStatus, newStatus == .notDetermined {
+            let granted = (try? await UNUserNotificationCenter.current()
+                .requestAuthorization(options: [.alert, .badge, .sound])) ?? false
+            newStatus = await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
+            if granted {
+                UIApplication.shared.registerForRemoteNotifications()
+                onSave()
+            }
+        } else if hasObservedStatus,
+                  newStatus != status,
+                  newStatus == .authorized || newStatus == .provisional {
             UIApplication.shared.registerForRemoteNotifications()
             onSave()
         }
