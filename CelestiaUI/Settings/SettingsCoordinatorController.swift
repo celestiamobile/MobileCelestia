@@ -74,7 +74,7 @@ public class SettingsCoordinatorController: UIViewController {
     #if !os(visionOS)
     private let fontContext: FontSettingContext
     private let toolbarContext: ToolbarSettingContext
-    private let pushNotificationContext: PushNotificationSettingContext?
+    private let pushNotificationContext: PushNotificationSettingContext
     #endif
 
     private let actionHandler: (SettingAction) -> Void
@@ -132,7 +132,7 @@ public class SettingsCoordinatorController: UIViewController {
         dataLocationContext: DataLocationSettingContext,
         fontContext: FontSettingContext,
         toolbarContext: ToolbarSettingContext,
-        pushNotificationContext: PushNotificationSettingContext?,
+        pushNotificationContext: PushNotificationSettingContext,
         assetProvider: AssetProvider,
         actionHandler: @escaping ((SettingAction) -> Void),
         dateInputHandler: @escaping (_ viewController: UIViewController, _ title: String, _ format: String) async -> Date?,
@@ -240,7 +240,7 @@ private extension SettingsCoordinatorController {
                 case .notifications:
                     viewController = PushNotificationSettingsViewController(
                         userDefaults: userDefaults,
-                        onSave: { [weak self] in self?.pushNotificationContext?.saveHandler() },
+                        onSave: { [weak self] in self?.pushNotificationContext.saveHandler() },
                         openSystemSettings: {
                             if let url = URL(string: UIApplication.openSettingsURLString) {
                                 UIApplication.shared.open(url)
