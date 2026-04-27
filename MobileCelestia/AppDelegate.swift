@@ -677,21 +677,22 @@ extension AppDelegate {
 }
 
 #if !targetEnvironment(macCatalyst)
+extension UNUserNotificationCenter: @unchecked @retroactive Sendable {}
+extension UNNotificationResponse: @unchecked @retroactive Sendable {}
+extension UNNotification: @unchecked @retroactive Sendable {}
+
 extension AppDelegate: UNUserNotificationCenterDelegate {
-    nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
+    @MainActor func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
         return [.banner, .sound, .badge]
     }
 
-    nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
+    @MainActor func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
         let userInfo = response.notification.request.content.userInfo
         let articleID = userInfo["article-id"] as? String
         let addonID = userInfo["addon-id"] as? String
-        await handlePushNotificationTap(articleID: articleID, addonID: addonID)
-    }
-
-    @MainActor
-    private func handlePushNotificationTap(articleID: String?, addonID: String?) {
-        pushManager.handleTap(articleID: articleID, addonID: addonID)
+        Task.detached { @MainActor in
+            self.pushManager.handleTap(articleID: articleID, addonID: addonID)
+        }
     }
 }
 #endif
