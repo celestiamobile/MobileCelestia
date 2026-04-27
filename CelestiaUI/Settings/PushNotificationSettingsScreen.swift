@@ -39,7 +39,7 @@ struct PushNotificationSettingsScreen: View {
             switch status {
             case .denied:
                 Section {
-                    Text(CelestiaString("Notifications are turned off for Celestia. Enable them in Settings to subscribe to updates.", comment: "Push notification denied state explanation"))
+                    Text(CelestiaString("Notifications are turned off for Celestia. Enable them in System Settings to subscribe to updates.", comment: "Push notification denied state explanation"))
                         .foregroundStyle(.secondary)
                     Button(CelestiaString("Open System Settings", comment: "Push notification denied state action")) {
                         openSystemSettings()
