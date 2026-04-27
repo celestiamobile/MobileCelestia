@@ -290,7 +290,7 @@ extension MainViewController {
                     guard confirmed else { return }
                     self.celestiaController.openURL(url)
                 }
-            case .windowURL(let windowURL, _):
+            case .windowURL(let windowURL, let source):
                 switch windowURL {
                 case .addon(let id):
                     Task {
@@ -303,7 +303,23 @@ extension MainViewController {
                 case .guide(let id):
                     // Need to wrap it in a NavVC without NavBar to make sure
                     // the scrolling behavior is correct on macCatalyst
-                    let vc = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromGuide(guideItemID: id, language: locale, subscriptionManager: subscriptionManager), requestHandler: requestHandler, actionHandler: commonWebActionHandler, matchingQueryKeys: ["guide"])
+                    let actionHandler: (CommonWebViewController.WebAction, UIViewController) -> Void
+                    if source == .pushNotification {
+                        actionHandler = { [weak self] action, viewController in
+                            guard let self else { return }
+                            if case let CommonWebViewController.WebAction.ack(ackID) = action, ackID == id {
+                                self.userDefaults[.lastNewsID] = ackID
+                                #if !targetEnvironment(macCatalyst)
+                                self.notifyPushManagerOfRegistrationStateChange()
+                                #endif
+                            } else {
+                                self.commonWebActionHandler(action, viewController)
+                            }
+                        }
+                    } else {
+                        actionHandler = commonWebActionHandler
+                    }
+                    let vc = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromGuide(guideItemID: id, language: locale, subscriptionManager: subscriptionManager), requestHandler: requestHandler, actionHandler: actionHandler, matchingQueryKeys: ["guide"])
                     let nav = BaseNavigationController(rootViewController: vc)
                     nav.setNavigationBarHidden(true, animated: false)
                     showViewController(nav, key: id, prefersMediumDetent: prefersMediumDetent, titleVisible: false)
