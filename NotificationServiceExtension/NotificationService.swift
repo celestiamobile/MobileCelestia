@@ -9,7 +9,7 @@
 // of the License, or (at your option) any later version.
 //
 
-import UserNotifications
+@preconcurrency import UserNotifications
 
 class NotificationService: UNNotificationServiceExtension {
     private var contentHandler: ((UNNotificationContent) -> Void)?
