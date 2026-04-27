@@ -9,7 +9,9 @@
 // of the License, or (at your option) any later version.
 //
 
-@preconcurrency import UserNotifications
+import UserNotifications
+
+extension UNMutableNotificationContent: @retroactive @unchecked Sendable {}
 
 class NotificationService: UNNotificationServiceExtension {
     private var contentHandler: ((UNNotificationContent) -> Void)?
@@ -27,19 +29,18 @@ class NotificationService: UNNotificationServiceExtension {
         }
 
         let sendableContentHandler = unsafeBitCast(contentHandler, to: (@Sendable (UNNotificationContent) -> Void).self)
-        URLSession.shared.downloadTask(with: url) { tempURL, response, _ in
-            if let tempURL {
-                let suggestedExtension = (response?.suggestedFilename as NSString?)?.pathExtension
+        Task {
+            do {
+                let (tempURL, response) = try await URLSession.shared.download(from: url)
+                let suggestedExtension = (response.suggestedFilename as NSString?)?.pathExtension
                 let pathExtension = (suggestedExtension?.isEmpty == false ? suggestedExtension : url.pathExtension) ?? "tmp"
                 let destination = tempURL.deletingLastPathComponent().appendingPathComponent("\(UUID().uuidString).\(pathExtension)")
-                do {
-                    try FileManager.default.moveItem(at: tempURL, to: destination)
-                    let attachment = try UNNotificationAttachment(identifier: "", url: destination)
-                    bestAttemptContent.attachments = [attachment]
-                } catch {}
-            }
+                try FileManager.default.moveItem(at: tempURL, to: destination)
+                let attachment = try UNNotificationAttachment(identifier: "", url: destination)
+                bestAttemptContent.attachments = [attachment]
+            } catch {}
             sendableContentHandler(bestAttemptContent)
-        }.resume()
+        }
     }
 
     override func serviceExtensionTimeWillExpire() {
