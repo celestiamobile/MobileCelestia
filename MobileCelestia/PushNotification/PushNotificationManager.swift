@@ -10,6 +10,7 @@
 #if !os(visionOS)
 
 import AsyncRequest
+import CelestiaCore
 import CelestiaFoundation
 import CelestiaUI
 import Foundation
