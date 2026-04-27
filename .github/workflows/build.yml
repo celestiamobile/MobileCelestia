@@ -4,6 +4,7 @@
 #   DISTRIBUTION_P12_BASE64                 - Base64-encoded AppleDistribution20260524.p12
 #   DEVELOPER_ID_P12_BASE64                 - Base64-encoded DeveloperIDApplication20270202.p12
 #   IOS_PROVISIONING_PROFILE_BASE64         - Base64-encoded iOSDistribution20260524.mobileprovision
+#   IOS_NSE_PROVISIONING_PROFILE_BASE64     - Base64-encoded iOS distribution profile for the NotificationServiceExtension App ID
 #   MAC_APP_STORE_PROVISIONING_PROFILE_BASE64 - Base64-encoded MacDistribution20260524.provisionprofile
 #   MAC_DEVELOPER_ID_PROVISIONING_PROFILE_BASE64 - Base64-encoded DeveloperIDApplication20270202.provisionprofile
 #   SENTRY_AUTH_TOKEN                       - Sentry auth token
@@ -189,6 +190,12 @@ jobs:
           cp $RUNNER_TEMP/ios_distribution.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/${IOS_UUID}.mobileprovision
           echo "IOS_PROVISIONING_PROFILE_UUID=${IOS_UUID}" >> $GITHUB_ENV
 
+          echo "${{ secrets.IOS_NSE_PROVISIONING_PROFILE_BASE64 }}" | base64 --decode > $RUNNER_TEMP/ios_nse.mobileprovision
+          security cms -D -i $RUNNER_TEMP/ios_nse.mobileprovision > $RUNNER_TEMP/ios_nse_profile.plist
+          IOS_NSE_UUID=$(/usr/libexec/PlistBuddy -c 'Print :UUID' $RUNNER_TEMP/ios_nse_profile.plist)
+          cp $RUNNER_TEMP/ios_nse.mobileprovision ~/Library/MobileDevice/Provisioning\ Profiles/${IOS_NSE_UUID}.mobileprovision
+          echo "IOS_NSE_PROVISIONING_PROFILE_UUID=${IOS_NSE_UUID}" >> $GITHUB_ENV
+
           echo "${{ secrets.MAC_APP_STORE_PROVISIONING_PROFILE_BASE64 }}" | base64 --decode > $RUNNER_TEMP/mac_distribution.provisionprofile
           security cms -D -i $RUNNER_TEMP/mac_distribution.provisionprofile > $RUNNER_TEMP/mac_app_store_profile.plist
           MAC_APP_STORE_UUID=$(/usr/libexec/PlistBuddy -c 'Print :UUID' $RUNNER_TEMP/mac_app_store_profile.plist)
@@ -207,6 +214,7 @@ jobs:
           MAC_BUNDLE_ID=$(/usr/libexec/PlistBuddy -c 'Print :Entitlements:com.apple.application-identifier' $RUNNER_TEMP/mac_app_store_profile.plist | sed 's/^[^.]*\.//')
           MAC_DEV_ID_BUNDLE_ID=$(/usr/libexec/PlistBuddy -c 'Print :Entitlements:com.apple.application-identifier' $RUNNER_TEMP/mac_developer_id_profile.plist | sed 's/^[^.]*\.//')
           /usr/libexec/PlistBuddy -c "Set :provisioningProfiles:${IOS_BUNDLE_ID} ${IOS_PROVISIONING_PROFILE_UUID}" MobileCelestia/ExportOptions-iphoneos-appStore.plist
+          /usr/libexec/PlistBuddy -c "Set :provisioningProfiles:${IOS_BUNDLE_ID}.NotificationServiceExtension ${IOS_NSE_PROVISIONING_PROFILE_UUID}" MobileCelestia/ExportOptions-iphoneos-appStore.plist
           /usr/libexec/PlistBuddy -c "Set :provisioningProfiles:${MAC_BUNDLE_ID} ${MAC_APP_STORE_PROVISIONING_PROFILE_UUID}" MobileCelestia/ExportOptions-macosx-appStore.plist
           /usr/libexec/PlistBuddy -c "Set :provisioningProfiles:${MAC_DEV_ID_BUNDLE_ID} ${MAC_DEVELOPER_ID_PROVISIONING_PROFILE_UUID}" MobileCelestia/ExportOptions-macosx-developerID.plist
 
@@ -247,7 +255,16 @@ jobs:
         if: matrix.sdk == 'iphoneos'
         run: |
           sed -i '' 's/CODE_SIGN_STYLE = Automatic;/CODE_SIGN_STYLE = Manual;/g' $XC_PROJECT/project.pbxproj
-          sed -i '' "s/PROVISIONING_PROFILE_SPECIFIER = \"\";/PROVISIONING_PROFILE_SPECIFIER = \"${IOS_PROVISIONING_PROFILE_UUID}\";/g" $XC_PROJECT/project.pbxproj
+          awk -v main_uuid="$IOS_PROVISIONING_PROFILE_UUID" -v nse_uuid="$IOS_NSE_PROVISIONING_PROFILE_UUID" '
+            /PRODUCT_BUNDLE_IDENTIFIER = space\.celestia\.MobileCelestia\.NotificationServiceExtension;/ { uuid = nse_uuid; print; next }
+            /PRODUCT_BUNDLE_IDENTIFIER = / { uuid = main_uuid; print; next }
+            /PROVISIONING_PROFILE_SPECIFIER = "";/ {
+              if (uuid != "") sub(/""/, "\"" uuid "\"")
+              print
+              next
+            }
+            { print }
+          ' $XC_PROJECT/project.pbxproj > $RUNNER_TEMP/project.pbxproj && mv $RUNNER_TEMP/project.pbxproj $XC_PROJECT/project.pbxproj
           sed -i '' "s/CODE_SIGN_IDENTITY = \"Apple Development\";/CODE_SIGN_IDENTITY = \"${DISTRIBUTION_IDENTITY}\";/g" $XC_PROJECT/project.pbxproj
           /usr/bin/xcodebuild archive -project "$XC_PROJECT" -scheme "$XC_SCHEME" -configuration "Release" -destination "generic/platform=iOS" -archivePath "$XC_ARCHIVE_PATH" SHARED_BUILD_NUMBER=$((6661 + ${{ github.run_number }}))
 
