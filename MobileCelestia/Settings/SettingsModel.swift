@@ -139,7 +139,7 @@ let notificationsSettingSection: SettingSection = SettingSection(
 )
 
 @MainActor
-let mainSetting: [SettingSection] = {
+func mainSetting(featureFlags: FeatureFlags) -> [SettingSection] {
     var items = [
         displaySettings(),
         timeAndRegionSettings(),
@@ -171,7 +171,12 @@ let mainSetting: [SettingSection] = {
         ]),
         advancedSettings(extraItems: advanceSettingExtraItems),
     ]
+    #if !targetEnvironment(macCatalyst)
+    if featureFlags.pushNotificationIOS {
+        items.append(notificationsSettingSection)
+    }
+    #endif
     items.append(celestiaPlusSettings())
     items.append(miscSettings())
     return items
-}()
+}
