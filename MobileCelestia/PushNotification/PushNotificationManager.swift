@@ -91,6 +91,18 @@ final class PushNotificationManager {
         }
     }
 
+    func clearDeliveredArticleNotifications(articleID: String) {
+        Task {
+            let center = UNUserNotificationCenter.current()
+            let delivered = await center.deliveredNotifications()
+            let identifiers = delivered
+                .filter { ($0.request.content.userInfo["article-id"] as? String) == articleID }
+                .map { $0.request.identifier }
+            guard !identifiers.isEmpty else { return }
+            center.removeDeliveredNotifications(withIdentifiers: identifiers)
+        }
+    }
+
     func register() async {
         guard let token = deviceToken ?? (userDefaults[.pushDeviceToken] as String?) else { return }
         guard await currentAuthorizationGranted() else { return }
@@ -108,7 +120,7 @@ final class PushNotificationManager {
         )
         do {
             try await AsyncEmptyRequestHandler.post(
-                url: URL.apiPrefixURL.appendingPathComponent("users/register").absoluteString,
+                url: "http://10.20.7.16:9000/api/2/users/register",
                 json: request,
                 httpClient: URLSession.shared
             )

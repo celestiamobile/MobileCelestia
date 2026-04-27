@@ -310,6 +310,7 @@ extension MainViewController {
                             if case let CommonWebViewController.WebAction.ack(ackID) = action, ackID == id {
                                 self.userDefaults[.lastNewsID] = ackID
                                 #if !targetEnvironment(macCatalyst)
+                                self.pushManager.clearDeliveredArticleNotifications(articleID: ackID)
                                 self.notifyPushManagerOfRegistrationStateChange()
                                 #endif
                             } else {
@@ -372,6 +373,7 @@ extension MainViewController {
                         if case let CommonWebViewController.WebAction.ack(id) = action, id == item.id {
                             self.userDefaults[.lastNewsID] = id
                             #if !targetEnvironment(macCatalyst)
+                            self.pushManager.clearDeliveredArticleNotifications(articleID: id)
                             self.notifyPushManagerOfRegistrationStateChange()
                             #endif
                         } else {
