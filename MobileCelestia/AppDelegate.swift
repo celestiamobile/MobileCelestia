@@ -16,6 +16,7 @@ import CelestiaHelper
 import CelestiaUI
 import Sentry
 import UIKit
+import UserNotifications
 
 enum MenuBarAction: Hashable, Equatable {
     case captureImage
@@ -131,6 +132,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return defaults
     }()
 
+    lazy var pushManager = PushNotificationManager(userDefaults: userDefaults)
+
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         CelestiaActor.underlyingExecutor = executor
 
@@ -215,8 +218,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(handleNSWindowDidBecomeKey(_:)), name: Self.windowDidBecomeKeyNotification, object: nil)
         #endif
 
+        #if !targetEnvironment(macCatalyst)
+        UNUserNotificationCenter.current().delegate = self
+        #endif
+
         return true
     }
+
+    #if !targetEnvironment(macCatalyst)
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        pushManager.didReceiveDeviceToken(deviceToken)
+    }
+
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        pushManager.didFailToRegister(error)
+    }
+    #endif
 
     func application(_ application: UIApplication, shouldSaveApplicationState coder: NSCoder) -> Bool {
         return false
@@ -658,6 +675,25 @@ extension AppDelegate {
         NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.celestiaPlus])
     }
 }
+
+#if !targetEnvironment(macCatalyst)
+extension UNUserNotificationCenter: @unchecked @retroactive Sendable {}
+extension UNNotificationResponse: @unchecked @retroactive Sendable {}
+extension UNNotification: @unchecked @retroactive Sendable {}
+
+extension AppDelegate: UNUserNotificationCenterDelegate {
+    @MainActor func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
+        return [.banner, .sound, .badge]
+    }
+
+    @MainActor func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
+        let userInfo = response.notification.request.content.userInfo
+        let articleID = userInfo["article-id"] as? String
+        let addonID = userInfo["addon-id"] as? String
+        pushManager.handleTap(articleID: articleID, addonID: addonID)
+    }
+}
+#endif
 
 #if targetEnvironment(macCatalyst)
 class MacBridge {

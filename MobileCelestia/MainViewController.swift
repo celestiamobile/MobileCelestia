@@ -57,6 +57,7 @@ class MainViewController: UIViewController {
     private let core: AppCore
     private let executor: CelestiaExecutor
     private let userDefaults: UserDefaults
+    private let pushManager: PushNotificationManager
     private let requestHandler = RequestHandlerImpl()
     private let assetProvider = CelestiaAssetProvider()
     private let stringProvider = CelestiaStringProvider()
@@ -92,10 +93,11 @@ class MainViewController: UIViewController {
         }
     }
 
-    init(initialURL: AppURL?, screen: UIScreen, core: AppCore, executor: CelestiaExecutor, userDefaults: UserDefaults) {
+    init(initialURL: AppURL?, screen: UIScreen, core: AppCore, executor: CelestiaExecutor, userDefaults: UserDefaults, pushManager: PushNotificationManager) {
         self.core = core
         self.executor = executor
         self.userDefaults = userDefaults
+        self.pushManager = pushManager
 
         #if os(visionOS)
         let platform = "visionos"
@@ -288,7 +290,7 @@ extension MainViewController {
                     guard confirmed else { return }
                     self.celestiaController.openURL(url)
                 }
-            case .windowURL(let windowURL, _):
+            case .windowURL(let windowURL, let source):
                 switch windowURL {
                 case .addon(let id):
                     Task {
@@ -301,7 +303,24 @@ extension MainViewController {
                 case .guide(let id):
                     // Need to wrap it in a NavVC without NavBar to make sure
                     // the scrolling behavior is correct on macCatalyst
-                    let vc = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromGuide(guideItemID: id, language: locale, subscriptionManager: subscriptionManager), requestHandler: requestHandler, actionHandler: commonWebActionHandler, matchingQueryKeys: ["guide"])
+                    let actionHandler: (CommonWebViewController.WebAction, UIViewController) -> Void
+                    if source == .pushNotification {
+                        actionHandler = { [weak self] action, viewController in
+                            guard let self else { return }
+                            if case let CommonWebViewController.WebAction.ack(ackID) = action, ackID == id {
+                                self.userDefaults[.lastNewsID] = ackID
+                                #if !targetEnvironment(macCatalyst)
+                                self.pushManager.clearDeliveredArticleNotifications(articleID: ackID)
+                                self.notifyPushManagerOfRegistrationStateChange()
+                                #endif
+                            } else {
+                                self.commonWebActionHandler(action, viewController)
+                            }
+                        }
+                    } else {
+                        actionHandler = commonWebActionHandler
+                    }
+                    let vc = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromGuide(guideItemID: id, language: locale, subscriptionManager: subscriptionManager), requestHandler: requestHandler, actionHandler: actionHandler, matchingQueryKeys: ["guide"])
                     let nav = BaseNavigationController(rootViewController: vc)
                     nav.setNavigationBarHidden(true, animated: false)
                     showViewController(nav, key: id, prefersMediumDetent: prefersMediumDetent, titleVisible: false)
@@ -348,21 +367,44 @@ extension MainViewController {
         Task {
             do {
                 let item = try await requestHandler.getLatestMetadata(language: locale)
-                if userDefaults[.lastNewsID] == item.id { return }
-                let vc = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromGuide(guideItemID: item.id, language: locale, subscriptionManager: subscriptionManager), requestHandler: requestHandler, actionHandler: { [weak self] action, viewController in
-                    guard let self else { return }
-                    if case let CommonWebViewController.WebAction.ack(id) = action, id == item.id {
-                        self.userDefaults[.lastNewsID] = id
-                    } else {
-                        self.commonWebActionHandler(action, viewController)
-                    }
-                }, matchingQueryKeys: ["guide"])
-                let nav = BaseNavigationController(rootViewController: vc)
-                nav.setNavigationBarHidden(true, animated: false)
-                self.showViewController(nav, key: item.id, prefersMediumDetent: prefersMediumDetent, titleVisible: false)
+                if userDefaults[.lastNewsID] != item.id {
+                    let vc = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromGuide(guideItemID: item.id, language: locale, subscriptionManager: subscriptionManager), requestHandler: requestHandler, actionHandler: { [weak self] action, viewController in
+                        guard let self else { return }
+                        if case let CommonWebViewController.WebAction.ack(id) = action, id == item.id {
+                            self.userDefaults[.lastNewsID] = id
+                            #if !targetEnvironment(macCatalyst)
+                            self.pushManager.clearDeliveredArticleNotifications(articleID: id)
+                            self.notifyPushManagerOfRegistrationStateChange()
+                            #endif
+                        } else {
+                            self.commonWebActionHandler(action, viewController)
+                        }
+                    }, matchingQueryKeys: ["guide"])
+                    let nav = BaseNavigationController(rootViewController: vc)
+                    nav.setNavigationBarHidden(true, animated: false)
+                    self.showViewController(nav, key: item.id, prefersMediumDetent: prefersMediumDetent, titleVisible: false)
+                    return
+                }
             } catch {}
+
+            #if !targetEnvironment(macCatalyst)
+            setUpPushNotificationsIfNeeded()
+            #endif
         }
     }
+
+    #if !targetEnvironment(macCatalyst)
+    private func setUpPushNotificationsIfNeeded() {
+        guard featureFlags.pushNotificationIOS else { return }
+        pushManager.presenter = { [weak self] in self?.front }
+        pushManager.runFirstRunOrReregister()
+    }
+
+    private func notifyPushManagerOfRegistrationStateChange() {
+        guard featureFlags.pushNotificationIOS else { return }
+        Task { await pushManager.register() }
+    }
+    #endif
 }
 
 extension MainViewController {
@@ -1316,6 +1358,7 @@ Device Model: \(model)
 
     @objc private func showSettings() {
         let executor = self.executor
+        let settings = mainSetting(featureFlags: featureFlags)
         let controller = SettingsCoordinatorController(
             core: core,
             executor: executor,
@@ -1323,7 +1366,7 @@ Device Model: \(model)
             bundle: .app,
             featureFlags: featureFlags,
             defaultDataDirectory: UserDefaults.defaultDataDirectory,
-            settings: mainSetting,
+            settings: settings,
             frameRateContext: FrameRateSettingContext(frameRateUserDefaultsKey: UserDefaultsKey.frameRate.rawValue),
             dataLocationContext: DataLocationSettingContext(
                 userDefaults: userDefaults,
@@ -1339,6 +1382,11 @@ Device Model: \(model)
                 boldFontIndexKey: UserDefaultsKey.boldFontIndex.rawValue
             ),
             toolbarContext: ToolbarSettingContext(toolbarActionsKey: UserDefaultsKey.toolbarItems.rawValue),
+            pushNotificationContext: PushNotificationSettingContext(saveHandler: { [weak self] in
+                #if !targetEnvironment(macCatalyst)
+                self?.notifyPushManagerOfRegistrationStateChange()
+                #endif
+            }),
             assetProvider: assetProvider,
             actionHandler: { [weak self]
                 settingsAction in

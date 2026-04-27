@@ -128,7 +128,18 @@ private let advanceSettingExtraItems = [
 ]
 
 @MainActor
-let mainSetting: [SettingSection] = {
+let notificationsSettingSection: SettingSection = SettingSection(
+    title: nil,
+    items: [
+        SettingItem(
+            name: CelestiaString("Notifications", comment: "Push notification settings entry"),
+            associatedItem: .other(type: .notifications)
+        )
+    ]
+)
+
+@MainActor
+func mainSetting(featureFlags: FeatureFlags) -> [SettingSection] {
     var items = [
         displaySettings(),
         timeAndRegionSettings(),
@@ -160,7 +171,12 @@ let mainSetting: [SettingSection] = {
         ]),
         advancedSettings(extraItems: advanceSettingExtraItems),
     ]
+    #if !targetEnvironment(macCatalyst)
+    if featureFlags.pushNotificationIOS {
+        items.append(notificationsSettingSection)
+    }
+    #endif
     items.append(celestiaPlusSettings())
     items.append(miscSettings())
     return items
-}()
+}

@@ -19,6 +19,12 @@ import UIKit
     case setTime(julianDay: Double)
 }
 
+@MainActor public enum WindowURLSource: Codable, Hashable, Sendable {
+    case urlScheme
+    case universalLink
+    case pushNotification
+}
+
 @MainActor public enum ObjectURLAction: String, Codable, Hashable, Sendable {
     case select
     case go
@@ -34,7 +40,7 @@ import UIKit
 @MainActor public enum AppURL: Codable, Hashable, Sendable {
     case celScript(url: URL)
     case celURL(url: URL)
-    case windowURL(url: WindowURL, universal: Bool)
+    case windowURL(url: WindowURL, source: WindowURLSource)
 
     public static func from(urlContext: UIOpenURLContext) -> AppURL? {
         return from(url: urlContext.url, openInPlace: urlContext.url.isFileURL && urlContext.options.openInPlace)
@@ -67,23 +73,23 @@ import UIKit
             if let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
                components.host == "item",
                let id = components.queryItems?.first(where: { $0.name == "item" })?.value {
-                appURL = .windowURL(url: .addon(id: id), universal: false)
+                appURL = .windowURL(url: .addon(id: id), source: .urlScheme)
             }
         } else if url.scheme == "celguide" {
             if let components = URLComponents(url: url, resolvingAgainstBaseURL: false),
                components.host == "guide",
                let id = components.queryItems?.first(where: { $0.name == "guide" })?.value {
-                appURL = .windowURL(url: .guide(id: id), universal: false)
+                appURL = .windowURL(url: .guide(id: id), source: .urlScheme)
             }
         } else if url.scheme == "celestia" {
             if let components = URLComponents(url: url, resolvingAgainstBaseURL: false) {
                 if components.host == "article" {
                     if let id = components.path.split(separator: "/").filter({ !$0.isEmpty }).first {
-                        appURL = .windowURL(url: .guide(id: String(id)), universal: false)
+                        appURL = .windowURL(url: .guide(id: String(id)), source: .urlScheme)
                     }
                 } else if components.host == "addon" {
                     if let id = components.path.split(separator: "/").filter({ !$0.isEmpty }).first {
-                        appURL = .windowURL(url: .addon(id: String(id)), universal: false)
+                        appURL = .windowURL(url: .addon(id: String(id)), source: .urlScheme)
                     }
                 } else if components.host == "object" {
                     let path = components.path.split(separator: "/").filter({ !$0.isEmpty }).joined(separator: "/")
@@ -94,12 +100,12 @@ import UIKit
                         } else {
                             action = nil
                         }
-                        appURL = .windowURL(url: .object(path: path, action: action), universal: false)
+                        appURL = .windowURL(url: .object(path: path, action: action), source: .urlScheme)
                     }
                 } else if components.host == "settime" {
                     if let julianDayString = components.queryItems?.first(where: { $0.name == "julianDay" })?.value,
                        let julianDay = Double(julianDayString) {
-                        appURL = .windowURL(url: .setTime(julianDay: julianDay), universal: false)
+                        appURL = .windowURL(url: .setTime(julianDay: julianDay), source: .urlScheme)
                     }
                 }
             }
@@ -115,7 +121,7 @@ import UIKit
                             components.queryItems?.first(where: { $0.name == "item" })?.value
                         }
                         if let id {
-                            appURL = .windowURL(url: .addon(id: id), universal: true)
+                            appURL = .windowURL(url: .addon(id: id), source: .universalLink)
                         }
                     } else if pathComponents[1] == "guide" {
                         // Handle shared article
@@ -125,7 +131,7 @@ import UIKit
                             components.queryItems?.first(where: { $0.name == "guide" })?.value
                         }
                         if let id {
-                            appURL = .windowURL(url: .guide(id: id), universal: true)
+                            appURL = .windowURL(url: .guide(id: id), source: .universalLink)
                         }
                     }
                 }

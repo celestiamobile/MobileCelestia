@@ -40,6 +40,14 @@ public enum UserDefaultsKey: String, Sendable {
     case pickSensitivity
 
     #if !os(visionOS)
+    case pushNotificationsAsked
+    case pushDeviceToken
+    case pushWeeklyAddon
+    case pushLatestNews
+    case pushFeaturedAddon
+    #endif
+
+    #if !os(visionOS)
     case fullDPI
     #else
     case foveatedRendering

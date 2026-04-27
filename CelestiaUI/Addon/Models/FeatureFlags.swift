@@ -13,14 +13,17 @@ public struct FeatureFlags: Sendable {
     public let dummy: Bool
     public let swiftUITimeSettings: Bool
     public let iosGLESV3: Bool
+    public let pushNotificationIOS: Bool
 
     public init(
         dummy: Bool = false,
         swiftUITimeSettings: Bool = false,
-        iosGLESV3: Bool = false
+        iosGLESV3: Bool = false,
+        pushNotificationIOS: Bool = false
     ) {
         self.dummy = dummy
         self.swiftUITimeSettings = swiftUITimeSettings
         self.iosGLESV3 = iosGLESV3
+        self.pushNotificationIOS = pushNotificationIOS
     }
 }

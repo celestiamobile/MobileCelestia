@@ -26,6 +26,16 @@ public struct FrameRateSettingContext {
 }
 #endif
 
+#if !os(visionOS)
+public struct PushNotificationSettingContext {
+    let saveHandler: () -> Void
+
+    public init(saveHandler: @escaping () -> Void) {
+        self.saveHandler = saveHandler
+    }
+}
+#endif
+
 public struct DataLocationSettingContext {
     let userDefaults: UserDefaults
     let dataDirectoryUserDefaultsKey: String
@@ -64,6 +74,7 @@ public class SettingsCoordinatorController: UIViewController {
     #if !os(visionOS)
     private let fontContext: FontSettingContext
     private let toolbarContext: ToolbarSettingContext
+    private let pushNotificationContext: PushNotificationSettingContext
     #endif
 
     private let actionHandler: (SettingAction) -> Void
@@ -121,6 +132,7 @@ public class SettingsCoordinatorController: UIViewController {
         dataLocationContext: DataLocationSettingContext,
         fontContext: FontSettingContext,
         toolbarContext: ToolbarSettingContext,
+        pushNotificationContext: PushNotificationSettingContext,
         assetProvider: AssetProvider,
         actionHandler: @escaping ((SettingAction) -> Void),
         dateInputHandler: @escaping (_ viewController: UIViewController, _ title: String, _ format: String) async -> Date?,
@@ -141,6 +153,7 @@ public class SettingsCoordinatorController: UIViewController {
         self.dataLocationContext = dataLocationContext
         self.toolbarContext = toolbarContext
         self.fontContext = fontContext
+        self.pushNotificationContext = pushNotificationContext
         self.actionHandler = actionHandler
         self.dateInputHandler = dateInputHandler
         self.textInputHandler = textInputHandler
@@ -224,6 +237,16 @@ private extension SettingsCoordinatorController {
                         self.openSubscriptionManagement(self)
                     })
                 #endif
+                case .notifications:
+                    viewController = PushNotificationSettingsViewController(
+                        userDefaults: userDefaults,
+                        onSave: { [weak self] in self?.pushNotificationContext.saveHandler() },
+                        openSystemSettings: {
+                            if let url = URL(string: UIApplication.openSettingsURLString) {
+                                UIApplication.shared.open(url)
+                            }
+                        }
+                    )
 #endif
                 }
             case .slider, .prefSwitch, .checkmark, .action, .custom, .keyedSelection, .prefSelection, .selection, .prefSlider:

@@ -50,7 +50,7 @@ class MainSceneDelegate: CommonSceneDelegate {
             launchURL = AppURL.from(urlContext: urlContext)
         }
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        let vc = MainViewController(initialURL: launchURL, screen: windowScene.screen, core: appDelegate.core, executor: appDelegate.executor, userDefaults: appDelegate.userDefaults)
+        let vc = MainViewController(initialURL: launchURL, screen: windowScene.screen, core: appDelegate.core, executor: appDelegate.executor, userDefaults: appDelegate.userDefaults, pushManager: appDelegate.pushManager)
         #if targetEnvironment(macCatalyst)
         let toolbar = NSToolbar(identifier: UUID().uuidString)
         if #available(iOS 18, *) {
