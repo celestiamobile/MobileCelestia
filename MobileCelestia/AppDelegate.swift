@@ -686,9 +686,12 @@ extension AppDelegate: UNUserNotificationCenterDelegate {
         let userInfo = response.notification.request.content.userInfo
         let articleID = userInfo["article-id"] as? String
         let addonID = userInfo["addon-id"] as? String
-        await MainActor.run {
-            self.pushManager.handleTap(articleID: articleID, addonID: addonID)
-        }
+        await handlePushNotificationTap(articleID: articleID, addonID: addonID)
+    }
+
+    @MainActor
+    private func handlePushNotificationTap(articleID: String?, addonID: String?) {
+        pushManager.handleTap(articleID: articleID, addonID: addonID)
     }
 }
 #endif
