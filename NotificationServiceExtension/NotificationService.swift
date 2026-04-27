@@ -9,9 +9,9 @@
 // of the License, or (at your option) any later version.
 //
 
-@preconcurrency import UserNotifications
+import UserNotifications
 
-class NotificationService: UNNotificationServiceExtension {
+final class NotificationService: UNNotificationServiceExtension, @unchecked Sendable {
     private var contentHandler: ((UNNotificationContent) -> Void)?
     private var bestAttemptContent: UNMutableNotificationContent?
 
@@ -26,24 +26,32 @@ class NotificationService: UNNotificationServiceExtension {
             return
         }
 
-        URLSession.shared.downloadTask(with: url) { tempURL, response, _ in
-            if let tempURL {
-                let suggestedExtension = (response?.suggestedFilename as NSString?)?.pathExtension
-                let pathExtension = (suggestedExtension?.isEmpty == false ? suggestedExtension : url.pathExtension) ?? "tmp"
-                let destination = tempURL.deletingLastPathComponent().appendingPathComponent("\(UUID().uuidString).\(pathExtension)")
-                do {
-                    try FileManager.default.moveItem(at: tempURL, to: destination)
-                    let attachment = try UNNotificationAttachment(identifier: "", url: destination)
-                    bestAttemptContent.attachments = [attachment]
-                } catch {}
-            }
-            contentHandler(bestAttemptContent)
+        URLSession.shared.downloadTask(with: url) { [weak self] tempURL, response, _ in
+            self?.finish(downloadedAt: tempURL, response: response, sourceURL: url)
         }.resume()
     }
 
     override func serviceExtensionTimeWillExpire() {
         // Apple gives the extension a finite window (~30s) before falling back
         // to the original payload — emit whatever we have.
+        deliverBestAttempt()
+    }
+
+    private func finish(downloadedAt tempURL: URL?, response: URLResponse?, sourceURL: URL) {
+        if let tempURL, let bestAttemptContent {
+            let suggestedExtension = (response?.suggestedFilename as NSString?)?.pathExtension
+            let pathExtension = (suggestedExtension?.isEmpty == false ? suggestedExtension : sourceURL.pathExtension) ?? "tmp"
+            let destination = tempURL.deletingLastPathComponent().appendingPathComponent("\(UUID().uuidString).\(pathExtension)")
+            do {
+                try FileManager.default.moveItem(at: tempURL, to: destination)
+                let attachment = try UNNotificationAttachment(identifier: "", url: destination)
+                bestAttemptContent.attachments = [attachment]
+            } catch {}
+        }
+        deliverBestAttempt()
+    }
+
+    private func deliverBestAttempt() {
         if let contentHandler, let bestAttemptContent {
             contentHandler(bestAttemptContent)
         }
