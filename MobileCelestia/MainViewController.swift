@@ -348,11 +348,15 @@ extension MainViewController {
         Task {
             do {
                 let item = try await requestHandler.getLatestMetadata(language: locale)
-                if userDefaults[.lastNewsID] == item.id { return }
+                if userDefaults[.lastNewsID] == item.id {
+                    setUpPushNotificationsIfNeeded()
+                    return
+                }
                 let vc = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromGuide(guideItemID: item.id, language: locale, subscriptionManager: subscriptionManager), requestHandler: requestHandler, actionHandler: { [weak self] action, viewController in
                     guard let self else { return }
                     if case let CommonWebViewController.WebAction.ack(id) = action, id == item.id {
                         self.userDefaults[.lastNewsID] = id
+                        self.notifyPushManagerOfRegistrationStateChange()
                     } else {
                         self.commonWebActionHandler(action, viewController)
                     }
@@ -360,8 +364,27 @@ extension MainViewController {
                 let nav = BaseNavigationController(rootViewController: vc)
                 nav.setNavigationBarHidden(true, animated: false)
                 self.showViewController(nav, key: item.id, prefersMediumDetent: prefersMediumDetent, titleVisible: false)
-            } catch {}
+            } catch {
+                setUpPushNotificationsIfNeeded()
+            }
         }
+    }
+
+    private func setUpPushNotificationsIfNeeded() {
+        #if !os(visionOS) && !targetEnvironment(macCatalyst)
+        guard featureFlags.pushNotificationIOS else { return }
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+        appDelegate.pushManager.presenter = { [weak self] in self?.front }
+        appDelegate.pushManager.runFirstRunOrReregister()
+        #endif
+    }
+
+    func notifyPushManagerOfRegistrationStateChange() {
+        #if !os(visionOS) && !targetEnvironment(macCatalyst)
+        guard featureFlags.pushNotificationIOS else { return }
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else { return }
+        Task { await appDelegate.pushManager.register() }
+        #endif
     }
 }
 

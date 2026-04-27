@@ -16,6 +16,9 @@ import CelestiaHelper
 import CelestiaUI
 import Sentry
 import UIKit
+#if !os(visionOS) && !targetEnvironment(macCatalyst)
+import UserNotifications
+#endif
 
 enum MenuBarAction: Hashable, Equatable {
     case captureImage
@@ -131,6 +134,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return defaults
     }()
 
+    #if !os(visionOS) && !targetEnvironment(macCatalyst)
+    lazy var pushManager = PushNotificationManager(userDefaults: userDefaults)
+    #endif
+
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         CelestiaActor.underlyingExecutor = executor
 
@@ -215,8 +222,22 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(handleNSWindowDidBecomeKey(_:)), name: Self.windowDidBecomeKeyNotification, object: nil)
         #endif
 
+        #if !os(visionOS) && !targetEnvironment(macCatalyst)
+        UNUserNotificationCenter.current().delegate = self
+        #endif
+
         return true
     }
+
+    #if !os(visionOS) && !targetEnvironment(macCatalyst)
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        pushManager.didReceiveDeviceToken(deviceToken)
+    }
+
+    func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
+        pushManager.didFailToRegister(error)
+    }
+    #endif
 
     func application(_ application: UIApplication, shouldSaveApplicationState coder: NSCoder) -> Bool {
         return false
@@ -658,6 +679,19 @@ extension AppDelegate {
         NotificationCenter.default.post(name: menuBarActionNotificationName, object: nil, userInfo: [menuBarActionNotificationKey: MenuBarAction.celestiaPlus])
     }
 }
+
+#if !os(visionOS) && !targetEnvironment(macCatalyst)
+extension AppDelegate: UNUserNotificationCenterDelegate {
+    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        completionHandler([.banner, .sound, .badge])
+    }
+
+    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
+        pushManager.handleTap(userInfo: response.notification.request.content.userInfo)
+        completionHandler()
+    }
+}
+#endif
 
 #if targetEnvironment(macCatalyst)
 class MacBridge {
