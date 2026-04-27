@@ -14,6 +14,7 @@
 		EA0854A22F78E04B00A01B46 /* AsyncRequest in Frameworks */ = {isa = PBXBuildFile; productRef = EA0854A12F78E04B00A01B46 /* AsyncRequest */; };
 		EA1823F027C08D3D00E0F5E4 /* CelestiaHelper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA1823EA27C08D3D00E0F5E4 /* CelestiaHelper.framework */; platformFilter = maccatalyst; };
 		EA34287A2F7F0284002C15B3 /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EA3428782F7F0272002C15B3 /* libiconv.tbd */; };
+		EA3DFFBD2F9EEE7300E4058C /* NotificationServiceExtension.appex in Embed PlugIns */ = {isa = PBXBuildFile; fileRef = EA3DFFB62F9EEE7300E4058C /* NotificationServiceExtension.appex */; platformFilter = ios; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		EA4E2D7C2A56B46B0046D62E /* CelestiaFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA4E2D752A56B4570046D62E /* CelestiaFoundation.framework */; };
 		EA4E2D862A56B5E10046D62E /* CelestiaFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA4E2D752A56B4570046D62E /* CelestiaFoundation.framework */; };
 		EA50E7642A505627005E7D7A /* CelestiaUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EA50E75E2A505627005E7D7A /* CelestiaUI.framework */; };
@@ -47,6 +48,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = EA1823E927C08D3D00E0F5E4;
 			remoteInfo = CelestiaHelper;
+		};
+		EA3DFFBB2F9EEE7300E4058C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 979D2F7223FEB1A6005D2592 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = EA3DFFB52F9EEE7300E4058C;
+			remoteInfo = NotificationServiceExtension;
 		};
 		EA4E2D7E2A56B46B0046D62E /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -106,6 +114,7 @@
 			dstSubfolder = PlugIns;
 			files = (
 				EAC84364252C84B600691943 /* CelestiaMacBridge.bundle in Embed PlugIns */,
+				EA3DFFBD2F9EEE7300E4058C /* NotificationServiceExtension.appex in Embed PlugIns */,
 			);
 			name = "Embed PlugIns";
 		};
@@ -120,6 +129,7 @@
 		979D2FAE23FEB2B9005D2592 /* libz.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libz.tbd; path = usr/lib/libz.tbd; sourceTree = SDKROOT; };
 		EA1823EA27C08D3D00E0F5E4 /* CelestiaHelper.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CelestiaHelper.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA3428782F7F0272002C15B3 /* libiconv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.tbd; path = usr/lib/libiconv.tbd; sourceTree = SDKROOT; };
+		EA3DFFB62F9EEE7300E4058C /* NotificationServiceExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = NotificationServiceExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA4E2D752A56B4570046D62E /* CelestiaFoundation.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CelestiaFoundation.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA50E75E2A505627005E7D7A /* CelestiaUI.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CelestiaUI.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EA7BF37B27033AE40058F704 /* GameController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GameController.framework; path = System/Library/Frameworks/GameController.framework; sourceTree = SDKROOT; };
@@ -178,6 +188,13 @@
 				CelestiaUI.h,
 			);
 			target = EA50E75D2A505627005E7D7A /* CelestiaUI */;
+		};
+		EA3DFFC12F9EEE7300E4058C /* Exceptions for "NotificationServiceExtension" folder in "NotificationServiceExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = EA3DFFB52F9EEE7300E4058C /* NotificationServiceExtension */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -243,6 +260,14 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		EA3DFFB72F9EEE7300E4058C /* NotificationServiceExtension */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				EA3DFFC12F9EEE7300E4058C /* Exceptions for "NotificationServiceExtension" folder in "NotificationServiceExtension" target */,
+			);
+			path = NotificationServiceExtension;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -271,6 +296,11 @@
 			);
 		};
 		EA1823E727C08D3D00E0F5E4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			files = (
+			);
+		};
+		EA3DFFB32F9EEE7300E4058C /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
 			);
@@ -307,6 +337,7 @@
 				EA3AD4692D812D750029ACA4 /* CelestiaUI */,
 				EA3AC23E2D811B790029ACA4 /* Shared */,
 				EA3ADEF62D812FE40029ACA4 /* Resources */,
+				EA3DFFB72F9EEE7300E4058C /* NotificationServiceExtension */,
 				979D2F7B23FEB1A6005D2592 /* Products */,
 				979D2FA523FEB1DD005D2592 /* Frameworks */,
 			);
@@ -321,6 +352,7 @@
 				EA1823EA27C08D3D00E0F5E4 /* CelestiaHelper.framework */,
 				EA50E75E2A505627005E7D7A /* CelestiaUI.framework */,
 				EA4E2D752A56B4570046D62E /* CelestiaFoundation.framework */,
+				EA3DFFB62F9EEE7300E4058C /* NotificationServiceExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -389,6 +421,7 @@
 				EA1823EF27C08D3D00E0F5E4 /* PBXTargetDependency */,
 				EA50E7632A505627005E7D7A /* PBXTargetDependency */,
 				EA4E2D7F2A56B46B0046D62E /* PBXTargetDependency */,
+				EA3DFFBC2F9EEE7300E4058C /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				EA3AC0082D811AA10029ACA4 /* MobileCelestia */,
@@ -441,6 +474,24 @@
 			productName = CelestiaHelper;
 			productReference = EA1823EA27C08D3D00E0F5E4 /* CelestiaHelper.framework */;
 			productType = "com.apple.product-type.framework";
+		};
+		EA3DFFB52F9EEE7300E4058C /* NotificationServiceExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = EA3DFFBE2F9EEE7300E4058C /* Build configuration list for PBXNativeTarget "NotificationServiceExtension" */;
+			buildPhases = (
+				EA3DFFB22F9EEE7300E4058C /* Sources */,
+				EA3DFFB32F9EEE7300E4058C /* Frameworks */,
+				EA3DFFB42F9EEE7300E4058C /* Resources */,
+			);
+			buildRules = (
+			);
+			fileSystemSynchronizedGroups = (
+				EA3DFFB72F9EEE7300E4058C /* NotificationServiceExtension */,
+			);
+			name = NotificationServiceExtension;
+			productName = NotificationServiceExtension;
+			productReference = EA3DFFB62F9EEE7300E4058C /* NotificationServiceExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 		EA4E2D742A56B4570046D62E /* CelestiaFoundation */ = {
 			isa = PBXNativeTarget;
@@ -506,7 +557,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastSwiftUpdateCheck = 1130;
+				LastSwiftUpdateCheck = 2640;
 				LastUpgradeCheck = 2600;
 				ORGANIZATIONNAME = "Celestia Development Team";
 				TargetAttributes = {
@@ -520,6 +571,9 @@
 					};
 					EA1823E927C08D3D00E0F5E4 = {
 						CreatedOnToolsVersion = 13.2.1;
+					};
+					EA3DFFB52F9EEE7300E4058C = {
+						CreatedOnToolsVersion = 26.4.1;
 					};
 					EA4E2D742A56B4570046D62E = {
 						CreatedOnToolsVersion = 14.3.1;
@@ -567,6 +621,7 @@
 				EA1823E927C08D3D00E0F5E4 /* CelestiaHelper */,
 				EA50E75D2A505627005E7D7A /* CelestiaUI */,
 				EA4E2D742A56B4570046D62E /* CelestiaFoundation */,
+				EA3DFFB52F9EEE7300E4058C /* NotificationServiceExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -600,6 +655,11 @@
 			);
 		};
 		EA1823E827C08D3D00E0F5E4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			files = (
+			);
+		};
+		EA3DFFB42F9EEE7300E4058C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			files = (
 			);
@@ -686,6 +746,11 @@
 			files = (
 			);
 		};
+		EA3DFFB22F9EEE7300E4058C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			files = (
+			);
+		};
 		EA4E2D712A56B4570046D62E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			files = (
@@ -714,6 +779,12 @@
 			platformFilter = maccatalyst;
 			target = EA1823E927C08D3D00E0F5E4 /* CelestiaHelper */;
 			targetProxy = EA1823EE27C08D3D00E0F5E4 /* PBXContainerItemProxy */;
+		};
+		EA3DFFBC2F9EEE7300E4058C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			platformFilter = ios;
+			target = EA3DFFB52F9EEE7300E4058C /* NotificationServiceExtension */;
+			targetProxy = EA3DFFBB2F9EEE7300E4058C /* PBXContainerItemProxy */;
 		};
 		EA4E2D7F2A56B46B0046D62E /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -1050,6 +1121,52 @@
 			};
 			name = Release;
 		};
+		EA3DFFBF2F9EEE7300E4058C /* Debug configuration for PBXNativeTarget "NotificationServiceExtension" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(SHARED_BUILD_NUMBER)";
+				INFOPLIST_FILE = NotificationServiceExtension/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = "$(SHARED_BUILD_VERSION)";
+				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.MobileCelestia.NotificationServiceExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		EA3DFFC02F9EEE7300E4058C /* Release configuration for PBXNativeTarget "NotificationServiceExtension" */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Apple Development";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = "$(SHARED_BUILD_NUMBER)";
+				INFOPLIST_FILE = NotificationServiceExtension/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = "$(SHARED_BUILD_VERSION)";
+				PRODUCT_BUNDLE_IDENTIFIER = space.celestia.MobileCelestia.NotificationServiceExtension;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
+				SKIP_INSTALL = YES;
+				SUPPORTS_MACCATALYST = NO;
+				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		EA4E2D792A56B4570046D62E /* Debug configuration for PBXNativeTarget "CelestiaFoundation" */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1250,6 +1367,14 @@
 			buildConfigurations = (
 				EA1823F227C08D3D00E0F5E4 /* Debug configuration for PBXNativeTarget "CelestiaHelper" */,
 				EA1823F327C08D3D00E0F5E4 /* Release configuration for PBXNativeTarget "CelestiaHelper" */,
+			);
+			defaultConfigurationName = Release;
+		};
+		EA3DFFBE2F9EEE7300E4058C /* Build configuration list for PBXNativeTarget "NotificationServiceExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				EA3DFFBF2F9EEE7300E4058C /* Debug configuration for PBXNativeTarget "NotificationServiceExtension" */,
+				EA3DFFC02F9EEE7300E4058C /* Release configuration for PBXNativeTarget "NotificationServiceExtension" */,
 			);
 			defaultConfigurationName = Release;
 		};
