@@ -39,6 +39,14 @@ public enum UserDefaultsKey: String, Sendable {
 
     case pickSensitivity
 
+    #if !os(visionOS) && !targetEnvironment(macCatalyst)
+    case pushNotificationsAsked
+    case pushDeviceToken
+    case pushWeeklyAddon
+    case pushLatestNews
+    case pushFeaturedAddon
+    #endif
+
     #if !os(visionOS)
     case fullDPI
     #else
