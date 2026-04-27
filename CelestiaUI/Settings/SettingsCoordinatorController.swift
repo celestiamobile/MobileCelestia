@@ -26,6 +26,16 @@ public struct FrameRateSettingContext {
 }
 #endif
 
+#if !os(visionOS) && !targetEnvironment(macCatalyst)
+public struct PushNotificationSettingContext {
+    let saveHandler: () -> Void
+
+    public init(saveHandler: @escaping () -> Void) {
+        self.saveHandler = saveHandler
+    }
+}
+#endif
+
 public struct DataLocationSettingContext {
     let userDefaults: UserDefaults
     let dataDirectoryUserDefaultsKey: String
@@ -64,6 +74,9 @@ public class SettingsCoordinatorController: UIViewController {
     #if !os(visionOS)
     private let fontContext: FontSettingContext
     private let toolbarContext: ToolbarSettingContext
+    #if !targetEnvironment(macCatalyst)
+    private var pushNotificationContext: PushNotificationSettingContext?
+    #endif
     #endif
 
     private let actionHandler: (SettingAction) -> Void
@@ -151,6 +164,12 @@ public class SettingsCoordinatorController: UIViewController {
         self.assetProvider = assetProvider
         super.init(nibName: nil, bundle: nil)
     }
+
+    #if !targetEnvironment(macCatalyst)
+    public func setPushNotificationContext(_ context: PushNotificationSettingContext?) {
+        self.pushNotificationContext = context
+    }
+    #endif
     #endif
 
     required init?(coder: NSCoder) {
@@ -223,6 +242,16 @@ private extension SettingsCoordinatorController {
                         guard let self else { return }
                         self.openSubscriptionManagement(self)
                     })
+                case .notifications:
+                    viewController = PushNotificationSettingsViewController(
+                        userDefaults: userDefaults,
+                        onSave: { [weak self] in self?.pushNotificationContext?.saveHandler() },
+                        openSystemSettings: {
+                            if let url = URL(string: UIApplication.openSettingsURLString) {
+                                UIApplication.shared.open(url)
+                            }
+                        }
+                    )
                 #endif
 #endif
                 }

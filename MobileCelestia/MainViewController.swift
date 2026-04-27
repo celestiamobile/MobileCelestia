@@ -1339,6 +1339,12 @@ Device Model: \(model)
 
     @objc private func showSettings() {
         let executor = self.executor
+        var settings = mainSetting
+        #if !os(visionOS) && !targetEnvironment(macCatalyst)
+        if featureFlags.pushNotificationIOS {
+            settings.append(notificationsSettingSection)
+        }
+        #endif
         let controller = SettingsCoordinatorController(
             core: core,
             executor: executor,
@@ -1346,7 +1352,7 @@ Device Model: \(model)
             bundle: .app,
             featureFlags: featureFlags,
             defaultDataDirectory: UserDefaults.defaultDataDirectory,
-            settings: mainSetting,
+            settings: settings,
             frameRateContext: FrameRateSettingContext(frameRateUserDefaultsKey: UserDefaultsKey.frameRate.rawValue),
             dataLocationContext: DataLocationSettingContext(
                 userDefaults: userDefaults,
@@ -1387,6 +1393,13 @@ Device Model: \(model)
                 self.showSubscription(for: viewController)
             }
         )
+        #if !os(visionOS) && !targetEnvironment(macCatalyst)
+        if featureFlags.pushNotificationIOS {
+            controller.setPushNotificationContext(PushNotificationSettingContext(saveHandler: { [weak self] in
+                self?.notifyPushManagerOfRegistrationStateChange()
+            }))
+        }
+        #endif
         #if targetEnvironment(macCatalyst)
         showViewController(controller, macOSPreferredSize: CGSize(width: 700, height: 600), customToolbar: true)
         #else

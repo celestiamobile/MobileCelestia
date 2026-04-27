@@ -23,6 +23,7 @@ public enum OtherSettingType: Sendable {
     case toolbar
     #if !targetEnvironment(macCatalyst)
     case appIcon
+    case notifications
     #endif
     #endif
 }

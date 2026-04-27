@@ -127,6 +127,19 @@ private let advanceSettingExtraItems = [
     gameControllerItem,
 ]
 
+#if !os(visionOS) && !targetEnvironment(macCatalyst)
+@MainActor
+let notificationsSettingSection: SettingSection = SettingSection(
+    title: nil,
+    items: [
+        SettingItem(
+            name: CelestiaString("Notifications", comment: "Push notification settings entry"),
+            associatedItem: .other(type: .notifications)
+        )
+    ]
+)
+#endif
+
 @MainActor
 let mainSetting: [SettingSection] = {
     var items = [

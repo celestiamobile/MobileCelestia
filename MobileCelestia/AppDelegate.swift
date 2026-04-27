@@ -682,13 +682,17 @@ extension AppDelegate {
 
 #if !os(visionOS) && !targetEnvironment(macCatalyst)
 extension AppDelegate: UNUserNotificationCenterDelegate {
-    func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
-        completionHandler([.banner, .sound, .badge])
+    nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
+        return [.banner, .sound, .badge]
     }
 
-    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse, withCompletionHandler completionHandler: @escaping () -> Void) {
-        pushManager.handleTap(userInfo: response.notification.request.content.userInfo)
-        completionHandler()
+    nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
+        let userInfo = response.notification.request.content.userInfo
+        let articleID = userInfo["article-id"] as? String
+        let addonID = userInfo["addon-id"] as? String
+        await MainActor.run {
+            self.pushManager.handleTap(articleID: articleID, addonID: addonID)
+        }
     }
 }
 #endif

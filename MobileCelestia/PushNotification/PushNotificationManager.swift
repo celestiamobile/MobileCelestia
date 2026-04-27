@@ -81,8 +81,8 @@ final class PushNotificationManager {
         }
     }
 
-    func handleTap(userInfo: [AnyHashable: Any]) {
-        if let articleID = userInfo["article-id"] as? String {
+    func handleTap(articleID: String?, addonID: String?) {
+        if let articleID {
             // Mirror the in-app news flow: push-opened articles count as "seen"
             // immediately, so the next launch's news check stays in sync.
             userDefaults[.lastNewsID] = articleID
@@ -90,7 +90,7 @@ final class PushNotificationManager {
             postOpen(.windowURL(url: .guide(id: articleID), universal: false))
             return
         }
-        if let addonID = userInfo["addon-id"] as? String {
+        if let addonID {
             postOpen(.windowURL(url: .addon(id: addonID), universal: false))
             return
         }
