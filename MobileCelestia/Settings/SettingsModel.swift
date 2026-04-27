@@ -127,7 +127,7 @@ private let advanceSettingExtraItems = [
     gameControllerItem,
 ]
 
-#if !os(visionOS) && !targetEnvironment(macCatalyst)
+#if !os(visionOS)
 @MainActor
 let notificationsSettingSection: SettingSection = SettingSection(
     title: nil,

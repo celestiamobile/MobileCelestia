@@ -26,7 +26,7 @@ public struct FrameRateSettingContext {
 }
 #endif
 
-#if !os(visionOS) && !targetEnvironment(macCatalyst)
+#if !os(visionOS)
 public struct PushNotificationSettingContext {
     let saveHandler: () -> Void
 
@@ -74,9 +74,7 @@ public class SettingsCoordinatorController: UIViewController {
     #if !os(visionOS)
     private let fontContext: FontSettingContext
     private let toolbarContext: ToolbarSettingContext
-    #if !targetEnvironment(macCatalyst)
     private let pushNotificationContext: PushNotificationSettingContext?
-    #endif
     #endif
 
     private let actionHandler: (SettingAction) -> Void
@@ -134,55 +132,7 @@ public class SettingsCoordinatorController: UIViewController {
         dataLocationContext: DataLocationSettingContext,
         fontContext: FontSettingContext,
         toolbarContext: ToolbarSettingContext,
-        assetProvider: AssetProvider,
-        actionHandler: @escaping ((SettingAction) -> Void),
-        dateInputHandler: @escaping (_ viewController: UIViewController, _ title: String, _ format: String) async -> Date?,
-        textInputHandler: @escaping (_ viewController: UIViewController, _ title: String, _ keyboardType: UIKeyboardType) async -> String?,
-        rendererInfoProvider: @escaping () async -> String,
-        screenProvider: @escaping () -> UIScreen?,
-        subscriptionManager: SubscriptionManager,
-        openSubscriptionManagement: @escaping (UIViewController) -> Void
-    ) {
-        self.core = core
-        self.executor = executor
-        self.userDefaults = userDefaults
-        self.bundle = bundle
-        self.featureFlags = featureFlags
-        self.defaultDataDirectory = defaultDataDirectory
-        self.settings = settings
-        self.frameRateContext = frameRateContext
-        self.dataLocationContext = dataLocationContext
-        self.toolbarContext = toolbarContext
-        self.fontContext = fontContext
-        self.actionHandler = actionHandler
-        self.dateInputHandler = dateInputHandler
-        self.textInputHandler = textInputHandler
-        self.rendererInfoProvider = rendererInfoProvider
-        self.screenProvider = screenProvider
-        self.subscriptionManager = subscriptionManager
-        self.openSubscriptionManagement = openSubscriptionManagement
-        self.assetProvider = assetProvider
-        #if !targetEnvironment(macCatalyst)
-        self.pushNotificationContext = nil
-        #endif
-        super.init(nibName: nil, bundle: nil)
-    }
-    #endif
-
-    #if !os(visionOS) && !targetEnvironment(macCatalyst)
-    public init(
-        core: AppCore,
-        executor: AsyncProviderExecutor,
-        userDefaults: UserDefaults,
-        bundle: Bundle,
-        featureFlags: FeatureFlags,
-        defaultDataDirectory: URL,
-        settings: [SettingSection],
-        frameRateContext: FrameRateSettingContext,
-        dataLocationContext: DataLocationSettingContext,
-        fontContext: FontSettingContext,
-        toolbarContext: ToolbarSettingContext,
-        pushNotificationContext: PushNotificationSettingContext,
+        pushNotificationContext: PushNotificationSettingContext? = nil,
         assetProvider: AssetProvider,
         actionHandler: @escaping ((SettingAction) -> Void),
         dateInputHandler: @escaping (_ viewController: UIViewController, _ title: String, _ format: String) async -> Date?,
@@ -286,6 +236,7 @@ private extension SettingsCoordinatorController {
                         guard let self else { return }
                         self.openSubscriptionManagement(self)
                     })
+                #endif
                 case .notifications:
                     viewController = PushNotificationSettingsViewController(
                         userDefaults: userDefaults,
@@ -296,7 +247,6 @@ private extension SettingsCoordinatorController {
                             }
                         }
                     )
-                #endif
 #endif
                 }
             case .slider, .prefSwitch, .checkmark, .action, .custom, .keyedSelection, .prefSelection, .selection, .prefSlider:

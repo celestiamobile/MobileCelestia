@@ -7,7 +7,7 @@
 // as published by the Free Software Foundation; either version 2
 // of the License, or (at your option) any later version.
 
-#if !os(visionOS) && !targetEnvironment(macCatalyst)
+#if !os(visionOS)
 
 import AsyncRequest
 import CelestiaFoundation
