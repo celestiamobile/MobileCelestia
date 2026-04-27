@@ -16,9 +16,7 @@ import CelestiaHelper
 import CelestiaUI
 import Sentry
 import UIKit
-#if !os(visionOS)
 import UserNotifications
-#endif
 
 enum MenuBarAction: Hashable, Equatable {
     case captureImage
@@ -134,9 +132,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return defaults
     }()
 
-    #if !os(visionOS)
     lazy var pushManager = PushNotificationManager(userDefaults: userDefaults)
-    #endif
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         CelestiaActor.underlyingExecutor = executor
@@ -222,14 +218,14 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         NotificationCenter.default.addObserver(self, selector: #selector(handleNSWindowDidBecomeKey(_:)), name: Self.windowDidBecomeKeyNotification, object: nil)
         #endif
 
-        #if !os(visionOS)
+        #if !targetEnvironment(macCatalyst)
         UNUserNotificationCenter.current().delegate = self
         #endif
 
         return true
     }
 
-    #if !os(visionOS)
+    #if !targetEnvironment(macCatalyst)
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
         pushManager.didReceiveDeviceToken(deviceToken)
     }
@@ -680,7 +676,7 @@ extension AppDelegate {
     }
 }
 
-#if !os(visionOS)
+#if !targetEnvironment(macCatalyst)
 extension AppDelegate: UNUserNotificationCenterDelegate {
     nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification) async -> UNNotificationPresentationOptions {
         return [.banner, .sound, .badge]

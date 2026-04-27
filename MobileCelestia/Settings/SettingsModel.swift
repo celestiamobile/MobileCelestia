@@ -127,7 +127,6 @@ private let advanceSettingExtraItems = [
     gameControllerItem,
 ]
 
-#if !os(visionOS)
 @MainActor
 let notificationsSettingSection: SettingSection = SettingSection(
     title: nil,
@@ -138,7 +137,6 @@ let notificationsSettingSection: SettingSection = SettingSection(
         )
     ]
 )
-#endif
 
 @MainActor
 let mainSetting: [SettingSection] = {

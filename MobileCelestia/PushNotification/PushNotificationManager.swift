@@ -7,8 +7,6 @@
 // as published by the Free Software Foundation; either version 2
 // of the License, or (at your option) any later version.
 
-#if !os(visionOS)
-
 import AsyncRequest
 import CelestiaCore
 import CelestiaFoundation
@@ -19,12 +17,12 @@ import UserNotifications
 
 private let pushAPIVersion = 1
 
-public enum PushNotificationContentType: String, CaseIterable, Sendable {
+private enum PushNotificationContentType: String, CaseIterable, Sendable {
     case weeklyAddon = "weekly-addon"
     case latestNews = "latest-news"
     case featuredAddon = "featured-addon"
 
-    public var userDefaultsKey: UserDefaultsKey {
+    var userDefaultsKey: UserDefaultsKey {
         switch self {
         case .weeklyAddon: return .pushWeeklyAddon
         case .latestNews: return .pushLatestNews
@@ -33,7 +31,7 @@ public enum PushNotificationContentType: String, CaseIterable, Sendable {
     }
 }
 
-extension UserDefaults {
+private extension UserDefaults {
     func pushTypeEnabled(_ type: PushNotificationContentType) -> Bool {
         // Defaults to true so newly-added types are enabled-by-default for opted-in users.
         return (self[type.userDefaultsKey] as String?) != "false"
@@ -183,5 +181,3 @@ private struct RegisterRequest: Encodable {
     let distribution: String?
     let lastShownNewsID: String?
 }
-
-#endif

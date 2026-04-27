@@ -132,7 +132,7 @@ public class SettingsCoordinatorController: UIViewController {
         dataLocationContext: DataLocationSettingContext,
         fontContext: FontSettingContext,
         toolbarContext: ToolbarSettingContext,
-        pushNotificationContext: PushNotificationSettingContext? = nil,
+        pushNotificationContext: PushNotificationSettingContext?,
         assetProvider: AssetProvider,
         actionHandler: @escaping ((SettingAction) -> Void),
         dateInputHandler: @escaping (_ viewController: UIViewController, _ title: String, _ format: String) async -> Date?,

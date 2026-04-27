@@ -350,42 +350,43 @@ extension MainViewController {
         Task {
             do {
                 let item = try await requestHandler.getLatestMetadata(language: locale)
-                if userDefaults[.lastNewsID] == item.id {
-                    setUpPushNotificationsIfNeeded()
+                if userDefaults[.lastNewsID] != item.id {
+                    let vc = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromGuide(guideItemID: item.id, language: locale, subscriptionManager: subscriptionManager), requestHandler: requestHandler, actionHandler: { [weak self] action, viewController in
+                        guard let self else { return }
+                        if case let CommonWebViewController.WebAction.ack(id) = action, id == item.id {
+                            self.userDefaults[.lastNewsID] = id
+                            #if !targetEnvironment(macCatalyst)
+                            self.notifyPushManagerOfRegistrationStateChange()
+                            #endif
+                        } else {
+                            self.commonWebActionHandler(action, viewController)
+                        }
+                    }, matchingQueryKeys: ["guide"])
+                    let nav = BaseNavigationController(rootViewController: vc)
+                    nav.setNavigationBarHidden(true, animated: false)
+                    self.showViewController(nav, key: item.id, prefersMediumDetent: prefersMediumDetent, titleVisible: false)
                     return
                 }
-                let vc = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromGuide(guideItemID: item.id, language: locale, subscriptionManager: subscriptionManager), requestHandler: requestHandler, actionHandler: { [weak self] action, viewController in
-                    guard let self else { return }
-                    if case let CommonWebViewController.WebAction.ack(id) = action, id == item.id {
-                        self.userDefaults[.lastNewsID] = id
-                        self.notifyPushManagerOfRegistrationStateChange()
-                    } else {
-                        self.commonWebActionHandler(action, viewController)
-                    }
-                }, matchingQueryKeys: ["guide"])
-                let nav = BaseNavigationController(rootViewController: vc)
-                nav.setNavigationBarHidden(true, animated: false)
-                self.showViewController(nav, key: item.id, prefersMediumDetent: prefersMediumDetent, titleVisible: false)
-            } catch {
-                setUpPushNotificationsIfNeeded()
-            }
+            } catch {}
+
+            #if !targetEnvironment(macCatalyst)
+            setUpPushNotificationsIfNeeded()
+            #endif
         }
     }
 
+    #if !targetEnvironment(macCatalyst)
     private func setUpPushNotificationsIfNeeded() {
-        #if !os(visionOS)
         guard featureFlags.pushNotificationIOS else { return }
         pushManager.presenter = { [weak self] in self?.front }
         pushManager.runFirstRunOrReregister()
-        #endif
     }
 
-    func notifyPushManagerOfRegistrationStateChange() {
-        #if !os(visionOS)
+    private func notifyPushManagerOfRegistrationStateChange() {
         guard featureFlags.pushNotificationIOS else { return }
         Task { await pushManager.register() }
-        #endif
     }
+    #endif
 }
 
 extension MainViewController {
@@ -1340,16 +1341,10 @@ Device Model: \(model)
     @objc private func showSettings() {
         let executor = self.executor
         var settings = mainSetting
-        #if !os(visionOS)
-        let pushNotificationsEnabled = featureFlags.pushNotificationIOS
-        if pushNotificationsEnabled {
+        #if !targetEnvironment(macCatalyst)
+        if featureFlags.pushNotificationIOS {
             settings.append(notificationsSettingSection)
         }
-        let pushNotificationContext: PushNotificationSettingContext? = pushNotificationsEnabled
-            ? PushNotificationSettingContext(saveHandler: { [weak self] in
-                self?.notifyPushManagerOfRegistrationStateChange()
-            })
-            : nil
         #endif
         let controller = SettingsCoordinatorController(
             core: core,
@@ -1374,7 +1369,11 @@ Device Model: \(model)
                 boldFontIndexKey: UserDefaultsKey.boldFontIndex.rawValue
             ),
             toolbarContext: ToolbarSettingContext(toolbarActionsKey: UserDefaultsKey.toolbarItems.rawValue),
-            pushNotificationContext: pushNotificationContext,
+            pushNotificationContext: PushNotificationSettingContext(saveHandler: { [weak self] in
+                #if !targetEnvironment(macCatalyst)
+                self?.notifyPushManagerOfRegistrationStateChange()
+                #endif
+            }),
             assetProvider: assetProvider,
             actionHandler: { [weak self]
                 settingsAction in
