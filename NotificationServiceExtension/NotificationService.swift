@@ -26,12 +26,19 @@ class NotificationService: UNNotificationServiceExtension {
             return
         }
 
-        Task {
-            if let attachment = await Self.downloadAttachment(from: url) {
-                bestAttemptContent.attachments = [attachment]
+        URLSession.shared.downloadTask(with: url) { tempURL, response, _ in
+            if let tempURL {
+                let suggestedExtension = (response?.suggestedFilename as NSString?)?.pathExtension
+                let pathExtension = (suggestedExtension?.isEmpty == false ? suggestedExtension : url.pathExtension) ?? "tmp"
+                let destination = tempURL.deletingLastPathComponent().appendingPathComponent("\(UUID().uuidString).\(pathExtension)")
+                do {
+                    try FileManager.default.moveItem(at: tempURL, to: destination)
+                    let attachment = try UNNotificationAttachment(identifier: "", url: destination)
+                    bestAttemptContent.attachments = [attachment]
+                } catch {}
             }
             contentHandler(bestAttemptContent)
-        }
+        }.resume()
     }
 
     override func serviceExtensionTimeWillExpire() {
@@ -39,19 +46,6 @@ class NotificationService: UNNotificationServiceExtension {
         // to the original payload — emit whatever we have.
         if let contentHandler, let bestAttemptContent {
             contentHandler(bestAttemptContent)
-        }
-    }
-
-    private static func downloadAttachment(from url: URL) async -> UNNotificationAttachment? {
-        do {
-            let (tempURL, response) = try await URLSession.shared.download(from: url)
-            let suggestedExtension = (response.suggestedFilename as NSString?)?.pathExtension
-            let pathExtension = (suggestedExtension?.isEmpty == false ? suggestedExtension : url.pathExtension) ?? "tmp"
-            let destination = tempURL.deletingLastPathComponent().appendingPathComponent("\(UUID().uuidString).\(pathExtension)")
-            try FileManager.default.moveItem(at: tempURL, to: destination)
-            return try UNNotificationAttachment(identifier: "", url: destination)
-        } catch {
-            return nil
         }
     }
 }
