@@ -70,7 +70,7 @@ class CelestiaDisplayController: AsyncGLViewController {
 #if targetEnvironment(macCatalyst)
         let api = AsyncGLAPI.openGLLegacy
 #else
-        let api = featureFlags.iosGLESV3 ? AsyncGLAPI.openGLES3 : AsyncGLAPI.openGLES2
+        let api = AsyncGLAPI.openGLES3
 #endif
         self.subscriptionManager = subscriptionManager
         self.core = core

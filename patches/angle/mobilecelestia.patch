@@ -1,10 +1,10 @@
 diff --git a/MobileCelestia.xcodeproj/project.pbxproj b/MobileCelestia.xcodeproj/project.pbxproj
-index 3006bfb..96b7e7e 100644
+index 3d11a5b..6164de9 100644
 --- a/MobileCelestia.xcodeproj/project.pbxproj
 +++ b/MobileCelestia.xcodeproj/project.pbxproj
-@@ -1298,6 +1298,9 @@
+@@ -1423,6 +1423,9 @@
  				kind = exactVersion;
- 				version = 1.2.0;
+ 				version = 1.2.1;
  			};
 +			traits = (
 +				ANGLE,
@@ -13,7 +13,7 @@ index 3006bfb..96b7e7e 100644
  		EAC20FDF2CA0CB7C0098AABA /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
  			isa = XCRemoteSwiftPackageReference;
 diff --git a/MobileCelestia/Celestia/CelestiaDisplayController.swift b/MobileCelestia/Celestia/CelestiaDisplayController.swift
-index 99bcf2a..5583db6 100644
+index 288df91..bfdfad8 100644
 --- a/MobileCelestia/Celestia/CelestiaDisplayController.swift
 +++ b/MobileCelestia/Celestia/CelestiaDisplayController.swift
 @@ -68,7 +68,7 @@ class CelestiaDisplayController: AsyncGLViewController {
@@ -23,5 +23,5 @@ index 99bcf2a..5583db6 100644
 -        let api = AsyncGLAPI.openGLLegacy
 +        let api = AsyncGLAPI.openGLES2
  #else
-         let api = featureFlags.iosGLESV3 ? AsyncGLAPI.openGLES3 : AsyncGLAPI.openGLES2
+         let api = AsyncGLAPI.openGLES3
  #endif
