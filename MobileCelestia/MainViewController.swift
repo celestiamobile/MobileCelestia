@@ -893,8 +893,8 @@ extension MainViewController: CelestiaControllerDelegate {
             vc.addAttachmentData(addonInfoData, mimeType: "text/plain", fileName: "addoninfo.txt")
         }
 
-        if let (transactionID, isSandbox) = subscriptionManager.transactionInfo() {
-            let info = "\(transactionID) \(isSandbox)"
+        if let (transactionID, isSandbox, productType) = subscriptionManager.transactionInfo() {
+            let info = "\(transactionID) \(isSandbox) \(productType.rawValue)"
             if let infoData = info.data(using: .utf8) {
                 vc.addAttachmentData(infoData, mimeType: "text/plain", fileName: "transactionid.txt")
             }
@@ -951,8 +951,8 @@ Device Model: \(model)
         vc.setToRecipients([Constants.feedbackEmailAddress])
         vc.setSubject(CelestiaString("Feature suggestion for Celestia", comment: "Default email title for feature suggestion"))
         vc.setMessageBody(CelestiaString("Please describe the feature you want to see in Celestia.", comment: "Default email body for feature suggestion"), isHTML: false)
-        if let (transactionID, isSandbox) = subscriptionManager.transactionInfo() {
-            let info = "\(transactionID) \(isSandbox)"
+        if let (transactionID, isSandbox, productType) = subscriptionManager.transactionInfo() {
+            let info = "\(transactionID) \(isSandbox) \(productType.rawValue)"
             if let infoData = info.data(using: .utf8) {
                 vc.addAttachmentData(infoData, mimeType: "text/plain", fileName: "transactionid.txt")
             }
@@ -1703,6 +1703,10 @@ struct CelestiaStringProvider: StringProvider {
         } else {
             return nil
         }
+    }
+
+    func formattedLifetimePrice(for product: Product) async -> AttributedString {
+        return AttributedString(product.displayPrice)
     }
 
     private func displayCyclePrice(displayPrice: String, price: Decimal, period: Period) -> AttributedString {

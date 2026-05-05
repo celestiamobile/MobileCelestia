@@ -33,9 +33,10 @@ public extension URL {
             URLQueryItem(name: "api", value: "2"),
         ]
         if let subscriptionManager {
-            if let (transactionID, isSandbox) = subscriptionManager.transactionInfo() {
+            if let (transactionID, isSandbox, productType) = subscriptionManager.transactionInfo() {
                 queryItems.append(URLQueryItem(name: "transactionIdApple", value: "\(transactionID)"))
                 queryItems.append(URLQueryItem(name: "isSandboxApple", value: isSandbox ? "1" : "0"))
+                queryItems.append(URLQueryItem(name: "productType", value: productType.rawValue))
             } else {
                 queryItems.append(URLQueryItem(name: "transactionIdApple", value: ""))
                 queryItems.append(URLQueryItem(name: "isSandboxApple", value: "1"))

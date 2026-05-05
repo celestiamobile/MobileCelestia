@@ -38,7 +38,7 @@ extension Dictionary: @retroactive JSONDecodable where Key == String, Value: Dec
 }
 
 final class RequestHandlerImpl: RequestHandler {
-    public func getSubscriptionValidity(originalTransactionID: UInt64, sandbox: Bool) async throws -> Bool {
+    public func getSubscriptionValidity(originalTransactionID: UInt64, sandbox: Bool, productType: PurchaseType) async throws -> Bool {
         struct ValidationResult: JSONDecodable {
             public static let decoder: JSONDecoder? = nil
 
@@ -48,6 +48,7 @@ final class RequestHandlerImpl: RequestHandler {
         let result: ValidationResult = try await AsyncJSONRequestHandler.get(url: URL.apiPrefixURL.appendingPathComponent("subscription/apple").absoluteString, parameters: [
             "originalTransactionId": "\(originalTransactionID)",
             "sandbox": sandbox ? "1" : "0",
+            "productType": productType.rawValue,
         ], httpClient: URLSession.shared)
         return result.valid
     }
@@ -74,10 +75,11 @@ final class RequestHandlerImpl: RequestHandler {
         let items: [String]
         let transactionIdApple: String
         let isSandboxApple: Bool
+        let productType: PurchaseType
     }
 
-    func getUpdates(addonIds: [String], language: String, originalTransactionID: UInt64, sandbox: Bool) async throws -> [String: AddonUpdate] {
-        return try await AsyncJSONRequestHandler.post(url: URL.updates.absoluteString, json: UpdateRequest(lang: language, items: addonIds, transactionIdApple: "\(originalTransactionID)", isSandboxApple: sandbox), httpClient: URLSession.shared)
+    func getUpdates(addonIds: [String], language: String, originalTransactionID: UInt64, sandbox: Bool, productType: PurchaseType) async throws -> [String: AddonUpdate] {
+        return try await AsyncJSONRequestHandler.post(url: URL.updates.absoluteString, json: UpdateRequest(lang: language, items: addonIds, transactionIdApple: "\(originalTransactionID)", isSandboxApple: sandbox, productType: productType), httpClient: URLSession.shared)
     }
 
     func getFeatureFlags(platform: String, language: String, version: String) async throws -> [String: Double] {

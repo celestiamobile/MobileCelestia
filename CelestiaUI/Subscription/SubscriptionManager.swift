@@ -14,6 +14,11 @@ public extension Notification.Name {
     static let subscriptionStatusChanged = Notification.Name("SubscriptionStatusChanged")
 }
 
+public enum PurchaseType: String, Codable, Sendable {
+    case subscription
+    case lifetime
+}
+
 @MainActor
 public class SubscriptionManager {
     public enum SubscriptionStatus: Hashable, Sendable {
@@ -21,6 +26,7 @@ public class SubscriptionManager {
         case empty
         case pending
         case verified(originalTransactionID: UInt64, productID: String, cycle: Plan.Cycle, expirationDate: Date?, environment: SubscriptionEnvironment)
+        case lifetime(originalTransactionID: UInt64, environment: SubscriptionEnvironment)
         case expired
         case revoked
     }
@@ -29,6 +35,14 @@ public class SubscriptionManager {
         case production
         case sandbox
         case xcode
+    }
+
+    public nonisolated static let lifetimeProductID = "space.celestia.mobilecelestia.plus.lifetime"
+
+    public struct LifetimePlan {
+        public let product: Product
+        public let name: String
+        public let formattedPrice: AttributedString
     }
 
     public struct Plan {
@@ -103,6 +117,7 @@ public class SubscriptionManager {
     private struct CacheTransactionInfo: Codable {
         let originalTransactionID: UInt64
         let isSandbox: Bool
+        let productType: PurchaseType?
     }
 
     private let cacheKey = "celestia-plus"
@@ -115,14 +130,28 @@ public class SubscriptionManager {
         }
     }
 
-    public func transactionInfo() -> (originalTransactionID: UInt64, isSandbox: Bool)? {
+    public func transactionInfo() -> (originalTransactionID: UInt64, isSandbox: Bool, productType: PurchaseType)? {
         if let transactionInfoCache {
-            return (transactionInfoCache.originalTransactionID, transactionInfoCache.isSandbox)
+            return (transactionInfoCache.originalTransactionID, transactionInfoCache.isSandbox, transactionInfoCache.productType ?? .subscription)
         }
         return nil
     }
 
     @discardableResult public func checkSubscriptionStatus() async -> SubscriptionStatus {
+        let lifetimeStatus = lifetimeStatus(for: await Transaction.currentEntitlement(for: SubscriptionManager.lifetimeProductID))
+        if case SubscriptionStatus.lifetime(let originalTransactionID, let environment) = lifetimeStatus {
+            var newStatus = lifetimeStatus
+            do {
+                if try await !performServerVerification(originalTransactionID: originalTransactionID, environment: environment, productType: .lifetime) {
+                    newStatus = .empty
+                }
+            } catch {
+                // Ignore the errors that might occur due to server issues
+            }
+            updateStatus(newStatus)
+            return newStatus
+        }
+
         let weeklyStatus = subscriptionStatus(for: await Transaction.currentEntitlement(for: Plan.Cycle.weekly.id), cycle: .weekly)
         let monthlyStatus = subscriptionStatus(for: await Transaction.currentEntitlement(for: Plan.Cycle.monthly.id), cycle: .monthly)
         let yearlyStatus = subscriptionStatus(for: await Transaction.currentEntitlement(for: Plan.Cycle.yearly.id), cycle: .yearly)
@@ -154,7 +183,7 @@ public class SubscriptionManager {
 
         if case SubscriptionStatus.verified(let originalTransactionID, _, _, _, let environment) = newStatus {
             do {
-                if try await !performServerVerification(originalTransactionID: originalTransactionID, environment: environment) {
+                if try await !performServerVerification(originalTransactionID: originalTransactionID, environment: environment, productType: .subscription) {
                     // Server verification failure, reset to empty
                     newStatus = .empty
                 }
@@ -173,11 +202,13 @@ public class SubscriptionManager {
                 case .unverified:
                     break
                 case .verified(let transaction):
-                    guard let cycle = Plan.Cycle(id: transaction.productID) else {
-                        continue
+                    if transaction.productID == SubscriptionManager.lifetimeProductID {
+                        await transaction.finish()
+                        await self.updateStatus(.lifetime(originalTransactionID: transaction.originalID, environment: SubscriptionEnvironment(transaction: transaction)))
+                    } else if let cycle = Plan.Cycle(id: transaction.productID) {
+                        await transaction.finish()
+                        await self.updateStatus(.verified(originalTransactionID: transaction.originalID, productID: transaction.productID, cycle: cycle, expirationDate: transaction.expirationDate, environment: SubscriptionEnvironment(transaction: transaction)))
                     }
-                    await transaction.finish()
-                    await self.updateStatus(.verified(originalTransactionID: transaction.originalID, productID: transaction.productID, cycle: cycle, expirationDate: transaction.expirationDate, environment: SubscriptionEnvironment(transaction: transaction)))
                 }
             }
         }
@@ -189,11 +220,13 @@ public class SubscriptionManager {
         let newTransactionInfo: CacheTransactionInfo?
         switch status {
         case .verified(let originalTransactionID, _, _, _, let environment):
-            newTransactionInfo = CacheTransactionInfo(originalTransactionID: originalTransactionID, isSandbox: environment != .production)
+            newTransactionInfo = CacheTransactionInfo(originalTransactionID: originalTransactionID, isSandbox: environment != .production, productType: .subscription)
+        case .lifetime(let originalTransactionID, let environment):
+            newTransactionInfo = CacheTransactionInfo(originalTransactionID: originalTransactionID, isSandbox: environment != .production, productType: .lifetime)
         default:
             newTransactionInfo = nil
         }
-        if newTransactionInfo?.isSandbox != transactionInfoCache?.isSandbox || newTransactionInfo?.originalTransactionID != transactionInfoCache?.originalTransactionID {
+        if newTransactionInfo?.isSandbox != transactionInfoCache?.isSandbox || newTransactionInfo?.originalTransactionID != transactionInfoCache?.originalTransactionID || newTransactionInfo?.productType != transactionInfoCache?.productType {
             transactionInfoCache = newTransactionInfo
             if let newTransactionInfo {
                 userDefaults.setValue(try? JSONEncoder().encode(newTransactionInfo), forKey: cacheKey)
@@ -227,6 +260,15 @@ public class SubscriptionManager {
         return [yearlyPlan, monthlyPlan, weeklyPlan].compactMap { $0 }
     }
 
+    func fetchLifetimeProduct(stringProvider: StringProvider) async throws -> LifetimePlan? {
+        let products = try await Product.products(for: [SubscriptionManager.lifetimeProductID])
+        guard let product = products.first(where: { $0.id == SubscriptionManager.lifetimeProductID }) else {
+            return nil
+        }
+        let formattedPrice = await stringProvider.formattedLifetimePrice(for: product)
+        return LifetimePlan(product: product, name: CelestiaString("Lifetime", comment: "Lifetime purchase"), formattedPrice: formattedPrice)
+    }
+
     func purchase(_ product: Product, cycle: Plan.Cycle, scene: UIWindowScene) async throws -> SubscriptionStatus {
         #if os(visionOS)
         let result = try await product.purchase(confirmIn: scene)
@@ -258,8 +300,39 @@ public class SubscriptionManager {
         return status
     }
 
-    private func performServerVerification(originalTransactionID: UInt64, environment: SubscriptionEnvironment) async throws -> Bool {
-        return try await requestHandler.getSubscriptionValidity(originalTransactionID: originalTransactionID, sandbox: environment != .production)
+    func purchaseLifetime(_ product: Product, scene: UIWindowScene) async throws -> SubscriptionStatus {
+        #if os(visionOS)
+        let result = try await product.purchase(confirmIn: scene)
+        #else
+        let result: Product.PurchaseResult
+        if #available(iOS 17, *) {
+            result = try await product.purchase(confirmIn: scene)
+        } else {
+            result = try await product.purchase()
+        }
+        #endif
+        switch result {
+        case .success(let verificationResult):
+            switch verificationResult {
+            case .unverified:
+                break
+            case .verified(let transaction):
+                await transaction.finish()
+                updateStatus(.lifetime(originalTransactionID: transaction.originalID, environment: SubscriptionEnvironment(transaction: transaction)))
+            }
+        case .userCancelled:
+            break
+        case .pending:
+            updateStatus(.pending)
+            break
+        @unknown default:
+            break
+        }
+        return status
+    }
+
+    private func performServerVerification(originalTransactionID: UInt64, environment: SubscriptionEnvironment, productType: PurchaseType) async throws -> Bool {
+        return try await requestHandler.getSubscriptionValidity(originalTransactionID: originalTransactionID, sandbox: environment != .production, productType: productType)
     }
 
     private func subscriptionStatus(for entitlement: VerificationResult<Transaction>?, cycle: Plan.Cycle) -> SubscriptionStatus {
@@ -274,6 +347,20 @@ public class SubscriptionManager {
                 return .expired
             }
             return .verified(originalTransactionID: transaction.originalID, productID: transaction.productID, cycle: cycle, expirationDate: transaction.expirationDate, environment: SubscriptionEnvironment(transaction: transaction))
+        case .none:
+            return .empty
+        }
+    }
+
+    private func lifetimeStatus(for entitlement: VerificationResult<Transaction>?) -> SubscriptionStatus {
+        switch entitlement {
+        case .unverified:
+            return .empty
+        case .verified(let transaction):
+            if transaction.revocationDate != nil {
+                return .revoked
+            }
+            return .lifetime(originalTransactionID: transaction.originalID, environment: SubscriptionEnvironment(transaction: transaction))
         case .none:
             return .empty
         }

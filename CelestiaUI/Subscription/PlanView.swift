@@ -27,8 +27,16 @@ final class PlanView: UIView {
     private let product: Product
     private let handler: () -> Void
 
-    init(plan: SubscriptionManager.Plan, action: Action, state: State, isCurrent: Bool, handler: @escaping () -> Void) {
-        self.product = plan.product
+    convenience init(plan: SubscriptionManager.Plan, action: Action, state: State, isCurrent: Bool, handler: @escaping () -> Void) {
+        self.init(product: plan.product, name: plan.name, primaryPrice: plan.formattedPriceLine1, secondaryPrice: plan.formattedPriceLine2, offersFreeTrial: plan.offersFreeTrial, action: action, state: state, isCurrent: isCurrent, handler: handler)
+    }
+
+    convenience init(lifetimePlan: SubscriptionManager.LifetimePlan, action: Action, state: State, isCurrent: Bool, handler: @escaping () -> Void) {
+        self.init(product: lifetimePlan.product, name: lifetimePlan.name, primaryPrice: lifetimePlan.formattedPrice, secondaryPrice: nil, offersFreeTrial: false, action: action, state: state, isCurrent: isCurrent, handler: handler)
+    }
+
+    private init(product: Product, name: String, primaryPrice: AttributedString, secondaryPrice: AttributedString?, offersFreeTrial: Bool, action: Action, state: State, isCurrent: Bool, handler: @escaping () -> Void) {
+        self.product = product
         self.handler = handler
 
         super.init(frame: .zero)
@@ -39,21 +47,21 @@ final class PlanView: UIView {
         let nameLabel = UILabel(textStyle: .body)
         nameLabel.numberOfLines = 0
         nameLabel.textColor = .label
-        nameLabel.text = isCurrent ? String.localizedStringWithFormat(CelestiaString("%@ (Current)", comment: "Subscription plan name when the plan is the current plan user owns"), plan.name) : plan.name
+        nameLabel.text = isCurrent ? String.localizedStringWithFormat(CelestiaString("%@ (Current)", comment: "Subscription plan name when the plan is the current plan user owns"), name) : name
         labels.append(nameLabel)
 
         if !isCurrent {
             let priceLabel = UILabel(textStyle: .body)
             priceLabel.textColor = .secondaryLabel
             priceLabel.numberOfLines = 0
-            priceLabel.attributedText = NSAttributedString(plan.formattedPriceLine1)
+            priceLabel.attributedText = NSAttributedString(primaryPrice)
             labels.append(priceLabel)
 
-            if let formattedPriceLine2 = plan.formattedPriceLine2 {
+            if let secondaryPrice {
                 let secondaryPriceLabel = UILabel(textStyle: .footnote)
                 secondaryPriceLabel.textColor = .secondaryLabel
                 secondaryPriceLabel.numberOfLines = 0
-                secondaryPriceLabel.attributedText = NSAttributedString(formattedPriceLine2)
+                secondaryPriceLabel.attributedText = NSAttributedString(secondaryPrice)
                 labels.append(secondaryPriceLabel)
             }
         }
@@ -93,7 +101,7 @@ final class PlanView: UIView {
                 hidden = false
                 prominent = false
             case .get:
-                text = plan.offersFreeTrial ? CelestiaString("Try for Free", comment: "Free trial on subscription service") : CelestiaString("Get", comment: "Purchase subscription service")
+                text = offersFreeTrial ? CelestiaString("Try for Free", comment: "Free trial on subscription service") : CelestiaString("Get", comment: "Purchase subscription service")
                 hidden = false
                 prominent = true
             case .empty:

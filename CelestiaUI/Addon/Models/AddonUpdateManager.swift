@@ -39,7 +39,7 @@ public class AddonUpdateManager {
         self.resourceManager = resourceManager
     }
 
-    func refresh(reason: CheckReason, originalTransactionID: UInt64, sandbox: Bool, language: String) async -> Bool {
+    func refresh(reason: CheckReason, originalTransactionID: UInt64, sandbox: Bool, productType: PurchaseType, language: String) async -> Bool {
         let installedAddons = resourceManager.installedResources()
         var success = true
 
@@ -58,7 +58,7 @@ public class AddonUpdateManager {
             isCheckingUpdates = true
             let installedAddonIds = installedAddons.compactMap { $0.checksum != nil ? $0.id : nil }
             do {
-                let result = try await requestHandler.getUpdates(addonIds: installedAddonIds, language: language, originalTransactionID: originalTransactionID, sandbox: sandbox)
+                let result = try await requestHandler.getUpdates(addonIds: installedAddonIds, language: language, originalTransactionID: originalTransactionID, sandbox: sandbox, productType: productType)
                 addonUpdates = result
             } catch {
                 success = false

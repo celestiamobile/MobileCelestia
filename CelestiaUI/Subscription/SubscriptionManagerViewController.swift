@@ -23,8 +23,8 @@ public class SubscriptionManagerViewController: UIViewController {
     enum Status {
         case empty
         case error
-        case inProgress(status: SubscriptionManager.SubscriptionStatus, plans: [SubscriptionManager.Plan], pendingProduct: Product)
-        case status(status: SubscriptionManager.SubscriptionStatus, plans: [SubscriptionManager.Plan])
+        case inProgress(status: SubscriptionManager.SubscriptionStatus, plans: [SubscriptionManager.Plan], lifetimePlan: SubscriptionManager.LifetimePlan?, pendingProduct: Product)
+        case status(status: SubscriptionManager.SubscriptionStatus, plans: [SubscriptionManager.Plan], lifetimePlan: SubscriptionManager.LifetimePlan?)
     }
 
     private var status = Status.empty
@@ -256,6 +256,7 @@ private extension SubscriptionManagerViewController {
         Task {
             do {
                 var plans = try await subscriptionManager.fetchSubscriptionProducts(stringProvider: stringProvider)
+                let lifetimePlan = try? await subscriptionManager.fetchLifetimeProduct(stringProvider: stringProvider)
                 let status = await self.subscriptionManager.checkSubscriptionStatus()
                 if let lastPlan = plans.last, lastPlan.cycle == .weekly {
                     plans.removeLast()
@@ -267,7 +268,7 @@ private extension SubscriptionManagerViewController {
                         plans.insert(lastPlan, at: 0)
                     }
                 }
-                self.status = .status(status: status, plans: plans)
+                self.status = .status(status: status, plans: plans, lifetimePlan: lifetimePlan)
                 reloadViews()
             } catch {
                 status = .error
@@ -312,7 +313,7 @@ private extension SubscriptionManagerViewController {
                 errorView.isHidden = false
             }
             scrollContainer.isHidden = true
-        case .status(let subscriptionStatus, let plans), .inProgress(let subscriptionStatus, let plans, _):
+        case .status(let subscriptionStatus, let plans, let lifetimePlan), .inProgress(let subscriptionStatus, let plans, let lifetimePlan, _):
             if #available(iOS 17, *) {
                 contentUnavailableConfiguration = nil
             } else {
@@ -322,36 +323,51 @@ private extension SubscriptionManagerViewController {
             }
             scrollContainer.isHidden = false
             let pendingProduct: Product?
-            if case let Status.inProgress(_, _, product) = status {
+            if case let Status.inProgress(_, _, _, product) = status {
                 pendingProduct = product
             } else {
                 pendingProduct = nil
             }
-            setUpPlanList(subscriptionStatus: subscriptionStatus, plans: plans, pendingProduct: pendingProduct)
+            setUpPlanList(subscriptionStatus: subscriptionStatus, plans: plans, lifetimePlan: lifetimePlan, pendingProduct: pendingProduct)
         }
     }
 
-    private func setUpPlanList(subscriptionStatus: SubscriptionManager.SubscriptionStatus, plans: [SubscriptionManager.Plan], pendingProduct: Product?) {
+    private func setUpPlanList(subscriptionStatus: SubscriptionManager.SubscriptionStatus, plans: [SubscriptionManager.Plan], lifetimePlan: SubscriptionManager.LifetimePlan?, pendingProduct: Product?) {
         for planView in planStack.arrangedSubviews {
             planStack.removeArrangedSubview(planView)
             planView.removeFromSuperview()
         }
         let currentPlanCycle: SubscriptionManager.Plan.Cycle?
+        let isLifetimeOwner: Bool
+        let hasActiveSubscription: Bool
         let allDisabled: Bool
         switch subscriptionStatus {
         case let .verified(_, _, cycle, _, _):
             currentPlanCycle = cycle
+            isLifetimeOwner = false
+            hasActiveSubscription = true
+            statusLabel.text = CelestiaString("Congratulations, you are a Celestia PLUS user", comment: "")
+            allDisabled = false
+        case .lifetime:
+            currentPlanCycle = nil
+            isLifetimeOwner = true
+            hasActiveSubscription = false
             statusLabel.text = CelestiaString("Congratulations, you are a Celestia PLUS user", comment: "")
             allDisabled = false
         case .pending:
             currentPlanCycle = nil
+            isLifetimeOwner = false
+            hasActiveSubscription = false
             statusLabel.text = CelestiaString("Your purchase is pending", comment: "")
             allDisabled = true
         default:
             currentPlanCycle = nil
+            isLifetimeOwner = false
+            hasActiveSubscription = false
             statusLabel.text = CelestiaString("Choose one of the plans below to get access to all the features.", comment: "")
             allDisabled = false
         }
+        if !isLifetimeOwner {
         for plan in plans {
             let product = plan.product
             var isCurrent = false
@@ -390,10 +406,10 @@ private extension SubscriptionManagerViewController {
                 Task {
                     do {
                         self.status = .empty
-                         self.status = .inProgress(status: subscriptionStatus, plans: plans, pendingProduct: product)
+                         self.status = .inProgress(status: subscriptionStatus, plans: plans, lifetimePlan: lifetimePlan, pendingProduct: product)
                         self.reloadViews()
                         let newStatus = try await self.subscriptionManager.purchase(product, cycle: plan.cycle, scene: scene)
-                        self.status = .status(status: newStatus, plans: plans)
+                        self.status = .status(status: newStatus, plans: plans, lifetimePlan: lifetimePlan)
                         if case .verified = newStatus {
                             self.reloadData()
                         } else {
@@ -407,6 +423,52 @@ private extension SubscriptionManagerViewController {
             }
             planView.layer.cornerRadius = Constants.boxCornerRadius
             planStack.addArrangedSubview(planView)
+        }
+        }
+
+        if !hasActiveSubscription, let lifetimePlan {
+            let product = lifetimePlan.product
+            let action: PlanView.Action
+            let state: PlanView.State
+            if isLifetimeOwner {
+                action = .empty
+                state = .disabled
+            } else if allDisabled {
+                action = .get
+                state = .disabled
+            } else if let pendingProduct, pendingProduct.id == product.id {
+                action = .get
+                state = .pending
+            } else if pendingProduct != nil {
+                action = .get
+                state = .disabled
+            } else {
+                action = .get
+                state = .normal
+            }
+            let lifetimeView = PlanView(lifetimePlan: lifetimePlan, action: action, state: state, isCurrent: isLifetimeOwner) { [weak self] in
+                guard let self else { return }
+                guard let scene = self.view.window?.windowScene else { return }
+                Task {
+                    do {
+                        self.status = .empty
+                        self.status = .inProgress(status: subscriptionStatus, plans: plans, lifetimePlan: lifetimePlan, pendingProduct: product)
+                        self.reloadViews()
+                        let newStatus = try await self.subscriptionManager.purchaseLifetime(product, scene: scene)
+                        self.status = .status(status: newStatus, plans: plans, lifetimePlan: lifetimePlan)
+                        if case .lifetime = newStatus {
+                            self.reloadData()
+                        } else {
+                            self.reloadViews()
+                        }
+                    } catch {
+                        self.status = .error
+                        self.reloadViews()
+                    }
+                }
+            }
+            lifetimeView.layer.cornerRadius = Constants.boxCornerRadius
+            planStack.addArrangedSubview(lifetimeView)
         }
     }
 

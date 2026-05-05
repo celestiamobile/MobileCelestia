@@ -11,7 +11,7 @@ import Foundation
 
 public protocol RequestHandler: Sendable {
     func getMetadata(id: String, language: String) async throws -> ResourceItem
-    func getSubscriptionValidity(originalTransactionID: UInt64, sandbox: Bool) async throws -> Bool
-    func getUpdates(addonIds: [String], language: String, originalTransactionID: UInt64, sandbox: Bool) async throws -> [String: AddonUpdate]
+    func getSubscriptionValidity(originalTransactionID: UInt64, sandbox: Bool, productType: PurchaseType) async throws -> Bool
+    func getUpdates(addonIds: [String], language: String, originalTransactionID: UInt64, sandbox: Bool, productType: PurchaseType) async throws -> [String: AddonUpdate]
     func getFeatureFlags(platform: String, language: String, version: String) async throws -> [String: Double]
 }

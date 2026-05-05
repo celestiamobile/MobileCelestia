@@ -179,9 +179,9 @@ extension AddonUpdateListViewController {
 
 private extension AddonUpdateListViewController {
     private func refresh(checkReason: AddonUpdateManager.CheckReason) {
-        guard let (transactionID, isSandbox) = subscriptionManager.transactionInfo() else { return }
+        guard let (transactionID, isSandbox, productType) = subscriptionManager.transactionInfo() else { return }
         Task {
-            let success = await addonUpdateManager.refresh(reason: checkReason, originalTransactionID: transactionID, sandbox: isSandbox, language: AppCore.language)
+            let success = await addonUpdateManager.refresh(reason: checkReason, originalTransactionID: transactionID, sandbox: isSandbox, productType: productType, language: AppCore.language)
             if !success {
                 showError(
                     CelestiaString("Error checking updates", comment: "Encountered error while checking updates."),

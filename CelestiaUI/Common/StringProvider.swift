@@ -14,4 +14,5 @@ import UIKit
 public protocol StringProvider: Sendable {
     func formattedPriceLine1(for product: Product, subscription: Product.SubscriptionInfo) async -> AttributedString
     func formattedPriceLine2(for product: Product, subscription: Product.SubscriptionInfo) async -> AttributedString?
+    func formattedLifetimePrice(for product: Product) async -> AttributedString
 }
