@@ -140,16 +140,18 @@ public class SubscriptionManager {
     @discardableResult public func checkSubscriptionStatus() async -> SubscriptionStatus {
         let lifetimeStatus = lifetimeStatus(for: await Transaction.currentEntitlement(for: SubscriptionManager.lifetimeProductID))
         if case SubscriptionStatus.lifetime(let originalTransactionID, let environment) = lifetimeStatus {
-            var newStatus = lifetimeStatus
+            var serverInvalidated = false
             do {
-                if try await !performServerVerification(originalTransactionID: originalTransactionID, environment: environment, productType: .lifetime) {
-                    newStatus = .empty
-                }
+                serverInvalidated = try await !performServerVerification(originalTransactionID: originalTransactionID, environment: environment, productType: .lifetime)
             } catch {
-                // Ignore the errors that might occur due to server issues
+                // Network/server error — trust on-device entitlement, keep .lifetime
             }
-            updateStatus(newStatus)
-            return newStatus
+            if !serverInvalidated {
+                updateStatus(lifetimeStatus)
+                return lifetimeStatus
+            }
+            // Server returned valid:false — fall through to subscription scan so a
+            // co-existing subscription isn't ignored just because lifetime got revoked.
         }
 
         let weeklyStatus = subscriptionStatus(for: await Transaction.currentEntitlement(for: Plan.Cycle.weekly.id), cycle: .weekly)
