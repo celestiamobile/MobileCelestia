@@ -77,7 +77,6 @@ class LongitudeLatitudeInputView: UIView, UIContentView {
     }
 
     private func setUp() {
-
         longitudeLabel.numberOfLines = 0
         latitudeLabel.numberOfLines = 0
         longitudeLabel.textColor = .secondaryLabel

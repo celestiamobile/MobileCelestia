@@ -13,7 +13,7 @@ import UIKit
 
 struct SegmentedControlConfiguration: UIContentConfiguration {
     let segmentTitles: [String]
-    let selectedSegmentIndex: Int
+    var selectedSegmentIndex: Int
     let selectedIndexChanged: (Int) -> Void
 
     func makeContentView() -> UIView & UIContentView {
@@ -76,6 +76,8 @@ class SegmentedControlView: UIView, UIContentView {
     }
 
     @objc private func segmentedControlSelectionChanged() {
-        currentConfiguration.selectedIndexChanged(segmentedControl.selectedSegmentIndex)
+        let selectedIndex = segmentedControl.selectedSegmentIndex
+        currentConfiguration.selectedSegmentIndex = selectedIndex
+        currentConfiguration.selectedIndexChanged(selectedIndex)
     }
 }
