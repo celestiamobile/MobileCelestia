@@ -97,6 +97,8 @@ public class SliderView: UIView, UIContentView {
     }
 
     @objc private func handleSlideEnd(_ sender: UISlider) {
-        currentConfiguration.valueChanged(Double(sender.value / 100))
+        let value = Double(sender.value / 100)
+        currentConfiguration.value = value
+        currentConfiguration.valueChanged(value)
     }
 }
