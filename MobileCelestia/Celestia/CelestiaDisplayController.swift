@@ -169,7 +169,7 @@ extension CelestiaDisplayController {
                 continue
             }
 
-            guard self.core.startRenderer() else {
+            guard self.core.startRenderer(srgbRendering: userDefaults[.srgbRendering] == true) else {
                 print("Failed to start renderer.")
                 shouldRetry = delegate?.celestiaDisplayControllerLoadingFailedShouldRetry(self) ?? false
                 continue

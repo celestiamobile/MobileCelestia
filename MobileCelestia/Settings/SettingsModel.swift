@@ -162,7 +162,13 @@ func mainSetting(featureFlags: FeatureFlags) -> [SettingSection] {
                                     associatedItem: .prefSwitch(item:
                                         AssociatedPreferenceSwitchItem(key: .msaa, defaultOn: false)
                                     )
-                                )
+                                ),
+                                SettingItem(
+                                    name: CelestiaString("sRGB Rendering (Experimental)", comment: ""),
+                                    associatedItem: .prefSwitch(
+                                        item: AssociatedPreferenceSwitchItem(key: .srgbRendering, defaultOn: false)
+                                    )
+                                ),
                             ], footer: CelestiaString("Configuration will take effect after a restart.", comment: "Change requires a restart")),
                         ]
                     )

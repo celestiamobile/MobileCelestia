@@ -53,6 +53,7 @@ public enum UserDefaultsKey: String, Sendable {
     case foveatedRendering
     #endif
     case msaa
+    case srgbRendering
     #if !os(visionOS)
     case toolbarItems
     case frameRate
