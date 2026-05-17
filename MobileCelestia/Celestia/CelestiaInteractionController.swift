@@ -756,7 +756,7 @@ extension UIPanGestureRecognizer {
 extension CelestiaInteractionController: AppCoreDelegate {
     nonisolated func celestiaAppCoreFatalErrorHappened(_ error: String) {
         Task { @MainActor in
-            self.showError(error)
+            self.showError(CelestiaString("Fatal Error", comment: "Error for fatal error alert title"), detail: error)
         }
     }
     nonisolated func celestiaAppCoreRequestSystemAccess() -> Bool {

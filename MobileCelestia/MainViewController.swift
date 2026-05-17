@@ -693,7 +693,7 @@ extension MainViewController: CelestiaControllerDelegate {
             shouldRetry(false)
             return
         }
-        showError(CelestiaString("Error loading data, fallback to original configuration.", comment: ""))
+        showError(CelestiaString("Error Loading Data", comment: ""), detail: CelestiaString("Error loading data, fallback to original configuration.", comment: ""))
         retried = true
         userDefaults.saveConfigFile(nil)
         userDefaults.saveDataDirectory(nil)
