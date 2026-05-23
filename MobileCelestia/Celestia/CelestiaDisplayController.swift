@@ -190,7 +190,7 @@ extension CelestiaDisplayController {
 
         core.layoutDirection = isRTL ? .RTL : .LTR
         let (viewSpec, fonts, hasPendingRequests) = DispatchQueue.main.sync {
-            return (getViewSpec(), getFonts(), stateManager.hasPendingRequests)
+            return (getViewSpec(), getCustomFonts(), stateManager.hasPendingRequests)
         }
         if let sensitivityValue: Double = userDefaults[UserDefaultsKey.pickSensitivity] {
             self.sensitivity = sensitivityValue
@@ -199,10 +199,14 @@ extension CelestiaDisplayController {
         updateContentScale(viewSpec: viewSpec, sensitivity: sensitivity, core: core)
 
         if let fonts {
-            core.setHudFont(fonts.normal.path, collectionIndex: fonts.normal.ttcIndex, fontSize: 9)
-            core.setHudTitleFont(fonts.bold.path, collectionIndex: fonts.bold.ttcIndex, fontSize: 15)
-            core.setRendererFont(fonts.normal.path, collectionIndex: fonts.normal.ttcIndex, fontSize: 9, fontStyle: .normal)
-            core.setRendererFont(fonts.bold.path, collectionIndex: fonts.bold.ttcIndex, fontSize: 15, fontStyle: .large)
+            if let normalFont = fonts.normal {
+                core.setHudFont(normalFont.path, collectionIndex: normalFont.ttcIndex, fontSize: 9)
+                core.setRendererFont(normalFont.path, collectionIndex: normalFont.ttcIndex, fontSize: 9, fontStyle: .normal)
+            }
+            if let boldFont = fonts.bold {
+                core.setHudTitleFont(boldFont.path, collectionIndex: boldFont.ttcIndex, fontSize: 15)
+                core.setRendererFont(boldFont.path, collectionIndex: boldFont.ttcIndex, fontSize: 15, fontStyle: .large)
+            }
         }
 
         core.tick()
@@ -277,12 +281,12 @@ extension CelestiaDisplayController {
         )
     }
 
-    private struct Fonts {
-        let normal: CustomFont
-        let bold: CustomFont
+    private struct CustomFonts {
+        let normal: CustomFont?
+        let bold: CustomFont?
     }
 
-    private func getFonts() -> Fonts? {
+    private func getCustomFonts() -> CustomFonts? {
         let hasCelestiaPlus = subscriptionManager.transactionInfo() != nil
         var customNormalFont: CustomFont?
         var customBoldFont: CustomFont?
@@ -296,15 +300,7 @@ extension CelestiaDisplayController {
                 customBoldFont = CustomFont(path: customBoldFontPath, ttcIndex: fontIndex)
             }
         }
-
-        guard var (normalFont, boldFont) = getInstalledFontFor(locale: AppCore.language) else { return nil }
-        if let customNormalFont = customNormalFont {
-            normalFont = customNormalFont
-        }
-        if let customBoldFont = customBoldFont {
-            boldFont = customBoldFont
-        }
-        return Fonts(normal: normalFont, bold: boldFont)
+        return CustomFonts(normal: customNormalFont, bold: customBoldFont)
     }
 
     nonisolated private func updateContentScale(viewSpec: ViewSpec, sensitivity: CGFloat, core: AppCore) {
@@ -319,43 +315,6 @@ extension CelestiaDisplayController {
     var targetGeometry: RenderingTargetGeometry {
         return RenderingTargetGeometry(size: view.frame.size, scale: view.contentScaleFactor)
     }
-}
-
-typealias FallbackFont = (filePath: String, collectionIndex: Int)
-
-private func getInstalledFontFor(locale: String) -> (font: CustomFont, boldFont: CustomFont)? {
-    guard let fontDir = Bundle.app.path(forResource: "Fonts", ofType: nil) else { return nil }
-    let fontFallback = [
-        "ja": (
-            font: CustomFont(path: "\(fontDir)/NotoSansCJK-Regular.ttc", ttcIndex: 0),
-            boldFont: CustomFont(path: "\(fontDir)/NotoSansCJK-Bold.ttc", ttcIndex: 0)
-        ),
-        "ka": (
-            font: CustomFont(path: "\(fontDir)/NotoSansGeorgian-Regular.ttf", ttcIndex: 0),
-            boldFont: CustomFont(path: "\(fontDir)/NotoSansGeorgian-Bold.ttf", ttcIndex: 0)
-        ),
-        "ko": (
-            font: CustomFont(path: "\(fontDir)/NotoSansCJK-Regular.ttc", ttcIndex: 1),
-            boldFont: CustomFont(path: "\(fontDir)/NotoSansCJK-Bold.ttc", ttcIndex: 1)
-        ),
-        "zh_CN": (
-            font: CustomFont(path: "\(fontDir)/NotoSansCJK-Regular.ttc", ttcIndex: 2),
-            boldFont: CustomFont(path: "\(fontDir)/NotoSansCJK-Bold.ttc", ttcIndex: 2)
-        ),
-        "zh_TW": (
-            font: CustomFont(path: "\(fontDir)/NotoSansCJK-Regular.ttc", ttcIndex: 3),
-            boldFont: CustomFont(path: "\(fontDir)/NotoSansCJK-Bold.ttc", ttcIndex: 3)
-        ),
-        "ar": (
-            font: CustomFont(path: "\(fontDir)/NotoSansArabic-Regular.ttf", ttcIndex: 0),
-            boldFont: CustomFont(path: "\(fontDir)/NotoSansArabic-Bold.ttf", ttcIndex: 0)
-        )
-    ]
-    let def = (
-        font: CustomFont(path: "\(fontDir)/NotoSans-Regular.ttf", ttcIndex: 0),
-        boldFont: CustomFont(path: "\(fontDir)/NotoSans-Bold.ttf", ttcIndex: 0)
-    )
-    return fontFallback[locale] ?? def
 }
 
 extension CelestiaDisplayController {

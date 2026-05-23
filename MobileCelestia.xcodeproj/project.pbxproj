@@ -256,9 +256,6 @@
 		};
 		EA3ADEF62D812FE40029ACA4 /* Resources */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			explicitFolders = (
-				Fonts,
-			);
 			path = Resources;
 			sourceTree = "<group>";
 		};
