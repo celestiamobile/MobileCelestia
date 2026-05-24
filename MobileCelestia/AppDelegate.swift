@@ -338,11 +338,14 @@ extension AppDelegate {
         )
         builder.insertChild(aboutMenu, atStartOfMenu: .application)
 
+        let settingsMenu = createMenuItem(identifierSuffix: "preferences", action: MenuActionContext(title: settingsTitle, action: #selector(showPreferences), input: ",", modifierFlags: .command))
+        #if !APPSTORE_BUILD
+        builder.insertSibling(settingsMenu, afterMenu: aboutMenu.identifier)
+        #else
         let celestiaPlusMenu = createMenuItem(identifierSuffix: "celestiaplus", action: MenuActionContext(title: CelestiaString("Celestia PLUS", comment: "Name for the subscription service"), action: #selector(showCelestiaPlus)))
         builder.insertSibling(celestiaPlusMenu, afterMenu: aboutMenu.identifier)
-
-        let settingsMenu = createMenuItem(identifierSuffix: "preferences", action: MenuActionContext(title: settingsTitle, action: #selector(showPreferences), input: ",", modifierFlags: .command))
         builder.insertSibling(settingsMenu, afterMenu: celestiaPlusMenu.identifier)
+        #endif
 
         let runScriptMenu = createMenuItem(identifierSuffix: "open", action: MenuActionContext(title: CelestiaString("Run Script…", comment: ""), action: #selector(openScriptFile), input: "O", modifierFlags: .command))
         builder.insertChild(runScriptMenu, atStartOfMenu: .file)

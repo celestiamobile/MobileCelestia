@@ -79,7 +79,7 @@ class InstalledResourceViewController: UICollectionViewController {
 
         collectionView.dataSource = dataSource
 
-        #if !os(visionOS)
+        #if !os(visionOS) && APPSTORE_BUILD
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: CelestiaString("Updates", comment: "View the list of add-ons that have pending updates."), style: .plain, target: self, action: #selector(showUpdates))
         #endif
 
@@ -178,13 +178,19 @@ extension NSToolbarItem.Identifier {
 
 extension InstalledResourceViewController: ToolbarAwareViewController {
     func supportedToolbarItemIdentifiers(for toolbarContainerViewController: ToolbarContainerViewController) -> [NSToolbarItem.Identifier] {
+        #if !APPSTORE_BUILD
+        return []
+        #else
         return [.updates]
+        #endif
     }
 
     func toolbarContainerViewController(_ toolbarContainerViewController: ToolbarContainerViewController, itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier) -> NSToolbarItem? {
+        #if APPSTORE_BUILD
         if itemIdentifier == .updates {
             return NSToolbarItem(itemIdentifier: itemIdentifier, buttonTitle: CelestiaString("Updates", comment: "View the list of add-ons that have pending updates."), target: self, action: #selector(showUpdates))
         }
+        #endif
         return nil
     }
 }

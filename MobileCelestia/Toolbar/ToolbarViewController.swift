@@ -41,7 +41,9 @@ enum AppToolbarAction: String {
 
     static var persistentAction: [[AppToolbarAction]] {
         var actions: [[AppToolbarAction]] = [[.setting], [.share, .search, .home, .paperplane], [.camera, .time, .script, .speedometer], [.browse, .favorite, .event], [.addons, .download, .newsarchive], [.feedback, .help]]
+        #if APPSTORE_BUILD
         actions.insert([.plus], at: 0)
+        #endif
         return actions
     }
 }

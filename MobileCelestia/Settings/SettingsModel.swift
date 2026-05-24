@@ -182,7 +182,9 @@ func mainSetting(featureFlags: FeatureFlags) -> [SettingSection] {
         items.append(notificationsSettingSection)
     }
     #endif
+    #if APPSTORE_BUILD
     items.append(celestiaPlusSettings())
+    #endif
     items.append(miscSettings())
     return items
 }

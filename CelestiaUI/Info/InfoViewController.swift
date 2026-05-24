@@ -240,7 +240,7 @@ final public class InfoViewController: UICollectionViewController {
             objectPath = nil
         }
 
-        #if !os(visionOS)
+        #if !os(visionOS) && APPSTORE_BUILD
         if let objectPath, !objectPath.isEmpty, !objectPath.starts(with: " ") {
             actions.append(.relatedAddons)
         }

@@ -32,6 +32,7 @@ public extension URL {
             URLQueryItem(name: "transparentBackground", value: "true"),
             URLQueryItem(name: "api", value: "2"),
         ]
+        #if APPSTORE_BUILD
         if let subscriptionManager {
             if let (transactionID, isSandbox, productType) = subscriptionManager.transactionInfo() {
                 queryItems.append(URLQueryItem(name: "transactionIdApple", value: "\(transactionID)"))
@@ -42,6 +43,7 @@ public extension URL {
                 queryItems.append(URLQueryItem(name: "isSandboxApple", value: "1"))
             }
         }
+        #endif
         if let shareable = shareable {
             queryItems.append(URLQueryItem(name: "share", value: shareable ? "true" : "false"))
         }

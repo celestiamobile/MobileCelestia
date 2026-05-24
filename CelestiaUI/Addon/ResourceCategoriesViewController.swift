@@ -51,6 +51,7 @@ private extension URL {
     @MainActor
     static func categoryURL(category: CategoryInfo?, subscriptionManager: SubscriptionManager?) -> URL {
         var queryItems = [URLQueryItem]()
+        #if APPSTORE_BUILD
         if let subscriptionManager {
             if let (transactionID, isSandbox, productType) = subscriptionManager.transactionInfo() {
                 queryItems.append(URLQueryItem(name: "transactionIdApple", value: "\(transactionID)"))
@@ -61,6 +62,7 @@ private extension URL {
                 queryItems.append(URLQueryItem(name: "isSandboxApple", value: "1"))
             }
         }
+        #endif
         let baseURL: String
         if let category, category.isLeaf {
             baseURL = "https://celestia.mobi/resources/category"

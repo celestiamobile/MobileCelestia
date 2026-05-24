@@ -131,13 +131,20 @@ public class SubscriptionManager {
     }
 
     public func transactionInfo() -> (originalTransactionID: UInt64, isSandbox: Bool, productType: PurchaseType)? {
+        #if !APPSTORE_BUILD
+        return nil
+        #else
         if let transactionInfoCache {
             return (transactionInfoCache.originalTransactionID, transactionInfoCache.isSandbox, transactionInfoCache.productType ?? .subscription)
         }
         return nil
+        #endif
     }
 
     @discardableResult public func checkSubscriptionStatus() async -> SubscriptionStatus {
+        #if !APPSTORE_BUILD
+        return .empty
+        #else
         let lifetimeStatus = lifetimeStatus(for: await Transaction.currentEntitlement(for: SubscriptionManager.lifetimeProductID))
         if case SubscriptionStatus.lifetime(let originalTransactionID, let environment) = lifetimeStatus {
             var serverInvalidated = false
@@ -195,9 +202,13 @@ public class SubscriptionManager {
         }
         updateStatus(newStatus)
         return newStatus
+        #endif
     }
 
     nonisolated public func checkPurchaseUpdates() -> Task<Void, Error> {
+        #if !APPSTORE_BUILD
+        return Task<Void, Error> {}
+        #else
         return .detached {
             for await verificationResult in Transaction.updates {
                 switch verificationResult {
@@ -214,6 +225,7 @@ public class SubscriptionManager {
                 }
             }
         }
+        #endif
     }
 
     private func updateStatus(_ status: SubscriptionStatus) {
@@ -241,6 +253,9 @@ public class SubscriptionManager {
     }
 
     func fetchSubscriptionProducts(stringProvider: StringProvider) async throws -> [Plan] {
+        #if !APPSTORE_BUILD
+        return []
+        #else
         let products = try await Product.products(for: [Plan.Cycle.yearly.id, Plan.Cycle.monthly.id, Plan.Cycle.weekly.id])
         var yearlyPlan: Plan?
         var monthlyPlan: Plan?
@@ -260,18 +275,26 @@ public class SubscriptionManager {
             }
         }
         return [yearlyPlan, monthlyPlan, weeklyPlan].compactMap { $0 }
+        #endif
     }
 
     func fetchLifetimeProduct(stringProvider: StringProvider) async throws -> LifetimePlan? {
+        #if !APPSTORE_BUILD
+        return nil
+        #else
         let products = try await Product.products(for: [SubscriptionManager.lifetimeProductID])
         guard let product = products.first(where: { $0.id == SubscriptionManager.lifetimeProductID }) else {
             return nil
         }
         let formattedPrice = await stringProvider.formattedLifetimePrice(for: product)
         return LifetimePlan(product: product, name: CelestiaString("Lifetime", comment: "Lifetime purchase"), formattedPrice: formattedPrice)
+        #endif
     }
 
     func purchase(_ product: Product, cycle: Plan.Cycle, scene: UIWindowScene) async throws -> SubscriptionStatus {
+        #if !APPSTORE_BUILD
+        return .empty
+        #else
         #if os(visionOS)
         let result = try await product.purchase(confirmIn: scene)
         #else
@@ -300,9 +323,13 @@ public class SubscriptionManager {
             break
         }
         return status
+        #endif
     }
 
     func purchaseLifetime(_ product: Product, scene: UIWindowScene) async throws -> SubscriptionStatus {
+        #if !APPSTORE_BUILD
+        return .empty
+        #else
         #if os(visionOS)
         let result = try await product.purchase(confirmIn: scene)
         #else
@@ -331,6 +358,7 @@ public class SubscriptionManager {
             break
         }
         return status
+        #endif
     }
 
     private func performServerVerification(originalTransactionID: UInt64, environment: SubscriptionEnvironment, productType: PurchaseType) async throws -> Bool {

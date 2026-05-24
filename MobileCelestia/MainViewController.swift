@@ -814,10 +814,13 @@ extension MainViewController: CelestiaControllerDelegate {
     }
 
     private func showSubscription(for viewController: UIViewController? = nil) {
+        #if !APPSTORE_BUILD
+        #else
         let vc = SubscriptionManagerViewController(subscriptionManager: subscriptionManager, assetProvider: assetProvider, stringProvider: stringProvider)
         let nav = BaseNavigationController(rootViewController: vc)
         nav.setNavigationBarHidden(true, animated: false)
         showViewController(nav, titleVisible: false)
+        #endif
     }
 
     private func showOnlineAddons(category: CategoryInfo?) {
