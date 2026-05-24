@@ -131,7 +131,7 @@ public class SubscriptionManager {
     }
 
     public func transactionInfo() -> (originalTransactionID: UInt64, isSandbox: Bool, productType: PurchaseType)? {
-        #if !APPSTORE_BUILD
+        #if os(visionOS) || !APPSTORE_BUILD
         return nil
         #else
         if let transactionInfoCache {
@@ -142,7 +142,7 @@ public class SubscriptionManager {
     }
 
     @discardableResult public func checkSubscriptionStatus() async -> SubscriptionStatus {
-        #if !APPSTORE_BUILD
+        #if os(visionOS) || !APPSTORE_BUILD
         return .empty
         #else
         let lifetimeStatus = lifetimeStatus(for: await Transaction.currentEntitlement(for: SubscriptionManager.lifetimeProductID))
@@ -206,7 +206,7 @@ public class SubscriptionManager {
     }
 
     nonisolated public func checkPurchaseUpdates() -> Task<Void, Error> {
-        #if !APPSTORE_BUILD
+        #if os(visionOS) || !APPSTORE_BUILD
         return Task<Void, Error> {}
         #else
         return .detached {
@@ -253,7 +253,7 @@ public class SubscriptionManager {
     }
 
     func fetchSubscriptionProducts(stringProvider: StringProvider) async throws -> [Plan] {
-        #if !APPSTORE_BUILD
+        #if os(visionOS) || !APPSTORE_BUILD
         return []
         #else
         let products = try await Product.products(for: [Plan.Cycle.yearly.id, Plan.Cycle.monthly.id, Plan.Cycle.weekly.id])
@@ -279,7 +279,7 @@ public class SubscriptionManager {
     }
 
     func fetchLifetimeProduct(stringProvider: StringProvider) async throws -> LifetimePlan? {
-        #if !APPSTORE_BUILD
+        #if os(visionOS) || !APPSTORE_BUILD
         return nil
         #else
         let products = try await Product.products(for: [SubscriptionManager.lifetimeProductID])
@@ -292,7 +292,7 @@ public class SubscriptionManager {
     }
 
     func purchase(_ product: Product, cycle: Plan.Cycle, scene: UIWindowScene) async throws -> SubscriptionStatus {
-        #if !APPSTORE_BUILD
+        #if os(visionOS) || !APPSTORE_BUILD
         return .empty
         #else
         #if os(visionOS)
@@ -327,7 +327,7 @@ public class SubscriptionManager {
     }
 
     func purchaseLifetime(_ product: Product, scene: UIWindowScene) async throws -> SubscriptionStatus {
-        #if !APPSTORE_BUILD
+        #if os(visionOS) || !APPSTORE_BUILD
         return .empty
         #else
         #if os(visionOS)

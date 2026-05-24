@@ -32,7 +32,7 @@ public extension URL {
             URLQueryItem(name: "transparentBackground", value: "true"),
             URLQueryItem(name: "api", value: "2"),
         ]
-        #if APPSTORE_BUILD
+        #if !os(visionOS) && APPSTORE_BUILD
         if let subscriptionManager {
             if let (transactionID, isSandbox, productType) = subscriptionManager.transactionInfo() {
                 queryItems.append(URLQueryItem(name: "transactionIdApple", value: "\(transactionID)"))
