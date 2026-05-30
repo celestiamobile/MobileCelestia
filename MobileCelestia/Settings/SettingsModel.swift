@@ -178,9 +178,7 @@ func mainSetting(featureFlags: FeatureFlags) -> [SettingSection] {
         advancedSettings(extraItems: advanceSettingExtraItems),
     ]
     #if !targetEnvironment(macCatalyst)
-    if featureFlags.pushNotificationIOS {
-        items.append(notificationsSettingSection)
-    }
+    items.append(notificationsSettingSection)
     #endif
     #if APPSTORE_BUILD
     items.append(celestiaPlusSettings())

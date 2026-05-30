@@ -11,7 +11,7 @@ import Foundation
 
 public final class FeatureFlagsManager: @unchecked Sendable {
     // Add new flag keys here
-    private static let flagKeys = ["dummy", "swiftUITimeSettings", "pushNotificationIOS"]
+    private static let flagKeys = ["dummy", "swiftUITimeSettings"]
 
     private static let storageKey = "FeatureFlagsData"
     private static let deviceIDKey = "FeatureFlagsDeviceID"
@@ -68,8 +68,7 @@ public final class FeatureFlagsManager: @unchecked Sendable {
         }
         return FeatureFlags(
             dummy: json["dummy"] as? Bool ?? false,
-            swiftUITimeSettings: json["swiftUITimeSettings"] as? Bool ?? false,
-            pushNotificationIOS: json["pushNotificationIOS"] as? Bool ?? false
+            swiftUITimeSettings: json["swiftUITimeSettings"] as? Bool ?? false
         )
     }
 

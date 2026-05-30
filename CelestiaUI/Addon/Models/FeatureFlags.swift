@@ -12,15 +12,12 @@ import Foundation
 public struct FeatureFlags: Sendable {
     public let dummy: Bool
     public let swiftUITimeSettings: Bool
-    public let pushNotificationIOS: Bool
 
     public init(
         dummy: Bool = false,
-        swiftUITimeSettings: Bool = false,
-        pushNotificationIOS: Bool = false
+        swiftUITimeSettings: Bool = false
     ) {
         self.dummy = dummy
         self.swiftUITimeSettings = swiftUITimeSettings
-        self.pushNotificationIOS = pushNotificationIOS
     }
 }

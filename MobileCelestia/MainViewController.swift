@@ -395,13 +395,11 @@ extension MainViewController {
 
     #if !targetEnvironment(macCatalyst)
     private func setUpPushNotificationsIfNeeded() {
-        guard featureFlags.pushNotificationIOS else { return }
         pushManager.presenter = { [weak self] in self?.front }
         pushManager.runFirstRunOrReregister()
     }
 
     private func notifyPushManagerOfRegistrationStateChange() {
-        guard featureFlags.pushNotificationIOS else { return }
         Task { await pushManager.register() }
     }
     #endif
