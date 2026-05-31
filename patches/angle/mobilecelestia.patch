@@ -20,8 +20,8 @@ index 288df91..bfdfad8 100644
          featureFlags: FeatureFlags
      ) {
  #if targetEnvironment(macCatalyst)
--        let api = AsyncGLAPI.openGLLegacy
-+        let api = AsyncGLAPI.openGLES2
+-        let api = AsyncGLAPI.openGLCore41
++        let api = AsyncGLAPI.openGLES3
  #else
          let api = AsyncGLAPI.openGLES3
  #endif
