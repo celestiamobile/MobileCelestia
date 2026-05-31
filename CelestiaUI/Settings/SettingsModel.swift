@@ -561,18 +561,6 @@ public func displaySettings() -> SettingSection {
                                 )
                             ),
                             SettingItem(
-                                name: CelestiaString("Montes (Mountains)", comment: "Location labels"),
-                                associatedItem: .checkmark(item:
-                                    SettingCheckmarkItem(name: CelestiaString("Montes (Mountains)", comment: "Location labels"), key: "showMonsLabels", representation: .checkmark)
-                                )
-                            ),
-                            SettingItem(
-                                name: CelestiaString("Maria (Seas)", comment: "Location labels"),
-                                associatedItem: .checkmark(item:
-                                    SettingCheckmarkItem(name: CelestiaString("Maria (Seas)", comment: "Location labels"), key: "showMareLabels", representation: .checkmark)
-                                )
-                            ),
-                            SettingItem(
                                 name: CelestiaString("Craters", comment: "Location labels"),
                                 associatedItem: .checkmark(item:
                                     SettingCheckmarkItem(name: CelestiaString("Craters", comment: "Location labels"), key: "showCraterLabels", representation: .checkmark)
@@ -585,15 +573,345 @@ public func displaySettings() -> SettingSection {
                                 )
                             ),
                             SettingItem(
-                                name: CelestiaString("Terrae (Land masses)", comment: "Location labels"),
+                                name: CelestiaString("Montes (Mountains)", comment: "Location labels"),
                                 associatedItem: .checkmark(item:
-                                    SettingCheckmarkItem(name: CelestiaString("Terrae (Land masses)", comment: "Location labels"), key: "showTerraLabels", representation: .checkmark)
+                                    SettingCheckmarkItem(name: CelestiaString("Montes (Mountains)", comment: "Location labels"), key: "showMonsLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Plana (Plateaus)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Plana (Plateaus)", comment: "Location labels"), key: "showPlanumLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Chasmata (Canyons)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Chasmata (Canyons)", comment: "Location labels"), key: "showChasmaLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Paterae (Irregular Craters)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Paterae (Irregular Craters)", comment: "Location labels"), key: "showPateraLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Maria (Seas)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Maria (Seas)", comment: "Location labels"), key: "showMareLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Rupes (Scarps)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Rupes (Scarps)", comment: "Location labels"), key: "showRupesLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Tesserae (Tile-like Terrain)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Tesserae (Tile-like Terrain)", comment: "Location labels"), key: "showTesseraLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Regiones (Regions)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Regiones (Regions)", comment: "Location labels"), key: "showRegioLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Chaos (Chaotic Terrain)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Chaos (Chaotic Terrain)", comment: "Location labels"), key: "showChaosLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Terrae (Land Masses)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Terrae (Land Masses)", comment: "Location labels"), key: "showTerraLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Astra (Radial Features)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Astra (Radial Features)", comment: "Location labels"), key: "showAstrumLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Coronae (Oval Features)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Coronae (Oval Features)", comment: "Location labels"), key: "showCoronaLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Dorsa (Ridges)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Dorsa (Ridges)", comment: "Location labels"), key: "showDorsumLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Fossae (Long Depressions)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Fossae (Long Depressions)", comment: "Location labels"), key: "showFossaLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Catenae (Crater Chains)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Catenae (Crater Chains)", comment: "Location labels"), key: "showCatenaLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Mensae (Flat-Topped Hills)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Mensae (Flat-Topped Hills)", comment: "Location labels"), key: "showMensaLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Rimae (Fissures)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Rimae (Fissures)", comment: "Location labels"), key: "showRimaLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Undae (Dunes)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Undae (Dunes)", comment: "Location labels"), key: "showUndaeLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Tholi (Small Domes)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Tholi (Small Domes)", comment: "Location labels"), key: "showTholusLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Reticula (Reticular Patterns)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Reticula (Reticular Patterns)", comment: "Location labels"), key: "showReticulumLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Planitiae (Plains)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Planitiae (Plains)", comment: "Location labels"), key: "showPlanitiaLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Lineae (Elongate Markings)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Lineae (Elongate Markings)", comment: "Location labels"), key: "showLineaLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Fluctus (Flow Terrain)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Fluctus (Flow Terrain)", comment: "Location labels"), key: "showFluctusLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Farra (Pancake-like Structures)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Farra (Pancake-like Structures)", comment: "Location labels"), key: "showFarrumLabels", representation: .checkmark)
                                 )
                             ),
                             SettingItem(
                                 name: CelestiaString("Volcanoes", comment: "Location labels"),
                                 associatedItem: .checkmark(item:
                                     SettingCheckmarkItem(name: CelestiaString("Volcanoes", comment: "Location labels"), key: "showEruptiveCenterLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Insulae (Islands)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Insulae (Islands)", comment: "Location labels"), key: "showInsulaLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Albedo Features", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Albedo Features", comment: "Location labels"), key: "showAlbedoLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Arcus (Arc-Shaped Features)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Arcus (Arc-Shaped Features)", comment: "Location labels"), key: "showArcusLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Cavi (Hollows)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Cavi (Hollows)", comment: "Location labels"), key: "showCavusLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Colles (Small Hills)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Colles (Small Hills)", comment: "Location labels"), key: "showCollesLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Faculae (Bright Spots)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Faculae (Bright Spots)", comment: "Location labels"), key: "showFaculaLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Flexus (Cuspate Features)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Flexus (Cuspate Features)", comment: "Location labels"), key: "showFlexusLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Flumina (Channels)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Flumina (Channels)", comment: "Location labels"), key: "showFlumenLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Freta (Straits)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Freta (Straits)", comment: "Location labels"), key: "showFretumLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Labes (Landslides)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Labes (Landslides)", comment: "Location labels"), key: "showLabesLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Labyrinthi (Valley Complexes)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Labyrinthi (Valley Complexes)", comment: "Location labels"), key: "showLabyrinthusLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Lacunae (Irregular Depressions)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Lacunae (Irregular Depressions)", comment: "Location labels"), key: "showLacunaLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Lacus (Lakes)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Lacus (Lakes)", comment: "Location labels"), key: "showLacusLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Large Ringed Features", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Large Ringed Features", comment: "Location labels"), key: "showLargeRingedLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Lobi (Lobate Features)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Lobi (Lobate Features)", comment: "Location labels"), key: "showLobusLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Lingulae (Tongue-Shaped Features)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Lingulae (Tongue-Shaped Features)", comment: "Location labels"), key: "showLingulaLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Maculae (Dark Spots)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Maculae (Dark Spots)", comment: "Location labels"), key: "showMaculaLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Oceani (Oceans)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Oceani (Oceans)", comment: "Location labels"), key: "showOceanusLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Paludes (Swamps)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Paludes (Swamps)", comment: "Location labels"), key: "showPalusLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Plumes", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Plumes", comment: "Location labels"), key: "showPlumeLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Promontoria (Capes)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Promontoria (Capes)", comment: "Location labels"), key: "showPromontoriumLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Satellite Features", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Satellite Features", comment: "Location labels"), key: "showSatelliteLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Scopuli (Irregular Scarps)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Scopuli (Irregular Scarps)", comment: "Location labels"), key: "showScopulusLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Serpentes (Serpentine Features)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Serpentes (Serpentine Features)", comment: "Location labels"), key: "showSerpensLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Sinus (Bays)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Sinus (Bays)", comment: "Location labels"), key: "showSinusLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Sulci (Parallel Grooves)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Sulci (Parallel Grooves)", comment: "Location labels"), key: "showSulcusLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Vastitates (Widespread Lowlands)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Vastitates (Widespread Lowlands)", comment: "Location labels"), key: "showVastitasLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Virgae (Streaks)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Virgae (Streaks)", comment: "Location labels"), key: "showVirgaLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Saxa (Boulders)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Saxa (Boulders)", comment: "Location labels"), key: "showSaxumLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Colla (Necks)", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Colla (Necks)", comment: "Location labels"), key: "showCollumLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Cosmodromes", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Cosmodromes", comment: "Location labels"), key: "showCosmodromeLabels", representation: .checkmark)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Rings", comment: "Location labels"),
+                                associatedItem: .checkmark(item:
+                                    SettingCheckmarkItem(name: CelestiaString("Rings", comment: "Location labels"), key: "showRingLabels", representation: .checkmark)
                                 )
                             ),
                             SettingItem(

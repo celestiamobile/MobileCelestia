@@ -210,6 +210,70 @@
 		<integer>0</integer>
 		<key>showEruptiveCenterLabels</key>
 		<integer>1</integer>
+		<key>showTholusLabels</key>
+		<integer>1</integer>
+		<key>showInsulaLabels</key>
+		<integer>1</integer>
+		<key>showAlbedoLabels</key>
+		<integer>1</integer>
+		<key>showArcusLabels</key>
+		<integer>1</integer>
+		<key>showCavusLabels</key>
+		<integer>1</integer>
+		<key>showCollesLabels</key>
+		<integer>1</integer>
+		<key>showFaculaLabels</key>
+		<integer>1</integer>
+		<key>showFlexusLabels</key>
+		<integer>1</integer>
+		<key>showFlumenLabels</key>
+		<integer>1</integer>
+		<key>showFretumLabels</key>
+		<integer>1</integer>
+		<key>showLabesLabels</key>
+		<integer>1</integer>
+		<key>showLabyrinthusLabels</key>
+		<integer>1</integer>
+		<key>showLacunaLabels</key>
+		<integer>1</integer>
+		<key>showLacusLabels</key>
+		<integer>1</integer>
+		<key>showLargeRingedLabels</key>
+		<integer>1</integer>
+		<key>showLingulaLabels</key>
+		<integer>1</integer>
+		<key>showLobusLabels</key>
+		<integer>1</integer>
+		<key>showMaculaLabels</key>
+		<integer>1</integer>
+		<key>showOceanusLabels</key>
+		<integer>1</integer>
+		<key>showPalusLabels</key>
+		<integer>1</integer>
+		<key>showPlumeLabels</key>
+		<integer>1</integer>
+		<key>showPromontoriumLabels</key>
+		<integer>1</integer>
+		<key>showSatelliteLabels</key>
+		<integer>1</integer>
+		<key>showScopulusLabels</key>
+		<integer>1</integer>
+		<key>showSerpensLabels</key>
+		<integer>1</integer>
+		<key>showSinusLabels</key>
+		<integer>1</integer>
+		<key>showSulcusLabels</key>
+		<integer>1</integer>
+		<key>showVastitasLabels</key>
+		<integer>1</integer>
+		<key>showVirgaLabels</key>
+		<integer>1</integer>
+		<key>showSaxumLabels</key>
+		<integer>1</integer>
+		<key>showCosmodromeLabels</key>
+		<integer>1</integer>
+		<key>showRingLabels</key>
+		<integer>1</integer>
 		<key>showMoons</key>
 		<integer>1</integer>
 		<key>showSpacecrafts</key>
