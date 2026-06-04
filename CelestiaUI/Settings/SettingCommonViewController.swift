@@ -83,16 +83,33 @@ extension SettingCommonViewController {
         case let .slider(item):
             let maxValue = item.maxValue
             let minValue = item.minValue
+            let isLogarithmic = item.isLogarithmic
             let key = item.key
             var listConfiguration = UIListContentConfiguration.celestiaCell()
             listConfiguration.text = row.name
-            let value = ((core.value(forKey: key) as! Double) - minValue) / (maxValue - minValue)
+            let rawValue = core.value(forKey: key) as! Double
+            let value: Double
+            if isLogarithmic {
+                let logMin = log(minValue)
+                let logMax = log(maxValue)
+                let clamped = max(minValue, min(maxValue, rawValue))
+                value = (log(clamped) - logMin) / (logMax - logMin)
+            } else {
+                value = (rawValue - minValue) / (maxValue - minValue)
+            }
             configuration = SliderConfiguration(
                 listContent: listConfiguration,
                 value: value
             ) { [weak self] newValue in
                 guard let self = self else { return }
-                let transformed = newValue * (maxValue - minValue) + minValue
+                let transformed: Double
+                if isLogarithmic {
+                    let logMin = log(minValue)
+                    let logMax = log(maxValue)
+                    transformed = exp(logMin + newValue * (logMax - logMin))
+                } else {
+                    transformed = newValue * (maxValue - minValue) + minValue
+                }
                 Task {
                     await self.executor.run {
                         $0.setValue(transformed, forKey: key)

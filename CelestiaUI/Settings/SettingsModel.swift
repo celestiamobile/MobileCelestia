@@ -151,11 +151,13 @@ public struct SettingSliderItem: Sendable {
     public let key: String
     public let minValue: Double
     public let maxValue: Double
+    public let isLogarithmic: Bool
 
-    public init(key: String, minValue: Double, maxValue: Double) {
+    public init(key: String, minValue: Double, maxValue: Double, isLogarithmic: Bool = false) {
         self.key = key
         self.minValue = minValue
         self.maxValue = maxValue
+        self.isLogarithmic = isLogarithmic
     }
 }
 
@@ -1129,13 +1131,13 @@ public func rendererSettings(extraItems: [SettingItem]) -> SettingSection {
                             SettingItem(
                                 name: CelestiaString("Max Irradiance", comment: "PSF star setting"),
                                 associatedItem: .slider(item:
-                                    AssociatedSliderItem(key: "starMaxIrradiance", minValue: 0, maxValue: 1000)
+                                    AssociatedSliderItem(key: "starMaxIrradiance", minValue: 1, maxValue: 1000000, isLogarithmic: true)
                                 )
                             ),
                             SettingItem(
                                 name: CelestiaString("Exposure", comment: "PSF star setting"),
                                 associatedItem: .slider(item:
-                                    AssociatedSliderItem(key: "starExposure", minValue: 0.1, maxValue: 100)
+                                    AssociatedSliderItem(key: "starExposure", minValue: 0.01, maxValue: 1000000, isLogarithmic: true)
                                 )
                             ),
                         ], footer: CelestiaString("Point spread function settings are only effective with the Point Spread Function star style.", comment: "")),
