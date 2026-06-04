@@ -1095,6 +1095,7 @@ public func rendererSettings(extraItems: [SettingItem]) -> SettingSection {
                                     .init(name: CelestiaString("Fuzzy Points", comment: "Star style"), value: 0),
                                     .init(name: CelestiaString("Points", comment: "Star style"), value: 1),
                                     .init(name: CelestiaString("Scaled Discs", comment: "Star style"), value: 2),
+                                    .init(name: CelestiaString("Point Spread Function", comment: "Star style"), value: 3),
                                 ], defaultOption: 0)
                             )),
                             SettingItem(name: CelestiaString("Star Colors", comment: ""), associatedItem: .selection(item: 
@@ -1111,7 +1112,33 @@ public func rendererSettings(extraItems: [SettingItem]) -> SettingSection {
                                     AssociatedSliderItem(key: "tintSaturation", minValue: 0, maxValue: 1)
                                 )
                             ),
-                        ], footer: CelestiaString("Tinted illumination saturation setting is only effective with Blackbody star colors.", comment: ""))
+                        ], footer: CelestiaString("Tinted illumination saturation setting is only effective with Blackbody star colors.", comment: "")),
+                        .init(header: CelestiaString("Point Spread Function", comment: "Star style"), rows: [
+                            SettingItem(
+                                name: CelestiaString("Point Radius", comment: "PSF star setting"),
+                                associatedItem: .slider(item:
+                                    AssociatedSliderItem(key: "starPointRadius", minValue: 1, maxValue: 10)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Bloom Compactness", comment: "PSF star setting"),
+                                associatedItem: .slider(item:
+                                    AssociatedSliderItem(key: "starOptimization", minValue: 0.05, maxValue: 1)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Max Irradiance", comment: "PSF star setting"),
+                                associatedItem: .slider(item:
+                                    AssociatedSliderItem(key: "starMaxIrradiance", minValue: 0, maxValue: 1000)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Exposure", comment: "PSF star setting"),
+                                associatedItem: .slider(item:
+                                    AssociatedSliderItem(key: "starExposure", minValue: 0.1, maxValue: 100)
+                                )
+                            ),
+                        ], footer: CelestiaString("Point spread function settings are only effective with the Point Spread Function star style.", comment: "")),
                     ]
                 )
             )
