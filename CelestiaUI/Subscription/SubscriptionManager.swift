@@ -37,7 +37,7 @@ public class SubscriptionManager {
         case xcode
     }
 
-    public nonisolated static let lifetimeProductID = "space.celestia.mobilecelestia.plus.lifetime.new"
+    public nonisolated static let lifetimeProductID = "space.celestia.mobilecelestia.plus.lifetime.v3"
 
     public struct LifetimePlan {
         public let product: Product
