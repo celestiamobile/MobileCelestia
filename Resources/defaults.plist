@@ -181,9 +181,11 @@
 		<key>starOptimization</key>
 		<real>0.1</real>
 		<key>starMaxIrradiance</key>
-		<real>100.0</real>
-		<key>starExposure</key>
+		<real>500.0</real>
+		<key>starDimClipFactor</key>
 		<real>10.0</real>
+		<key>starExposure</key>
+		<real>20.0</real>
 		<key>enableReverseWheel</key>
 		<integer>0</integer>
 		<key>enableRayBasedDragging</key>

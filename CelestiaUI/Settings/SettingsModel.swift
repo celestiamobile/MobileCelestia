@@ -1135,6 +1135,12 @@ public func rendererSettings(extraItems: [SettingItem]) -> SettingSection {
                                 )
                             ),
                             SettingItem(
+                                name: CelestiaString("Dim Clip Factor", comment: "PSF star setting"),
+                                associatedItem: .slider(item:
+                                    AssociatedSliderItem(key: "starDimClipFactor", minValue: 1, maxValue: 100)
+                                )
+                            ),
+                            SettingItem(
                                 name: CelestiaString("Exposure", comment: "PSF star setting"),
                                 associatedItem: .slider(item:
                                     AssociatedSliderItem(key: "starExposure", minValue: 0.01, maxValue: 1000000, isLogarithmic: true)
