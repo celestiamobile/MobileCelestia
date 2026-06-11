@@ -1118,30 +1118,35 @@ public func rendererSettings(extraItems: [SettingItem]) -> SettingSection {
                         .init(header: CelestiaString("Point Spread Function", comment: "Star style"), rows: [
                             SettingItem(
                                 name: CelestiaString("Point Radius", comment: "PSF star setting"),
+                                subtitle: CelestiaString("Pixel radius of a unit-irradiance star sprite.", comment: "PSF star setting footnote"),
                                 associatedItem: .slider(item:
                                     AssociatedSliderItem(key: "starPointRadius", minValue: 1, maxValue: 10)
                                 )
                             ),
                             SettingItem(
                                 name: CelestiaString("Bloom Compactness", comment: "PSF star setting"),
+                                subtitle: CelestiaString("Extent of the eye PSF glow around bright stars. Lower values widen the glow at higher GPU cost.", comment: "PSF star setting footnote"),
                                 associatedItem: .slider(item:
                                     AssociatedSliderItem(key: "starOptimization", minValue: 0.05, maxValue: 1)
                                 )
                             ),
                             SettingItem(
                                 name: CelestiaString("Max Irradiance", comment: "PSF star setting"),
+                                subtitle: CelestiaString("Soft upper limit on per-star peak irradiance to prevent bloom saturation.", comment: "PSF star setting footnote"),
                                 associatedItem: .slider(item:
                                     AssociatedSliderItem(key: "starMaxIrradiance", minValue: 1, maxValue: 1000000, isLogarithmic: true)
                                 )
                             ),
                             SettingItem(
                                 name: CelestiaString("Dim Clip Factor", comment: "PSF star setting"),
+                                subtitle: CelestiaString("Soft-clips dim stars below this multiple of the perceptual visibility floor.", comment: "PSF star setting footnote"),
                                 associatedItem: .slider(item:
                                     AssociatedSliderItem(key: "starDimClipFactor", minValue: 1, maxValue: 100)
                                 )
                             ),
                             SettingItem(
                                 name: CelestiaString("Exposure", comment: "PSF star setting"),
+                                subtitle: CelestiaString("Brightness multiplier applied to every star, extending the visible magnitude limit.", comment: "PSF star setting footnote"),
                                 associatedItem: .slider(item:
                                     AssociatedSliderItem(key: "starExposure", minValue: 0.01, maxValue: 1000000, isLogarithmic: true)
                                 )
