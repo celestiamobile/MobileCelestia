@@ -51,8 +51,8 @@ final class PlanView: UIView {
         labels.append(nameLabel)
 
         if !isCurrent {
-            let priceLabel = UILabel(textStyle: .body)
-            priceLabel.textColor = .secondaryLabel
+            let priceLabel = UILabel(textStyle: .footnote)
+            priceLabel.textColor = .label
             priceLabel.numberOfLines = 0
             priceLabel.attributedText = NSAttributedString(primaryPrice)
             labels.append(priceLabel)
