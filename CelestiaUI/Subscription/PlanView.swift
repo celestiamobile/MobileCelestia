@@ -101,7 +101,7 @@ final class PlanView: UIView {
                 hidden = false
                 prominent = false
             case .get:
-                text = offersFreeTrial ? CelestiaString("Try for Free", comment: "Free trial on subscription service") : CelestiaString("Get", comment: "Purchase subscription service")
+                text = CelestiaString("Get", comment: "Purchase subscription service")
                 hidden = false
                 prominent = true
             case .empty:
