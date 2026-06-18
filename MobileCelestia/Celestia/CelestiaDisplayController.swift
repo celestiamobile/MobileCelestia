@@ -190,7 +190,7 @@ extension CelestiaDisplayController {
 
         core.layoutDirection = isRTL ? .RTL : .LTR
         let (viewSpec, fonts, hasPendingRequests) = DispatchQueue.main.sync {
-            return (getViewSpec(), getCustomFonts(), stateManager.hasPendingRequests)
+            return (getViewSpec(), getCustomFonts(), stateManager.hasPendingCelestiaRequests)
         }
         if let sensitivityValue: Double = userDefaults[UserDefaultsKey.pickSensitivity] {
             self.sensitivity = sensitivityValue

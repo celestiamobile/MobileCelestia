@@ -68,6 +68,8 @@ let requestRunScriptNotificationName = Notification.Name("RequestRunScriptNotifi
 let requestRunScriptNotificationKey = Notification.Name("RequestRunScriptNotificationKey")
 let requestOpenBookmarkNotificationName = Notification.Name("RequestOpenBookmarkNotificationName")
 let requestOpenBookmarkNotificationKey = Notification.Name("RequestOpenBookmarkNotificationKey")
+let requestSearchNotificationName = Notification.Name("RequestSearchNotificationName")
+let requestSearchNotificationTermKey = "RequestSearchNotificationTermKey"
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {

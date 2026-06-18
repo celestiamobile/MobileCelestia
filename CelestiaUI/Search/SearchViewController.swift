@@ -25,6 +25,7 @@ public class SearchViewController: UIViewController {
     private let selected: (_ viewController: SearchViewController, _ display: String, _ selection: Selection) -> Void
 
     private let executor: AsyncProviderExecutor
+    private let initialSearchTerm: String?
     private var currentSearchTerm: String?
     private var validSearchTerm: String?
 
@@ -41,9 +42,10 @@ public class SearchViewController: UIViewController {
         })
     }()
 
-    public init(executor: AsyncProviderExecutor, selected: @escaping (_ viewController: SearchViewController, _ display: String, _ selection: Selection) -> Void) {
+    public init(executor: AsyncProviderExecutor, initialSearchTerm: String? = nil, selected: @escaping (_ viewController: SearchViewController, _ display: String, _ selection: Selection) -> Void) {
         self.selected = selected
         self.executor = executor
+        self.initialSearchTerm = initialSearchTerm
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -115,6 +117,16 @@ private extension SearchViewController {
         searchController.searchResultsUpdater = self
         searchBar.keyboardAppearance = .dark
         searchBar.delegate = self
+
+        if let initialSearchTerm, !initialSearchTerm.isEmpty {
+            searchBar.text = initialSearchTerm
+            searchController.isActive = true
+            searchTextUpdated(initialSearchTerm)
+        }
+        #else
+        if let initialSearchTerm, !initialSearchTerm.isEmpty {
+            searchTextUpdated(initialSearchTerm)
+        }
         #endif
     }
 
