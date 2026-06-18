@@ -52,18 +52,14 @@ final class PlanView: UIView {
 
         if !isCurrent {
             let priceLabel = UILabel(textStyle: .footnote)
-            priceLabel.textColor = .label
+            priceLabel.textColor = .secondaryLabel
             priceLabel.numberOfLines = 0
-            priceLabel.attributedText = NSAttributedString(primaryPrice)
-            labels.append(priceLabel)
-
+            var string = primaryPrice
             if let secondaryPrice {
-                let secondaryPriceLabel = UILabel(textStyle: .footnote)
-                secondaryPriceLabel.textColor = .secondaryLabel
-                secondaryPriceLabel.numberOfLines = 0
-                secondaryPriceLabel.attributedText = NSAttributedString(secondaryPrice)
-                labels.append(secondaryPriceLabel)
+                string = string + "\n" + secondaryPrice
             }
+            priceLabel.attributedText = NSAttributedString(string)
+            labels.append(priceLabel)
         }
 
         let verticalPadding = isCurrent ? GlobalConstants.pageMediumMarginVertical : GlobalConstants.pageSmallMarginVertical
