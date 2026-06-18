@@ -14,9 +14,14 @@ import CelestiaFoundation
 import CelestiaUI
 import Foundation
 
-enum AppRequest {
+enum CelestiaRequest {
     case goTo(objectPath: String, latitude: Float, longitude: Float, distance: Double, distanceUnit: DistanceUnit, travelDuration: Double)
     case perform(objectPath: String, action: ObjectURLAction)
+}
+
+enum AppRequest {
+    case celestia(CelestiaRequest)
+    case search(term: String)
 }
 
 enum AppRequestError: Error {
@@ -54,9 +59,21 @@ class StateManager {
         }
     }
 
-    private var continuations: [(CheckedContinuation<Void, Error>, AppRequest)] = []
+    private var continuations: [(continuation: CheckedContinuation<Void, Error>, request: AppRequest)] = []
 
     var hasPendingRequests: Bool { !continuations.isEmpty }
+
+    var hasPendingCelestiaRequests: Bool {
+        for continuation in continuations {
+            switch continuation.request {
+            case .celestia:
+                return true
+            case .search:
+                break
+            }
+        }
+        return false
+    }
 
     func waitForInitialization(_ request: AppRequest) async throws {
         // 1. If already initialized, return immediately
@@ -98,6 +115,15 @@ class StateManager {
     }
 
     private func executeRequest(_ request: AppRequest, appCore: AppCore) async throws {
+        switch request {
+        case .search(let term):
+            NotificationCenter.default.post(name: requestSearchNotificationName, object: nil, userInfo: [requestSearchNotificationTermKey: term])
+        case .celestia(let celestiaRequest):
+            try await executeCelestiaRequest(celestiaRequest, appCore: appCore)
+        }
+    }
+
+    private func executeCelestiaRequest(_ request: CelestiaRequest, appCore: AppCore) async throws {
         try await Task { @CelestiaActor in
             switch request {
             case let .goTo(objectPath, latitude, longitude, distance, distanceUnit, travelDuration):

@@ -95,7 +95,7 @@ struct PerformActionIntent: AppIntent {
     @MainActor
     func perform() async throws -> some IntentResult {
         let objectPath = object
-        try await stateManager.waitForInitialization(.perform(objectPath: objectPath, action: action.action))
+        try await stateManager.waitForInitialization(.celestia(.perform(objectPath: objectPath, action: action.action)))
         return .result()
     }
 }

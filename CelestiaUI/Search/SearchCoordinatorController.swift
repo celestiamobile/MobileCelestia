@@ -15,11 +15,11 @@ public class SearchCoordinatorController: ToolbarNavigationContainerController {
 
     private let selection: (Selection) -> SearchContentViewController
 
-    public init(executor: AsyncProviderExecutor, selected: @escaping (Selection) -> SearchContentViewController) {
+    public init(executor: AsyncProviderExecutor, initialSearchTerm: String? = nil, selected: @escaping (Selection) -> SearchContentViewController) {
         self.selection = selected
         self.executor = executor
         super.init(rootViewController: UIViewController())
-        setViewControllers([SearchViewController(executor: executor) { [weak self] parent, _, object in
+        setViewControllers([SearchViewController(executor: executor, initialSearchTerm: initialSearchTerm) { [weak self] parent, _, object in
             guard let self else { return }
             guard !object.isEmpty else {
                 self.showError(CelestiaString("Object not found", comment: ""))

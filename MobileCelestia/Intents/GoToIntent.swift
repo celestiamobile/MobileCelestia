@@ -112,7 +112,7 @@ struct GoToIntent: AppIntent {
     @MainActor
     func perform() async throws -> some IntentResult {
         let objectPath = object
-        try await stateManager.waitForInitialization(.goTo(objectPath: objectPath, latitude: Float(latitude), longitude: Float(longitude), distance: distanceValue, distanceUnit: distanceUnit.unit, travelDuration: travelDuration))
+        try await stateManager.waitForInitialization(.celestia(.goTo(objectPath: objectPath, latitude: Float(latitude), longitude: Float(longitude), distance: distanceValue, distanceUnit: distanceUnit.unit, travelDuration: travelDuration)))
         return .result()
     }
 }

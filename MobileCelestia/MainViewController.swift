@@ -165,6 +165,7 @@ class MainViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(menuBarAction(_:)), name: menuBarActionNotificationName, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(requestRunScript(_:)), name: requestRunScriptNotificationName, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(requestOpenBookmark(_:)), name: requestOpenBookmarkNotificationName, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(requestSearch(_:)), name: requestSearchNotificationName, object: nil)
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -590,6 +591,11 @@ extension MainViewController {
         guard let url = URL(string: bookmark.url) else { return }
 
         celestiaController.openURL(url)
+    }
+
+    @objc private func requestSearch(_ notification: Notification) {
+        guard let term = notification.userInfo?[requestSearchNotificationTermKey] as? String else { return }
+        showSearch(initialTerm: term)
     }
 
     private func openFolder(_ url: URL?) {
@@ -1420,8 +1426,8 @@ Device Model: \(model)
         #endif
     }
 
-    private func showSearch() {
-        let controller = SearchCoordinatorController(executor: executor) { [unowned self] info in
+    private func showSearch(initialTerm: String? = nil) {
+        let controller = SearchCoordinatorController(executor: executor, initialSearchTerm: initialTerm) { [unowned self] info in
             return self.createSelectionInfoViewController(with: info, showNavigationTitle: false, backgroundColor: .systemBackground)
         }
         #if targetEnvironment(macCatalyst)
