@@ -59,6 +59,7 @@
 
 @property (nonatomic) CFTimeInterval currentTime;
 @property (nonatomic) CGSize currentSize;
+@property (nonatomic) CGSize currentPhysicalSize;
 
 @property (nonatomic) BOOL antiAliasing;
 @property (nonatomic) BOOL srgbRendering;
@@ -105,6 +106,7 @@
         _srgbRendering = srgbRendering;
 
         _currentSize = CGSizeZero;
+        _currentPhysicalSize = CGSizeZero;
     }
     return self;
 }
@@ -497,10 +499,22 @@
         }
 
         CGSize newSize = CGSizeMake(renderSurface.screenWidth, renderSurface.screenHeight);
+        CGSize newPhysicalSize = CGSizeZero;
+        if (rateMap != nil) {
+            MTLSize newMetalPhysicalSize = [rateMap physicalSizeForLayer:0];
+            newPhysicalSize = CGSizeMake((CGFloat)newMetalPhysicalSize.width, (CGFloat)newMetalPhysicalSize.height);
+        }
+
         if (!CGSizeEqualToSize(_currentSize, newSize))
         {
             [_appCore resize:newSize];
             _currentSize = newSize;
+        }
+
+        if (!CGSizeEqualToSize(_currentPhysicalSize, newPhysicalSize))
+        {
+            [_appCore setPhysicalSize:newPhysicalSize];
+            _currentPhysicalSize = newPhysicalSize;
         }
 
         [_appCore setCustomPerspectiveProjectionLeft:left right:right top:top bottom:bottom nearZ:nearZ farZ:farZ];
