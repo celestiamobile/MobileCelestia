@@ -97,8 +97,6 @@ struct CelestiaXRApp: App {
     private let featureFlags: FeatureFlags
 
     init() {
-        let useMixedImmersionDefaultValue = false
-        self.immersionStyle = .full
         AppCore.setUpLocale()
         let userDirectory = URL.documentsDirectory.appending(component: "CelestiaResources")
         let bundle = Bundle.app
@@ -108,6 +106,7 @@ struct CelestiaXRApp: App {
         userDefaults = defaults
         let extraDirectoryURL = userDirectory.appending(component: "extras")
         let extraScriptURL = userDirectory.appending(component: "scripts")
+        let useMixedImmersion = userDefaults[.mixedImmersion] == true
         let renderer = {
             let defaultConfigPlistPath = bundle.path(forResource: "defaults", ofType: "plist")
             return XRRenderer(
@@ -118,12 +117,13 @@ struct CelestiaXRApp: App {
                     userDefaults: defaults,
                     appDefaultsPath:defaultConfigPlistPath,
                     antiAliasing: defaults[.msaa] == true,
-                    useMixedImmersion: useMixedImmersionDefaultValue,
+                    useMixedImmersion: useMixedImmersion,
                     srgbRendering: defaults[.srgbRendering] == true
                 )
             )
         }()
         CelestiaActor.underlyingExecutor = renderer
+        self.immersionStyle = useMixedImmersion ? .mixed : .full
         self.renderer = renderer
         self.bundle = bundle
         self.defaultDataDirectoryURL = defaultDataDirectoryURL
@@ -169,7 +169,7 @@ struct CelestiaXRApp: App {
 
     var body: some Scene {
         WindowGroup(id: "StartUp") {
-            StartUpView(immersionStyle: $immersionStyle)
+            StartUpView()
                 .onAppear(perform: {
                     windowManager.isStartUpWindowVisible = true
                 })

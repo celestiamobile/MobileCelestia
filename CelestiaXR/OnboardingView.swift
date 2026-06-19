@@ -15,16 +15,11 @@ struct OnboardingView: View {
     @Environment(XRRenderer.self) private var renderer
 
     let isOpeningImmersiveSpace: Bool
-    @Binding var immersionStyle: any ImmersionStyle
     let startAction: () -> Void
 
-    @State private var useMixedImmersion: Bool
-
-    init(isOpeningImmersiveSpace: Bool, immersionStyle: Binding<any ImmersionStyle>, startAction: @escaping () -> Void) {
+    init(isOpeningImmersiveSpace: Bool, startAction: @escaping () -> Void) {
         self.isOpeningImmersiveSpace = isOpeningImmersiveSpace
-        self._immersionStyle = immersionStyle
         self.startAction = startAction
-        self.useMixedImmersion = immersionStyle.wrappedValue is MixedImmersionStyle
     }
 
     var body: some View {
@@ -84,22 +79,12 @@ struct OnboardingView: View {
                     .font(.body)
             } else if renderer.rendererStatus != .loading {
                 VStack(spacing: 16) {
-                    if #available(visionOS 2, *) {
-                        Toggle(isOn: $useMixedImmersion) {
-                            Text("Use Mixed Immersion")
-                        }
-                        .fixedSize()
-                    }
                     Button(action: startAction) {
                         Text("Start Celestia")
                     }
                 }
                 .disabled(isOpeningImmersiveSpace)
             }
-        }
-        .onChange(of: useMixedImmersion) { _, _ in
-            immersionStyle = useMixedImmersion ? .mixed : .full
-            renderer.updateImmersionStyle(useMixedImmersion: useMixedImmersion)
         }
     }
 }

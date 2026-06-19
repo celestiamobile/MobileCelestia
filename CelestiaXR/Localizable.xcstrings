@@ -162,6 +162,7 @@
       }
     },
     "Use Mixed Immersion" : {
+      "extractionState" : "stale",
       "localizations" : {
         "zh_CN" : {
           "stringUnit" : {

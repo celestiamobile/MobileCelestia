@@ -23,8 +23,6 @@ struct StartUpView: View {
         case opened
     }
 
-    @Binding var immersionStyle: any ImmersionStyle
-
     @State private var immersiveSpaceState: ImmersiveSpaceState = .notOpened
 
     @Environment(\.openImmersiveSpace) private var openImmersiveSpace
@@ -37,7 +35,7 @@ struct StartUpView: View {
         Group {
             switch renderer.rendererStatus {
             case .loading, .loaded, .invalidated, .failed:
-                OnboardingView(isOpeningImmersiveSpace: immersiveSpaceState == .opening, immersionStyle: $immersionStyle, startAction: {
+                OnboardingView(isOpeningImmersiveSpace: immersiveSpaceState == .opening, startAction: {
                     Task {
                         immersiveSpaceState = .opening
                         await openImmersiveSpace(id: "ImmersiveSpace")

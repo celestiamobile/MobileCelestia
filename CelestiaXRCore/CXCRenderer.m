@@ -63,6 +63,7 @@
 
 @property (nonatomic) BOOL antiAliasing;
 @property (nonatomic) BOOL srgbRendering;
+@property (nonatomic) BOOL useMixedImmersion;
 
 @end
 

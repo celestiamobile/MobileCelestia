@@ -167,13 +167,6 @@ final class SystemAccessRequest: NSObject, @unchecked Sendable {
         renderer.startRendering(withLayerRenderer: layerRenderer)
     }
 
-    func updateImmersionStyle(useMixedImmersion: Bool) {
-        renderer.enqueueTask { [weak self] _ in
-            guard let self else { return }
-            renderer.useMixedImmersion = useMixedImmersion
-        }
-    }
-
     nonisolated func celestiaAppCoreCursorShapeChanged(_ shape: CursorShape) {}
 
     nonisolated func celestiaAppCoreFatalErrorHappened(_ error: String) {

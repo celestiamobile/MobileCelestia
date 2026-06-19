@@ -51,6 +51,7 @@ public enum UserDefaultsKey: String, Sendable {
     case fullDPI
     #else
     case foveatedRendering
+    case mixedImmersion
     #endif
     case msaa
     case srgbRendering

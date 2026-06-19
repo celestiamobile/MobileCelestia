@@ -31,7 +31,6 @@ NS_SWIFT_NAME(Renderer)
 @interface CXCRenderer : NSObject
 
 @property (readonly, nonatomic) CXCRendererStatus status;
-@property (nonatomic) BOOL useMixedImmersion;
 @property (nullable, nonatomic) void (NS_SWIFT_SENDABLE ^stateUpdater)(CelestiaAppState *);
 @property (nullable, nonatomic) void (NS_SWIFT_SENDABLE ^statusUpdater)(CXCRendererStatus);
 @property (nullable, nonatomic) void (NS_SWIFT_SENDABLE ^fileNameUpdater)(NSString *);

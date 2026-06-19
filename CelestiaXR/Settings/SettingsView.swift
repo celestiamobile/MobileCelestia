@@ -38,6 +38,35 @@ struct SettingsView: UIViewControllerRepresentable {
     }
 
     func makeUIViewController(context: Context) -> SettingsCoordinatorController {
+        var advancedItems = [
+            SettingItem(
+                name: CelestiaString("Anti-aliasing", comment: ""),
+                associatedItem: .prefSwitch(item:
+                    AssociatedPreferenceSwitchItem(key: .msaa, defaultOn: false)
+                )
+            ),
+            SettingItem(
+                name: CelestiaString("sRGB Rendering (Experimental)", comment: ""),
+                associatedItem: .prefSwitch(
+                    item: AssociatedPreferenceSwitchItem(key: .srgbRendering, defaultOn: false)
+                )
+            ),
+            SettingItem(
+                name: CelestiaString("Foveated Rendering", comment: ""),
+                associatedItem: .prefSwitch(item:
+                    AssociatedPreferenceSwitchItem(key: .foveatedRendering, defaultOn: false)
+                )
+            ),
+        ]
+
+        if #available(visionOS 2.0, *) {
+            advancedItems.append(SettingItem(
+                name: CelestiaString("Passthrough", comment: "Mixed immersion / passthrough toggle"),
+                associatedItem: .prefSwitch(item:
+                    AssociatedPreferenceSwitchItem(key: .mixedImmersion, defaultOn: false)
+                )
+            ))
+        }
 
         let settings = [
             displaySettings(),
@@ -48,26 +77,7 @@ struct SettingsView: UIViewControllerRepresentable {
                         AssociatedCommonItem(
                             title: CelestiaString("Advanced", comment: "Advanced setting items"),
                             sections: [
-                                .init(header: nil, rows: [
-                                    SettingItem(
-                                        name: CelestiaString("Anti-aliasing", comment: ""),
-                                        associatedItem: .prefSwitch(item:
-                                            AssociatedPreferenceSwitchItem(key: .msaa, defaultOn: false)
-                                        )
-                                    ),
-                                    SettingItem(
-                                        name: CelestiaString("sRGB Rendering (Experimental)", comment: ""),
-                                        associatedItem: .prefSwitch(
-                                            item: AssociatedPreferenceSwitchItem(key: .srgbRendering, defaultOn: false)
-                                        )
-                                    ),
-                                    SettingItem(
-                                        name: CelestiaString("Foveated Rendering", comment: ""),
-                                        associatedItem: .prefSwitch(item:
-                                            AssociatedPreferenceSwitchItem(key: .foveatedRendering, defaultOn: false)
-                                        )
-                                    )
-                                ], footer: CelestiaString("Configuration will take effect after a restart.", comment: "Change requires a restart")),
+                                .init(header: nil, rows: advancedItems, footer: CelestiaString("Configuration will take effect after a restart.", comment: "Change requires a restart")),
                             ]
                         )
                     )
