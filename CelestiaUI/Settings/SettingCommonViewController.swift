@@ -87,6 +87,7 @@ extension SettingCommonViewController {
             let key = item.key
             var listConfiguration = UIListContentConfiguration.celestiaCell()
             listConfiguration.text = row.name
+            listConfiguration.secondaryText = row.subtitle
             let rawValue = core.value(forKey: key) as! Double
             let value: Double
             if isLogarithmic {
