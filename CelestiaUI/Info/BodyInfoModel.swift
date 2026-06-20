@@ -15,26 +15,24 @@ struct BodyInfo: @unchecked Sendable {
     let name: String
     let overview: NSAttributedString
 
-    fileprivate let selection: Selection
+    private let infoURL: String?
+    private let selection: Selection
 }
 
 extension BodyInfo {
     var url: URL? {
-        guard let url = selection.webInfoURL else { return nil }
+        guard let url = infoURL else { return nil }
         return URL(string: url)
-    }
-}
-
-extension AppCore {
-    var selection: BodyInfo {
-        get { return BodyInfo(selection: simulation.selection, core: self) }
-        set { simulation.selection = newValue.selection }
     }
 }
 
 extension BodyInfo {
     init(selection: Selection, core: AppCore) {
-        self.init(name: core.simulation.universe.name(for: selection),
-                  overview: core.overviewForSelection(selection), selection: selection)
+        self.init(
+            name: core.simulation.universe.name(for: selection),
+            overview: core.overviewForSelection(selection),
+            infoURL: core.simulation.universe.webInfoURL(for: selection),
+            selection: selection
+        )
     }
 }
