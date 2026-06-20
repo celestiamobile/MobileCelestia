@@ -246,8 +246,9 @@ final public class InfoViewController: UICollectionViewController {
         }
         #endif
 
+        let bodyInfo = BodyInfo(selection: selection, core: core)
         var contextURL: URL?
-        if let urlString = selection.webInfoURL, let url = URL(string: urlString) {
+        if let url = bodyInfo.url {
             actions.append(.web)
             contextURL = url
         }
@@ -261,7 +262,7 @@ final public class InfoViewController: UICollectionViewController {
 
         return (
             InfoContextObject(
-                bodyInfo: BodyInfo(selection: selection, core: core),
+                bodyInfo: bodyInfo,
                 actions: actions,
                 url: contextURL,
                 alternativeSurfaceNames: contextAlternateSurfaceNames,
