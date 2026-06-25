@@ -202,6 +202,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         #endif
 
+        #if !DEBUG
         #if targetEnvironment(macCatalyst)
         let dsn = "SENTRY-CATALYST-DSN"
         #else
@@ -215,6 +216,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             options.tracesSampleRate = 0
             options.enableAutoPerformanceTracing = false
         }
+        #endif
 
         #if targetEnvironment(macCatalyst)
         NotificationCenter.default.addObserver(self, selector: #selector(handleNSWindowDidBecomeKey(_:)), name: Self.windowDidBecomeKeyNotification, object: nil)

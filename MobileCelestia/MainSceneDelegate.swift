@@ -95,7 +95,7 @@ class MainSceneDelegate: CommonSceneDelegate {
         if scene.session.persistentIdentifier != Self.mainWindowSessionIdentifier {
             return
         }
-        MacBridge.terminateApp()
+        exit(0)
     }
     #endif
 
