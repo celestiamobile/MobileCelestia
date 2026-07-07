@@ -12,6 +12,17 @@ import CelestiaFoundation
 import CelestiaUI
 import Foundation
 
+private let shadowMapSizeFormatter: NumberFormatter = {
+    let formatter = NumberFormatter()
+    formatter.numberStyle = .decimal
+    formatter.maximumFractionDigits = 0
+    return formatter
+}()
+
+private let shadowMapSizeOptions: [AssociatedPreferenceSelectionItem.Option] = [0, 1024, 2048, 4096, 8192].map { size in
+    .init(name: shadowMapSizeFormatter.string(from: size), value: size)
+}
+
 #if targetEnvironment(macCatalyst)
 private let defaultSensitivity: Double = 4.0
 #else
@@ -167,6 +178,13 @@ func mainSetting(featureFlags: FeatureFlags) -> [SettingSection] {
                                     name: CelestiaString("sRGB Rendering (Experimental)", comment: ""),
                                     associatedItem: .prefSwitch(
                                         item: AssociatedPreferenceSwitchItem(key: .srgbRendering, defaultOn: false)
+                                    )
+                                ),
+                                SettingItem(
+                                    name: CelestiaString("Shadow Resolution", comment: "Resolution of shadow maps"),
+                                    subtitle: CelestiaString("A value of 0 disables self-shadowing. Higher values produce sharper shadows at a greater performance cost.", comment: "Shadow resolution setting footnote"),
+                                    associatedItem: .prefSelection(
+                                        item: AssociatedPreferenceSelectionItem(key: .shadowMapSize, options: shadowMapSizeOptions, defaultOption: 0)
                                     )
                                 ),
                             ], footer: CelestiaString("Configuration will take effect after a restart.", comment: "Change requires a restart")),

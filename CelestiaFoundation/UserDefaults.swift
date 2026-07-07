@@ -54,6 +54,7 @@ public enum UserDefaultsKey: String, Sendable {
     #endif
     case msaa
     case srgbRendering
+    case shadowMapSize
     #if !os(visionOS)
     case toolbarItems
     case frameRate
