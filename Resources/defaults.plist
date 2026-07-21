@@ -176,6 +176,10 @@
 		<integer>2</integer>
 		<key>tintSaturation</key>
 		<real>0.5</real>
+		<key>toneMapping</key>
+		<integer>0</integer>
+		<key>exposure</key>
+		<real>1.0</real>
 		<key>starPointRadius</key>
 		<real>1.5</real>
 		<key>starOptimization</key>
