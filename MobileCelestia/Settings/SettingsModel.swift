@@ -175,45 +175,6 @@ func mainSetting(featureFlags: FeatureFlags) -> [SettingSection] {
                                     )
                                 ),
                                 SettingItem(
-                                    name: CelestiaString("Output Rendering", comment: "Output rendering settings"),
-                                    associatedItem: .common(
-                                        item: AssociatedCommonItem(
-                                            title: CelestiaString("Output Rendering", comment: "Output rendering settings"),
-                                            sections: [
-                                                .init(header: nil, rows: [
-                                                    SettingItem(
-                                                        name: CelestiaString("sRGB Rendering (Experimental)", comment: ""),
-                                                        associatedItem: .prefSwitch(
-                                                            item: AssociatedPreferenceSwitchItem(key: .srgbRendering, defaultOn: false)
-                                                        )
-                                                    ),
-                                                    SettingItem(
-                                                        name: CelestiaString("Tone Mapping", comment: "Tone mapping setting"),
-                                                        associatedItem: .checkmark(
-                                                            item: AssociatedCheckmarkItem(
-                                                                name: CelestiaString("Tone Mapping", comment: "Tone mapping setting"),
-                                                                key: "toneMapping",
-                                                                representation: .switch
-                                                            )
-                                                        )
-                                                    ),
-                                                    SettingItem(
-                                                        name: CelestiaString("Exposure", comment: "Output rendering setting"),
-                                                        associatedItem: .slider(
-                                                            item: AssociatedSliderItem(
-                                                                key: "exposure",
-                                                                minValue: 0.01,
-                                                                maxValue: 100,
-                                                                isLogarithmic: true
-                                                            )
-                                                        )
-                                                    ),
-                                                ], footer: CelestiaString("Tone mapping and exposure only affect sRGB rendering. Changes to sRGB rendering take effect after a restart.", comment: "Output rendering settings footnote")),
-                                            ]
-                                        )
-                                    )
-                                ),
-                                SettingItem(
                                     name: CelestiaString("Shadow Resolution", comment: "Resolution of shadow maps"),
                                     subtitle: CelestiaString("A value of 0 disables self-shadowing. Higher values produce sharper shadows at a greater performance cost.", comment: "Shadow resolution setting footnote"),
                                     associatedItem: .prefSelection(
@@ -221,6 +182,35 @@ func mainSetting(featureFlags: FeatureFlags) -> [SettingSection] {
                                     )
                                 ),
                             ], footer: CelestiaString("Configuration will take effect after a restart.", comment: "Change requires a restart")),
+                            .init(header: CelestiaString("Output Rendering", comment: "Output rendering settings"), rows: [
+                                SettingItem(
+                                    name: CelestiaString("sRGB Rendering (Experimental)", comment: ""),
+                                    associatedItem: .prefSwitch(
+                                        item: AssociatedPreferenceSwitchItem(key: .srgbRendering, defaultOn: false)
+                                    )
+                                ),
+                                SettingItem(
+                                    name: CelestiaString("Tone Mapping", comment: "Tone mapping setting"),
+                                    associatedItem: .checkmark(
+                                        item: AssociatedCheckmarkItem(
+                                            name: CelestiaString("Tone Mapping", comment: "Tone mapping setting"),
+                                            key: "toneMapping",
+                                            representation: .switch
+                                        )
+                                    )
+                                ),
+                                SettingItem(
+                                    name: CelestiaString("Exposure", comment: "Output rendering setting"),
+                                    associatedItem: .slider(
+                                        item: AssociatedSliderItem(
+                                            key: "exposure",
+                                            minValue: 0.01,
+                                            maxValue: 100,
+                                            isLogarithmic: true
+                                        )
+                                    )
+                                ),
+                            ], footer: CelestiaString("Tone mapping and exposure only affect sRGB rendering. Changes to sRGB rendering take effect after a restart.", comment: "Output rendering settings footnote")),
                         ]
                     )
                 )
