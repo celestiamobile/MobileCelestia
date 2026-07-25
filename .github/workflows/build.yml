@@ -29,7 +29,7 @@ on:
 
 env:
   DEPENDENCY_VERSION: '1.0.82'
-  CONTENT_COMMIT_HASH: 'bcf6e7f24154c064c516ca3a64dc97f1c7ac4f1b'
+  CONTENT_COMMIT_HASH: '1aab5ac27ba8f4f74e72d3e32ea97211d3f38984'
   XC_VERSION: '26.6'
   XC_PROJECT: 'MobileCelestia/MobileCelestia.xcodeproj'
   XC_SCHEME: 'MobileCelestia'
