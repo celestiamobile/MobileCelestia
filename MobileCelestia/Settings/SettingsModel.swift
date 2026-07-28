@@ -191,11 +191,14 @@ func mainSetting(featureFlags: FeatureFlags) -> [SettingSection] {
                                 ),
                                 SettingItem(
                                     name: CelestiaString("Tone Mapping", comment: "Tone mapping setting"),
-                                    associatedItem: .checkmark(
-                                        item: AssociatedCheckmarkItem(
-                                            name: CelestiaString("Tone Mapping", comment: "Tone mapping setting"),
+                                    associatedItem: .selection(
+                                        item: AssociatedSelectionSingleItem(
                                             key: "toneMapping",
-                                            representation: .switch
+                                            options: [
+                                                .init(name: CelestiaString("Off", comment: "Tone mapping mode"), value: 0),
+                                                .init(name: CelestiaString("Manual", comment: "Tone mapping mode"), value: 1),
+                                            ],
+                                            defaultOption: 0
                                         )
                                     )
                                 ),
