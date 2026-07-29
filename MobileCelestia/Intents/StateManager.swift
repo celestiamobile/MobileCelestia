@@ -17,6 +17,7 @@ import Foundation
 enum CelestiaRequest {
     case goTo(objectPath: String, latitude: Float, longitude: Float, distance: Double, distanceUnit: DistanceUnit, travelDuration: Double)
     case perform(objectPath: String, action: ObjectURLAction)
+    case runScript(scriptURL: URL)
 }
 
 enum AppRequest {
@@ -27,6 +28,7 @@ enum AppRequest {
 enum AppRequestError: Error {
     case failedToLoad
     case objectNotFound(objectPath: String)
+    case invalidScript
 }
 
 @available(iOS 16, visionOS 1, *)
@@ -35,6 +37,7 @@ extension AppRequestError: CustomLocalizedStringResourceConvertible {
         switch self {
         case .failedToLoad: return "Celestia failed to initialize."
         case let .objectNotFound(objectPath): return "Unable to find object \(objectPath)."
+        case .invalidScript: return "The script is invalid or empty."
         }
     }
 }
@@ -153,6 +156,8 @@ class StateManager {
                         break
                     }
                 }
+            case let .runScript(scriptURL):
+                appCore.runScript(at: scriptURL.path)
             }
         }.value
     }
