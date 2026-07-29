@@ -9,6 +9,7 @@
 // of the License, or (at your option) any later version.
 //
 
+import AsyncGL
 import CelestiaCore
 import CelestiaFoundation
 import CelestiaUI
@@ -18,6 +19,8 @@ enum CelestiaRequest {
     case goTo(objectPath: String, latitude: Float, longitude: Float, distance: Double, distanceUnit: DistanceUnit, travelDuration: Double)
     case perform(objectPath: String, action: ObjectURLAction)
     case runScript(scriptURL: URL)
+    case openURL(url: URL)
+    case screenshot(outputURL: URL)
 }
 
 enum AppRequest {
@@ -29,6 +32,7 @@ enum AppRequestError: Error {
     case failedToLoad
     case objectNotFound(objectPath: String)
     case invalidScript
+    case screenshotFailed
 }
 
 @available(iOS 16, visionOS 1, *)
@@ -38,6 +42,7 @@ extension AppRequestError: CustomLocalizedStringResourceConvertible {
         case .failedToLoad: return "Celestia failed to initialize."
         case let .objectNotFound(objectPath): return "Unable to find object \(objectPath)."
         case .invalidScript: return "The script is invalid or empty."
+        case .screenshotFailed: return "Unable to capture a screenshot."
         }
     }
 }
@@ -158,6 +163,21 @@ class StateManager {
                 }
             case let .runScript(scriptURL):
                 appCore.runScript(at: scriptURL.path)
+            case let .openURL(url):
+                appCore.go(to: url.absoluteString)
+            case let .screenshot(outputURL):
+                guard let executor = CelestiaActor.underlyingExecutor as? CelestiaExecutor else {
+                    throw AppRequestError.screenshotFailed
+                }
+                nonisolated(unsafe) var success = false
+                executor.prepare {
+                    appCore.draw()
+                } resolve: {
+                    success = appCore.screenshot(to: outputURL.path, type: .PNG)
+                }
+                if !success {
+                    throw AppRequestError.screenshotFailed
+                }
             }
         }.value
     }
