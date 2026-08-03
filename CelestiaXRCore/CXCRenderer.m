@@ -63,13 +63,14 @@
 
 @property (nonatomic) BOOL antiAliasing;
 @property (nonatomic) BOOL srgbRendering;
+@property (nonatomic) NSInteger shadowMapSize;
 @property (nonatomic) BOOL useMixedImmersion;
 
 @end
 
 @implementation CXCRenderer
 
-- (instancetype)initWithResourceFolderPath:(NSString *)resourceFolderPath configFilePath:(NSString *)configFilePath extraDirectories:(NSArray<NSString *> *)extraDirectories userDefaults:(NSUserDefaults *)userDefaults appDefaultsPath:(nullable NSString *)appDefaultsPath antiAliasing:(BOOL)antiAliasing useMixedImmersion:(BOOL)useMixedImmersion srgbRendering:(BOOL)srgbRendering {
+- (instancetype)initWithResourceFolderPath:(NSString *)resourceFolderPath configFilePath:(NSString *)configFilePath extraDirectories:(NSArray<NSString *> *)extraDirectories userDefaults:(NSUserDefaults *)userDefaults appDefaultsPath:(nullable NSString *)appDefaultsPath antiAliasing:(BOOL)antiAliasing useMixedImmersion:(BOOL)useMixedImmersion srgbRendering:(BOOL)srgbRendering shadowMapSize:(NSInteger)shadowMapSize {
     self = [super init];
     if (self) {
         _renderResource = [[CXCRenderResource alloc] init];
@@ -105,6 +106,7 @@
 
         _antiAliasing = antiAliasing;
         _srgbRendering = srgbRendering;
+        _shadowMapSize = shadowMapSize;
 
         _currentSize = CGSizeZero;
         _currentPhysicalSize = CGSizeZero;
@@ -289,7 +291,7 @@
         [fileManager changeCurrentDirectoryPath:oldCurrentDirectory];
         return NO;
     }
-    if (![_appCore startRendererWithSRGBRendering:_srgbRendering]) {
+    if (![_appCore startRendererWithSRGBRendering:_srgbRendering shadowMapSize:0]) {
         NSLog(@"Error preparing Celestia renderer");
         [self cleanupCelestia];
         [fileManager changeCurrentDirectoryPath:oldCurrentDirectory];

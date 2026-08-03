@@ -39,7 +39,7 @@ NS_SWIFT_NAME(Renderer)
 @property (readonly, nonatomic) CelestiaAppCore *appCore;
 
 - (instancetype)init NS_UNAVAILABLE;
-- (instancetype)initWithResourceFolderPath:(NSString *)resourceFolderPath configFilePath:(NSString *)configFilePath extraDirectories:(NSArray<NSString *> *)extraDirectories userDefaults:(NSUserDefaults *)userDefaults appDefaultsPath:(nullable NSString *)appDefaultsPath antiAliasing:(BOOL)antiAliasing useMixedImmersion:(BOOL)useMixedImmersion srgbRendering:(BOOL)srgbRendering;
+- (instancetype)initWithResourceFolderPath:(NSString *)resourceFolderPath configFilePath:(NSString *)configFilePath extraDirectories:(NSArray<NSString *> *)extraDirectories userDefaults:(NSUserDefaults *)userDefaults appDefaultsPath:(nullable NSString *)appDefaultsPath antiAliasing:(BOOL)antiAliasing useMixedImmersion:(BOOL)useMixedImmersion srgbRendering:(BOOL)srgbRendering shadowMapSize:(NSInteger)shadowMapSize;
 
 - (void)enqueueTask:(void (NS_SWIFT_SENDABLE ^)(CelestiaAppCore *))task;
 - (void)enqueueEvents:(NSArray<CXCInputEvent *> *)events;

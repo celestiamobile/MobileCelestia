@@ -140,6 +140,17 @@ let notificationsSettingSection: SettingSection = SettingSection(
 
 @MainActor
 func mainSetting(featureFlags: FeatureFlags) -> [SettingSection] {
+    let shadowMapSizeFormatter: NumberFormatter = {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.maximumFractionDigits = 0
+        return formatter
+    }()
+
+    let shadowMapSizeOptions: [AssociatedPreferenceSelectionItem.Option] = [0, 1024, 2048, 4096, 8192].map { size in
+        .init(name: shadowMapSizeFormatter.string(from: size), value: size)
+    }
+
     var items = [
         displaySettings(),
         timeAndRegionSettings(),

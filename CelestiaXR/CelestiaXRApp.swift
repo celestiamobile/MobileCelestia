@@ -118,7 +118,8 @@ struct CelestiaXRApp: App {
                     appDefaultsPath:defaultConfigPlistPath,
                     antiAliasing: defaults[.msaa] == true,
                     useMixedImmersion: useMixedImmersion,
-                    srgbRendering: defaults[.srgbRendering] == true
+                    srgbRendering: defaults[.srgbRendering] == true,
+                    shadowMapSize: defaults[.shadowMapSize] ?? 0
                 )
             )
         }()

@@ -38,17 +38,22 @@ struct SettingsView: UIViewControllerRepresentable {
     }
 
     func makeUIViewController(context: Context) -> SettingsCoordinatorController {
-        var advancedItems = [
+        let shadowMapSizeFormatter: NumberFormatter = {
+            let formatter = NumberFormatter()
+            formatter.numberStyle = .decimal
+            formatter.maximumFractionDigits = 0
+            return formatter
+        }()
+
+        let shadowMapSizeOptions: [AssociatedPreferenceSelectionItem.Option] = [0, 1024, 2048, 4096, 8192].map { size in
+            .init(name: shadowMapSizeFormatter.string(from: size), value: size)
+        }
+
+        var baseAdvancedItems = [
             SettingItem(
                 name: CelestiaString("Anti-aliasing", comment: ""),
                 associatedItem: .prefSwitch(item:
                     AssociatedPreferenceSwitchItem(key: .msaa, defaultOn: false)
-                )
-            ),
-            SettingItem(
-                name: CelestiaString("sRGB Rendering (Experimental)", comment: ""),
-                associatedItem: .prefSwitch(
-                    item: AssociatedPreferenceSwitchItem(key: .srgbRendering, defaultOn: false)
                 )
             ),
             SettingItem(
@@ -57,10 +62,17 @@ struct SettingsView: UIViewControllerRepresentable {
                     AssociatedPreferenceSwitchItem(key: .foveatedRendering, defaultOn: false)
                 )
             ),
+            SettingItem(
+                name: CelestiaString("Shadow Resolution", comment: "Resolution of shadow maps"),
+                subtitle: CelestiaString("A value of 0 disables self-shadowing. Higher values produce sharper shadows at a greater performance cost.", comment: "Shadow resolution setting footnote"),
+                associatedItem: .prefSelection(
+                    item: AssociatedPreferenceSelectionItem(key: .shadowMapSize, options: shadowMapSizeOptions, defaultOption: 0)
+                )
+            ),
         ]
 
         if #available(visionOS 2.0, *) {
-            advancedItems.append(SettingItem(
+            baseAdvancedItems.append(SettingItem(
                 name: CelestiaString("Passthrough", comment: "Mixed immersion / passthrough toggle"),
                 associatedItem: .prefSwitch(item:
                     AssociatedPreferenceSwitchItem(key: .mixedImmersion, defaultOn: false)
@@ -77,7 +89,8 @@ struct SettingsView: UIViewControllerRepresentable {
                         AssociatedCommonItem(
                             title: CelestiaString("Advanced", comment: "Advanced setting items"),
                             sections: [
-                                .init(header: nil, rows: advancedItems, footer: CelestiaString("Configuration will take effect after a restart.", comment: "Change requires a restart")),
+                                .init(header: nil, rows: baseAdvancedItems, footer: CelestiaString("Configuration will take effect after a restart.", comment: "Change requires a restart")),
+                                outputRenderSettings(),
                             ]
                         )
                     )
