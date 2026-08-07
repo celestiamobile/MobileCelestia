@@ -14,12 +14,15 @@ class EventFinderInputViewController: UICollectionViewController {
     private enum Section {
         case time
         case object
+        case type
     }
 
     private enum Item {
         case startTime
         case endTime
         case object
+        case solar
+        case lunar
     }
 
     private lazy var dataSource: UICollectionViewDiffableDataSource<Section, Item> = {
@@ -31,6 +34,7 @@ class EventFinderInputViewController: UICollectionViewController {
         }()
         let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, Item> { [weak self] cell, indexPath, itemIdentifier in
             var contentConfiguration = UIListContentConfiguration.celestiaValueCell()
+            cell.accessories = []
             let text: String
             var secondaryText: String?
             switch itemIdentifier {
@@ -47,6 +51,25 @@ class EventFinderInputViewController: UICollectionViewController {
             case .object:
                 text = CelestiaString("Object", comment: "In eclipse finder, object to find eclipse with, or in go to")
                 secondaryText = self?.objectName
+            case .solar, .lunar:
+                let isSolar = itemIdentifier == .solar
+                text = isSolar
+                    ? CelestiaString("Solar", comment: "Solar eclipses.")
+                    : CelestiaString("Lunar", comment: "Lunar eclipses.")
+                if let self {
+                    let toggle = UISwitch()
+                    toggle.isOn = isSolar ? self.findSolar : self.findLunar
+                    toggle.addAction(UIAction { [weak self] action in
+                        guard let self, let toggle = action.sender as? UISwitch else { return }
+                        if isSolar {
+                            self.findSolar = toggle.isOn
+                        } else {
+                            self.findLunar = toggle.isOn
+                        }
+                        self.updateFindButtonState()
+                    }, for: .valueChanged)
+                    cell.accessories = [.customView(configuration: UICellAccessory.CustomViewConfiguration(customView: toggle, placement: .trailing(displayed: .always)))]
+                }
             }
             contentConfiguration.text = text
             contentConfiguration.secondaryText = secondaryText
@@ -61,10 +84,13 @@ class EventFinderInputViewController: UICollectionViewController {
     private let selectableObjects: [(displayName: String, objectPath: String)] = [(LocalizedString("Earth", "celestia-data"), "Sol/Earth"), (LocalizedString("Jupiter", "celestia-data"), "Sol/Jupiter")]
 
     private let defaultSearchingInterval: TimeInterval = 365 * 24 * 60 * 60
-    private lazy var startTime = endTime.addingTimeInterval(-defaultSearchingInterval)
-    private lazy var endTime = Date()
+    private let defaultReferenceTime = Date()
+    private lazy var startTime = defaultReferenceTime.addingTimeInterval(-defaultSearchingInterval)
+    private lazy var endTime = defaultReferenceTime.addingTimeInterval(defaultSearchingInterval)
     private var objectName = LocalizedString("Earth", "celestia-data")
     private var objectPath = "Sol/Earth"
+    private var findSolar = true
+    private var findLunar = true
 
     private let executor: AsyncProviderExecutor
 
@@ -105,13 +131,19 @@ private extension EventFinderInputViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: CelestiaString("Find", comment: "Find (eclipses)"), style: .plain, target: self, action: #selector(findEclipse))
 
         var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
-        snapshot.appendSections([.time, .object])
+        snapshot.appendSections([.time, .object, .type])
         snapshot.appendItems([.startTime, .endTime], toSection: .time)
         snapshot.appendItems([.object], toSection: .object)
+        snapshot.appendItems([.solar, .lunar], toSection: .type)
         dataSource.applySnapshotUsingReloadData(snapshot)
     }
 
+    func updateFindButtonState() {
+        navigationItem.rightBarButtonItem?.isEnabled = findSolar || findLunar
+    }
+
     @objc private func findEclipse() {
+        guard findSolar || findLunar else { return }
         Task {
             let objectPath = self.objectPath
             guard let body = await executor.get({ core in return core.simulation.findObject(from: objectPath).body }) else {
@@ -126,7 +158,14 @@ private extension EventFinderInputViewController {
                 aborted = true
             }
 
-            let results = await finder.search(kind: [.lunar, .solar], from: self.startTime, to: self.endTime)
+            var kind: EclipseKind = []
+            if self.findSolar {
+                kind.insert(.solar)
+            }
+            if self.findLunar {
+                kind.insert(.lunar)
+            }
+            let results = await finder.search(kind: kind, from: self.startTime, to: self.endTime)
 
             guard !aborted else { return }
             alert.dismiss(animated: true) {
@@ -159,6 +198,8 @@ extension EventFinderInputViewController {
                 snapshot.reloadItems([item])
                 await self.dataSource.apply(snapshot)
             }
+        case .solar, .lunar:
+            break
         case .object:
             if let cell = collectionView.cellForItem(at: indexPath) {
                 showSelection(CelestiaString("Please choose an object.", comment: "In eclipse finder, choose an object to find eclipse wth"),
