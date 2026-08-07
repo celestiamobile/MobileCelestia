@@ -11,7 +11,7 @@ import CelestiaCore
 import UIKit
 
 class EventFinderResultViewController: UICollectionViewController {
-    private let eventHandler: ((Eclipse) -> Void)
+    private let eventHandler: ((Eclipse, EclipseAction) -> Void)
     private let events: [Eclipse]
 
     private enum Section {
@@ -27,7 +27,11 @@ class EventFinderResultViewController: UICollectionViewController {
         }()
         let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, Eclipse> { cell, indexPath, itemIdentifier in
             var contentConfiguration = UIListContentConfiguration.celestiaValueCell()
-            contentConfiguration.text = "\(itemIdentifier.occulter.name) -> \(itemIdentifier.receiver.name)"
+            contentConfiguration.text = [
+                String(format: CelestiaString("Occulter: %@", comment: "Eclipse finder result"), itemIdentifier.occulter.name),
+                String(format: CelestiaString("Eclipsed body: %@", comment: "Eclipse finder result"), itemIdentifier.receiver.name),
+            ].joined(separator: "\n")
+            contentConfiguration.textProperties.numberOfLines = 2
             contentConfiguration.secondaryText = displayDateFormatter.string(from: itemIdentifier.startTime)
             cell.contentConfiguration = contentConfiguration
         }
@@ -37,7 +41,7 @@ class EventFinderResultViewController: UICollectionViewController {
         return dataSource
     }()
 
-    init(results: [Eclipse], eventHandler: @escaping ((Eclipse) -> Void)) {
+    init(results: [Eclipse], eventHandler: @escaping ((Eclipse, EclipseAction) -> Void)) {
         self.eventHandler = eventHandler
         self.events = results
         super.init(collectionViewLayout: UICollectionViewCompositionalLayout.list(using: UICollectionLayoutListConfiguration(appearance: .defaultGrouped)))
@@ -84,7 +88,34 @@ extension EventFinderResultViewController {
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
         guard let eclipse = dataSource.itemIdentifier(for: indexPath) else { return }
-        eventHandler(eclipse)
+
+        let alertTitle = [
+            String(format: CelestiaString("Occulter: %@", comment: "Eclipse finder result"), eclipse.occulter.name),
+            String(format: CelestiaString("Eclipsed body: %@", comment: "Eclipse finder result"), eclipse.receiver.name),
+        ].joined(separator: "\n")
+        let alert = UIAlertController(
+            title: CelestiaString("View Eclipse", comment: ""),
+            message: alertTitle,
+            preferredStyle: .actionSheet
+        )
+        let actions: [(String, EclipseAction)] = [
+            (CelestiaString("Set time to mid-eclipse", comment: ""), .setTime),
+            (String(format: CelestiaString("Near %@", comment: ""), eclipse.receiver.name), .nearEclipsedBody),
+            (String(format: CelestiaString("From surface of %@", comment: ""), eclipse.receiver.name), .fromEclipsedBodySurface),
+            (String(format: CelestiaString("From surface of %@", comment: ""), eclipse.occulter.name), .fromOcculterSurface),
+            (String(format: CelestiaString("Behind %@", comment: ""), eclipse.occulter.name), .behindOcculter),
+        ]
+        let eventHandler = eventHandler
+        for (title, action) in actions {
+            alert.addAction(UIAlertAction(title: title, style: .default) { [eventHandler] _ in
+                eventHandler(eclipse, action)
+            })
+        }
+        alert.addAction(UIAlertAction(title: CelestiaString("Cancel", comment: ""), style: .cancel))
+        if let popover = alert.popoverPresentationController {
+            popover.sourceView = collectionView
+            popover.sourceRect = collectionView.layoutAttributesForItem(at: indexPath)?.frame ?? collectionView.bounds
+        }
+        present(alert, animated: true)
     }
 }
-

@@ -1237,9 +1237,9 @@ Device Model: \(model)
     }
 
     private func presentEventFinder() {
-        showViewController(EventFinderCoordinatorViewController(executor: executor, eventHandler: { [weak self] eclipse in
+        showViewController(EventFinderCoordinatorViewController(executor: executor, eventHandler: { [weak self] eclipse, action in
             guard let self else { return }
-            self.executor.runAsynchronously { $0.simulation.goToEclipse(eclipse) }
+            self.executor.runAsynchronously { $0.simulation.performEclipseAction(action, eclipse: eclipse) }
         }, textInputHandler: { viewController, title in
             return await viewController.getTextInputDifferentiated(title)
         }, dateInputHandler: { viewController, title, format in

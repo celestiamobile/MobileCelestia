@@ -13,7 +13,7 @@ import UIKit
 public class EventFinderCoordinatorViewController: ToolbarNavigationContainerController {
     public init(
         executor: AsyncProviderExecutor,
-        eventHandler: @escaping ((Eclipse) -> Void),
+        eventHandler: @escaping ((Eclipse, EclipseAction) -> Void),
         textInputHandler: @escaping (_ viewController: UIViewController, _ title: String) async -> String?,
         dateInputHandler: @escaping (_ viewController: UIViewController, _ title: String, _ format: String) async -> Date?
     ) {
@@ -28,4 +28,3 @@ public class EventFinderCoordinatorViewController: ToolbarNavigationContainerCon
         fatalError("init(coder:) has not been implemented")
     }
 }
-
