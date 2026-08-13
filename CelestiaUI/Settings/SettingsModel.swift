@@ -46,12 +46,20 @@ public struct SettingItem: Sendable {
     public let name: String
     public let subtitle: String?
     public let associatedItem: AssociatedItem
+    public let visibilityCondition: SettingVisibilityCondition?
 
-    public init(name: String, subtitle: String? = nil, associatedItem: AssociatedItem) {
+    public init(name: String, subtitle: String? = nil, associatedItem: AssociatedItem, visibilityCondition: SettingVisibilityCondition? = nil) {
         self.name = name
         self.subtitle = subtitle
         self.associatedItem = associatedItem
+        self.visibilityCondition = visibilityCondition
     }
+}
+
+public indirect enum SettingVisibilityCondition: Sendable {
+    case preferenceBoolean(key: UserDefaultsKey, equals: Bool, defaultValue: Bool)
+    case coreInteger(key: String, equals: Int)
+    case all([SettingVisibilityCondition])
 }
 
 public struct SettingActionItem: Sendable {

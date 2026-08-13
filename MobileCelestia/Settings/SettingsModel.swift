@@ -200,7 +200,8 @@ func mainSetting(featureFlags: FeatureFlags) -> [SettingSection] {
                                             ],
                                             defaultOption: 0
                                         )
-                                    )
+                                    ),
+                                    visibilityCondition: .preferenceBoolean(key: .srgbRendering, equals: true, defaultValue: false)
                                 ),
                                 SettingItem(
                                     name: CelestiaString("Exposure", comment: "Output rendering setting"),
@@ -211,9 +212,13 @@ func mainSetting(featureFlags: FeatureFlags) -> [SettingSection] {
                                             maxValue: 100,
                                             isLogarithmic: true
                                         )
-                                    )
+                                    ),
+                                    visibilityCondition: .all([
+                                        .preferenceBoolean(key: .srgbRendering, equals: true, defaultValue: false),
+                                        .coreInteger(key: "toneMapping", equals: 1),
+                                    ])
                                 ),
-                            ], footer: CelestiaString("Tone mapping and exposure only affect sRGB rendering. Changes to sRGB rendering take effect after a restart.", comment: "Output rendering settings footnote")),
+                            ], footer: CelestiaString("Changes to sRGB rendering take effect after a restart.", comment: "Output rendering settings footnote")),
                         ]
                     )
                 )

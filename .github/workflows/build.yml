@@ -27,6 +27,10 @@ on:
       - main
       - develop
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'push' && github.ref || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'push' }}
+
 env:
   DEPENDENCY_VERSION: '1.0.82'
   CONTENT_COMMIT_HASH: 'e4d5d2754b6224f04e440e53b189f9ee96b6d1fe'

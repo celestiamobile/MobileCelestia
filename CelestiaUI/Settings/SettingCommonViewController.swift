@@ -18,6 +18,8 @@ class SettingCommonViewController: UICollectionViewController {
     private let executor: AsyncProviderExecutor
     private let userDefaults: UserDefaults
 
+    private lazy var visibleRowsBySection = calculateVisibleRows()
+
     init(core: AppCore, executor: AsyncProviderExecutor, userDefaults: UserDefaults, item: SettingCommonItem) {
         self.item = item
         self.core = core
@@ -45,6 +47,12 @@ class SettingCommonViewController: UICollectionViewController {
 
         setUp()
     }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        refreshVisibleRows()
+    }
 }
 
 private extension SettingCommonViewController {
@@ -64,7 +72,35 @@ extension SettingCommonViewController {
     }
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return item.sections[section].rows.count
+        return visibleRowsBySection[section].count
+    }
+
+    private func calculateVisibleRows() -> [[SettingItem]] {
+        return item.sections.map { section in
+            section.rows.filter(isVisible)
+        }
+    }
+
+    private func refreshVisibleRows() {
+        visibleRowsBySection = calculateVisibleRows()
+        collectionView.reloadData()
+    }
+
+    private func isVisible(_ item: SettingItem) -> Bool {
+        guard let condition = item.visibilityCondition else { return true }
+        return isSatisfied(condition)
+    }
+
+    private func isSatisfied(_ condition: SettingVisibilityCondition) -> Bool {
+        switch condition {
+        case let .preferenceBoolean(key, expectedValue, defaultValue):
+            let value: Bool = userDefaults[key] ?? defaultValue
+            return value == expectedValue
+        case let .coreInteger(key, expectedValue):
+            return (core.value(forKey: key) as? Int) == expectedValue
+        case let .all(conditions):
+            return conditions.allSatisfy(isSatisfied)
+        }
     }
 
     private func logWrongAssociatedItemType(_ item: AnyHashable) -> Never {
@@ -72,7 +108,7 @@ extension SettingCommonViewController {
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let row = item.sections[indexPath.section].rows[indexPath.item]
+        let row = visibleRowsBySection[indexPath.section][indexPath.item]
 
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "Cell", for: indexPath) as! SelectableListCell
 
@@ -171,8 +207,9 @@ extension SettingCommonViewController {
             toggle.addAction(UIAction { [weak self] action in
                 guard let self, let sender = action.sender as? UISwitch else { return }
                 let newValue = sender.isOn
-                Task {
-                    self.userDefaults[item.key] = newValue
+                self.userDefaults[item.key] = newValue
+                DispatchQueue.main.async { [weak self] in
+                    self?.refreshVisibleRows()
                 }
             }, for: .valueChanged)
             accessories = [.customView(configuration: UICellAccessory.CustomViewConfiguration(customView: toggle, placement: .trailing(displayed: .always)))]
@@ -221,6 +258,7 @@ extension SettingCommonViewController {
                             $0.setValue(option.value, forKey: item.key)
                         }
                         self.userDefaults.setValue(option.value, forKey: item.key)
+                        self.refreshVisibleRows()
                     }
                 }
             }))
@@ -256,7 +294,7 @@ extension SettingCommonViewController {
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
 
-        let row = item.sections[indexPath.section].rows[indexPath.row]
+        let row = visibleRowsBySection[indexPath.section][indexPath.row]
         switch row.associatedItem {
         case .action(let item):
             core.charEnter(item.action)
@@ -267,7 +305,7 @@ extension SettingCommonViewController {
                     $0.setValue(!checked, forKey: item.key)
                 }
                 self.userDefaults.set(!checked, forKey: item.key)
-                self.collectionView.reloadData()
+                self.refreshVisibleRows()
             }
         case .keyedSelection(let item):
             Task {
@@ -275,7 +313,7 @@ extension SettingCommonViewController {
                     $0.setValue(item.index, forKey: item.key)
                 }
                 self.userDefaults.set(item.index, forKey: item.key)
-                self.collectionView.reloadData()
+                self.refreshVisibleRows()
             }
         case .custom(let item):
             Task {
