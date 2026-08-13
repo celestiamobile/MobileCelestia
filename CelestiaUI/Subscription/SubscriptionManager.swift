@@ -109,10 +109,12 @@ public class SubscriptionManager {
     }
 
     private(set) var status: SubscriptionStatus = .unknown
+    private(set) var didPurchaseInCurrentSession = false
     private let userDefaults: UserDefaults
     private let requestHandler: RequestHandler
 
     private var transactionInfoCache: CacheTransactionInfo?
+    private var pendingPurchaseProductIDs: Set<String> = []
 
     private struct CacheTransactionInfo: Codable {
         let originalTransactionID: UInt64
@@ -217,9 +219,11 @@ public class SubscriptionManager {
                 case .verified(let transaction):
                     if transaction.productID == SubscriptionManager.lifetimeProductID {
                         await transaction.finish()
+                        await self.completePendingPurchase(productID: transaction.productID)
                         await self.updateStatus(.lifetime(originalTransactionID: transaction.originalID, environment: SubscriptionEnvironment(transaction: transaction)))
                     } else if let cycle = Plan.Cycle(id: transaction.productID) {
                         await transaction.finish()
+                        await self.completePendingPurchase(productID: transaction.productID)
                         await self.updateStatus(.verified(originalTransactionID: transaction.originalID, productID: transaction.productID, cycle: cycle, expirationDate: transaction.expirationDate, environment: SubscriptionEnvironment(transaction: transaction)))
                     }
                 }
@@ -312,11 +316,14 @@ public class SubscriptionManager {
                 break
             case .verified(let transaction):
                 await transaction.finish()
+                didPurchaseInCurrentSession = true
+                pendingPurchaseProductIDs.remove(transaction.productID)
                 updateStatus(.verified(originalTransactionID: transaction.originalID, productID: transaction.productID, cycle: cycle, expirationDate: transaction.expirationDate, environment: SubscriptionEnvironment(transaction: transaction)))
             }
         case .userCancelled:
             break
         case .pending:
+            pendingPurchaseProductIDs.insert(product.id)
             updateStatus(.pending)
             break
         @unknown default:
@@ -347,11 +354,14 @@ public class SubscriptionManager {
                 break
             case .verified(let transaction):
                 await transaction.finish()
+                didPurchaseInCurrentSession = true
+                pendingPurchaseProductIDs.remove(transaction.productID)
                 updateStatus(.lifetime(originalTransactionID: transaction.originalID, environment: SubscriptionEnvironment(transaction: transaction)))
             }
         case .userCancelled:
             break
         case .pending:
+            pendingPurchaseProductIDs.insert(product.id)
             updateStatus(.pending)
             break
         @unknown default:
@@ -359,6 +369,12 @@ public class SubscriptionManager {
         }
         return status
         #endif
+    }
+
+    private func completePendingPurchase(productID: String) {
+        if pendingPurchaseProductIDs.remove(productID) != nil {
+            didPurchaseInCurrentSession = true
+        }
     }
 
     private func performServerVerification(originalTransactionID: UInt64, environment: SubscriptionEnvironment, productType: PurchaseType) async throws -> Bool {

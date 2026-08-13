@@ -346,13 +346,13 @@ private extension SubscriptionManagerViewController {
             currentPlanCycle = cycle
             isLifetimeOwner = false
             hasActiveSubscription = true
-            statusLabel.text = CelestiaString("Congratulations, you are a Celestia PLUS user", comment: "")
+            statusLabel.text = purchaseSuccessMessage()
             allDisabled = false
         case .lifetime:
             currentPlanCycle = nil
             isLifetimeOwner = true
             hasActiveSubscription = false
-            statusLabel.text = CelestiaString("Congratulations, you are a Celestia PLUS user", comment: "")
+            statusLabel.text = purchaseSuccessMessage()
             allDisabled = false
         case .pending:
             currentPlanCycle = nil
@@ -470,6 +470,16 @@ private extension SubscriptionManagerViewController {
             lifetimeView.layer.cornerRadius = Constants.boxCornerRadius
             planStack.addArrangedSubview(lifetimeView)
         }
+    }
+
+    private func purchaseSuccessMessage() -> String {
+        if subscriptionManager.didPurchaseInCurrentSession {
+            return CelestiaString(
+                "Congratulations, you are a Celestia PLUS user. Restart Celestia for your purchase to take effect.",
+                comment: "Purchase success message with restart guidance"
+            )
+        }
+        return CelestiaString("Congratulations, you are a Celestia PLUS user", comment: "")
     }
 
     @objc private func restorePurchases() {
