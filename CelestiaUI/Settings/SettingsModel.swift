@@ -1011,6 +1011,7 @@ public func timeAndRegionSettings() -> SettingSection {
                                     SettingSelectionItem(name: CelestiaString("Default", comment: ""), index: 0),
                                     SettingSelectionItem(name: CelestiaString("YYYY MMM DD HH:MM:SS TZ", comment: ""), index: 1),
                                     SettingSelectionItem(name: CelestiaString("UTC Offset", comment: ""), index: 2),
+                                    SettingSelectionItem(name: CelestiaString("ISO 8601", comment: ""), index: 3),
                                 ]
                             ).toSection()
                         ]
