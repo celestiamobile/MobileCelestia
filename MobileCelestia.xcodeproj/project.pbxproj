@@ -1432,7 +1432,7 @@
 			repositoryURL = "https://github.com/celestiamobile/AsyncGL";
 			requirement = {
 				kind = exactVersion;
-				version = 1.2.10;
+				version = 1.2.11;
 			};
 		};
 		EAC20FDF2CA0CB7C0098AABA /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
