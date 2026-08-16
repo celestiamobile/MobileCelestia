@@ -33,7 +33,7 @@ concurrency:
 
 env:
   DEPENDENCY_VERSION: '1.0.93'
-  CONTENT_COMMIT_HASH: 'e4d5d2754b6224f04e440e53b189f9ee96b6d1fe'
+  CONTENT_COMMIT_HASH: '72d16fc97bc0a6af4f32123d12d21779e4978336'
   XC_VERSION: '26.6'
   XC_PROJECT: 'MobileCelestia/MobileCelestia.xcodeproj'
   XC_SCHEME: 'MobileCelestia'
