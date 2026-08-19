@@ -23,6 +23,10 @@ private let shadowMapSizeOptions: [AssociatedPreferenceSelectionItem.Option] = [
     .init(name: shadowMapSizeFormatter.string(from: size), value: size)
 }
 
+private let segmentCountOptions: [AssociatedSelectionSingleItem.Option] = (1...16).map { count in
+    .init(name: String(count), value: count)
+}
+
 #if targetEnvironment(macCatalyst)
 private let defaultSensitivity: Double = 4.0
 #else
@@ -156,33 +160,90 @@ func mainSetting(featureFlags: FeatureFlags) -> [SettingSection] {
         timeAndRegionSettings(),
         rendererSettings(extraItems: [
             SettingItem(
-                name: CelestiaString("Advanced", comment: "Advanced setting items"),
+                name: CelestiaString("Quality", comment: "Rendering quality settings"),
+                associatedItem: .common(
+                    item: AssociatedCommonItem(
+                        title: CelestiaString("Quality", comment: "Rendering quality settings"),
+                        sections: [
+                            .init(
+                                header: CelestiaString("Textures", comment: "Texture rendering quality settings"),
+                                rows: [
+                                    textureResolutionSetting(),
+                                ],
+                                footer: nil
+                            ),
+                            .init(
+                                header: CelestiaString("Shadows", comment: "Shadow rendering quality settings"),
+                                rows: [
+                                    SettingItem(
+                                        name: CelestiaString("Shadow Resolution", comment: "Resolution of shadow maps"),
+                                        subtitle: CelestiaString("A value of 0 disables self-shadowing. Higher values produce sharper shadows at a greater performance cost.", comment: "Shadow resolution setting footnote"),
+                                        associatedItem: .prefSelection(
+                                            item: AssociatedPreferenceSelectionItem(key: .shadowMapSize, options: shadowMapSizeOptions, defaultOption: 0)
+                                        )
+                                    ),
+                                ],
+                                footer: CelestiaString("Shadow resolution changes take effect after a restart.", comment: "Change requires a restart")
+                            ),
+                            .init(
+                                header: CelestiaString("Display", comment: "Display quality settings"),
+                                rows: [
+                                    SettingItem(
+                                        name: CelestiaString("HiDPI", comment: "HiDPI support in display"),
+                                        associatedItem: .prefSwitch(
+                                            item: AssociatedPreferenceSwitchItem(key: .fullDPI, defaultOn: true)
+                                        )
+                                    ),
+                                    SettingItem(
+                                        name: CelestiaString("Anti-aliasing", comment: ""),
+                                        associatedItem: .prefSwitch(
+                                            item: AssociatedPreferenceSwitchItem(key: .msaa, defaultOn: false)
+                                        )
+                                    ),
+                                ],
+                                footer: CelestiaString("Configuration will take effect after a restart.", comment: "Change requires a restart")
+                            ),
+                            .init(
+                                header: CelestiaString("Atmosphere", comment: "Atmosphere rendering quality settings"),
+                                rows: [
+                                    SettingItem(
+                                        name: CelestiaString("Atmosphere Segment Count", comment: "Atmosphere rendering quality setting"),
+                                        subtitle: CelestiaString("Number of segments used to integrate atmospheric scattering. Higher values improve quality at a greater performance cost.", comment: "Atmosphere segment count setting description"),
+                                        associatedItem: .selection(
+                                            item: AssociatedSelectionSingleItem(key: "atmosphereSegmentCount", options: segmentCountOptions, defaultOption: 3)
+                                        )
+                                    ),
+                                    SettingItem(
+                                        name: CelestiaString("Cloud Segment Count", comment: "Cloud rendering quality setting"),
+                                        subtitle: CelestiaString("Number of segments used to render clouds. Higher values improve quality at a greater performance cost.", comment: "Cloud segment count setting description"),
+                                        associatedItem: .selection(
+                                            item: AssociatedSelectionSingleItem(key: "cloudSegmentCount", options: segmentCountOptions, defaultOption: 2)
+                                        )
+                                    ),
+                                    SettingItem(
+                                        name: CelestiaString("Separate Rayleigh and Mie Scale Heights", comment: "Atmosphere rendering quality setting"),
+                                        associatedItem: .checkmark(
+                                            item: AssociatedCheckmarkItem(
+                                                name: CelestiaString("Separate Rayleigh and Mie Scale Heights", comment: "Atmosphere rendering quality setting"),
+                                                key: "separateRayleighMieScaleHeights",
+                                                representation: .switch
+                                            )
+                                        )
+                                    ),
+                                ],
+                                footer: nil
+                            ),
+                        ]
+                    )
+                )
+            ),
+            SettingItem(
+                name: CelestiaString("Output", comment: "Output rendering settings"),
                 associatedItem: .common(item:
                     AssociatedCommonItem(
-                        title: CelestiaString("Advanced", comment: "Advanced setting items"),
+                        title: CelestiaString("Output", comment: "Output rendering settings"),
                         sections: [
                             .init(header: nil, rows: [
-                                SettingItem(
-                                    name: CelestiaString("HiDPI", comment: "HiDPI support in display"),
-                                    associatedItem: .prefSwitch(item:
-                                        AssociatedPreferenceSwitchItem(key: .fullDPI, defaultOn: true)
-                                    )
-                                ),
-                                SettingItem(
-                                    name: CelestiaString("Anti-aliasing", comment: ""),
-                                    associatedItem: .prefSwitch(item:
-                                        AssociatedPreferenceSwitchItem(key: .msaa, defaultOn: false)
-                                    )
-                                ),
-                                SettingItem(
-                                    name: CelestiaString("Shadow Resolution", comment: "Resolution of shadow maps"),
-                                    subtitle: CelestiaString("A value of 0 disables self-shadowing. Higher values produce sharper shadows at a greater performance cost.", comment: "Shadow resolution setting footnote"),
-                                    associatedItem: .prefSelection(
-                                        item: AssociatedPreferenceSelectionItem(key: .shadowMapSize, options: shadowMapSizeOptions, defaultOption: 0)
-                                    )
-                                ),
-                            ], footer: CelestiaString("Configuration will take effect after a restart.", comment: "Change requires a restart")),
-                            .init(header: CelestiaString("Output Rendering", comment: "Output rendering settings"), rows: [
                                 SettingItem(
                                     name: CelestiaString("sRGB Rendering (Experimental)", comment: ""),
                                     associatedItem: .prefSwitch(

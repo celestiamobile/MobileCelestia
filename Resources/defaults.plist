@@ -6,6 +6,10 @@
 	<dict>
 		<key>ambientLightLevel</key>
 		<real>0.1</real>
+		<key>atmosphereSegmentCount</key>
+		<integer>3</integer>
+		<key>cloudSegmentCount</key>
+		<integer>2</integer>
 		<key>dateFormat</key>
 		<integer>1</integer>
 		<key>faintestVisible</key>
@@ -18,6 +22,8 @@
 		<real>20</real>
 		<key>resolution</key>
 		<integer>1</integer>
+		<key>separateRayleighMieScaleHeights</key>
+		<integer>0</integer>
 		<key>showAsteroidLabels</key>
 		<integer>0</integer>
 		<key>showAsteroidOrbits</key>

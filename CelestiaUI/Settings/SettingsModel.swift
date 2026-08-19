@@ -506,10 +506,10 @@ public func displaySettings() -> SettingSection {
                 )
             ),
             SettingItem(
-                name: CelestiaString("Object Labels", comment: "Labels"),
+                name: CelestiaString("Labels", comment: "Labels to display"),
                 associatedItem: .common(item:
                     AssociatedCommonItem(
-                        title: CelestiaString("Object Labels", comment: "Labels"),
+                        title: CelestiaString("Labels", comment: "Labels to display"),
                         sections: [
                             [
                                 SettingCheckmarkItem(name: CelestiaString("Stars", comment: "Tab for stars in Star Browser"), key: "showStarLabels"),
@@ -524,18 +524,10 @@ public func displaySettings() -> SettingSection {
                                 SettingCheckmarkItem(name: CelestiaString("Nebulae", comment: ""), key: "showNebulaLabels"),
                                 SettingCheckmarkItem(name: CelestiaString("Globulars", comment: ""), key: "showGlobularLabels"),
                                 SettingCheckmarkItem(name: CelestiaString("Open Clusters", comment: ""), key: "showOpenClusterLabels"),
-                            ].toSection()
-                        ]
-                    )
-                )
-            ),
-            SettingItem(
-                name: CelestiaString("Locations", comment: "Location labels to display"),
-                associatedItem: .common(item:
-                    AssociatedCommonItem(title: CelestiaString("Locations", comment: "Location labels to display"), sections: [
-                        .init(
-                            header: nil,
-                            rows: [
+                            ].toSection(),
+                            .init(
+                                header: CelestiaString("Locations", comment: "Location labels to display"),
+                                rows: [
                             SettingItem(
                                 name: CelestiaString("Show Locations", comment: ""),
                                 associatedItem: .checkmark(item:
@@ -548,10 +540,6 @@ public func displaySettings() -> SettingSection {
                                     AssociatedSliderItem(key: "minimumFeatureSize", minValue: 0, maxValue: 99)
                                 )
                             ),
-                        ], footer: nil),
-                        .init(
-                            header: nil,
-                            rows: [
                             SettingItem(
                                 name: CelestiaString("Cities", comment: ""),
                                 associatedItem: .checkmark(item:
@@ -931,7 +919,8 @@ public func displaySettings() -> SettingSection {
                                 )
                             ),
                         ], footer: nil)
-                    ])
+                        ]
+                    )
                 )
             ),
             SettingItem(
@@ -1077,28 +1066,10 @@ public func timeAndRegionSettings() -> SettingSection {
 public func rendererSettings(extraItems: [SettingItem]) -> SettingSection {
     var items: [SettingItem] = [
         SettingItem(
-            name: CelestiaString("Texture Resolution", comment: ""),
+            name: CelestiaString("Stars", comment: "Star rendering settings"),
             associatedItem: .common(item:
                 AssociatedCommonItem(
-                    title: CelestiaString("Texture Resolution", comment: ""),
-                    sections: [
-                        AssociatedSelectionItem(
-                            key: "resolution",
-                            items: [
-                                SettingSelectionItem(name: CelestiaString("Low", comment: "Low resolution"), index: 0),
-                                SettingSelectionItem(name: CelestiaString("Medium", comment: "Medium resolution"), index: 1),
-                                SettingSelectionItem(name: CelestiaString("High", comment: "High resolution"), index: 2),
-                            ]
-                        ).toSection()
-                    ]
-                )
-            )
-        ),
-        SettingItem(
-            name: CelestiaString("Star Style", comment: ""),
-            associatedItem: .common(item:
-                AssociatedCommonItem(
-                    title: CelestiaString("Star Style", comment: ""),
+                    title: CelestiaString("Stars", comment: "Star rendering settings"),
                     sections: [
                         .init(header: nil, rows: [
                             SettingItem(name: CelestiaString("Star Style", comment: ""), associatedItem: .selection(item: 
@@ -1166,15 +1137,29 @@ public func rendererSettings(extraItems: [SettingItem]) -> SettingSection {
                                 )
                             ),
                         ], footer: CelestiaString("Tinted illumination saturation setting is only effective with Blackbody star colors.", comment: "")),
+                        .init(header: nil, rows: [
+                            SettingItem(
+                                name: CelestiaString("Auto Mag", comment: "Auto mag for star display"),
+                                associatedItem: .checkmark(item:
+                                    AssociatedCheckmarkItem(name: CelestiaString("Auto Mag", comment: "Auto mag for star display"), key: "showAutoMag", representation: .switch)
+                                )
+                            ),
+                            SettingItem(
+                                name: CelestiaString("Faintest Stars", comment: "Control the faintest star that Celestia should display"),
+                                associatedItem: .slider(item:
+                                    AssociatedSliderItem(key: "faintestVisible", minValue: 3, maxValue: 12)
+                                )
+                            ),
+                        ], footer: nil),
                     ]
                 )
             )
         ),
         SettingItem(
-            name: CelestiaString("Render Parameters", comment: "Render parameters in setting"),
+            name: CelestiaString("Rendering", comment: "Rendering settings"),
             associatedItem: .common(item:
                 AssociatedCommonItem(
-                    title: CelestiaString("Render Parameters", comment: "Render parameters in setting"),
+                    title: CelestiaString("Rendering", comment: "Rendering settings"),
                     sections: [
                         .init(header: nil, rows: [
                             SettingItem(
@@ -1186,21 +1171,9 @@ public func rendererSettings(extraItems: [SettingItem]) -> SettingSection {
                         ], footer: nil),
                         .init(header: nil, rows: [
                             SettingItem(
-                                name: CelestiaString("Auto Mag", comment: "Auto mag for star display"),
-                                associatedItem: .checkmark(item:
-                                    AssociatedCheckmarkItem(name: CelestiaString("Auto Mag", comment: "Auto mag for star display"), key: "showAutoMag", representation: .switch)
-                                )
-                            ),
-                            SettingItem(
                                 name: CelestiaString("Ambient Light", comment: "In setting"),
                                 associatedItem: .slider(item:
                                     AssociatedSliderItem(key: "ambientLightLevel", minValue: 0, maxValue: 1)
-                                )
-                            ),
-                            SettingItem(
-                                name: CelestiaString("Faintest Stars", comment: "Control the faintest star that Celestia should display"),
-                                associatedItem: .slider(item:
-                                    AssociatedSliderItem(key: "faintestVisible", minValue: 3, maxValue: 12)
                                 )
                             ),
                             SettingItem(
@@ -1222,6 +1195,23 @@ public func rendererSettings(extraItems: [SettingItem]) -> SettingSection {
     items.append(SettingItem(name: CelestiaString("Render Info", comment: "Information about renderer"), associatedItem: .other(type: .render)))
 
     return SettingSection(title: CelestiaString("Renderer", comment: "In settings"), items: items)
+}
+
+public func textureResolutionSetting() -> SettingItem {
+    SettingItem(
+        name: CelestiaString("Texture Resolution", comment: ""),
+        associatedItem: .selection(
+            item: AssociatedSelectionSingleItem(
+                key: "resolution",
+                options: [
+                    .init(name: CelestiaString("Low", comment: "Low resolution"), value: 0),
+                    .init(name: CelestiaString("Medium", comment: "Medium resolution"), value: 1),
+                    .init(name: CelestiaString("High", comment: "High resolution"), value: 2),
+                ],
+                defaultOption: 1
+            )
+        )
+    )
 }
 
 #if !os(visionOS)
