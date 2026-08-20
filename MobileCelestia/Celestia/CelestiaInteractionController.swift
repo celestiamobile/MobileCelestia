@@ -574,12 +574,24 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
                     return
                 }
 
-                completion(self.contextMenuForSelection(selection: selection))
+                let referenceMarkStates: [String: Bool]
+                if selection.body != nil {
+                    let referenceMarks = ["body axes", "frame axes", "sun direction", "velocity vector", "planetographic grid", "terminator"]
+                    referenceMarkStates = await self.executor.get { core in
+                        Dictionary(uniqueKeysWithValues: referenceMarks.map { referenceMark in
+                            (referenceMark, core.isReferenceMarkEnabled(referenceMark, for: selection))
+                        })
+                    }
+                } else {
+                    referenceMarkStates = [:]
+                }
+
+                completion(self.contextMenuForSelection(selection: selection, referenceMarkStates: referenceMarkStates))
             }
         }
     }
 
-    private func contextMenuForSelection(selection: Selection) -> [UIMenuElement] {
+    private func contextMenuForSelection(selection: Selection, referenceMarkStates: [String: Bool]) -> [UIMenuElement] {
         let titleAction = UIAction(title: core.simulation.universe.name(for: selection)) { _ in }
         titleAction.attributes = [.disabled]
         var actions: [UIMenuElement] = [titleAction]
@@ -650,6 +662,29 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
             }
             let menu = UIMenu(title: CelestiaString("Alternate Surfaces", comment: "Alternative textures to display"), children: [defaultSurfaceItem] + otherSurfaces)
             actions.append(menu)
+        }
+
+        if selection.body != nil {
+            let referenceVectors = [
+                (CelestiaString("Show Body Axes", comment: "Reference vector"), "body axes"),
+                (CelestiaString("Show Frame Axes", comment: "Reference vector"), "frame axes"),
+                (CelestiaString("Show Sun Direction", comment: "Reference vector"), "sun direction"),
+                (CelestiaString("Show Velocity Vector", comment: "Reference vector"), "velocity vector"),
+                (CelestiaString("Show Planetographic Grid", comment: "Reference vector"), "planetographic grid"),
+                (CelestiaString("Show Terminator", comment: "Reference vector"), "terminator"),
+            ]
+            let referenceVectorActions = referenceVectors.map { title, key in
+                let isEnabled = referenceMarkStates[key] ?? false
+                return UIAction(title: title, state: isEnabled ? .on : .off) { _ in
+                    Task { @CelestiaActor in
+                        CelestiaActor.appCore.toggleReferenceMark(key, for: selection)
+                    }
+                }
+            }
+            actions.append(UIMenu(
+                title: CelestiaString("Reference Vectors", comment: "Reference vectors for an object"),
+                children: referenceVectorActions
+            ))
         }
 
         let markerOptions = (0...MarkerRepresentation.crosshair.rawValue).map { MarkerRepresentation(rawValue: $0)?.localizedTitle ?? "" } + [CelestiaString("Unmark", comment: "Unmark an object")]
