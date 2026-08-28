@@ -38,41 +38,17 @@ struct SettingsView: UIViewControllerRepresentable {
     }
 
     func makeUIViewController(context: Context) -> SettingsCoordinatorController {
-        let shadowMapSizeFormatter: NumberFormatter = {
-            let formatter = NumberFormatter()
-            formatter.numberStyle = .decimal
-            formatter.maximumFractionDigits = 0
-            return formatter
-        }()
-
-        let shadowMapSizeOptions: [AssociatedPreferenceSelectionItem.Option] = [0, 1024, 2048, 4096, 8192].map { size in
-            .init(name: shadowMapSizeFormatter.string(from: size), value: size)
-        }
-
-        var baseAdvancedItems = [
-            SettingItem(
-                name: CelestiaString("Anti-aliasing", comment: ""),
-                associatedItem: .prefSwitch(item:
-                    AssociatedPreferenceSwitchItem(key: .msaa, defaultOn: false)
-                )
-            ),
+        var xrOutputItems = [
             SettingItem(
                 name: CelestiaString("Foveated Rendering", comment: ""),
                 associatedItem: .prefSwitch(item:
                     AssociatedPreferenceSwitchItem(key: .foveatedRendering, defaultOn: false)
                 )
             ),
-            SettingItem(
-                name: CelestiaString("Shadow Resolution", comment: "Resolution of shadow maps"),
-                subtitle: CelestiaString("A value of 0 disables self-shadowing. Higher values produce sharper shadows at a greater performance cost.", comment: "Shadow resolution setting footnote"),
-                associatedItem: .prefSelection(
-                    item: AssociatedPreferenceSelectionItem(key: .shadowMapSize, options: shadowMapSizeOptions, defaultOption: 0)
-                )
-            ),
         ]
 
         if #available(visionOS 2.0, *) {
-            baseAdvancedItems.append(SettingItem(
+            xrOutputItems.append(SettingItem(
                 name: CelestiaString("Passthrough", comment: "Mixed immersion / passthrough toggle"),
                 associatedItem: .prefSwitch(item:
                     AssociatedPreferenceSwitchItem(key: .mixedImmersion, defaultOn: false)
@@ -83,18 +59,23 @@ struct SettingsView: UIViewControllerRepresentable {
         let settings = [
             displaySettings(),
             rendererSettings(extraItems: [
-                SettingItem(
-                    name: CelestiaString("Advanced", comment: "Advanced setting items"),
-                    associatedItem: .common(item:
-                        AssociatedCommonItem(
-                            title: CelestiaString("Advanced", comment: "Advanced setting items"),
-                            sections: [
-                                .init(header: nil, rows: baseAdvancedItems, footer: CelestiaString("Configuration will take effect after a restart.", comment: "Change requires a restart")),
-                                outputRenderSettings(),
-                            ]
-                        )
-                    )
+                rendererQualitySetting(
+                    displayItems: [
+                        SettingItem(
+                            name: CelestiaString("Anti-aliasing", comment: ""),
+                            associatedItem: .prefSwitch(
+                                item: AssociatedPreferenceSwitchItem(key: .msaa, defaultOn: false)
+                            )
+                        ),
+                    ]
                 ),
+                outputRenderSetting(extraSections: [
+                    .init(
+                        header: CelestiaString("XR", comment: "XR output rendering settings"),
+                        rows: xrOutputItems,
+                        footer: CelestiaString("Configuration will take effect after a restart.", comment: "Change requires a restart")
+                    )
+                ]),
             ]),
             advancedSettings(extraItems: [gameControllerItem]),
             miscSettings(),

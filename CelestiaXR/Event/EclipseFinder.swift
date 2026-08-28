@@ -16,9 +16,9 @@ struct EclipseFinder: UIViewControllerRepresentable {
     @Environment(XRRenderer.self) private var renderer
 
     func makeUIViewController(context: Context) -> EventFinderCoordinatorViewController {
-        return EventFinderCoordinatorViewController(executor: renderer) { eclipse in
+        return EventFinderCoordinatorViewController(executor: renderer) { eclipse, action in
             renderer.enqueue { core in
-                core.simulation.goToEclipse(eclipse)
+                core.simulation.performEclipseAction(action, eclipse: eclipse)
             }
         } textInputHandler: { viewController, title in
             return await viewController.getTextInput(title)
