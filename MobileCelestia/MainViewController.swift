@@ -1464,15 +1464,23 @@ Device Model: \(model)
         viewController.preferredContentSize = view.frame.width > 1024 ? CGSize(width: 393, height: 393) : CGSize(width: 320, height: 320)
         if #available(iOS 16, *), Self.canUseSystemSheetPresentationController, let sheet = viewController.sheetPresentationController {
             sheet.prefersGrabberVisible = true
-            sheet.detents = [.small(), .medium(), .large()]
+            var detents: [UISheetPresentationController.Detent] = [.small(), .medium(), .large()]
             sheet.selectedDetentIdentifier = prefersMediumDetent ? .medium : .large
             sheet.largestUndimmedDetentIdentifier = .large
             sheet.prefersEdgeAttachedInCompactHeight = true
             sheet.widthFollowsPreferredContentSizeWhenEdgeAttached = true
-            sheet.setValue(1, forKey: "horizontalAlignment")
-            sheet.setValue(true, forKey: "wantsBottomAttached")
-            sheet.setValue(GlobalConstants.pageMediumMarginHorizontal, forKey: "marginInRegularWidthRegularHeight")
-            sheet.setValue(GlobalConstants.pageMediumMarginHorizontal, forKey: "marginInCompactHeight")
+            if #available(iOS 27, *) {
+                sheet.preferredPlacement = .leading
+                if Self.canUseBarDetent, let barDetent = UISheetPresentationController.Detent.perform(NSSelectorFromString("_barDetent")).takeUnretainedValue() as? UISheetPresentationController.Detent {
+                    detents.insert(barDetent, at: 0)
+                }
+            } else {
+                sheet.setValue(1, forKey: "horizontalAlignment")
+                sheet.setValue(true, forKey: "wantsBottomAttached")
+                sheet.setValue(GlobalConstants.pageMediumMarginHorizontal, forKey: "marginInRegularWidthRegularHeight")
+                sheet.setValue(GlobalConstants.pageMediumMarginHorizontal, forKey: "marginInCompactHeight")
+            }
+            sheet.detents = detents
         } else {
             viewController.modalPresentationStyle = .custom
             viewController.transitioningDelegate = endSlideInManager
@@ -1484,6 +1492,7 @@ Device Model: \(model)
 
     #if !targetEnvironment(macCatalyst)
     private static var _canUseSystemSheetPresentationController: Bool?
+    private static var _canUseBarDetent: Bool?
 
     @available(iOS 16, *)
     private static var canUseSystemSheetPresentationController: Bool {
@@ -1494,6 +1503,7 @@ Device Model: \(model)
         func resolveValue() -> Bool {
             guard UIWindow.instancesRespond(to: NSSelectorFromString("_rootPresentationController")) else { return false }
             guard UISheetPresentationController.instancesRespond(to: NSSelectorFromString("_setShouldScaleDownBehindDescendantSheets:")) else { return false }
+            if #available(iOS 27, *) { return true }
             guard UISheetPresentationController.instancesRespond(to: NSSelectorFromString("_setHorizontalAlignment:")) else { return false }
             guard UISheetPresentationController.instancesRespond(to: NSSelectorFromString("_setWantsBottomAttached:")) else { return false }
             guard UISheetPresentationController.instancesRespond(to: NSSelectorFromString("_setMarginInRegularWidthRegularHeight:")) else { return false }
@@ -1503,6 +1513,21 @@ Device Model: \(model)
 
         let canUse = resolveValue()
         _canUseSystemSheetPresentationController = canUse
+        return canUse
+    }
+
+    @available(iOS 27, *)
+    private static var canUseBarDetent: Bool {
+        if let _canUseBarDetent {
+            return _canUseBarDetent
+        }
+
+        func resolveValue() -> Bool {
+            return UISheetPresentationController.Detent.responds(to: NSSelectorFromString("_barDetent"))
+        }
+
+        let canUse = resolveValue()
+        _canUseBarDetent = canUse
         return canUse
     }
     #endif
