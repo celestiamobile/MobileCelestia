@@ -944,22 +944,24 @@ extension CelestiaInteractionController {
                 motionManager.startDeviceMotionUpdates(to: .main) { [weak self] deviceMotionData, error in
                     guard let self, self.isObservingGyroscopeUpdates, let deviceMotionData, error == nil else { return }
 
-                    let deviceOrientation = self.view.window?.windowScene?.interfaceOrientation ?? .portrait
-
                     let baseQuat = simd_quatf(deviceMotionData.attitude.quaternion)
                     let currentQuat: simd_quatf
-                    switch deviceOrientation {
-                    case .portraitUpsideDown:
-                        currentQuat = simd_quatf(angle: .pi, axis: simd_float3(0, 0, 1)) * baseQuat
-                    case .landscapeLeft:
-                        currentQuat = simd_quatf(angle: -.pi / 2, axis: simd_float3(0, 0, 1)) * baseQuat
-                    case .landscapeRight:
-                        currentQuat = simd_quatf(angle: .pi / 2, axis: simd_float3(0, 0, 1)) * baseQuat
-                    case .unknown, .portrait:
-                        fallthrough
-                    @unknown default:
+                    if #available(iOS 27, *) {
                         currentQuat = baseQuat
-                        break
+                    } else {
+                        let deviceOrientation = self.view.window?.windowScene?.interfaceOrientation ?? .portrait
+                        switch deviceOrientation {
+                        case .portraitUpsideDown:
+                            currentQuat = simd_quatf(angle: .pi, axis: simd_float3(0, 0, 1)) * baseQuat
+                        case .landscapeLeft:
+                            currentQuat = simd_quatf(angle: -.pi / 2, axis: simd_float3(0, 0, 1)) * baseQuat
+                        case .landscapeRight:
+                            currentQuat = simd_quatf(angle: .pi / 2, axis: simd_float3(0, 0, 1)) * baseQuat
+                        case .unknown, .portrait:
+                            fallthrough
+                        @unknown default:
+                            currentQuat = baseQuat
+                        }
                     }
 
                     guard let previousQuat = self.lastRotationQuaternion else {
