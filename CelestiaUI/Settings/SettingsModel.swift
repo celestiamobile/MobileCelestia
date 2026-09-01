@@ -1214,6 +1214,88 @@ public func textureResolutionSetting() -> SettingItem {
     )
 }
 
+private let shadowMapSizeFormatter: NumberFormatter = {
+    let formatter = NumberFormatter()
+    formatter.numberStyle = .decimal
+    formatter.maximumFractionDigits = 0
+    return formatter
+}()
+
+private let shadowMapSizeOptions: [AssociatedPreferenceSelectionItem.Option] = [0, 1024, 2048, 4096, 8192].map { size in
+    .init(name: shadowMapSizeFormatter.string(from: size), value: size)
+}
+
+private let segmentCountOptions: [AssociatedSelectionSingleItem.Option] = (1...16).map { count in
+    .init(name: String(count), value: count)
+}
+
+public func rendererQualitySetting(displayItems: [SettingItem]) -> SettingItem {
+    var sections: [AssociatedCommonItem.Section] = [
+        .init(
+            header: CelestiaString("Textures", comment: "Texture rendering quality settings"),
+            rows: [textureResolutionSetting()],
+            footer: nil
+        ),
+    ]
+    sections.append(.init(
+        header: CelestiaString("Shadows", comment: "Shadow rendering quality settings"),
+        rows: [
+            SettingItem(
+                name: CelestiaString("Shadow Resolution", comment: "Resolution of shadow maps"),
+                subtitle: CelestiaString("A value of 0 disables self-shadowing. Higher values produce sharper shadows at a greater performance cost.", comment: "Shadow resolution setting footnote"),
+                associatedItem: .prefSelection(
+                    item: AssociatedPreferenceSelectionItem(key: .shadowMapSize, options: shadowMapSizeOptions, defaultOption: 0)
+                )
+            ),
+        ],
+        footer: CelestiaString("Shadow resolution changes take effect after a restart.", comment: "Change requires a restart")
+    ))
+    sections.append(.init(
+        header: CelestiaString("Display", comment: "Display quality settings"),
+        rows: displayItems,
+        footer: CelestiaString("Configuration will take effect after a restart.", comment: "Change requires a restart")
+    ))
+    sections.append(.init(
+        header: CelestiaString("Atmosphere", comment: "Atmosphere rendering quality settings"),
+        rows: [
+            SettingItem(
+                name: CelestiaString("Atmosphere Segment Count", comment: "Atmosphere rendering quality setting"),
+                subtitle: CelestiaString("Number of segments used to integrate atmospheric scattering. Higher values improve quality at a greater performance cost.", comment: "Atmosphere segment count setting description"),
+                associatedItem: .selection(
+                    item: AssociatedSelectionSingleItem(key: "atmosphereSegmentCount", options: segmentCountOptions, defaultOption: 3)
+                )
+            ),
+            SettingItem(
+                name: CelestiaString("Cloud Segment Count", comment: "Cloud rendering quality setting"),
+                subtitle: CelestiaString("Number of segments used to render clouds. Higher values improve quality at a greater performance cost.", comment: "Cloud segment count setting description"),
+                associatedItem: .selection(
+                    item: AssociatedSelectionSingleItem(key: "cloudSegmentCount", options: segmentCountOptions, defaultOption: 2)
+                )
+            ),
+            SettingItem(
+                name: CelestiaString("Separate Rayleigh and Mie Scale Heights", comment: "Atmosphere rendering quality setting"),
+                associatedItem: .checkmark(
+                    item: AssociatedCheckmarkItem(
+                        name: CelestiaString("Separate Rayleigh and Mie Scale Heights", comment: "Atmosphere rendering quality setting"),
+                        key: "separateRayleighMieScaleHeights",
+                        representation: .switch
+                    )
+                )
+            ),
+        ],
+        footer: nil
+    ))
+    return SettingItem(
+        name: CelestiaString("Quality", comment: "Rendering quality settings"),
+        associatedItem: .common(
+            item: AssociatedCommonItem(
+                title: CelestiaString("Quality", comment: "Rendering quality settings"),
+                sections: sections
+            )
+        )
+    )
+}
+
 #if !os(visionOS)
 @MainActor
 public func celestiaPlusSettings() -> SettingSection {
@@ -1406,4 +1488,55 @@ public func miscSettings() -> SettingSection {
             ),
             SettingItem(name: CelestiaString("About", comment: "About Celestia"), associatedItem: .other(type: .about))
         ])
+}
+
+public func outputRenderSetting(extraSections: [AssociatedCommonItem.Section] = []) -> SettingItem {
+    let sections = [
+        AssociatedCommonItem.Section(header: nil, rows: [
+            SettingItem(
+                name: CelestiaString("sRGB Rendering (Experimental)", comment: ""),
+                associatedItem: .prefSwitch(
+                    item: AssociatedPreferenceSwitchItem(key: .srgbRendering, defaultOn: false)
+                )
+            ),
+            SettingItem(
+                name: CelestiaString("Tone Mapping", comment: "Tone mapping setting"),
+                associatedItem: .selection(
+                    item: AssociatedSelectionSingleItem(
+                        key: "toneMapping",
+                        options: [
+                            .init(name: CelestiaString("Off", comment: "Tone mapping mode"), value: 0),
+                            .init(name: CelestiaString("Manual", comment: "Tone mapping mode"), value: 1),
+                        ],
+                        defaultOption: 0
+                    )
+                ),
+                visibilityCondition: .preferenceBoolean(key: .srgbRendering, equals: true, defaultValue: false)
+            ),
+            SettingItem(
+                name: CelestiaString("Exposure", comment: "Output rendering setting"),
+                associatedItem: .slider(
+                    item: AssociatedSliderItem(
+                        key: "exposure",
+                        minValue: 0.01,
+                        maxValue: 100,
+                        isLogarithmic: true
+                    )
+                ),
+                visibilityCondition: .all([
+                    .preferenceBoolean(key: .srgbRendering, equals: true, defaultValue: false),
+                    .coreInteger(key: "toneMapping", equals: 1),
+                ])
+            ),
+        ], footer: CelestiaString("Changes to sRGB rendering take effect after a restart.", comment: "Output rendering settings footnote")),
+    ] + extraSections
+    return SettingItem(
+        name: CelestiaString("Output", comment: "Output rendering settings"),
+        associatedItem: .common(
+            item: AssociatedCommonItem(
+                title: CelestiaString("Output", comment: "Output rendering settings"),
+                sections: sections
+            )
+        )
+    )
 }
