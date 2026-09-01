@@ -310,15 +310,29 @@ class FallbackStepper: UIControl {
 
 class StepperView: UIView {
     #if targetEnvironment(macCatalyst) || os(visionOS)
+    private lazy var canUseNativeStepper: Bool = {
+        if #available(iOS 27, visionOS 27, *) {
+            return true
+        }
+        return false
+    }()
+
     #if targetEnvironment(macCatalyst)
-    private lazy var stepper = MacOSStepper.canBeUsed ? MacOSStepper() : FallbackStepper()
+    private lazy var fallbackStepper = MacOSStepper.canBeUsed ? MacOSStepper() : FallbackStepper()
     #else
-    private lazy var stepper = FallbackStepper()
+    private lazy var fallbackStepper = FallbackStepper()
     #endif
-    #else
+    #endif
+
     private lazy var stepper = UIStepper()
     private var stepperValue: Double = 0
+
+    #if targetEnvironment(macCatalyst) || os(visionOS)
+    private lazy var stepperView: UIView = canUseNativeStepper ? stepper : fallbackStepper
+    #else
+    private lazy var stepperView: UIView = stepper
     #endif
+
 
     var changeBlock: ((Bool) -> Void)?
     var stopBlock: (() -> Void)?
@@ -341,13 +355,13 @@ class StepperView: UIView {
 
 private extension StepperView {
     func setup() {
-        stepper.translatesAutoresizingMaskIntoConstraints = false
-        addSubview(stepper)
+        stepperView.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(stepperView)
         NSLayoutConstraint.activate([
-            stepper.leadingAnchor.constraint(equalTo: leadingAnchor),
-            stepper.topAnchor.constraint(equalTo: topAnchor),
-            stepper.centerXAnchor.constraint(equalTo: centerXAnchor),
-            stepper.centerYAnchor.constraint(equalTo: centerYAnchor),
+            stepperView.leadingAnchor.constraint(equalTo: leadingAnchor),
+            stepperView.topAnchor.constraint(equalTo: topAnchor),
+            stepperView.centerXAnchor.constraint(equalTo: centerXAnchor),
+            stepperView.centerYAnchor.constraint(equalTo: centerYAnchor),
         ])
 
         #if !targetEnvironment(macCatalyst) && !os(visionOS)
@@ -356,29 +370,40 @@ private extension StepperView {
         stepper.addTarget(self, action: #selector(handleTouchUp(_:)), for: .touchUpInside)
         stepper.addTarget(self, action: #selector(handleTouchUp(_:)), for: .touchUpOutside)
         stepper.addTarget(self, action: #selector(handleTouchUp(_:)), for: .touchCancel)
-        #endif
-        #if targetEnvironment(macCatalyst)
-        if let control = stepper as? UIControl {
-            control.addTarget(self, action: #selector(handleChange(_:)), for: .valueChanged)
-        } else if let macOSStepper = stepper as? MacOSStepper {
-            macOSStepper.changeBlock = { [weak self] plus  in
-                guard let self else { return }
-                self.changeBlock?(plus)
-            }
-            macOSStepper.stopBlock = { [weak self] in
-                guard let self else { return }
-                self.stopBlock?()
-            }
-        } else {
-            fatalError()
-        }
-        #else
         stepper.addTarget(self, action: #selector(handleChange(_:)), for: .valueChanged)
+        #else
+        if canUseNativeStepper {
+            stepper.wraps = true
+            stepperValue = stepper.value
+            stepper.addTarget(self, action: #selector(handleTouchUp(_:)), for: .touchUpInside)
+            stepper.addTarget(self, action: #selector(handleTouchUp(_:)), for: .touchUpOutside)
+            stepper.addTarget(self, action: #selector(handleTouchUp(_:)), for: .touchCancel)
+            stepper.addTarget(self, action: #selector(handleChange(_:)), for: .valueChanged)
+        } else {
+            #if targetEnvironment(macCatalyst)
+            if let control = fallbackStepper as? UIControl {
+                control.addTarget(self, action: #selector(handleFallbackChange(_:)), for: .valueChanged)
+            } else if let macOSStepper = fallbackStepper as? MacOSStepper {
+                macOSStepper.changeBlock = { [weak self] plus  in
+                    guard let self else { return }
+                    self.changeBlock?(plus)
+                }
+                macOSStepper.stopBlock = { [weak self] in
+                    guard let self else { return }
+                    self.stopBlock?()
+                }
+            } else {
+                fatalError()
+            }
+            #else
+            fallbackStepper.addTarget(self, action: #selector(handleFallbackChange(_:)), for: .valueChanged)
+            #endif
+        }
         #endif
     }
 
     #if targetEnvironment(macCatalyst) || os(visionOS)
-    @objc private func handleChange(_ sender: FallbackStepper) {
+    @objc private func handleFallbackChange(_ sender: FallbackStepper) {
         let state = sender.stepperState
         switch state {
         case .empty:
@@ -389,7 +414,8 @@ private extension StepperView {
             changeBlock?(true)
         }
     }
-    #else
+    #endif
+
     @objc private func handleChange(_ sender: UIStepper) {
         let orig = stepperValue
         let newValue = sender.value
@@ -407,11 +433,8 @@ private extension StepperView {
         stepperValue = sender.value
         changeBlock?(isPlus)
     }
-    #endif
 
-    #if !targetEnvironment(macCatalyst) && !os(visionOS)
     @objc private func handleTouchUp(_ sender: UIStepper) {
         stopBlock?()
     }
-    #endif
 }

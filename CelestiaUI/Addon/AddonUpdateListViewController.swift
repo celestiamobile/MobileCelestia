@@ -59,10 +59,20 @@ final class AddonUpdateListViewController: UICollectionViewController {
         return dataSource
     }()
 
-    #if !targetEnvironment(macCatalyst)
     private lazy var refreshControl = UIRefreshControl()
     private lazy var cancellables: Set<AnyCancellable> = []
-    #endif
+
+    private lazy var canUseRefreshControl: Bool = {
+        #if targetEnvironment(macCatalyst)
+        if #available(iOS 27, visionOS 27, *) {
+            return true
+        } else {
+            return false
+        }
+        #else
+        return true
+        #endif
+    }()
 
     init(addonUpdateManager: AddonUpdateManager, resourceManager: ResourceManager, subscriptionManager: SubscriptionManager, openAddon: @escaping (ResourceItem) -> Void) {
         self.addonUpdateManager = addonUpdateManager
@@ -86,26 +96,26 @@ final class AddonUpdateListViewController: UICollectionViewController {
 
         collectionView.dataSource = dataSource
 
-        #if !targetEnvironment(macCatalyst)
-        refreshControl.addTarget(self, action: #selector(refreshTriggered), for: .valueChanged)
-        collectionView.refreshControl = refreshControl
+        if canUseRefreshControl {
+            refreshControl.addTarget(self, action: #selector(refreshTriggered), for: .valueChanged)
+            collectionView.refreshControl = refreshControl
 
-        if addonUpdateManager.isCheckingUpdates {
-            refreshControl.beginRefreshing()
-        }
-        addonUpdateManager.$isCheckingUpdates.removeDuplicates().sink { [weak self] refreshing in
-            guard let self else { return }
-            if refreshing {
-                self.refreshControl.beginRefreshing()
-            } else {
-                self.refreshControl.endRefreshing()
+            if addonUpdateManager.isCheckingUpdates {
+                refreshControl.beginRefreshing()
             }
-            if #available(iOS 17, visionOS 1, *) {
-                setNeedsUpdateContentUnavailableConfiguration()
+            addonUpdateManager.$isCheckingUpdates.removeDuplicates().sink { [weak self] refreshing in
+                guard let self else { return }
+                if refreshing {
+                    self.refreshControl.beginRefreshing()
+                } else {
+                    self.refreshControl.endRefreshing()
+                }
+                if #available(iOS 17, visionOS 1, *) {
+                    setNeedsUpdateContentUnavailableConfiguration()
+                }
             }
+            .store(in: &cancellables)
         }
-        .store(in: &cancellables)
-        #endif
 
         if #available(iOS 17, visionOS 1, *) {
             setNeedsUpdateContentUnavailableConfiguration()
@@ -128,8 +138,7 @@ final class AddonUpdateListViewController: UICollectionViewController {
         } else {
             var config = UIContentUnavailableConfiguration.empty()
             config.text = CelestiaString("No Update Available", comment: "Hint that there is no update for installed add-ons.")
-            #if !targetEnvironment(macCatalyst)
-            if !addonUpdateManager.isCheckingUpdates {
+            if canUseRefreshControl && !addonUpdateManager.isCheckingUpdates {
                 #if os(visionOS)
                 config.button = .filled()
                 #else
@@ -145,7 +154,6 @@ final class AddonUpdateListViewController: UICollectionViewController {
                     self.refreshTriggered()
                 }
             }
-            #endif
             contentUnavailableConfiguration = config
         }
     }
