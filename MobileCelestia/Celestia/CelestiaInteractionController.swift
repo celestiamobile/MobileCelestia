@@ -135,6 +135,9 @@ class CelestiaInteractionController: UIViewController {
     private var isObservingGyroscopeUpdates = false
     private lazy var motionManager: CMMotionManager = {
         let motionManager = CMMotionManager()
+        if #available(iOS 27, *) {
+            motionManager.deviceMotionBody = view
+        }
         motionManager.deviceMotionUpdateInterval = 0.02
         return motionManager
     }()

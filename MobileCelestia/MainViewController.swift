@@ -365,22 +365,30 @@ extension MainViewController {
         }
 
         // Check news
-        Task {
+        Task { [weak self] in
+            guard let self else { return }
             do {
-                let item = try await requestHandler.getLatestMetadata(language: locale)
-                if userDefaults[.lastNewsID] != item.id {
-                    let vc = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromGuide(guideItemID: item.id, language: locale, subscriptionManager: subscriptionManager), requestHandler: requestHandler, actionHandler: { [weak self] action, viewController in
+                let item = try await self.requestHandler.getLatestMetadata(language: locale)
+                if self.userDefaults[.lastNewsID] != item.id {
+                    let vc = CommonWebViewController(
+                        executor: self.executor,
+                        resourceManager: self.resourceManager,
+                        url: .fromGuide(guideItemID: item.id, language: locale, subscriptionManager: self.subscriptionManager),
+                        requestHandler: self.requestHandler,
+                        actionHandler: { [weak self] action, viewController in
                         guard let self else { return }
-                        if case let CommonWebViewController.WebAction.ack(id) = action, id == item.id {
-                            self.userDefaults[.lastNewsID] = id
-                            #if !targetEnvironment(macCatalyst)
-                            self.pushManager.clearDeliveredArticleNotifications(articleID: id)
-                            self.notifyPushManagerOfRegistrationStateChange()
-                            #endif
-                        } else {
-                            self.commonWebActionHandler(action, viewController)
-                        }
-                    }, matchingQueryKeys: ["guide"])
+                            if case let CommonWebViewController.WebAction.ack(id) = action, id == item.id {
+                                self.userDefaults[.lastNewsID] = id
+                                #if !targetEnvironment(macCatalyst)
+                                self.pushManager.clearDeliveredArticleNotifications(articleID: id)
+                                self.notifyPushManagerOfRegistrationStateChange()
+                                #endif
+                            } else {
+                                self.commonWebActionHandler(action, viewController)
+                            }
+                        },
+                        matchingQueryKeys: ["guide"]
+                    )
                     let nav = BaseNavigationController(rootViewController: vc)
                     nav.setNavigationBarHidden(true, animated: false)
                     self.showViewController(nav, key: item.id, prefersMediumDetent: prefersMediumDetent, titleVisible: false)
@@ -389,7 +397,7 @@ extension MainViewController {
             } catch {}
 
             #if !targetEnvironment(macCatalyst)
-            setUpPushNotificationsIfNeeded()
+            self.setUpPushNotificationsIfNeeded()
             #endif
         }
     }

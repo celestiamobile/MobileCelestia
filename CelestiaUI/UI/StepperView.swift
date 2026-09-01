@@ -311,10 +311,14 @@ class FallbackStepper: UIControl {
 class StepperView: UIView {
     #if targetEnvironment(macCatalyst) || os(visionOS)
     private lazy var canUseNativeStepper: Bool = {
+        #if targetEnvironment(macCatalyst)
+        return false
+        #else
         if #available(iOS 27, visionOS 27, *) {
             return true
         }
         return false
+        #endif
     }()
 
     #if targetEnvironment(macCatalyst)

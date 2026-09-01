@@ -18,7 +18,7 @@ class SettingsMainViewController: UICollectionViewController {
         self.selection = selection
         super.init(collectionViewLayout: UICollectionViewCompositionalLayout(sectionProvider: { sectionIndex, environment in
             #if targetEnvironment(macCatalyst)
-            var configuration = UICollectionLayoutListConfiguration(appearance: .grouped)
+            var configuration = UICollectionLayoutListConfiguration(appearance: .sidebar)
             #else
             var configuration = UICollectionLayoutListConfiguration(appearance: .defaultGrouped)
             #endif
