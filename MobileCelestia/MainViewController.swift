@@ -721,7 +721,14 @@ extension MainViewController: CelestiaControllerDelegate {
         self.status = .loaded
         self.loadingController.remove()
         #if targetEnvironment(macCatalyst)
-        split.setSidebarViewController(actionViewController)
+        let sidebarNavigation = split.setSidebarViewController(actionViewController)
+        sidebarNavigation.view.frame = CGRect(
+            x: 0,
+            y: 0,
+            width: ToolbarViewController.Constants.width,
+            height: split.view.bounds.height
+        )
+        sidebarNavigation.view.layoutIfNeeded()
         setupTouchBar()
         #endif
         UIMenuSystem.main.setNeedsRebuild()
