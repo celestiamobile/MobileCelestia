@@ -230,7 +230,8 @@ extension CelestiaViewController: CelestiaInteractionControllerDelegate {
 
 extension CelestiaViewController: CelestiaDisplayControllerDelegate {
     nonisolated func celestiaDisplayControllerLoadingSucceeded(_ celestiaDisplayController: CelestiaDisplayController) {
-        Task.detached { @MainActor in
+        Task.detached { @MainActor [weak self] in
+            guard let self else { return }
             let interactionController = CelestiaInteractionController(subscriptionManager: self.subscriptionManager, core: self.core, executor: self.executor, userDefaults: self.userDefaults)
             #if !targetEnvironment(macCatalyst)
             interactionController.setGyroscopeEnabled(self.gyroscopeSettings.isEnabled)

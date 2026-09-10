@@ -211,7 +211,8 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: UICollectionViewCo
         self.textInputHandler = textInputHandler
         super.init(collectionViewLayout: UICollectionViewFlowLayout())
         var configuration = UICollectionLayoutListConfiguration(appearance: .defaultGrouped)
-        configuration.trailingSwipeActionsConfigurationProvider = { indexPath in
+        configuration.trailingSwipeActionsConfigurationProvider = { [weak self] indexPath in
+            guard let self else { return UISwipeActionsConfiguration(actions: []) }
             var actions = [UIContextualAction]()
             if item.canBeModified {
                 actions.append(

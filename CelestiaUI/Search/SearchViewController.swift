@@ -73,8 +73,10 @@ public class SearchViewController: UIViewController {
 
         if shouldActivate {
             Task {
-                try await Task.sleep(nanoseconds: 100000000)
-                self.searchController.searchBar.becomeFirstResponder()
+                do {
+                    try await Task.sleep(nanoseconds: 100000000)
+                    self.searchController.searchBar.becomeFirstResponder()
+                } catch {}
             }
         }
     }

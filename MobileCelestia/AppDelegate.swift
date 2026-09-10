@@ -309,8 +309,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
         Task { @MainActor in
-            try await Task.sleep(nanoseconds: 5_000_000_000)
-            application.endBackgroundTask(backgroundTaskID)
+            do {
+                try await Task.sleep(nanoseconds: 5_000_000_000)
+                application.endBackgroundTask(backgroundTaskID)
+            } catch {}
         }
     }
 }

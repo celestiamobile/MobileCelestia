@@ -72,8 +72,10 @@ class MainSceneDelegate: CommonSceneDelegate {
         if let userActivity = connectionOptions.userActivities.first {
             // Delay this so the view gets loaded before user activity gets handled
             Task {
-                try await Task.sleep(nanoseconds: 500000000)
-                AppDelegate.handleUserActivity(userActivity)
+                do {
+                    try await Task.sleep(nanoseconds: 500000000)
+                    AppDelegate.handleUserActivity(userActivity)
+                } catch {}
             }
         }
     }
@@ -85,8 +87,10 @@ class MainSceneDelegate: CommonSceneDelegate {
             return
         }
         Task { @MainActor in
-            try await Task.sleep(nanoseconds: 5_000_000_000)
-            application.endBackgroundTask(backgroundTaskID)
+            do {
+                try await Task.sleep(nanoseconds: 5_000_000_000)
+                application.endBackgroundTask(backgroundTaskID)
+            } catch {}
         }
     }
 
