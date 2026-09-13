@@ -559,7 +559,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 2640;
-				LastUpgradeCheck = 2600;
+				LastUpgradeCheck = 2700;
 				ORGANIZATIONNAME = "Celestia Development Team";
 				TargetAttributes = {
 					979D2F7923FEB1A6005D2592 = {
