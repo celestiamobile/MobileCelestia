@@ -72,6 +72,7 @@ class MainViewController: UIViewController {
     #if !targetEnvironment(macCatalyst)
     private var currentWindowSceneForMirroring: UIWindowScene?
     private var disabledScalingBehindSheets: Bool = false
+    private var externalDisplayAccessoryRegistration: Any?
     #endif
 
     private var urlToOpen: AppURL?
@@ -158,6 +159,15 @@ class MainViewController: UIViewController {
         #if !targetEnvironment(macCatalyst)
         NotificationCenter.default.addObserver(self, selector: #selector(newScreenConnected(_:)), name: newScreenConnectedNotificationName, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(screenDisconnected(_:)), name: screenDisconnectedNotificationName, object: nil)
+        // Beginning in iOS 27, the system only connects the noninteractive external-display
+        // scene after the app registers a scene accessory for it. Earlier releases connect
+        // this scene automatically via the Info.plist scene manifest.
+        if #available(iOS 27, *) {
+            let configuration = UISceneConfiguration()
+            configuration.delegateClass = ExternalScreenSceneDelegate.self
+            let accessory = UISceneAccessory.externalNonInteractive(sceneConfiguration: configuration)
+            externalDisplayAccessoryRegistration = registerSceneAccessory(accessory)
+        }
         #endif
         NotificationCenter.default.addObserver(self, selector: #selector(presentHelp), name: showHelpNotificationName, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(showSettings), name: showPreferencesNotificationName, object: nil)
