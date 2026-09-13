@@ -57,7 +57,7 @@ class BrowserCommonViewController: UICollectionViewController {
             return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: itemIdentifier)
         }
         let headerRegistration = UICollectionView.SupplementaryRegistration<UICollectionViewListCell>(elementKind: UICollectionView.elementKindSectionHeader) { supplementaryView, elementKind, indexPath in
-            var contentConfiguration = UIListContentConfiguration.groupedFooter()
+            var contentConfiguration = UIListContentConfiguration.celestiaFooter()
             contentConfiguration.text = CelestiaString("Subsystem", comment: "Subsystem of an object (e.g. planetarium system)")
             supplementaryView.contentConfiguration = contentConfiguration
         }

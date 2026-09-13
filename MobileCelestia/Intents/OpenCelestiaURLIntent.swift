@@ -17,6 +17,12 @@ struct OpenCelestiaURLIntent: AppIntent {
     static let title: LocalizedStringResource = "Open a Celestia URL"
     static let description = IntentDescription("Opens the app and navigates to a cel:// URL.")
 
+    @available(iOS 26, macOS 26, macCatalyst 26, visionOS 26, *)
+    static let supportedModes: IntentModes = .foreground
+
+    @available(iOS, deprecated: 26)
+    @available(macOS, deprecated: 26)
+    @available(visionOS, deprecated: 26)
     static let openAppWhenRun: Bool = true
 
     @Dependency

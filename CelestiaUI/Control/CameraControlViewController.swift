@@ -134,7 +134,7 @@ public final class CameraControlViewController: UICollectionViewController {
         }
 
         let footerRegistration = UICollectionView.SupplementaryRegistration<UICollectionViewListCell>(elementKind: UICollectionView.elementKindSectionFooter) { [weak self] supplementaryView, elementKind, indexPath in
-            var contentConfiguration = UIListContentConfiguration.groupedFooter()
+            var contentConfiguration = UIListContentConfiguration.celestiaFooter()
             if let self, let section = self.dataSource.sectionIdentifier(for: indexPath.section) {
                 switch section {
                 case .pitchYawRow:

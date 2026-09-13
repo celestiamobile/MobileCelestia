@@ -77,7 +77,7 @@ extension SettingsMainViewController {
         #if targetEnvironment(macCatalyst)
         var configuration = UIListContentConfiguration.sidebarHeader()
         #else
-        var configuration = UIListContentConfiguration.groupedHeader()
+        var configuration = UIListContentConfiguration.celestiaHeader()
         #endif
         configuration.text = sections[indexPath.section].title
 

@@ -72,7 +72,7 @@ class DataLocationSelectionViewController: UICollectionViewController {
         }
         
         let footerRegistration = UICollectionView.SupplementaryRegistration<UICollectionViewListCell>(elementKind: UICollectionView.elementKindSectionFooter) { supplementaryView, elementKind, indexPath in
-            var contentConfiguration = UIListContentConfiguration.groupedFooter()
+            var contentConfiguration = UIListContentConfiguration.celestiaFooter()
             contentConfiguration.text = CelestiaString("Configuration will take effect after a restart.", comment: "Change requires a restart")
             supplementaryView.contentConfiguration = contentConfiguration
         }

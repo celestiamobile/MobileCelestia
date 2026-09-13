@@ -43,9 +43,17 @@ public class SelectableListCell: UICollectionViewListCell {
         var configuration: UIBackgroundConfiguration
         switch backgroundStyle {
         case .grouped:
-            configuration = .listGroupedCell()
+            if #available(iOS 18, visionOS 2, *) {
+                configuration = .listCell()
+            } else {
+                configuration = .listGroupedCell()
+            }
         case .plain:
-            configuration = .listPlainCell()
+            if #available(iOS 18, visionOS 2, *) {
+                configuration = .listCell()
+            } else {
+                configuration = .listPlainCell()
+            }
         case .clear:
             configuration = .clear()
         }

@@ -20,6 +20,22 @@ public extension UICollectionLayoutListConfiguration.Appearance {
 }
 
 public extension UIListContentConfiguration {
+    static func celestiaHeader() -> Self {
+        if #available(iOS 18, visionOS 2, *) {
+            return header()
+        } else {
+            return groupedHeader()
+        }
+    }
+
+    static func celestiaFooter() -> Self {
+        if #available(iOS 18, visionOS 2, *) {
+            return footer()
+        } else {
+            return groupedFooter()
+        }
+    }
+
     static func celestiaCell() -> Self {
         var configuration = cell()
         configuration.directionalLayoutMargins = NSDirectionalEdgeInsets(top: GlobalConstants.listItemMediumMarginVertical, leading: GlobalConstants.listItemMediumMarginHorizontal, bottom: GlobalConstants.listItemMediumMarginVertical, trailing: GlobalConstants.listItemMediumMarginHorizontal)

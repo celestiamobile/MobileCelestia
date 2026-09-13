@@ -19,6 +19,12 @@ struct TakeScreenshotIntent: AppIntent {
     static let title: LocalizedStringResource = "Take a screenshot"
     static let description = IntentDescription("Opens the app, captures a screenshot, and returns it as a file.")
 
+    @available(iOS 26, macOS 26, macCatalyst 26, visionOS 26, *)
+    static let supportedModes: IntentModes = .foreground
+
+    @available(iOS, deprecated: 26)
+    @available(macOS, deprecated: 26)
+    @available(visionOS, deprecated: 26)
     static let openAppWhenRun: Bool = true
 
     @Dependency

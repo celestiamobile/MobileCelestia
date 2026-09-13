@@ -132,7 +132,7 @@ class GoToInputViewController: UICollectionViewController {
             return collectionView.dequeueConfiguredReusableCell(using: cellRegistration, for: indexPath, item: itemIdentifier)
         }
         let headerRegistration = UICollectionView.SupplementaryRegistration<UICollectionViewListCell>(elementKind: UICollectionView.elementKindSectionHeader) { [weak self] supplementaryView, _, indexPath in
-            var configuration = UIListContentConfiguration.groupedHeader()
+            var configuration = UIListContentConfiguration.celestiaHeader()
             if let self, let section = self.dataSource.sectionIdentifier(for: indexPath.section) {
                 switch section {
                 case .object:

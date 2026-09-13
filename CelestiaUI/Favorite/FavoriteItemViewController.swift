@@ -312,6 +312,19 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: UICollectionViewCo
     }
 
     override func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
+        if #available(iOS 16, visionOS 1, *) {
+            return nil
+        }
+        return contextMenuConfiguration(for: indexPath)
+    }
+
+    @available(iOS 16, visionOS 1, *)
+    override func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
+        guard indexPaths.count == 1, let indexPath = indexPaths.first else { return nil }
+        return contextMenuConfiguration(for: indexPath)
+    }
+
+    private func contextMenuConfiguration(for indexPath: IndexPath) -> UIContextMenuConfiguration? {
         guard !collectionView.isEditing else { return nil }
         return UIContextMenuConfiguration(identifier: nil, previewProvider: nil) { [weak self] (_) -> UIMenu? in
             guard let self = self else { return nil }

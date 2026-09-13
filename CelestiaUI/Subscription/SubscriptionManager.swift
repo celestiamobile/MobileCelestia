@@ -147,7 +147,7 @@ public class SubscriptionManager {
         #if os(visionOS) || !APPSTORE_BUILD
         return .empty
         #else
-        let lifetimeStatus = lifetimeStatus(for: await Transaction.currentEntitlement(for: SubscriptionManager.lifetimeProductID))
+        let lifetimeStatus = lifetimeStatus(for: await currentEntitlement(for: SubscriptionManager.lifetimeProductID))
         if case SubscriptionStatus.lifetime(let originalTransactionID, let environment) = lifetimeStatus {
             var serverInvalidated = false
             do {
@@ -163,9 +163,9 @@ public class SubscriptionManager {
             // co-existing subscription isn't ignored just because lifetime got revoked.
         }
 
-        let weeklyStatus = subscriptionStatus(for: await Transaction.currentEntitlement(for: Plan.Cycle.weekly.id), cycle: .weekly)
-        let monthlyStatus = subscriptionStatus(for: await Transaction.currentEntitlement(for: Plan.Cycle.monthly.id), cycle: .monthly)
-        let yearlyStatus = subscriptionStatus(for: await Transaction.currentEntitlement(for: Plan.Cycle.yearly.id), cycle: .yearly)
+        let weeklyStatus = subscriptionStatus(for: await currentEntitlement(for: Plan.Cycle.weekly.id), cycle: .weekly)
+        let monthlyStatus = subscriptionStatus(for: await currentEntitlement(for: Plan.Cycle.monthly.id), cycle: .monthly)
+        let yearlyStatus = subscriptionStatus(for: await currentEntitlement(for: Plan.Cycle.yearly.id), cycle: .yearly)
 
         var newStatus: SubscriptionStatus = yearlyStatus // Fallback to yearly status
         var expiration: Date?
@@ -381,6 +381,18 @@ public class SubscriptionManager {
         return try await requestHandler.getSubscriptionValidity(originalTransactionID: originalTransactionID, sandbox: environment != .production, productType: productType)
     }
 
+    private func currentEntitlement(for productID: String) async -> VerificationResult<Transaction>? {
+        if #available(iOS 18.4, macOS 15.4, visionOS 2.4, *) {
+            // Regular IAP product IDs have at most one current entitlement.
+            for await entitlement in Transaction.currentEntitlements(for: productID) {
+                return entitlement
+            }
+            return nil
+        } else {
+            return await Transaction.currentEntitlement(for: productID)
+        }
+    }
+
     private func subscriptionStatus(for entitlement: VerificationResult<Transaction>?, cycle: Plan.Cycle) -> SubscriptionStatus {
         switch entitlement {
         case .unverified:
@@ -415,26 +427,25 @@ public class SubscriptionManager {
 
 extension SubscriptionManager.SubscriptionEnvironment {
     init(transaction: Transaction) {
-        if #available(iOS 16, *) {
+        if #available(iOS 16, macOS 13, visionOS 1, *) {
             switch transaction.environment {
             case .production:
                 self = .production
-                return
             case .sandbox:
                 self = .sandbox
-                return
             case .xcode:
                 self = .xcode
-                return
             default:
-                break
+                NSLog("Unknown StoreKit transaction environment: %@. Falling back to production.", transaction.environment.rawValue)
+                self = .production
             }
-        }
-        let hasSandboxReceipt = Bundle.main.appStoreReceiptURL?.path.contains("sandboxReceipt") ?? false
-        if hasSandboxReceipt {
-            self = .sandbox
         } else {
-            self = .production
+            let hasSandboxReceipt = Bundle.main.appStoreReceiptURL?.path.contains("sandboxReceipt") ?? false
+            if hasSandboxReceipt {
+                self = .sandbox
+            } else {
+                self = .production
+            }
         }
     }
 }

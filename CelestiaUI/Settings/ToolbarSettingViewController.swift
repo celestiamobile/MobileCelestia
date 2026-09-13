@@ -68,7 +68,7 @@ class ToolbarSettingViewController: SubscriptionBackingViewController {
             return indexPath.section == 0
         }
 
-        override func collectionView(_ collectionView: UICollectionView, targetIndexPathForMoveFromItemAt currentIndexPath: IndexPath, toProposedIndexPath proposedIndexPath: IndexPath) -> IndexPath {
+        override func collectionView(_ collectionView: UICollectionView, targetIndexPathForMoveOfItemFromOriginalIndexPath originalIndexPath: IndexPath, atCurrentIndexPath currentIndexPath: IndexPath, toProposedIndexPath proposedIndexPath: IndexPath) -> IndexPath {
             guard proposedIndexPath.section == 0 else { return IndexPath(item: addedActions.count - 1, section: 0) }
             if proposedIndexPath.item >= addedActions.count {
                 return IndexPath(item: addedActions.count - 1, section: proposedIndexPath.section)
@@ -171,7 +171,7 @@ class ToolbarSettingViewController: SubscriptionBackingViewController {
 
         override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
             let cell = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Footer", for: indexPath) as! UICollectionViewListCell
-            var configuration = UIListContentConfiguration.groupedFooter()
+            var configuration = UIListContentConfiguration.celestiaFooter()
             configuration.text = CelestiaString("Configuration will take effect after a restart.", comment: "Change requires a restart")
             cell.contentConfiguration = configuration
             return cell

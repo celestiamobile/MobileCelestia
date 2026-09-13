@@ -21,6 +21,12 @@ struct SearchIntent: ShowInAppSearchResultsIntent {
     @Dependency
     var stateManager: StateManager
 
+    @available(iOS 26, macOS 26, macCatalyst 26, visionOS 26, *)
+    static let supportedModes: IntentModes = .foreground
+
+    @available(iOS, deprecated: 26)
+    @available(macOS, deprecated: 26)
+    @available(visionOS, deprecated: 26)
     static let openAppWhenRun: Bool = true
 
     @MainActor

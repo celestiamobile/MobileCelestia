@@ -323,7 +323,11 @@ extension AppDelegate {
 
         guard builder.system == .main else { return }
 
-        builder.remove(menu: .newScene)
+        if #available(iOS 26, macCatalyst 26, visionOS 26, *) {
+            builder.remove(menu: .newItem)
+        } else {
+            builder.remove(menu: .newScene)
+        }
         builder.remove(menu: .preferences)
         builder.remove(menu: .about)
         builder.remove(menu: .format)

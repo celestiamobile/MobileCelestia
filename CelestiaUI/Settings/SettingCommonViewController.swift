@@ -333,13 +333,13 @@ extension SettingCommonViewController {
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if kind == UICollectionView.elementKindSectionHeader {
             let cell = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Header", for: indexPath) as! UICollectionViewListCell
-            var contentConfiguration = UIListContentConfiguration.groupedHeader()
+            var contentConfiguration = UIListContentConfiguration.celestiaHeader()
             contentConfiguration.text = item.sections[indexPath.section].header
             cell.contentConfiguration = contentConfiguration
             return cell
         } else if kind == UICollectionView.elementKindSectionFooter {
             let cell = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "Footer", for: indexPath) as! UICollectionViewListCell
-            var contentConfiguration = UIListContentConfiguration.groupedFooter()
+            var contentConfiguration = UIListContentConfiguration.celestiaFooter()
             contentConfiguration.text = item.sections[indexPath.section].footer
             cell.contentConfiguration = contentConfiguration
             return cell

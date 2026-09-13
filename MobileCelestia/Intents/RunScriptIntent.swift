@@ -49,6 +49,12 @@ struct RunScriptIntent: AppIntent {
     static let title: LocalizedStringResource = "Run a script"
     static let description = IntentDescription("Opens the app and runs a Celestia script from text or a file.")
 
+    @available(iOS 26, macOS 26, macCatalyst 26, visionOS 26, *)
+    static let supportedModes: IntentModes = .foreground
+
+    @available(iOS, deprecated: 26)
+    @available(macOS, deprecated: 26)
+    @available(visionOS, deprecated: 26)
     static let openAppWhenRun: Bool = true
 
     @Dependency

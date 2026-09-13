@@ -43,6 +43,12 @@ struct GoToIntent: AppIntent {
     static let title: LocalizedStringResource = "Go to an astronomical object"
     static let description = IntentDescription("Opens the app and goes to an astronomical object.")
 
+    @available(iOS 26, macOS 26, macCatalyst 26, visionOS 26, *)
+    static let supportedModes: IntentModes = .foreground
+
+    @available(iOS, deprecated: 26)
+    @available(macOS, deprecated: 26)
+    @available(visionOS, deprecated: 26)
     static let openAppWhenRun: Bool = true
 
     @Dependency
