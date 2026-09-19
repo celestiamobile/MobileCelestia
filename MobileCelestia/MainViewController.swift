@@ -1197,6 +1197,9 @@ Device Model: \(model)
                     }))
                 }
                 item.accessibilityLabel = action.accessibilityLabel
+                if #available(anyAppleOS 27.1, *) {
+                    item.axisBehavior = .horizontalOnly
+                }
                 return item
             }
 

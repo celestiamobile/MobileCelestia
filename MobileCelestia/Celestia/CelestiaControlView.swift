@@ -80,8 +80,12 @@ class ControlButtonView: UIView, UIContentSizeCategoryAdjusting {
 
     private func createButton(_ button: CelestiaControlButton) -> UIButton {
         var configuration = UIButton.Configuration.plain()
-        configuration.contentInsets = NSDirectionalEdgeInsets(top: Constants.buttonPadding, leading: Constants.buttonPadding, bottom: Constants.buttonPadding, trailing: Constants.buttonPadding)
-        configuration.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(textStyle: .title3)
+        if #available(anyAppleOS 26.0, *) {
+            configuration.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(weight: .medium)
+        } else {
+            configuration.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(textStyle: .title3)
+            configuration.contentInsets = NSDirectionalEdgeInsets(top: Constants.buttonPadding, leading: Constants.buttonPadding, bottom: Constants.buttonPadding, trailing: Constants.buttonPadding)
+        }
         switch button {
         case let .pressAndHold(image, _, _):
             configuration.image = image?.withRenderingMode(.alwaysTemplate)
@@ -91,8 +95,11 @@ class ControlButtonView: UIView, UIContentSizeCategoryAdjusting {
             break
         }
         let uiButton = StandardButton(configuration: configuration)
-        uiButton.tintColor = .secondaryLabel
-        uiButton.adjustsImageSizeForAccessibilityContentSizeCategory = true
+        if #available(anyAppleOS 26.0, *) {
+        } else {
+            uiButton.tintColor = .secondaryLabel
+            uiButton.adjustsImageSizeForAccessibilityContentSizeCategory = true
+        }
         switch button {
         case let .pressAndHold(_, _, accessibilityLabel):
             uiButton.accessibilityLabel = accessibilityLabel
@@ -126,6 +133,13 @@ class ControlButtonView: UIView, UIContentSizeCategoryAdjusting {
                 button.topAnchor.constraint(equalTo: topAnchor),
                 button.bottomAnchor.constraint(equalTo: bottomAnchor),
             ])
+
+            if #available(anyAppleOS 26, *) {
+                NSLayoutConstraint.activate([
+                    button.widthAnchor.constraint(equalToConstant: 48),
+                    button.heightAnchor.constraint(equalToConstant: 48)
+                ])
+            }
         }
         switch configuration.button {
         case .toggle(_, let offImage, _, let offAccessibilityValue, let onImage, _, let onAccessibilityValue):
@@ -165,12 +179,6 @@ class ControlButtonView: UIView, UIContentSizeCategoryAdjusting {
 }
 
 final class CelestiaControlView: UIView {
-    private enum Constants {
-        static let controlViewMarginVertical: CGFloat = 4
-        static let controlViewSpacing: CGFloat = 0
-        static let cornerRadius: CGFloat = 8
-    }
-
     private let buttonProperties: [CelestiaControlButton]
     private var buttonViews = [ControlButtonView]()
 
@@ -221,22 +229,30 @@ final class CelestiaControlView: UIView {
         let stackView = UIStackView(arrangedSubviews: buttons)
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .vertical
-        stackView.spacing = Constants.controlViewSpacing
+
+        let verticalMargin: CGFloat
+        if #available(anyAppleOS 26.0, *) {
+            stackView.spacing = 4
+            verticalMargin = 0
+        } else {
+            stackView.spacing = 0
+            verticalMargin = 4
+        }
 
         visualBackground.contentView.addSubview(stackView)
         NSLayoutConstraint.activate([
             stackView.leadingAnchor.constraint(equalTo: visualBackground.contentView.leadingAnchor),
             stackView.trailingAnchor.constraint(equalTo: visualBackground.contentView.trailingAnchor),
-            stackView.topAnchor.constraint(equalTo: visualBackground.contentView.topAnchor, constant: Constants.controlViewMarginVertical),
-            stackView.bottomAnchor.constraint(equalTo: visualBackground.contentView.bottomAnchor, constant: -Constants.controlViewMarginVertical)
+            stackView.topAnchor.constraint(equalTo: visualBackground.contentView.topAnchor, constant: verticalMargin),
+            stackView.bottomAnchor.constraint(equalTo: visualBackground.contentView.bottomAnchor, constant: -verticalMargin)
         ])
 
         if #available(iOS 26, *) {
-            visualBackground.cornerConfiguration = .corners(radius: .fixed(Constants.cornerRadius))
+            visualBackground.cornerConfiguration = .capsule()
         } else {
             clipsToBounds = true
             layer.cornerCurve = .continuous
-            layer.cornerRadius = Constants.cornerRadius
+            layer.cornerRadius = 8
         }
     }
 
