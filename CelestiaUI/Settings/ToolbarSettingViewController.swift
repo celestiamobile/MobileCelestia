@@ -10,7 +10,7 @@
 import UIKit
 
 class ToolbarSettingViewController: SubscriptionBackingViewController {
-    private class ContentViewController: UICollectionViewController {
+    private class ContentViewController: UICollectionViewController, ToolbarAwareViewController {
         private let userDefaults: UserDefaults
         private let toolbarActionsKey: String
         private let assetProvider: AssetProvider
@@ -62,6 +62,9 @@ class ToolbarSettingViewController: SubscriptionBackingViewController {
             super.setEditing(editing, animated: animated)
 
             collectionView.reloadData()
+            #if targetEnvironment(macCatalyst)
+            updateToolbarIfNeeded()
+            #endif
         }
 
         override func collectionView(_ collectionView: UICollectionView, canEditItemAt indexPath: IndexPath) -> Bool {
@@ -176,12 +179,37 @@ class ToolbarSettingViewController: SubscriptionBackingViewController {
             cell.contentConfiguration = configuration
             return cell
         }
+
+        #if targetEnvironment(macCatalyst)
+        func supportedToolbarItemIdentifiers(for toolbarContainerViewController: ToolbarContainerViewController) -> [NSToolbarItem.Identifier] {
+            return [isEditing ? .toolbarSettingsDone : .toolbarSettingsEdit]
+        }
+
+        func toolbarContainerViewController(_ toolbarContainerViewController: ToolbarContainerViewController, itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier) -> NSToolbarItem? {
+            if itemIdentifier == .toolbarSettingsEdit {
+                return NSToolbarItem(itemIdentifier: itemIdentifier, buttonTitle: CelestiaString("Edit", comment: "Enter toolbar customization mode"), target: self, action: #selector(startEditing))
+            }
+            if itemIdentifier == .toolbarSettingsDone {
+                return NSToolbarItem(itemIdentifier: itemIdentifier, buttonTitle: CelestiaString("Done", comment: "Exit toolbar customization mode"), target: self, action: #selector(endEditing))
+            }
+            return nil
+        }
+
+        @objc private func startEditing() {
+            setEditing(true, animated: true)
+        }
+
+        @objc private func endEditing() {
+            setEditing(false, animated: true)
+        }
+        #endif
     }
 
     init(context: ToolbarSettingContext, userDefaults: UserDefaults, subscriptionManager: SubscriptionManager, assetProvider: AssetProvider, openSubscriptionManagement: @escaping () -> Void) {
         super.init(subscriptionManager: subscriptionManager, openSubscriptionManagement: openSubscriptionManagement) { containerViewController in
-            containerViewController.navigationItem.rightBarButtonItem = containerViewController.editButtonItem
-            return ContentViewController(userDefaults: userDefaults, toolbarActionsKey: context.toolbarActionsKey, assetProvider: assetProvider)
+            let contentViewController = ContentViewController(userDefaults: userDefaults, toolbarActionsKey: context.toolbarActionsKey, assetProvider: assetProvider)
+            contentViewController.navigationItem.rightBarButtonItem = containerViewController.editButtonItem
+            return contentViewController
         }
     }
 
@@ -202,3 +230,10 @@ class ToolbarSettingViewController: SubscriptionBackingViewController {
         windowTitle = navigationItem.title
     }
 }
+
+#if targetEnvironment(macCatalyst)
+private extension NSToolbarItem.Identifier {
+    static let toolbarSettingsEdit = NSToolbarItem.Identifier("\(Bundle(for: ToolbarSettingViewController.self).bundleIdentifier!).settings.toolbar.edit")
+    static let toolbarSettingsDone = NSToolbarItem.Identifier("\(Bundle(for: ToolbarSettingViewController.self).bundleIdentifier!).settings.toolbar.done")
+}
+#endif
