@@ -59,6 +59,8 @@ class CelestiaViewController: UIViewController {
     private let core: AppCore
     private let executor: CelestiaExecutor
     private let userDefaults: UserDefaults
+    private var requestedToolbarItems = [UIBarButtonItem]()
+    private var controlToolbarItems = [UIBarButtonItem]()
 
     // On Mac, we have top title bar/toolbar, which covers
     // part of the view, we do not to extend to below the bars
@@ -122,6 +124,23 @@ class CelestiaViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(windowSceneEnterForegroundNotification(_:)), name: screenEnterForegroundNotificationName, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(windowSceneEnterBackgroundNotification(_:)), name: screenEnterBackgroundNotificationName, object: nil)
         #endif
+    }
+
+    override func setToolbarItems(_ toolbarItems: [UIBarButtonItem]?, animated: Bool) {
+        requestedToolbarItems = toolbarItems ?? []
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        if #available(anyAppleOS 27.1, *) {
+            requestedToolbarItems.forEach { $0.visibilityPriority = .high }
+        }
+        #endif
+        updateToolbarItems(animated: animated)
+    }
+
+    private func updateToolbarItems(animated: Bool) {
+        var toolbarItems = requestedToolbarItems
+        toolbarItems.append(contentsOf: controlToolbarItems)
+        super.setToolbarItems(toolbarItems, animated: animated)
+        navigationController?.setToolbarHidden(toolbarItems.isEmpty, animated: animated)
     }
 
     override func pressesBegan(_ presses: Set<UIPress>, with event: UIPressesEvent?) {
@@ -225,6 +244,11 @@ extension CelestiaViewController: CelestiaInteractionControllerDelegate {
 
     func celestiaInteractionControllerRequestGo(_ celestiaInteractionController: CelestiaInteractionController) {
         delegate?.celestiaControllerRequestGo(self)
+    }
+
+    func celestiaInteractionController(_ celestiaInteractionController: CelestiaInteractionController, didUpdateControlToolbarItems toolbarItems: [UIBarButtonItem]) {
+        controlToolbarItems = toolbarItems
+        updateToolbarItems(animated: true)
     }
 }
 

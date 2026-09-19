@@ -24,6 +24,7 @@ protocol CelestiaInteractionControllerDelegate: AnyObject {
     func celestiaInteractionController(_ celestiaInteractionController: CelestiaInteractionController, requestShowSubsystemWithSelection selection: Selection)
     func celestiaInteractionController(_ celestiaInteractionController: CelestiaInteractionController, requestWebInfo webURL: URL)
     func celestiaInteractionControllerRequestGo(_ celestiaInteractionController: CelestiaInteractionController)
+    func celestiaInteractionController(_ celestiaInteractionController: CelestiaInteractionController, didUpdateControlToolbarItems toolbarItems: [UIBarButtonItem])
     func celestiaInteractionControllerCanAcceptKeyEvents(_ celestiaInteractionController: CelestiaInteractionController) -> Bool
 }
 
@@ -86,7 +87,7 @@ class CelestiaInteractionController: UIViewController {
         }
         return QuickAction.defaultItems
     }()
-    private lazy var activeControlView = CelestiaControlView(items: controlViewActions.compactMap { action in
+    private lazy var controlButtons = controlViewActions.map { action in
         switch action {
         case .mode:
             CelestiaControlButton.toggle(accessibilityLabel:  CelestiaString("Toggle Interaction Mode", comment: "Touch interaction mode"), offImage: UIImage(systemName: "cube"), offAction: .switchToObject, offAccessibilityValue: CelestiaString("Camera Mode", comment: "Interaction mode for touch"), onImage: UIImage(systemName: "video"), onAction: .switchToCamera, onAccessibilityValue: CelestiaString("Object Mode", comment: "Interaction mode for touch"))
@@ -105,7 +106,15 @@ class CelestiaInteractionController: UIViewController {
         case .go:
             CelestiaControlButton.tap(image: UIImage(systemName: "paperplane.circle"), action: .go, accessibilityLabel: CelestiaString("Go", comment: "Go to an object"))
         }
-    })
+    }
+    private lazy var activeControlView = CelestiaControlView(items: controlButtons)
+    private lazy var controlToolbarItems: [UIBarButtonItem] = {
+        if #available(anyAppleOS 27.1, *) {
+            return controlButtons.map { createControlToolbarItem(for: $0) }
+        }
+        return []
+    }()
+    private var controlButtonsByToolbarItem = [ObjectIdentifier: CelestiaControlButton]()
     #endif
 
     // MARK: gesture
@@ -226,25 +235,52 @@ class CelestiaInteractionController: UIViewController {
         setUpGameControllerManager()
 
         core.delegate = self
+
+        #if !targetEnvironment(macCatalyst)
+        #if os(iOS)
+        if #available(anyAppleOS 27.1, *) {
+            registerForTraitChanges(UITraitCollection.systemTraitsAffectingVerticalBarEdge) { (self: Self, _) in
+                self.updateControlPresentation()
+            }
+        }
+        #endif
+        updateControlPresentation()
+        #endif
     }
 }
 
 #if !targetEnvironment(macCatalyst)
 extension CelestiaInteractionController: CelestiaControlViewDelegate {
     func celestiaControlView(_ celestiaControlView: CelestiaControlView, pressDidStartWith action: CelestiaControlAction) {
+        startPressingControl(action)
+    }
+
+    func celestiaControlView(_ celestiaControlView: CelestiaControlView, pressDidEndWith action: CelestiaControlAction) {
+        stopPressingControl()
+    }
+
+    func celestiaControlView(_ celestiaControlView: CelestiaControlView, didTapWith action: CelestiaControlAction) {
+        performControlAction(action)
+    }
+
+    func celestiaControlView(_ celestiaControlView: CelestiaControlView, didToggleTo action: CelestiaControlAction) {
+        toggleInteractionMode(to: action)
+    }
+
+    private func startPressingControl(_ action: CelestiaControlAction) {
         zoomMode = action == .zoomIn ? .in : .out
         zoomTimer?.invalidate()
         zoomTimer = Timer.scheduledTimer(timeInterval: 0.1, target: self, selector: #selector(callZoom), userInfo: nil, repeats: true)
         callZoom()
     }
 
-    func celestiaControlView(_ celestiaControlView: CelestiaControlView, pressDidEndWith action: CelestiaControlAction) {
+    private func stopPressingControl() {
         zoomMode = nil
         zoomTimer?.invalidate()
         zoomTimer = nil
     }
 
-    func celestiaControlView(_ celestiaControlView: CelestiaControlView, didTapWith action: CelestiaControlAction) {
+    private func performControlAction(_ action: CelestiaControlAction) {
         if action == .hide {
             hideControlView()
         } else if action == .show {
@@ -263,7 +299,134 @@ extension CelestiaInteractionController: CelestiaControlViewDelegate {
         }
     }
 
+    private var usesControlToolbar: Bool {
+        #if os(iOS)
+        if #available(anyAppleOS 27.1, *) {
+            switch traitCollection.verticalBarEdge {
+            case .leading, .trailing:
+                return true
+            default:
+                return false
+            }
+        }
+        #endif
+        return false
+    }
+
+    private func updateControlPresentation() {
+        let usesControlToolbar = usesControlToolbar
+        activeControlView.isHidden = usesControlToolbar
+        activeControlView.alpha = isControlViewVisible ? 1 : 0
+        delegate?.celestiaInteractionController(
+            self,
+            didUpdateControlToolbarItems: usesControlToolbar && isControlViewVisible ? controlToolbarItems : []
+        )
+    }
+
+    @available(anyAppleOS 27.1, *)
+    private func createControlToolbarItem(for button: CelestiaControlButton) -> UIBarButtonItem {
+        let title: String
+        switch button {
+        case let .pressAndHold(_, _, accessibilityLabel),
+             let .tap(_, _, accessibilityLabel),
+             let .toggle(accessibilityLabel, _, _, _, _, _, _):
+            title = accessibilityLabel
+        }
+
+        let item: UIBarButtonItem
+        switch button {
+        case let .pressAndHold(image, action, _):
+            let toolbarImage = controlToolbarImage(for: action, fallback: image)
+            item = TouchDownUpBarButtonItem(image: toolbarImage, touchDown: { [weak self] in
+                self?.startPressingControl(action)
+            }, touchUp: { [weak self] _ in
+                self?.stopPressingControl()
+            })
+            item.menuRepresentation = UIAction(title: title, image: toolbarImage) { [weak self] _ in
+                self?.startPressingControl(action)
+                self?.stopPressingControl()
+            }
+        case let .tap(image, action, _):
+            item = UIBarButtonItem(image: controlToolbarImage(for: action, fallback: image), style: .plain, target: self, action: #selector(performControlToolbarItemAction(_:)))
+        case let .toggle(_, offImage, _, offAccessibilityValue, onImage, _, onAccessibilityValue):
+            item = UIBarButtonItem(image: offImage, style: .plain, target: self, action: #selector(performControlToolbarItemAction(_:)))
+            updateToggleToolbarItem(
+                item,
+                offImage: offImage,
+                offAccessibilityValue: offAccessibilityValue,
+                onImage: onImage,
+                onAccessibilityValue: onAccessibilityValue
+            )
+        }
+        item.title = title
+        item.accessibilityLabel = title
+        controlButtonsByToolbarItem[ObjectIdentifier(item)] = button
+        #if os(iOS)
+        item.visibilityPriority = .low
+        #endif
+        return item
+    }
+
+    private func controlToolbarImage(for action: CelestiaControlAction, fallback: UIImage?) -> UIImage? {
+        switch action {
+        case .zoomIn:
+            return UIImage(systemName: "plus")
+        case .zoomOut:
+            return UIImage(systemName: "minus")
+        case .showMenu:
+            return UIImage(systemName: "line.3.horizontal") ?? UIImage(systemName: "line.horizontal.3")
+        case .info:
+            return UIImage(systemName: "info")
+        case .hide:
+            return UIImage(systemName: "xmark")
+        case .search:
+            return UIImage(systemName: "magnifyingglass")
+        case .go:
+            return UIImage(systemName: "paperplane")
+        case .switchToObject, .switchToCamera, .show:
+            return fallback
+        }
+    }
+
+    @available(anyAppleOS 27.1, *)
+    @objc private func performControlToolbarItemAction(_ item: UIBarButtonItem) {
+        guard let button = controlButtonsByToolbarItem[ObjectIdentifier(item)] else { return }
+        switch button {
+        case let .tap(_, action, _):
+            performControlAction(action)
+        case let .toggle(_, offImage, offAction, offAccessibilityValue, onImage, onAction, onAccessibilityValue):
+            toggleInteractionMode(to: interactionMode == .object ? onAction : offAction)
+            updateToggleToolbarItem(
+                item,
+                offImage: offImage,
+                offAccessibilityValue: offAccessibilityValue,
+                onImage: onImage,
+                onAccessibilityValue: onAccessibilityValue
+            )
+        case .pressAndHold:
+            break
+        }
+    }
+
+    @available(anyAppleOS 27.1, *)
+    private func updateToggleToolbarItem(
+        _ item: UIBarButtonItem,
+        offImage: UIImage?,
+        offAccessibilityValue: String,
+        onImage: UIImage?,
+        onAccessibilityValue: String
+    ) {
+        let isOn = interactionMode == .camera
+        item.image = isOn ? onImage : offImage
+        item.accessibilityValue = isOn ? offAccessibilityValue : onAccessibilityValue
+    }
+
     private func hideControlView() {
+        if usesControlToolbar {
+            isControlViewVisible = false
+            updateControlPresentation()
+            return
+        }
         guard currentHideAnimator == nil else { return }
         currentShowAnimator?.stopAnimation(true)
         currentShowAnimator?.finishAnimation(at: .current)
@@ -285,6 +448,11 @@ extension CelestiaInteractionController: CelestiaControlViewDelegate {
     }
 
     private func showControlView() {
+        if usesControlToolbar {
+            isControlViewVisible = true
+            updateControlPresentation()
+            return
+        }
         guard currentShowAnimator == nil else { return }
         currentHideAnimator?.stopAnimation(true)
         currentHideAnimator?.finishAnimation(at: .current)
@@ -314,10 +482,10 @@ extension CelestiaInteractionController: CelestiaControlViewDelegate {
         hideControlView()
     }
 
-    func celestiaControlView(_ celestiaControlView: CelestiaControlView, didToggleTo action: CelestiaControlAction) {
-        #if !targetEnvironment(macCatalyst)
+    private func toggleInteractionMode(to action: CelestiaControlAction) {
         let toastDuration: TimeInterval = 1
         interactionMode = action == .switchToObject ? .object : .camera
+        activeControlView.setToggleState(interactionMode == .camera)
         switch action {
         case .switchToObject:
             interactionMode = .object
@@ -332,7 +500,6 @@ extension CelestiaInteractionController: CelestiaControlViewDelegate {
         default:
             fatalError("Unknown mode found: \(action)")
         }
-        #endif
     }
 }
 #endif
