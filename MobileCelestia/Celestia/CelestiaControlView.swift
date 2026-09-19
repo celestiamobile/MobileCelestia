@@ -136,6 +136,11 @@ class ControlButtonView: UIView, UIContentSizeCategoryAdjusting {
         }
     }
 
+    func setToggleState(_ isOn: Bool) {
+        guard case .toggle = configuration.button else { return }
+        configuration.on = isOn
+    }
+
     @objc private func didTap(_ sender: UIButton) {
         guard case CelestiaControlButton.tap(_, let action, _) = configuration.button else { return }
         configuration.tap?(action)
@@ -167,6 +172,7 @@ final class CelestiaControlView: UIView {
     }
 
     private let buttonProperties: [CelestiaControlButton]
+    private var buttonViews = [ControlButtonView]()
 
     weak var delegate: CelestiaControlViewDelegate?
 
@@ -192,6 +198,7 @@ final class CelestiaControlView: UIView {
                 self.delegate?.celestiaControlView(self, didToggleTo: action)
             }
         }
+        buttonViews = buttons
 
         let effect: UIVisualEffect
         if #available(iOS 26, *) {
@@ -235,6 +242,10 @@ final class CelestiaControlView: UIView {
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+
+    func setToggleState(_ isOn: Bool) {
+        buttonViews.forEach { $0.setToggleState(isOn) }
     }
 }
 #endif
