@@ -87,24 +87,30 @@ class CelestiaInteractionController: UIViewController {
         }
         return QuickAction.defaultItems
     }()
+    private func controlViewImage(_ name: String, legacyName: String) -> UIImage? {
+        if #available(iOS 26, *) {
+            return UIImage(systemName: name)
+        }
+        return UIImage(systemName: legacyName)
+    }
     private lazy var controlButtons = controlViewActions.map { action in
         switch action {
         case .mode:
             CelestiaControlButton.toggle(accessibilityLabel:  CelestiaString("Toggle Interaction Mode", comment: "Touch interaction mode"), offImage: UIImage(systemName: "cube"), offAction: .switchToObject, offAccessibilityValue: CelestiaString("Camera Mode", comment: "Interaction mode for touch"), onImage: UIImage(systemName: "video"), onAction: .switchToCamera, onAccessibilityValue: CelestiaString("Object Mode", comment: "Interaction mode for touch"))
         case .info:
-            CelestiaControlButton.tap(image: UIImage(systemName: "info.circle"), action: .info, accessibilityLabel: CelestiaString("Get Info", comment: "Action for getting info about current selected object"))
+            CelestiaControlButton.tap(image: controlViewImage("info", legacyName: "info.circle"), action: .info, accessibilityLabel: CelestiaString("Get Info", comment: "Action for getting info about current selected object"))
         case .search:
-            CelestiaControlButton.tap(image: UIImage(systemName: "magnifyingglass.circle"), action: .search, accessibilityLabel: CelestiaString("Search", comment: ""))
+            CelestiaControlButton.tap(image: controlViewImage("magnifyingglass", legacyName: "magnifyingglass.circle"), action: .search, accessibilityLabel: CelestiaString("Search", comment: ""))
         case .menu:
-            CelestiaControlButton.tap(image: UIImage(systemName: "line.3.horizontal.circle") ?? UIImage(systemName: "line.horizontal.3.circle"), action: .showMenu, accessibilityLabel: CelestiaString("Menu", comment: "Menu button"))
+            CelestiaControlButton.tap(image: controlViewImage("line.3.horizontal", legacyName: "line.3.horizontal.circle") ?? controlViewImage("line.horizontal.3", legacyName: "line.horizontal.3.circle"), action: .showMenu, accessibilityLabel: CelestiaString("Menu", comment: "Menu button"))
         case .hide:
-            CelestiaControlButton.tap(image: UIImage(systemName: "xmark.circle"), action: .hide, accessibilityLabel: CelestiaString("Hide", comment: "Action to hide the tool overlay"))
+            CelestiaControlButton.tap(image: controlViewImage("xmark", legacyName: "xmark.circle"), action: .hide, accessibilityLabel: CelestiaString("Hide", comment: "Action to hide the tool overlay"))
         case .zoomIn:
-            CelestiaControlButton.pressAndHold(image: UIImage(systemName: "plus.circle"), action: .zoomIn, accessibilityLabel: CelestiaString("Zoom In", comment: ""))
+            CelestiaControlButton.pressAndHold(image: controlViewImage("plus.magnifyingglass", legacyName: "plus.circle"), action: .zoomIn, accessibilityLabel: CelestiaString("Zoom In", comment: ""))
         case .zoomOut:
-            CelestiaControlButton.pressAndHold(image: UIImage(systemName: "minus.circle"), action: .zoomOut, accessibilityLabel: CelestiaString("Zoom Out", comment: ""))
+            CelestiaControlButton.pressAndHold(image: controlViewImage("minus.magnifyingglass", legacyName: "minus.circle"), action: .zoomOut, accessibilityLabel: CelestiaString("Zoom Out", comment: ""))
         case .go:
-            CelestiaControlButton.tap(image: UIImage(systemName: "paperplane.circle"), action: .go, accessibilityLabel: CelestiaString("Go", comment: "Go to an object"))
+            CelestiaControlButton.tap(image: controlViewImage("paperplane", legacyName: "paperplane.circle"), action: .go, accessibilityLabel: CelestiaString("Go", comment: "Go to an object"))
         }
     }
     private lazy var activeControlView = CelestiaControlView(items: controlButtons)
@@ -336,18 +342,17 @@ extension CelestiaInteractionController: CelestiaControlViewDelegate {
         let item: UIBarButtonItem
         switch button {
         case let .pressAndHold(image, action, _):
-            let toolbarImage = controlToolbarImage(for: action, fallback: image)
-            item = TouchDownUpBarButtonItem(image: toolbarImage, touchDown: { [weak self] in
+            item = TouchDownUpBarButtonItem(image: image, touchDown: { [weak self] in
                 self?.startPressingControl(action)
             }, touchUp: { [weak self] _ in
                 self?.stopPressingControl()
             })
-            item.menuRepresentation = UIAction(title: title, image: toolbarImage) { [weak self] _ in
+            item.menuRepresentation = UIAction(title: title, image: image) { [weak self] _ in
                 self?.startPressingControl(action)
                 self?.stopPressingControl()
             }
-        case let .tap(image, action, _):
-            item = UIBarButtonItem(image: controlToolbarImage(for: action, fallback: image), style: .plain, target: self, action: #selector(performControlToolbarItemAction(_:)))
+        case let .tap(image, _, _):
+            item = UIBarButtonItem(image: image, style: .plain, target: self, action: #selector(performControlToolbarItemAction(_:)))
         case let .toggle(_, offImage, _, offAccessibilityValue, onImage, _, onAccessibilityValue):
             item = UIBarButtonItem(image: offImage, style: .plain, target: self, action: #selector(performControlToolbarItemAction(_:)))
             updateToggleToolbarItem(
@@ -365,27 +370,6 @@ extension CelestiaInteractionController: CelestiaControlViewDelegate {
         item.visibilityPriority = .low
         #endif
         return item
-    }
-
-    private func controlToolbarImage(for action: CelestiaControlAction, fallback: UIImage?) -> UIImage? {
-        switch action {
-        case .zoomIn:
-            return UIImage(systemName: "plus")
-        case .zoomOut:
-            return UIImage(systemName: "minus")
-        case .showMenu:
-            return UIImage(systemName: "line.3.horizontal") ?? UIImage(systemName: "line.horizontal.3")
-        case .info:
-            return UIImage(systemName: "info")
-        case .hide:
-            return UIImage(systemName: "xmark")
-        case .search:
-            return UIImage(systemName: "magnifyingglass")
-        case .go:
-            return UIImage(systemName: "paperplane")
-        case .switchToObject, .switchToCamera, .show:
-            return fallback
-        }
     }
 
     @available(anyAppleOS 27.1, *)
