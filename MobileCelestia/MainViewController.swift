@@ -125,6 +125,7 @@ class MainViewController: UIViewController {
         splitViewController.minimumPrimaryColumnWidth = ToolbarViewController.Constants.width
         splitViewController.maximumPrimaryColumnWidth = ToolbarViewController.Constants.width
         splitViewController.setSecondaryAndCompactViewController(celestiaController)
+
         split = splitViewController
 
         if let url = initialURL {
