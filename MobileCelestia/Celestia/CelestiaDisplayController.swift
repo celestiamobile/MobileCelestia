@@ -99,7 +99,6 @@ class CelestiaDisplayController: AsyncGLViewController {
         #else
         view.contentMode = .center
         #endif
-
         if #available(anyAppleOS 26.0, *) {
             verticalCornerAdaptedSafeAreaGuide = view.layoutGuide(
                 for: .safeArea(cornerAdaptation: .vertical)
@@ -107,7 +106,6 @@ class CelestiaDisplayController: AsyncGLViewController {
             horizontalCornerAdaptedSafeAreaGuide = view.layoutGuide(
                 for: .safeArea(cornerAdaptation: .horizontal)
             )
-            view.cornerConfiguration = .corners(radius: .containerConcentric())
         }
     }
 
@@ -171,13 +169,6 @@ class CelestiaDisplayController: AsyncGLViewController {
                 displayScaleOrContentSizeCategoryChanged()
             }
         }
-    }
-
-    @available(anyAppleOS 26.0, *)
-    override func updateProperties() {
-        super.updateProperties()
-
-        updateSafeAreaInsets()
     }
 
     #if targetEnvironment(macCatalyst)
