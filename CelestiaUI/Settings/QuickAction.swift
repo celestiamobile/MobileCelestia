@@ -93,19 +93,19 @@ public extension QuickAction {
         case .mode:
             return UIImage(systemName: "cube")
         case .info:
-            return UIImage(systemName: "info.circle")
+            return UIImage(systemName: "info")
         case .search:
-            return UIImage(systemName: "magnifyingglass.circle")
+            return UIImage(systemName: "magnifyingglass")
         case .menu:
-            return UIImage(systemName: "line.3.horizontal.circle")
+            return UIImage(systemName: "line.3.horizontal")
         case .hide:
-            return UIImage(systemName: "xmark.circle")
+            return UIImage(systemName: "xmark")
         case .zoomIn:
-            return UIImage(systemName: "plus.circle")
+            return UIImage(systemName: "plus.magnifyingglass")
         case .zoomOut:
-            return UIImage(systemName: "minus.circle")
+            return UIImage(systemName: "minus.magnifyingglass")
         case .go:
-            return UIImage(systemName: "paperplane.circle")
+            return UIImage(systemName: "paperplane")
         }
     }
 

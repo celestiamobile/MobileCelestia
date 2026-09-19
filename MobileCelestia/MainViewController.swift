@@ -1197,9 +1197,11 @@ Device Model: \(model)
                     }))
                 }
                 item.accessibilityLabel = action.accessibilityLabel
+                #if !targetEnvironment(macCatalyst) && !os(visionOS)
                 if #available(anyAppleOS 27.1, *) {
                     item.axisBehavior = .horizontalOnly
                 }
+                #endif
                 return item
             }
 
