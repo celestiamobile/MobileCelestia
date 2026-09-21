@@ -198,7 +198,10 @@ class MainViewController: UIViewController {
     }
 
     override var prefersHomeIndicatorAutoHidden: Bool {
-         return true
+        if #available(anyAppleOS 26, *) {
+            return false
+        }
+        return true
     }
 
     override var prefersStatusBarHidden: Bool {
