@@ -41,6 +41,9 @@ class CelestiaDisplayController: AsyncGLViewController {
     private nonisolated(unsafe) var configFileURL: UniformedURL!
 
     private var currentViewScale: CGFloat = 1
+    private var verticalCornerAdaptedSafeAreaGuide: UILayoutGuide?
+    private var horizontalCornerAdaptedSafeAreaGuide: UILayoutGuide?
+    private var lastAppliedSafeAreaInsets: UIEdgeInsets?
 
     nonisolated(unsafe) weak var delegate: CelestiaDisplayControllerDelegate?
 
@@ -96,17 +99,66 @@ class CelestiaDisplayController: AsyncGLViewController {
         #else
         view.contentMode = .center
         #endif
+
+        if #available(iOS 26, *) {
+            verticalCornerAdaptedSafeAreaGuide = view.layoutGuide(
+                for: .safeArea(cornerAdaptation: .vertical)
+            )
+            horizontalCornerAdaptedSafeAreaGuide = view.layoutGuide(
+                for: .safeArea(cornerAdaptation: .horizontal)
+            )
+        }
     }
 
     override func viewSafeAreaInsetsDidChange() {
         super.viewSafeAreaInsetsDidChange()
 
+        updateSafeAreaInsets()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        updateSafeAreaInsets()
+    }
+
+    private func updateSafeAreaInsets() {
         guard isLoaded else { return }
 
-        let insets = view.safeAreaInsets.scale(by: view.contentScaleFactor)
+        let safeAreaInsets = actualSafeAreaInsets()
+        guard safeAreaInsets != lastAppliedSafeAreaInsets else { return }
+        lastAppliedSafeAreaInsets = safeAreaInsets
+
+        let insets = safeAreaInsets.scale(by: view.contentScaleFactor)
         executor.runAsynchronously { core in
             core.setSafeAreaInsets(insets)
         }
+    }
+
+    private func actualSafeAreaInsets() -> UIEdgeInsets {
+        guard #available(iOS 26, *),
+              let verticalCornerAdaptedSafeAreaGuide,
+              let horizontalCornerAdaptedSafeAreaGuide else {
+            return view.safeAreaInsets
+        }
+
+        let verticalFrame = verticalCornerAdaptedSafeAreaGuide.layoutFrame
+        let horizontalFrame = horizontalCornerAdaptedSafeAreaGuide.layoutFrame
+        guard !verticalFrame.isEmpty, !horizontalFrame.isEmpty else {
+            return view.safeAreaInsets
+        }
+
+        let verticalArea = verticalFrame.width * verticalFrame.height
+        let horizontalArea = horizontalFrame.width * horizontalFrame.height
+        let safeAreaFrame = verticalArea >= horizontalArea ? verticalFrame : horizontalFrame
+        let bounds = view.bounds
+
+        return UIEdgeInsets(
+            top: safeAreaFrame.minY - bounds.minY,
+            left: safeAreaFrame.minX - bounds.minX,
+            bottom: bounds.maxY - safeAreaFrame.maxY,
+            right: bounds.maxX - safeAreaFrame.maxX
+        )
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -274,7 +326,7 @@ extension CelestiaDisplayController {
         #endif
 
         return ViewSpec(
-            viewSafeAreaInsets: view.safeAreaInsets,
+            viewSafeAreaInsets: actualSafeAreaInsets(),
             viewScale: viewScale,
             applicationScalingFactor: applicationScalingFactor,
             textScaleFactor: UIFontMetrics.default.scaledValue(for: 10000, compatibleWith: traitCollection) / 10000
