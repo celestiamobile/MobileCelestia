@@ -11,7 +11,6 @@ import CelestiaCore
 import SwiftUI
 import UIKit
 
-@available(iOS 16, visionOS 1, *)
 public struct TimeSettings: View {
     @State private var currentTime: Date?
     @State private var showTimeInputError = false
@@ -94,7 +93,6 @@ public struct TimeSettings: View {
     }
 }
 
-@available(iOS 16, visionOS 1, *)
 public class TimeSettingSUIViewController: UIHostingController<TimeSettings> {
     private class Context {
         weak var viewController: UIViewController?

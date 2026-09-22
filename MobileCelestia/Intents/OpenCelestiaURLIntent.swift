@@ -12,7 +12,6 @@
 import AppIntents
 import Foundation
 
-@available(iOS 16, visionOS 1, *)
 struct OpenCelestiaURLIntent: AppIntent {
     static let title: LocalizedStringResource = "Open a Celestia URL"
     static let description = IntentDescription("Opens the app and navigates to a cel:// URL.")

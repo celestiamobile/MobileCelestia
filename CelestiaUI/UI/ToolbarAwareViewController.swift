@@ -26,7 +26,6 @@ public extension ToolbarAwareViewController {
 #endif
 
 #if targetEnvironment(macCatalyst)
-@available(iOS 16, *)
 public enum ToolbarFallbackStyle {
     case none
     case sidebar
@@ -129,7 +128,6 @@ open class ToolbarNavigationContainerController: UIViewController, ToolbarContai
         }
     }
 
-    @available(iOS 16, *)
     open var fallbackStyle: ToolbarFallbackStyle {
         return .none
     }
@@ -189,13 +187,11 @@ open class ToolbarNavigationContainerController: UIViewController, ToolbarContai
 #if targetEnvironment(macCatalyst)
 @MainActor
 protocol ToolbarAwareNavigationControllerDelegate: UINavigationControllerDelegate {
-    @available(iOS 16, *)
     func fallbackStyleForNavigationController(_ navigationController: UINavigationController) -> ToolbarFallbackStyle
 }
 
 private class ToolbarAwareNavigationController: BaseNavigationController {}
 
-@available(iOS 16, *)
 extension ToolbarAwareNavigationController: UINavigationBarDelegate {
     public func navigationBarNSToolbarSection(_ navigationBar: UINavigationBar) -> UINavigationBar.NSToolbarSection {
         if let delegate = self.delegate as? ToolbarAwareNavigationControllerDelegate {
@@ -210,7 +206,6 @@ extension ToolbarNavigationContainerController: ToolbarAwareNavigationController
         _updateToolbar(for: viewController)
     }
 
-    @available(iOS 16, *)
     func fallbackStyleForNavigationController(_ navigationController: UINavigationController) -> ToolbarFallbackStyle {
         if nsToolbar == nil {
             return fallbackStyle
@@ -241,7 +236,6 @@ extension ToolbarNavigationContainerController: NSToolbarDelegate {
     }
 }
 
-@available(iOS 16, *)
 extension UINavigationBar.NSToolbarSection {
     init(style: ToolbarFallbackStyle) {
         switch style {
@@ -617,7 +611,6 @@ extension ToolbarSplitContainerController: ToolbarAwareNavigationControllerDeleg
         }
     }
 
-    @available(iOS 16, *)
     func fallbackStyleForNavigationController(_ navigationController: UINavigationController) -> ToolbarFallbackStyle {
         return .none
     }

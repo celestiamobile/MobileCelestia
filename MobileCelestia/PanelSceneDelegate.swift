@@ -53,9 +53,7 @@ class PanelSceneDelegate: CommonSceneDelegate {
         }
         windowScene.sizeRestrictions?.minimumSize = size
         windowScene.sizeRestrictions?.maximumSize = size
-        if #available(iOS 16.0, *) {
-            windowScene.sizeRestrictions?.allowsFullScreen = false
-        }
+        windowScene.sizeRestrictions?.allowsFullScreen = false
         let window = UIWindow(windowScene: windowScene)
         window.rootViewController = viewController
 

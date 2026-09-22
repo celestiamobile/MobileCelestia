@@ -707,14 +707,7 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
         return actions
     }
 
-    @available(iOS 16, *)
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configuration: UIContextMenuConfiguration, highlightPreviewForItemWithIdentifier identifier: NSCopying) -> UITargetedPreview? {
-        contextMenuHighlightPreview(for: interaction)
-    }
-
-    @available(iOS, deprecated: 16)
-    @available(visionOS, deprecated: 1)
-    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, previewForHighlightingMenuWithConfiguration configuration: UIContextMenuConfiguration) -> UITargetedPreview? {
         contextMenuHighlightPreview(for: interaction)
     }
 

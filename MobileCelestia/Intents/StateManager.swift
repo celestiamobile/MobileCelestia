@@ -35,7 +35,6 @@ enum AppRequestError: Error {
     case screenshotFailed
 }
 
-@available(iOS 16, visionOS 1, *)
 extension AppRequestError: CustomLocalizedStringResourceConvertible {
     var localizedStringResource: LocalizedStringResource {
         switch self {

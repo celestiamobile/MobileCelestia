@@ -14,7 +14,6 @@ import CelestiaFoundation
 import Foundation
 import UniformTypeIdentifiers
 
-@available(iOS 16, visionOS 1, *)
 struct TakeScreenshotIntent: AppIntent {
     static let title: LocalizedStringResource = "Take a screenshot"
     static let description = IntentDescription("Opens the app, captures a screenshot, and returns it as a file.")

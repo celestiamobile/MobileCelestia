@@ -12,7 +12,6 @@
 import AppIntents
 import CelestiaCore
 
-@available(iOS 16.0, visionOS 1.0, *)
 enum DistanceUnitEnum: String, AppEnum {
     case km
     case radii
@@ -38,7 +37,6 @@ enum DistanceUnitEnum: String, AppEnum {
     }
 }
 
-@available(iOS 16, visionOS 1, *)
 struct GoToIntent: AppIntent {
     static let title: LocalizedStringResource = "Go to an astronomical object"
     static let description = IntentDescription("Opens the app and goes to an astronomical object.")

@@ -182,7 +182,7 @@ class MainViewController: UIViewController {
         super.viewDidAppear(animated)
 
         #if !targetEnvironment(macCatalyst)
-        if #available(iOS 16, *), Self.canUseSystemSheetPresentationController, !disabledScalingBehindSheets {
+        if Self.canUseSystemSheetPresentationController, !disabledScalingBehindSheets {
             if let sheet = view.window?.value(forKey: "rootPresentationController") as? UISheetPresentationController {
                 sheet.setValue(false, forKey: "shouldScaleDownBehindDescendantSheets")
                 disabledScalingBehindSheets = true
@@ -435,7 +435,6 @@ extension MainViewController {
         }
     }
 
-    @available(iOS 16, *)
     override func find(_ sender: Any?) {
         showSearch()
     }
@@ -462,10 +461,8 @@ extension MainViewController {
         if !core.isInitialized {
             if command.action == #selector(copy(_:)) || command.action == #selector(paste(_:)) {
                 command.attributes.insert(.disabled)
-            } else if #available(iOS 16, *) {
-                if command.action == #selector(find(_:)) {
-                    command.attributes.insert(.disabled)
-                }
+            } else if command.action == #selector(find(_:)) {
+                command.attributes.insert(.disabled)
             }
         }
     }
@@ -1375,7 +1372,7 @@ Device Model: \(model)
 
     private func showTimeSettings() {
         let vc: UIViewController
-        if #available(iOS 16, visionOS 1, *), featureFlags.swiftUITimeSettings {
+        if featureFlags.swiftUITimeSettings {
             vc = TimeSettingSUIViewController(dateInputHandler: { viewController, title, format in
                 return await viewController.getDateInputDifferentiated(title, format: format)
             }) { viewController, title, keyboardType in
@@ -1490,7 +1487,7 @@ Device Model: \(model)
         #else
         viewController.isAdaptiveBottomSheet = true
         viewController.preferredContentSize = view.frame.width > 1024 ? CGSize(width: 393, height: 393) : CGSize(width: 320, height: 320)
-        if #available(iOS 16, *), Self.canUseSystemSheetPresentationController, let sheet = viewController.sheetPresentationController {
+        if Self.canUseSystemSheetPresentationController, let sheet = viewController.sheetPresentationController {
             sheet.prefersGrabberVisible = true
             var detents: [UISheetPresentationController.Detent] = [.small(), .medium(), .large()]
             sheet.selectedDetentIdentifier = prefersMediumDetent ? .medium : .large
@@ -1522,7 +1519,6 @@ Device Model: \(model)
     private static var _canUseSystemSheetPresentationController: Bool?
     private static var _canUseBarDetent: Bool?
 
-    @available(iOS 16, *)
     private static var canUseSystemSheetPresentationController: Bool {
         if let _canUseSystemSheetPresentationController {
             return _canUseSystemSheetPresentationController
@@ -1818,7 +1814,6 @@ struct CelestiaStringProvider: StringProvider {
 }
 
 #if !targetEnvironment(macCatalyst)
-@available(iOS 16.0, *)
 extension UISheetPresentationController.Detent {
     static let smallIdentifier = Identifier("\(Bundle.app.bundleIdentifier!).detents.small")
 

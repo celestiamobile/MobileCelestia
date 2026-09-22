@@ -16,7 +16,6 @@ NS_ASSUME_NONNULL_BEGIN
 + (CGFloat)catalystScaleFactor;
 + (CGPoint)currentMouseLocation;
 + (nullable id)nsWindowForUIWindow:(id)uiWindow;
-+ (void)disableFullScreenForNSWindow:(NSWindow *)window;
 + (void)disableRestorationForNSWindow:(NSWindow *)window;
 + (void)openFolder:(NSURL *)folderURL;
 + (void)terminateApp;

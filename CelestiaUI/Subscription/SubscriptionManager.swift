@@ -427,25 +427,16 @@ public class SubscriptionManager {
 
 extension SubscriptionManager.SubscriptionEnvironment {
     init(transaction: Transaction) {
-        if #available(iOS 16, macOS 13, visionOS 1, *) {
-            switch transaction.environment {
-            case .production:
-                self = .production
-            case .sandbox:
-                self = .sandbox
-            case .xcode:
-                self = .xcode
-            default:
-                NSLog("Unknown StoreKit transaction environment: %@. Falling back to production.", transaction.environment.rawValue)
-                self = .production
-            }
-        } else {
-            let hasSandboxReceipt = Bundle.main.appStoreReceiptURL?.path.contains("sandboxReceipt") ?? false
-            if hasSandboxReceipt {
-                self = .sandbox
-            } else {
-                self = .production
-            }
+        switch transaction.environment {
+        case .production:
+            self = .production
+        case .sandbox:
+            self = .sandbox
+        case .xcode:
+            self = .xcode
+        default:
+            NSLog("Unknown StoreKit transaction environment: %@. Falling back to production.", transaction.environment.rawValue)
+            self = .production
         }
     }
 }

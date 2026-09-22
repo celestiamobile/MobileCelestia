@@ -140,9 +140,7 @@ public class CommonWebViewController: UIViewController {
     private func updateNavigation() {
 #if !targetEnvironment(macCatalyst)
         goBackItem.isEnabled = webView.canGoBack
-        if #available(iOS 16, visionOS 1, *) {
-            goBackItem.isHidden = !goBackItem.isEnabled
-        }
+        goBackItem.isHidden = !goBackItem.isEnabled
 #else
         toolbarBackItem.isEnabled = webView.canGoBack
         updateToolbarIfNeeded()
@@ -312,5 +310,4 @@ extension CommonWebViewController: ToolbarAwareViewController {
     }
 }
 #endif
-
 

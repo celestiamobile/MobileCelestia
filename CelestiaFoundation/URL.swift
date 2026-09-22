@@ -69,13 +69,7 @@ public extension URL {
         do {
             return try createDirectoryIfNeeded(for: .itemReplacementDirectory, appropriateFor: url)
         } catch {
-            let fallback: URL
-            if #available(iOS 16, visionOS 1, *) {
-                fallback = .temporaryDirectory
-            } else {
-                fallback = URL(fileURLWithPath: NSTemporaryDirectory())
-            }
-            return try createDirectoryIfNeeded(url: fallback)
+            return try createDirectoryIfNeeded(url: .temporaryDirectory)
         }
     }
 

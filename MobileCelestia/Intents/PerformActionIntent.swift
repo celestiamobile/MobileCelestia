@@ -13,7 +13,6 @@ import AppIntents
 import CelestiaCore
 import CelestiaFoundation
 
-@available(iOS 16.0, visionOS 1.0, *)
 enum PerformActionEnum: String, AppEnum {
     case select
     case go
@@ -63,7 +62,6 @@ enum PerformActionEnum: String, AppEnum {
     }
 }
 
-@available(iOS 16, visionOS 1, *)
 struct PerformActionIntent: AppIntent {
     static let title: LocalizedStringResource = "Perform an action on an astronomical object"
     static let description = IntentDescription("Opens the app and performs an action on an astronomical object.")

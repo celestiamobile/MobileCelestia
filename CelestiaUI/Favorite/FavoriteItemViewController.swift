@@ -312,13 +312,9 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: UICollectionViewCo
     }
 
     override func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemAt indexPath: IndexPath, point: CGPoint) -> UIContextMenuConfiguration? {
-        if #available(iOS 16, visionOS 1, *) {
-            return nil
-        }
-        return contextMenuConfiguration(for: indexPath)
+        return nil
     }
 
-    @available(iOS 16, visionOS 1, *)
     override func collectionView(_ collectionView: UICollectionView, contextMenuConfigurationForItemsAt indexPaths: [IndexPath], point: CGPoint) -> UIContextMenuConfiguration? {
         guard indexPaths.count == 1, let indexPath = indexPaths.first else { return nil }
         return contextMenuConfiguration(for: indexPath)
@@ -363,9 +359,7 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: UICollectionViewCo
 
         #if !targetEnvironment(macCatalyst)
         addBarButtonItem.isEnabled = !editing
-        if #available(iOS 16, visionOS 1, *) {
-            addBarButtonItem.isHidden = editing
-        }
+        addBarButtonItem.isHidden = editing
         #else
         updateToolbarIfNeeded()
         #endif

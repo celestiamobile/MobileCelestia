@@ -208,7 +208,7 @@ private extension SettingsCoordinatorController {
                     let renderInfo = await self.rendererInfoProvider()
                     viewController = TextViewController(title: item.name, text: renderInfo)
                 case .time:
-                    if #available(iOS 16, visionOS 1, *), featureFlags.swiftUITimeSettings {
+                    if featureFlags.swiftUITimeSettings {
                         viewController = TimeSettingSUIViewController(dateInputHandler: self.dateInputHandler, textInputHandler: self.textInputHandler)
                     } else {
                         viewController = TimeSettingViewController(core: core, executor: executor, dateInputHandler: self.dateInputHandler, textInputHandler: self.textInputHandler)

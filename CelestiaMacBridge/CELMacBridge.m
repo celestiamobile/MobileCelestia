@@ -69,13 +69,6 @@
     [window setRestorable:NO];
 }
 
-+ (void)disableFullScreenForNSWindow:(NSWindow *)window {
-    NSWindowCollectionBehavior behavior = NSWindowCollectionBehaviorFullScreenAuxiliary | NSWindowCollectionBehaviorFullScreenNone;
-    [window setCollectionBehavior:behavior];
-    NSButton *button = [window standardWindowButton:NSWindowZoomButton];
-    [button setEnabled:NO];
-}
-
 + (void)showTextInputSheetForWindow:(NSWindow *)window title:(NSString *)title message:(nullable NSString *)message text:(nullable NSString *)text placeholder:(nullable NSString *)placeholder okButtonTitle:(NSString *)okButtonTitle cancelButtonTitle:(NSString *)cancelButtonTitle completionHandler:(void (^)(NSString * _Nullable))completionHandler {
     const CGFloat alertTextInputWidth = 228;
     const CGFloat alertTextInputDefaultHeight = 21;

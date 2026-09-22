@@ -139,38 +139,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         CelestiaActor.underlyingExecutor = executor
 
-        if #available(iOS 16, *) {
-            let stateManager = StateManager.shared
-            AppDependencyManager.shared.add(dependency: stateManager)
-        }
+        let stateManager = StateManager.shared
+        AppDependencyManager.shared.add(dependency: stateManager)
 
         AppCore.setUpLocale()
 
         #if targetEnvironment(macCatalyst)
         MacBridge.initialize()
-
-        if #available(macCatalyst 15.0, *) {
-            if #available(macCatalyst 16.0, *) {
-            } else {
-                /// On macOS Catalyst 15.x-[UIFocusSytem _topEnvironment] throws a failed assertion `Expected a UIWindowScene but found (null).`
-                /// when a window is closed with a list item focused. Swizzle to avoid the exception by catching it in Objective-C. FB9915023
-                let selector = NSSelectorFromString("_topEnvironment")
-                if UIFocusSystem.instancesRespond(to: selector),
-                   let method = class_getInstanceMethod(UIFocusSystem.self, selector) {
-                    let imp = method_getImplementation(method)
-                    class_replaceMethod(UIFocusSystem.self, selector, imp_implementationWithBlock({ (self: UIFocusSystem) -> UIFocusEnvironment? in
-                        var environment: UIFocusEnvironment?
-                        ExceptionCatching.execute {
-                            let oldIMP = unsafeBitCast(imp, to: (@convention(c) (UIFocusSystem, Selector) -> UIFocusEnvironment?).self)
-                            environment = oldIMP(self, selector)
-                        } exceptionHandler: { exception in
-                            print("Ignoring exception: \(exception)")
-                        }
-                      return environment
-                    } as @convention(block) (UIFocusSystem) -> UIFocusEnvironment?), method_getTypeEncoding(method))
-                }
-            }
-        }
 
         UserDefaults.standard.register(defaults: ["NSApplicationCrashOnExceptions": true])
 
@@ -270,20 +245,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     @objc private func handleNSWindowDidBecomeKey(_ notification: Notification) {
         guard let nsWindow = notification.object as? NSObject else { return }
-        guard let scene = UIApplication.shared.connectedScenes.first(where: { scene in
-            guard let windowScene = scene as? UIWindowScene else { return false }
-            return windowScene.windows.contains { window in
-                return window.nsWindow == nsWindow
-            }
-        }) else { return }
-
         MacBridge.disableRestorationForNSWindow(nsWindow)
-        if scene.delegate is PanelSceneDelegate {
-            if #available(iOS 16, *) {
-            } else {
-                MacBridge.disableFullScreenForNSWindow(nsWindow)
-            }
-        }
     }
     #endif
 
@@ -332,16 +294,7 @@ extension AppDelegate {
         builder.remove(menu: .about)
         builder.remove(menu: .format)
 
-        #if targetEnvironment(macCatalyst)
-        let settingsTitle: String
-        if #available(macCatalyst 16.0, *) {
-            settingsTitle = CelestiaString("Settings…", comment: "")
-        } else {
-            settingsTitle = CelestiaString("Preferences…", comment: "Settings")
-        }
-        #else
         let settingsTitle = CelestiaString("Settings…", comment: "")
-        #endif
         let aboutMenu = createMenuItem(
             identifierSuffix: "about",
             action: MenuActionContext(title: CelestiaString("About Celestia", comment: "System menu item"), action: #selector(showAbout))
@@ -733,10 +686,6 @@ class MacBridge {
 
     static func disableRestorationForNSWindow(_ nsWindow: NSObject) {
         clazz.perform(NSSelectorFromString("disableRestorationForNSWindow:"), with: nsWindow)
-    }
-
-    static func disableFullScreenForNSWindow(_ nsWindow: NSObject) {
-        clazz.perform(NSSelectorFromString("disableFullScreenForNSWindow:"), with: nsWindow)
     }
 
     static func showTextInputSheetForWindow(_ window: NSObject, title: String, message: String? = nil, text: String? = nil, placeholder: String? = nil, okButtonTitle: String, cancelButtonTitle: String, completion: @escaping (String?) -> Void) {

@@ -71,13 +71,7 @@ public final class AboutViewController: UIViewController {
         ]
 
 #if !targetEnvironment(macCatalyst)
-        let showICPC: Bool
-        if #available(iOS 16, visionOS 1, *) {
-            showICPC = Locale.current.region == .chinaMainland
-        } else {
-            showICPC = Locale.current.regionCode == "CN"
-        }
-        if showICPC {
+        if Locale.current.region == .chinaMainland {
             links.append(LinkTextConfiguration.Link(text: "苏ICP备2023039249号-4A", link: "https://beian.miit.gov.cn"))
         }
 #endif

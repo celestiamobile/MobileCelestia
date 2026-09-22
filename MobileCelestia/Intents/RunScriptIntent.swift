@@ -14,7 +14,6 @@ import CelestiaFoundation
 import Foundation
 import UniformTypeIdentifiers
 
-@available(iOS 16.0, visionOS 1.0, *)
 enum ScriptTypeEnum: String, AppEnum {
     case cel
     case celx
@@ -31,7 +30,6 @@ enum ScriptTypeEnum: String, AppEnum {
     }
 }
 
-@available(iOS 16.0, visionOS 1.0, *)
 enum ScriptSourceEnum: String, AppEnum {
     case text
     case file
