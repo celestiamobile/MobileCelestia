@@ -88,13 +88,6 @@ jobs:
           path: Celestia
           fetch-depth: 0
 
-      - name: Checkout CelestiaCore
-        uses: actions/checkout@v4
-        with:
-          repository: celestiamobile/CelestiaCore
-          path: CelestiaCore
-          fetch-depth: 0
-
       - name: Checkout CelestiaContent
         uses: actions/checkout@v4
         with:
@@ -114,8 +107,6 @@ jobs:
         run: |
           cd Celestia
           git checkout origin/${{ github.ref_name }}
-          cd ../CelestiaCore
-          git checkout origin/${{ github.ref_name }}
           cd ../CelestiaLocalization
           git checkout origin/${{ github.ref_name }}
 
@@ -124,18 +115,10 @@ jobs:
         run: |
           cd Celestia
           git checkout origin/${{ github.event.pull_request.base.ref }}
-          cd ../CelestiaCore
-          git checkout origin/${{ github.event.pull_request.base.ref }}
           cd ../CelestiaLocalization
           git checkout origin/${{ github.event.pull_request.base.ref }}
 
-      - name: Apply ANGLE Patches (1)
-        if: matrix.backend == 'angle'
-        run: |
-          cd CelestiaCore
-          git apply ../MobileCelestia/patches/angle/celestiacore.patch --ignore-whitespace --whitespace=nowarn -3
-
-      - name: Apply ANGLE Patches (2)
+      - name: Apply ANGLE Patches
         if: matrix.backend == 'angle'
         run: |
           cd MobileCelestia
@@ -154,13 +137,13 @@ jobs:
       - name: Download Pre-built Dependencies
         run: |
           wget https://github.com/celestiamobile/apple-android-dependencies/releases/download/${{ env.DEPENDENCY_VERSION }}/apple-dependencies.tar.gz -O /tmp/apple-dependencies.tar.gz
-          mkdir -p CelestiaCore/libs/dependency
-          tar -xzf /tmp/apple-dependencies.tar.gz -C CelestiaCore/libs/dependency
+          mkdir -p MobileCelestia/libs/dependency
+          tar -xzf /tmp/apple-dependencies.tar.gz -C MobileCelestia/libs/dependency
 
       - name: Use libepoxy with ANGLE
         if: matrix.backend == 'angle'
         run: |
-          cd CelestiaCore/libs/dependency
+          cd MobileCelestia/libs/dependency
           rm -rf libepoxy.xcframework
           mv libepoxy_angle.xcframework libepoxy.xcframework
 
@@ -170,10 +153,10 @@ jobs:
           xcodebuild -version
 
       - name: Running imagemagick
-        run: sh $GITHUB_WORKSPACE/CelestiaCore/downsize_textures.sh
+        run: sh $GITHUB_WORKSPACE/MobileCelestia/scripts/downsize_textures.sh
 
       - name: Running gperf
-        run: sh $GITHUB_WORKSPACE/CelestiaCore/run_gperf.sh $GITHUB_WORKSPACE/Celestia
+        run: sh $GITHUB_WORKSPACE/MobileCelestia/scripts/run_gperf.sh $GITHUB_WORKSPACE/Celestia
 
       - name: Install Sentry-CLI
         run: brew install sentry-cli
