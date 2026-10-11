@@ -42,7 +42,7 @@ public class EmptyHintView: UIView {
     }
 
     private lazy var textLabel = UILabel(textStyle: .body)
-    private lazy var actionButton = ActionButtonHelper.newButton(traitCollection: traitCollection)
+    private lazy var actionButton = ActionButtonHelper.newButton()
 
     private var actionButtonVisibleConstraints = [NSLayoutConstraint]()
     private var actionButtonHiddenConstraints = [NSLayoutConstraint]()

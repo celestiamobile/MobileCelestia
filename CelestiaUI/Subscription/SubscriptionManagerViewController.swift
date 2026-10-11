@@ -155,7 +155,7 @@ public class SubscriptionManagerViewController: UIViewController {
         planStack.axis = .vertical
         planStack.spacing = GlobalConstants.pageMediumGapVertical
 
-        let button = ActionButtonHelper.newButton(prominent: true, traitCollection: traitCollection)
+        let button = ActionButtonHelper.newButton(prominent: true)
         button.setTitle(CelestiaString("Restore Purchase", comment: "Refresh purchase status"), for: .normal)
         button.addTarget(self, action: #selector(restorePurchases), for: .touchUpInside)
 

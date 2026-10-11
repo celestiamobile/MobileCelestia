@@ -141,7 +141,7 @@ class DestinationDetailViewController: UIViewController {
     private let goToHandler: () -> Void
 
     private lazy var scrollView = UIScrollView(frame: .zero)
-    private lazy var goToButton = ActionButtonHelper.newButton(prominent: true, traitCollection: traitCollection)
+    private lazy var goToButton = ActionButtonHelper.newButton(prominent: true)
 
     private lazy var descriptionLabel = UITextView()
 

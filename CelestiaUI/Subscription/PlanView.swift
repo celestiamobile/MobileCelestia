@@ -105,7 +105,7 @@ final class PlanView: UIView {
                 hidden = true
                 prominent = false
             }
-            let actionButton = ActionButtonHelper.newButton(prominent: prominent, traitCollection: traitCollection)
+            let actionButton = ActionButtonHelper.newButton(prominent: prominent)
             actionButton.setTitle(text, for: .normal)
             actionButton.addTarget(self, action: #selector(handleTap), for: .touchUpInside)
             actionButton.isHidden = hidden

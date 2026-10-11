@@ -9,42 +9,8 @@
 
 import UIKit
 
+#if targetEnvironment(macCatalyst)
 public class ActionButton: StandardButton {
-#if !targetEnvironment(macCatalyst)
-    public enum Constants {
-        static func contentEdgeInsets(for traitCollection: UITraitCollection) -> UIEdgeInsets {
-            let scale = GlobalConstants.preferredUIElementScaling(for: traitCollection)
-            let vertical = traitCollection.roundUpToPixel(10 * scale)
-            return UIEdgeInsets(top: vertical, left: 0, bottom: vertical, right: 0)
-        }
-
-        static func cornerRadius(for traitCollection: UITraitCollection) -> CGFloat {
-            return traitCollection.roundUpToPixel(6 * GlobalConstants.preferredUIElementScaling(for: traitCollection))
-        }
-    }
-
-    public override init(frame: CGRect) {
-        super.init(frame: frame)
-
-        setUp()
-    }
-
-    public required init?(coder: NSCoder) {
-        super.init(coder: coder)
-
-        setUp()
-    }
-
-    private func setUp() {
-        titleLabel?.lineBreakMode = .byWordWrapping
-        titleLabel?.textAlignment = .center
-        contentEdgeInsets = Constants.contentEdgeInsets(for: traitCollection)
-        layer.cornerRadius = Constants.cornerRadius(for: traitCollection)
-        layer.cornerCurve = .continuous
-        backgroundColor = tintColor
-        setTitleColor(.label, for: .normal)
-    }
-#else
     public override func didAddSubview(_ subview: UIView) {
         super.didAddSubview(subview)
 
@@ -60,12 +26,12 @@ public class ActionButton: StandardButton {
             }
         }
     }
-#endif
 }
+#endif
 
 @MainActor
 public class ActionButtonHelper {
-    public static func newButton(liquidGlass: Bool = true, clear: Bool = false, prominent: Bool = false, traitCollection: UITraitCollection) -> UIButton {
+    public static func newButton(liquidGlass: Bool = true, clear: Bool = false, prominent: Bool = false) -> UIButton {
         #if !os(visionOS)
         if #available(iOS 26, *), liquidGlass {
             let button = UIButton(configuration: prominent ? .prominentGlass() : (clear ? .clearGlass() : .glass()))

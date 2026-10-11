@@ -33,7 +33,7 @@ class TeachingCardContentView: UIView, UIContentView {
     private var currentConfiguration: TeachingCardContentConfiguration?
     
     private lazy var titleLabel = UILabel(textStyle: .body)
-    private lazy var actionButton = ActionButtonHelper.newButton(prominent: true, traitCollection: traitCollection)
+    private lazy var actionButton = ActionButtonHelper.newButton(prominent: true)
     private lazy var stackView = UIStackView(arrangedSubviews: [titleLabel, actionButton])
 
     var configuration: UIContentConfiguration {
