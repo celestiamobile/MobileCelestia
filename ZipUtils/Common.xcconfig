@@ -18,7 +18,7 @@ MACH_O_TYPE = staticlib
 
 LD_RUNPATH_SEARCH_PATHS = $(inherited) @executable_path/../Frameworks @loader_path/Frameworks
 
-PRODUCT_BUNDLE_IDENTIFIER = space.celestia.CelestiaCore
+PRODUCT_BUNDLE_IDENTIFIER = space.celestia.ZipUtils
 PRODUCT_NAME = $(TARGET_NAME:c99extidentifier)
 
 STRIP_INSTALLED_PRODUCT = NO
