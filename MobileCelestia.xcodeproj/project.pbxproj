@@ -1043,7 +1043,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		EA3A8A162D80FCBF0029ACA4 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		EA3A8A162D80FCBF0029ACA4 /* Exceptions for "ZipUtils" folder in "ZipUtils" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Common.xcconfig,
@@ -1054,7 +1054,7 @@
 			);
 			target = EA86F7B32B790E4800419451 /* ZipUtils */;
 		};
-		EA3A8AEF2D80FCDA0029ACA4 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		EA3A8AEF2D80FCDA0029ACA4 /* Exceptions for "CelestiaCore" folder in "CelestiaCore" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				"App/CelestiaObserver+Private.h",
@@ -1159,7 +1159,7 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-		EA3A8AF02D80FCDA0029ACA4 /* PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet */ = {
+		EA3A8AF02D80FCDA0029ACA4 /* Exceptions for "CelestiaCore" folder in "Compile Sources" phase from "CelestiaCore" target */ = {
 			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
 			buildPhase = 971A65C823019BC5009E4EA1 /* Sources */;
 			membershipExceptions = (
@@ -1169,8 +1169,23 @@
 /* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		EA3A8A112D80FCBF0029ACA4 /* ZipUtils */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (EA3A8A162D80FCBF0029ACA4 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = ZipUtils; sourceTree = "<group>"; };
-		EA3A8A862D80FCDA0029ACA4 /* CelestiaCore */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (EA3A8AEF2D80FCDA0029ACA4 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, EA3A8AF02D80FCDA0029ACA4 /* PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = CelestiaCore; sourceTree = "<group>"; };
+		EA3A8A112D80FCBF0029ACA4 /* ZipUtils */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				EA3A8A162D80FCBF0029ACA4 /* Exceptions for "ZipUtils" folder in "ZipUtils" target */,
+			);
+			path = ZipUtils;
+			sourceTree = "<group>";
+		};
+		EA3A8A862D80FCDA0029ACA4 /* CelestiaCore */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				EA3A8AEF2D80FCDA0029ACA4 /* Exceptions for "CelestiaCore" folder in "CelestiaCore" target */,
+				EA3A8AF02D80FCDA0029ACA4 /* Exceptions for "CelestiaCore" folder in "Compile Sources" phase from "CelestiaCore" target */,
+			);
+			path = CelestiaCore;
+			sourceTree = "<group>";
+		};
 		EA3ABD872D8116090029ACA4 /* CelestiaHelper */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
@@ -1242,7 +1257,6 @@
 /* Begin PBXFrameworksBuildPhase section */
 		971A65C923019BC5009E4EA1 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				EA5167572FBFA13200EC5909 /* ffmpeg.xcframework in Frameworks */,
 				EA1B49692F0C6AF300800440 /* fast_float.xcframework in Frameworks */,
@@ -1261,7 +1275,6 @@
 				EA3A88E42D80B0100029ACA4 /* freetype.xcframework in Frameworks */,
 				EA3A88EC2D80B0910029ACA4 /* icu.xcframework in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		979D2F7723FEB1A6005D2592 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
@@ -1312,11 +1325,9 @@
 		};
 		EA86F7B12B790E4800419451 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				EA3A88F32D80B3440029ACA4 /* libzip.xcframework in Frameworks */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		EAC84351252C816500691943 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
@@ -1852,7 +1863,6 @@
 				979D2FAE23FEB2B9005D2592 /* libz.tbd */,
 				979D2FAC23FEB2AE005D2592 /* libbz2.tbd */,
 				979D2FAA23FEB2A5005D2592 /* libc++.tbd */,
-
 				EA51675A2FBFA13400EC5909 /* x264.xcframework */,
 				EA5167562FBFA13200EC5909 /* ffmpeg.xcframework */,
 				EA1B49682F0C6AF300800440 /* fast_float.xcframework */,
@@ -1985,7 +1995,6 @@
 /* Begin PBXHeadersBuildPhase section */
 		971A65C723019BC5009E4EA1 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				EA2D5F2A29EE82D3005990BA /* largestarrenderer.h in Headers */,
 				EAE846512B3AE659008A146D /* loadstars.h in Headers */,
@@ -2232,7 +2241,6 @@
 				971A66D423019C20009E4EA1 /* referencemark.h in Headers */,
 				EA5164352FBF9AC700EC5909 /* overlaymanager.h in Headers */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		EA1823E527C08D3D00E0F5E4 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
@@ -2251,10 +2259,8 @@
 		};
 		EA86F7AF2B790E4800419451 /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
@@ -2268,8 +2274,6 @@
 				971A65C923019BC5009E4EA1 /* Frameworks */,
 			);
 			buildRules = (
-			);
-			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
 				EA3A8A862D80FCDA0029ACA4 /* CelestiaCore */,
@@ -2424,8 +2428,6 @@
 			);
 			buildRules = (
 			);
-			dependencies = (
-			);
 			fileSystemSynchronizedGroups = (
 				EA3A8A112D80FCBF0029ACA4 /* ZipUtils */,
 			);
@@ -2457,7 +2459,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
 				LastSwiftUpdateCheck = 2640;
-				LastUpgradeCheck = 2700;
+				LastUpgradeCheck = 2710;
 				ORGANIZATIONNAME = "Celestia Development Team";
 				TargetAttributes = {
 					971A65CB23019BC5009E4EA1 = {
@@ -2527,7 +2529,6 @@
 		};
 /* End PBXProject section */
 
-
 /* Begin PBXResourcesBuildPhase section */
 		979D2F7823FEB1A6005D2592 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
@@ -2561,10 +2562,8 @@
 		};
 		EA86F7B22B790E4800419451 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		EAC84352252C816500691943 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
@@ -2621,7 +2620,6 @@
 /* Begin PBXSourcesBuildPhase section */
 		971A65C823019BC5009E4EA1 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 				971A66DC23019C20009E4EA1 /* rotationmanager.cpp in Sources */,
 				971A666423019C15009E4EA1 /* orbit.cpp in Sources */,
@@ -2820,7 +2818,6 @@
 				EADF80B82F023AD500B52A80 /* geometry.cpp in Sources */,
 				971A668623019C20009E4EA1 /* boundaries.cpp in Sources */,
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		979D2F7623FEB1A6005D2592 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -2854,10 +2851,8 @@
 		};
 		EA86F7B02B790E4800419451 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
 			files = (
 			);
-			runOnlyForDeploymentPostprocessing = 0;
 		};
 		EAC84350252C816500691943 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -2918,7 +2913,7 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		971A65D223019BC6009E4EA1 /* Debug */ = {
+		971A65D223019BC6009E4EA1 /* Debug configuration for PBXNativeTarget "CelestiaCore" */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReferenceAnchor = EA3A8A862D80FCDA0029ACA4 /* CelestiaCore */;
 			baseConfigurationReferenceRelativePath = Configurations/Debug.xcconfig;
@@ -2940,7 +2935,7 @@
 			};
 			name = Debug;
 		};
-		971A65D323019BC6009E4EA1 /* Release */ = {
+		971A65D323019BC6009E4EA1 /* Release configuration for PBXNativeTarget "CelestiaCore" */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReferenceAnchor = EA3A8A862D80FCDA0029ACA4 /* CelestiaCore */;
 			baseConfigurationReferenceRelativePath = Configurations/Release.xcconfig;
@@ -3443,7 +3438,7 @@
 			};
 			name = Release;
 		};
-		EA86F7B82B790E4800419451 /* Debug */ = {
+		EA86F7B82B790E4800419451 /* Debug configuration for PBXNativeTarget "ZipUtils" */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReferenceAnchor = EA3A8A112D80FCBF0029ACA4 /* ZipUtils */;
 			baseConfigurationReferenceRelativePath = Common.xcconfig;
@@ -3464,7 +3459,7 @@
 			};
 			name = Debug;
 		};
-		EA86F7B92B790E4800419451 /* Release */ = {
+		EA86F7B92B790E4800419451 /* Release configuration for PBXNativeTarget "ZipUtils" */ = {
 			isa = XCBuildConfiguration;
 			baseConfigurationReferenceAnchor = EA3A8A112D80FCBF0029ACA4 /* ZipUtils */;
 			baseConfigurationReferenceRelativePath = Common.xcconfig;
@@ -3535,10 +3530,9 @@
 		971A65D123019BC6009E4EA1 /* Build configuration list for PBXNativeTarget "CelestiaCore" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				971A65D223019BC6009E4EA1 /* Debug */,
-				971A65D323019BC6009E4EA1 /* Release */,
+				971A65D223019BC6009E4EA1 /* Debug configuration for PBXNativeTarget "CelestiaCore" */,
+				971A65D323019BC6009E4EA1 /* Release configuration for PBXNativeTarget "CelestiaCore" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 		979D2F7523FEB1A6005D2592 /* Build configuration list for PBXProject "MobileCelestia" */ = {
@@ -3600,10 +3594,9 @@
 		EA86F7BA2B790E4800419451 /* Build configuration list for PBXNativeTarget "ZipUtils" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				EA86F7B82B790E4800419451 /* Debug */,
-				EA86F7B92B790E4800419451 /* Release */,
+				EA86F7B82B790E4800419451 /* Debug configuration for PBXNativeTarget "ZipUtils" */,
+				EA86F7B92B790E4800419451 /* Release configuration for PBXNativeTarget "ZipUtils" */,
 			);
-			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 		EAC8435A252C816500691943 /* Build configuration list for PBXNativeTarget "CelestiaMacBridge" */ = {
