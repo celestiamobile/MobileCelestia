@@ -316,7 +316,6 @@
 		EA2EBCAB29DD461D00EE0D84 /* flag.h in Headers */ = {isa = PBXBuildFile; fileRef = EA2EBCAA29DD461D00EE0D84 /* flag.h */; };
 		EA2EBCB029DD669500EE0D84 /* unicode.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EA2EBCAE29DD669500EE0D84 /* unicode.cpp */; };
 		EA2EBCB129DD669500EE0D84 /* unicode.h in Headers */ = {isa = PBXBuildFile; fileRef = EA2EBCAF29DD669500EE0D84 /* unicode.h */; };
-		EA30660E2AD2794A006A3EE2 /* ranges.h in Headers */ = {isa = PBXBuildFile; fileRef = EA30660D2AD2794A006A3EE2 /* ranges.h */; };
 		EA319B832FCAC06900566C73 /* catalogloader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EA319B822FCAC06900566C73 /* catalogloader.cpp */; };
 		EA34287A2F7F0284002C15B3 /* libiconv.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EA3428782F7F0272002C15B3 /* libiconv.tbd */; };
 		EA34E2E3275CA76300507F22 /* tzutil.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EA34E2E1275CA76300507F22 /* tzutil.cpp */; };
@@ -876,7 +875,6 @@
 		EA2EBCAA29DD461D00EE0D84 /* flag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = flag.h; sourceTree = "<group>"; };
 		EA2EBCAE29DD669500EE0D84 /* unicode.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = unicode.cpp; sourceTree = "<group>"; };
 		EA2EBCAF29DD669500EE0D84 /* unicode.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = unicode.h; sourceTree = "<group>"; };
-		EA30660D2AD2794A006A3EE2 /* ranges.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ranges.h; sourceTree = "<group>"; };
 		EA319B822FCAC06900566C73 /* catalogloader.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = catalogloader.cpp; sourceTree = "<group>"; };
 		EA3428782F7F0272002C15B3 /* libiconv.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libiconv.tbd; path = usr/lib/libiconv.tbd; sourceTree = SDKROOT; };
 		EA34E2E1275CA76300507F22 /* tzutil.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = tzutil.cpp; sourceTree = "<group>"; };
@@ -1725,7 +1723,6 @@
 				EA6671DA29B4AB1A00A7846E /* r128.h */,
 				EA6671DB29B4AB1A00A7846E /* r128util.cpp */,
 				EA6671DC29B4AB1A00A7846E /* r128util.h */,
-				EA30660D2AD2794A006A3EE2 /* ranges.h */,
 				EA3FC0B525F63AB30019C3BD /* stringutils.cpp */,
 				EA3FC0B625F63AB30019C3BD /* stringutils.h */,
 				EA8D1EB524D6D0BD0071C7B5 /* strnatcmp.cpp */,
@@ -2095,7 +2092,6 @@
 				EACB001930214A1400F54FCB /* tass17.h in Headers */,
 				97B5E2D4239689B9006F35B4 /* pointstarvertexbuffer.h in Headers */,
 				971A664523019C0F009E4EA1 /* bytes.h in Headers */,
-				EA30660E2AD2794A006A3EE2 /* ranges.h in Headers */,
 				971A671523019C26009E4EA1 /* 3dsread.h in Headers */,
 				971A672423019C2B009E4EA1 /* solve.h in Headers */,
 				EA59EA3826213CB4001E5B9D /* dds_decompress.h in Headers */,
