@@ -148,14 +148,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         MacBridge.initialize()
 
         UserDefaults.standard.register(defaults: ["NSApplicationCrashOnExceptions": true])
-
-        // Avoid reading saved state
-        if let libraryURL = URL.library() {
-            let savedStateURL = libraryURL.appendingPathComponent("Saved Application State")
-            if FileManager.default.fileExists(atPath: savedStateURL.path) {
-                try? FileManager.default.removeItem(at: savedStateURL)
-            }
-        }
         #endif
 
         #if !targetEnvironment(macCatalyst)
@@ -215,19 +207,19 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     #endif
 
     func application(_ application: UIApplication, shouldSaveApplicationState coder: NSCoder) -> Bool {
-        return false
+        return true
     }
 
     func application(_ application: UIApplication, shouldSaveSecureApplicationState coder: NSCoder) -> Bool {
-        return false
+        return true
     }
 
     func application(_ application: UIApplication, shouldRestoreApplicationState coder: NSCoder) -> Bool {
-        return false
+        return true
     }
 
     func application(_ application: UIApplication, shouldRestoreSecureApplicationState coder: NSCoder) -> Bool {
-        return false
+        return true
     }
 
     func application(_ application: UIApplication, continue userActivity: NSUserActivity, restorationHandler: @escaping ([UIUserActivityRestoring]?) -> Void) -> Bool {
@@ -245,7 +237,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     @objc private func handleNSWindowDidBecomeKey(_ notification: Notification) {
         guard let nsWindow = notification.object as? NSObject else { return }
-        MacBridge.disableRestorationForNSWindow(nsWindow)
+        let panelSceneDelegates = UIApplication.shared.connectedScenes.compactMap({ ($0 as? UIWindowScene)?.delegate as? PanelSceneDelegate })
+        if panelSceneDelegates.contains(where: { $0.window?.nsWindow === nsWindow }) {
+            MacBridge.disableRestorationForNSWindow(nsWindow)
+        }
     }
     #endif
 

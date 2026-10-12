@@ -18,10 +18,21 @@ class PanelSceneDelegate: CommonSceneDelegate {
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = scene as? UIWindowScene else { return }
+
+        var sceneWindowCreated = false
+        defer {
+            if !sceneWindowCreated {
+                UIApplication.shared.requestSceneSessionDestruction(session, options: nil)
+            }
+        }
+
         guard let userInfo = connectionOptions.userActivities.first?.userInfo else { return }
         guard let id = userInfo[Self.idKey] as? UUID, let width = userInfo[Self.widthKey] as? CGFloat, let height = userInfo[Self.heightKey] as? CGFloat, let titleVisible = userInfo[Self.titleVisibleKey] as? Bool, let showsToolbar = userInfo[Self.customToolbarKey] as? Bool else { return }
         guard let sessionKey = userInfo[Self.sessionKey] as? String else { return }
         guard let viewController = Self.viewControllersToPresent.removeValue(forKey: id) else { return }
+
+        sceneWindowCreated = true
+
         let size = CGSize(width: width, height: height)
         Self.weakSessionTable.setObject(session, forKey: sessionKey as NSString)
 

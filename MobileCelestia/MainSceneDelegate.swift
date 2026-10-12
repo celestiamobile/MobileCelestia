@@ -24,10 +24,7 @@ class MainSceneDelegate: CommonSceneDelegate {
 
         #if targetEnvironment(macCatalyst)
         if Self.mainWindowSessionIdentifier != nil {
-            let window = UIWindow(windowScene: windowScene)
-            window.rootViewController = UnsupportedViewController()
-            self.window = window
-            window.makeKeyAndVisible()
+            UIApplication.shared.requestSceneSessionDestruction(session, options: nil)
             return
         }
 
@@ -100,28 +97,6 @@ class MainSceneDelegate: CommonSceneDelegate {
             return
         }
         exit(0)
-    }
-    #endif
-
-    #if targetEnvironment(macCatalyst)
-    // Temporary workaround for multiple windows
-    class UnsupportedViewController: UIViewController {
-        override func loadView() {
-            let containerView = UIView()
-            containerView.backgroundColor = .systemBackground
-            let label = UILabel(textStyle: .body)
-            label.numberOfLines = 0
-            label.text = "Multiple Celestia windows within a single instance is supported, please send an e-mail to celestia.mobile@outlook.com with reproduction steps."
-            containerView.addSubview(label)
-            label.translatesAutoresizingMaskIntoConstraints = false
-            label.textColor = .label
-            NSLayoutConstraint.activate([
-                label.centerXAnchor.constraint(equalTo: containerView.centerXAnchor),
-                label.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
-                label.leadingAnchor.constraint(greaterThanOrEqualTo: containerView.leadingAnchor, constant: GlobalConstants.pageMediumMarginHorizontal),
-            ])
-            view = containerView
-        }
     }
     #endif
 }
