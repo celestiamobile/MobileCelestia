@@ -80,7 +80,7 @@
 }
 
 - (void)markSelection:(CelestiaSelection *)selection withMarker:(CelestiaMarkerRepresentation)marker {
-    u->markObject([selection selection], celestia::MarkerRepresentation(celestia::MarkerRepresentation::Symbol(marker), 10.0f, Color(0.0f, 1.0f, 0.0f, 0.9f)), 1);
+    u->markObject([selection selection], celestia::engine::MarkerRepresentation(celestia::engine::MarkerSymbol(marker), 10.0f, Color(0.0f, 1.0f, 0.0f, 0.9f)), 1);
 }
 
 - (void)unmarkSelection:(CelestiaSelection *)selection {

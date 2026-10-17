@@ -469,7 +469,6 @@
 		EAE846562B3AE659008A146D /* progressnotifier.h in Headers */ = {isa = PBXBuildFile; fileRef = EAE8464E2B3AE659008A146D /* progressnotifier.h */; };
 		EAE846572B3AE659008A146D /* loadsso.h in Headers */ = {isa = PBXBuildFile; fileRef = EAE8464F2B3AE659008A146D /* loadsso.h */; };
 		EAE846582B3AE659008A146D /* loaddso.h in Headers */ = {isa = PBXBuildFile; fileRef = EAE846502B3AE659008A146D /* loaddso.h */; };
-		EAE8466A2B443F60008A146D /* array_view.h in Headers */ = {isa = PBXBuildFile; fileRef = EAE846612B443F60008A146D /* array_view.h */; };
 		EAE8466B2B443F60008A146D /* gettext.h in Headers */ = {isa = PBXBuildFile; fileRef = EAE846622B443F60008A146D /* gettext.h */; };
 		EAE8466C2B443F60008A146D /* dateformatter.h in Headers */ = {isa = PBXBuildFile; fileRef = EAE846632B443F60008A146D /* dateformatter.h */; };
 		EAE8466D2B443F60008A146D /* infourl.h in Headers */ = {isa = PBXBuildFile; fileRef = EAE846642B443F60008A146D /* infourl.h */; };
@@ -1025,7 +1024,6 @@
 		EAE8464E2B3AE659008A146D /* progressnotifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = progressnotifier.h; sourceTree = "<group>"; };
 		EAE8464F2B3AE659008A146D /* loadsso.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = loadsso.h; sourceTree = "<group>"; };
 		EAE846502B3AE659008A146D /* loaddso.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = loaddso.h; sourceTree = "<group>"; };
-		EAE846612B443F60008A146D /* array_view.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = array_view.h; sourceTree = "<group>"; };
 		EAE846622B443F60008A146D /* gettext.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = gettext.h; sourceTree = "<group>"; };
 		EAE846632B443F60008A146D /* dateformatter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dateformatter.h; sourceTree = "<group>"; };
 		EAE846642B443F60008A146D /* infourl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = infourl.h; sourceTree = "<group>"; };
@@ -1691,7 +1689,6 @@
 				EA10A2612D84094500A27213 /* parser.h */,
 				EA10A2622D84094500A27213 /* parser.cpp */,
 				EA11E4582D76E17800DABEF0 /* infourl.cpp */,
-				EAE846612B443F60008A146D /* array_view.h */,
 				EAE846692B443F60008A146D /* blockarray.h */,
 				EAE846682B443F60008A146D /* dateformatter.cpp */,
 				EAE846632B443F60008A146D /* dateformatter.h */,
@@ -2003,7 +2000,6 @@
 				EA9166A72B0C37D200AF48B1 /* date.h in Headers */,
 				9751DC1723594A8000299997 /* celx_observer.h in Headers */,
 				9751DC1D23594A8000299997 /* celx_phase.h in Headers */,
-				EAE8466A2B443F60008A146D /* array_view.h in Headers */,
 				EA5B78C22FD1F02C0007F1C0 /* psfstarvertexbuffer.h in Headers */,
 				EA3FC0B825F63AB30019C3BD /* stringutils.h in Headers */,
 				97E34AEE2431ED09009E67C3 /* glsupport.h in Headers */,
