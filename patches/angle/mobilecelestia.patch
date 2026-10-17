@@ -30,7 +30,7 @@ index 1c9e5c3..38eeda2 100644
 +++ b/MobileCelestia.xcodeproj/project.pbxproj
 @@ -3639,6 +3639,9 @@
  				kind = exactVersion;
- 				version = 1.3.3;
+ 				version = 1.3.4;
  			};
 +			traits = (
 +				ANGLE,
