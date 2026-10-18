@@ -414,6 +414,14 @@ OBSERVERMETHODS(AlignCameraToSurfaceOnLand);
     core->setOverlayElements(static_cast<celestia::HudElements>(overlayElements));
 }
 
+- (BOOL)mixedImmersion {
+    return static_cast<BOOL>(core->getRenderer()->getMixedImmersion());
+}
+
+- (void)setMixedImmersion:(BOOL)mixedImmersion {
+    core->getRenderer()->setMixedImmersion(static_cast<bool>(mixedImmersion));
+}
+
 // Time settings
 
 // Timezone values are inverted to maintain backward compatibility

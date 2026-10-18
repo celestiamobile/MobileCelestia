@@ -218,6 +218,8 @@ typedef NS_ENUM(NSInteger, CelestiaLayoutDirection) {
 @property BOOL enableFocusZooming;
 @property BOOL enableAlignCameraToSurfaceOnLand;
 
+@property BOOL mixedImmersion;
+
 @property CelestiaOverlayElements overlayElements;
 
 - (void)loadUserDefaults:(NSUserDefaults *)userDefaults withAppDefaultsAtPath:(nullable NSString *)path;

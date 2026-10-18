@@ -1,0 +1,13 @@
+diff --git a/Pods/Target Support Files/AsyncGL-libEGL-libGLESv2/AsyncGL-libEGL-libGLESv2-xcframeworks.sh b/Pods/Target Support Files/AsyncGL-libEGL-libGLESv2/AsyncGL-libEGL-libGLESv2-xcframeworks.sh
+index fa0282c..43b7dce 100755
+--- a/Pods/Target Support Files/AsyncGL-libEGL-libGLESv2/AsyncGL-libEGL-libGLESv2-xcframeworks.sh	
++++ b/Pods/Target Support Files/AsyncGL-libEGL-libGLESv2/AsyncGL-libEGL-libGLESv2-xcframeworks.sh	
+@@ -177,6 +177,6 @@ install_xcframework() {
+   echo "Copied $source to $destination"
+ }
+ 
+-install_xcframework "${PODS_ROOT}/AsyncGL/XCFrameworks/libEGL.xcframework" "AsyncGL/libEGL" "framework" "ios-arm64" "ios-arm64_x86_64-maccatalyst" "ios-arm64_x86_64-simulator"
+-install_xcframework "${PODS_ROOT}/AsyncGL/XCFrameworks/libGLESv2.xcframework" "AsyncGL/libGLESv2" "framework" "xros-arm64" "ios-arm64_x86_64-simulator"
++install_xcframework "${PODS_ROOT}/AsyncGL/XCFrameworks/libEGL.xcframework" "AsyncGL/libEGL" "framework" "xros-arm64" "xros-arm64_x86_64-simulator"
++install_xcframework "${PODS_ROOT}/AsyncGL/XCFrameworks/libGLESv2.xcframework" "AsyncGL/libGLESv2" "framework" "xros-arm64" "xros-arm64_x86_64-simulator"
+ 

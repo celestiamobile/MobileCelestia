@@ -8,6 +8,7 @@
 // of the License, or (at your option) any later version.
 
 
+#include <celmath/frustum.h>
 #include <celengine/body.h>
 #include <celengine/glsupport.h>
 
@@ -26,9 +27,111 @@
 #include <celestia/configfile.h>
 #include <celestia/progressnotifier.h>
 #include <celestia/url.h>
+#include <celengine/perspectiveprojectionmode.h>
+#include <celengine/shadermanager.h>
+
 #include <unicode/uloc.h>
 
 #include <memory>
+
+using namespace Eigen;
+
+class CustomPerspectiveProjectionMode : public celestia::engine::PerspectiveProjectionMode
+{
+public:
+    CustomPerspectiveProjectionMode(float left, float right, float top, float bottom, float nearZ, float farZ, float width, float height) : PerspectiveProjectionMode(width, height, 0, 0), left(left), right(right), top(top), bottom(bottom), nearZ(nearZ), farZ(std::isinf(farZ) ? maximumFarZ : std::min(farZ, maximumFarZ))
+    {
+    }
+
+    CustomPerspectiveProjectionMode(const CustomPerspectiveProjectionMode &) = default;
+    CustomPerspectiveProjectionMode(CustomPerspectiveProjectionMode &&) = default;
+    CustomPerspectiveProjectionMode &operator=(const CustomPerspectiveProjectionMode &) = default;
+    CustomPerspectiveProjectionMode &operator=(CustomPerspectiveProjectionMode &&) = default;
+    ~CustomPerspectiveProjectionMode() = default;
+
+    std::tuple<float, float> getDefaultDepthRange() const override
+    {
+        return std::make_tuple(nearZ, farZ);
+    }
+
+    Matrix4f getProjectionMatrix(float nz, float fz, float) const override
+    {
+        float ratio = nz / nearZ;
+
+        float l = ratio * left;
+        float r = ratio * right;
+        float t = ratio * top;
+        float b = ratio * bottom;
+
+        // https://registry.khronos.org/OpenGL-Refpages/gl2.1/xhtml/glFrustum.xml
+        float A = (r + l) / (r - l);
+        float B = (t + b) / (t - b);
+        float C = -(fz + nz) / (fz - nz);
+        float D = -2.0f * fz * nz / (fz - nz);
+
+        Matrix4f m;
+
+        m << 2.0f * nz / (r - l),                0.0f,     A, 0.0f,
+             0.0f,                2.0f * nz / (t - b),     B, 0.0f,
+             0.0f,                               0.0f,     C,    D,
+             0.0f,                               0.0f, -1.0f, 0.0f;
+
+        return m;
+    }
+
+    float getMinimumFOV() const override { return getFOV(1.0f); };
+    float getMaximumFOV() const override { return getFOV(1.0f); };
+    float getFOV(float zoom) const override
+    {
+        float a = top * top + nearZ * nearZ;
+        float b = bottom * bottom + nearZ * nearZ;
+        float c = (top - bottom) * (top - bottom);
+        return std::acos((a + b - c) / (2.0f * std::sqrt(a * b)));
+    }
+    float getZoom(float fov) const override { return 1.0f; }
+    celestia::math::Frustum getFrustum(float _nearZ, float _farZ, float zoom) const override {
+        float ratio = _nearZ / nearZ;
+        return celestia::math::Frustum(left * ratio, right * ratio, top * ratio, bottom * ratio, _nearZ, _farZ);
+    }
+    double getViewConeAngleMax(float zoom) const override
+    {
+        float a = left * left + top * top;
+        float b = right * right + top * top;
+        float c = left * left + bottom * bottom;
+        float d = right * right + bottom * bottom;
+        float maxValue = std::max({a, b, c, d});
+        return static_cast<double>(nearZ) / std::sqrt(static_cast<double>(nearZ * nearZ + maxValue));
+    }
+
+    static constexpr float maximumFarZ = 1.0e9f;
+
+    Vector3f getPickRay(float x, float y, float zoom) const override
+    {
+        auto invProj = getProjectionMatrix(nearZ, maximumFarZ, 1.0f).inverse();
+        float aspectRatio = width / height;
+        Vector4f clip(x / aspectRatio * 2.0f, y * 2.0f, -1.0, 1.0);
+        return (invProj * clip).head<3>().normalized();
+    }
+
+    Vector2f getRayIntersection(Vector3f pickRay, float zoom) const override
+    {
+        auto proj = getProjectionMatrix(nearZ, maximumFarZ, 1.0f);
+        float coeff = -nearZ / pickRay.z();
+        Vector4f point(coeff * pickRay.x(), coeff * pickRay.y(), -nearZ, 1.0f);
+        Vector4f projected = proj * point;
+        projected /= projected.w();
+        float aspectRatio = width / height;
+        return Vector2f(projected.x() * aspectRatio, projected.y());
+    }
+
+private:
+    float left;
+    float right;
+    float bottom;
+    float top;
+    float nearZ;
+    float farZ;
+};
 
 class AppCoreProgressWatcher: public ProgressNotifier
 {
@@ -264,6 +367,10 @@ private:
     core->resize(size.width, size.height);
 }
 
+- (void)setPhysicalSize:(CGSize)size {
+    core->setPhysicalSize(static_cast<int>(size.width), static_cast<int>(size.height));
+}
+
 - (void)setSafeAreaInsetsWithLeft:(CGFloat)left top:(CGFloat)top right:(CGFloat)right bottom:(CGFloat)bottom {
     core->setSafeAreaInsets(left, top, right, bottom);
 }
@@ -417,12 +524,32 @@ private:
     delete core;
 }
 
+- (void)setHudMessagesEnabled:(BOOL)enabled {
+    core->enableHudMessages(static_cast<bool>(enabled));
+}
+
 - (void)enableSelectionPointer {
     core->getRenderer()->enableSelectionPointer();
 }
 
 - (void)disableSelectionPointer {
     core->getRenderer()->disableSelectionPointer();
+}
+
+- (void)setHudOverlayImageEnabled:(BOOL)enabled {
+    core->enableHudOverlayImage(static_cast<bool>(enabled));
+}
+
+- (NSString *)currentMessageText {
+    auto message = core->messageText();
+    if (message.empty())
+        return @"";
+    return [NSString stringWithUTF8String:message.data()];
+}
+
+- (void)setCustomPerspectiveProjectionLeft:(float)left right:(float)right top:(float)top bottom:(float)bottom nearZ:(float)nearZ farZ:(float)farZ {
+    auto [width, height] = core->getWindowDimension();
+    core->getRenderer()->setProjectionMode(std::make_shared<CustomPerspectiveProjectionMode>(left, right, top, bottom, nearZ, farZ, static_cast<float>(width), static_cast<float>(height)));
 }
 
 - (void)setCameraTransform:(simd_float4x4)cameraTransform {
@@ -432,6 +559,18 @@ private:
          cols[0][1], cols[1][1], cols[2][1],
          cols[0][2], cols[1][2], cols[2][2];
     core->getRenderer()->setCameraTransform(m);
+}
+
+- (void)touchDown:(simd_float3)focus {
+    core->touchDown(Eigen::Vector3f(focus[0], focus[1], focus[2]));
+}
+
+- (void)touchMove:(simd_float3)focus from:(simd_double3)from to:(simd_double3)to {
+    core->touchMove(Eigen::Vector3f(focus[0], focus[1], focus[2]), Eigen::Vector3f(static_cast<float>(from[0]), static_cast<float>(from[1]), static_cast<float>(from[2])), Eigen::Vector3f(static_cast<float>(to[0]), static_cast<float>(to[1]), static_cast<float>(to[2])));
+}
+
+- (void)touchUp:(simd_float3)focus {
+    core->touchUp(Eigen::Vector3f(focus[0], focus[1], focus[2]));
 }
 
 @end

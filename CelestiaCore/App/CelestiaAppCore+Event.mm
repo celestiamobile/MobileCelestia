@@ -330,4 +330,8 @@ enum {
     core->pinchUpdate(static_cast<float>(focus.x), static_cast<float>(focus.y), static_cast<float>(scale), static_cast<bool>(zoomFOV));
 }
 
+- (void)pinchUpdate:(simd_float3)focus scale:(CGFloat)scale {
+    core->pinchUpdate(Eigen::Vector3f(focus[0], focus[1], focus[2]), static_cast<float>(scale));
+}
+
 @end

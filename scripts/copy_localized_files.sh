@@ -1,7 +1,13 @@
 #!/bin/sh
 
-CELESTIA_IOS_ROOT=$SRCROOT/MobileCelestia/Resources
+CELESTIA_IOS_ROOT=$SRCROOT/$TARGET_NAME/Resources
 CELESTIA_LOCALIZATION_REPO_ROOT=$SRCROOT/../CelestiaLocalization
 CELESTIA_LOCALIZATION_IOS_ROOT=$CELESTIA_LOCALIZATION_REPO_ROOT/ios
 
-rsync -rv --quiet $CELESTIA_LOCALIZATION_IOS_ROOT/* $CELESTIA_IOS_ROOT
+mkdir -p "$CELESTIA_IOS_ROOT"
+
+if [ "$TARGET_NAME" = "CelestiaXR" ]; then
+    rsync -rv --quiet --exclude=Localizable.xcstrings "$CELESTIA_LOCALIZATION_IOS_ROOT/" "$CELESTIA_IOS_ROOT"
+else
+    rsync -rv --quiet "$CELESTIA_LOCALIZATION_IOS_ROOT/" "$CELESTIA_IOS_ROOT"
+fi

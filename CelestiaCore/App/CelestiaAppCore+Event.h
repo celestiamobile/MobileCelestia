@@ -8,6 +8,7 @@
 // of the License, or (at your option) any later version.
 
 #import <CelestiaCore/CelestiaAppCore.h>
+#include <simd/types.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -37,6 +38,8 @@ typedef NS_OPTIONS(NSUInteger, CelestiaEventModifier) {
 - (void)joystickAxis:(CelestiaJoystickAxis)axis amount:(float)amount;
 
 - (void)pinchUpdate:(CGPoint)focus scale:(CGFloat)scale zoomFOV:(BOOL)zoomFOV;
+
+- (void)pinchUpdate:(simd_float3)focus scale:(CGFloat)scale;
 
 @end
 

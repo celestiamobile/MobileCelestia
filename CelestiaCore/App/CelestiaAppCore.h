@@ -152,6 +152,7 @@ NS_SWIFT_NAME(AppCore)
 - (void)tick:(NSTimeInterval)elapsedTime;
 + (void)finish;
 - (void)resize:(CGSize)size NS_SWIFT_NAME(resize(to:));
+- (void)setPhysicalSize:(CGSize)size;
 - (void)setSafeAreaInsetsWithLeft:(CGFloat)left top:(CGFloat)top right:(CGFloat)right bottom:(CGFloat)bottom NS_SWIFT_NAME(setSafeAreaInsets(left:top:right:bottom:));
 - (void)setHudFont:(NSString *)fontPath collectionIndex:(NSInteger)collectionIndex fontSize:(NSInteger)fontSize;
 - (void)setHudTitleFont:(NSString *)fontPath collectionIndex:(NSInteger)collectionIndex fontSize:(NSInteger)fontSize;
@@ -182,10 +183,19 @@ NS_SWIFT_NAME(AppCore)
 // MARK: Simulation
 @property (readonly) CelestiaSimulation *simulation;
 
+- (void)setHudMessagesEnabled:(BOOL)enabled;
 - (void)enableSelectionPointer;
 - (void)disableSelectionPointer;
+- (void)setHudOverlayImageEnabled:(BOOL)enabled;
 
+- (NSString *)currentMessageText;
+
+- (void)setCustomPerspectiveProjectionLeft:(float)left right:(float)right top:(float)top bottom:(float)bottom nearZ:(float)nearZ farZ:(float)farZ;
 - (void)setCameraTransform:(simd_float4x4)cameraTransform;
+
+- (void)touchDown:(simd_float3)focus;
+- (void)touchMove:(simd_float3)focus from:(simd_double3)from to:(simd_double3)to;
+- (void)touchUp:(simd_float3)focus;
 
 @end
 
