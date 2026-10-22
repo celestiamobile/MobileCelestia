@@ -1125,10 +1125,11 @@ public func rendererSettings(extraItems: [SettingItem]) -> SettingSection {
                             SettingItem(name: CelestiaString("Star Colors", comment: ""), associatedItem: .selection(item:
                                 AssociatedSelectionSingleItem(key: "starColors", options: [
                                     .init(name: CelestiaString("Classic Colors", comment: "Star colors option"), value: 0),
-                                    .init(name: CelestiaString("Blackbody D65", comment: "Star colors option"), value: 1),
-                                    .init(name: CelestiaString("Blackbody (Solar Whitepoint)", comment: "Star colors option"), value: 2),
-                                    .init(name: CelestiaString("Blackbody (Vega Whitepoint)", comment: "Star colors option"), value: 3),
-                                ], defaultOption: 1)
+                                    .init(name: CelestiaString("Blackbody Illuminant E", comment: "Star colors option"), value: 1),
+                                    .init(name: CelestiaString("Blackbody D65", comment: "Star colors option"), value: 2),
+                                    .init(name: CelestiaString("Blackbody (Solar Whitepoint)", comment: "Star colors option"), value: 3),
+                                    .init(name: CelestiaString("Blackbody (Vega Whitepoint)", comment: "Star colors option"), value: 4),
+                                ], defaultOption: 2)
                             )),
                             SettingItem(
                                 name: CelestiaString("Tinted Illumination Saturation", comment: ""),

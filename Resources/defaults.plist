@@ -179,7 +179,7 @@
 		<key>scriptSystemAccessPolicy</key>
 		<integer>0</integer>
 		<key>starColors</key>
-		<integer>2</integer>
+		<integer>3</integer>
 		<key>tintSaturation</key>
 		<real>0.5</real>
 		<key>toneMapping</key>

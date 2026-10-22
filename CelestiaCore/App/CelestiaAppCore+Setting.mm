@@ -460,6 +460,16 @@ OBSERVERMETHODS(AlignCameraToSurfaceOnLand);
             [settingsDictionary setObject:obj forKey:key];
     }];
 
+    if (![userDefaults boolForKey:@"StarColorsIlluminantEMigrated"]) {
+        NSNumber *starColors = [userDefaults objectForKey:@"starColors"];
+        if (starColors != nil && starColors.integerValue >= 1 && starColors.integerValue <= 3) {
+            NSNumber *migratedStarColors = @(starColors.integerValue + 1);
+            [userDefaults setObject:migratedStarColors forKey:@"starColors"];
+            [settingsDictionary setObject:migratedStarColors forKey:@"starColors"];
+        }
+        [userDefaults setBool:YES forKey:@"StarColorsIlluminantEMigrated"];
+    }
+
     // Remove the old user defaults
     if (oldUserDefs != nil)
         [userDefaults setObject:nil forKey:oldDefaultsKey];

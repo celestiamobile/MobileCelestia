@@ -96,6 +96,8 @@
 		971A669923019C20009E4EA1 /* deepskyobj.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 977D81C622FDB236002FF1C2 /* deepskyobj.cpp */; };
 		971A669A23019C20009E4EA1 /* deepskyobj.h in Headers */ = {isa = PBXBuildFile; fileRef = 977D823D22FDB23D002FF1C2 /* deepskyobj.h */; };
 		971A669D23019C20009E4EA1 /* dsodb.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 977D824C22FDB23F002FF1C2 /* dsodb.cpp */; };
+		EAF026110000000000000001 /* dsobrowser.cpp in Sources */ = {isa = PBXBuildFile; fileRef = EAF026110000000000000003 /* dsobrowser.cpp */; };
+		EAF026110000000000000002 /* dsobrowser.h in Headers */ = {isa = PBXBuildFile; fileRef = EAF026110000000000000004 /* dsobrowser.h */; };
 		971A669E23019C20009E4EA1 /* dsodb.h in Headers */ = {isa = PBXBuildFile; fileRef = 977D81D122FDB237002FF1C2 /* dsodb.h */; };
 		971A66A123019C20009E4EA1 /* dsooctree.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 977D820822FDB23A002FF1C2 /* dsooctree.cpp */; };
 		971A66A223019C20009E4EA1 /* dsooctree.h in Headers */ = {isa = PBXBuildFile; fileRef = 977D821622FDB23B002FF1C2 /* dsooctree.h */; };
@@ -627,6 +629,7 @@
 		977D81CF22FDB237002FF1C2 /* body.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = body.cpp; sourceTree = "<group>"; };
 		977D81D022FDB237002FF1C2 /* boundaries.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = boundaries.h; sourceTree = "<group>"; };
 		977D81D122FDB237002FF1C2 /* dsodb.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dsodb.h; sourceTree = "<group>"; };
+		EAF026110000000000000004 /* dsobrowser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = dsobrowser.h; sourceTree = "<group>"; };
 		977D81D222FDB237002FF1C2 /* opencluster.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = opencluster.h; sourceTree = "<group>"; };
 		977D81D322FDB237002FF1C2 /* texture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = texture.cpp; sourceTree = "<group>"; };
 		977D81D422FDB237002FF1C2 /* surface.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = surface.h; sourceTree = "<group>"; };
@@ -720,6 +723,7 @@
 		977D824A22FDB23E002FF1C2 /* lightenv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = lightenv.h; sourceTree = "<group>"; };
 		977D824B22FDB23E002FF1C2 /* curveplot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = curveplot.h; sourceTree = "<group>"; };
 		977D824C22FDB23F002FF1C2 /* dsodb.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dsodb.cpp; sourceTree = "<group>"; };
+		EAF026110000000000000003 /* dsobrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = dsobrowser.cpp; sourceTree = "<group>"; };
 		977D824D22FDB23F002FF1C2 /* starbrowser.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = starbrowser.cpp; sourceTree = "<group>"; };
 		977D824E22FDB23F002FF1C2 /* solarsys.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = solarsys.h; sourceTree = "<group>"; };
 		977D824F22FDB23F002FF1C2 /* starname.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = starname.cpp; sourceTree = "<group>"; };
@@ -1508,6 +1512,8 @@
 				977D81C622FDB236002FF1C2 /* deepskyobj.cpp */,
 				977D823D22FDB23D002FF1C2 /* deepskyobj.h */,
 				977D824C22FDB23F002FF1C2 /* dsodb.cpp */,
+				EAF026110000000000000003 /* dsobrowser.cpp */,
+				EAF026110000000000000004 /* dsobrowser.h */,
 				977D81D122FDB237002FF1C2 /* dsodb.h */,
 				977D820822FDB23A002FF1C2 /* dsooctree.cpp */,
 				977D821622FDB23B002FF1C2 /* dsooctree.h */,
@@ -2227,6 +2233,7 @@
 				EA63E97C2C1AA8B600ED8EE9 /* stardbbuilder.h in Headers */,
 				EA34E2E4275CA76300507F22 /* tzutil.h in Headers */,
 				971A669E23019C20009E4EA1 /* dsodb.h in Headers */,
+				EAF026110000000000000002 /* dsobrowser.h in Headers */,
 				EAE8466C2B443F60008A146D /* dateformatter.h in Headers */,
 				EA9166B62B0C37FE00AF48B1 /* hud.h in Headers */,
 				971A66C823019C20009E4EA1 /* observer.h in Headers */,
@@ -2675,6 +2682,7 @@
 				971A660E23019BFC009E4EA1 /* mesh.cpp in Sources */,
 				97AD59C8235B1B8E0056CA80 /* luascript.cpp in Sources */,
 				971A669D23019C20009E4EA1 /* dsodb.cpp in Sources */,
+				EAF026110000000000000001 /* dsobrowser.cpp in Sources */,
 				97B5E2D6239689B9006F35B4 /* pointstarrenderer.cpp in Sources */,
 				EA14B03E2A51BC9100F069C0 /* projectionmode.cpp in Sources */,
 				974A6B2323532EDB007BCABD /* view.cpp in Sources */,
@@ -3012,7 +3020,7 @@
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SHARED_BUILD_NUMBER = 720;
-				SHARED_BUILD_VERSION = 26.10.0;
+				SHARED_BUILD_VERSION = 26.11.0;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -3080,7 +3088,7 @@
 				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				SDKROOT = iphoneos;
 				SHARED_BUILD_NUMBER = 720;
-				SHARED_BUILD_VERSION = 26.10.0;
+				SHARED_BUILD_VERSION = 26.11.0;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
 				SWIFT_COMPILATION_MODE = wholemodule;
 				SWIFT_EMIT_LOC_STRINGS = YES;
