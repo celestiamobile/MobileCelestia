@@ -158,10 +158,6 @@ NS_SWIFT_NAME(AppCore)
 - (void)setRendererFont:(NSString *)fontPath collectionIndex:(NSInteger)collectionIndex fontSize:(NSInteger)fontSize fontStyle:(CelestiaRendererFontStyle)fontStyle;
 - (void)setPickTolerance:(CGFloat)pickTolerance;
 
-// MARK: History
-- (void)forward;
-- (void)back;
-
 // MARK: Other
 @property (readonly) NSString *currentURL;
 @property CelestiaTextEnterMode textEnterMode;

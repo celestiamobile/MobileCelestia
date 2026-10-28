@@ -393,18 +393,6 @@ private:
     return _simulation;
 }
 
-// MARK: History
-- (void)forward {
-    std::vector<Url>::size_type historySize = core->getHistory().size();
-    if (historySize < 2) return;
-    if (core->getHistoryCurrent() > historySize-2) return;
-    core->forward();
-}
-
-- (void)back {
-    core->back();
-}
-
 - (CelestiaAppState *)state {
     return [[CelestiaAppState alloc] initWithCore:core];
 }

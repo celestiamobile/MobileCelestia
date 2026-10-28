@@ -1621,14 +1621,6 @@ extension MainViewController: NSToolbarDelegate {
         guard let action = AppToolbarAction(rawValue: sender.itemIdentifier.rawValue) else { return }
         toolbarActionSelected(action)
     }
-
-    @objc private func undoOrRedo(_ sender: NSToolbarItemGroup) {
-        if sender.selectedIndex == 0 {
-            executor.runAsynchronously { $0.back() }
-        } else {
-            executor.runAsynchronously { $0.forward() }
-        }
-    }
 }
 
 extension MainViewController: NSTouchBarDelegate {
