@@ -24,20 +24,20 @@ index 4a25ca1..15fb2a8 100644
  GCC_PREPROCESSOR_DEFINITIONS[sdk=iphoneos*] = $(PREPROCESSOR_BASE) GL_ES
  GCC_PREPROCESSOR_DEFINITIONS[sdk=iphonesimulator*] = $(PREPROCESSOR_BASE) GL_ES
  GCC_PREPROCESSOR_DEFINITIONS[sdk=xros*] = $(PREPROCESSOR_BASE) GL_ES
-diff --git a/MobileCelestia.xcodeproj/project.pbxproj b/MobileCelestia.xcodeproj/project.pbxproj
-index 1c9e5c3..38eeda2 100644
---- a/MobileCelestia.xcodeproj/project.pbxproj
-+++ b/MobileCelestia.xcodeproj/project.pbxproj
-@@ -3639,6 +3639,9 @@
- 				kind = exactVersion;
- 				version = 1.3.4;
- 			};
-+			traits = (
-+				ANGLE,
-+			);
- 		};
- 		EAC20FDF2CA0CB7C0098AABA /* XCRemoteSwiftPackageReference "sentry-cocoa" */ = {
- 			isa = XCRemoteSwiftPackageReference;
+diff --git a/MobileCelestia.xcodeproj/project.xcproj b/MobileCelestia.xcodeproj/project.xcproj
+index 64d2c414..c8065eb2 100644
+--- a/MobileCelestia.xcodeproj/project.xcproj
++++ b/MobileCelestia.xcodeproj/project.xcproj
+@@ -20,6 +20,9 @@
+       "kind": "remote",
+       "repository": "https://github.com/celestiamobile/AsyncGL",
+       "version": {
+         "version": "1.3.4",
+       },
++      "traits": [
++        "ANGLE",
++      ],
+     }, {
 diff --git a/MobileCelestia/Celestia/CelestiaDisplayController.swift b/MobileCelestia/Celestia/CelestiaDisplayController.swift
 index f02efe6..d931dfa 100644
 --- a/MobileCelestia/Celestia/CelestiaDisplayController.swift
