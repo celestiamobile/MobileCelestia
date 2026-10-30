@@ -115,8 +115,6 @@
 	<true/>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.simulation-games</string>
-	<key>LSHasLocalizedDisplayName</key>
-	<true/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>LSSupportsOpeningDocumentsInPlace</key>
