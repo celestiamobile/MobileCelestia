@@ -35,7 +35,7 @@ concurrency:
 env:
   DEPENDENCY_VERSION: '1.0.109'
   CONTENT_COMMIT_HASH: 'e6d05411f1ab8aecbd8d72173711ae37f228deaf'
-  XC_VERSION: '27.1'
+  XC_VERSION: '27.2'
   XC_PROJECT: 'MobileCelestia/MobileCelestia.xcodeproj'
   XC_SCHEME: 'MobileCelestia'
   DISTRIBUTION_IDENTITY: 'Apple Distribution: Linfeng Li (22NR5428TD)'
@@ -272,34 +272,19 @@ jobs:
       - name: Build Archive (iOS)
         if: matrix.sdk == 'iphoneos'
         run: |
-          sed -i '' 's/CODE_SIGN_STYLE = Automatic;/CODE_SIGN_STYLE = Manual;/g' $XC_PROJECT/project.pbxproj
-          awk -v main_uuid="$IOS_PROVISIONING_PROFILE_UUID" -v nse_uuid="$IOS_NSE_PROVISIONING_PROFILE_UUID" '
-            /PRODUCT_BUNDLE_IDENTIFIER = space\.celestia\.MobileCelestia\.NotificationServiceExtension;/ { uuid = nse_uuid; print; next }
-            /PRODUCT_BUNDLE_IDENTIFIER = / { uuid = main_uuid; print; next }
-            /PROVISIONING_PROFILE_SPECIFIER = "";/ {
-              if (uuid != "") sub(/""/, "\"" uuid "\"")
-              print
-              next
-            }
-            { print }
-          ' $XC_PROJECT/project.pbxproj > $RUNNER_TEMP/project.pbxproj && mv $RUNNER_TEMP/project.pbxproj $XC_PROJECT/project.pbxproj
-          sed -i '' "s/CODE_SIGN_IDENTITY = \"Apple Development\";/CODE_SIGN_IDENTITY = \"${DISTRIBUTION_IDENTITY}\";/g" $XC_PROJECT/project.pbxproj
+          xcrun swift MobileCelestia/scripts/configure_signing.swift "$XC_PROJECT/project.xcproj" "$DISTRIBUTION_IDENTITY" "$IOS_PROVISIONING_PROFILE_UUID" "$IOS_NSE_PROVISIONING_PROFILE_UUID"
           /usr/bin/xcodebuild archive -project "$XC_PROJECT" -scheme "$XC_SCHEME" -configuration "Release" -destination "generic/platform=iOS" -archivePath "$XC_ARCHIVE_PATH" SHARED_BUILD_NUMBER=$((6661 + ${{ github.run_number }})) APPSTORE_BUILD=YES
 
       - name: Build Archive (Mac, App Store)
         if: matrix.sdk == 'macosx' && matrix.signing == 'appStore'
         run: |
-          sed -i '' 's/CODE_SIGN_STYLE = Automatic;/CODE_SIGN_STYLE = Manual;/g' $XC_PROJECT/project.pbxproj
-          sed -i '' "s/PROVISIONING_PROFILE_SPECIFIER = \"\";/PROVISIONING_PROFILE_SPECIFIER = \"${MAC_APP_STORE_PROVISIONING_PROFILE_UUID}\";/g" $XC_PROJECT/project.pbxproj
-          sed -i '' "s/CODE_SIGN_IDENTITY = \"Apple Development\";/CODE_SIGN_IDENTITY = \"${DISTRIBUTION_IDENTITY}\";/g" $XC_PROJECT/project.pbxproj
+          xcrun swift MobileCelestia/scripts/configure_signing.swift "$XC_PROJECT/project.xcproj" "$DISTRIBUTION_IDENTITY" "$MAC_APP_STORE_PROVISIONING_PROFILE_UUID"
           /usr/bin/xcodebuild archive -project "$XC_PROJECT" -scheme "$XC_SCHEME" -configuration "Release" -destination "platform=macOS,variant=Mac Catalyst" -archivePath "$XC_ARCHIVE_PATH" SHARED_BUILD_NUMBER=$((6661 + ${{ github.run_number }})) APPSTORE_BUILD=YES
 
       - name: Build Archive (Mac, Developer ID)
         if: matrix.sdk == 'macosx' && matrix.signing == 'developerID'
         run: |
-          sed -i '' 's/CODE_SIGN_STYLE = Automatic;/CODE_SIGN_STYLE = Manual;/g' $XC_PROJECT/project.pbxproj
-          sed -i '' "s/PROVISIONING_PROFILE_SPECIFIER = \"\";/PROVISIONING_PROFILE_SPECIFIER = \"${MAC_DEVELOPER_ID_PROVISIONING_PROFILE_UUID}\";/g" $XC_PROJECT/project.pbxproj
-          sed -i '' "s/CODE_SIGN_IDENTITY = \"Apple Development\";/CODE_SIGN_IDENTITY = \"${DEVELOPER_ID_IDENTITY}\";/g" $XC_PROJECT/project.pbxproj
+          xcrun swift MobileCelestia/scripts/configure_signing.swift "$XC_PROJECT/project.xcproj" "$DEVELOPER_ID_IDENTITY" "$MAC_DEVELOPER_ID_PROVISIONING_PROFILE_UUID"
           /usr/bin/xcodebuild archive -project "$XC_PROJECT" -scheme "$XC_SCHEME" -configuration "Release" -destination "platform=macOS,variant=Mac Catalyst" -archivePath "$XC_ARCHIVE_PATH" SHARED_BUILD_NUMBER=$((6661 + ${{ github.run_number }})) APPSTORE_BUILD=NO
 
       - name: Export Archive
