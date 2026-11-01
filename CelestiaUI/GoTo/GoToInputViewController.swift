@@ -94,22 +94,27 @@ class GoToInputViewController: UICollectionViewController {
             case .distance:
                 configuration = DistanceInputConfiguration(
                     model: DistanceInputConfiguration.Model(
-                        units: DistanceUnit.allCases.map({ $0.name }),
-                        selectedUnitIndex: DistanceUnit.allCases.firstIndex(of: unit)!,
                         distanceValue: self.distance,
                         distanceString: self.distanceString
                     ),
                     directionalLayoutMargins: NSDirectionalEdgeInsets(top: GlobalConstants.listItemMediumMarginVertical, leading: GlobalConstants.listItemMediumMarginHorizontal, bottom: GlobalConstants.listItemMediumMarginVertical, trailing: GlobalConstants.listItemMediumMarginHorizontal)
-                ) { [weak self] unitIndex in
-                    guard let self else { return }
-                    self.unit = DistanceUnit.allCases[unitIndex]
-                } distanceChanged: { [weak self] distanceValue, distanceString in
+                ) { [weak self] distanceValue, distanceString in
                     guard let self else { return }
                     self.distance = distanceValue
                     self.distanceString = distanceString
                     self.validate()
                 }
-                accessories = []
+                let menu = UIMenu(options: .singleSelection, children: DistanceUnit.allCases.map({ unit in
+                    UIAction(title: unit.name, state: self.unit == unit ? .on : .off) { [weak self] _ in
+                        guard let self else { return }
+                        self.unit = unit
+                        var snapshot = self.dataSource.snapshot()
+                        snapshot.reconfigureItems([.distance])
+                        self.dataSource.apply(snapshot, animatingDifferences: false)
+                    }
+                }))
+                accessories = [.label(text: self.unit.name), .popUpMenu(menu)]
+                selectable = true
             case .coordinates:
                 configuration = LongitudeLatitudeInputConfiguration(
                     model: LongitudeLatitudeInputConfiguration.Model(longitude: self.longitude, latitude: self.latitude, longitudeString: self.longitudeString, latitudeString: self.latitudeString),

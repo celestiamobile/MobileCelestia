@@ -42,29 +42,19 @@ public class ObserverModeViewController: UICollectionViewController {
             var configuration = UIListContentConfiguration.celestiaValueCell()
             let text: String
             var secondaryText: String?
-            var selectable = true
             let accessories: [UICellAccessory]
             switch itemIdentifier {
             case .coordinateSystem:
                 text = CelestiaString("Coordinate System", comment: "Used in Flight Mode")
-                selectable = false
-                #if targetEnvironment(macCatalyst)
-                let button = UIButton(type: .system)
-                #else
-                let button = UIButton(configuration: .plain())
-                #endif
-                button.showsMenuAsPrimaryAction = true
-                button.changesSelectionAsPrimaryAction = true
-                button.menu = UIMenu(children: self.supportedCoordinateSystems.map({ coordinateSystem in
+                secondaryText = self.coordinateSystem.name
+                let menu = UIMenu(options: .singleSelection, children: self.supportedCoordinateSystems.map({ coordinateSystem in
                     UIAction(title: coordinateSystem.name, state: self.coordinateSystem == coordinateSystem ? .on : .off) { [weak self] _ in
                         guard let self else { return }
                         self.coordinateSystem = coordinateSystem
                         self.reload()
                     }
                 }))
-                accessories = [
-                    .customView(configuration: UICellAccessory.CustomViewConfiguration(customView: button, placement: .trailing(displayed: .always))),
-                ]
+                accessories = [.popUpMenu(menu)]
             case .referenceObjectName:
                 text = CelestiaString("Reference Object", comment: "Used in Flight Mode")
                 secondaryText = self.referenceObjectName
@@ -77,7 +67,7 @@ public class ObserverModeViewController: UICollectionViewController {
             configuration.text = text
             configuration.secondaryText = secondaryText
             cell.contentConfiguration = configuration
-            cell.selectable = selectable
+            cell.selectable = true
             cell.accessories = accessories
         }
         let dataSource = UICollectionViewDiffableDataSource<Section, Item>(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in

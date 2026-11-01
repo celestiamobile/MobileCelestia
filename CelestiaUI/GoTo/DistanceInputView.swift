@@ -12,21 +12,17 @@ import UIKit
 @MainActor
 struct DistanceInputConfiguration: UIContentConfiguration {
     struct Model: Hashable {
-        let units: [String]
-        var selectedUnitIndex: Int
         var distanceValue: Double?
         var distanceString: String?
     }
 
     var model: Model
     var directionalLayoutMargins: NSDirectionalEdgeInsets
-    var unitChanged: ((Int) -> Void)?
     var distanceChanged: ((Double?, String?) -> Void)?
 
-    init(model: Model, directionalLayoutMargins: NSDirectionalEdgeInsets = .zero, unitChanged: ((Int) -> Void)?, distanceChanged: ((Double?, String?) -> Void)?) {
+    init(model: Model, directionalLayoutMargins: NSDirectionalEdgeInsets = .zero, distanceChanged: ((Double?, String?) -> Void)?) {
         self.model = model
         self.directionalLayoutMargins = directionalLayoutMargins
-        self.unitChanged = unitChanged
         self.distanceChanged = distanceChanged
     }
 
@@ -41,13 +37,6 @@ struct DistanceInputConfiguration: UIContentConfiguration {
 
 class DistanceInputView: UIView, UIContentView {
     private lazy var distanceTextField = UITextField()
-    private lazy var unitButton: UIButton = {
-#if targetEnvironment(macCatalyst)
-        return UIButton(type: .system)
-#else
-        return UIButton(configuration: .plain())
-#endif
-    }()
 
     private lazy var parseNumberFormatter: NumberFormatter = {
         let formatter = NumberFormatter()
@@ -82,30 +71,19 @@ class DistanceInputView: UIView, UIContentView {
     }
 
     private func setUp() {
-        unitButton.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
-        unitButton.titleLabel?.adjustsFontForContentSizeCategory = true
-        unitButton.showsMenuAsPrimaryAction = true
-        unitButton.changesSelectionAsPrimaryAction = true
-
         distanceTextField.font = UIFont.preferredFont(forTextStyle: .body)
         distanceTextField.adjustsFontForContentSizeCategory = true
 
         distanceTextField.translatesAutoresizingMaskIntoConstraints = false
-        unitButton.translatesAutoresizingMaskIntoConstraints = false
         addSubview(distanceTextField)
-        addSubview(unitButton)
         NSLayoutConstraint.activate([
             distanceTextField.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
+            distanceTextField.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor),
             distanceTextField.topAnchor.constraint(greaterThanOrEqualTo: layoutMarginsGuide.topAnchor),
             distanceTextField.centerYAnchor.constraint(equalTo: layoutMarginsGuide.centerYAnchor),
-            unitButton.leadingAnchor.constraint(equalTo: distanceTextField.trailingAnchor, constant: GlobalConstants.listItemGapHorizontal),
-            unitButton.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor),
-            unitButton.topAnchor.constraint(greaterThanOrEqualTo: layoutMarginsGuide.topAnchor),
-            unitButton.centerYAnchor.constraint(equalTo: layoutMarginsGuide.centerYAnchor),
         ])
 
         let optionalConstraints = [
-            unitButton.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor),
             distanceTextField.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor),
         ]
 
@@ -122,14 +100,6 @@ class DistanceInputView: UIView, UIContentView {
         currentConfiguration = configuration
 
         directionalLayoutMargins = configuration.directionalLayoutMargins
-        let items = configuration.model.units.enumerated().map { (index, name) in
-            return UIAction(title: name, state: index == configuration.model.selectedUnitIndex ? .on : .off) { [weak self] _ in
-                guard let self = self else { return }
-                self.currentConfiguration.model.selectedUnitIndex = index
-                self.currentConfiguration.unitChanged?(self.currentConfiguration.model.selectedUnitIndex)
-            }
-        }
-        unitButton.menu = UIMenu(children: items)
         distanceTextField.text = configuration.model.distanceString
     }
 
