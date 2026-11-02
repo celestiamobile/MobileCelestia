@@ -113,9 +113,11 @@ public class GameControllerManager: @unchecked Sendable {
             case .reverseOrientation:
                 if !pressed && performReleaseAction { core.simulation.reverseObserverOrientation() }
             case .tapCenter:
+                guard !pressed && performReleaseAction else { return }
                 let size = core.size
                 let center = CGPoint(x: size.width / 2, y: size.height / 2)
-                pressed ? core.mouseButtonDown(at: center, modifiers: 0, with: .left) : core.mouseButtonUp(at: center, modifiers: 0, with: .left)
+                core.mouseButtonDown(at: center, modifiers: 0, with: .left)
+                core.mouseButtonUp(at: center, modifiers: 0, with: .left)
             case .goTo:
                 if !pressed && performReleaseAction { core.receive(.goTo) }
             case .esc:

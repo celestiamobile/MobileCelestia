@@ -29,9 +29,9 @@ public enum GameControllerAction: Int, CaseIterable, Sendable {
 
     var isContinuous: Bool {
         switch self {
-        case .moveFaster, .moveSlower, .tapCenter, .pitchUp, .pitchDown, .yawLeft, .yawRight, .rollLeft, .rollRight:
+        case .moveFaster, .moveSlower, .pitchUp, .pitchDown, .yawLeft, .yawRight, .rollLeft, .rollRight:
             return true
-        case .noop, .stopSpeed, .reverseSpeed, .reverseOrientation, .goTo, .esc:
+        case .noop, .stopSpeed, .reverseSpeed, .reverseOrientation, .tapCenter, .goTo, .esc:
             return false
         }
     }
