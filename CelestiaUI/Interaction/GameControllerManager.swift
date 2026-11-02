@@ -201,11 +201,11 @@ public class GameControllerManager: @unchecked Sendable {
                     action = self.actionRemapper?(button) ?? defaultAction
                     let alreadyPressed = self.activeButtons.values.contains(action)
                     self.activeButtons[button] = action
-                    guard !alreadyPressed else { return }
+                    guard !action.isContinuous || !alreadyPressed else { return }
                 } else {
                     guard let acceptedAction = self.activeButtons.removeValue(forKey: button) else { return }
                     action = acceptedAction
-                    guard !self.activeButtons.values.contains(action) else { return }
+                    guard !action.isContinuous || !self.activeButtons.values.contains(action) else { return }
                 }
                 self.sendButtonAction(action, pressed: pressed)
             }

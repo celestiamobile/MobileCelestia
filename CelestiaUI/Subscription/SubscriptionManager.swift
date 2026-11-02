@@ -217,15 +217,10 @@ public class SubscriptionManager {
                 case .unverified:
                     break
                 case .verified(let transaction):
-                    if transaction.productID == SubscriptionManager.lifetimeProductID {
-                        await transaction.finish()
-                        await self.completePendingPurchase(productID: transaction.productID)
-                        await self.updateStatus(.lifetime(originalTransactionID: transaction.originalID, environment: SubscriptionEnvironment(transaction: transaction)))
-                    } else if let cycle = Plan.Cycle(id: transaction.productID) {
-                        await transaction.finish()
-                        await self.completePendingPurchase(productID: transaction.productID)
-                        await self.updateStatus(.verified(originalTransactionID: transaction.originalID, productID: transaction.productID, cycle: cycle, expirationDate: transaction.expirationDate, environment: SubscriptionEnvironment(transaction: transaction)))
-                    }
+                    guard transaction.productID == SubscriptionManager.lifetimeProductID || Plan.Cycle(id: transaction.productID) != nil else { continue }
+                    await transaction.finish()
+                    await self.completePendingPurchase(productID: transaction.productID)
+                    await self.checkSubscriptionStatus()
                 }
             }
         }

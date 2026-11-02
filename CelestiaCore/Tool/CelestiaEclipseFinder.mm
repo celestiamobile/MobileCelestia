@@ -13,6 +13,7 @@
 #import "CelestiaBody+Private.h"
 #include "celestia/eclipsefinder.h"
 
+#include <atomic>
 #include <memory>
 
 class EclipseSeacherWatcher;
@@ -21,7 +22,7 @@ class EclipseSeacherWatcher;
     std::unique_ptr<EclipseSeacherWatcher> d;
     std::unique_ptr<EclipseFinder> s;
 @public
-    BOOL aborted;
+    std::atomic<bool> aborted;
 }
 
 @end
@@ -34,7 +35,7 @@ public:
     virtual Status eclipseFinderProgressUpdate(double t)
     {
         CelestiaEclipseFinder *searcher = (__bridge CelestiaEclipseFinder *)delegate;
-        return searcher->aborted ? Status::AbortOperation : Status::ContinueOperation;
+        return searcher->aborted.load() ? Status::AbortOperation : Status::ContinueOperation;
     };
 private:
     void *delegate;
@@ -62,13 +63,12 @@ private:
     if (self) {
         d = std::make_unique<EclipseSeacherWatcher>((__bridge void *)self);
         s = std::make_unique<EclipseFinder>([body body], d.get());
-        aborted = YES;
+        aborted.store(false);
     }
     return self;
 }
 
 - (NSArray<CelestiaEclipse *> *)search:(CelestiaEclipseKind)kind fromStart:(NSDate *)startTime toEnd:(NSDate *)endTime {
-    aborted = NO;
     std::vector<Eclipse> results;
     s->findEclipses([startTime julianDay], [endTime julianDay], static_cast<Eclipse::Type>(kind), results);
 
@@ -76,12 +76,12 @@ private:
     for (Eclipse &result: results) {
         [array addObject:[[CelestiaEclipse alloc] initWithEclipse:&result]];
     }
-    aborted = YES;
+    aborted.store(false);
     return array;
 }
 
 - (void)abort {
-    aborted = YES;
+    aborted.store(true);
 }
 
 @end

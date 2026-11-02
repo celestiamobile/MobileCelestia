@@ -27,6 +27,15 @@ public enum GameControllerAction: Int, CaseIterable, Sendable {
     case rollLeft
     case rollRight
 
+    var isContinuous: Bool {
+        switch self {
+        case .moveFaster, .moveSlower, .tapCenter, .pitchUp, .pitchDown, .yawLeft, .yawRight, .rollLeft, .rollRight:
+            return true
+        case .noop, .stopSpeed, .reverseSpeed, .reverseOrientation, .goTo, .esc:
+            return false
+        }
+    }
+
     public var name: String {
         switch self {
         case .noop:
