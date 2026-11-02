@@ -9,6 +9,7 @@
 
 import Foundation
 import GameController
+import UIKit
 
 extension GCController: @unchecked @retroactive Sendable {}
 
@@ -21,7 +22,9 @@ public class GameControllerManager: @unchecked Sendable {
     private let menuButtonHandler: (() -> Void)?
     private let connectedGameControllerChanged: ((GCController?) -> Void)?
 
-    private var connectedGameController: GCController?
+    @MainActor private var connectedGameController: GCController?
+    @MainActor private var activeButtons: [GameControllerButton: GameControllerAction] = [:]
+    @MainActor private var activeThumbsticks: Set<GameControllerThumbstick> = []
 
     @MainActor
     public init(
@@ -54,6 +57,8 @@ public class GameControllerManager: @unchecked Sendable {
 
         NotificationCenter.default.addObserver(self, selector: #selector(gameControllerConnected(_:)), name: .GCControllerDidConnect, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(gameControllerDisconnected(_:)), name: .GCControllerDidDisconnect, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(inputFocusLost(_:)), name: UIApplication.willResignActiveNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(inputFocusLost(_:)), name: UIWindow.didResignKeyNotification, object: nil)
     }
 
     @objc private func gameControllerConnected(_ notification: Notification) {
@@ -68,13 +73,78 @@ public class GameControllerManager: @unchecked Sendable {
         guard let controller = notification.object as? GCController else { return }
         Task { @MainActor in
             if connectedGameController == controller {
+                resetInput()
                 connectedGameController = nil
                 connectedGameControllerChanged?(nil)
             }
         }
     }
 
+    @objc private func inputFocusLost(_ notification: Notification) {
+        Task { @MainActor in
+            resetInput()
+        }
+    }
+
+    @MainActor private func resetInput() {
+        for action in Set(activeButtons.values) {
+            sendButtonAction(action, pressed: false, performReleaseAction: false)
+        }
+        activeButtons.removeAll()
+        for thumbstick in activeThumbsticks {
+            sendThumbstick(thumbstick, xValue: 0, yValue: 0)
+        }
+        activeThumbsticks.removeAll()
+    }
+
+    private func sendButtonAction(_ action: GameControllerAction, pressed: Bool, performReleaseAction: Bool = true) {
+        executor.runAsynchronously { core in
+            switch action {
+            case .noop:
+                break
+            case .moveFaster:
+                pressed ? core.joystickButtonDown(.button2) : core.joystickButtonUp(.button2)
+            case .moveSlower:
+                pressed ? core.joystickButtonDown(.button1) : core.joystickButtonUp(.button1)
+            case .stopSpeed:
+                if !pressed && performReleaseAction { core.receive(.stop) }
+            case .reverseSpeed:
+                if !pressed && performReleaseAction { core.receive(.reverseSpeed) }
+            case .reverseOrientation:
+                if !pressed && performReleaseAction { core.simulation.reverseObserverOrientation() }
+            case .tapCenter:
+                let size = core.size
+                let center = CGPoint(x: size.width / 2, y: size.height / 2)
+                pressed ? core.mouseButtonDown(at: center, modifiers: 0, with: .left) : core.mouseButtonUp(at: center, modifiers: 0, with: .left)
+            case .goTo:
+                if !pressed && performReleaseAction { core.receive(.goTo) }
+            case .esc:
+                if !pressed && performReleaseAction { core.receive(.cancelScript) }
+            case .pitchUp:
+                pressed ? core.keyDown(26) : core.keyUp(26)
+            case .pitchDown:
+                pressed ? core.keyDown(32) : core.keyUp(32)
+            case .yawLeft:
+                pressed ? core.keyDown(28) : core.keyUp(28)
+            case .yawRight:
+                pressed ? core.keyDown(30) : core.keyUp(30)
+            case .rollLeft:
+                pressed ? core.keyDown(31) : core.keyUp(31)
+            case .rollRight:
+                pressed ? core.keyDown(33) : core.keyUp(33)
+            }
+        }
+    }
+
+    private func sendThumbstick(_ thumbstick: GameControllerThumbstick, xValue: Float, yValue: Float) {
+        executor.runAsynchronously { core in
+            core.joystickAxis(thumbstick == .right ? .rightX : .X, amount: xValue)
+            core.joystickAxis(thumbstick == .right ? .rightY : .Y, amount: yValue)
+        }
+    }
+
     @MainActor private func gameControllerChanged(_ controller: GCController) {
+        resetInput()
         var buttonA: GCDeviceButtonInput?
         var buttonB: GCDeviceButtonInput?
         var buttonX: GCDeviceButtonInput?
@@ -117,86 +187,57 @@ public class GameControllerManager: @unchecked Sendable {
             buttonMenu = microGamepad.buttonMenu
         }
 
-        let buttonStateChangedHandler = { [weak self] (button: GameControllerButton, defaultAction: GameControllerAction, pressed: Bool) in
+        let buttonStateChangedHandler = { [weak self, weak controller] (button: GameControllerButton, defaultAction: GameControllerAction, pressed: Bool) in
             guard let self else { return }
-            guard self.canAcceptEvents() else {
-                return
-            }
-            Task { @MainActor in
-                let action = self.actionRemapper?(button) ?? defaultAction
-                switch action {
-                case .noop:
-                    break
-                case .moveFaster:
-                    await self.executor.run { pressed ? $0.joystickButtonDown(.button2) : $0.joystickButtonUp(.button2) }
-                case .moveSlower:
-                    await self.executor.run { pressed ? $0.joystickButtonDown(.button1) : $0.joystickButtonUp(.button1) }
-                case .stopSpeed:
-                    if !pressed {
-                        await self.executor.run { $0.receive(.stop) }
-                    }
-                case .reverseSpeed:
-                    if !pressed {
-                        await self.executor.run { $0.receive(.reverseSpeed) }
-                    }
-                case .reverseOrientation:
-                    if !pressed {
-                        await self.executor.run { $0.simulation.reverseObserverOrientation() }
-                    }
-                case .tapCenter:
-                    await self.executor.run { core in
-                        let size = core.size
-                        let center = CGPoint(x: size.width / 2, y: size.height / 2)
-                        pressed ? core.mouseButtonDown(at: center, modifiers: 0, with: .left) : core.mouseButtonUp(at: center, modifiers: 0, with: .left)
-                    }
-                case .goTo:
-                    if !pressed {
-                        await self.executor.run { $0.receive(.goTo) }
-                    }
-                case .esc:
-                    if !pressed {
-                        await self.executor.run { $0.receive(.cancelScript) }
-                    }
-                case .pitchUp:
-                    await self.executor.run { pressed ? $0.keyDown(26) : $0.keyUp(26) }
-                case .pitchDown:
-                    await self.executor.run { pressed ? $0.keyDown(32) : $0.keyUp(32) }
-                case .yawLeft:
-                    await self.executor.run { pressed ? $0.keyDown(28) : $0.keyUp(28) }
-                case .yawRight:
-                    await self.executor.run { pressed ? $0.keyDown(30) : $0.keyUp(30) }
-                case .rollLeft:
-                    await self.executor.run { pressed ? $0.keyDown(31) : $0.keyUp(31) }
-                case .rollRight:
-                    await self.executor.run { pressed ? $0.keyDown(33) : $0.keyUp(33) }
+            Task { @MainActor [weak controller] in
+                guard let controller, self.connectedGameController == controller else { return }
+                guard self.canAcceptEvents() else {
+                    self.resetInput()
+                    return
                 }
+                let action: GameControllerAction
+                if pressed {
+                    guard self.activeButtons[button] == nil else { return }
+                    action = self.actionRemapper?(button) ?? defaultAction
+                    let alreadyPressed = self.activeButtons.values.contains(action)
+                    self.activeButtons[button] = action
+                    guard !alreadyPressed else { return }
+                } else {
+                    guard let acceptedAction = self.activeButtons.removeValue(forKey: button) else { return }
+                    action = acceptedAction
+                    guard !self.activeButtons.values.contains(action) else { return }
+                }
+                self.sendButtonAction(action, pressed: pressed)
             }
         }
-        let thumbstickChangedHandler = { [weak self] (thumbstick: GameControllerThumbstick, xValue: Float, yValue: Float) in
+        let thumbstickChangedHandler = { [weak self, weak controller] (thumbstick: GameControllerThumbstick, xValue: Float, yValue: Float) in
             guard let self else { return }
-            let thumbstickEnabled = self.thumbstickStatus?(thumbstick) ?? true
-            guard thumbstickEnabled else { return }
-
-            guard self.canAcceptEvents() else {
-                return
-            }
-
-            let shouldInvertX = self.axisInversion?(.X) ?? false
-            let shouldInvertY = self.axisInversion?(.Y) ?? false
-            Task { @MainActor in
-                await self.executor.run { core in
-                    core.joystickAxis(thumbstick == .right ? .rightX : .X, amount: shouldInvertX ? -xValue : xValue)
-                    core.joystickAxis(thumbstick == .right ? .rightY : .Y, amount: shouldInvertY ? -yValue : yValue)
+            Task { @MainActor [weak controller] in
+                guard let controller, self.connectedGameController == controller else { return }
+                guard self.canAcceptEvents() else {
+                    self.resetInput()
+                    return
                 }
+                guard self.thumbstickStatus?(thumbstick) ?? true else {
+                    self.activeThumbsticks.remove(thumbstick)
+                    self.sendThumbstick(thumbstick, xValue: 0, yValue: 0)
+                    return
+                }
+                let shouldInvertX = self.axisInversion?(.X) ?? false
+                let shouldInvertY = self.axisInversion?(.Y) ?? false
+                self.activeThumbsticks.insert(thumbstick)
+                self.sendThumbstick(thumbstick, xValue: shouldInvertX ? -xValue : xValue, yValue: shouldInvertY ? -yValue : yValue)
             }
         }
-        buttonMenu?.valueChangedHandler = { [weak self] _, _, pressed in
+        buttonMenu?.valueChangedHandler = { [weak self, weak controller] _, _, pressed in
             guard let self = self else { return }
-            guard self.canAcceptEvents() else {
-                return
-            }
             if !pressed {
-                Task { @MainActor in
+                Task { @MainActor [weak controller] in
+                    guard let controller, self.connectedGameController == controller else { return }
+                    guard self.canAcceptEvents() else {
+                        self.resetInput()
+                        return
+                    }
                     self.menuButtonHandler?()
                 }
             }

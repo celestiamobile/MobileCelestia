@@ -28,6 +28,8 @@ public final class ResourceManager: @unchecked Sendable {
     static let resourceErrorKey = "ResourceDownloadManagerResourceErrorKey"
 
     private var tasks: [String: URLSessionTask] = [:]
+    private var installations: [String: Task<Void, Never>] = [:]
+    private var cancelledIdentifiers: Set<String> = []
 
     private var observations: [String: NSKeyValueObservation] = [:]
 
@@ -99,12 +101,12 @@ public final class ResourceManager: @unchecked Sendable {
         try FileManager.default.removeItem(at: folder)
     }
 
-    func reinstall(item: ResourceItem) throws {
-        try uninstallInternally(item: item)
+    func reinstall(item: ResourceItem) {
         download(item: item)
     }
 
     func download(item: ResourceItem) {
+        guard !isDownloading(identifier: item.id) else { return }
         guard let destinationURL = contextDirectory(forAddon: item) else { return }
 
         let downloadTask = URLSession.shared.downloadTask(with: item.item) { [weak self] url, response, error in
@@ -123,16 +125,22 @@ public final class ResourceManager: @unchecked Sendable {
     }
 
     func cancel(identifier: String) {
-        tasks.removeValue(forKey: identifier)?.cancel()
-        observations.removeValue(forKey: identifier)?.invalidate()
+        guard isDownloading(identifier: identifier) else { return }
+        cancelledIdentifiers.insert(identifier)
+        tasks[identifier]?.cancel()
+        installations[identifier]?.cancel()
     }
 
     private nonisolated func handleDownloadResult(url: URL?, response: URLResponse?, error: Error?) throws -> URL {
         if let e = error {
             throw e
         }
+        if let response = response as? HTTPURLResponse, !(200..<300).contains(response.statusCode) {
+            throw ResourceError.download
+        }
+        guard let url else { throw ResourceError.download }
         // We have to move immediately after the download task
-        return try moveTemporaryFile(url: url!)
+        return try moveTemporaryFile(url: url)
     }
 
     private nonisolated func handleDownloadResult(item: ResourceItem, url: URL?, response: URLResponse?, error: Error?, destinationURL: URL) {
@@ -143,6 +151,7 @@ public final class ResourceManager: @unchecked Sendable {
             Task { @MainActor in
                 self.tasks.removeValue(forKey: item.id)
                 self.observations.removeValue(forKey: item.id)?.invalidate()
+                self.cancelledIdentifiers.remove(item.id)
 
                 if let e = error as? URLError, e.errorCode == URLError.cancelled.rawValue {
                     // Canceled
@@ -157,22 +166,72 @@ public final class ResourceManager: @unchecked Sendable {
 
         // Download and move success
         Task { @MainActor in
-            self.tasks.removeValue(forKey: item.id)
-            self.observations.removeValue(forKey: item.id)?.invalidate()
-
-            NotificationCenter.default.post(name: Self.downloadSuccess, object: nil, userInfo: [Self.downloadIdentifierKey: item.id])
-            do {
-                try await self.unzip(zipFileURL: tempURL, destinationURL: destinationURL)
-                NotificationCenter.default.post(name: Self.unzipSuccess, object: nil, userInfo: [Self.downloadIdentifierKey: item.id])
-                // Store a json file in the same folder
+            let installation = Task { @MainActor in
+                let installationError: ResourceError?
                 do {
-                    let json = try JSONEncoder().encode(item)
-                    try await json.write(to: destinationURL.appendingPathComponent("description.json"))
-                } catch {}
-            } catch let error {
-                // unzip error
-                NotificationCenter.default.post(name: Self.resourceError, object: nil, userInfo: [Self.downloadIdentifierKey: item.id, Self.resourceErrorKey: error])
+                    defer { Self.removeTemporaryItem(at: tempURL) }
+                    if self.cancelledIdentifiers.contains(item.id) {
+                        throw CancellationError()
+                    }
+                    try Task.checkCancellation()
+                    NotificationCenter.default.post(name: Self.downloadSuccess, object: nil, userInfo: [Self.downloadIdentifierKey: item.id])
+                    try await self.install(item: item, zipFileURL: tempURL, destinationURL: destinationURL)
+                    installationError = nil
+                } catch is CancellationError {
+                    installationError = .cancelled
+                } catch let error as ResourceError {
+                    installationError = error
+                } catch {
+                    NSLog("Unable to install add-on %@: %@", item.id, String(describing: error))
+                    installationError = .writeFile(contextPath: destinationURL.path)
+                }
+
+                self.tasks.removeValue(forKey: item.id)
+                self.installations.removeValue(forKey: item.id)
+                self.observations.removeValue(forKey: item.id)?.invalidate()
+                self.cancelledIdentifiers.remove(item.id)
+                if let installationError {
+                    NotificationCenter.default.post(name: Self.resourceError, object: nil, userInfo: [Self.downloadIdentifierKey: item.id, Self.resourceErrorKey: installationError])
+                } else {
+                    NotificationCenter.default.post(name: Self.unzipSuccess, object: nil, userInfo: [Self.downloadIdentifierKey: item.id])
+                }
             }
+            self.installations[item.id] = installation
+        }
+    }
+
+    private nonisolated static func removeTemporaryItem(at url: URL) {
+        guard FileManager.default.fileExists(atPath: url.path) else { return }
+        do {
+            try FileManager.default.removeItem(at: url)
+        } catch {
+            NSLog("Unable to remove temporary add-on file %@: %@", url.path, String(describing: error))
+        }
+    }
+
+    private nonisolated func install(item: ResourceItem, zipFileURL: URL, destinationURL: URL) async throws {
+        let fm = FileManager.default
+        let stagingURL = destinationURL.deletingLastPathComponent().appendingPathComponent(".\(item.id).\(UUID().uuidString).staging")
+        defer { Self.removeTemporaryItem(at: stagingURL) }
+
+        try await unzip(zipFileURL: zipFileURL, destinationURL: stagingURL)
+        try Task.checkCancellation()
+        let descriptionURL = stagingURL.appendingPathComponent("description.json")
+        do {
+            let json = try JSONEncoder().encode(item)
+            try await json.write(to: descriptionURL, options: .atomic)
+        } catch {
+            throw ResourceError.writeFile(contextPath: descriptionURL.path)
+        }
+        try Task.checkCancellation()
+        do {
+            if fm.fileExists(atPath: destinationURL.path) {
+                _ = try fm.replaceItemAt(destinationURL, withItemAt: stagingURL, options: .usingNewMetadataOnly)
+            } else {
+                try fm.moveItem(at: stagingURL, to: destinationURL)
+            }
+        } catch {
+            throw ResourceError.writeFile(contextPath: destinationURL.path)
         }
     }
 

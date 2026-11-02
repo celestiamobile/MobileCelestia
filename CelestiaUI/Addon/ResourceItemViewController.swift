@@ -323,7 +323,7 @@ public class ResourceItemViewController: UIViewController {
     }
 
     @objc private func updateButtonClicked() {
-        try? viewModel.resourceManager.reinstall(item: viewModel.item)
+        viewModel.resourceManager.reinstall(item: viewModel.item)
         viewModel.state = .downloading
         updateUI()
     }
@@ -350,7 +350,7 @@ public class ResourceItemViewController: UIViewController {
     }
 
     @objc private func statusButtonClicked() {
-        if viewModel.resourceManager.isInstalled(item: viewModel.item) {
+        if viewModel.resourceManager.isInstalled(item: viewModel.item) && !viewModel.resourceManager.isDownloading(identifier: viewModel.item.id) {
             // Already installed, offer option for uninstalling
             showOption(CelestiaString("Do you want to uninstall this add-on?", comment: "")) { [weak self] confirm in
                 guard confirm, let self = self else { return }
