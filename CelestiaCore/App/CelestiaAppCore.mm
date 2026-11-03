@@ -25,7 +25,7 @@
 #include <celutil/localeutil.h>
 #include <celestia/configfile.h>
 #include <celestia/progressnotifier.h>
-#include <celestia/url.h>
+#include <celestia/celestiastate.h>
 #include <unicode/uloc.h>
 
 #include <memory>
@@ -286,11 +286,8 @@ private:
 
 // MARK: Other
 - (NSString *)currentURL {
-    CelestiaState appState(core);
-    appState.captureState();
-
-    Url currentURL(appState, Url::CurrentVersion);
-    return [NSString stringWithUTF8String:currentURL.getAsString().c_str()];
+    auto currentURL = celestia::CelestiaState::capture(*core).createURL();
+    return [NSString stringWithUTF8String:currentURL.c_str()];
 }
 
 - (NSArray<CelestiaDestination *> *)destinations {

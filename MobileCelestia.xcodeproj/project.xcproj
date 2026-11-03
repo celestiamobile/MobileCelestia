@@ -264,8 +264,6 @@
             { "path": "textprintposition.cpp", "encoding": "utf8", "target-membership": [ "CelestiaCore/compile-sources" ] },
             { "path": "textprintposition.h", "encoding": "utf8", "target-membership": [ "CelestiaCore/headers" ] },
             { "path": "timeinfo.h", "encoding": "utf8", "target-membership": [ "CelestiaCore/headers" ] },
-            { "path": "url.cpp", "encoding": "utf8", "target-membership": [ "CelestiaCore/compile-sources" ] },
-            { "path": "url.h", "encoding": "utf8", "target-membership": [ "CelestiaCore/headers" ] },
             { "path": "view.cpp", "encoding": "utf8", "target-membership": [ "CelestiaCore/compile-sources" ] },
             { "path": "view.h", "encoding": "utf8", "target-membership": [ "CelestiaCore/headers" ] },
             { "path": "viewmanager.cpp", "encoding": "utf8", "target-membership": [ "CelestiaCore/compile-sources" ] },
