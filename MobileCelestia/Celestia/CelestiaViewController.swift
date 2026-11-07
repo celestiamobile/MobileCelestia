@@ -107,6 +107,10 @@ class CelestiaViewController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    isolated deinit {
+        displayController.shutdown()
+    }
+
     override func loadView() {
         let container = UIView()
         container.backgroundColor = .systemBackground

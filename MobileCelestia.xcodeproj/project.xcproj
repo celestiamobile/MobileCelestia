@@ -20,13 +20,13 @@
       "kind": "remote",
       "repository": "https://github.com/celestiamobile/AsyncGL",
       "version": {
-        "version": "1.3.4",
+        "version": "2.0.0",
       },
     }, {
       "kind": "remote",
       "repository": "https://github.com/getsentry/sentry-cocoa",
       "version": {
-        "version": "9.29.2",
+        "version": "9.30.0",
       },
     }, {
       "kind": "remote",
