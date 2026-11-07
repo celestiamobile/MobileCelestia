@@ -67,6 +67,16 @@ class StateManager {
     }
 
     private var continuations: [(continuation: CheckedContinuation<Void, Error>, request: AppRequest)] = []
+    private var isTerminating = false
+
+    func beginTermination() {
+        isTerminating = true
+        let pending = continuations
+        continuations.removeAll()
+        for (continuation, _) in pending {
+            continuation.resume(throwing: CancellationError())
+        }
+    }
 
     var hasPendingRequests: Bool { !continuations.isEmpty }
 
@@ -83,6 +93,7 @@ class StateManager {
     }
 
     func waitForInitialization(_ request: AppRequest) async throws {
+        guard !isTerminating else { throw CancellationError() }
         // 1. If already initialized, return immediately
         if let state {
             switch state {
@@ -101,11 +112,14 @@ class StateManager {
     }
 
     func markAsInitialized(_ state: State) {
+        guard !isTerminating else { return }
         self.state = state
     }
 
     private func resumePendingContinuations(state: State) async {
-        for (continuation, request) in continuations {
+        let pending = continuations
+        continuations.removeAll()
+        for (continuation, request) in pending {
             switch state {
             case .failedToLoad:
                 continuation.resume(throwing: AppRequestError.failedToLoad)
@@ -118,10 +132,10 @@ class StateManager {
                 }
             }
         }
-        continuations.removeAll()
     }
 
     private func executeRequest(_ request: AppRequest, appCore: AppCore) async throws {
+        guard !isTerminating else { throw CancellationError() }
         switch request {
         case .search(let term):
             NotificationCenter.default.post(name: requestSearchNotificationName, object: nil, userInfo: [requestSearchNotificationTermKey: term])

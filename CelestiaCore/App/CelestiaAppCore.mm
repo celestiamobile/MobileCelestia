@@ -394,6 +394,13 @@ private:
     return [[CelestiaAppState alloc] initWithCore:core];
 }
 
+- (void)shutdownResourceWorkersWithCompletion:(void (^)(void))completion {
+    dispatch_async(dispatch_get_global_queue(QOS_CLASS_USER_INITIATED, 0), ^{
+        self->core->shutdownResources();
+        dispatch_async(dispatch_get_main_queue(), completion);
+    });
+}
+
 - (void)dealloc {
     core->setAlerter(nullptr);
     core->setCursorHandler(nullptr);

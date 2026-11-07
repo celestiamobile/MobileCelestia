@@ -17,6 +17,8 @@ class MainSceneDelegate: CommonSceneDelegate {
 
     #if targetEnvironment(macCatalyst)
     static var mainWindowSessionIdentifier: String?
+    private static var isTerminating = false
+    private var renderingController: CelestiaViewController?
     #endif
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
@@ -49,6 +51,7 @@ class MainSceneDelegate: CommonSceneDelegate {
         let appDelegate = UIApplication.shared.delegate as! AppDelegate
         let vc = MainViewController(initialURL: launchURL, screen: windowScene.screen, core: appDelegate.core, executor: appDelegate.executor, userDefaults: appDelegate.userDefaults, pushManager: appDelegate.pushManager)
         #if targetEnvironment(macCatalyst)
+        renderingController = vc.celestiaController
         let toolbar = NSToolbar(identifier: UUID().uuidString)
         if #available(iOS 18, *) {
             toolbar.allowsDisplayModeCustomization = false
@@ -93,10 +96,23 @@ class MainSceneDelegate: CommonSceneDelegate {
 
     #if targetEnvironment(macCatalyst)
     func sceneDidDisconnect(_ scene: UIScene) {
-        if scene.session.persistentIdentifier != Self.mainWindowSessionIdentifier {
+        if scene.session.persistentIdentifier != Self.mainWindowSessionIdentifier || Self.isTerminating {
             return
         }
-        exit(0)
+        Self.isTerminating = true
+        StateManager.shared.beginTermination()
+        let appDelegate = UIApplication.shared.delegate as! AppDelegate
+        let finishShutdown: @MainActor () -> Void = {
+            appDelegate.core.shutdownResourceWorkers {
+                exit(0)
+            }
+        }
+        if let renderingController {
+            renderingController.shutdownForAppTermination(completion: finishShutdown)
+        } else {
+            NSLog("Main scene disconnected before a renderer was created; stopping resource workers directly.")
+            finishShutdown()
+        }
     }
     #endif
 }
