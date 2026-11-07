@@ -44,6 +44,8 @@ class CelestiaDisplayController: AsyncGLViewController {
     private var verticalCornerAdaptedSafeAreaGuide: UILayoutGuide?
     private var horizontalCornerAdaptedSafeAreaGuide: UILayoutGuide?
     private var lastAppliedSafeAreaInsets: UIEdgeInsets?
+    private var resizeSnapshot: UIView?
+    private var resizeBlur: UIVisualEffectView?
 
     nonisolated(unsafe) weak var delegate: CelestiaDisplayControllerDelegate?
 
@@ -121,6 +123,66 @@ class CelestiaDisplayController: AsyncGLViewController {
         updateSafeAreaInsets()
     }
 
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        hideResizeSnapshot(resizeSnapshot, animated: false)
+    }
+
+    private func showResizeSnapshot() -> UIView? {
+        hideResizeSnapshot(resizeSnapshot, animated: false)
+
+        guard isViewLoaded, view.window != nil, isReady, !view.bounds.isEmpty else { return nil }
+        guard let snapshot = view.resizableSnapshotView(from: view.bounds, afterScreenUpdates: false, withCapInsets: .zero) else {
+            print("Failed to capture rendering view for resize transition.")
+            return nil
+        }
+
+        snapshot.frame = view.bounds
+        snapshot.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        snapshot.isUserInteractionEnabled = false
+        snapshot.accessibilityElementsHidden = true
+        view.addSubview(snapshot)
+        resizeSnapshot = snapshot
+
+        if !UIAccessibility.isReduceTransparencyEnabled {
+            let blur = UIVisualEffectView(effect: UIBlurEffect(style: .regular))
+            blur.frame = view.bounds
+            blur.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+            blur.isUserInteractionEnabled = false
+            blur.accessibilityElementsHidden = true
+            view.addSubview(blur)
+            resizeBlur = blur
+        }
+
+        return snapshot
+    }
+
+    private func hideResizeSnapshot(_ snapshot: UIView?, animated: Bool) {
+        guard let snapshot, resizeSnapshot === snapshot else { return }
+
+        let blur = resizeBlur
+        let removeSnapshot = { [weak self] in
+            snapshot.removeFromSuperview()
+            blur?.removeFromSuperview()
+            if self?.resizeSnapshot === snapshot {
+                self?.resizeSnapshot = nil
+                self?.resizeBlur = nil
+            }
+        }
+
+        if animated && !UIAccessibility.isReduceMotionEnabled {
+            UIView.animate(withDuration: 0.2, delay: 0, options: [.beginFromCurrentState, .allowUserInteraction]) {
+                snapshot.alpha = 0
+                blur?.effect = nil
+            } completion: { _ in
+                removeSnapshot()
+            }
+        } else {
+            removeSnapshot()
+        }
+    }
+
     private func updateSafeAreaInsets() {
         guard isLoaded else { return }
 
@@ -173,27 +235,27 @@ class CelestiaDisplayController: AsyncGLViewController {
 
     #if targetEnvironment(macCatalyst)
     @objc private func windowWillStartLiveResizing(_ notification: Notification) {
-        guard let window = view.window else { return }
+        guard let window = viewIfLoaded?.window?.nsWindow,
+              notification.object as? NSObject === window else { return }
 
-        if notification.object as? NSObject == window.nsWindow {
-            isPaused = true
-        }
+        _ = showResizeSnapshot()
     }
 
     @objc private func windowDidEndLiveResizing(_ notification: Notification) {
-        guard let window = view.window else { return }
+        guard let window = viewIfLoaded?.window?.nsWindow,
+              notification.object as? NSObject === window else { return }
 
-        if notification.object as? NSObject == window.nsWindow {
-            isPaused = false
-        }
+        hideResizeSnapshot(resizeSnapshot, animated: true)
     }
     #else
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: coordinator)
 
-        isPaused = true
-        coordinator.animate(alongsideTransition: nil) { [weak self] _ in
-            self?.isPaused = false
+        let snapshot = showResizeSnapshot()
+        if !coordinator.animate(alongsideTransition: nil, completion: { [weak self] _ in
+            self?.hideResizeSnapshot(snapshot, animated: true)
+        }) {
+            hideResizeSnapshot(snapshot, animated: false)
         }
     }
     #endif
