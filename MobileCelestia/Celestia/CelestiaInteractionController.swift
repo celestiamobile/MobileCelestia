@@ -746,6 +746,8 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
     }
 
     private func contextMenuForSelection(selection: Selection, referenceMarkStates: [String: Bool]) -> [UIMenuElement] {
+        let menuActions = CelestiaAction.allCases
+        let menuActionTitles = menuActions.map(\.description)
         let titleAction = UIAction(title: core.simulation.universe.name(for: selection)) { _ in }
         titleAction.attributes = [.disabled]
         var actions: [UIMenuElement] = [titleAction]
@@ -762,8 +764,8 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
                 let core = CelestiaActor.appCore
                 core.simulation.selection = selection
             }
-        })] + CelestiaAction.allCases.map { action in
-            return UIAction(title: action.description) { _ in
+        })] + menuActions.enumerated().map { index, action in
+            return UIAction(title: menuActionTitles[index]) { _ in
                 Task { @CelestiaActor in
                     let core = CelestiaActor.appCore
                     core.simulation.selection = selection
@@ -774,14 +776,15 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
 
         if let entry = selection.object {
             let browserItem = BrowserItem(name: core.simulation.universe.name(for: selection), catEntry: entry, provider: core.simulation.universe)
-            actions.append(UIMenu(options: .displayInline, children: browserItem.children.compactMap { $0.createMenuItems(object: entry, additionalItemsProvider: { selection in
+            var remainingMenuItems = BrowserItem.maximumContextMenuBrowserItems
+            actions.append(UIMenu(options: .displayInline, children: browserItem.createChildMenuItems(object: entry, remainingMenuItems: &remainingMenuItems, additionalItemCount: menuActions.count + 2, additionalItemsProvider: { selection in
                 let actions = [UIAction(title: CelestiaString("Select", comment: "Select an object"), handler: { _ in
                     Task { @CelestiaActor in
                         let core = CelestiaActor.appCore
                         core.simulation.selection = selection
                     }
-                })] + CelestiaAction.allCases.map { action in
-                    return UIAction(title: action.description) { _ in
+                })] + menuActions.enumerated().map { index, action in
+                    return UIAction(title: menuActionTitles[index]) { _ in
                         Task { @CelestiaActor in
                             let core = CelestiaActor.appCore
                             core.simulation.selection = selection
@@ -799,7 +802,7 @@ extension CelestiaInteractionController: UIContextMenuInteractionDelegate {
             }) { [weak self] selection in
                 guard let self else { return }
                 self.delegate?.celestiaInteractionController(self, requestShowSubsystemWithSelection: selection)
-            }}))
+            }))
         }
 
         if let alternativeSurfaces = selection.body?.alternateSurfaceNames, alternativeSurfaces.count > 0 {
@@ -881,8 +884,11 @@ extension UIContextMenuInteraction {
 }
 
 extension BrowserItem {
+    fileprivate static let maximumContextMenuDepth = 2
+    fileprivate static let maximumContextMenuBrowserItems = 100
+
     @MainActor
-    func createMenuItems(object: AstroObject, additionalItemsProvider: (Selection) -> [UIMenuElement]?, showMoreHandler: @escaping (Selection) -> Void) -> UIMenu? {
+    private func createMenuItems(object: AstroObject, depth: Int, remainingMenuItems: inout Int, additionalItemCount: Int, additionalItemsProvider: (Selection) -> [UIMenuElement]?, showMoreHandler: @escaping (Selection) -> Void) -> UIMenu? {
         var items = [UIMenuElement]()
         var parent = object
         if let entry {
@@ -893,32 +899,49 @@ extension BrowserItem {
             }
         }
 
-        var childItems = [UIMenuElement]()
-        var shouldInsertShowMore = false
-        for i in 0..<children.count {
-            if i > 50 {
-                shouldInsertShowMore = true
-                break
-            }
-            let subItemName = childName(at: Int(i))!
-            let child = child(with: subItemName)!
-            if let childMenu = child.createMenuItems(object: parent, additionalItemsProvider: additionalItemsProvider, showMoreHandler: showMoreHandler) {
-                childItems.append(childMenu)
-            }
-        }
-        if childItems.count > 0 {
+        let childItems = createChildMenuItems(object: parent, depth: depth, remainingMenuItems: &remainingMenuItems, additionalItemCount: additionalItemCount, additionalItemsProvider: additionalItemsProvider, showMoreHandler: showMoreHandler)
+        if !childItems.isEmpty {
             items.append(UIMenu(options: .displayInline, children: childItems))
+        }
+        return items.isEmpty ? nil : UIMenu(title: name, children: items)
+    }
+
+    @MainActor
+    func createChildMenuItems(object: AstroObject, depth: Int = 0, remainingMenuItems: inout Int, additionalItemCount: Int, additionalItemsProvider: (Selection) -> [UIMenuElement]?, showMoreHandler: @escaping (Selection) -> Void) -> [UIMenuElement] {
+        let children = self.children
+        guard !children.isEmpty else { return [] }
+
+        // Reserve a fallback entry before descendants consume the shared budget.
+        remainingMenuItems -= 1
+        var items = [UIMenuElement]()
+        var shouldInsertShowMore = depth >= Self.maximumContextMenuDepth
+        if !shouldInsertShowMore {
+            for child in children {
+                let itemCost = child.entry == nil ? 1 : additionalItemCount + 1
+                guard remainingMenuItems >= itemCost + 1 else {
+                    shouldInsertShowMore = true
+                    break
+                }
+                remainingMenuItems -= itemCost
+                if let childMenu = child.createMenuItems(object: object, depth: depth + 1, remainingMenuItems: &remainingMenuItems, additionalItemCount: additionalItemCount, additionalItemsProvider: additionalItemsProvider, showMoreHandler: showMoreHandler) {
+                    items.append(childMenu)
+                } else {
+                    remainingMenuItems += itemCost
+                }
+            }
         }
         if shouldInsertShowMore {
             items.append(UIMenu(options: .displayInline, children: [
                 UIAction(title: CelestiaString("Show More…", comment: "Menu action to indicate that more items that are not shown in the menu"), handler: { _ in
-                    let selection = Selection(object: parent)
+                    let selection = Selection(object: object)
                     guard !selection.isEmpty else { return }
                     showMoreHandler(selection)
                 })
             ]))
+        } else {
+            remainingMenuItems += 1
         }
-        return items.count == 0 ? nil : UIMenu(title: name, children: items)
+        return items
     }
 }
 
