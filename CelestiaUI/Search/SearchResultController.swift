@@ -12,9 +12,17 @@ import CelestiaCore
 import UIKit
 
 struct SearchResult: Hashable {
-    var id: Int { completion.hashValue }
+    let name: String
+    let selection: Selection
 
-    let completion: Completion
+    static func == (lhs: Self, rhs: Self) -> Bool {
+        lhs.name == rhs.name && lhs.selection == rhs.selection
+    }
+
+    func hash(into hasher: inout Hasher) {
+        // Selection has value equality but inherits NSObject's identity hash.
+        hasher.combine(name)
+    }
 }
 
 enum SearchSection: Hashable {
@@ -29,7 +37,6 @@ struct SearchResultSection {
 
 public class SearchResultViewController: UIViewController {
     private var resultSections: [SearchResultSection] = []
-    private var rawResults: [Completion] = []
 
     private let selected: (_ viewController: SearchResultViewController, _ display: String, _ selection: Selection) -> Void
     private let contentScrollViewChanged: (UIScrollView?) -> Void
@@ -52,7 +59,7 @@ public class SearchResultViewController: UIViewController {
     private lazy var dataSource: UICollectionViewDiffableDataSource<SearchSection, SearchResult> = {
         let cellRegistration = UICollectionView.CellRegistration<UICollectionViewListCell, SearchResult> { cell, _, itemIdentifier in
             var configuration = UIListContentConfiguration.celestiaCell()
-            configuration.text = itemIdentifier.completion.name
+            configuration.text = itemIdentifier.name
             cell.contentConfiguration = configuration
         }
         let dataSource = UICollectionViewDiffableDataSource<SearchSection, SearchResult>(collectionView: collectionView) { collectionView, indexPath, itemIdentifier in
@@ -158,16 +165,16 @@ public class SearchResultViewController: UIViewController {
         reload()
     }
 
-    func updateResults(resultSections: [SearchResultSection], rawResults: [Completion]) {
+    func updateResults(resultSections: [SearchResultSection]) {
         self.resultSections = resultSections
-        self.rawResults = rawResults
 
         var snapshot = NSDiffableDataSourceSnapshot<SearchSection, SearchResult>()
+        var seen = Set<SearchResult>()
         for resultSection in resultSections {
             snapshot.appendSections([resultSection.section])
-            snapshot.appendItems(resultSection.results, toSection: resultSection.section)
+            snapshot.appendItems(resultSection.results.filter { seen.insert($0).inserted }, toSection: resultSection.section)
         }
-        dataSource.apply(snapshot)
+        dataSource.apply(snapshot, animatingDifferences: false)
     }
 
     private func updateContentScrollView(_ newContentScrollView: UIScrollView?) {
@@ -294,6 +301,6 @@ extension SearchResultViewController: UICollectionViewDelegate {
         collectionView.deselectItem(at: indexPath, animated: true)
 
         guard let item = dataSource.itemIdentifier(for: indexPath) else { return }
-        selected(self, item.completion.name, item.completion.selection)
+        selected(self, item.name, item.selection)
     }
 }

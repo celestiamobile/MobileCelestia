@@ -298,6 +298,8 @@ typedef NS_OPTIONS(NSUInteger, CelestiaGoToLocationFieldMask) {
 - (NSArray<CelestiaCompletion *> *)completionForName:(NSString *)name {
     std::vector<celestia::engine::Completion> completions;
     s->getObjectCompletion(completions, [name UTF8String], true);
+    if (completions.size() > 100)
+        completions.erase(completions.begin() + 100, completions.end());
     NSMutableArray *array = [NSMutableArray arrayWithCapacity:completions.size()];
     for (auto const& completion : completions) {
         CelestiaCompletion *result = [[CelestiaCompletion alloc] initWithCompletion:completion];

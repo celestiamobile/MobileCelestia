@@ -27,11 +27,15 @@ public class SearchViewController: UIViewController {
     private let executor: AsyncProviderExecutor
     private let initialSearchTerm: String?
     private var currentSearchTerm: String?
-    private var validSearchTerm: String?
+    private var validSearchGeneration: Int?
+    private var searchGeneration = 0
+    private var searchTask: Task<Void, Never>?
+    private var pendingSearchSubmission: Int?
 
     private lazy var resultViewController: SearchResultViewController = {
         return SearchResultViewController(selected: { [weak self] _, display, selection in
             guard let self else { return }
+            self.pendingSearchSubmission = nil
             #if !targetEnvironment(macCatalyst)
             self.searchController.searchBar.resignFirstResponder()
             #endif
@@ -136,35 +140,71 @@ private extension SearchViewController {
         guard currentSearchTerm != text else { return }
 
         currentSearchTerm = text
+        searchGeneration &+= 1
+        validSearchGeneration = nil
+        pendingSearchSubmission = nil
         guard let text, !text.isEmpty else {
-            validSearchTerm = ""
             fullMatch = Selection()
-            resultViewController.updateResults(resultSections: [], rawResults: [])
+            resultViewController.updateResults(resultSections: [])
             resultViewController.updateState(.empty)
             resultViewController.updateSearchState(false)
             return
         }
 
-        Task {
-            resultViewController.updateSearchState(true)
-            if resultViewController.isEmpty {
-                resultViewController.updateState(.loading)
+        resultViewController.updateSearchState(true)
+        if resultViewController.isEmpty {
+            resultViewController.updateState(.loading)
+        }
+
+        guard searchTask == nil else { return }
+        searchTask = Task { [weak self] in
+            guard let self else { return }
+            defer {
+                searchTask = nil
+                if let text = currentSearchTerm,
+                   pendingSearchSubmission == searchGeneration,
+                   validSearchGeneration == searchGeneration {
+                    itemSelected(with: text)
+                }
             }
-            let (sections, rawResults, fullMatch) = await self.search(with: text)
-            guard text == currentSearchTerm else { return }
-            validSearchTerm = text
-            self.fullMatch = fullMatch
-            self.resultViewController.updateResults(resultSections: sections, rawResults: rawResults)
-            self.resultViewController.updateState(.results(empty: rawResults.isEmpty))
+
+            while let text = currentSearchTerm, !text.isEmpty {
+                let generation = searchGeneration
+                do {
+                    try await Task.sleep(nanoseconds: 200_000_000)
+                } catch {
+                    if !Task.isCancelled {
+                        print("Search debounce failed: \(error)")
+                    }
+                    return
+                }
+                guard generation == searchGeneration else { continue }
+
+                let (sections, fullMatch) = await search(with: text)
+                guard generation == searchGeneration else { continue }
+                validSearchGeneration = generation
+                self.fullMatch = fullMatch
+                resultViewController.updateResults(resultSections: sections)
+                resultViewController.updateState(.results(empty: resultViewController.isEmpty))
+                return
+            }
         }
     }
 
     func searchTextReturned(_ text: String?) {
         guard let text, !text.isEmpty, resultViewController.isEmpty else { return }
+        if currentSearchTerm != text {
+            searchTextUpdated(text)
+        }
+        guard validSearchGeneration == searchGeneration else {
+            pendingSearchSubmission = searchGeneration
+            return
+        }
         itemSelected(with: text)
     }
 
     private func itemSelected(with name: String) {
+        pendingSearchSubmission = nil
         selected(self, name, fullMatch)
     }
 }
@@ -189,14 +229,13 @@ extension SearchViewController: UISearchResultsUpdating {
 #endif
 
 extension SearchViewController {
-    private func search(with text: String) async -> (results: [SearchResultSection], rawResults: [Completion], fullMatch: Selection) {
-        let results: (completions: [Completion], fullMatch: Selection) = await executor.get { core in
+    private func search(with text: String) async -> (results: [SearchResultSection], fullMatch: Selection) {
+        let results: (completions: [SearchResult], fullMatch: Selection) = await executor.get { core in
             let completions = core.simulation.completion(for: text)
             let fullMatch = core.simulation.findObject(from: text)
-            return (completions, fullMatch)
+            return (completions.map { SearchResult(name: $0.name, selection: $0.selection) }, fullMatch)
         }
-        let completions = results.completions
-        return ([SearchResultSection(section: .main, results: completions.map { SearchResult(completion: $0) })], completions, results.fullMatch)
+        return ([SearchResultSection(section: .main, results: results.completions)], results.fullMatch)
     }
 }
 
