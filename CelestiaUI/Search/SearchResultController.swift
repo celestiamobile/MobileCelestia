@@ -28,6 +28,7 @@ struct SearchResult: Hashable {
 enum SearchSection: Hashable {
     var id: Self { self }
     case main
+    case recent
 }
 
 struct SearchResultSection {
@@ -40,6 +41,7 @@ public class SearchResultViewController: UIViewController {
 
     private let selected: (_ viewController: SearchResultViewController, _ display: String, _ selection: Selection) -> Void
     private let contentScrollViewChanged: (UIScrollView?) -> Void
+    private let clearHistory: (() -> Void)?
 
     private lazy var emptyView = EmptyHintView()
     private lazy var loadingView = UIActivityIndicatorView(style: .large)
@@ -76,10 +78,39 @@ public class SearchResultViewController: UIViewController {
             switch self.dataSource.sectionIdentifier(for: indexPath.section) {
             case .main:
                 configuration.text = nil
+            case .recent:
+                configuration.text = CelestiaString("Recent Searches", comment: "")
+                let verticalMargin = (configuration.directionalLayoutMargins.top + configuration.directionalLayoutMargins.bottom) / 2
+                configuration.directionalLayoutMargins.top = verticalMargin
+                configuration.directionalLayoutMargins.bottom = verticalMargin
+                configuration.axesPreservingSuperviewLayoutMargins.remove(.vertical)
             case nil:
                 configuration.text = nil
             }
             supplementaryView.contentConfiguration = configuration
+            supplementaryView.accessories = []
+            if self.dataSource.sectionIdentifier(for: indexPath.section) == .recent {
+                var buttonConfiguration = UIButton.Configuration.plain()
+                buttonConfiguration.macIdiomStyle = .borderlessTinted
+                buttonConfiguration.buttonSize = .small
+                buttonConfiguration.image = UIImage(systemName: "trash")
+                buttonConfiguration.preferredSymbolConfigurationForImage = UIImage.SymbolConfiguration(font: configuration.textProperties.font, scale: .small)
+                #if targetEnvironment(macCatalyst)
+                buttonConfiguration.contentInsets = .zero
+                #endif
+                let button = UIButton(configuration: buttonConfiguration)
+                #if !targetEnvironment(macCatalyst)
+                NSLayoutConstraint.activate([
+                    button.widthAnchor.constraint(greaterThanOrEqualToConstant: 44),
+                    button.heightAnchor.constraint(greaterThanOrEqualToConstant: 44),
+                ])
+                #endif
+                button.accessibilityLabel = CelestiaString("Clear History", comment: "")
+                button.addAction(UIAction { [weak self] _ in
+                    self?.clearHistory?()
+                }, for: .touchUpInside)
+                supplementaryView.accessories = [.customView(configuration: UICellAccessory.CustomViewConfiguration(customView: button, placement: .trailing(displayed: .always), reservedLayoutWidth: .actual))]
+            }
         }
         dataSource.supplementaryViewProvider = { [unowned self] collectionView, _, indexPath in
             return collectionView.dequeueConfiguredReusableSupplementary(using: headerRegistration, for: indexPath)
@@ -103,9 +134,10 @@ public class SearchResultViewController: UIViewController {
         return resultSections.reduce(0, { $0 + $1.results.count }) == 0
     }
 
-    public init(selected: @escaping (_ viewController: SearchResultViewController, _ display: String, _ selection: Selection) -> Void, contentScrollViewChanged: @escaping (UIScrollView?) -> Void) {
+    public init(selected: @escaping (_ viewController: SearchResultViewController, _ display: String, _ selection: Selection) -> Void, contentScrollViewChanged: @escaping (UIScrollView?) -> Void, clearHistory: (() -> Void)? = nil) {
         self.selected = selected
         self.contentScrollViewChanged = contentScrollViewChanged
+        self.clearHistory = clearHistory
         super.init(nibName: nil, bundle: nil)
     }
 

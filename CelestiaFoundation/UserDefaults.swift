@@ -14,6 +14,7 @@ public enum UserDefaultsKey: String, Sendable {
 
     case onboardMessageDisplayed
     case lastNewsID
+    case recentSearches
 
     case gameControllerRemapA
     case gameControllerRemapB

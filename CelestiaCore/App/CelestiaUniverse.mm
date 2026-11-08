@@ -61,6 +61,22 @@
     }
 }
 
+- (NSString *)pathForSelection:(CelestiaSelection *)selection {
+    const Selection sel = [selection selection];
+    switch (sel.getType()) {
+        case SelectionType::Star:
+            return [NSString stringWithUTF8String:u->getStarCatalog()->getStarName(*sel.star(), false).c_str()];
+        case SelectionType::Body:
+            return [NSString stringWithUTF8String:sel.body()->getPath(u->getStarCatalog()).c_str()];
+        case SelectionType::DeepSky:
+            return [NSString stringWithUTF8String:u->getDSOCatalog()->getDSOName(sel.deepsky(), false).c_str()];
+        case SelectionType::Location:
+            return [NSString stringWithUTF8String:sel.location()->getPath(u->getStarCatalog()).c_str()];
+        default:
+            return @"";
+    }
+}
+
 - (CelestiaDSOCatalog *)dsoCatalog {
     if (!_dsoCatalog) {
         _dsoCatalog = [[CelestiaDSOCatalog alloc] initWithDatabase:u->getDSOCatalog()];

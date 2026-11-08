@@ -8,6 +8,7 @@
 // of the License, or (at your option) any later version.
 
 import CelestiaCore
+import CelestiaFoundation
 import UIKit
 
 public protocol SearchContentViewController: UIViewController {
@@ -31,18 +32,25 @@ public class SearchViewController: UIViewController {
     private var searchGeneration = 0
     private var searchTask: Task<Void, Never>?
     private var pendingSearchSubmission: Int?
+    private var selectionTask: Task<Void, Never>?
+    private var recentSearchTask: Task<Void, Never>?
+
+    private var recentSearches: [String] {
+        UserDefaults.standard[.recentSearches] ?? []
+    }
 
     private lazy var resultViewController: SearchResultViewController = {
         return SearchResultViewController(selected: { [weak self] _, display, selection in
             guard let self else { return }
-            self.pendingSearchSubmission = nil
-            #if !targetEnvironment(macCatalyst)
-            self.searchController.searchBar.resignFirstResponder()
-            #endif
-            self.selected(self, display, selection)
+            self.selectResult(named: display, selection: selection)
         }, contentScrollViewChanged: { [weak self] scrollView in
             guard let self else { return }
             self.setContentScrollView(scrollView)
+        }, clearHistory: { [weak self] in
+            guard let self else { return }
+            self.selectionTask?.cancel()
+            UserDefaults.standard.removeObject(forKey: UserDefaultsKey.recentSearches.rawValue)
+            self.showRecentSearches()
         })
     }()
 
@@ -84,13 +92,17 @@ public class SearchViewController: UIViewController {
             }
         }
     }
+    #endif
 
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
+        selectionTask?.cancel()
+        pendingSearchSubmission = nil
+        #if !targetEnvironment(macCatalyst)
         shouldActivate = searchController.searchBar.isFirstResponder
+        #endif
     }
-    #endif
 
     public override var minimumSheetHeight: CGFloat {
         return resultViewController.minimumSheetHeight
@@ -110,6 +122,7 @@ private extension SearchViewController {
         windowTitle = title
 
         install(resultViewController)
+        showRecentSearches()
 
         #if !targetEnvironment(macCatalyst)
         // Configure search bar
@@ -137,24 +150,28 @@ private extension SearchViewController {
     }
 
     func searchTextUpdated(_ text: String?) {
-        guard currentSearchTerm != text else { return }
+        guard currentSearchTerm != text else {
+            if text?.isEmpty != false {
+                showRecentSearches()
+            }
+            return
+        }
 
         currentSearchTerm = text
+        selectionTask?.cancel()
+        recentSearchTask?.cancel()
         searchGeneration &+= 1
         validSearchGeneration = nil
         pendingSearchSubmission = nil
         guard let text, !text.isEmpty else {
             fullMatch = Selection()
-            resultViewController.updateResults(resultSections: [])
-            resultViewController.updateState(.empty)
-            resultViewController.updateSearchState(false)
+            showRecentSearches()
             return
         }
 
         resultViewController.updateSearchState(true)
-        if resultViewController.isEmpty {
-            resultViewController.updateState(.loading)
-        }
+        resultViewController.updateResults(resultSections: [])
+        resultViewController.updateState(.loading)
 
         guard searchTask == nil else { return }
         searchTask = Task { [weak self] in
@@ -204,8 +221,52 @@ private extension SearchViewController {
     }
 
     private func itemSelected(with name: String) {
+        selectResult(named: name, selection: fullMatch)
+    }
+
+    private func selectResult(named name: String, selection: Selection) {
         pendingSearchSubmission = nil
-        selected(self, name, fullMatch)
+        selectionTask?.cancel()
+        recentSearchTask?.cancel()
+        selectionTask = Task { [weak self] in
+            guard let self else { return }
+            let path = await executor.get { core in
+                core.simulation.universe.path(for: selection)
+            }
+            guard !Task.isCancelled else { return }
+            if !selection.isEmpty, !path.isEmpty {
+                UserDefaults.standard[.recentSearches] = Array(([path] + recentSearches.filter { $0 != path }).prefix(10))
+            }
+            #if !targetEnvironment(macCatalyst)
+            searchController.searchBar.resignFirstResponder()
+            #endif
+            selected(self, name, selection)
+        }
+    }
+
+    private func showRecentSearches() {
+        recentSearchTask?.cancel()
+        let paths = recentSearches
+        resultViewController.updateResults(resultSections: [])
+        resultViewController.updateSearchState(!paths.isEmpty)
+        resultViewController.updateState(paths.isEmpty ? .empty : .loading)
+        guard !paths.isEmpty else { return }
+        recentSearchTask = Task { [weak self] in
+            guard let self else { return }
+            let results: [SearchResult] = await executor.get { core in
+                paths.compactMap { path in
+                    let selection = core.simulation.findObject(from: path)
+                    guard !selection.isEmpty else { return nil }
+                    return SearchResult(name: core.simulation.universe.name(for: selection), selection: selection)
+                }
+            }
+            guard !Task.isCancelled else { return }
+            resultViewController.updateResults(resultSections: results.isEmpty ? [] : [
+                SearchResultSection(section: .recent, results: results),
+            ])
+            resultViewController.updateSearchState(!results.isEmpty)
+            resultViewController.updateState(results.isEmpty ? .empty : .results(empty: false))
+        }
     }
 }
 
@@ -258,7 +319,10 @@ extension SearchViewController: ToolbarAwareViewController {
             } returnHandler: { [weak self] text in
                 guard let self else { return }
                 self.searchTextReturned(text)
-            } searchStartHandler: {} searchEndHandler: {}
+            } searchStartHandler: { [weak self] in
+                guard let self, self.currentSearchTerm?.isEmpty != false else { return }
+                self.showRecentSearches()
+            } searchEndHandler: {}
         }
         return nil
     }
