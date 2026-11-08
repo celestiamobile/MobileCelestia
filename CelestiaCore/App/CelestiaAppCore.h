@@ -9,6 +9,7 @@
 
 
 #import <Foundation/Foundation.h>
+#import <TargetConditionals.h>
 #import <CoreGraphics/CGGeometry.h>
 #include <simd/types.h>
 
@@ -132,6 +133,12 @@ NS_SWIFT_NAME(AppCore)
 // MARK: Initilalization
 
 - (instancetype)init;
+
+#if TARGET_OS_IOS && !TARGET_OS_MACCATALYST
++ (BOOL)acquirePictureInPictureAudioSessionWithError:(NSError * _Nullable * _Nullable)error;
+// Consumes the lease even if restoring the audio session fails.
++ (BOOL)releasePictureInPictureAudioSessionWithError:(NSError * _Nullable * _Nullable)error;
+#endif
 
 + (BOOL)initGL;
 

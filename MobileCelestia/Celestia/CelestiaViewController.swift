@@ -47,6 +47,9 @@ class CelestiaViewController: UIViewController {
     private let displayController: CelestiaDisplayController
     private var interactionController: CelestiaInteractionController?
     private var isShuttingDown = false
+    #if os(iOS) && !targetEnvironment(macCatalyst)
+    private var pictureInPictureController: CelestiaPictureInPictureController?
+    #endif
 
     private lazy var auxiliaryWindows = [UIScreen: UIWindow]()
 
@@ -109,6 +112,9 @@ class CelestiaViewController: UIViewController {
     }
 
     isolated deinit {
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        pictureInPictureController?.shutdown()
+        #endif
         displayController.shutdown()
     }
 
@@ -287,6 +293,13 @@ extension CelestiaViewController: CelestiaDisplayControllerDelegate {
             #endif
             self.install(interactionController, safeAreaEdges: self.safeAreaEdges)
             self.interactionController = interactionController
+            #if os(iOS) && !targetEnvironment(macCatalyst)
+            self.pictureInPictureController = CelestiaPictureInPictureController(
+                displayController: self.displayController,
+                sourceView: self.view,
+                userDefaults: self.userDefaults
+            )
+            #endif
             #if !targetEnvironment(macCatalyst)
             if self.isMirroring {
                 interactionController.startMirroring()

@@ -12,6 +12,9 @@
 #include <celengine/glsupport.h>
 
 #import "CelestiaAppCore+Private.h"
+#if TARGET_OS_IOS && !TARGET_OS_MACCATALYST
+#import <celestia/iosaudiosession.h>
+#endif
 #import "CelestiaAppCore+Setting.h"
 #import "CelestiaAppState+Private.h"
 #import "CelestiaSimulation+Private.h"
@@ -112,6 +115,18 @@ private:
 @end
 
 @implementation CelestiaAppCore
+
+#if TARGET_OS_IOS && !TARGET_OS_MACCATALYST
++ (BOOL)acquirePictureInPictureAudioSessionWithError:(NSError **)error
+{
+    return CelestiaAcquirePictureInPictureAudioSession(error);
+}
+
++ (BOOL)releasePictureInPictureAudioSessionWithError:(NSError **)error
+{
+    return CelestiaReleasePictureInPictureAudioSession(error);
+}
+#endif
 
 // MARK: Initilalization
 - (instancetype)init {

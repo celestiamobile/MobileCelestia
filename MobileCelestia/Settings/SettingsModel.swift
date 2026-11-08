@@ -140,6 +140,18 @@ let notificationsSettingSection: SettingSection = SettingSection(
 
 @MainActor
 func mainSetting(featureFlags: FeatureFlags) -> [SettingSection] {
+    var outputSections: [AssociatedCommonItem.Section] = []
+    #if os(iOS) && !targetEnvironment(macCatalyst)
+    outputSections.append(.init(header: nil, rows: [
+        SettingItem(
+            name: CelestiaString("Automatic Picture in Picture (Experimental)", comment: "Output setting"),
+            subtitle: CelestiaString("Keep rendering in Picture in Picture when leaving the app.", comment: "Automatic Picture in Picture setting description"),
+            associatedItem: .prefSwitch(item:
+                AssociatedPreferenceSwitchItem(key: .automaticPictureInPicture, defaultOn: false)
+            )
+        ),
+    ], footer: CelestiaString("Background rendering is experimental and may cause iOS to terminate the app.", comment: "Picture in Picture background rendering warning")))
+    #endif
     var items = [
         displaySettings(),
         timeAndRegionSettings(),
@@ -158,7 +170,7 @@ func mainSetting(featureFlags: FeatureFlags) -> [SettingSection] {
                     )
                 ),
             ]),
-            outputRenderSetting(),
+            outputRenderSetting(extraSections: outputSections),
         ]),
         advancedSettings(extraItems: advanceSettingExtraItems),
     ]

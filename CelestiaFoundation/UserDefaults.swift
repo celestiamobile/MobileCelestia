@@ -55,6 +55,9 @@ public enum UserDefaultsKey: String, Sendable {
     case msaa
     case srgbRendering
     case shadowMapSize
+    #if os(iOS) && !targetEnvironment(macCatalyst)
+    case automaticPictureInPicture
+    #endif
     #if !os(visionOS)
     case toolbarItems
     case frameRate
