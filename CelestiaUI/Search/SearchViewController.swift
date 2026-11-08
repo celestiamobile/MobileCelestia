@@ -46,11 +46,6 @@ public class SearchViewController: UIViewController {
         }, contentScrollViewChanged: { [weak self] scrollView in
             guard let self else { return }
             self.setContentScrollView(scrollView)
-        }, clearHistory: { [weak self] in
-            guard let self else { return }
-            self.selectionTask?.cancel()
-            UserDefaults.standard.removeObject(forKey: UserDefaultsKey.recentSearches.rawValue)
-            self.showRecentSearches()
         })
     }()
 
