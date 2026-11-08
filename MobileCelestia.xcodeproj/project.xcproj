@@ -20,7 +20,7 @@
       "kind": "remote",
       "repository": "https://github.com/celestiamobile/AsyncGL",
       "version": {
-        "version": "2.2.1",
+        "version": "2.3.0",
       },
     }, {
       "kind": "remote",
