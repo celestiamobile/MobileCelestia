@@ -115,7 +115,6 @@ class CelestiaViewController: UIViewController {
     #if targetEnvironment(macCatalyst)
     func shutdownForAppTermination(completion: @escaping @MainActor () -> Void) {
         isShuttingDown = true
-        interactionController?.stopMirroring()
         displayController.shutdown {
             MainActor.assumeIsolated {
                 completion()
@@ -288,9 +287,11 @@ extension CelestiaViewController: CelestiaDisplayControllerDelegate {
             #endif
             self.install(interactionController, safeAreaEdges: self.safeAreaEdges)
             self.interactionController = interactionController
+            #if !targetEnvironment(macCatalyst)
             if self.isMirroring {
                 interactionController.startMirroring()
             }
+            #endif
             self.delegate?.celestiaControllerLoadingSucceeded(self)
         }
     }
@@ -390,13 +391,19 @@ extension CelestiaViewController: RenderingTargetInformationProvider {
         return displayController.targetGeometry
     }
 
-    var targetContents: Any? {
-        return displayController.screenshot()
+    #if !targetEnvironment(macCatalyst)
+    func startMirroring() -> UIView {
+        displayController.loadViewIfNeeded()
+        guard let glView = displayController.glView else {
+            preconditionFailure("The rendering view is unavailable for mirroring.")
+        }
+        return glView.startMirroring()
     }
 
-    var targetView: UIView {
-        return displayController.view
+    func stopMirroring() {
+        displayController.glView?.stopMirroring()
     }
+    #endif
 }
 
 private extension UIKey {

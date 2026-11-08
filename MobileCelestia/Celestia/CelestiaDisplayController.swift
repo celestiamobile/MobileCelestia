@@ -430,12 +430,6 @@ extension CelestiaDisplayController {
     }
 }
 
-extension CelestiaDisplayController {
-    func screenshot() -> Any? {
-        return self.view.snapshotView(afterScreenUpdates: false)?.layer.contents
-    }
-}
-
 private extension UIEdgeInsets {
     func scale(by factor: CGFloat) -> UIEdgeInsets {
         return UIEdgeInsets(top: top * factor, left: left * factor, bottom: bottom * factor, right: right * factor)

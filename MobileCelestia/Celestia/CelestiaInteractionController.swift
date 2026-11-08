@@ -31,8 +31,10 @@ protocol CelestiaInteractionControllerDelegate: AnyObject {
 @MainActor
 protocol RenderingTargetInformationProvider: AnyObject {
     var targetGeometry: RenderingTargetGeometry { get }
-    var targetContents: Any? { get }
-    var targetView: UIView { get }
+    #if !targetEnvironment(macCatalyst)
+    func startMirroring() -> UIView
+    func stopMirroring()
+    #endif
 }
 
 extension UIKeyModifierFlags: @unchecked @retroactive Sendable {}
@@ -163,24 +165,20 @@ class CelestiaInteractionController: UIViewController {
         return targetProvider?.targetGeometry ?? RenderingTargetGeometry(size: view.frame.size, scale: view.contentScaleFactor)
     }
 
-    private var renderingTargetContents: Any? {
-        return targetProvider?.targetContents
-    }
-
     final class FocusableView: UIView {
         override var canBecomeFocused: Bool { return true }
         override var canBecomeFirstResponder: Bool { return true }
     }
 
-    private var portalView: ScaledPortalView?
+    #if !targetEnvironment(macCatalyst)
+    private var mirroringView: UIView?
+    #endif
     private lazy var targetInteractionView: UIView = {
         let view = FocusableView()
         view.focusEffect = nil
         return view
     }()
     private lazy var auxillaryContextMenuPreviewView = UIView()
-    private var mirroringDisplayLink: CADisplayLink?
-    private var isMirroring = false
 
     private var isControlViewVisible = true
     private weak var currentShowAnimator: UIViewPropertyAnimator?
@@ -1003,44 +1001,32 @@ extension CelestiaInteractionController: AppCoreDelegate {
     nonisolated func celestiaAppCoreWatchedFlagsDidChange(_ changedFlags: WatcherFlags) {}
 }
 
+#if !targetEnvironment(macCatalyst)
 extension CelestiaInteractionController {
-    @objc private func mirroringDisplayLinkHandler() {
-        targetInteractionView.layer.contents = renderingTargetContents
-    }
-
     func startMirroring() {
-        guard let targetProvider else { return }
+        guard mirroringView == nil, let targetProvider else { return }
 
-        if ScaledPortalView.canBeUsed {
-            let portalView = ScaledPortalView(sourceView: targetProvider.targetView)
-            portalView.translatesAutoresizingMaskIntoConstraints = false
-            view.insertSubview(portalView, belowSubview: targetInteractionView)
-            NSLayoutConstraint.activate([
-                portalView.topAnchor.constraint(equalTo: view.topAnchor),
-                portalView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-                portalView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-                portalView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            ])
-            self.portalView = portalView
-        } else {
-            let displayLink = CADisplayLink(target: self, selector: #selector(mirroringDisplayLinkHandler))
-            displayLink.add(to: .main, forMode: .common)
-            mirroringDisplayLink = displayLink
-        }
-        isMirroring = true
+        loadViewIfNeeded()
+        let mirroringView = targetProvider.startMirroring()
+        mirroringView.translatesAutoresizingMaskIntoConstraints = false
+        view.insertSubview(mirroringView, belowSubview: targetInteractionView)
+        NSLayoutConstraint.activate([
+            mirroringView.topAnchor.constraint(equalTo: view.topAnchor),
+            mirroringView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            mirroringView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            mirroringView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+        ])
+        self.mirroringView = mirroringView
     }
 
     func stopMirroring() {
-        if ScaledPortalView.canBeUsed {
-            portalView?.removeFromSuperview()
-        } else {
-            mirroringDisplayLink?.invalidate()
-            mirroringDisplayLink = nil
-            targetInteractionView.layer.contents = nil
-        }
-        isMirroring = false
+        guard let mirroringView else { return }
+        targetProvider?.stopMirroring()
+        mirroringView.removeFromSuperview()
+        self.mirroringView = nil
     }
 }
+#endif
 
 extension CelestiaInteractionController {
     @objc private func callZoom() {
