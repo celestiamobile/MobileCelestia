@@ -46,7 +46,6 @@ class CelestiaViewController: UIViewController {
 
     private let displayController: CelestiaDisplayController
     private var interactionController: CelestiaInteractionController?
-    private var isShuttingDown = false
 
     private lazy var auxiliaryWindows = [UIScreen: UIWindow]()
 
@@ -111,17 +110,6 @@ class CelestiaViewController: UIViewController {
     isolated deinit {
         displayController.shutdown()
     }
-
-    #if targetEnvironment(macCatalyst)
-    func shutdownForAppTermination(completion: @escaping @MainActor () -> Void) {
-        isShuttingDown = true
-        displayController.shutdown {
-            MainActor.assumeIsolated {
-                completion()
-            }
-        }
-    }
-    #endif
 
     override func loadView() {
         let container = UIView()
@@ -271,7 +259,7 @@ extension CelestiaViewController: CelestiaInteractionControllerDelegate {
 extension CelestiaViewController: CelestiaDisplayControllerDelegate {
     nonisolated func celestiaDisplayControllerLoadingSucceeded(_ celestiaDisplayController: CelestiaDisplayController) {
         Task.detached { @MainActor [weak self] in
-            guard let self, !self.isShuttingDown else { return }
+            guard let self else { return }
             let interactionController = CelestiaInteractionController(subscriptionManager: self.subscriptionManager, core: self.core, executor: self.executor, userDefaults: self.userDefaults)
             #if !targetEnvironment(macCatalyst)
             interactionController.setGyroscopeEnabled(self.gyroscopeSettings.isEnabled)
@@ -304,7 +292,7 @@ extension CelestiaViewController: CelestiaDisplayControllerDelegate {
         let dispatchGroup = DispatchGroup()
         dispatchGroup.enter()
         Task { @MainActor in
-            guard !self.isShuttingDown, let delegate = self.delegate else {
+            guard let delegate = self.delegate else {
                 dispatchGroup.leave()
                 return
             }
@@ -319,14 +307,14 @@ extension CelestiaViewController: CelestiaDisplayControllerDelegate {
 
     nonisolated func celestiaDisplayControllerLoadingFailed(_ celestiaDisplayController: CelestiaDisplayController) {
         Task.detached { @MainActor [weak self] in
-            guard let self, !self.isShuttingDown else { return }
+            guard let self else { return }
             self.delegate?.celestiaControllerLoadingFailed(self)
         }
     }
 
     nonisolated func celestiaDisplayController(_ celestiaDisplayController: CelestiaDisplayController, loadingStatusUpdated status: String) {
         Task.detached { @MainActor [weak self] in
-            guard let self, !self.isShuttingDown else { return }
+            guard let self else { return }
             self.delegate?.celestiaController(self, loadingStatusUpdated: status)
         }
     }

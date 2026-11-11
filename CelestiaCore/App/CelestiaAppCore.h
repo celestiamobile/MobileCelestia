@@ -166,8 +166,6 @@ NS_SWIFT_NAME(AppCore)
 
 - (void)runScript:(NSString *)path NS_SWIFT_NAME(runScript(at:));
 - (void)cancelScript;
-// Call after renderer shutdown. Completion runs on main after workers are joined.
-- (void)shutdownResourceWorkersWithCompletion:(void (^)(void))completion NS_SWIFT_NAME(shutdownResourceWorkers(completion:));
 - (void)goToURL:(NSString *)url NS_SWIFT_NAME(go(to:));
 
 - (BOOL)screenshot:(NSString *)filePath withFileSize:(CelestiaScreenshotFileType)type NS_SWIFT_NAME(screenshot(to:type:));

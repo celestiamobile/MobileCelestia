@@ -12,6 +12,7 @@ import CelestiaCore
 import CelestiaFoundation
 #if targetEnvironment(macCatalyst)
 import CelestiaHelper
+import Darwin
 #endif
 import CelestiaUI
 import Sentry
@@ -259,6 +260,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
     }
+
+    #if targetEnvironment(macCatalyst)
+    static func exitMacApplication() -> Never {
+        StateManager.shared.beginTermination()
+        SentrySDK.close()
+        // Loading may still be running; do not race it with process-exit destructors.
+        Darwin._Exit(0)
+    }
+    #endif
 
     func applicationWillResignActive(_ application: UIApplication) {
         let backgroundTaskID = application.beginBackgroundTask(expirationHandler: nil)
