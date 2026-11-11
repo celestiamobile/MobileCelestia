@@ -26,7 +26,7 @@
       "kind": "remote",
       "repository": "https://github.com/getsentry/sentry-cocoa",
       "version": {
-        "version": "9.30.0",
+        "version": "9.30.1",
       },
     }, {
       "kind": "remote",
