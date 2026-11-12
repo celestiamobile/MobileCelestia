@@ -1,1 +1,1 @@
-celestia,天文,宇宙,空间,太阳,地球,模拟,stellarium,space,engine,宇宙沙盒,沙盒,spaceengine
+celestia,模拟器,天象馆,宇宙,恒星,星系,地球,月球,太阳,天文学,太空

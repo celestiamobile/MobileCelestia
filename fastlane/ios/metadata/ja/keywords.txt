@@ -1,1 +1,1 @@
-celestia,simulator,planetarium,universe,star,galaxy,earth,moon,solar,astronomy,space,stellarium,天文学
+celestia,シミュレーター,プラネタリウム,宇宙,恒星,銀河,地球,月,太陽,天文学,宇宙空間
