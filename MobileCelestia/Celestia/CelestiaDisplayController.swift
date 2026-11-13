@@ -29,6 +29,7 @@ class CelestiaDisplayController: AsyncGLViewController {
 
     // MARK: rendering
     private nonisolated(unsafe) var currentSize: CGSize = .zero
+    private nonisolated(unsafe) var lastFrameTimestamp: CFTimeInterval = 0
 
     private nonisolated(unsafe) var isLoaded = false
     private var isInBackground = false
@@ -324,6 +325,7 @@ extension CelestiaDisplayController {
 
         core.tick()
         core.start()
+        lastFrameTimestamp = CACurrentMediaTime()
 
         if hasPendingRequests {
             core.cancelScript()
@@ -338,14 +340,17 @@ extension CelestiaDisplayController {
         return true
     }
 
-    override func drawGL(_ size: CGSize) {
+    override func drawGL(_ size: CGSize, targetTimestamp: CFTimeInterval) {
         if size != currentSize {
             currentSize = size
             core.resize(to: currentSize)
         }
 
+        // Keep both display deadlines and untimed frames on one monotonic timeline.
+        let frameTimestamp = max(lastFrameTimestamp, targetTimestamp > 0 ? targetTimestamp : CACurrentMediaTime())
+        core.tick(frameTimestamp - lastFrameTimestamp)
+        lastFrameTimestamp = frameTimestamp
         core.draw()
-        core.tick()
     }
 }
 
