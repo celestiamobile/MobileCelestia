@@ -360,6 +360,10 @@ class FavoriteItemViewController<ItemList: FavoriteItemList>: UICollectionViewCo
         #if !targetEnvironment(macCatalyst)
         addBarButtonItem.isEnabled = !editing
         addBarButtonItem.isHidden = editing
+        if #available(iOS 26, visionOS 26, *), itemList.canBeModified,
+           let navigationController, navigationController.topViewController === self {
+            navigationController.setToolbarHidden(editing, animated: animated)
+        }
         #else
         updateToolbarIfNeeded()
         #endif
@@ -416,9 +420,15 @@ private extension FavoriteItemViewController {
 
         if itemList.canBeModified {
             navigationItem.rightBarButtonItems = [
-                editButtonItem,
                 addBarButtonItem,
+                editButtonItem,
             ]
+            #if !targetEnvironment(macCatalyst)
+            if #available(iOS 26, visionOS 26, *) {
+                navigationItem.rightBarButtonItems = [editButtonItem]
+                setToolbarItems([.flexibleSpace(), addBarButtonItem], animated: false)
+            }
+            #endif
         }
 
         reload()
@@ -454,7 +464,7 @@ extension FavoriteItemViewController: ToolbarAwareViewController {
             if isEditing {
                 return [.done]
             }
-            return [.add, .edit]
+            return [.edit, .add]
         }
         return []
     }

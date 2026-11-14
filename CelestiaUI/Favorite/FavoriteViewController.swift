@@ -58,7 +58,7 @@ class FavoriteViewController: UICollectionViewController {
         self.currentSelection = currentSelection
         self.selected = selected
         #if targetEnvironment(macCatalyst)
-        let configuration = UICollectionLayoutListConfiguration(appearance: .grouped)
+        let configuration = UICollectionLayoutListConfiguration(appearance: .sidebar)
         #else
         let configuration = UICollectionLayoutListConfiguration(appearance: .defaultGrouped)
         #endif

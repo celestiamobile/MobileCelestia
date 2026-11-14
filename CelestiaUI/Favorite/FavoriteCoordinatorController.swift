@@ -121,6 +121,17 @@ public class FavoriteCoordinatorController: UIViewController {
     }
 }
 
+#if !targetEnvironment(macCatalyst)
+extension FavoriteCoordinatorController: UINavigationControllerDelegate {
+    public func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+        if #available(iOS 26, visionOS 26, *) {
+            viewController.loadViewIfNeeded()
+            navigationController.setToolbarHidden(viewController.isEditing || viewController.toolbarItems?.isEmpty != false, animated: animated)
+        }
+    }
+}
+#endif
+
 private extension FavoriteCoordinatorController {
     func setUp() {
         #if targetEnvironment(macCatalyst)
@@ -131,6 +142,7 @@ private extension FavoriteCoordinatorController {
         observeWindowTitle(for: controller)
         #else
         navigation = BaseNavigationController(rootViewController: main)
+        navigation.delegate = self
         install(navigation)
         observeWindowTitle(for: navigation)
         #endif
