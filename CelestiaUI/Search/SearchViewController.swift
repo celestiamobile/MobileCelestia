@@ -16,9 +16,14 @@ public protocol SearchContentViewController: UIViewController {
 }
 
 public class SearchViewController: UIViewController {
-    #if !targetEnvironment(macCatalyst)
-    private lazy var searchController = UISearchController(searchResultsController: nil)
     private var shouldActivate = true
+    #if targetEnvironment(macCatalyst)
+    private weak var searchToolbarItem: NSToolbarItem?
+    private var isSearchViewVisible = false
+    #else
+    private lazy var searchController = UISearchController(searchResultsController: nil)
+    private var isSearchPresented = false
+    private var pendingSearchFocus = false
     var cancelHandler: (() -> Void)?
     var sheetCloseButtonItem: UIBarButtonItem?
     #endif
@@ -74,29 +79,38 @@ public class SearchViewController: UIViewController {
         super.viewDidLoad()
 
         setUp()
+        #if targetEnvironment(macCatalyst)
+        NotificationCenter.default.addObserver(self, selector: #selector(searchSceneDidActivate(_:)),
+                                               name: UIScene.didActivateNotification, object: nil)
+        #endif
     }
 
-    #if !targetEnvironment(macCatalyst)
     public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        if shouldActivate {
-            Task {
-                do {
-                    try await Task.sleep(nanoseconds: 100000000)
-                    self.searchController.searchBar.becomeFirstResponder()
-                } catch {}
-            }
+        #if targetEnvironment(macCatalyst)
+        isSearchViewVisible = true
+        activateToolbarSearchIfReady()
+        #else
+        guard shouldActivate else { return }
+        pendingSearchFocus = true
+        if isSearchPresented {
+            focusSearchBarIfRequested()
+        } else {
+            searchController.isActive = true
         }
+        #endif
     }
-    #endif
 
     public override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
         selectionTask?.cancel()
         pendingSearchSubmission = nil
-        #if !targetEnvironment(macCatalyst)
+        #if targetEnvironment(macCatalyst)
+        isSearchViewVisible = false
+        #else
+        pendingSearchFocus = false
         shouldActivate = searchController.searchBar.isFirstResponder
         #endif
     }
@@ -114,6 +128,14 @@ public class SearchViewController: UIViewController {
 }
 
 private extension SearchViewController {
+    #if !targetEnvironment(macCatalyst)
+    func focusSearchBarIfRequested() {
+        guard pendingSearchFocus else { return }
+        pendingSearchFocus = false
+        searchController.searchBar.becomeFirstResponder()
+    }
+    #endif
+
     func setUp() {
         title = CelestiaString("Search", comment: "")
         windowTitle = title
@@ -301,9 +323,16 @@ extension SearchViewController: UISearchControllerDelegate {
     }
 
     public func willDismissSearchController(_ searchController: UISearchController) {
+        isSearchPresented = false
+        pendingSearchFocus = false
         if let sheetCloseButtonItem {
             navigationItem.rightBarButtonItem = sheetCloseButtonItem
         }
+    }
+
+    public func didPresentSearchController(_ searchController: UISearchController) {
+        isSearchPresented = true
+        focusSearchBarIfRequested()
     }
 }
 #endif
@@ -326,13 +355,35 @@ extension NSToolbarItem.Identifier {
 }
 
 extension SearchViewController: ToolbarAwareViewController {
+    @objc private func searchSceneDidActivate(_ notification: Notification) {
+        guard let scene = notification.object as? UIWindowScene,
+              scene === viewIfLoaded?.window?.windowScene else { return }
+        activateToolbarSearchIfReady()
+    }
+
+    private func activateToolbarSearchIfReady() {
+        guard shouldActivate, isSearchViewVisible,
+              viewIfLoaded?.window?.windowScene?.activationState == .foregroundActive,
+              let searchToolbarItem else { return }
+        let selector = NSSelectorFromString("beginSearchInteraction")
+        guard searchToolbarItem.responds(to: selector) else {
+            print("Search toolbar item does not support search activation")
+            shouldActivate = false
+            return
+        }
+        typealias BeginSearchMethod = @convention(c) (NSObject, Selector) -> Void
+        let method = unsafeBitCast(searchToolbarItem.method(for: selector), to: BeginSearchMethod.self)
+        shouldActivate = false
+        method(searchToolbarItem, selector)
+    }
+
     public func supportedToolbarItemIdentifiers(for toolbarContainerViewController: ToolbarContainerViewController) -> [NSToolbarItem.Identifier] {
         return [.search]
     }
 
     public func toolbarContainerViewController(_ toolbarContainerViewController: ToolbarContainerViewController, itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier) -> NSToolbarItem? {
         if itemIdentifier == .search {
-            return NSToolbarItem.searchItem(with: .search, currentText: currentSearchTerm) { [weak self] text in
+            let item = NSToolbarItem.searchItem(with: .search, currentText: currentSearchTerm) { [weak self] text in
                 guard let self else { return }
                 self.searchTextUpdated(text)
             } returnHandler: { [weak self] text in
@@ -342,6 +393,8 @@ extension SearchViewController: ToolbarAwareViewController {
                 guard let self, self.currentSearchTerm?.isEmpty != false else { return }
                 self.showRecentSearches()
             } searchEndHandler: {}
+            searchToolbarItem = item
+            return item
         }
         return nil
     }
