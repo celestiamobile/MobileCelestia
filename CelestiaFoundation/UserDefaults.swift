@@ -13,6 +13,8 @@ public enum UserDefaultsKey: String, Sendable {
     case databaseVersion
 
     case onboardMessageDisplayed
+    case controlViewRestoreHintAcknowledged
+    case controlViewRestoreTipRevision
     case lastNewsID
     case recentSearches
 

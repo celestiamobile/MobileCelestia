@@ -16,6 +16,9 @@ import Darwin
 #endif
 import CelestiaUI
 import Sentry
+#if !targetEnvironment(macCatalyst)
+import TipKit
+#endif
 import UIKit
 import UserNotifications
 
@@ -144,6 +147,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         AppDependencyManager.shared.add(dependency: stateManager)
 
         AppCore.setUpLocale()
+
+        #if !targetEnvironment(macCatalyst)
+        if #available(iOS 17, *) {
+            do {
+                try Tips.configure()
+            } catch {
+                NSLog("Unable to configure TipKit: %@", error.localizedDescription)
+            }
+        }
+        #endif
 
         #if targetEnvironment(macCatalyst)
         MacBridge.initialize()

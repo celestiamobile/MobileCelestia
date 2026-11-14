@@ -12,6 +12,8 @@ import CelestiaFoundation
 import CelestiaUI
 #if !targetEnvironment(macCatalyst)
 import CoreMotion
+import SwiftUI
+import TipKit
 import simd
 #endif
 import UIKit
@@ -126,6 +128,12 @@ class CelestiaInteractionController: UIViewController {
     #endif
 
     // MARK: gesture
+    #if !targetEnvironment(macCatalyst)
+    private lazy var showControlViewGesture = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(handleShowControlView(_:)))
+    private weak var controlViewRestoreHintView: UIView?
+    private var controlViewRestoreHintTask: Task<Void, Never>?
+    private weak var controlViewRestoreHintController: UIViewController?
+    #endif
     private var currentPanPoint: CGPoint?
     #if targetEnvironment(macCatalyst)
     private var currentPanStartPoint: CGPoint?
@@ -198,6 +206,12 @@ class CelestiaInteractionController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
 
+    #if !targetEnvironment(macCatalyst)
+    isolated deinit {
+        controlViewRestoreHintTask?.cancel()
+    }
+    #endif
+
     override func loadView() {
         let container = UIView()
 
@@ -223,6 +237,7 @@ class CelestiaInteractionController: UIViewController {
             activeControlView.centerYAnchor.constraint(equalTo: container.centerYAnchor),
             activeControlView.trailingAnchor.constraint(equalTo: container.safeAreaLayoutGuide.trailingAnchor, constant: -Constants.controlViewMarginTrailing),
         ])
+
         #endif
 
         auxillaryContextMenuPreviewView.backgroundColor = .clear
@@ -251,6 +266,18 @@ class CelestiaInteractionController: UIViewController {
         updateControlPresentation()
         #endif
     }
+
+    #if !targetEnvironment(macCatalyst)
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        showControlViewGesture.edges = view.effectiveUserInterfaceLayoutDirection == .rightToLeft ? .left : .right
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        dismissControlViewRestoreHint()
+    }
+    #endif
 }
 
 #if !targetEnvironment(macCatalyst)
@@ -286,7 +313,9 @@ extension CelestiaInteractionController: CelestiaControlViewDelegate {
 
     private func performControlAction(_ action: CelestiaControlAction) {
         if action == .hide {
+            guard isControlViewVisible else { return }
             hideControlView()
+            showControlViewRestoreHintIfNeeded()
         } else if action == .show {
             showControlView()
         } else if action == .showMenu {
@@ -301,6 +330,98 @@ extension CelestiaInteractionController: CelestiaControlViewDelegate {
         } else if action == .go {
             delegate?.celestiaInteractionControllerRequestGo(self)
         }
+    }
+
+    private func showControlViewRestoreHintIfNeeded() {
+        guard !isControlViewVisible,
+              userDefaults[.controlViewRestoreHintAcknowledged] != true,
+              view.window != nil,
+              presentedViewController == nil else { return }
+        let text = view.effectiveUserInterfaceLayoutDirection == .rightToLeft
+            ? CelestiaString("Swipe inward from the left edge of the screen to show the toolbar.", comment: "Hint shown the first time the toolbar is hidden in a right-to-left layout")
+            : CelestiaString("Swipe inward from the right edge of the screen to show the toolbar.", comment: "Hint shown the first time the toolbar is hidden in a left-to-right layout")
+        if #available(iOS 17, *) {
+            controlViewRestoreHintTask?.cancel()
+            controlViewRestoreHintTask = Task { @MainActor [weak self] in
+                while !Task.isCancelled {
+                    guard let userDefaults = self?.userDefaults else { return }
+                    let revision: Int = userDefaults[.controlViewRestoreTipRevision] ?? 0
+                    let tip = ControlViewRestoreTip(text: text, revision: revision)
+                    var didDisplay = false
+                    var retryInvalidatedTip = false
+                    for await shouldDisplay in tip.shouldDisplayUpdates {
+                        guard !Task.isCancelled, let self,
+                              !self.isControlViewVisible,
+                              self.view.window != nil,
+                              userDefaults[.controlViewRestoreHintAcknowledged] != true else { return }
+                        if shouldDisplay {
+                            if self.controlViewRestoreHintView == nil {
+                                self.showControlViewRestoreTip(tip)
+                                didDisplay = true
+                            }
+                        } else {
+                            self.controlViewRestoreHintView?.removeFromSuperview()
+                            self.controlViewRestoreHintView = nil
+                        }
+                        if case .invalidated = tip.status {
+                            // TipKit persists X dismissal; a new identity allows the next reminder.
+                            userDefaults[.controlViewRestoreTipRevision] = revision + 1
+                            if didDisplay {
+                                self.controlViewRestoreHintTask = nil
+                                return
+                            }
+                            retryInvalidatedTip = true
+                            break
+                        }
+                    }
+                    guard retryInvalidatedTip else { return }
+                }
+            }
+        } else {
+            let alert = UIAlertController(
+                title: CelestiaString("Show the toolbar", comment: "Title for the hidden toolbar hint"),
+                message: text,
+                preferredStyle: .alert
+            )
+            alert.addAction(UIAlertAction(title: CelestiaString("Got it", comment: "Dismiss the hidden toolbar hint"), style: .default) { [weak self] _ in
+                self?.userDefaults[.controlViewRestoreHintAcknowledged] = true
+            })
+            controlViewRestoreHintController = alert
+            present(alert, animated: true)
+        }
+    }
+
+    @available(iOS 17, *)
+    private func showControlViewRestoreTip(_ tip: ControlViewRestoreTip) {
+        let hint = TipUIView(tip, arrowEdge: nil) { [weak self] _ in
+            self?.userDefaults[.controlViewRestoreHintAcknowledged] = true
+            tip.invalidate(reason: .actionPerformed)
+            self?.dismissControlViewRestoreHint()
+        }
+        hint.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(hint)
+        controlViewRestoreHintView = hint
+        let horizontalMargin = GlobalConstants.pageMediumMarginHorizontal
+        let preferredWidth = hint.widthAnchor.constraint(equalToConstant: 320)
+        preferredWidth.priority = .defaultHigh
+        NSLayoutConstraint.activate([
+            hint.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
+            hint.leadingAnchor.constraint(greaterThanOrEqualTo: view.safeAreaLayoutGuide.leadingAnchor, constant: horizontalMargin),
+            hint.trailingAnchor.constraint(lessThanOrEqualTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -horizontalMargin),
+            preferredWidth,
+            hint.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -GlobalConstants.pageMediumMarginVertical)
+        ])
+        view.setNeedsLayout()
+        view.layoutIfNeeded()
+    }
+
+    private func dismissControlViewRestoreHint() {
+        controlViewRestoreHintTask?.cancel()
+        controlViewRestoreHintTask = nil
+        controlViewRestoreHintView?.removeFromSuperview()
+        controlViewRestoreHintView = nil
+        controlViewRestoreHintController?.dismiss(animated: true)
+        controlViewRestoreHintController = nil
     }
 
     private var usesControlToolbar: Bool {
@@ -404,14 +525,13 @@ extension CelestiaInteractionController: CelestiaControlViewDelegate {
     }
 
     private func hideControlView() {
+        isControlViewVisible = false
         if usesControlToolbar {
-            isControlViewVisible = false
             updateControlPresentation()
             return
         }
         guard currentHideAnimator == nil else { return }
         currentShowAnimator?.stopAnimation(true)
-        currentShowAnimator?.finishAnimation(at: .current)
         currentShowAnimator = nil
 
         let animator = UIViewPropertyAnimator(duration: Constants.controlViewHideAnimationDuration, curve: .linear) { [weak self] in
@@ -419,25 +539,22 @@ extension CelestiaInteractionController: CelestiaControlViewDelegate {
         }
 
         currentHideAnimator = animator
-        animator.startAnimation()
-
-
-        Task {
-            await animator.addCompletion()
+        animator.addCompletion { [weak self, weak animator] _ in
+            guard let self, let animator, self.currentHideAnimator === animator else { return }
             self.currentHideAnimator = nil
-            self.isControlViewVisible = false
         }
+        animator.startAnimation()
     }
 
     private func showControlView() {
+        dismissControlViewRestoreHint()
+        isControlViewVisible = true
         if usesControlToolbar {
-            isControlViewVisible = true
             updateControlPresentation()
             return
         }
         guard currentShowAnimator == nil else { return }
         currentHideAnimator?.stopAnimation(true)
-        currentHideAnimator?.finishAnimation(at: .current)
         currentHideAnimator = nil
 
         let animator = UIViewPropertyAnimator(duration: Constants.controlViewShowAnimationDuration, curve: .linear) { [weak self] in
@@ -445,13 +562,11 @@ extension CelestiaInteractionController: CelestiaControlViewDelegate {
         }
 
         currentShowAnimator = animator
-        animator.startAnimation()
-
-        Task {
-            await animator.addCompletion()
+        animator.addCompletion { [weak self, weak animator] _ in
+            guard let self, let animator, self.currentShowAnimator === animator else { return }
             self.currentShowAnimator = nil
-            self.isControlViewVisible = true
         }
+        animator.startAnimation()
     }
 
     private func showControlViewIfNeeded() {
@@ -523,6 +638,16 @@ extension CelestiaInteractionController {
         tap.delegate = self
         targetInteractionView.addGestureRecognizer(tap)
 
+        #if !targetEnvironment(macCatalyst)
+        showControlViewGesture.edges = view.effectiveUserInterfaceLayoutDirection == .rightToLeft ? .left : .right
+        showControlViewGesture.delegate = self
+        targetInteractionView.addGestureRecognizer(showControlViewGesture)
+        pan1.require(toFail: showControlViewGesture)
+        pan2.require(toFail: showControlViewGesture)
+        pinch.require(toFail: showControlViewGesture)
+        tap.require(toFail: showControlViewGesture)
+        #endif
+
         #if targetEnvironment(macCatalyst)
         let isContextMenuEnabled = true
         #else
@@ -543,11 +668,14 @@ extension CelestiaInteractionController {
 }
 
 extension CelestiaInteractionController {
-    @objc private func handlePanZoom(_ pan: UIPanGestureRecognizer) {
-#if !targetEnvironment(macCatalyst)
+    #if !targetEnvironment(macCatalyst)
+    @objc private func handleShowControlView(_ gesture: UIScreenEdgePanGestureRecognizer) {
+        guard gesture.state == .began else { return }
         showControlViewIfNeeded()
-#endif
+    }
+    #endif
 
+    @objc private func handlePanZoom(_ pan: UIPanGestureRecognizer) {
         let modifiers = pan.modifierFlags
         switch pan.state {
         case .changed:
@@ -561,10 +689,6 @@ extension CelestiaInteractionController {
     }
 
     @objc private func handlePan(_ pan: UIPanGestureRecognizer) {
-#if !targetEnvironment(macCatalyst)
-        showControlViewIfNeeded()
-#endif
-
         let location = pan.location(with: renderingTargetGeometry)
         let modifiers = pan.modifierFlags
         let button: MouseButton
@@ -617,10 +741,6 @@ extension CelestiaInteractionController {
     }
 
     @objc private func handlePinch(_ gesture: UIPinchGestureRecognizer) {
-#if !targetEnvironment(macCatalyst)
-        showControlViewIfNeeded()
-#endif
-
         switch gesture.state {
         case .possible:
             break
@@ -648,10 +768,6 @@ extension CelestiaInteractionController {
     }
 
     @objc private func handleTap(_ tap: UITapGestureRecognizer) {
-#if !targetEnvironment(macCatalyst)
-        showControlViewIfNeeded()
-#endif
-
         switch tap.state {
         case .ended:
             let location = tap.location(with: renderingTargetGeometry)
@@ -677,6 +793,11 @@ extension CelestiaInteractionController {
 
 extension CelestiaInteractionController: UIGestureRecognizerDelegate {
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        #if !targetEnvironment(macCatalyst)
+        if gestureRecognizer === showControlViewGesture {
+            return !isControlViewVisible
+        }
+        #endif
         var area = gestureRecognizer.view!.bounds.inset(by: gestureRecognizer.view!.safeAreaInsets)
         // reserve area
         area = area.insetBy(dx: 16, dy: 16)
@@ -1153,6 +1274,30 @@ extension CelestiaInteractionController {
 private extension simd_quatf {
     init(_ quaternion: CMQuaternion) {
         self.init(ix: Float(quaternion.x), iy: Float(quaternion.y), iz: Float(quaternion.z), r: -Float(quaternion.w))
+    }
+}
+#endif
+
+#if !targetEnvironment(macCatalyst)
+@available(iOS 17, *)
+private struct ControlViewRestoreTip: Tip {
+    let text: String
+    let revision: Int
+
+    var id: String {
+        "ControlViewRestoreTip-\(revision)"
+    }
+
+    var title: Text {
+        Text(CelestiaString("Show the toolbar", comment: "Title for the hidden toolbar hint"))
+    }
+
+    var message: Text? {
+        Text(text)
+    }
+
+    var actions: [Action] {
+        Action(id: "dismiss", title: CelestiaString("Got it", comment: "Dismiss the hidden toolbar hint"))
     }
 }
 #endif
