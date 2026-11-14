@@ -707,9 +707,15 @@ extension CelestiaInteractionController {
     }
 
     @objc private func handleRotation(_ gesture: UIRotationGestureRecognizer) {
+        if gesture.state == .began {
+            beginTouchTransform()
+        }
+        guard gesture.numberOfTouches == 0 || userDefaults[.twoFingerPanAndRotation] != false else {
+            gesture.rotation = 0
+            return
+        }
         switch gesture.state {
         case .began:
-            beginTouchTransform()
             gesture.rotation = 0
         case .changed:
             let rotation = gesture.rotation
@@ -730,7 +736,10 @@ extension CelestiaInteractionController {
             handlePanZoom(gesture)
             return
         }
-        guard gesture.numberOfTouches == 2 else {
+        if gesture.numberOfTouches == 2 && gesture.state == .began {
+            beginTouchTransform()
+        }
+        guard gesture.numberOfTouches == 2, userDefaults[.twoFingerPanAndRotation] != false else {
             currentTwoFingerPanPoint = nil
             return
         }
@@ -738,7 +747,6 @@ extension CelestiaInteractionController {
         let orbit = interactionMode == .object
         switch gesture.state {
         case .began:
-            beginTouchTransform()
             currentTwoFingerPanPoint = location
             executor.runAsynchronously {
                 $0.panUpdate(location, offset: .zero, orbit: orbit, begin: true)

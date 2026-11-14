@@ -77,6 +77,13 @@ private let interactionItems = sharedInteractionItems + [
 #else
 private let interactionItems = sharedInteractionItems + [
     SettingItem(
+        name: CelestiaString("Two-Finger Rotation and Pan", comment: ""),
+        subtitle: CelestiaString("Rotate and pan with two fingers. Pinch zoom remains enabled.", comment: ""),
+        associatedItem: .prefSwitch(item:
+            AssociatedPreferenceSwitchItem(key: .twoFingerPanAndRotation, defaultOn: true)
+        )
+    ),
+    SettingItem(
         name: CelestiaString("Context Menu", comment: "Settings for whether context menu is enabled"),
         subtitle: CelestiaString("Context menu by long press or context click", comment: "Description for how a context menu is triggered"),
         associatedItem: .prefSwitch(item:

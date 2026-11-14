@@ -41,6 +41,7 @@ public enum UserDefaultsKey: String, Sendable {
     case boldFontIndex
 
     case pickSensitivity
+    case twoFingerPanAndRotation
 
     #if !os(visionOS)
     case pushNotificationsAsked
