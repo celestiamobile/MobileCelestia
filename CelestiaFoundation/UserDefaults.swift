@@ -57,6 +57,7 @@ public enum UserDefaultsKey: String, Sendable {
     case foveatedRendering
     #endif
     case msaa
+    case presentationMSAA
     case srgbRendering
     case shadowMapSize
     #if !os(visionOS)

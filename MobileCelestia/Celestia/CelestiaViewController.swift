@@ -99,7 +99,7 @@ class CelestiaViewController: UIViewController {
         self.core = core
         self.executor = executor
         self.userDefaults = userDefaults
-        displayController = CelestiaDisplayController(msaaEnabled: userDefaults[.msaa] == true, screen: screen, initialFrameRate: userDefaults[.frameRate] ?? 60, executor: executor, subscriptionManager: subscriptionManager, core: core, userDefaults: userDefaults, featureFlags: featureFlags)
+        displayController = CelestiaDisplayController(msaaEnabled: userDefaults[.presentationMSAA] == true, screen: screen, initialFrameRate: userDefaults[.frameRate] ?? 60, executor: executor, subscriptionManager: subscriptionManager, core: core, userDefaults: userDefaults, featureFlags: featureFlags)
         super.init(nibName: nil, bundle: nil)
     }
 

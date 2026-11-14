@@ -159,9 +159,15 @@ func mainSetting(featureFlags: FeatureFlags) -> [SettingSection] {
                     )
                 ),
                 SettingItem(
-                    name: CelestiaString("Anti-aliasing", comment: ""),
+                    name: CelestiaString("Scene anti-aliasing", comment: "Anti-aliasing for the rendered scene"),
                     associatedItem: .prefSwitch(
                         item: AssociatedPreferenceSwitchItem(key: .msaa, defaultOn: false)
+                    )
+                ),
+                SettingItem(
+                    name: CelestiaString("Overlay anti-aliasing", comment: "Anti-aliasing for labels, markers, and other overlays"),
+                    associatedItem: .prefSwitch(
+                        item: AssociatedPreferenceSwitchItem(key: .presentationMSAA, defaultOn: false)
                     )
                 ),
             ]),
