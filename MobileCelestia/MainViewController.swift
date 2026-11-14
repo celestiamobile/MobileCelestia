@@ -1377,19 +1377,10 @@ Device Model: \(model)
     }
 
     private func showTimeSettings() {
-        let vc: UIViewController
-        if featureFlags.swiftUITimeSettings {
-            vc = TimeSettingSUIViewController(dateInputHandler: { viewController, title, format in
-                return await viewController.getDateInputDifferentiated(title, format: format)
-            }) { viewController, title, keyboardType in
-                return await viewController.getTextInputDifferentiated(title, keyboardType: keyboardType)
-            }
-        } else {
-            vc = TimeSettingViewController(core: core, executor: executor, dateInputHandler: { viewController, title, format in
-                return await viewController.getDateInputDifferentiated(title, format: format)
-            }) { viewController, title, keyboardType in
-                return await viewController.getTextInputDifferentiated(title, keyboardType: keyboardType)
-            }
+        let vc = TimeSettingViewController(dateInputHandler: { viewController, title, format in
+            return await viewController.getDateInputDifferentiated(title, format: format)
+        }) { viewController, title, keyboardType in
+            return await viewController.getTextInputDifferentiated(title, keyboardType: keyboardType)
         }
         showViewController(ToolbarNavigationContainerController(rootViewController: vc), customToolbar: true)
     }
@@ -1402,7 +1393,6 @@ Device Model: \(model)
             executor: executor,
             userDefaults: userDefaults,
             bundle: .app,
-            featureFlags: featureFlags,
             defaultDataDirectory: UserDefaults.defaultDataDirectory,
             settings: settings,
             frameRateContext: FrameRateSettingContext(frameRateUserDefaultsKey: UserDefaultsKey.frameRate.rawValue),
