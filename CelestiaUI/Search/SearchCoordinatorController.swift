@@ -19,7 +19,7 @@ public class SearchCoordinatorController: ToolbarNavigationContainerController {
         self.selection = selected
         self.executor = executor
         super.init(rootViewController: UIViewController())
-        setViewControllers([SearchViewController(executor: executor, initialSearchTerm: initialSearchTerm) { [weak self] parent, _, object in
+        let searchController = SearchViewController(executor: executor, initialSearchTerm: initialSearchTerm) { [weak self] parent, _, object in
             guard let self else { return }
             guard !object.isEmpty else {
                 self.showError(CelestiaString("Object not found", comment: ""))
@@ -27,12 +27,25 @@ public class SearchCoordinatorController: ToolbarNavigationContainerController {
             }
             let viewController = self.selection(object)
             parent.installContentViewController(viewController)
-        }], animated: false)
+        }
+        #if !targetEnvironment(macCatalyst)
+        searchController.cancelHandler = { [weak self] in
+            self?.closeSheet()
+        }
+        searchController.sheetCloseButtonItem = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(closeSheet))
+        #endif
+        setViewControllers([searchController], animated: false)
     }
 
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+
+    #if !targetEnvironment(macCatalyst)
+    @objc private func closeSheet() {
+        presentingViewController?.dismiss(animated: true)
+    }
+    #endif
 }
 
 extension InfoViewController: SearchContentViewController {

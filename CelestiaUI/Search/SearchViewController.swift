@@ -19,6 +19,8 @@ public class SearchViewController: UIViewController {
     #if !targetEnvironment(macCatalyst)
     private lazy var searchController = UISearchController(searchResultsController: nil)
     private var shouldActivate = true
+    var cancelHandler: (() -> Void)?
+    var sheetCloseButtonItem: UIBarButtonItem?
     #endif
 
     private var fullMatch: Selection = Selection()
@@ -128,9 +130,13 @@ private extension SearchViewController {
 
         searchController.obscuresBackgroundDuringPresentation = false
         definesPresentationContext = true
+        searchController.delegate = self
         searchController.searchResultsUpdater = self
         searchBar.keyboardAppearance = .dark
         searchBar.delegate = self
+        if let sheetCloseButtonItem {
+            navigationItem.rightBarButtonItem = sheetCloseButtonItem
+        }
 
         if let initialSearchTerm, !initialSearchTerm.isEmpty {
             searchBar.text = initialSearchTerm
@@ -273,13 +279,31 @@ extension SearchViewController: UISearchBarDelegate {
     }
 
     public func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-        searchTextUpdated(nil)
+        if let cancelHandler {
+            cancelHandler()
+        } else {
+            searchTextUpdated(nil)
+        }
     }
 }
 
 extension SearchViewController: UISearchResultsUpdating {
     public func updateSearchResults(for searchController: UISearchController) {
         searchTextUpdated(searchController.searchBar.text)
+    }
+}
+
+extension SearchViewController: UISearchControllerDelegate {
+    public func willPresentSearchController(_ searchController: UISearchController) {
+        if sheetCloseButtonItem != nil {
+            navigationItem.rightBarButtonItem = nil
+        }
+    }
+
+    public func willDismissSearchController(_ searchController: UISearchController) {
+        if let sheetCloseButtonItem {
+            navigationItem.rightBarButtonItem = sheetCloseButtonItem
+        }
     }
 }
 #endif
