@@ -848,7 +848,12 @@ extension MainViewController: CelestiaControllerDelegate {
         #else
         let vc = SubscriptionManagerViewController(subscriptionManager: subscriptionManager, assetProvider: assetProvider, stringProvider: stringProvider)
         let nav = BaseNavigationController(rootViewController: vc)
-        nav.setNavigationBarHidden(true, animated: false)
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithTransparentBackground()
+        nav.navigationBar.standardAppearance = appearance
+        nav.navigationBar.scrollEdgeAppearance = appearance
+        nav.navigationBar.compactAppearance = appearance
+        nav.navigationBar.compactScrollEdgeAppearance = appearance
         showViewController(nav, titleVisible: false)
         #endif
     }
@@ -1327,8 +1332,9 @@ Device Model: \(model)
     }
 
     private func showSelectionInfo(with selection: Selection) {
-        let viewController = createSelectionInfoViewController(with: selection, showNavigationTitle: false, backgroundColor: .secondarySystemBackground)
-        showViewController(viewController, titleVisible: false)
+        let viewController = createSelectionInfoViewController(with: selection, showNavigationTitle: true, backgroundColor: .secondarySystemBackground)
+        let nav = BaseNavigationController(rootViewController: viewController)
+        showViewController(nav, titleVisible: false)
     }
 
     private func createSelectionInfoViewController(with selection: Selection, showNavigationTitle: Bool, backgroundColor: UIColor) -> InfoViewController {
