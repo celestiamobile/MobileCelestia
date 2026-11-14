@@ -138,6 +138,7 @@ class CelestiaInteractionController: UIViewController {
     private weak var touchPanGesture: UIPanGestureRecognizer?
     private lazy var rotationGesture = UIRotationGestureRecognizer(target: self, action: #selector(handleRotation(_:)))
     private var currentTwoFingerPanPoint: CGPoint?
+    private let isTwoFingerPanAndRotationEnabled: Bool
     #endif
     private var currentPanPoint: CGPoint?
     #if targetEnvironment(macCatalyst)
@@ -204,6 +205,9 @@ class CelestiaInteractionController: UIViewController {
         self.core = core
         self.executor = executor
         self.userDefaults = userDefaults
+        #if !targetEnvironment(macCatalyst)
+        isTwoFingerPanAndRotationEnabled = userDefaults[.twoFingerPanAndRotation] != false
+        #endif
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -710,7 +714,7 @@ extension CelestiaInteractionController {
         if gesture.state == .began {
             beginTouchTransform()
         }
-        guard gesture.numberOfTouches == 0 || userDefaults[.twoFingerPanAndRotation] != false else {
+        guard gesture.numberOfTouches == 0 || isTwoFingerPanAndRotationEnabled else {
             gesture.rotation = 0
             return
         }
@@ -739,7 +743,7 @@ extension CelestiaInteractionController {
         if gesture.numberOfTouches == 2 && gesture.state == .began {
             beginTouchTransform()
         }
-        guard gesture.numberOfTouches == 2, userDefaults[.twoFingerPanAndRotation] != false else {
+        guard gesture.numberOfTouches == 2, isTwoFingerPanAndRotationEnabled else {
             currentTwoFingerPanPoint = nil
             return
         }
