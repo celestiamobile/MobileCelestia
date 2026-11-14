@@ -133,6 +133,11 @@ class CelestiaInteractionController: UIViewController {
     private weak var controlViewRestoreHintView: UIView?
     private var controlViewRestoreHintTask: Task<Void, Never>?
     private weak var controlViewRestoreHintController: UIViewController?
+    private weak var singleTouchPanGesture: UIPanGestureRecognizer?
+    private weak var touchPinchGesture: UIPinchGestureRecognizer?
+    private weak var touchPanGesture: UIPanGestureRecognizer?
+    private lazy var rotationGesture = UIRotationGestureRecognizer(target: self, action: #selector(handleRotation(_:)))
+    private var currentTwoFingerPanPoint: CGPoint?
     #endif
     private var currentPanPoint: CGPoint?
     #if targetEnvironment(macCatalyst)
@@ -623,16 +628,35 @@ extension CelestiaInteractionController {
         pan1.delegate = self
         pan1.supportedMouseButtons = [.primary, .secondary]
         targetInteractionView.addGestureRecognizer(pan1)
+        #if !targetEnvironment(macCatalyst)
+        singleTouchPanGesture = pan1
+        #endif
 
+        #if targetEnvironment(macCatalyst)
         let pan2 = UIPanGestureRecognizer(target: self, action: #selector(handlePanZoom(_:)))
+        #else
+        let pan2 = UIPanGestureRecognizer(target: self, action: #selector(handleTwoFingerPan(_:)))
+        pan2.minimumNumberOfTouches = 2
+        pan2.maximumNumberOfTouches = 2
+        touchPanGesture = pan2
+        #endif
         pan2.allowedScrollTypesMask = [.discrete, .continuous]
         pan2.delegate = self
         targetInteractionView.addGestureRecognizer(pan2)
+        #if targetEnvironment(macCatalyst)
         pan2.require(toFail: pan1)
+        #endif
 
         let pinch = UIPinchGestureRecognizer(target: self, action: #selector(handlePinch(_:)))
         pinch.delegate = self
         targetInteractionView.addGestureRecognizer(pinch)
+
+        #if !targetEnvironment(macCatalyst)
+        touchPinchGesture = pinch
+        rotationGesture.allowedTouchTypes = [NSNumber(value: UITouch.TouchType.direct.rawValue)]
+        rotationGesture.delegate = self
+        targetInteractionView.addGestureRecognizer(rotationGesture)
+        #endif
 
         let tap = UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
         tap.delegate = self
@@ -645,6 +669,7 @@ extension CelestiaInteractionController {
         pan1.require(toFail: showControlViewGesture)
         pan2.require(toFail: showControlViewGesture)
         pinch.require(toFail: showControlViewGesture)
+        rotationGesture.require(toFail: showControlViewGesture)
         tap.require(toFail: showControlViewGesture)
         #endif
 
@@ -672,6 +697,68 @@ extension CelestiaInteractionController {
     @objc private func handleShowControlView(_ gesture: UIScreenEdgePanGestureRecognizer) {
         guard gesture.state == .began else { return }
         showControlViewIfNeeded()
+    }
+
+    private func beginTouchTransform() {
+        guard let pan = singleTouchPanGesture, pan.buttonMask.isEmpty,
+              pan.state == .began || pan.state == .changed else { return }
+        pan.isEnabled = false
+        pan.isEnabled = true
+    }
+
+    @objc private func handleRotation(_ gesture: UIRotationGestureRecognizer) {
+        switch gesture.state {
+        case .began:
+            beginTouchTransform()
+            gesture.rotation = 0
+        case .changed:
+            let rotation = gesture.rotation
+            gesture.rotation = 0
+            let focus = currentTwoFingerPanPoint ?? gesture.location(with: renderingTargetGeometry)
+            let orbit = interactionMode == .object
+            executor.runAsynchronously {
+                $0.rotateUpdate(focus, rotation: rotation, orbit: orbit)
+            }
+        default:
+            break
+        }
+    }
+
+    @objc private func handleTwoFingerPan(_ gesture: UIPanGestureRecognizer) {
+        if gesture.numberOfTouches == 0 {
+            currentTwoFingerPanPoint = nil
+            handlePanZoom(gesture)
+            return
+        }
+        guard gesture.numberOfTouches == 2 else {
+            currentTwoFingerPanPoint = nil
+            return
+        }
+        let location = gesture.location(with: renderingTargetGeometry)
+        let orbit = interactionMode == .object
+        switch gesture.state {
+        case .began:
+            beginTouchTransform()
+            currentTwoFingerPanPoint = location
+            executor.runAsynchronously {
+                $0.panUpdate(location, offset: .zero, orbit: orbit, begin: true)
+            }
+        case .changed:
+            let previous = currentTwoFingerPanPoint
+            currentTwoFingerPanPoint = location
+            guard let previous else {
+                executor.runAsynchronously {
+                    $0.panUpdate(location, offset: .zero, orbit: orbit, begin: true)
+                }
+                return
+            }
+            let offset = CGPoint(x: location.x - previous.x, y: location.y - previous.y)
+            executor.runAsynchronously {
+                $0.panUpdate(location, offset: offset, orbit: orbit, begin: false)
+            }
+        default:
+            currentTwoFingerPanPoint = nil
+        }
     }
     #endif
 
@@ -745,6 +832,11 @@ extension CelestiaInteractionController {
         case .possible:
             break
         case .began:
+            #if !targetEnvironment(macCatalyst)
+            if gesture.numberOfTouches == 2 {
+                beginTouchTransform()
+            }
+            #endif
             currentPinchScale = gesture.scale
         case .changed:
             let scale = gesture.scale
@@ -754,7 +846,11 @@ extension CelestiaInteractionController {
             let zoomFOV = interactionMode == .camera
             #endif
             if let currentPinchScale {
+                #if targetEnvironment(macCatalyst)
                 let focus = gesture.location(with: renderingTargetGeometry)
+                #else
+                let focus = currentTwoFingerPanPoint ?? gesture.location(with: renderingTargetGeometry)
+                #endif
                 executor.runAsynchronously {
                     $0.pinchUpdate(focus, scale: scale / currentPinchScale, zoomFOV: zoomFOV)
                 }
@@ -792,6 +888,28 @@ extension CelestiaInteractionController {
 }
 
 extension CelestiaInteractionController: UIGestureRecognizerDelegate {
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        #if !targetEnvironment(macCatalyst)
+        let isTransform = isTouchTransform(gestureRecognizer)
+        let otherIsTransform = isTouchTransform(otherGestureRecognizer)
+        if isTransform && otherIsTransform {
+            return true
+        }
+        // Keep transforms eligible when a second finger joins an existing drag.
+        if isTransform && otherGestureRecognizer === singleTouchPanGesture ||
+            otherIsTransform && gestureRecognizer === singleTouchPanGesture {
+            return singleTouchPanGesture?.buttonMask.isEmpty == true
+        }
+        #endif
+        return false
+    }
+
+    #if !targetEnvironment(macCatalyst)
+    private func isTouchTransform(_ gesture: UIGestureRecognizer) -> Bool {
+        return gesture === touchPinchGesture || gesture === rotationGesture || gesture === touchPanGesture
+    }
+    #endif
+
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
         #if !targetEnvironment(macCatalyst)
         if gestureRecognizer === showControlViewGesture {

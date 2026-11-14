@@ -22,10 +22,8 @@ final class CelestiaExecutor: AsyncGLExecutor, AsyncProviderExecutor, @unchecked
     }
 
     func runAsynchronously(_ task: @escaping @Sendable (AppCore) -> Void) {
-        Task {
-            runTaskAsynchronously {
-                task(self.core)
-            }
+        runTaskAsynchronously {
+            task(self.core)
         }
     }
 

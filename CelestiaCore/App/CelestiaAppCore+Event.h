@@ -37,6 +37,8 @@ typedef NS_OPTIONS(NSUInteger, CelestiaEventModifier) {
 - (void)joystickAxis:(CelestiaJoystickAxis)axis amount:(float)amount;
 
 - (void)pinchUpdate:(CGPoint)focus scale:(CGFloat)scale zoomFOV:(BOOL)zoomFOV;
+- (void)rotateUpdate:(CGPoint)focus rotation:(CGFloat)rotation orbit:(BOOL)orbit;
+- (void)panUpdate:(CGPoint)focus offset:(CGPoint)offset orbit:(BOOL)orbit begin:(BOOL)begin;
 
 @end
 

@@ -330,4 +330,12 @@ enum {
     core->pinchUpdate(static_cast<float>(focus.x), static_cast<float>(focus.y), static_cast<float>(scale), static_cast<bool>(zoomFOV));
 }
 
+- (void)rotateUpdate:(CGPoint)focus rotation:(CGFloat)rotation orbit:(BOOL)orbit {
+    core->rotateUpdate(static_cast<float>(focus.x), static_cast<float>(focus.y), static_cast<float>(rotation), static_cast<bool>(orbit));
+}
+
+- (void)panUpdate:(CGPoint)focus offset:(CGPoint)offset orbit:(BOOL)orbit begin:(BOOL)begin {
+    core->panUpdate(static_cast<float>(focus.x), static_cast<float>(focus.y), static_cast<float>(offset.x), static_cast<float>(offset.y), static_cast<bool>(orbit), static_cast<bool>(begin));
+}
+
 @end
