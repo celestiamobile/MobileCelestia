@@ -178,8 +178,9 @@ private:
     return _initialized;
 }
 
-- (BOOL)startRendererWithSRGBRendering:(BOOL)srgbRendering shadowMapSize:(NSInteger)shadowMapSize {
-    BOOL success = core->initRenderer(celestia::engine::TextureResolution::medres, static_cast<bool>(srgbRendering)) ? YES : NO;
+- (BOOL)startRendererWithSRGBRendering:(BOOL)srgbRendering shadowMapSize:(NSInteger)shadowMapSize samples:(NSInteger)samples {
+    BOOL success = core->initRenderer(celestia::engine::TextureResolution::medres, static_cast<bool>(srgbRendering),
+                                     samples > 1 ? static_cast<unsigned int>(samples) : 1u) ? YES : NO;
 
     // start with default values
     constexpr auto DEFAULT_ORBIT_MASK = BodyClassification::Planet | BodyClassification::Moon | BodyClassification::Stellar;

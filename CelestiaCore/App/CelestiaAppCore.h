@@ -137,7 +137,7 @@ NS_SWIFT_NAME(AppCore)
 
 - (BOOL)startSimulationWithConfigFileName:(nullable NSString *)configFileName extraDirectories:(nullable NSArray<NSString *> *)extraDirectories progressReporter:(void (NS_NOESCAPE ^)(NSString *))reporter NS_SWIFT_NAME(startSimulation(configFileName:extraDirectories:progress:));
 
-- (BOOL)startRendererWithSRGBRendering:(BOOL)srgbRendering shadowMapSize:(NSInteger)shadowMapSize NS_SWIFT_NAME(startRenderer(srgbRendering:shadowMapSize:));
+- (BOOL)startRendererWithSRGBRendering:(BOOL)srgbRendering shadowMapSize:(NSInteger)shadowMapSize samples:(NSInteger)samples NS_SWIFT_NAME(startRenderer(srgbRendering:shadowMapSize:samples:));
 
 - (void)setStartURL:(nullable NSString *)startURL;
 - (void)start;
