@@ -1562,7 +1562,7 @@ Device Model: \(model)
 extension UIViewController {
     func presentAfterDismissCurrent(_ viewController: UIViewController, animated: Bool) {
         callAfterDismissCurrent(animated: animated) { [weak self] in
-            self?.present(viewController, animated: animated)
+            self?.presentWithStatusBarWorkaround(viewController, animated: animated)
         }
     }
 }

@@ -159,7 +159,7 @@ extension DataLocationSelectionViewController {
             currentPicker = Location(rawValue: typeIndex)
             browser.allowsMultipleSelection = false
             browser.delegate = self
-            present(browser, animated: true, completion: nil)
+            presentWithStatusBarWorkaround(browser, animated: true, completion: nil)
         }
     }
 }

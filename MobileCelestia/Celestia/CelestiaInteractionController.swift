@@ -396,7 +396,7 @@ extension CelestiaInteractionController: CelestiaControlViewDelegate {
                 self?.userDefaults[.controlViewRestoreHintAcknowledged] = true
             })
             controlViewRestoreHintController = alert
-            present(alert, animated: true)
+            presentWithStatusBarWorkaround(alert, animated: true)
         }
     }
 

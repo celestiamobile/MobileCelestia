@@ -230,6 +230,19 @@ public extension UIViewController {
         present(alert, source: source, completion: completion)
     }
 
+    func presentWithStatusBarWorkaround(_ viewController: UIViewController, animated: Bool, completion: (() -> Void)? = nil) {
+        #if os(iOS) && !targetEnvironment(macCatalyst)
+        if #available(iOS 27.3, *), traitCollection.userInterfaceIdiom == .pad {
+            // Observed on iPadOS 27.3 beta 1: presenting with a hidden status bar in a
+            // full-screen window can trigger UIKit's observation/layout feedback loop.
+            // Let the presentation own status-bar appearance; UIKit restores the
+            // presenter's policy on dismissal.
+            viewController.modalPresentationCapturesStatusBarAppearance = true
+        }
+        #endif
+        present(viewController, animated: animated, completion: completion)
+    }
+
     func present(_ viewController: UIViewController, source: PopoverSource?, completion: (() -> Void)? = nil) {
         // Present from the top view controller to ensure that it can get presented correctly
         var presentingController = self
@@ -259,7 +272,7 @@ public extension UIViewController {
                 viewController.popoverPresentationController?.permittedArrowDirections = []
             }
         }
-        presentingController.present(viewController, animated: true, completion: completion)
+        presentingController.presentWithStatusBarWorkaround(viewController, animated: true, completion: completion)
     }
 
     func getTextInput(_ title: String, message: String? = nil, text: String? = nil, placeholder: String? = nil, keyboardType: UIKeyboardType = .default, source: PopoverSource? = nil) async -> String? {

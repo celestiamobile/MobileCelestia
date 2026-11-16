@@ -116,6 +116,6 @@ extension EventFinderResultViewController {
             popover.sourceView = collectionView
             popover.sourceRect = collectionView.layoutAttributesForItem(at: indexPath)?.frame ?? collectionView.bounds
         }
-        present(alert, animated: true)
+        presentWithStatusBarWorkaround(alert, animated: true)
     }
 }
