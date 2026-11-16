@@ -100,6 +100,8 @@ extension SettingCommonViewController {
             return (core.value(forKey: key) as? Int) == expectedValue
         case let .all(conditions):
             return conditions.allSatisfy(isSatisfied)
+        case let .any(conditions):
+            return conditions.contains(where: isSatisfied)
         }
     }
 

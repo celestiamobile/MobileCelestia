@@ -60,6 +60,7 @@ public indirect enum SettingVisibilityCondition: Sendable {
     case preferenceBoolean(key: UserDefaultsKey, equals: Bool, defaultValue: Bool)
     case coreInteger(key: String, equals: Int)
     case all([SettingVisibilityCondition])
+    case any([SettingVisibilityCondition])
 }
 
 public struct SettingActionItem: Sendable {
@@ -1507,7 +1508,9 @@ public func outputRenderSetting(extraSections: [AssociatedCommonItem.Section] = 
                         key: "toneMapping",
                         options: [
                             .init(name: CelestiaString("Off", comment: "Tone mapping mode"), value: 0),
-                            .init(name: CelestiaString("Manual", comment: "Tone mapping mode"), value: 1),
+                            .init(name: CelestiaString("Exponential", comment: "Tone mapping mode"), value: 1),
+                            .init(name: CelestiaString("ACES (fitted)", comment: "Tone mapping mode"), value: 2),
+                            .init(name: CelestiaString("Reinhard", comment: "Tone mapping mode"), value: 3),
                         ],
                         defaultOption: 0
                     )
@@ -1526,7 +1529,11 @@ public func outputRenderSetting(extraSections: [AssociatedCommonItem.Section] = 
                 ),
                 visibilityCondition: .all([
                     .preferenceBoolean(key: .srgbRendering, equals: true, defaultValue: false),
-                    .coreInteger(key: "toneMapping", equals: 1),
+                    .any([
+                        .coreInteger(key: "toneMapping", equals: 1),
+                        .coreInteger(key: "toneMapping", equals: 2),
+                        .coreInteger(key: "toneMapping", equals: 3),
+                    ]),
                 ])
             ),
         ], footer: CelestiaString("Changes to sRGB rendering take effect after a restart.", comment: "Output rendering settings footnote")),
