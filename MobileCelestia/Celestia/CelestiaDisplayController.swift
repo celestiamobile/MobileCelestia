@@ -283,7 +283,10 @@ extension CelestiaDisplayController {
                 continue
             }
 
-            guard self.core.startRenderer(srgbRendering: userDefaults[.srgbRendering] == true, shadowMapSize: userDefaults[.shadowMapSize] ?? 0, samples: userDefaults[.msaa] == true ? 4 : 1) else {
+            if userDefaults.object(forKey: "sceneMSAA") == nil {
+                userDefaults.set(userDefaults[.msaa] == true, forKey: "sceneMSAA")
+            }
+            guard self.core.startRenderer(srgbRendering: userDefaults[.srgbRendering] == true, shadowMapSize: userDefaults[.shadowMapSize] ?? 0, samples: userDefaults.bool(forKey: "sceneMSAA") ? 4 : 1) else {
                 print("Failed to start renderer.")
                 shouldRetry = delegate?.celestiaDisplayControllerLoadingFailedShouldRetry(self) ?? false
                 continue

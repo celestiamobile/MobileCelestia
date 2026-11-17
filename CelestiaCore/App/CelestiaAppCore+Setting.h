@@ -177,6 +177,10 @@ typedef NS_ENUM(NSInteger, CelestiaLayoutDirection) {
 @property NSInteger toneMapping;
 @property float exposure;
 
+// Use on the core thread after renderer initialization; applied on the next draw.
+// Enabled requests 4 samples, disabled requests 1, subject to hardware limits.
+@property BOOL sceneMSAA;
+
 // Star Settings
 
 @property float distanceLimit ;

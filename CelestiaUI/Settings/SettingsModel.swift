@@ -1252,8 +1252,11 @@ public func rendererQualitySetting(displayItems: [SettingItem]) -> SettingItem {
         ],
         footer: CelestiaString("Shadow resolution changes take effect after a restart.", comment: "Change requires a restart")
     ))
+    sections.append([
+        SettingCheckmarkItem(name: CelestiaString("Scene anti-aliasing", comment: "Anti-aliasing for the rendered scene"), key: "sceneMSAA", representation: .switch),
+    ].toSection(header: CelestiaString("Display", comment: "Display quality settings")))
     sections.append(.init(
-        header: CelestiaString("Display", comment: "Display quality settings"),
+        header: nil,
         rows: displayItems,
         footer: CelestiaString("Configuration will take effect after a restart.", comment: "Change requires a restart")
     ))

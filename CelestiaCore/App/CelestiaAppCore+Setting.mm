@@ -292,6 +292,9 @@ FEATUREMETHODS(Other)
 - (NSInteger)toneMapping { return static_cast<NSInteger>(core->getRenderer()->getToneMappingMode()); }
 - (void)setToneMapping:(NSInteger)value { core->getRenderer()->setToneMappingMode(static_cast<ToneMappingMode>(value)); }
 
+- (BOOL)sceneMSAA { return core->getSceneMSAASamples() > 1; }
+- (void)setSceneMSAA:(BOOL)value { core->setSceneMSAASamples(value ? 4u : 1u); }
+
 - (float)exposure { return core->getRenderer()->getToneMappingExposure(); }
 - (void)setExposure:(float)value { core->getRenderer()->setToneMappingExposure(value); }
 

@@ -22,6 +22,8 @@
 		<real>20</real>
 		<key>resolution</key>
 		<integer>1</integer>
+		<key>sceneMSAA</key>
+		<false/>
 		<key>separateRayleighMieScaleHeights</key>
 		<integer>0</integer>
 		<key>showAsteroidLabels</key>
