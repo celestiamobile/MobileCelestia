@@ -424,6 +424,8 @@
             { "path": "curveplot.h", "encoding": "utf8", "target-membership": [ "CelestiaCore/headers" ] },
             { "path": "deepskyobj.cpp", "encoding": "utf8", "target-membership": [ "CelestiaCore/compile-sources" ] },
             { "path": "deepskyobj.h", "encoding": "utf8", "target-membership": [ "CelestiaCore/headers" ] },
+            { "path": "depthpartition.cpp", "encoding": "utf8", "target-membership": [ "CelestiaCore/compile-sources" ] },
+            { "path": "depthpartition.h", "encoding": "utf8", "target-membership": [ "CelestiaCore/headers" ] },
             { "path": "dsodb.cpp", "encoding": "utf8", "target-membership": [ "CelestiaCore/compile-sources" ] },
             { "path": "dsobrowser.cpp", "encoding": "utf8", "target-membership": [ "CelestiaCore/compile-sources" ] },
             { "path": "dsobrowser.h", "encoding": "utf8", "target-membership": [ "CelestiaCore/headers" ] },
