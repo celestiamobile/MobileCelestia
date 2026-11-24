@@ -11,11 +11,7 @@ import UIKit
 
 public extension UICollectionLayoutListConfiguration.Appearance {
     static var defaultGrouped: Self {
-        #if targetEnvironment(macCatalyst)
         return .insetGrouped
-        #else
-        return .grouped
-        #endif
     }
 }
 

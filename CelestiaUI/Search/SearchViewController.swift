@@ -131,8 +131,15 @@ private extension SearchViewController {
     #if !targetEnvironment(macCatalyst)
     func focusSearchBarIfRequested() {
         guard pendingSearchFocus else { return }
-        pendingSearchFocus = false
-        searchController.searchBar.becomeFirstResponder()
+        DispatchQueue.main.async { [weak self] in
+            guard let self, self.pendingSearchFocus, self.isSearchPresented,
+                  self.searchController.isActive, self.viewIfLoaded?.window != nil else { return }
+            if self.searchController.searchBar.becomeFirstResponder() {
+                self.pendingSearchFocus = false
+            } else {
+                print("Could not focus search bar after presentation")
+            }
+        }
     }
     #endif
 
