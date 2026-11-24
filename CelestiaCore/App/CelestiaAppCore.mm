@@ -85,6 +85,21 @@ private:
     CelestiaCore::CursorShape shape;
 };
 
+class AppCoreWindowResizeHandler: public CelestiaCore::WindowResizeHandler
+{
+public:
+    AppCoreWindowResizeHandler(void (^block)(NSInteger, NSInteger)) : block(block) {};
+
+    void requestResize(int width, int height) override
+    {
+        @autoreleasepool {
+            block(width, height);
+        }
+    }
+private:
+    void (^block)(NSInteger, NSInteger);
+};
+
 class AppCoreContextMenuHandler: public CelestiaCore::ContextMenuHandler
 {
 public:
@@ -105,6 +120,7 @@ private:
     std::unique_ptr<AppCoreAlerter> alerter;
     std::unique_ptr<AppCoreCursorHandler> cursorHandler;
     std::unique_ptr<AppCoreContextMenuHandler> internalContextMenuHandler;
+    std::unique_ptr<AppCoreWindowResizeHandler> internalWindowResizeHandler;
 
     CelestiaSimulation *_simulation;
 }
@@ -112,6 +128,8 @@ private:
 @end
 
 @implementation CelestiaAppCore
+
+@synthesize windowResizeHandler = _windowResizeHandler;
 
 // MARK: Initilalization
 - (instancetype)init {
@@ -136,6 +154,10 @@ private:
                 }
             }
         });
+        internalWindowResizeHandler = std::make_unique<AppCoreWindowResizeHandler>(^(NSInteger width, NSInteger height) {
+            __strong id<CelestiaAppCoreWindowResizeHandler> handler = weakSelf.windowResizeHandler;
+            [handler celestiaAppCoreDidRequestResizeToWidth:width height:height];
+        });
         core->setAlerter(alerter.get());
         core->setCursorHandler(cursorHandler.get());
         core->setContextMenuHandler(internalContextMenuHandler.get());
@@ -155,6 +177,11 @@ private:
         });
     }
     return self;
+}
+
+- (void)setWindowResizeHandler:(id<CelestiaAppCoreWindowResizeHandler>)windowResizeHandler {
+    _windowResizeHandler = windowResizeHandler;
+    core->setWindowResizeHandler(windowResizeHandler != nil ? internalWindowResizeHandler.get() : nullptr);
 }
 
 + (BOOL)initGL {
@@ -399,6 +426,7 @@ private:
     core->setAlerter(nullptr);
     core->setCursorHandler(nullptr);
     core->setContextMenuHandler(nullptr);
+    core->setWindowResizeHandler(nullptr);
     core->setScriptSystemAccessHandler(std::nullopt);
     delete core;
 }

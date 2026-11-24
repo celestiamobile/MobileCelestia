@@ -116,6 +116,11 @@ NS_SWIFT_NAME(AppCoreContextMenuHandler)
 - (void)celestiaAppCoreCursorDidRequestContextMenuAtPoint:(CGPoint)location withSelection:(CelestiaSelection *)selection;
 @end
 
+NS_SWIFT_NAME(AppCoreWindowResizeHandler)
+@protocol CelestiaAppCoreWindowResizeHandler <NSObject>
+- (void)celestiaAppCoreDidRequestResizeToWidth:(NSInteger)width height:(NSInteger)height NS_SWIFT_NAME(celestiaAppCoreDidRequestResize(toWidth:height:));
+@end
+
 NS_SWIFT_NAME(AppCore)
 @interface CelestiaAppCore : NSObject
 
@@ -123,6 +128,7 @@ NS_SWIFT_NAME(AppCore)
 
 @property (nonatomic, weak, nullable) id<CelestiaAppCoreDelegate> delegate;
 @property (nonatomic, weak, nullable) id<CelestiaAppCoreContextMenuHandler> contextMenuHandler;
+@property (nonatomic, weak, nullable) id<CelestiaAppCoreWindowResizeHandler> windowResizeHandler;
 @property (nonatomic, readonly) CGSize size;
 @property (nonatomic) NSInteger screenDPI;
 @property (nonatomic) CGFloat textScaleFactor;

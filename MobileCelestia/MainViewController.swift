@@ -73,6 +73,8 @@ class MainViewController: UIViewController {
     private var currentWindowSceneForMirroring: UIWindowScene?
     private var disabledScalingBehindSheets: Bool = false
     private var externalDisplayAccessoryRegistration: Any?
+    #else
+    private var windowResizeHandler: WindowResizeHandler?
     #endif
 
     private var urlToOpen: AppURL?
@@ -153,6 +155,15 @@ class MainViewController: UIViewController {
 
         celestiaController.delegate = self
         install(split)
+
+        #if targetEnvironment(macCatalyst)
+        // Window geometry belongs to the platform shell, not the Celestia
+        // engine, so requests coming from celx (celestia:resize()) are
+        // forwarded here to the owning UIWindowScene.
+        let windowResizeHandler = WindowResizeHandler(viewController: self)
+        core.windowResizeHandler = windowResizeHandler
+        self.windowResizeHandler = windowResizeHandler
+        #endif
 
         install(loadingController)
 
@@ -1684,7 +1695,29 @@ extension MainViewController: ToolbarContainerViewController {
         split.updateToolbar(for: viewController)
     }
 }
+
+private class WindowResizeHandler: NSObject, AppCoreWindowResizeHandler, @unchecked Sendable {
+    private weak var viewController: UIViewController?
+
+    init(viewController: UIViewController) {
+        self.viewController = viewController
+    }
+
+    func celestiaAppCoreDidRequestResize(toWidth width: Int, height: Int) {
+        guard #available(macCatalyst 16, *) else { return }
+        guard width > 0, height > 0 else { return }
+        DispatchQueue.main.async { [weak self] in
+            guard let windowScene = self?.viewController?.view.window?.windowScene else { return }
+            let currentFrame = windowScene.effectiveGeometry.systemFrame
+            let newFrame = CGRect(x: currentFrame.origin.x, y: currentFrame.origin.y, width: CGFloat(width), height: CGFloat(height))
+            windowScene.requestGeometryUpdate(.Mac(systemFrame: newFrame)) { error in
+                print("Failed to resize window: \(error)")
+            }
+        }
+    }
+}
 #endif
+
 
 struct CelestiaAssetProvider: AssetProvider {
     func image(for image: AssetImage) -> UIImage {

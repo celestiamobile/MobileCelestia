@@ -1,1 +1,7 @@
-
+1. Fix multiple eclipse shadows
+2. Fix PSF rendering bounds, transitions, and batch state
+3. Update the exoplanet catalog
+4. Update Kamo'oalewa data and add a shape model
+5. Update Didymos and Dimorphos data, models, and textures
+6. Improve OBA star texture quality
+7. Add support for iOS and iPadOS 27
