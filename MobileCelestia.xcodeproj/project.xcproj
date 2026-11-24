@@ -1251,7 +1251,7 @@
     "ONLY_ACTIVE_ARCH[config=Debug]": "YES",
     "SDKROOT": "iphoneos",
     "SHARED_BUILD_NUMBER": "725",
-    "SHARED_BUILD_VERSION": "26.11.0",
+    "SHARED_BUILD_VERSION": "26.12.0",
     "STRING_CATALOG_GENERATE_SYMBOLS": "YES",
     "SWIFT_ACTIVE_COMPILATION_CONDITIONS[config=Debug]": "DEBUG",
     "SWIFT_COMPILATION_MODE[config=Release]": "wholemodule",
