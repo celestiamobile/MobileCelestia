@@ -80,6 +80,11 @@ public:
     {
         return shape;
     }
+
+    bool warpsCursor() const override
+    {
+        return false;
+    }
 private:
     void (^block)(CelestiaCursorShape);
     CelestiaCore::CursorShape shape;
