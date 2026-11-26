@@ -71,7 +71,6 @@ class MainViewController: UIViewController {
 
     #if !targetEnvironment(macCatalyst)
     private var currentWindowSceneForMirroring: UIWindowScene?
-    private var disabledScalingBehindSheets: Bool = false
     private var externalDisplayAccessoryRegistration: Any?
     #endif
 
@@ -181,15 +180,6 @@ class MainViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-
-        #if !targetEnvironment(macCatalyst)
-        if Self.canUseSystemSheetPresentationController, !disabledScalingBehindSheets {
-            if let sheet = view.window?.value(forKey: "rootPresentationController") as? UISheetPresentationController {
-                sheet.setValue(false, forKey: "shouldScaleDownBehindDescendantSheets")
-                disabledScalingBehindSheets = true
-            }
-        }
-        #endif
 
         if !isObservingSubscriptionChange {
             isObservingSubscriptionChange = true
@@ -1535,8 +1525,6 @@ Device Model: \(model)
         }
 
         func resolveValue() -> Bool {
-            guard UIWindow.instancesRespond(to: NSSelectorFromString("_rootPresentationController")) else { return false }
-            guard UISheetPresentationController.instancesRespond(to: NSSelectorFromString("_setShouldScaleDownBehindDescendantSheets:")) else { return false }
             if #available(iOS 27, *) { return true }
             guard UISheetPresentationController.instancesRespond(to: NSSelectorFromString("_setHorizontalAlignment:")) else { return false }
             guard UISheetPresentationController.instancesRespond(to: NSSelectorFromString("_setWantsBottomAttached:")) else { return false }
