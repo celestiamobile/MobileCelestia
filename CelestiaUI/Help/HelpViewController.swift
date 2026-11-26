@@ -17,7 +17,7 @@ public final class HelpViewController: UIViewController {
     private let requestHandler: RequestHandler
     private let assetProvider: AssetProvider
 
-    private lazy var nav: UINavigationController = {
+    private lazy var nav: ToolbarNavigationContainerController = {
         let url = URL.fromGuideShort(path: "/help/welcome", language: AppCore.language, shareable: false)
         let assetProvider = self.assetProvider
         let vc = FallbackWebViewController(executor: executor, resourceManager: resourceManager, url: url, requestHandler: requestHandler, actionHandler: actionHandler, showsGuideHeader: true, fallbackViewControllerCreator: OnboardViewController(assetProvider: assetProvider) { [weak self] action in
@@ -35,10 +35,11 @@ public final class HelpViewController: UIViewController {
             }
         })
         vc.title = CelestiaString("Welcome to Celestia", comment: "Welcome message")
-        let nav = BaseNavigationController(rootViewController: vc)
+        let nav = ToolbarNavigationContainerController(rootViewController: vc)
         if !CommonWebViewController.supportsNativeGuideHeader {
             nav.setNavigationBarHidden(true, animated: false)
         }
+
         return nav
     }()
 
@@ -66,3 +67,16 @@ public final class HelpViewController: UIViewController {
         return nav.minimumSheetHeight
     }
 }
+
+#if targetEnvironment(macCatalyst)
+extension HelpViewController: ToolbarContainerViewController {
+    public var nsToolbar: NSToolbar? {
+        get { nav.nsToolbar }
+        set { nav.nsToolbar = newValue }
+    }
+
+    public func updateToolbar(for viewController: UIViewController) {
+        nav.updateToolbar(for: viewController)
+    }
+}
+#endif

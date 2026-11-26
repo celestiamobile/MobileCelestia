@@ -44,6 +44,11 @@ public class CommonWebViewController: UIViewController {
     private let showsGuideHeader: Bool
     private var pageInfo: SendACKContext?
 
+    private var guideShareURL: URL? {
+        guard showsGuideHeader && Self.supportsNativeGuideHeader else { return nil }
+        return pageInfo?.shareURL
+    }
+
     private let executor: AsyncProviderExecutor
     private let resourceManager: ResourceManager
 
@@ -65,6 +70,7 @@ public class CommonWebViewController: UIViewController {
     private lazy var toolbarBackItem: NSToolbarItem = {
         return NSToolbarItem(backItemIdentifier: .back, target: self, action: #selector(goBack))
     }()
+    private lazy var toolbarShareItem = NSSharingServicePickerToolbarItem(itemIdentifier: .share)
     #endif
 
     private lazy var activityIndicator = UIActivityIndicatorView(style: .large)
@@ -176,8 +182,15 @@ public class CommonWebViewController: UIViewController {
         #if !os(visionOS)
         if showsGuideHeader, #available(anyAppleOS 26.0, *) {
             navigationItem.subtitle = windowSubtitle
-            navigationItem.rightBarButtonItem = pageInfo?.shareURL != nil ? shareGuideItem : nil
+            navigationItem.rightBarButtonItem = guideShareURL != nil ? shareGuideItem : nil
         }
+        #endif
+        #if targetEnvironment(macCatalyst)
+        toolbarShareItem.activityItemsConfiguration = guideShareURL.map {
+            UIActivityItemsConfiguration(objects: [$0 as NSURL])
+        }
+        toolbarShareItem.isEnabled = guideShareURL != nil
+        updateToolbarIfNeeded()
         #endif
         delegate?.webViewNavigationItemUpdated(navigationItem)
     }
@@ -191,7 +204,7 @@ public class CommonWebViewController: UIViewController {
     }
 
     @objc private func shareGuide(_ sender: UIBarButtonItem) {
-        guard let shareURL = pageInfo?.shareURL else { return }
+        guard let shareURL = guideShareURL else { return }
         showShareSheet(for: shareURL, source: .barButtonItem(barButtonItem: sender))
     }
 
@@ -350,6 +363,7 @@ extension Data {
 extension NSToolbarItem.Identifier {
     private static let prefix = Bundle(for: GoToInputViewController.self).bundleIdentifier!
     fileprivate static let back = NSToolbarItem.Identifier.init("\(prefix).web.back")
+    fileprivate static let share = NSToolbarItem.Identifier.init("\(prefix).web.share")
 }
 
 extension CommonWebViewController: ToolbarAwareViewController {
@@ -358,12 +372,19 @@ extension CommonWebViewController: ToolbarAwareViewController {
     }
 
     public func supportedToolbarItemIdentifiers(for toolbarContainerViewController: ToolbarContainerViewController) -> [NSToolbarItem.Identifier] {
-        return webView.canGoBack ? [.back] : []
+        var items: [NSToolbarItem.Identifier] = webView.canGoBack ? [.back] : []
+        if guideShareURL != nil {
+            items += [.flexibleSpace, .share]
+        }
+        return items
     }
 
     public func toolbarContainerViewController(_ toolbarContainerViewController: ToolbarContainerViewController, itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier) -> NSToolbarItem? {
         if itemIdentifier == .back {
             return toolbarBackItem
+        }
+        if itemIdentifier == .share {
+            return toolbarShareItem
         }
         return nil
     }

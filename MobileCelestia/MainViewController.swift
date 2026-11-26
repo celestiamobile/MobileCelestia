@@ -324,11 +324,11 @@ extension MainViewController {
                         actionHandler = commonWebActionHandler
                     }
                     let vc = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromGuide(guideItemID: id, language: locale, subscriptionManager: subscriptionManager), requestHandler: requestHandler, actionHandler: actionHandler, matchingQueryKeys: ["guide"], showsGuideHeader: true)
-                    let nav = BaseNavigationController(rootViewController: vc)
+                    let nav = ToolbarNavigationContainerController(rootViewController: vc)
                     if !CommonWebViewController.supportsNativeGuideHeader {
                         nav.setNavigationBarHidden(true, animated: false)
                     }
-                    showViewController(nav, key: id, prefersMediumDetent: prefersMediumDetent, titleVisible: CommonWebViewController.supportsNativeGuideHeader)
+                    showViewController(nav, key: id, prefersMediumDetent: prefersMediumDetent, titleVisible: CommonWebViewController.supportsNativeGuideHeader, customToolbar: CommonWebViewController.supportsNativeGuideHeader)
                 case let .object(path, action):
                     Task {
                         let selection: Selection? = await Task { @CelestiaActor in
@@ -394,11 +394,11 @@ extension MainViewController {
                         matchingQueryKeys: ["guide"],
                         showsGuideHeader: true
                     )
-                    let nav = BaseNavigationController(rootViewController: vc)
+                    let nav = ToolbarNavigationContainerController(rootViewController: vc)
                     if !CommonWebViewController.supportsNativeGuideHeader {
                         nav.setNavigationBarHidden(true, animated: false)
                     }
-                    self.showViewController(nav, key: item.id, prefersMediumDetent: prefersMediumDetent, titleVisible: CommonWebViewController.supportsNativeGuideHeader)
+                    self.showViewController(nav, key: item.id, prefersMediumDetent: prefersMediumDetent, titleVisible: CommonWebViewController.supportsNativeGuideHeader, customToolbar: CommonWebViewController.supportsNativeGuideHeader)
                     return
                 }
             } catch {}
@@ -840,14 +840,14 @@ extension MainViewController: CelestiaControllerDelegate {
         #if !APPSTORE_BUILD
         #else
         let vc = SubscriptionManagerViewController(subscriptionManager: subscriptionManager, assetProvider: assetProvider, stringProvider: stringProvider)
-        let nav = BaseNavigationController(rootViewController: vc)
+        let nav = ToolbarNavigationContainerController(rootViewController: vc)
         let appearance = UINavigationBarAppearance()
         appearance.configureWithTransparentBackground()
         nav.navigationBar.standardAppearance = appearance
         nav.navigationBar.scrollEdgeAppearance = appearance
         nav.navigationBar.compactAppearance = appearance
         nav.navigationBar.compactScrollEdgeAppearance = appearance
-        showViewController(nav, titleVisible: false)
+        showViewController(nav, key: String(describing: type(of: vc)), customToolbar: true)
         #endif
     }
 
@@ -1262,7 +1262,7 @@ Device Model: \(model)
 
     @objc private func presentHelp(prefersMediumDetent: Bool = false) {
         let vc = HelpViewController(executor: executor, resourceManager: resourceManager, requestHandler: requestHandler, assetProvider: assetProvider, actionHandler: commonWebActionHandler)
-        showViewController(vc, prefersMediumDetent: prefersMediumDetent, titleVisible: CommonWebViewController.supportsNativeGuideHeader)
+        showViewController(vc, prefersMediumDetent: prefersMediumDetent, titleVisible: CommonWebViewController.supportsNativeGuideHeader, customToolbar: CommonWebViewController.supportsNativeGuideHeader)
     }
 
     private func presentEventFinder() {
@@ -1326,8 +1326,8 @@ Device Model: \(model)
 
     private func showSelectionInfo(with selection: Selection) {
         let viewController = createSelectionInfoViewController(with: selection, showNavigationTitle: true, backgroundColor: .secondarySystemBackground)
-        let nav = BaseNavigationController(rootViewController: viewController)
-        showViewController(nav, titleVisible: false)
+        let nav = ToolbarNavigationContainerController(rootViewController: viewController)
+        showViewController(nav, key: String(describing: type(of: viewController)), customToolbar: true)
     }
 
     private func createSelectionInfoViewController(with selection: Selection, showNavigationTitle: Bool, backgroundColor: UIColor) -> InfoViewController {

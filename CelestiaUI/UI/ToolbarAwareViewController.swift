@@ -74,6 +74,10 @@ open class ToolbarNavigationContainerController: UIViewController, ToolbarContai
         return navigation.topViewController
     }
 
+    public var navigationBar: UINavigationBar {
+        return navigation.navigationBar
+    }
+
     public init(rootViewController: UIViewController) {
         #if targetEnvironment(macCatalyst)
         let vc = ToolbarAwareNavigationController(rootViewController: rootViewController)
@@ -95,6 +99,10 @@ open class ToolbarNavigationContainerController: UIViewController, ToolbarContai
 
     public func setViewControllers(_ viewControllers: [UIViewController], animated: Bool) {
         navigation.setViewControllers(viewControllers, animated: animated)
+    }
+
+    public func setNavigationBarHidden(_ hidden: Bool, animated: Bool) {
+        navigation.setNavigationBarHidden(hidden, animated: animated)
     }
 
     public func pushViewController(_ viewController: UIViewController, animated: Bool) {

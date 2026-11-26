@@ -59,6 +59,9 @@ extension FallbackWebViewController: CommonWebViewControllerDelegate {
             self.navigationItem.subtitle = navigationItem.subtitle
         }
         #endif
+        #if targetEnvironment(macCatalyst)
+        updateToolbarIfNeeded()
+        #endif
     }
 
     func webViewLoadFailed() {
@@ -78,5 +81,24 @@ extension FallbackWebViewController: CommonWebViewControllerDelegate {
             navigationItem.subtitle = nil
         }
         #endif
+        #if targetEnvironment(macCatalyst)
+        updateToolbarIfNeeded()
+        #endif
     }
 }
+
+#if targetEnvironment(macCatalyst)
+extension FallbackWebViewController: ToolbarAwareViewController {
+    public func insertSpaceBeforeToolbarItems(for toolbarContainerViewController: ToolbarContainerViewController) -> Bool {
+        return (currentViewController as? ToolbarAwareViewController)?.insertSpaceBeforeToolbarItems(for: toolbarContainerViewController) ?? false
+    }
+
+    public func supportedToolbarItemIdentifiers(for toolbarContainerViewController: ToolbarContainerViewController) -> [NSToolbarItem.Identifier] {
+        return (currentViewController as? ToolbarAwareViewController)?.supportedToolbarItemIdentifiers(for: toolbarContainerViewController) ?? []
+    }
+
+    public func toolbarContainerViewController(_ toolbarContainerViewController: ToolbarContainerViewController, itemForItemIdentifier itemIdentifier: NSToolbarItem.Identifier) -> NSToolbarItem? {
+        return (currentViewController as? ToolbarAwareViewController)?.toolbarContainerViewController(toolbarContainerViewController, itemForItemIdentifier: itemIdentifier)
+    }
+}
+#endif
