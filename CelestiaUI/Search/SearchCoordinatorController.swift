@@ -15,6 +15,10 @@ public class SearchCoordinatorController: ToolbarNavigationContainerController {
 
     private let selection: (Selection) -> SearchContentViewController
 
+    #if !targetEnvironment(macCatalyst)
+    public var searchActivationHandler: (() -> Void)?
+    #endif
+
     public init(executor: AsyncProviderExecutor, initialSearchTerm: String? = nil, selected: @escaping (Selection) -> SearchContentViewController) {
         self.selection = selected
         self.executor = executor
@@ -29,6 +33,9 @@ public class SearchCoordinatorController: ToolbarNavigationContainerController {
             parent.installContentViewController(viewController)
         }
         #if !targetEnvironment(macCatalyst)
+        searchController.searchActivationHandler = { [weak self] in
+            self?.searchActivationHandler?()
+        }
         searchController.cancelHandler = { [weak self] in
             self?.closeSheet()
         }

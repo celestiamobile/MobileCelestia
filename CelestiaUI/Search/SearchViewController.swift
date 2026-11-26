@@ -25,6 +25,7 @@ public class SearchViewController: UIViewController {
     private var isSearchPresented = false
     private var pendingSearchFocus = false
     var cancelHandler: (() -> Void)?
+    var searchActivationHandler: (() -> Void)?
     var sheetCloseButtonItem: UIBarButtonItem?
     #endif
 
@@ -82,6 +83,10 @@ public class SearchViewController: UIViewController {
         #if targetEnvironment(macCatalyst)
         NotificationCenter.default.addObserver(self, selector: #selector(searchSceneDidActivate(_:)),
                                                name: UIScene.didActivateNotification, object: nil)
+        #else
+        if #available(iOS 26.0, *) {
+            navigationItem.searchBarPlacementAllowsToolbarIntegration = false
+        }
         #endif
     }
 
@@ -302,6 +307,10 @@ private extension SearchViewController {
 
 #if !targetEnvironment(macCatalyst)
 extension SearchViewController: UISearchBarDelegate {
+    public func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
+        searchActivationHandler?()
+    }
+
     public func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         searchBar.resignFirstResponder()
         searchTextReturned(searchBar.text)
@@ -324,6 +333,7 @@ extension SearchViewController: UISearchResultsUpdating {
 
 extension SearchViewController: UISearchControllerDelegate {
     public func willPresentSearchController(_ searchController: UISearchController) {
+        searchActivationHandler?()
         if sheetCloseButtonItem != nil {
             navigationItem.rightBarButtonItem = nil
         }

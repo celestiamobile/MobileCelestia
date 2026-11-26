@@ -1500,6 +1500,14 @@ Device Model: \(model)
                 sheet.preferredPlacement = .leading
                 if Self.canUseBarDetent, let barDetent = UISheetPresentationController.Detent.perform(NSSelectorFromString("_barDetent")).takeUnretainedValue() as? UISheetPresentationController.Detent {
                     detents.insert(barDetent, at: 0)
+                    if let searchController = viewController as? SearchCoordinatorController {
+                        searchController.searchActivationHandler = { [weak sheet] in
+                            guard let sheet, sheet.selectedDetentIdentifier == barDetent.identifier else { return }
+                            sheet.animateChanges {
+                                sheet.selectedDetentIdentifier = .large
+                            }
+                        }
+                    }
                 }
             } else {
                 sheet.setValue(1, forKey: "horizontalAlignment")
