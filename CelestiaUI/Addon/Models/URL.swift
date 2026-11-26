@@ -32,6 +32,9 @@ public extension URL {
             URLQueryItem(name: "transparentBackground", value: "true"),
             URLQueryItem(name: "api", value: "2"),
         ]
+        if CommonWebViewController.supportsNativeGuideHeader {
+            queryItems.append(URLQueryItem(name: "titleVisibility", value: "collapsed"))
+        }
         #if !os(visionOS) && APPSTORE_BUILD
         if let subscriptionManager {
             if let (transactionID, isSandbox, productType) = subscriptionManager.transactionInfo() {
@@ -70,6 +73,9 @@ public extension URL {
             URLQueryItem(name: "transparentBackground", value: "true"),
             URLQueryItem(name: "api", value: "2"),
         ]
+        if CommonWebViewController.supportsNativeGuideHeader {
+            queryItems.append(URLQueryItem(name: "titleVisibility", value: "collapsed"))
+        }
         if let shareable = shareable {
             queryItems.append(URLQueryItem(name: "share", value: shareable ? "true" : "false"))
         }

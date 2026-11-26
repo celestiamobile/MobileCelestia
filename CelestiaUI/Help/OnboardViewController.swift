@@ -47,6 +47,11 @@ private extension OnboardViewController {
         welcomeView.numberOfLines = 0
         welcomeView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(welcomeView)
+        if CommonWebViewController.supportsNativeGuideHeader {
+            welcomeView.isHidden = true
+            welcomeView.heightAnchor.constraint(equalToConstant: 0).isActive = true
+            title = welcomeView.text
+        }
 
         NSLayoutConstraint.activate([
             welcomeView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: GlobalConstants.pageMediumMarginHorizontal),

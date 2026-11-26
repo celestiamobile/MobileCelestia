@@ -306,8 +306,6 @@ extension MainViewController {
                         } catch {}
                     }
                 case .guide(let id):
-                    // Need to wrap it in a NavVC without NavBar to make sure
-                    // the scrolling behavior is correct on macCatalyst
                     let actionHandler: (CommonWebViewController.WebAction, UIViewController) -> Void
                     if source == .pushNotification {
                         actionHandler = { [weak self] action, viewController in
@@ -325,10 +323,12 @@ extension MainViewController {
                     } else {
                         actionHandler = commonWebActionHandler
                     }
-                    let vc = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromGuide(guideItemID: id, language: locale, subscriptionManager: subscriptionManager), requestHandler: requestHandler, actionHandler: actionHandler, matchingQueryKeys: ["guide"])
+                    let vc = CommonWebViewController(executor: executor, resourceManager: resourceManager, url: .fromGuide(guideItemID: id, language: locale, subscriptionManager: subscriptionManager), requestHandler: requestHandler, actionHandler: actionHandler, matchingQueryKeys: ["guide"], showsGuideHeader: true)
                     let nav = BaseNavigationController(rootViewController: vc)
-                    nav.setNavigationBarHidden(true, animated: false)
-                    showViewController(nav, key: id, prefersMediumDetent: prefersMediumDetent, titleVisible: false)
+                    if !CommonWebViewController.supportsNativeGuideHeader {
+                        nav.setNavigationBarHidden(true, animated: false)
+                    }
+                    showViewController(nav, key: id, prefersMediumDetent: prefersMediumDetent, titleVisible: CommonWebViewController.supportsNativeGuideHeader)
                 case let .object(path, action):
                     Task {
                         let selection: Selection? = await Task { @CelestiaActor in
@@ -391,11 +391,14 @@ extension MainViewController {
                                 self.commonWebActionHandler(action, viewController)
                             }
                         },
-                        matchingQueryKeys: ["guide"]
+                        matchingQueryKeys: ["guide"],
+                        showsGuideHeader: true
                     )
                     let nav = BaseNavigationController(rootViewController: vc)
-                    nav.setNavigationBarHidden(true, animated: false)
-                    self.showViewController(nav, key: item.id, prefersMediumDetent: prefersMediumDetent, titleVisible: false)
+                    if !CommonWebViewController.supportsNativeGuideHeader {
+                        nav.setNavigationBarHidden(true, animated: false)
+                    }
+                    self.showViewController(nav, key: item.id, prefersMediumDetent: prefersMediumDetent, titleVisible: CommonWebViewController.supportsNativeGuideHeader)
                     return
                 }
             } catch {}
@@ -1259,7 +1262,7 @@ Device Model: \(model)
 
     @objc private func presentHelp(prefersMediumDetent: Bool = false) {
         let vc = HelpViewController(executor: executor, resourceManager: resourceManager, requestHandler: requestHandler, assetProvider: assetProvider, actionHandler: commonWebActionHandler)
-        showViewController(vc, prefersMediumDetent: prefersMediumDetent, titleVisible: false)
+        showViewController(vc, prefersMediumDetent: prefersMediumDetent, titleVisible: CommonWebViewController.supportsNativeGuideHeader)
     }
 
     private func presentEventFinder() {

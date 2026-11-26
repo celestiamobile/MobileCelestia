@@ -60,6 +60,8 @@ public extension UIViewController {
     func stopObservingWindowTitle() {
         _titleObservation?.invalidate()
         _titleObservation = nil
+        _subtitleObservation?.invalidate()
+        _subtitleObservation = nil
     }
 
     func observeWindowTitle(for viewController: UIViewController) {
@@ -68,6 +70,12 @@ public extension UIViewController {
             Task { @MainActor in
                 guard let self = self else { return }
                 self.windowTitle = viewController.windowTitle
+            }
+        }
+        _subtitleObservation = viewController.observe(\.windowSubtitle, options: [.initial, .new]) { [weak self] (viewController, _) in
+            Task { @MainActor in
+                guard let self else { return }
+                self.windowSubtitle = viewController.windowSubtitle
             }
         }
     }
@@ -102,10 +110,19 @@ private struct UIViewControllerAssociatedKeys {
     @MainActor
     static var _titleObservation: UInt8 = 0
     @MainActor
+    static var _subtitleObservation: UInt8 = 0
+    @MainActor
     static var windowTitle: UInt8 = 0
+    @MainActor
+    static var windowSubtitle: UInt8 = 0
 }
 
 fileprivate extension UIViewController {
+    var _subtitleObservation: NSKeyValueObservation? {
+        get { return objc_getAssociatedObject(self, &UIViewControllerAssociatedKeys._subtitleObservation) as? NSKeyValueObservation }
+        set { objc_setAssociatedObject(self, &UIViewControllerAssociatedKeys._subtitleObservation, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
+    }
+
     var _titleObservation: NSKeyValueObservation? {
         get { return objc_getAssociatedObject(self, &UIViewControllerAssociatedKeys._titleObservation) as? NSKeyValueObservation }
         set { objc_setAssociatedObject(self, &UIViewControllerAssociatedKeys._titleObservation, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN_NONATOMIC) }
@@ -113,6 +130,11 @@ fileprivate extension UIViewController {
 }
 
 public extension UIViewController {
+    @objc dynamic var windowSubtitle: String? {
+        get { return objc_getAssociatedObject(self, &UIViewControllerAssociatedKeys.windowSubtitle) as? String }
+        set { objc_setAssociatedObject(self, &UIViewControllerAssociatedKeys.windowSubtitle, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC) }
+    }
+
     @objc dynamic var windowTitle: String? {
         get { return objc_getAssociatedObject(self, &UIViewControllerAssociatedKeys.windowTitle) as? String }
         set { objc_setAssociatedObject(self, &UIViewControllerAssociatedKeys.windowTitle, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_COPY_NONATOMIC) }

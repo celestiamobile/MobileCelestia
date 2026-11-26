@@ -15,6 +15,7 @@ import UIKit
 class PanelSceneDelegate: CommonSceneDelegate {
     var window: UIWindow?
     private var titleObservation: NSKeyValueObservation?
+    private var subtitleObservation: NSKeyValueObservation?
 
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let windowScene = scene as? UIWindowScene else { return }
@@ -46,6 +47,13 @@ class PanelSceneDelegate: CommonSceneDelegate {
             Task { @MainActor in
                 guard let windowScene = windowScene else { return }
                 windowScene.title = viewController.windowTitle
+            }
+        }
+        if #available(anyAppleOS 26.0, *) {
+            subtitleObservation = viewController.observe(\.windowSubtitle, options: [.initial, .new]) { [weak windowScene] (viewController, _) in
+                Task { @MainActor in
+                    windowScene?.subtitle = viewController.windowSubtitle ?? ""
+                }
             }
         }
 

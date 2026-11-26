@@ -20,7 +20,7 @@ public final class HelpViewController: UIViewController {
     private lazy var nav: UINavigationController = {
         let url = URL.fromGuideShort(path: "/help/welcome", language: AppCore.language, shareable: false)
         let assetProvider = self.assetProvider
-        let vc = FallbackWebViewController(executor: executor, resourceManager: resourceManager, url: url, requestHandler: requestHandler, actionHandler: actionHandler, fallbackViewControllerCreator: OnboardViewController(assetProvider: assetProvider) { [weak self] action in
+        let vc = FallbackWebViewController(executor: executor, resourceManager: resourceManager, url: url, requestHandler: requestHandler, actionHandler: actionHandler, showsGuideHeader: true, fallbackViewControllerCreator: OnboardViewController(assetProvider: assetProvider) { [weak self] action in
             guard let self else { return }
             switch action {
             case .tutorial(let tutorial):
@@ -34,8 +34,11 @@ public final class HelpViewController: UIViewController {
                 UIApplication.shared.open(url, options: [:], completionHandler: nil)
             }
         })
+        vc.title = CelestiaString("Welcome to Celestia", comment: "Welcome message")
         let nav = BaseNavigationController(rootViewController: vc)
-        nav.setNavigationBarHidden(true, animated: false)
+        if !CommonWebViewController.supportsNativeGuideHeader {
+            nav.setNavigationBarHidden(true, animated: false)
+        }
         return nav
     }()
 

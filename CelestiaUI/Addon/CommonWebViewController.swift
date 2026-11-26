@@ -15,9 +15,21 @@ import WebKit
 @MainActor
 protocol CommonWebViewControllerDelegate: AnyObject {
     func webViewLoadFailed()
+    func webViewNavigationItemUpdated(_ navigationItem: UINavigationItem)
 }
 
 public class CommonWebViewController: UIViewController {
+    public nonisolated static var supportsNativeGuideHeader: Bool {
+        #if os(visionOS)
+        return false
+        #else
+        if #available(anyAppleOS 26.0, *) {
+            return true
+        }
+        return false
+        #endif
+    }
+
     public enum WebAction: Sendable {
         case showSubscription
         case ack(id: String)
@@ -29,6 +41,8 @@ public class CommonWebViewController: UIViewController {
     private let contextDirectory: URL?
     private let filterURL: Bool
     private var titleObservation: NSKeyValueObservation?
+    private let showsGuideHeader: Bool
+    private var pageInfo: SendACKContext?
 
     private let executor: AsyncProviderExecutor
     private let resourceManager: ResourceManager
@@ -44,6 +58,8 @@ public class CommonWebViewController: UIViewController {
         let isRTL = UIView.userInterfaceLayoutDirection(for: view.semanticContentAttribute) == .rightToLeft
         return UIBarButtonItem(image: UIImage(systemName: isRTL ? "chevron.right" : "chevron.left"), style: .plain, target: self, action: #selector(goBack))
     }()
+
+    private lazy var shareGuideItem = UIBarButtonItem(barButtonSystemItem: .action, target: self, action: #selector(shareGuide(_:)))
 
     #if targetEnvironment(macCatalyst)
     private lazy var toolbarBackItem: NSToolbarItem = {
@@ -70,7 +86,7 @@ public class CommonWebViewController: UIViewController {
         view = containerView
     }
 
-    public init(executor: AsyncProviderExecutor, resourceManager: ResourceManager, url: URL, requestHandler: RequestHandler, actionHandler: ((WebAction, UIViewController) -> Void)?, matchingQueryKeys: [String] = [], contextDirectory: URL? = nil, filterURL: Bool = true) {
+    public init(executor: AsyncProviderExecutor, resourceManager: ResourceManager, url: URL, requestHandler: RequestHandler, actionHandler: ((WebAction, UIViewController) -> Void)?, matchingQueryKeys: [String] = [], contextDirectory: URL? = nil, filterURL: Bool = true, showsGuideHeader: Bool = false) {
         self.executor = executor
         self.resourceManager = resourceManager
         self.url = url
@@ -79,6 +95,7 @@ public class CommonWebViewController: UIViewController {
         self.matchingQueryKeys = matchingQueryKeys
         self.contextDirectory = contextDirectory
         self.filterURL = filterURL
+        self.showsGuideHeader = showsGuideHeader
         let configuration = WKWebViewConfiguration()
         configuration.limitsNavigationsToAppBoundDomains = true
         let handler = CelestiaScriptHandler()
@@ -112,8 +129,7 @@ public class CommonWebViewController: UIViewController {
         titleObservation = webView.observe(\.title, options: .new, changeHandler: { [weak self] webView, _ in
             guard let self else { return }
             Task.detached { @MainActor in
-                self.title = webView.title
-                self.windowTitle = self.title
+                self.updatePageTitle()
             }
         })
     }
@@ -138,13 +154,45 @@ public class CommonWebViewController: UIViewController {
     }
 
     private func updateNavigation() {
-#if !targetEnvironment(macCatalyst)
         goBackItem.isEnabled = webView.canGoBack
         goBackItem.isHidden = !goBackItem.isEnabled
-#else
+#if targetEnvironment(macCatalyst)
         toolbarBackItem.isEnabled = webView.canGoBack
         updateToolbarIfNeeded()
 #endif
+        delegate?.webViewNavigationItemUpdated(navigationItem)
+    }
+
+    private func updatePageTitle() {
+        if showsGuideHeader && Self.supportsNativeGuideHeader {
+            title = pageInfo?.title ?? webView.title ?? title
+            windowTitle = title
+            windowSubtitle = pageInfo?.subtitle?.isEmpty == false ? pageInfo?.subtitle : nil
+        } else {
+            title = webView.title
+            windowTitle = title
+            windowSubtitle = nil
+        }
+        #if !os(visionOS)
+        if showsGuideHeader, #available(anyAppleOS 26.0, *) {
+            navigationItem.subtitle = windowSubtitle
+            navigationItem.rightBarButtonItem = pageInfo?.shareURL != nil ? shareGuideItem : nil
+        }
+        #endif
+        delegate?.webViewNavigationItemUpdated(navigationItem)
+    }
+
+    private func handleLoadFailure() {
+        if showsGuideHeader && Self.supportsNativeGuideHeader {
+            pageInfo = nil
+            updatePageTitle()
+        }
+        delegate?.webViewLoadFailed()
+    }
+
+    @objc private func shareGuide(_ sender: UIBarButtonItem) {
+        guard let shareURL = pageInfo?.shareURL else { return }
+        showShareSheet(for: shareURL, source: .barButtonItem(barButtonItem: sender))
     }
 
     @objc private func goBack() {
@@ -158,6 +206,13 @@ public class CommonWebViewController: UIViewController {
 }
 
 extension CommonWebViewController: WKNavigationDelegate {
+    public func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+        if showsGuideHeader && Self.supportsNativeGuideHeader {
+            pageInfo = nil
+            updatePageTitle()
+        }
+    }
+
     private func isURLAllowed(_ url: URL) -> Bool {
         let comp1 = URLComponents(url: self.url, resolvingAgainstBaseURL: false)!
         let comp2 = URLComponents(url: url, resolvingAgainstBaseURL: false)!
@@ -198,11 +253,11 @@ extension CommonWebViewController: WKNavigationDelegate {
     }
 
     public func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
-        delegate?.webViewLoadFailed()
+        handleLoadFailure()
     }
 
     public func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-        delegate?.webViewLoadFailed()
+        handleLoadFailure()
     }
 }
 
@@ -247,8 +302,12 @@ extension CommonWebViewController: CelestiaScriptHandlerDelegate {
         }
     }
 
-    func receivedACK(id: String) {
-        actionHandler?(.ack(id: id), self)
+    func receivedACK(context: SendACKContext) {
+        if showsGuideHeader && Self.supportsNativeGuideHeader {
+            pageInfo = context
+            updatePageTitle()
+        }
+        actionHandler?(.ack(id: context.id), self)
     }
 
     func openAddonNext(id: String) {

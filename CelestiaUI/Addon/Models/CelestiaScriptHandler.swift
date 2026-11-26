@@ -37,6 +37,9 @@ struct ShareURLContext: Decodable {
 
 struct SendACKContext: Decodable {
     let id: String
+    let title: String?
+    let subtitle: String?
+    let shareURL: URL?
 }
 
 struct OpenAddonNextContext: Decodable {
@@ -93,7 +96,7 @@ final class SendACKHandler: JavascriptHandler<SendACKContext>, @unchecked Sendab
     override var operation: String { return "sendACK" }
 
     override func execute(context: SendACKContext, delegate: CelestiaScriptHandlerDelegate) {
-        delegate.receivedACK(id: context.id)
+        delegate.receivedACK(context: context)
     }
 }
 
@@ -126,7 +129,7 @@ final class OpenSubscriptionPageHandler: JavascriptHandler<OpenSubscriptionPageC
 protocol CelestiaScriptHandlerDelegate: AnyObject, Sendable {
     func runScript(type: String, content: String, name: String?, location: String?)
     func shareURL(title: String, url: URL, rect: CGRect)
-    func receivedACK(id: String)
+    func receivedACK(context: SendACKContext)
     func openAddonNext(id: String)
     func runDemo()
     func openSubscriptionPage()
